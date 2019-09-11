@@ -1,19 +1,0 @@
-
-Dsquid:S1444"-Make this "public static COMMAND" field final(±æêÖ
-Gsquid:S1444"+Make this "public static USAGE" field final(•Á¶—ıÿÿÿÿ
-Msquid:S1444"1Make this "public static DESCRIPTION" field final(Ï¸¨ìıÿÿÿÿ
-Gsquid:S1444"+Make this "public static ALIAS" field final(Ğ¢—ıùÿÿÿÿ
-"squid:ClassVariableVisibilityCheck"SMake COMMAND a static final constant or non-public and provide accessors if needed.(±æêÖ
-„"squid:ClassVariableVisibilityCheck"QMake USAGE a static final constant or non-public and provide accessors if needed.(•Á¶—ıÿÿÿÿ
-Š"squid:ClassVariableVisibilityCheck"WMake DESCRIPTION a static final constant or non-public and provide accessors if needed.(Ï¸¨ìıÿÿÿÿ
-„"squid:ClassVariableVisibilityCheck"QMake ALIAS a static final constant or non-public and provide accessors if needed.(Ğ¢—ıùÿÿÿÿ
-isquid:S3008"RRename this field "COMMAND" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(±æêÖ
-lsquid:S3008"PRename this field "USAGE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(•Á¶—ıÿÿÿÿ
-rsquid:S3008"VRename this field "DESCRIPTION" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ï¸¨ìıÿÿÿÿ
-lsquid:S3008"PRename this field "ALIAS" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ğ¢—ıùÿÿÿÿ
-§squid:S1845"Rename field "COMMAND" to prevent any misunderstanding/clash with field "command" defined in superclass "de.anteiku.kittybot.commands.Command".(±æêÖ
-¨squid:S1845"‹Rename field "USAGE" to prevent any misunderstanding/clash with field "usage" defined in superclass "de.anteiku.kittybot.commands.Command".(•Á¶—ıÿÿÿÿ
-´squid:S1845"—Rename field "DESCRIPTION" to prevent any misunderstanding/clash with field "description" defined in superclass "de.anteiku.kittybot.commands.Command".(Ï¸¨ìıÿÿÿÿ
-¨squid:S1845"‹Rename field "ALIAS" to prevent any misunderstanding/clash with field "alias" defined in superclass "de.anteiku.kittybot.commands.Command".(Ğ¢—ıùÿÿÿÿ
-9squid:S2386"Make this member "protected".(Ğ¢—ıùÿÿÿÿ
-nsquid:S3776"RRefactor this method to reduce its Cognitive Complexity from 48 to the 15 allowed.(ãĞæÛùÿÿÿÿ

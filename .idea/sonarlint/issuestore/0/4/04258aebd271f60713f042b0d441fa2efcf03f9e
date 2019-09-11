@@ -1,7 +1,0 @@
-
-|squid:S4165"eRemove this useless assignment; "guildId" already holds the assigned value along all execution paths.(ÝÍ´Ã
-Xsquid:S00107!"AConstructor has 8 parameters, which is greater than 7 authorized.(„¯ê
-:squid:S1659"#Declare "topic" on a separate line.(‚’ðú
-7squid:S1659" Declare "id" on a separate line.(‚’ðú
-<squid:S1659"%Declare "guildId" on a separate line.(‚’ðú
-<squid:S1659"%Declare "endTime" on a separate line.(‘’±¼

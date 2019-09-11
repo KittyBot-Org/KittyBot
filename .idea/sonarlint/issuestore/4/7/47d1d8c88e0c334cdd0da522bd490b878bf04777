@@ -1,7 +1,0 @@
-
-;squid:S2386"Make this member "protected".(•óÛÍ8óÉÙÔÍ-
-ªsquid:S1845"‹Rename field "ALIAS" to prevent any misunderstanding/clash with field "alias" defined in superclass "de.anteiku.kittybot.commands.Command".(•óÛÍ8óÉÙÔÍ-
-®squid:S1845"Rename field "COMMAND" to prevent any misunderstanding/clash with field "command" defined in superclass "de.anteiku.kittybot.commands.Command".(Ñş‚Ù8óÉÙÔÍ-
-»squid:S1845
-"—Rename field "DESCRIPTION" to prevent any misunderstanding/clash with field "description" defined in superclass "de.anteiku.kittybot.commands.Command".(ìĞŞ„ûÿÿÿÿ8óÉÙÔÍ-
-ªsquid:S1845	"‹Rename field "USAGE" to prevent any misunderstanding/clash with field "usage" defined in superclass "de.anteiku.kittybot.commands.Command".(º“ë¼8óÉÙÔÍ-

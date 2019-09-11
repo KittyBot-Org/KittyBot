@@ -1,24 +1,0 @@
-
-8squid:S1643Q"Use a StringBuilder instead.(œÁ“èøÿÿÿÿ
-8squid:S1643m"Use a StringBuilder instead.(ÏĞ¦Ÿûÿÿÿÿ
-Isquid:S1444"-Make this "public static COMMAND" field final(öè–àûÿÿÿÿ
-Gsquid:S1444"+Make this "public static USAGE" field final(ÙÓ†Äùÿÿÿÿ
-Gsquid:S1444"1Make this "public static DESCRIPTION" field final(ì¤
-Bsquid:S1444"+Make this "public static ALIAS" field final(È×®
-Gsquid:S1444"+Make this "public static title" field final(ô„Çúÿÿÿÿ
-†"squid:ClassVariableVisibilityCheck"SMake COMMAND a static final constant or non-public and provide accessors if needed.(öè–àûÿÿÿÿ
-„"squid:ClassVariableVisibilityCheck"QMake USAGE a static final constant or non-public and provide accessors if needed.(ÙÓ†Äùÿÿÿÿ
-„"squid:ClassVariableVisibilityCheck"WMake DESCRIPTION a static final constant or non-public and provide accessors if needed.(ì¤
-"squid:ClassVariableVisibilityCheck"QMake ALIAS a static final constant or non-public and provide accessors if needed.(È×®
-„"squid:ClassVariableVisibilityCheck"QMake title a static final constant or non-public and provide accessors if needed.(ô„Çúÿÿÿÿ
-Zsquid:S1155:">Use isEmpty() to check whether the collection is empty or not.(Õ¢™¿ùÿÿÿÿ
-nsquid:S3008"RRename this field "COMMAND" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(öè–àûÿÿÿÿ
-lsquid:S3008"PRename this field "USAGE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÙÓ†Äùÿÿÿÿ
-lsquid:S3008"VRename this field "DESCRIPTION" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ì¤
-gsquid:S3008"PRename this field "ALIAS" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(È×®
-¬squid:S1845"Rename field "COMMAND" to prevent any misunderstanding/clash with field "command" defined in superclass "de.anteiku.kittybot.commands.Command".(öè–àûÿÿÿÿ
-¨squid:S1845"‹Rename field "USAGE" to prevent any misunderstanding/clash with field "usage" defined in superclass "de.anteiku.kittybot.commands.Command".(ÙÓ†Äùÿÿÿÿ
-®squid:S1845"—Rename field "DESCRIPTION" to prevent any misunderstanding/clash with field "description" defined in superclass "de.anteiku.kittybot.commands.Command".(ì¤
-£squid:S1845"‹Rename field "ALIAS" to prevent any misunderstanding/clash with field "alias" defined in superclass "de.anteiku.kittybot.commands.Command".(È×®
-4squid:S2386"Make this member "protected".(È×®
-nsquid:S37763"RRefactor this method to reduce its Cognitive Complexity from 42 to the 15 allowed.(ãĞæÛùÿÿÿÿ

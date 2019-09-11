@@ -1,18 +1,0 @@
-
-Dsquid:S1444"-Make this "public static COMMAND" field final(ŒÒâŞ
-Gsquid:S1444"+Make this "public static USAGE" field final(èéüÊÿÿÿÿÿ
-Msquid:S1444"1Make this "public static DESCRIPTION" field final(øñü³ûÿÿÿÿ
-Gsquid:S1444"+Make this "public static ALIAS" field final(‹ğ¤‡ûÿÿÿÿ
-"squid:ClassVariableVisibilityCheck"SMake COMMAND a static final constant or non-public and provide accessors if needed.(ŒÒâŞ
-„"squid:ClassVariableVisibilityCheck"QMake USAGE a static final constant or non-public and provide accessors if needed.(èéüÊÿÿÿÿÿ
-Š"squid:ClassVariableVisibilityCheck"WMake DESCRIPTION a static final constant or non-public and provide accessors if needed.(øñü³ûÿÿÿÿ
-„"squid:ClassVariableVisibilityCheck"QMake ALIAS a static final constant or non-public and provide accessors if needed.(‹ğ¤‡ûÿÿÿÿ
-isquid:S3008"RRename this field "COMMAND" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ŒÒâŞ
-lsquid:S3008"PRename this field "USAGE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(èéüÊÿÿÿÿÿ
-rsquid:S3008"VRename this field "DESCRIPTION" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(øñü³ûÿÿÿÿ
-lsquid:S3008"PRename this field "ALIAS" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‹ğ¤‡ûÿÿÿÿ
-§squid:S1845"Rename field "COMMAND" to prevent any misunderstanding/clash with field "command" defined in superclass "de.anteiku.kittybot.commands.Command".(ŒÒâŞ
-¨squid:S1845"‹Rename field "USAGE" to prevent any misunderstanding/clash with field "usage" defined in superclass "de.anteiku.kittybot.commands.Command".(èéüÊÿÿÿÿÿ
-´squid:S1845"—Rename field "DESCRIPTION" to prevent any misunderstanding/clash with field "description" defined in superclass "de.anteiku.kittybot.commands.Command".(øñü³ûÿÿÿÿ
-¨squid:S1845"‹Rename field "ALIAS" to prevent any misunderstanding/clash with field "alias" defined in superclass "de.anteiku.kittybot.commands.Command".(‹ğ¤‡ûÿÿÿÿ
-9squid:S2386"Make this member "protected".(‹ğ¤‡ûÿÿÿÿ

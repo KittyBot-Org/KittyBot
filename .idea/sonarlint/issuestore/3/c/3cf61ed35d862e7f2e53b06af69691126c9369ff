@@ -1,20 +1,0 @@
-
-Isquid:S1444"-Make this "public static COMMAND" field final(¼ãåËüÿÿÿÿ
-Gsquid:S1444"+Make this "public static USAGE" field final(¤—ùÿÿÿÿ
-Gsquid:S1444"1Make this "public static DESCRIPTION" field final(á¥…
-Bsquid:S1444"+Make this "public static ALIAS" field final(œÄ³³
-†"squid:ClassVariableVisibilityCheck"SMake COMMAND a static final constant or non-public and provide accessors if needed.(¼ãåËüÿÿÿÿ
-„"squid:ClassVariableVisibilityCheck"QMake USAGE a static final constant or non-public and provide accessors if needed.(¤—ùÿÿÿÿ
-„"squid:ClassVariableVisibilityCheck"WMake DESCRIPTION a static final constant or non-public and provide accessors if needed.(á¥…
-"squid:ClassVariableVisibilityCheck"QMake ALIAS a static final constant or non-public and provide accessors if needed.(œÄ³³
-nsquid:S3008"RRename this field "COMMAND" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¼ãåËüÿÿÿÿ
-lsquid:S3008"PRename this field "USAGE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¤—ùÿÿÿÿ
-lsquid:S3008"VRename this field "DESCRIPTION" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(á¥…
-gsquid:S3008"PRename this field "ALIAS" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(œÄ³³
-¬squid:S1845"Rename field "COMMAND" to prevent any misunderstanding/clash with field "command" defined in superclass "de.anteiku.kittybot.commands.Command".(¼ãåËüÿÿÿÿ
-¨squid:S1845"‹Rename field "USAGE" to prevent any misunderstanding/clash with field "usage" defined in superclass "de.anteiku.kittybot.commands.Command".(¤—ùÿÿÿÿ
-®squid:S1845"—Rename field "DESCRIPTION" to prevent any misunderstanding/clash with field "description" defined in superclass "de.anteiku.kittybot.commands.Command".(á¥…
-£squid:S1845"‹Rename field "ALIAS" to prevent any misunderstanding/clash with field "alias" defined in superclass "de.anteiku.kittybot.commands.Command".(œÄ³³
-4squid:S2386"Make this member "protected".(œÄ³³
-nsquid:S3776!"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(ãĞæÛùÿÿÿÿ
-Csquid:S1481«"&Remove this unused "m" local variable.(ÛëÌøÿÿÿÿ

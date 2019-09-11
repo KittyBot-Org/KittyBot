@@ -1,9 +1,0 @@
-
-lsquid:S3008"PRename this field "SLEEP" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‹êè†øÿÿÿÿ
-fsquid:S3008"ORename this field "NAME" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¹©½»
-„"squid:ClassVariableVisibilityCheck"QMake SLEEP a static final constant or non-public and provide accessors if needed.(‹êè†øÿÿÿÿ
-Gsquid:S1444"+Make this "public static SLEEP" field final(‹êè†øÿÿÿÿ
-¢squid:S1845"…Rename field "SLEEP" to prevent any misunderstanding/clash with field "sleep" defined in superclass "de.anteiku.kittybot.tasks.Task".(‹êè†øÿÿÿÿ
-Asquid:S1444"*Make this "public static NAME" field final(¹©½»
-~"squid:ClassVariableVisibilityCheck"PMake NAME a static final constant or non-public and provide accessors if needed.(¹©½»
-›squid:S1845"ƒRename field "NAME" to prevent any misunderstanding/clash with field "name" defined in superclass "de.anteiku.kittybot.tasks.Task".(¹©½»

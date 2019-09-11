@@ -1,6 +1,0 @@
-
-V"squid:SwitchLastCaseIsDefaultCheck""Add a default case to this switch.(έυτ£ωÿÿÿÿ
-psquid:S3012B"YUse "Arrays.copyOf", "Arrays.asList", "Collections.addAll" or "System.arraycopy" instead.(Έ•
-V"squid:SwitchLastCaseIsDefaultCheckω""Add a default case to this switch.(έυτ£ωÿÿÿÿ
-V"squid:SwitchLastCaseIsDefaultCheckΣ""Add a default case to this switch.(έυτ£ωÿÿÿÿ
-Vsquid:S1118":Add a private constructor to hide the implicit public one.(£δ‚›ύÿÿÿÿ

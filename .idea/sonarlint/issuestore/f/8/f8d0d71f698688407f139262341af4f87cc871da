@@ -1,8 +1,0 @@
-
-isquid:S3776M"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(®¯µÅ
-^$squid:AssignmentInSubExpressionCheck7".Extract the assignment out of this expression.(²ÜåÚ
-‚"squid:ClassVariableVisibilityCheck"TMake commands a static final constant or non-public and provide accessors if needed.(Óí½Å
-‰"squid:ClassVariableVisibilityCheck"[Make commandMessages a static final constant or non-public and provide accessors if needed.(±ÛÛ
-"squid:ClassVariableVisibilityCheck"\Make controllableMsgs a static final constant or non-public and provide accessors if needed.(ŠÆ¨Ìøÿÿÿÿ
-3squid:S1643d"Use a StringBuilder instead.(äù²ƒ
-"squid:ClassVariableVisibilityCheck"SMake msgCtrl a static final constant or non-public and provide accessors if needed.(¤€»ÿ

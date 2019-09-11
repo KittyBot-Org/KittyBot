@@ -1,6 +1,0 @@
-[22:26:25]Connection to Redis Server failed!
-java.lang.NullPointerException
-	at de.anteiku.kittybot.KittyBot.close(KittyBot.java:124)
-	at de.anteiku.kittybot.database.Database.<init>(Database.java:67)
-	at de.anteiku.kittybot.KittyBot.<init>(KittyBot.java:72)
-	at de.anteiku.kittybot.KittyBot.main(KittyBot.java:51)

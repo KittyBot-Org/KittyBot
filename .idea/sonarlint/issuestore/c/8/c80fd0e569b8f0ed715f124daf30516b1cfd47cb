@@ -1,18 +1,0 @@
-
-Isquid:S1444"-Make this "public static COMMAND" field final(îêòƒÿÿÿÿÿ
-Bsquid:S1444"+Make this "public static USAGE" field final(´‘üº
-Msquid:S1444"1Make this "public static DESCRIPTION" field final(¹å˜şÿÿÿÿÿ
-Gsquid:S1444"+Make this "public static ALIAS" field final(êô°ùÿÿÿÿ
-†"squid:ClassVariableVisibilityCheck"SMake COMMAND a static final constant or non-public and provide accessors if needed.(îêòƒÿÿÿÿÿ
-"squid:ClassVariableVisibilityCheck"QMake USAGE a static final constant or non-public and provide accessors if needed.(´‘üº
-Š"squid:ClassVariableVisibilityCheck"WMake DESCRIPTION a static final constant or non-public and provide accessors if needed.(¹å˜şÿÿÿÿÿ
-„"squid:ClassVariableVisibilityCheck"QMake ALIAS a static final constant or non-public and provide accessors if needed.(êô°ùÿÿÿÿ
-nsquid:S3008"RRename this field "COMMAND" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(îêòƒÿÿÿÿÿ
-gsquid:S3008"PRename this field "USAGE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(´‘üº
-rsquid:S3008"VRename this field "DESCRIPTION" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¹å˜şÿÿÿÿÿ
-lsquid:S3008"PRename this field "ALIAS" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(êô°ùÿÿÿÿ
-¬squid:S1845"Rename field "COMMAND" to prevent any misunderstanding/clash with field "command" defined in superclass "de.anteiku.kittybot.commands.Command".(îêòƒÿÿÿÿÿ
-£squid:S1845"‹Rename field "USAGE" to prevent any misunderstanding/clash with field "usage" defined in superclass "de.anteiku.kittybot.commands.Command".(´‘üº
-´squid:S1845"—Rename field "DESCRIPTION" to prevent any misunderstanding/clash with field "description" defined in superclass "de.anteiku.kittybot.commands.Command".(¹å˜şÿÿÿÿÿ
-¨squid:S1845"‹Rename field "ALIAS" to prevent any misunderstanding/clash with field "alias" defined in superclass "de.anteiku.kittybot.commands.Command".(êô°ùÿÿÿÿ
-9squid:S2386"Make this member "protected".(êô°ùÿÿÿÿ

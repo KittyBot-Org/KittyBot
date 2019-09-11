@@ -1,18 +1,0 @@
-
-Isquid:S1444"-Make this "public static COMMAND" field final(©ÆĞúÿÿÿÿ
-Gsquid:S1444"+Make this "public static USAGE" field final(î¹Óöüÿÿÿÿ
-Msquid:S1444"1Make this "public static DESCRIPTION" field final(Š°¯›üÿÿÿÿ
-Gsquid:S1444"+Make this "public static ALIAS" field final(ç«¹ûÿÿÿÿ
-†"squid:ClassVariableVisibilityCheck"SMake COMMAND a static final constant or non-public and provide accessors if needed.(©ÆĞúÿÿÿÿ
-„"squid:ClassVariableVisibilityCheck"QMake USAGE a static final constant or non-public and provide accessors if needed.(î¹Óöüÿÿÿÿ
-Š"squid:ClassVariableVisibilityCheck"WMake DESCRIPTION a static final constant or non-public and provide accessors if needed.(Š°¯›üÿÿÿÿ
-„"squid:ClassVariableVisibilityCheck"QMake ALIAS a static final constant or non-public and provide accessors if needed.(ç«¹ûÿÿÿÿ
-nsquid:S3008"RRename this field "COMMAND" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(©ÆĞúÿÿÿÿ
-lsquid:S3008"PRename this field "USAGE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(î¹Óöüÿÿÿÿ
-rsquid:S3008"VRename this field "DESCRIPTION" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Š°¯›üÿÿÿÿ
-lsquid:S3008"PRename this field "ALIAS" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ç«¹ûÿÿÿÿ
-¬squid:S1845"Rename field "COMMAND" to prevent any misunderstanding/clash with field "command" defined in superclass "de.anteiku.kittybot.commands.Command".(©ÆĞúÿÿÿÿ
-¨squid:S1845"‹Rename field "USAGE" to prevent any misunderstanding/clash with field "usage" defined in superclass "de.anteiku.kittybot.commands.Command".(î¹Óöüÿÿÿÿ
-´squid:S1845"—Rename field "DESCRIPTION" to prevent any misunderstanding/clash with field "description" defined in superclass "de.anteiku.kittybot.commands.Command".(Š°¯›üÿÿÿÿ
-¨squid:S1845"‹Rename field "ALIAS" to prevent any misunderstanding/clash with field "alias" defined in superclass "de.anteiku.kittybot.commands.Command".(ç«¹ûÿÿÿÿ
-9squid:S2386"Make this member "protected".(ç«¹ûÿÿÿÿ

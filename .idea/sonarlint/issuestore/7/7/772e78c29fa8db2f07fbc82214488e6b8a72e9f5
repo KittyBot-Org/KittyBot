@@ -1,7 +1,0 @@
-
-lsquid:S3008"PRename this field "DEBUG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ö‚ÆÖûÿÿÿÿ
-<squid:S2885" Make "sdf" an instance variable.(µ¨”Îûÿÿÿÿ
-osquid:S1450"XRemove the "errorFile" field and declare it as a local variable in the relevant methods.(ÛÙƒŸ
-Dsquid:S1068"(Remove this unused "main" private field.(¿“Õûüÿÿÿÿ
-7squid:S3010" Remove this assignment of "sdf".(ÙúÞÞ
-Rsquid:S2696."6Make the enclosing method "static" or remove this set.(ãÿéÛüÿÿÿÿ

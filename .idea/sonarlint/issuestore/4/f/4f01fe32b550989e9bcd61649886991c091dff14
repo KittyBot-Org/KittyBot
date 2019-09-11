@@ -1,15 +1,0 @@
-
-‘"squid:ClassVariableVisibilityCheck+"WMake pollManager a static final constant or non-public and provide accessors if needed.(´à Àşÿÿÿÿ8èµùÓÍ-
-Msquid:S14440"*Make this "public static rand" field final(Æ‰ıüúÿÿÿÿ8èµùÓÍ-
-"squid:ClassVariableVisibilityCheck*"ZMake commandManager a static final constant or non-public and provide accessors if needed.(¤ÁÎÌ8èµùÓÍ-
-isquid:S2142t"FEither re-interrupt this method or rethrow the "InterruptedException".(±ğ¡Åıÿÿÿÿ8èµùÓÍ-
-Dsquid:S3010C"!Remove this assignment of "rand".(µÏ‚Ùÿÿÿÿÿ8èµùÓÍ-
-‰"squid:ClassVariableVisibilityCheck'"OMake jda a static final constant or non-public and provide accessors if needed.(ì¶ëôüÿÿÿÿ8èµùÓÍ-
-"squid:ClassVariableVisibilityCheck-"TMake database a static final constant or non-public and provide accessors if needed.(ÂÆš­şÿÿÿÿ8èµùÓÍ-
-Š"squid:ClassVariableVisibilityCheck0"PMake rand a static final constant or non-public and provide accessors if needed.(Æ‰ıüúÿÿÿÿ8èµùÓÍ-
-"squid:ClassVariableVisibilityCheck/"VMake webService a static final constant or non-public and provide accessors if needed.(Š«Ïâÿÿÿÿÿ8èµùÓÍ-
-Dsquid:S2440D"&Remove this instantiation of "Emotes".(©­Îî8èµùÓÍ-
-‰"squid:ClassVariableVisibilityCheck."OMake owm a static final constant or non-public and provide accessors if needed.(İÅ™Ğşÿÿÿÿ8èµùÓÍ-
-‡"squid:ClassVariableVisibilityCheck("RMake logger a static final constant or non-public and provide accessors if needed.(¬íÜ€8èµùÓÍ-
-Œ"squid:ClassVariableVisibilityCheck)"RMake config a static final constant or non-public and provide accessors if needed.(Ê’şøÿÿÿÿ8èµùÓÍ-
-Œ"squid:ClassVariableVisibilityCheck,"WMake taskManager a static final constant or non-public and provide accessors if needed.( ­×ÿ8èµùÓÍ-

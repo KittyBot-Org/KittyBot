@@ -1,18 +1,0 @@
-
-Dsquid:S1444"-Make this "public static COMMAND" field final(®ÿñô
-Gsquid:S1444"+Make this "public static USAGE" field final(ë¸·Õıÿÿÿÿ
-Msquid:S1444"1Make this "public static DESCRIPTION" field final(Ÿ€á®úÿÿÿÿ
-Bsquid:S1444"+Make this "public static ALIAS" field final(¨æàÜ
-"squid:ClassVariableVisibilityCheck"SMake COMMAND a static final constant or non-public and provide accessors if needed.(®ÿñô
-„"squid:ClassVariableVisibilityCheck"QMake USAGE a static final constant or non-public and provide accessors if needed.(ë¸·Õıÿÿÿÿ
-Š"squid:ClassVariableVisibilityCheck"WMake DESCRIPTION a static final constant or non-public and provide accessors if needed.(Ÿ€á®úÿÿÿÿ
-"squid:ClassVariableVisibilityCheck"QMake ALIAS a static final constant or non-public and provide accessors if needed.(¨æàÜ
-isquid:S3008"RRename this field "COMMAND" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(®ÿñô
-lsquid:S3008"PRename this field "USAGE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ë¸·Õıÿÿÿÿ
-rsquid:S3008"VRename this field "DESCRIPTION" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ÿ€á®úÿÿÿÿ
-gsquid:S3008"PRename this field "ALIAS" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¨æàÜ
-§squid:S1845"Rename field "COMMAND" to prevent any misunderstanding/clash with field "command" defined in superclass "de.anteiku.kittybot.commands.Command".(®ÿñô
-¨squid:S1845"‹Rename field "USAGE" to prevent any misunderstanding/clash with field "usage" defined in superclass "de.anteiku.kittybot.commands.Command".(ë¸·Õıÿÿÿÿ
-´squid:S1845"—Rename field "DESCRIPTION" to prevent any misunderstanding/clash with field "description" defined in superclass "de.anteiku.kittybot.commands.Command".(Ÿ€á®úÿÿÿÿ
-£squid:S1845"‹Rename field "ALIAS" to prevent any misunderstanding/clash with field "alias" defined in superclass "de.anteiku.kittybot.commands.Command".(¨æàÜ
-4squid:S2386"Make this member "protected".(¨æàÜ
