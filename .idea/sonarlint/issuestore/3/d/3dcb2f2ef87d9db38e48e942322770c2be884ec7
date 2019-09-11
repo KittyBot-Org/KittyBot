@@ -1,0 +1,46 @@
+
+ƒ"squid:ClassVariableVisibilityCheck3"PMake nsfw a static final constant or non-public and provide accessors if needed.(¤¦Î§úÿÿÿÿ
+:squid:S3010D"$Remove this assignment of "console".(Ä¼Ž]
+<squid:S3010B" Remove this assignment of "tft".(ì‚œÖýÿÿÿÿ
+Fsquid:S14441"/Make this "public static teamdoggo" field final(”Ñ®Á
+}"squid:ClassVariableVisibilityCheck5"OMake tft a static final constant or non-public and provide accessors if needed.(€óóÂ
+}squid:S1845/"aRename field "blank" to prevent any misunderstanding/clash with field "BLANK" defined on line 36.(‹ÛíÖÿÿÿÿÿ
+"squid:ClassVariableVisibilityCheck2"\Make teamaussenseiter a static final constant or non-public and provide accessors if needed.(ÂÎô“ýÿÿÿÿ
+:squid:S3010E"#Remove this assignment of "invite".(„úþ÷
+@squid:S14444")Make this "public static lol" field final(‡¾‡Ë
+<squid:S3010A" Remove this assignment of "lol".(·††£øÿÿÿÿ
+Dsquid:S3010?"-Remove this assignment of "teamaussenseiter".(Œâ¯¡
+Gsquid:S1444/"+Make this "public static blank" field final(‹ÛíÖÿÿÿÿÿ
+ˆ"squid:ClassVariableVisibilityCheck0"UMake teamkitty a static final constant or non-public and provide accessors if needed.(ÐØâæýÿÿÿÿ
+tsquid:S18455"]Rename field "tft" to prevent any misunderstanding/clash with field "TFT" defined on line 42.(€óóÂ
+{squid:S18453"_Rename field "nsfw" to prevent any misunderstanding/clash with field "NSFW" defined on line 40.(¤¦Î§úÿÿÿÿ
+€"squid:ClassVariableVisibilityCheck7"SMake console a static final constant or non-public and provide accessors if needed.(Þìª
+=squid:S3010@"!Remove this assignment of "nsfw".(ïŽ´Öúÿÿÿÿ
+squid:S18458"cRename field "invite" to prevent any misunderstanding/clash with field "INVITE" defined on line 45.(Ê±ù±ûÿÿÿÿ
+Rsquid:S14442"6Make this "public static teamaussenseiter" field final(ÂÎô“ýÿÿÿÿ
+Fsquid:S14443"*Make this "public static nsfw" field final(¤¦Î§úÿÿÿÿ
+Bsquid:S3010="&Remove this assignment of "teamkitty".(Ž¥ØÅøÿÿÿÿ
+=squid:S3010>"&Remove this assignment of "teamdoggo".(†”Ìµ
+9squid:S3010<""Remove this assignment of "blank".(—šö
+€squid:S18451"iRename field "teamdoggo" to prevent any misunderstanding/clash with field "TEAMDOGGO" defined on line 38.(”Ñ®Á
+ƒ"squid:ClassVariableVisibilityCheck1"UMake teamdoggo a static final constant or non-public and provide accessors if needed.(”Ñ®Á
+…"squid:ClassVariableVisibilityCheck8"RMake invite a static final constant or non-public and provide accessors if needed.(Ê±ù±ûÿÿÿÿ
+{squid:S18457"eRename field "console" to prevent any misunderstanding/clash with field "CONSOLE" defined on line 44.(Þìª
+tsquid:S18454"]Rename field "lol" to prevent any misunderstanding/clash with field "LOL" defined on line 41.(‡¾‡Ë
+Csquid:S14447"-Make this "public static console" field final(Þìª
+Isquid:S14449"-Make this "public static discord" field final(öö¤¨ùÿÿÿÿ
+}"squid:ClassVariableVisibilityCheck4"OMake lol a static final constant or non-public and provide accessors if needed.(‡¾‡Ë
+Hsquid:S14448",Make this "public static invite" field final(Ê±ù±ûÿÿÿÿ
+;squid:S3010F"$Remove this assignment of "discord".(ø™àõ
+@squid:S14445")Make this "public static tft" field final(€óóÂ
+Ksquid:S14440"/Make this "public static teamkitty" field final(ÐØâæýÿÿÿÿ
+…squid:S18450"iRename field "teamkitty" to prevent any misunderstanding/clash with field "TEAMKITTY" defined on line 37.(ÐØâæýÿÿÿÿ
+@squid:S3010C"$Remove this assignment of "twitter".(ó÷ô‹ÿÿÿÿÿ
+†"squid:ClassVariableVisibilityCheck6"SMake twitter a static final constant or non-public and provide accessors if needed.(ž¡’¼øÿÿÿÿ
+squid:S18456"eRename field "twitter" to prevent any misunderstanding/clash with field "TWITTER" defined on line 43.(ž¡’¼øÿÿÿÿ
+“squid:S18452"wRename field "teamaussenseiter" to prevent any misunderstanding/clash with field "TEAMAUSSENSEITER" defined on line 39.(ÂÎô“ýÿÿÿÿ
+Isquid:S14446"-Make this "public static twitter" field final(ž¡’¼øÿÿÿÿ
+squid:S18459"eRename field "discord" to prevent any misunderstanding/clash with field "DISCORD" defined on line 46.(öö¤¨ùÿÿÿÿ
+4squid:S1118;"Hide this public constructor.(€À×ï
+„"squid:ClassVariableVisibilityCheck/"QMake blank a static final constant or non-public and provide accessors if needed.(‹ÛíÖÿÿÿÿÿ
+†"squid:ClassVariableVisibilityCheck9"SMake discord a static final constant or non-public and provide accessors if needed.(öö¤¨ùÿÿÿÿ

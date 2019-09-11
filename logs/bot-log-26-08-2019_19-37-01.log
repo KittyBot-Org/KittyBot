@@ -1,0 +1,20 @@
+[19:37:03]Running task 'PollTask'!
+[19:37:03]Poll closed Topic: 'this is a test poll' Id: 'null'
+[19:37:03]Poll closed Topic: 'this is a test poll' Id: 'null'
+[19:37:03]Poll closed Topic: 'this is a test poll' Id: 'null'
+[19:37:03]Poll closed Topic: 'this is a test poll' Id: 'null'
+[19:37:03]'0' polls running!
+[19:37:03]Task 'PollTask' finished! took '17'ms
+[19:37:33]Running task 'PollTask'!
+[19:37:33]'4' polls running!
+[19:37:33]Task 'PollTask' finished! took '0'ms
+[19:37:57]Command: 'poll' by: 'To?' from: 'Katzenkörbchen' took '391'ms
+[19:38:03]Running task 'PollTask'!
+[19:38:03]'4' polls running!
+[19:38:03]Task 'PollTask' finished! took '0'ms
+[19:38:33]Running task 'PollTask'!
+[19:38:33]'4' polls running!
+[19:38:33]Task 'PollTask' finished! took '0'ms
+[19:39:03]Running task 'PollTask'!
+[19:39:03]'4' polls running!
+[19:39:03]Task 'PollTask' finished! took '0'ms

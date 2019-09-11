@@ -1,0 +1,9 @@
+
+3squid:S1643F"Use a StringBuilder instead.(û‚¤×
+3squid:S1643G"Use a StringBuilder instead.(—×ÕÌ
+>squid:S1659"'Declare "channelId" on a separate line.(ô€´º
+:squid:S1659"#Declare "topic" on a separate line.(ô€´º
+7squid:S1659" Declare "id" on a separate line.(ô€´º
+<squid:S1659"%Declare "endTime" on a separate line.(‘’±¼
+Ssquid:S1854×";Remove this useless assignment to local variable "message".(¯µô
+Dsquid:S1481×",Remove this unused "message" local variable.(¯µô

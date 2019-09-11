@@ -1,0 +1,23 @@
+
+Isquid:S1444"-Make this "public static COMMAND" field final(«ÜøÍûÿÿÿÿ
+Bsquid:S1444	"+Make this "public static USAGE" field final(Ç¬€
+Hsquid:S1444
+"1Make this "public static DESCRIPTION" field final(íí×ò
+Gsquid:S1444"+Make this "public static ALIAS" field final(îşÊàüÿÿÿÿ
+†"squid:ClassVariableVisibilityCheck"SMake COMMAND a static final constant or non-public and provide accessors if needed.(«ÜøÍûÿÿÿÿ
+"squid:ClassVariableVisibilityCheck	"QMake USAGE a static final constant or non-public and provide accessors if needed.(Ç¬€
+…"squid:ClassVariableVisibilityCheck
+"WMake DESCRIPTION a static final constant or non-public and provide accessors if needed.(íí×ò
+„"squid:ClassVariableVisibilityCheck"QMake ALIAS a static final constant or non-public and provide accessors if needed.(îşÊàüÿÿÿÿ
+nsquid:S3008"RRename this field "COMMAND" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(«ÜøÍûÿÿÿÿ
+gsquid:S3008	"PRename this field "USAGE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ç¬€
+msquid:S3008
+"VRename this field "DESCRIPTION" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(íí×ò
+lsquid:S3008"PRename this field "ALIAS" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(îşÊàüÿÿÿÿ
+¬squid:S1845"Rename field "COMMAND" to prevent any misunderstanding/clash with field "command" defined in superclass "de.anteiku.kittybot.commands.Command".(«ÜøÍûÿÿÿÿ
+£squid:S1845	"‹Rename field "USAGE" to prevent any misunderstanding/clash with field "usage" defined in superclass "de.anteiku.kittybot.commands.Command".(Ç¬€
+¯squid:S1845
+"—Rename field "DESCRIPTION" to prevent any misunderstanding/clash with field "description" defined in superclass "de.anteiku.kittybot.commands.Command".(íí×ò
+¨squid:S1845"‹Rename field "ALIAS" to prevent any misunderstanding/clash with field "alias" defined in superclass "de.anteiku.kittybot.commands.Command".(îşÊàüÿÿÿÿ
+squid:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ãĞæÛùÿÿÿÿ
+9squid:S2386"Make this member "protected".(îşÊàüÿÿÿÿ

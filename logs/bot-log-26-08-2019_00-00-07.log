@@ -1,0 +1,13 @@
+[00:00:09]Registering new guild: '481150133682044948'
+[00:00:09]Registering new guild: '576923247212363787'
+[00:00:09]Registering new guild: '592763557515362324'
+[00:00:09]Running task 'PollTask'!
+[00:00:09]'0' polls running!
+[00:00:09]Task 'PollTask' finished! took '8'ms
+[00:00:17]Command: 'help' by: 'To?' from: 'Katzenkörbchen' took '391'ms
+[00:00:20]Command: 'cmds' by: 'To?' from: 'Katzenkörbchen' took '386'ms
+[00:00:36]Command: 'delete' by: 'To?' from: 'Katzenkörbchen' took '173'ms
+[00:00:39]Running task 'PollTask'!
+[00:00:39]'0' polls running!
+[00:00:39]Task 'PollTask' finished! took '0'ms
+[00:00:45]Stopping KittyBot...

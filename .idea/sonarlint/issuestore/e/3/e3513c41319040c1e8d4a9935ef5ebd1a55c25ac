@@ -1,0 +1,26 @@
+
+Csquid:S1444
+"-Make this "public static COMMAND" field final(²ÅøZ
+Bsquid:S1444"+Make this "public static USAGE" field final(†”ÉÂ
+Msquid:S1444"1Make this "public static DESCRIPTION" field final(á¿•Ğøÿÿÿÿ
+Gsquid:S1444"+Make this "public static ALIAS" field final(óÜ£úÿÿÿÿ
+€"squid:ClassVariableVisibilityCheck
+"SMake COMMAND a static final constant or non-public and provide accessors if needed.(²ÅøZ
+"squid:ClassVariableVisibilityCheck"QMake USAGE a static final constant or non-public and provide accessors if needed.(†”ÉÂ
+Š"squid:ClassVariableVisibilityCheck"WMake DESCRIPTION a static final constant or non-public and provide accessors if needed.(á¿•Ğøÿÿÿÿ
+„"squid:ClassVariableVisibilityCheck"QMake ALIAS a static final constant or non-public and provide accessors if needed.(óÜ£úÿÿÿÿ
+hsquid:S3008
+"RRename this field "COMMAND" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(²ÅøZ
+gsquid:S3008"PRename this field "USAGE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(†”ÉÂ
+rsquid:S3008"VRename this field "DESCRIPTION" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(á¿•Ğøÿÿÿÿ
+lsquid:S3008"PRename this field "ALIAS" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(óÜ£úÿÿÿÿ
+¦squid:S1845
+"Rename field "COMMAND" to prevent any misunderstanding/clash with field "command" defined in superclass "de.anteiku.kittybot.commands.Command".(²ÅøZ
+£squid:S1845"‹Rename field "USAGE" to prevent any misunderstanding/clash with field "usage" defined in superclass "de.anteiku.kittybot.commands.Command".(†”ÉÂ
+´squid:S1845"—Rename field "DESCRIPTION" to prevent any misunderstanding/clash with field "description" defined in superclass "de.anteiku.kittybot.commands.Command".(á¿•Ğøÿÿÿÿ
+¨squid:S1845"‹Rename field "ALIAS" to prevent any misunderstanding/clash with field "alias" defined in superclass "de.anteiku.kittybot.commands.Command".(óÜ£úÿÿÿÿ
+9squid:S2386"Make this member "protected".(óÜ£úÿÿÿÿ
+Osquid:S1854"8Remove this useless assignment to local variable "tags".(Í¿Ÿ®
+Fsquid:S00108")Either remove or fill this block of code.(æœüÿÿÿÿ
+Asquid:S00108")Either remove or fill this block of code.(’”ßÌ
+@squid:S1481")Remove this unused "tags" local variable.(Í¿Ÿ®

@@ -1,0 +1,15 @@
+[17:23:24]Running task 'PollTask'!
+[17:23:24]'3' polls running!
+[17:23:24]Task 'PollTask' finished! took '1'ms
+[17:23:40]Poll created Topic: 'this is a test poll' Id: '4' Duration: '3min'
+[17:23:41]Command: 'poll' by: 'To?' from: 'Katzenkörbchen' took '431'ms
+[17:23:54]Running task 'PollTask'!
+[17:23:54]'4' polls running!
+[17:23:54]Task 'PollTask' finished! took '0'ms
+[17:24:20]Command: 'poll' by: 'To?' from: 'Katzenkörbchen' took '399'ms
+[17:24:24]Running task 'PollTask'!
+[17:24:24]'4' polls running!
+[17:24:24]Task 'PollTask' finished! took '0'ms
+[17:24:54]Running task 'PollTask'!
+[17:24:54]'4' polls running!
+[17:24:54]Task 'PollTask' finished! took '0'ms

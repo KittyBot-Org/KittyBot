@@ -1,0 +1,10 @@
+[17:19:22]Running task 'PollTask'!
+[17:19:22]'1' polls running!
+[17:19:22]Task 'PollTask' finished! took '1'ms
+[17:19:38]Poll created Topic: 'this is a test poll' Id: '2' Duration: '3min'
+[17:19:52]Running task 'PollTask'!
+[17:19:52]'2' polls running!
+[17:19:52]Task 'PollTask' finished! took '0'ms
+[17:20:22]Running task 'PollTask'!
+[17:20:22]'2' polls running!
+[17:20:22]Task 'PollTask' finished! took '0'ms

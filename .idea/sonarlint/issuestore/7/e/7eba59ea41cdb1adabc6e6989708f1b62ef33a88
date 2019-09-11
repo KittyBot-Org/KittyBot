@@ -1,0 +1,21 @@
+
+Isquid:S1444"-Make this "public static COMMAND" field final(„şüÒüÿÿÿÿ
+Gsquid:S1444"+Make this "public static USAGE" field final(÷ô¦âøÿÿÿÿ
+Msquid:S1444"1Make this "public static DESCRIPTION" field final(¡½óşÿÿÿÿ
+Gsquid:S1444"+Make this "public static ALIAS" field final(ç«¹ûÿÿÿÿ
+†"squid:ClassVariableVisibilityCheck"SMake COMMAND a static final constant or non-public and provide accessors if needed.(„şüÒüÿÿÿÿ
+„"squid:ClassVariableVisibilityCheck"QMake USAGE a static final constant or non-public and provide accessors if needed.(÷ô¦âøÿÿÿÿ
+Š"squid:ClassVariableVisibilityCheck"WMake DESCRIPTION a static final constant or non-public and provide accessors if needed.(¡½óşÿÿÿÿ
+„"squid:ClassVariableVisibilityCheck"QMake ALIAS a static final constant or non-public and provide accessors if needed.(ç«¹ûÿÿÿÿ
+nsquid:S3008"RRename this field "COMMAND" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(„şüÒüÿÿÿÿ
+lsquid:S3008"PRename this field "USAGE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(÷ô¦âøÿÿÿÿ
+rsquid:S3008"VRename this field "DESCRIPTION" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¡½óşÿÿÿÿ
+lsquid:S3008"PRename this field "ALIAS" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ç«¹ûÿÿÿÿ
+¬squid:S1845"Rename field "COMMAND" to prevent any misunderstanding/clash with field "command" defined in superclass "de.anteiku.kittybot.commands.Command".(„şüÒüÿÿÿÿ
+¨squid:S1845"‹Rename field "USAGE" to prevent any misunderstanding/clash with field "usage" defined in superclass "de.anteiku.kittybot.commands.Command".(÷ô¦âøÿÿÿÿ
+´squid:S1845"—Rename field "DESCRIPTION" to prevent any misunderstanding/clash with field "description" defined in superclass "de.anteiku.kittybot.commands.Command".(¡½óşÿÿÿÿ
+¨squid:S1845"‹Rename field "ALIAS" to prevent any misunderstanding/clash with field "alias" defined in superclass "de.anteiku.kittybot.commands.Command".(ç«¹ûÿÿÿÿ
+4squid:S2386"Make this member "protected".(ëŸÏ­
+9squid:S2386"Make this member "protected".(ç«¹ûÿÿÿÿ
+wsquid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(ØÅöäşÿÿÿÿ
+Dsquid:S1185"(Remove this method to simply inherit it.(æÊ‚šûÿÿÿÿ
