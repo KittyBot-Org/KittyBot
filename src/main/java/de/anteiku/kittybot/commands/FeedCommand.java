@@ -10,10 +10,10 @@ import java.awt.*;
 
 public class FeedCommand extends Command{
 
-	public static String COMMAND = "feed";
-	public static String USAGE = "feed <@user>";
-	public static String DESCRIPTION = "Feeds a user";
-	public static String[] ALIAS = {"füttern"};
+	public static final String COMMAND = "feed";
+	public static final String USAGE = "feed <@user>";
+	public static final String DESCRIPTION = "Feeds a user";
+	protected static final String[] ALIAS = {"füttern"};
 
 	public FeedCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);

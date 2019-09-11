@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class Config{
 	
-	private static final String SEPERATOR = "=";
+	private static final String SEPARATOR = "=";
 	private static final String NEWLINE = System.lineSeparator();
 	private File file;
 	private HashMap<String, String> values;
@@ -36,7 +36,7 @@ public class Config{
 			String line;
 			while((line = reader.readLine()) != null){
 				
-				int i = line.indexOf(SEPERATOR);
+				int i = line.indexOf(SEPARATOR);
 				if(i != - 1){
 					String key = line.substring(0, i);
 					String value = line.substring(i + 1);
@@ -48,7 +48,6 @@ public class Config{
 		catch(IOException e){
 			Logger.error(e);
 		}
-		
 		return values;
 	}
 	
@@ -60,7 +59,7 @@ public class Config{
 		try{
 			FileWriter writer = new FileWriter(file, false);
 			for(Map.Entry<String, String> v : values.entrySet()){
-				writer.write(v.getKey() + SEPERATOR + v.getValue() + NEWLINE);
+				writer.write(v.getKey() + SEPARATOR + v.getValue() + NEWLINE);
 				writer.flush();
 			}
 			writer.close();

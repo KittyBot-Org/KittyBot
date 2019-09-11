@@ -6,10 +6,10 @@ import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 
 public class DeleteCommand extends Command{
 
-	public static String COMMAND = "delete";
-	public static String USAGE = "delete <guild id>";
-	public static String DESCRIPTION = "Deletes databases";
-	public static String[] ALIAS = {};
+	public static final String COMMAND = "delete";
+	public static final String USAGE = "delete <guild id>";
+	public static final String DESCRIPTION = "Deletes databases";
+	public static final String[] ALIAS = {};
 
 	public DeleteCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);

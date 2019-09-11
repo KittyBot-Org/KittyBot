@@ -23,18 +23,10 @@ import java.util.Random;
 
 public class KittyBot{
 	
-	public static final String UNSPLASHTOKEN = "6e24263ff3b94bac27daa47d540f289cf1cf7887e16d0457a6df1c3c74b4af26";
-	public static final String CLIENTID = "0e455fd386d593c";
-	public static final String CLIENTSECRET = "cd302f8a0943f725b36301ded01e524d298f0610";
-	public static final String UNSPLASHURL = "https://api.unsplash.com/photos/random/?client_id=6e24263ff3b94bac27daa47d540f289cf1cf7887e16d0457a6df1c3c74b4af26&query=";
-	public static final String IMGURURL = "https://api.imgur.com/3/gallery/search/{{top}}/{{all}}/{{1}}?q=";
-	public static final String TENORURL = "https://api.tenor.com/v1/";
-	public static final String NEKOSURL = "https://nekos.life/api/v2/img/";
-	public static final String ANTEIKUURL = "http://anteiku.de:9000/";
 	public static final OkHttpClient client = new OkHttpClient();
-	public static final String MYGUILD = "592763557515362324";
-	public static final String DEFAULTPREFIX = ".";
 	public static final String ME = "170939974227591168";
+	public static String IMGUR_CLIENT_ID;
+	public static String UNSPLASH_CLIENT_ID;
 	
 	public JDA jda;
 	public Logger logger;
@@ -56,8 +48,9 @@ public class KittyBot{
 		
 		config = new Config("options.cfg");
 		
-		String discordtoken = config.get("discordtoken");
-		
+		String discordtoken = config.get("discord_token");
+		IMGUR_CLIENT_ID = config.get("imgur_client_id");
+		UNSPLASH_CLIENT_ID = config.get("unsplash_client_id");
 		if(discordtoken.equals("")){
 			Logger.print("Please set the discord token in '" + config.getName() + "'!");
 			close();
@@ -67,8 +60,6 @@ public class KittyBot{
 			rand = new Random();
 			new Emotes(this);
 			
-			owm = new OWM("aa97a5b91d53f36c47ae133b6ba8c892");
-			owm.setUnit(OWM.Unit.METRIC);
 			database = new Database(this);
 			pollManager = new PollManager(this);
 			
@@ -77,7 +68,6 @@ public class KittyBot{
 			commandManager.add(new CommandsCommand(this));
 			commandManager.add(new RolesCommand(this));
 			commandManager.add(new PollCommand(this));
-			//commandManager.add(new WeatherCommand(this));
 			commandManager.add(new ScreenShareCommand(this));
 			commandManager.add(new SearchCommand(this));
 			commandManager.add(new QuokkaCommand(this));

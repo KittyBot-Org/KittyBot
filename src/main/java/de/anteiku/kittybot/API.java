@@ -122,7 +122,7 @@ public class API{
 		try{
 			URL url = new URL(rawUrl);
 			URLConnection request = url.openConnection();
-			request.setRequestProperty("Authorization", "Client-ID 0e455fd386d593c");
+			request.setRequestProperty("Authorization", "Client-ID " + KittyBot.IMGUR_CLIENT_ID);
 			request.connect();
 			JsonParser jp = new JsonParser();
 			JsonElement root = jp.parse(new InputStreamReader((InputStream)request.getContent()));
@@ -175,7 +175,7 @@ public class API{
 	}
 	
 	public static String getRandomImage(String search){
-		String rawUrl = "https://api.unsplash.com/photos/random/?client_id=6e24263ff3b94bac27daa47d540f289cf1cf7887e16d0457a6df1c3c74b4af26&query=" + search;
+		String rawUrl = "https://api.unsplash.com/photos/random/?client_id=" + KittyBot.UNSPLASH_CLIENT_ID + "&query=" + search;
 		try{
 			URL url = new URL(rawUrl);
 			URLConnection request = url.openConnection();
