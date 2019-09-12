@@ -28,7 +28,7 @@ public class WebService{
 	
 	public WebService(KittyBot main, int port){
 		this.main = main;
-		oAuth = new OAuthBuilder("587697058602025011", "0jpcqjBdnzKvqOKka7jTNxmnoBfkro5v");
+		oAuth = new OAuthBuilder(main.config.get("discord_client_id"), main.config.get("discord_client_secret"));
 		oAuth.setScopes(new String[]{"guilds", "identify"});
 		oAuth.setRedirectURI("http://anteiku.de/trylogin");
 		port(port);

@@ -25,8 +25,22 @@ public class Config{
 			catch(IOException e){
 				e.printStackTrace();
 			}
+			values = loadDefault();
+			save();
 		}
-		values = load();
+		else{
+			values = load();
+		}
+	}
+	
+	private HashMap<String, String> loadDefault(){
+		HashMap<String, String> values = new HashMap<>();
+		values.put("discord_token", "");
+		values.put("discord_client_id", "");
+		values.put("discord_client_secret", "");
+		values.put("imgur_client_id", "");
+		values.put("unsplash_client_id", "");
+		return values;
 	}
 	
 	private HashMap<String, String> load(){

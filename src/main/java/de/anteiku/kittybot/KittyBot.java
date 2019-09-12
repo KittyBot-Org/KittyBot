@@ -117,7 +117,6 @@ public class KittyBot{
 			System.exit(0);
 		}
 		catch(NullPointerException e){
-			Logger.error(e);
 			System.exit(0);
 		}
 		
