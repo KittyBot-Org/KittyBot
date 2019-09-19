@@ -1,7 +1,7 @@
 
 var userId = document.getElementById("userIdField").value;
-//var host = "http://anteiku.de/";
-var host = "http://localhost/";
+var host = "http://anteiku.de/";
+//var host = "http://localhost/";
 var displayMobileNav = false;
 
 loadGuilds();
