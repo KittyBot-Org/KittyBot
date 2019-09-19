@@ -30,7 +30,7 @@ public class FeedCommand extends Command{
 			User user = event.getJDA().getUserById(id);
 			if(user != null){
 				try{
-					String url = API.getNeko("feed");
+					String url = getNeko("feed");
 					EmbedBuilder eb = new EmbedBuilder();
 					eb.setColor(Color.pink);
 					if(user.getId().equals(event.getAuthor().getId())){

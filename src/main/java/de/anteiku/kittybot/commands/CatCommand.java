@@ -25,15 +25,15 @@ public class CatCommand extends Command{
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		try{
-			String url = API.getNeko("meow");
+			String url = getNeko("meow");
 			EmbedBuilder eb = new EmbedBuilder();
 			eb.setColor(Color.ORANGE);
 			eb.setImage(url);
-			Message message = event.getChannel().sendMessage(eb.build()).complete();
-			message.addReaction(Emotes.CAT).queue();
+			Message message = sendAnswer(event.getMessage(), eb.build());
+			message.addReaction(Emotes.CAT.get()).queue();
 		}
 		catch(Exception e){
-			sendError(event.getChannel(), "No cat found!");
+			sendError(event.getMessage(), "No cat found!");
 			Logger.error(e);
 		}
 	}

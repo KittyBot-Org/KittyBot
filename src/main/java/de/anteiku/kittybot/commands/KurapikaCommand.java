@@ -21,17 +21,7 @@ public class KurapikaCommand extends Command{
 	
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
-		try{
-			String url = API.getRandomAnteikuImage("kurapika");
-			EmbedBuilder eb = new EmbedBuilder();
-			eb.setColor(Color.ORANGE);
-			eb.setImage(url);
-			event.getChannel().sendMessage(eb.build()).queue();
-		}
-		catch(NullPointerException e){
-			sendError(event.getChannel(), "No Kurapika found!");
-			Logger.error(e);
-		}
+		sendLocalImage(event.getMessage(), "kurapika");
 	}
 	
 }

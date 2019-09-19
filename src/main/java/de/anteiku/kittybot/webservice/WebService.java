@@ -30,7 +30,8 @@ public class WebService{
 		this.main = main;
 		oAuth = new OAuthBuilder(main.config.get("discord_client_id"), main.config.get("discord_client_secret"));
 		oAuth.setScopes(new String[]{"guilds", "identify"});
-		oAuth.setRedirectURI("http://anteiku.de/trylogin");
+		//oAuth.setRedirectURI("http://anteiku.de/trylogin");
+		oAuth.setRedirectURI("http://localhost/trylogin");
 		port(port);
 		staticFileLocation("/public");
 		get("/", new IndexRoute(main), new HtmlTemplateEngine());
@@ -112,7 +113,7 @@ public class WebService{
 			halt(401, "<a href='/login'>Please login with discord!</a>");
 		}
 		else{
-			Member member = guild.getMemberById(request.cookie("user_id"));
+			Member member = guild.getMemberById(main.database.getSession(request.cookie("key")));
 			if(member == null){
 				halt(401, "<a href='/login'>Please login with discord!</a>");
 			}
@@ -125,23 +126,13 @@ public class WebService{
 	}
 	
 	public boolean loggedIn(Request request){
-		String userId = request.cookie("user_id");
-		String token = request.cookie("user_token");
-		if(token == null || userId == null){
+		String key = request.cookie("key");
+		if(key == null){
 			return false;
 		}
 		else{
-			String userToken = main.database.getUserToken(userId);
-			if(userToken == null){
-				return false;
-			}
-			else{
-				if(!userToken.equals(token)){
-					return false;
-				}
-			}
+			return main.database.sessionExists(key);
 		}
-		return true;
 	}
 	
 	private String getIcon(Request request, Response response){
@@ -180,7 +171,7 @@ public class WebService{
 	
 	private String getGuilds(Request request, Response response){
 		StringBuilder json = new StringBuilder("{\"guilds\": [");
-		User user = main.jda.retrieveUserById(request.cookie("user_id")).complete();
+		User user = main.jda.getUserById(main.database.getSession(request.cookie("key")));
 		for(Guild guild : main.jda.getMutualGuilds(user)){
 			if(guild.getMember(user).hasPermission(Permission.ADMINISTRATOR)){
 				json.append("{\"name\": \"").append(guild.getName()).append("\", \"id\": \"").append(guild.getId()).append("\", \"iconurl\": \"").append(guild.getIconUrl()).append("\"}, ");

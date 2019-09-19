@@ -22,17 +22,7 @@ public class TurtleCommand extends Command{
 	
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
-		try{
-			String url = API.getRandomImage("turtle");
-			EmbedBuilder eb = new EmbedBuilder();
-			eb.setColor(Color.GREEN);
-			eb.setImage(url);
-			Message message = event.getChannel().sendMessage(eb.build()).complete();
-			message.addReaction(Emotes.TURTLE).queue();
-		}
-		catch(NullPointerException e){
-			sendError(event.getChannel(), "No turtle found!");
-		}
+		sendUnsplashImage(event.getMessage(), "turtle");
 	}
 	
 }

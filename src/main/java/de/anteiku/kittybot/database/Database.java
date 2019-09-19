@@ -3,6 +3,7 @@ package de.anteiku.kittybot.database;
 import de.anteiku.kittybot.API;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.Logger;
+import de.anteiku.kittybot.Password;
 import de.anteiku.kittybot.poll.Poll;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
@@ -14,6 +15,7 @@ import java.util.*;
 public class Database{
 	
 	private static final String SEP = ":";
+	private static final long TIMEOUT = 30 * 60000L;
 	
 	private static class GUILD{
 		static final String COMMANDPREFIX = "command_prefix";
@@ -22,7 +24,6 @@ public class Database{
 		static final String WELCOMEMESSAGE = "welcome_message";
 		static final String WELCOMEMESSAGEENABLED = "welcome_message_enabled";
 		static final String NSFWENABLED = "nsfw_enabled";
-		static final String PASSWORD = "password";
 		static final String SESSIONKEY = "session_key";
 		static final String LASTIP = "last_ip";
 		static final String POLLS = "polls";
@@ -44,11 +45,9 @@ public class Database{
 	private RedisCommands<String, String> guilds;
 	private RedisCommands<String, String> polls;
 	private RedisCommands<String, String> users;
-	
-	private KittyBot main;
+	private RedisCommands<String, String> sessions;
 	
 	public Database(KittyBot main){
-		this.main = main;
 		try{
 			client = RedisClient.create("redis://localhost:6379");
 			conn = client.connect();
@@ -61,15 +60,18 @@ public class Database{
 			
 			users = conn.sync();
 			users.select(2);
+			
+			sessions = conn.sync();
+			sessions.select(3);
 		}
 		catch(Exception e){
 			Logger.print("Connection to Redis Server failed!");
 			main.close();
 		}
-		init();
+		init(main);
 	}
 	
-	private void init(){
+	private void init(KittyBot main){
 		for(Guild guild : main.jda.getGuilds()){
 			if(!isGuildRegistered(guild)){
 				registerGuild(guild);
@@ -272,11 +274,41 @@ public class Database{
 	}
 	
 	public void deletePolls(){
-		for(Guild g : main.jda.getGuilds()){
+	/*	for(Guild g : main.jda.getGuilds()){
 			guilds.srem(g.getId() + SEP + GUILD.POLLS, API.toArray(getSet(g.getId(), GUILD.POLLS)));
-		}
+		} */
 		polls.flushdb();
 		polls.save();
+	}
+	
+	/*
+	 * Session specified methods
+	 */
+	
+	public boolean sessionExists(String key){
+		return sessions.exists(key) > 0;
+	}
+	
+	private String generateUniqueKey(){
+		String key = Password.generate(32);
+		while(sessionExists(key)){
+			key = Password.generate(32);
+		}
+		return key;
+	}
+	
+	public String addSession(String userId){
+		String key = generateUniqueKey();
+		sessions.set(key, userId);
+		return key;
+	}
+	
+	public void deleteSession(String key){
+		sessions.del(key);
+	}
+	
+	public String getSession(String key){
+		return sessions.get(key);
 	}
 	
 }

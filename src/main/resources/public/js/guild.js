@@ -2,8 +2,8 @@
 var guildId = document.getElementById("guildIdField").value;
 var userId = document.getElementById("userIdField").value;
 var addedRoles = [];
-var host = "http://anteiku.de/";
-//var host = "http://localhost/";
+//var host = "http://anteiku.de/";
+var host = "http://localhost/";
 var displayMobileNav = false;
 
 var tx = document.getElementsByTagName('textarea');

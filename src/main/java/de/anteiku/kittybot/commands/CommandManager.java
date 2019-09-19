@@ -51,8 +51,8 @@ public class CommandManager{
 		String prefix = main.database.getCommandPrefix(event.getGuild().getId());
 		String command = getCommand(message, prefix);
 		for(Map.Entry<String, Command> c : commands.entrySet()){
-			Command cmd;
-			if((cmd = c.getValue()).checkCmd(command)){
+			Command cmd = c.getValue();
+			if(cmd.checkCmd(command)){
 				event.getChannel().sendTyping().complete();
 				try{
 					String[] args = getArgs(message, prefix);
@@ -60,9 +60,8 @@ public class CommandManager{
 					Logger.print("Command: '" + command + "' by: '" + event.getAuthor().getName() + "' from: '" + event.getGuild().getName() + "' took '" + API.getMs(start) + "'ms");
 				}
 				catch(ArgumentException e){
-					Message msg = cmd.sendError(event.getChannel(), e.getMessage());
-					addListenerCmd(msg, event.getMessage(), cmd, - 1L);
-					msg.addReaction(Emotes.QUESTIONMARK).queue();
+					cmd.sendError(event.getChannel(), e.getMessage());
+					event.getMessage().addReaction(Emotes.QUESTION.get()).queue();
 					Logger.error(e);
 				}
 				return;
@@ -74,13 +73,13 @@ public class CommandManager{
 		return raw.split(" ")[0].replaceFirst(Pattern.quote(prefix), "");
 	}
 	
-	private String[] getArgs(String raw, String prefix) throws ArgumentException{
-		String command = getCommand(raw, prefix);
-		String rawraw = raw.substring(command.length() + 1).trim();
+	private String[] getArgs(String message, String prefix) throws ArgumentException{
+		String command = getCommand(message, prefix);
+		String raw = message.substring(command.length() + 1).trim();
 		boolean b = false;
-		String string = "";
+		StringBuilder string = new StringBuilder();
 		ArrayList<String> args = new ArrayList<>();
-		for(String s : rawraw.split(" ")){
+		for(String s : raw.split(" ")){
 			if(s.startsWith("(") && s.endsWith(")") && ! b){
 				args.add(s.substring(1, s.length() - 1));
 				continue;
@@ -91,24 +90,21 @@ public class CommandManager{
 			else if(s.endsWith(")") && ! b){
 				throw new ArgumentException("Missing ')' in: '" + raw + "'\n" + Emotes.WHITESPACE.repeat("Missing '(' in: '".length() + raw.indexOf(s)) + "^");
 			}
-			
 			if(s.startsWith("(")){
 				b = true;
 			}
-			
 			if(b){
-				string += s + " ";
+				string.append(s).append(" ");
 			}
 			else{
 				if(! s.equals("")){
 					args.add(s);
 				}
 			}
-			
 			if(s.endsWith(")")){
 				b = false;
 				args.add(string.substring(1, string.length() - 2));
-				string = "";
+				string.delete(0, string.length());
 			}
 		}
 		if(b){

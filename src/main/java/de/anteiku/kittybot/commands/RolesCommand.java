@@ -65,7 +65,7 @@ public class RolesCommand extends Command{
 						sendAnswer(event.getChannel(), "Roles removed!");
 					}
 					else{
-						event.getMessage().addReaction(Emotes.QUESTIONMARK).queue();
+						event.getMessage().addReaction(Emotes.QUESTION.get()).queue();
 						sendUsage(event.getChannel());
 					}
 				}
@@ -84,13 +84,13 @@ public class RolesCommand extends Command{
 						}
 					}
 					else{
-						event.getMessage().addReaction(Emotes.QUESTIONMARK).queue();
+						event.getMessage().addReaction(Emotes.QUESTION.get()).queue();
 						sendError(event.getChannel(), "Please mention roles!");
 					}
 				}
 			}
 			else{
-				event.getMessage().addReaction(Emotes.X).queue();
+				event.getMessage().addReaction(Emotes.X.get()).queue();
 				sendError(event.getChannel(), "You need to be an administrator to use this command!");
 			}
 		}
@@ -106,15 +106,15 @@ public class RolesCommand extends Command{
 			eb.setColor(Color.MAGENTA);
 			String value = "";
 			for(Map.Entry<Role, String> k : roles.entrySet()){
-				value += k.getValue() + Emotes.blank.getAsMention() + Emotes.blank.getAsMention() + k.getKey().getAsMention() + "\n";
+				value += k.getValue() + Emotes.BLANK.get() + Emotes.BLANK.get() + k.getKey().getAsMention() + "\n";
 			}
-			eb.addField("**Emote:**" + Emotes.blank.getAsMention() + "**Role:**", value, true);
+			eb.addField("**Emote:**" + Emotes.BLANK.get() + "**Role:**", value, true);
 			Message message = event.getChannel().sendMessage(eb.build()).complete();
 			main.commandManager.addListenerCmd(message, event.getMessage(), this, - 1L);
 			for(Map.Entry<Role, String> r : roles.entrySet()){
 				message.addReaction(r.getValue()).queue();
 			}
-			message.addReaction(Emotes.WASTEBASKET).queue();
+			message.addReaction(Emotes.WASTEBASKET.get()).queue();
 		}
 	}
 	

@@ -22,7 +22,7 @@ public class GuildRoute implements TemplateViewRoute{
 		if(main.webService.loggedIn(request)){
 			response.body(WebService.readFile("/html/guild.html"));
 			WebService.HtmlObject obj = new WebService.HtmlObject(response.body());
-			User user = main.jda.getUserById(request.cookie("user_id"));
+			User user = main.jda.getUserById(main.database.getSession(request.cookie("key")));
 			obj.addRegex("guildname", main.jda.getGuildById(guildId).getName());
 			obj.addRegex("guildid", guildId);
 			obj.addRegex("guildiconurl", main.jda.getGuildById(guildId).getIconUrl());

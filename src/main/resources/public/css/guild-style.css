@@ -107,8 +107,9 @@
 	z-index: 100;
 }
 
-#background{
-	opacity: 0;
+#mobile-navigation-close{
+	opacity: 0.6;
+	background-color: #000000;
 	height: 100%;
 	width: 100%;
 	z-index: 100;

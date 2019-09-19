@@ -30,7 +30,7 @@ public class TickleCommand extends Command{
 			User user = event.getJDA().getUserById(id);
 			if(user != null){
 				try{
-					String url = API.getNeko("tickle");
+					String url = getNeko("tickle");
 					EmbedBuilder eb = new EmbedBuilder();
 					eb.setColor(Color.pink);
 					if(user.getId().equals(event.getAuthor().getId())){

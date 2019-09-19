@@ -50,7 +50,7 @@ public class PollSave{
 		for(Map.Entry<String, Integer> i : ids.entrySet()){
 			message.addReaction(EmojiUtils.getEmoji(API.parseEmoji(i.getValue()))).queue();
 		}
-		message.addReaction(Emotes.REFRESH).queue();
+		message.addReaction(Emotes.REFRESH.get()).queue();
 		//message.pin().queue();
 		return message;
 	}
@@ -68,7 +68,7 @@ public class PollSave{
 		String f2 = "";
 		for(Map.Entry<Integer, List<String>> a : votes.entrySet()){
 			f1 += API.parseDiscordEmoji(a.getKey()) + getAnswer(a.getKey()) + "\n";
-			f2 += votes.get(a.getKey()).size() + Emotes.blank.getAsMention() + "\n";
+			f2 += votes.get(a.getKey()).size() + Emotes.BLANK.get() + "\n";
 		}
 		eb.addField("**Answers:**", f1, true);
 		eb.addField("**Votes:**", f2, true);

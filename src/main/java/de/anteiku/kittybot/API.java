@@ -17,10 +17,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
-import java.util.Set;
 
 public class API{
 	
@@ -61,11 +59,7 @@ public class API{
 	}
 	
 	public static List<String> toList(String[] array){
-		List<String> list = new ArrayList<>();
-		for(String string : array){
-			list.add(string);
-		}
-		return list;
+		return new ArrayList<>(Arrays.asList(array));
 	}
 	
 	public static String[] toArrayy(List<String> list){
@@ -117,86 +111,12 @@ public class API{
 		return null;
 	}
 	
-	public static String getMeme(String search){
-		String rawUrl = "https://api.imgur.com/3/gallery/search/{{top}}/{{all}}/{{1}}?q=" + search;
-		try{
-			URL url = new URL(rawUrl);
-			URLConnection request = url.openConnection();
-			request.setRequestProperty("Authorization", "Client-ID " + KittyBot.IMGUR_CLIENT_ID);
-			request.connect();
-			JsonParser jp = new JsonParser();
-			JsonElement root = jp.parse(new InputStreamReader((InputStream)request.getContent()));
-			JsonArray array = root.getAsJsonObject().get("data").getAsJsonArray();
-			
-			return array.get(new Random().nextInt(array.size() - 1)).getAsJsonObject().get("images").getAsJsonArray().get(0).getAsJsonObject().get("link").getAsString();
-		}
-		catch(IOException e){
-			Logger.error(e);
-		}
-		return "";
-	}
 	
 	public static String getNameByUser(Member member){
 		if(member.getNickname() != null){
 			return member.getNickname();
 		}
 		return member.getUser().getName();
-	}
-	
-	public static String getNeko(String search){
-		try{
-			Request request = new Request.Builder().url("https://nekos.life/api/v2/img/" + search).build();
-			Response response = KittyBot.client.newCall(request).execute();
-			JsonParser jp = new JsonParser();
-			return jp.parse(response.body().string()).getAsJsonObject().get("url").getAsString();
-		}
-		catch(IOException e){
-			Logger.error(e);
-		}
-		return null;
-		
-	}
-	
-	public static String getRandomAnteikuImage(String image){
-		try{
-			URL url = new URL("http://anteiku.de:9000/" + image);
-			URLConnection request = url.openConnection();
-			request.connect();
-			
-			BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream()));
-			String string = in.readLine();
-			in.close();
-			return string;
-		}
-		catch(IOException e){
-			Logger.error(e);
-		}
-		return "";
-	}
-	
-	public static String getRandomImage(String search){
-		String rawUrl = "https://api.unsplash.com/photos/random/?client_id=" + KittyBot.UNSPLASH_CLIENT_ID + "&query=" + search;
-		try{
-			URL url = new URL(rawUrl);
-			URLConnection request = url.openConnection();
-			request.connect();
-			JsonParser jp = new JsonParser();
-			JsonElement root = jp.parse(new InputStreamReader((InputStream)request.getContent()));
-			
-			return root.getAsJsonObject().get("urls").getAsJsonObject().get("regular").getAsString();
-		}
-		catch(JsonIOException | JsonSyntaxException | IOException e){
-			Logger.error(e);
-		}
-		return "";
-	}
-	
-	public static Message sendPicture(TextChannel channel, String url, Color color){
-		EmbedBuilder eb = new EmbedBuilder();
-		eb.setColor(color);
-		eb.setImage(url);
-		
-		return channel.sendMessage(eb.build()).complete();
 	}
 	
 	public static Message sendTTSMessage(TextChannel channel, String text){
@@ -286,34 +206,34 @@ public class API{
 		String string = "";
 		switch(value){
 			case 0:
-				string = Emotes.ZERO;
+				string = Emotes.ZERO.get();
 				break;
 			case 1:
-				string = Emotes.ONE;
+				string = Emotes.ONE.get();
 				break;
 			case 2:
-				string = Emotes.TWO;
+				string = Emotes.TWO.get();
 				break;
 			case 3:
-				string = Emotes.THREE;
+				string = Emotes.THREE.get();
 				break;
 			case 4:
-				string = Emotes.FOUR;
+				string = Emotes.FOUR.get();
 				break;
 			case 5:
-				string = Emotes.FIVE;
+				string = Emotes.FIVE.get();
 				break;
 			case 6:
-				string = Emotes.SIX;
+				string = Emotes.SIX.get();
 				break;
 			case 7:
-				string = Emotes.SEVEN;
+				string = Emotes.SEVEN.get();
 				break;
 			case 8:
-				string = Emotes.EIGHT;
+				string = Emotes.EIGHT.get();
 				break;
 			case 9:
-				string = Emotes.NINE;
+				string = Emotes.NINE.get();
 				break;
 		}
 		

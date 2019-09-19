@@ -44,11 +44,11 @@ public class CommandsCommand extends Command{
 	
 	@Override
 	public void reactionAdd(Message command, GuildMessageReactionAddEvent event){
-		if(event.getReactionEmote().getName().equals(Emotes.ARROWLEFT)){
+		if(event.getReactionEmote().getName().equals(Emotes.ARROW_LEFT.get())){
 			prevPage(event.getChannel().getMessageById(event.getMessageId()).complete());
 			event.getReaction().removeReaction(event.getUser()).queue();
 		}
-		else if(event.getReactionEmote().getName().equals(Emotes.ARROWRIGHT)){
+		else if(event.getReactionEmote().getName().equals(Emotes.ARROW_RIGHT.get())){
 			nextPage(event.getChannel().getMessageById(event.getMessageId()).complete());
 			event.getReaction().removeReaction(event.getUser()).queue();
 		}
@@ -60,9 +60,9 @@ public class CommandsCommand extends Command{
 		Message message = event.getChannel().sendMessage(buildCommands(args, main.database.getCommandPrefix(event.getGuild().getId()))).complete();
 		main.commandManager.addListenerCmd(message, event.getMessage(), this, - 1L);
 		
-		message.addReaction(Emotes.ARROWLEFT).queue();
-		message.addReaction(Emotes.ARROWRIGHT).queue();
-		message.addReaction(Emotes.WASTEBASKET).queue();
+		message.addReaction(Emotes.ARROW_LEFT.get()).queue();
+		message.addReaction(Emotes.ARROW_RIGHT.get()).queue();
+		message.addReaction(Emotes.WASTEBASKET.get()).queue();
 	}
 	
 	private MessageEmbed buildCommands(String[] args, String prefix){

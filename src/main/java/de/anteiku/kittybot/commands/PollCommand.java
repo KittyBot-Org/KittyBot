@@ -154,7 +154,7 @@ public class PollCommand extends Command{
 		int i = 0;
 		for(Map.Entry<String, List<String>> a : poll.getVotes().entrySet()){
 			f1.append(API.parseDiscordEmoji(i)).append(a.getKey()).append("\n");
-			f2.append(poll.getVotes().get(a.getKey()).size()).append(Emotes.blank.getAsMention()).append("\n");
+			f2.append(poll.getVotes().get(a.getKey()).size()).append(Emotes.BLANK.get()).append("\n");
 			i++;
 		}
 		eb.addField("**Answers:**", f1.toString(), true);
@@ -172,7 +172,7 @@ public class PollCommand extends Command{
 			message.addReaction(EmojiUtils.getEmoji(API.parseEmoji(i))).queue();
 			i++;
 		}
-		message.addReaction(Emotes.REFRESH).queue();
+		message.addReaction(Emotes.REFRESH.get()).queue();
 		//message.pin().queue();
 		return message;
 	}

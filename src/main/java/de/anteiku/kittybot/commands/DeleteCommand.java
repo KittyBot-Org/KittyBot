@@ -22,12 +22,12 @@ public class DeleteCommand extends Command{
 			if(args.length > 0){
 				if(args[0].equalsIgnoreCase("all")){
 					main.database.flush();
-					event.getMessage().addReaction(Emotes.CHECK).queue();
+					event.getMessage().addReaction(Emotes.CHECK.get()).queue();
 				}
 			}
 			else{
 				
-				event.getMessage().addReaction(Emotes.CHECK).queue();
+				event.getMessage().addReaction(Emotes.CHECK.get()).queue();
 			}
 		}
 		else{

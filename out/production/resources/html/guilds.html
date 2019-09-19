@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>Configure Guild</title>
+		<link rel="stylesheet" type="text/css" href="/css/guild-style.css">
+		<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+		<link rel="icon" type="image/png" href="/images/favicon.png" />
+
+		<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+	</head>
+	
+	<body>
+
+		<div id="navigation">
+			<a href="/"><button><img src="/images/kittybot.png" alt="KittyBot Icon"><h2>Kitty Bot</h2></button></a>
+			<a href="/documentation"><button><img src="/images/search.png" alt="Documentation Icon"><h2>Documentation</h2></button></a>
+			<a href="https://github.com/TopiSenpai/KittyBot"><button><img src="/images/github.png" alt="Source Code Icon"><h2>Source Code</h2></button></a>
+			<a href="https://discord.gg/tqPMReD"><button><img src="/images/kittybot.png" alt="Guild Icon"><h2>Support Server</h2></button></a>
+			<a href="/logout"><button><img src="/images/logout.png" alt="Logout Icon"><h2>Logout</h2></button></a>
+
+			<div><p>&copy;Copyright 2019 <a href="http://anteiku.de">Anteiku.de</a><br />Made by <a href="https://twitter.com/TopiSenpai">To&pi; Senpai</a></p></div>
+		</div>
+        <div id="mobile-navigation">
+			<div id="mobile-navigation-container">
+				<div>
+					<img src=":usericonurl:"/>
+					<p>
+						:username:
+						<br />
+						<span>:usertag:</span>
+					</p>
+					<a href="/logout"><button><img src="/images/logout.png"/></button></a>
+				</div>
+				<ul id="mobile-navigation-list">
+					<li><a href="/"><button><img src="/images/kittybot.png" alt="KittyBot Icon">Kitty Bot</button></a></li>
+					<li><a href="/documentation"><button><img src="/images/search.png" alt="Documentation Icon">Documentation</button></a></li>
+					<li><a href="https://github.com/TopiSenpai/KittyBot"><button><img src="/images/github.png" alt="Source Code Icon">Source Code</button></a></li>
+					<li><a href="https://discord.gg/tqPMReD"><button><img src="/images/kittybot.png" alt="Guild Icon">Support Server</button></a></li>
+				</ul>
+				<div id="footer"><p>&copy;Copyright 2019 <a href="http://anteiku.de">Anteiku.de</a><br />Made by <a href="https://twitter.com/TopiSenpai">To&pi; Senpai</a></p></div>
+			</div>
+			<div id="background" onclick="toggleMobileNav()"></div>
+        </div>
+		<div id="view">
+			<div id="header">
+				<button id="navigation-icon" onclick="toggleMobileNav()">&#9776;</button>
+				<h2>Choose a guild to configure</h2>
+				<input id="userIdField" type="text" value=":userid:" readonly/>
+			</div>
+
+			<div id="content-box">
+				<ul id="server-list">
+
+				</ul>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+		<script src="/js/guilds.js"></script>
+
+	</body>
+	
+</html>

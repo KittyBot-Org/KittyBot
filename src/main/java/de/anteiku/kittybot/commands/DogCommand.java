@@ -23,12 +23,12 @@ public class DogCommand extends Command{
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		try{
-			String url = API.getNeko("woof");
+			String url = getNeko("woof");
 			EmbedBuilder eb = new EmbedBuilder();
 			eb.setColor(Colors.BROWN);
 			eb.setImage(url);
 			Message message = event.getChannel().sendMessage(eb.build()).complete();
-			message.addReaction(Emotes.DOG).queue();
+			message.addReaction(Emotes.DOG.get()).queue();
 		}
 		catch(Exception e){
 			sendError(event.getChannel(), "No dog found!");

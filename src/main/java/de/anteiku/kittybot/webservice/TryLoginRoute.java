@@ -1,8 +1,6 @@
 package de.anteiku.kittybot.webservice;
 
-import bell.oauth.discord.main.OAuthBuilder;
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.Password;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
@@ -19,13 +17,10 @@ public class TryLoginRoute implements TemplateViewRoute{
 	@Override
 	public ModelAndView handle(Request request, Response response){
 		String code = request.queryParams("code");
-		OAuthBuilder oAuth = main.webService.oAuth;
-		if(oAuth.exchange(code) != bell.oauth.discord.main.Response.ERROR){
-			String userId = oAuth.getUser().getId();
-			String token = Password.generate(20);
-			main.database.setUserToken(userId, token);
-			response.cookie("user_id", userId);
-			response.cookie("user_token", token);
+		if(main.webService.oAuth.exchange(code) != bell.oauth.discord.main.Response.ERROR){
+			String userId =  main.webService.oAuth.getUser().getId();
+			String key = main.database.addSession(userId);
+			response.cookie("key", key);
 			response.redirect("/guild");
 		}
 		else{

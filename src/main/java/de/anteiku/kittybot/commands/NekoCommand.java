@@ -39,11 +39,11 @@ public class NekoCommand extends Command{
 		if(args.length > 0){
 			if(nekos.contains(args[0])){
 				try{
-					String url = API.getNeko(args[0]);
-					Message message = API.sendPicture(event.getChannel(), url, Color.green);
+					String url = getNeko(args[0]);
+					Message message = sendImage(event.getChannel(), url);
 
 					main.commandManager.addListenerCmd(message, event.getMessage(), this, - 1L);
-					message.addReaction(Emotes.WASTEBASKET).queue();
+					message.addReaction(Emotes.WASTEBASKET.get()).queue();
 				}
 				catch(Exception e){
 					sendError(event.getChannel(), "No neko found!");

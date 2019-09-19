@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'de.anteiku'
-version '2.2'
+version '2.3'
 
 mainClassName = 'de.anteiku.kittybot.KittyBot'
 compileJava.options.encoding = 'UTF-8'
@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    compile files('libs/EmojiUtils-1.0.jar')
+    compile 'com.github.TopiSenpai:EmojiUtils:1.0'
 
     compile 'com.github.HayateLaTech:OAuth2Discord:1'
 

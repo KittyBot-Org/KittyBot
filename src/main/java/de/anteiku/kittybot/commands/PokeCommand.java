@@ -30,7 +30,7 @@ public class PokeCommand extends Command{
 			User user = event.getJDA().getUserById(id);
 			if(user != null){
 				try{
-					String url = API.getNeko("poke");
+					String url = getNeko("poke");
 					EmbedBuilder eb = new EmbedBuilder();
 					eb.setColor(Color.pink);
 					if(user.getId().equals(event.getAuthor().getId())){

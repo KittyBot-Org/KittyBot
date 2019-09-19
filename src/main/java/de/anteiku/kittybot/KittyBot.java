@@ -11,7 +11,6 @@ import de.anteiku.kittybot.poll.PollManager;
 import de.anteiku.kittybot.tasks.PollTask;
 import de.anteiku.kittybot.tasks.TaskManager;
 import de.anteiku.kittybot.webservice.WebService;
-import net.aksingh.owmjapis.core.OWM;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.OnlineStatus;
@@ -23,10 +22,9 @@ import java.util.Random;
 
 public class KittyBot{
 	
-	public static final OkHttpClient client = new OkHttpClient();
+	public final OkHttpClient httpClient;
 	public static final String ME = "170939974227591168";
-	public static String IMGUR_CLIENT_ID;
-	public static String UNSPLASH_CLIENT_ID;
+	public String unsplashClientId;
 	
 	public JDA jda;
 	public Logger logger;
@@ -35,30 +33,29 @@ public class KittyBot{
 	public PollManager pollManager;
 	public TaskManager taskManager;
 	public Database database;
-	public OWM owm;
 	public WebService webService;
-	public static Random rand;
+	public Random rand;
 	
 	public static void main(String[] args){
 		new KittyBot();
 	}
 	
 	public KittyBot(){
+		httpClient = new OkHttpClient();
 		logger = new Logger(this);
 		
 		config = new Config("options.cfg");
 		
-		String discordtoken = config.get("discord_token");
-		IMGUR_CLIENT_ID = config.get("imgur_client_id");
-		UNSPLASH_CLIENT_ID = config.get("unsplash_client_id");
-		if(discordtoken.equals("")){
-			Logger.print("Please set the discord token in '" + config.getName() + "'!");
+		String discordToken = config.get("discord_token");
+		unsplashClientId = config.get("unsplash_client_id");
+		if(discordToken.equals("") || unsplashClientId.equals("")){
+			Logger.print("Please set the api token in '" + config.getName() + "'!");
 			close();
 		}
 		try{
-			jda = new JDABuilder(discordtoken).build().awaitReady();
+			JDABuilder jdaBuilder = new JDABuilder(discordToken);
+			jda = jdaBuilder.build().awaitReady();
 			rand = new Random();
-			new Emotes(this);
 			
 			database = new Database(this);
 			pollManager = new PollManager(this);
@@ -69,7 +66,6 @@ public class KittyBot{
 			commandManager.add(new RolesCommand(this));
 			commandManager.add(new PollCommand(this));
 			commandManager.add(new ScreenShareCommand(this));
-			commandManager.add(new SearchCommand(this));
 			commandManager.add(new QuokkaCommand(this));
 			commandManager.add(new TurtleCommand(this));
 			commandManager.add(new CatCommand(this));
