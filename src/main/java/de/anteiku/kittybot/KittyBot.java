@@ -25,6 +25,7 @@ public class KittyBot{
 	public final OkHttpClient httpClient;
 	public static final String ME = "170939974227591168";
 	public String unsplashClientId;
+	public String host;
 	
 	public JDA jda;
 	public Logger logger;
@@ -47,6 +48,7 @@ public class KittyBot{
 		config = new Config("options.cfg");
 		
 		String discordToken = config.get("discord_token");
+		host = config.get("host");
 		unsplashClientId = config.get("unsplash_client_id");
 		if(discordToken.equals("") || unsplashClientId.equals("")){
 			Logger.print("Please set the api token in '" + config.getName() + "'!");

@@ -25,7 +25,7 @@ public class GuildsRoute implements TemplateViewRoute{
 			obj.addRegex("userid", user.getId());
 			obj.addRegex("usericonurl", user.getAvatarUrl());
 			obj.addRegex("username", user.getName());
-			obj.addRegex("usertag", user.getAsTag());
+			obj.addRegex("usertag", "#" + user.getDiscriminator());
 			model = new ModelAndView(obj, "guilds.html");
 		}
 		else{

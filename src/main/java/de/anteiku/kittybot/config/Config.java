@@ -35,11 +35,11 @@ public class Config{
 	
 	private HashMap<String, String> loadDefault(){
 		HashMap<String, String> values = new HashMap<>();
-		values.put("discord_token", "");
-		values.put("discord_client_id", "");
-		values.put("discord_client_secret", "");
-		values.put("imgur_client_id", "");
-		values.put("unsplash_client_id", "");
+		values.put("discord_token", "your discord token");
+		values.put("discord_client_id", "your discord bot id");
+		values.put("discord_client_secret", "your discord bot secret");
+		values.put("host", "https://bla.de");
+		values.put("unsplash_client_id", "your unsplash client id");
 		return values;
 	}
 	

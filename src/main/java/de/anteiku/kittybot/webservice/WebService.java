@@ -30,8 +30,7 @@ public class WebService{
 		this.main = main;
 		oAuth = new OAuthBuilder(main.config.get("discord_client_id"), main.config.get("discord_client_secret"));
 		oAuth.setScopes(new String[]{"guilds", "identify"});
-		oAuth.setRedirectURI("http://anteiku.de/trylogin");
-		//oAuth.setRedirectURI("http://localhost/trylogin");
+		oAuth.setRedirectURI(main.host + "/trylogin");
 		port(port);
 		staticFileLocation("/public");
 		get("/", new IndexRoute(main), new HtmlTemplateEngine());
@@ -49,7 +48,7 @@ public class WebService{
 		
 		path("/user", () -> {
 			before("", this::checkDiscordLogin);
-			path("/:userId", () -> {
+			path("/me", ()->{
 				get("/guilds/get", this::getGuilds);
 			});
 		});

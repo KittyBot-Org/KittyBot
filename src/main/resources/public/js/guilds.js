@@ -1,7 +1,3 @@
-
-var userId = document.getElementById("userIdField").value;
-var host = "http://anteiku.de/";
-//var host = "http://localhost/";
 var displayMobileNav = false;
 
 loadGuilds();
@@ -9,7 +5,7 @@ loadGuilds();
 function request(url, func){
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = func;
-	xmlhttp.open("GET", url, true);
+	xmlhttp.open("GET", window.location.origin + "/" + url, true);
 	xmlhttp.send();
 }
 
@@ -17,8 +13,7 @@ function loadGuilds(){
     var desktop = document.getElementById("navigation");
     var mobile = document.getElementById("mobile-navigation-list");
     var list = document.getElementById("server-list");
-    var url = host + "user/" + userId + "/guilds/get";
-    request(url, function(){
+    request("user/me/guilds/get", function(){
 		if(this.readyState == 4 && this.status == 200){
 			var json = JSON.parse(this.responseText);
 			var textDesktop = "";
