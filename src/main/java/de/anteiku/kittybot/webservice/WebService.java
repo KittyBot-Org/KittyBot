@@ -14,7 +14,7 @@ import spark.TemplateEngine;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -54,10 +54,10 @@ public class WebService{
 		});
 		path("/guild", () -> {
 			before("", this::checkDiscordLogin);
-			get("", new GuildsRoute(main), new HtmlTemplateEngine());
+			get("", new GuildTemplateRoute(main), new HtmlTemplateEngine());
 			path("/:guildId", () -> {
 				before("", this::checkGuildPerms);
-				get("", new GuildRoute(main), new HtmlTemplateEngine());
+				get("", new GuildTemplateRoute(main), new HtmlTemplateEngine());
 				redirect.get("/", "/login");
 				path("/commandprefix", () -> {
 					get("/get", this::getCommandPrefix);
@@ -318,7 +318,7 @@ public class WebService{
 		
 		public HtmlObject(String body){
 			this.body = body;
-			this.map = new HashMap<>();
+			this.map = new LinkedHashMap<>();
 		}
 		
 		public String getBody(){

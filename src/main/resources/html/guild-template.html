@@ -47,76 +47,7 @@
 		</div>
 
 		<div id="view">
-			<div id="header">
-				<button id="navigation-icon" onclick="toggleMobileNav()">&#9776;</button>
-				<h2>Configure :guildname:</h2>
-				<input id="guildIdField" type="text" value=":guildid:" readonly/>
-			</div>
-			<div id="content-box">
-				<div id="content-center">
-					<div class="box">
-						<div class="label">
-							<b>Self-assignable roles</b>
-						</div>
-						<div class="content">
-							<p>Roles selected will be self-assignable width the <b>.roles</b> command</p>
-							<ul id="roleList"></ul>
-							<div>
-								<select id="roleSelect" onchange='addSelfAssignableRole()'></select>
-							</div>
-						</div>
-					</div>
-
-					<div class="box">
-						<div class="label">
-							<b>Welcome Message</b>
-						</div>
-						<div class="content">
-							<p>You can use <b>[username]</b> or <b>[randomwelcomemessage]</b> as placeholders for the username of new member and a random welcome message.</p>
-							<div>
-								<label class="switch">
-									<input id="welcomeMessageEnabled" type="checkbox" onclick="setWelcomeMessageEnabled()"/>
-									<span class="slider"></span>
-								</label>
-								<p>Enable welcome messages</p>
-							</div>
-							<div>
-								<textarea id="welcomeMessage" placeholder="Welcome message..." oninput='setWelcomeMessage()'></textarea>
-							</div>
-							<div>
-								<select id="channelSelect" onchange='setWelcomeChannel()'></select>
-							</div>
-						</div>
-					</div>
-
-					<div class="box">
-						<div class="label">
-							<b>Command Prefix</b>
-						</div>
-						<div class="content">
-							<p>The command prefix should be a single character like <b>.</b> or <b>*</b></p>
-							<div>
-								<input id="commandPrefix" type="text" maxlength="1" placeholder="Command prefix..." oninput="setCommandPrefix()"/>
-							</div>
-						</div>
-					</div>
-
-					<div class="box">
-						<div class="label">
-							<b>NSFW Commands</b>
-						</div>
-						<div class="content">
-							<div>
-								<label class="switch">
-									<input id="nsfwEnabled" type="checkbox" onclick="setNSFWEnabled()"/>
-									<span class="slider"></span>
-								</label>
-								<p>Enable nsfw commands</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+			:template:
 		</div>
 
 		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>

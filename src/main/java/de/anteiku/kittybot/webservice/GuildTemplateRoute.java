@@ -7,11 +7,11 @@ import spark.Request;
 import spark.Response;
 import spark.TemplateViewRoute;
 
-public class GuildsRoute implements TemplateViewRoute{
+public class GuildTemplateRoute implements TemplateViewRoute{
 	
 	private KittyBot main;
 	
-	public GuildsRoute(KittyBot main){
+	public GuildTemplateRoute(KittyBot main){
 		this.main = main;
 	}
 	
@@ -19,14 +19,23 @@ public class GuildsRoute implements TemplateViewRoute{
 	public ModelAndView handle(Request request, Response response){
 		ModelAndView model;
 		if(main.webService.loggedIn(request)){
-			response.body(WebService.readFile("/html/guilds.html"));
+			response.body(WebService.readFile("/html/guild-template.html"));
 			WebService.HtmlObject obj = new WebService.HtmlObject(response.body());
 			User user = main.jda.getUserById(main.database.getSession(request.cookie("key")));
-			obj.addRegex("userid", user.getId());
+			if(request.pathInfo().equalsIgnoreCase("/guild")){
+				obj.addRegex("template", WebService.readFile("/html/overview-template.html"));
+			}
+			else{
+				String guildId = request.params("guildId");
+				obj.addRegex("template", WebService.readFile("/html/settings-template.html"));
+				obj.addRegex("guildname", main.jda.getGuildById(guildId).getName());
+				obj.addRegex("guildid", guildId);
+				obj.addRegex("guildiconurl", main.jda.getGuildById(guildId).getIconUrl());
+			}
 			obj.addRegex("usericonurl", user.getAvatarUrl());
 			obj.addRegex("username", user.getName());
 			obj.addRegex("usertag", "#" + user.getDiscriminator());
-			model = new ModelAndView(obj, "guilds.html");
+			model = new ModelAndView(obj, "guild.html");
 		}
 		else{
 			response.redirect("/");

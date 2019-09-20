@@ -1,7 +1,19 @@
-
-var guildId = document.getElementById("guildIdField").value;
 var addedRoles = [];
 var displayMobileNav = false;
+
+if(window.location.pathname === "/guild"){
+	loadGuildsOverview();
+}
+else{
+	loadGuilds();
+	loadSelfAssignableRoles();
+	loadChannels();
+	getWelcomeMessageEnabled();
+	getWelcomeMessage();
+	getWelcomeChannel();
+	getCommandPrefix();
+	getNSFWEnabled();
+}
 
 var tx = document.getElementsByTagName('textarea');
 for (var i = 0; i < tx.length; i++) {
@@ -9,28 +21,52 @@ for (var i = 0; i < tx.length; i++) {
   tx[i].addEventListener("input", OnInput, false);
 }
 
-loadGuilds();
-loadSelfAssignableRoles();
-loadChannels();
-getWelcomeMessageEnabled();
-getWelcomeMessage();
-getWelcomeChannel();
-getCommandPrefix();
-getNSFWEnabled();
 
-
-function request(url, func){
+function requestUrl(url, func){
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = func;
 	xmlhttp.open("GET",  window.location.origin + "/" + url, true);
 	xmlhttp.send();
 }
 
+function request(url, func){
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = func;
+	xmlhttp.open("GET",  window.location.href + "/" + url, true);
+	xmlhttp.send();
+}
+
+function loadGuildsOverview(){
+    var desktop = document.getElementById("navigation");
+    var mobile = document.getElementById("mobile-navigation-list");
+    var list = document.getElementById("server-list");
+    requestUrl("user/me/guilds/get", function(){
+		if(this.readyState == 4 && this.status == 200){
+			var json = JSON.parse(this.responseText);
+			var textDesktop = "";
+			var textMobile = "";
+			var textList = "";
+			for (var i = 0; i < json.guilds.length; i++) {
+				var e = json.guilds[i];
+				textDesktop += "<a href='/guild/" + e.id + "'><button><img src='" + e.iconurl + "' alt='" + e.name + " Icon'><h2>" + e.name + "</h2></button></a>";
+				textMobile += "<li><a href='/guild/" + e.id + "'><button><img src='" + e.iconurl + "' alt='" + e.name + " Icon'>" + e.name + "</button></a></li>";
+				textList += "<li><a href='/guild/" + e.id + "'><img src='" + e.iconurl + "' alt='" + e.name + " Icon'><p>" + e.name + "</p></a></li>";
+			}
+			desktop.innerHTML += textDesktop;
+			mobile.innerHTML += textMobile;
+			list.innerHTML += textList;
+		}
+		else if(this.readyState == 4 && this.status == 401){
+			sendToast("Error: '" + this.responseText + "'");
+		}
+	});
+}
+
 function loadGuilds(){
     var desktop = document.getElementById("navigation");
     var mobile = document.getElementById("mobile-navigation-list");
     var url = "user/me/guilds/get";
-    request(url, function(){
+    requestUrl(url, function(){
 		if(this.readyState == 4 && this.status == 200){
 			var json = JSON.parse(this.responseText);
 			var textDesktop = "";
@@ -51,7 +87,7 @@ function loadGuilds(){
 
 function loadRoles() {
     var list = document.getElementById("roleSelect");
-    var url = "guild/" + guildId + "/roles/get";
+    var url = "/roles/get";
     request(url, function(){
     	if(this.readyState == 4 && this.status == 200){
     		var json = JSON.parse(this.responseText);
@@ -73,7 +109,7 @@ function loadRoles() {
 
 function loadSelfAssignableRoles() {
     var list = document.getElementById("roleList");
-    var url = "guild/" + guildId + "/selfassignableroles/get";
+    var url = "/selfassignableroles/get";
     request(url, function(){
 		if(this.readyState == 4 && this.status == 200){
 			var json = JSON.parse(this.responseText);
@@ -83,7 +119,7 @@ function loadSelfAssignableRoles() {
 				text = "<li><span>No roles added</span></li>";
 			}
 			else{
-				var roles = json.selfassignableroles
+				var roles = json.selfassignableroles;
 				for(var i = 0; i < roles.length; i++){
 					var e = roles[i];
 					addedRoles.push(e.id);
@@ -99,7 +135,7 @@ function loadSelfAssignableRoles() {
 	});
 }
 function removeSelfAssignableRole(element){
-    var url = "guild/" + guildId + "/selfassignableroles/remove/" + element.value;
+    var url = "/selfassignableroles/remove/" + element.value;
 	var xmlhttp = new XMLHttpRequest();
 	request(url, function(){
 		if(this.readyState == 4 && this.status == 200){
@@ -118,7 +154,7 @@ function addSelfAssignableRole(){
 	var e = document.getElementById("roleSelect");
 	var roleId = e.options[e.selectedIndex].value;
 	if(roleId != "-1"){
-		var url = "guild/" + guildId + "/selfassignableroles/add/" + roleId;
+		var url = "/selfassignableroles/add/" + roleId;
 		request(url, function(){
 			if(this.readyState == 4 && this.status == 200){
 				var json = JSON.parse(this.responseText);
@@ -136,7 +172,7 @@ function addSelfAssignableRole(){
 
 function loadChannels() {
     var list = document.getElementById("channelSelect");
-    var url = "guild/" + guildId + "/channels/get";
+    var url = "/channels/get";
     request(url, function(){
 		if(this.readyState == 4 && this.status == 200){
 			var json = JSON.parse(this.responseText);
@@ -155,7 +191,7 @@ function loadChannels() {
 
 function setNSFWEnabled(){
     var box = document.getElementById("nsfwEnabled");
-    var url = "guild/" + guildId + "/nsfw/set/" + box.checked;
+    var url = "/nsfw/set/" + box.checked;
     request(url, function(){
 		if(this.readyState == 4 && this.status == 200){
 			var json = JSON.parse(this.responseText);
@@ -178,7 +214,7 @@ function setNSFWEnabled(){
 }
 function getNSFWEnabled(){
     var box = document.getElementById("nsfwEnabled");
-    var url = "guild/" + guildId + "/nsfw/get";
+    var url = "/nsfw/get";
     request(url, function(){
 		if(this.readyState == 4 && this.status == 200){
 			var json = JSON.parse(this.responseText);
@@ -197,7 +233,7 @@ function getNSFWEnabled(){
 
 function setWelcomeMessageEnabled(){
     var box = document.getElementById("welcomeMessageEnabled");
-    var url = "guild/" + guildId + "/welcomemessage/enabled/set/" + box.checked;
+    var url = "/welcomemessage/enabled/set/" + box.checked;
     request(url, function(){
 		if(this.readyState == 4 && this.status == 200){
 			var json = JSON.parse(this.responseText);
@@ -220,7 +256,7 @@ function setWelcomeMessageEnabled(){
 }
 function getWelcomeMessageEnabled(){
     var box = document.getElementById("welcomeMessageEnabled");
-    var url = "guild/" + guildId + "/welcomemessage/enabled/get";
+    var url = "/welcomemessage/enabled/get";
     request(url, function(){
 		if(this.readyState == 4 && this.status == 200){
 			var json = JSON.parse(this.responseText);
@@ -239,7 +275,7 @@ function getWelcomeMessageEnabled(){
 
 function setWelcomeMessage(){
     var field = document.getElementById("welcomeMessage");
-    var url = "guild/" + guildId + "/welcomemessage/set/" + encodeURIComponent(field.value.trim());
+    var url = "/welcomemessage/set/" + encodeURIComponent(field.value.trim());
     request(url, function(){
 		if(this.readyState == 4 && this.status == 200){
 			var json = JSON.parse(this.responseText);
@@ -257,7 +293,7 @@ function setWelcomeMessage(){
 }
 function getWelcomeMessage(){
     var field = document.getElementById("welcomeMessage");
-    var url = "guild/" + guildId + "/welcomemessage/get";
+    var url = "/welcomemessage/get";
     request(url, function(){
 		if(this.readyState == 4 && this.status == 200){
 			if(this.responseText != "-1"){
@@ -274,7 +310,7 @@ function getWelcomeMessage(){
 
 function getWelcomeChannel(){
 	var element = document.getElementById("channelSelect");
-    var url = "guild/" + guildId + "/welcomechannel/get";
+    var url = "/welcomechannel/get";
     request(url, function(){
 		if(this.readyState == 4 && this.status == 200){
 			var json = JSON.parse(this.responseText);
@@ -287,7 +323,7 @@ function getWelcomeChannel(){
 }
 function setWelcomeChannel(){
 	var element = document.getElementById("channelSelect");
-    var url = "guild/" + guildId + "/welcomechannel/set/" + element.value;
+    var url = "/welcomechannel/set/" + element.value;
     request(url, function(){
 		if(this.readyState == 4 && this.status == 200){
 			var json = JSON.parse(this.responseText);
@@ -308,7 +344,7 @@ function setWelcomeChannel(){
 
 function setCommandPrefix(){
     var field = document.getElementById("commandPrefix");
-    var url = "guild/" + guildId + "/commandprefix/set/" + encodeURIComponent(field.value);
+    var url = "/commandprefix/set/" + encodeURIComponent(field.value);
     if(field.value.length == 1){
 		request(url, function(){
 			if(this.readyState == 4 && this.status == 200){
@@ -329,7 +365,7 @@ function setCommandPrefix(){
 }
 function getCommandPrefix(){
     var field = document.getElementById("commandPrefix");
-    var url = "guild/" + guildId + "/commandprefix/get";
+    var url = "/commandprefix/get";
     request(url, function(){
 		if(this.readyState == 4 && this.status == 200){
 			var json = JSON.parse(this.responseText);
