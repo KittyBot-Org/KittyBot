@@ -7,16 +7,14 @@ import de.anteiku.kittybot.Emotes;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageEmbed;
-import net.dv8tion.jda.core.entities.PrivateChannel;
-import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
 import okhttp3.Request;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.List;
 
 public abstract class Command{
 	
@@ -145,6 +143,17 @@ public abstract class Command{
 		eb.addField("Command usage:", "`" + main.database.getCommandPrefix(channel.getGuild().getId()) + usage + "`", true);
 		
 		return channel.sendMessage(eb.build()).complete();
+	}
+	
+	protected Message sendReactionImage(GuildMessageReceivedEvent event, String type, String text, List<User> users){
+		StringBuilder mentioned = new StringBuilder();
+		for(User user : users){
+			mentioned.append(user.getAsMention()).append(", ");
+		}
+		if(mentioned.lastIndexOf(",") != - 1){
+			mentioned.deleteCharAt(mentioned.lastIndexOf(","));
+		}
+		return sendAnswer(event.getMessage(), new EmbedBuilder().setDescription(event.getAuthor().getAsMention() + " " + text + " " + mentioned).setImage(getNeko(type)).build());
 	}
 	
 	protected Message sendImage(TextChannel channel, String url){
