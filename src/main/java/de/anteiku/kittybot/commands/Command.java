@@ -145,15 +145,21 @@ public abstract class Command{
 		return channel.sendMessage(eb.build()).complete();
 	}
 	
-	protected Message sendReactionImage(GuildMessageReceivedEvent event, String type, String text, List<User> users){
-		StringBuilder mentioned = new StringBuilder();
-		for(User user : users){
-			mentioned.append(user.getAsMention()).append(", ");
+	protected Message sendReactionImage(GuildMessageReceivedEvent event, String type, String text){
+		List<User> users = event.getMessage().getMentionedUsers();
+		if(users.isEmpty() || users.contains(event.getAuthor())){
+			return sendError(event.getMessage(), "You need to mention a User(or not yourself :p)");
 		}
-		if(mentioned.lastIndexOf(",") != - 1){
-			mentioned.deleteCharAt(mentioned.lastIndexOf(","));
+		else{
+			StringBuilder mentioned = new StringBuilder();
+			for(User user : users){
+				mentioned.append(user.getAsMention()).append(", ");
+			}
+			if(mentioned.lastIndexOf(",") != - 1){
+				mentioned.deleteCharAt(mentioned.lastIndexOf(","));
+			}
+			return sendAnswer(event.getMessage(), new EmbedBuilder().setDescription(event.getAuthor().getAsMention() + " " + text + " " + mentioned).setImage(getNeko(type)).build());
 		}
-		return sendAnswer(event.getMessage(), new EmbedBuilder().setDescription(event.getAuthor().getAsMention() + " " + text + " " + mentioned).setImage(getNeko(type)).build());
 	}
 	
 	protected Message sendImage(TextChannel channel, String url){
@@ -172,10 +178,6 @@ public abstract class Command{
 			Logger.error(e);
 		}
 		return null;
-	}
-	
-	protected Message sendNeko(Message message, String type){
-		return sendImage(message.getTextChannel(), getNeko(type));
 	}
 	
 	protected Message sendUnsplashImage(Message message, String search){

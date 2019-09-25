@@ -1,6 +1,5 @@
 package de.anteiku.kittybot.commands;
 
-import de.anteiku.kittybot.API;
 import de.anteiku.kittybot.Emotes;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.Logger;
@@ -8,7 +7,6 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
 
-import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,25 +31,18 @@ public class NekoCommand extends Command{
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		if(! event.getChannel().isNSFW()){
-			sendError(event.getChannel(), "This is not a nsfw Channel!");
+			sendError(event.getChannel(), "Sorry but this command can only be used in a nsfw channels");
 			return;
 		}
-		if(args.length > 0){
-			if(nekos.contains(args[0])){
-				try{
-					String url = getNeko(args[0]);
-					Message message = sendImage(event.getChannel(), url);
-
-					main.commandManager.addListenerCmd(message, event.getMessage(), this, - 1L);
-					message.addReaction(Emotes.WASTEBASKET.get()).queue();
-				}
-				catch(Exception e){
-					sendError(event.getChannel(), "No neko found!");
-					Logger.error(e);
-				}
+		if(args.length > 0 && nekos.contains(args[0])){
+			try{
+				Message message = sendImage(event.getChannel(), getNeko(args[0]));
+				main.commandManager.addListenerCmd(message, event.getMessage(), this, - 1L);
+				message.addReaction(Emotes.WASTEBASKET.get()).queue();
 			}
-			else{
-				sendUsage(event.getChannel());
+			catch(Exception e){
+				sendError(event.getChannel(), "Sadly I was not able to find a Neko for you :(");
+				Logger.error(e);
 			}
 		}
 		else{

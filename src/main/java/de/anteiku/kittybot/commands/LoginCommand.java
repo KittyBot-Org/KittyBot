@@ -1,6 +1,7 @@
 package de.anteiku.kittybot.commands;
 
 import de.anteiku.kittybot.KittyBot;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 
 public class LoginCommand extends Command{
@@ -16,7 +17,12 @@ public class LoginCommand extends Command{
 	
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
-		sendAnswer(event.getChannel(), "Click [here](http://anteiku.de/login) to login with discord and manage your guilds!\nDo not forget that you need administrator permissions to manage them!");
+		if(event.getMember().hasPermission(Permission.ADMINISTRATOR) || event.getMember().isOwner()){
+			sendAnswer(event.getMessage(), "Click [here](" + main.host + "/guild/" + event.getGuild().getId() + ") to login with discord and manage your guilds.");
+		}
+		else{
+			sendAnswer(event.getMessage(), "Click [here](" + main.host + "/login) to login with discord and manage your guilds.\nYou need at least administrator permissions to manage guilds.");
+		}
 	}
 	
 }

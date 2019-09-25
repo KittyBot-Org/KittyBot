@@ -23,7 +23,6 @@ import java.util.Random;
 public class KittyBot{
 	
 	public final OkHttpClient httpClient;
-	public static final String ME = "170939974227591168";
 	public String unsplashClientId;
 	public String host;
 	
@@ -84,7 +83,6 @@ public class KittyBot{
 			commandManager.add(new KurapikaCommand(this));
 			commandManager.add(new LoginCommand(this));
 			commandManager.add(new OptionsCommand(this));
-			commandManager.add(new DeleteCommand(this));
 			commandManager.add(new TestCommand(this));
 			
 			jda.getPresence().setStatus(OnlineStatus.ONLINE);
