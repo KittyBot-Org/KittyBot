@@ -1,20 +1,19 @@
 package de.anteiku.kittybot.commands;
 
-import de.anteiku.kittybot.API;
-import de.anteiku.kittybot.Emotes;
 import de.anteiku.kittybot.KittyBot;
+import de.anteiku.kittybot.utils.API;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.List;
 
-public class OptionsCommand extends Command{
+public class OptionsCommand extends ACommand{
 	
 	public static String COMMAND = "options";
 	public static String USAGE = "options <prefix|welcomechannel|welcomemessage|nsfw> <value>";
 	public static String DESCRIPTION = "Used to set some guild specified options";
-	public static String[] ALIAS = {"opts", "opt"};
+	protected static String[] ALIAS = {"opts", "opt"};
 	
 	public OptionsCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);

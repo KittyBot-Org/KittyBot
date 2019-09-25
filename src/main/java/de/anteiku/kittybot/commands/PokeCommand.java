@@ -3,12 +3,12 @@ package de.anteiku.kittybot.commands;
 import de.anteiku.kittybot.KittyBot;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 
-public class PokeCommand extends Command{
+public class PokeCommand extends ACommand{
 	
 	public static String COMMAND = "poke";
 	public static String USAGE = "poke <@user>";
 	public static String DESCRIPTION = "Pokes a user";
-	public static String[] ALIAS = {"stups"};
+	protected static String[] ALIAS = {"stups"};
 	
 	public PokeCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
@@ -16,7 +16,7 @@ public class PokeCommand extends Command{
 	
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
-		if(args.length != 1){
+		if(args.length == 0){
 			sendUsage(event.getMessage());
 			return;
 		}

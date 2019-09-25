@@ -1,7 +1,7 @@
 package de.anteiku.kittybot.commands;
 
-import de.anteiku.kittybot.Emotes;
 import de.anteiku.kittybot.KittyBot;
+import de.anteiku.kittybot.utils.Emotes;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
@@ -9,12 +9,12 @@ import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEv
 
 import java.awt.*;
 
-public class HelpCommand extends Command{
+public class HelpCommand extends ACommand{
 	
 	public static String COMMAND = "help";
 	public static String USAGE = "help";
 	public static String DESCRIPTION = "Shows some help stuff";
-	public static String[] ALIAS = {"?"};
+	protected static String[] ALIAS = {"?"};
 	
 	public HelpCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);

@@ -3,7 +3,7 @@ package de.anteiku.kittybot.tasks;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.commands.PollCommand;
 import de.anteiku.kittybot.poll.Poll;
-import de.anteiku.kittybot.Logger;
+import de.anteiku.kittybot.utils.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 

@@ -1,4 +1,4 @@
-package de.anteiku.kittybot.commands;
+package de.anteiku.kittybot.utils;
 
 public class ArgumentException extends Exception{
 	

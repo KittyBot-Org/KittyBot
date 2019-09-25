@@ -3,9 +3,9 @@ package de.anteiku.kittybot.commands;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import de.anteiku.kittybot.Emotes;
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.Logger;
+import de.anteiku.kittybot.utils.Emotes;
+import de.anteiku.kittybot.utils.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
@@ -16,7 +16,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 
-public abstract class Command{
+public abstract class ACommand{
 	
 	protected KittyBot main;
 	protected String command;
@@ -24,7 +24,7 @@ public abstract class Command{
 	protected String description;
 	protected String[] alias;
 	
-	protected Command(KittyBot main, String command, String usage, String description, String[] alias){
+	protected ACommand(KittyBot main, String command, String usage, String description, String[] alias){
 		this.main = main;
 		this.command = command;
 		this.usage = usage;
@@ -32,9 +32,9 @@ public abstract class Command{
 		this.alias = alias;
 	}
 	
-	abstract void run(String[] args, GuildMessageReceivedEvent event);
+	public abstract void run(String[] args, GuildMessageReceivedEvent event);
 	
-	boolean checkCmd(String cmd){
+	public boolean checkCmd(String cmd){
 		if(cmd.equalsIgnoreCase(command)){
 			return true;
 		}
@@ -94,26 +94,38 @@ public abstract class Command{
 		return sendAnswer(message.getTextChannel(), answer);
 	}
 	
-	protected Message sendAnswer(Message message, MessageEmbed answer){
-		message.addReaction(Emotes.CHECK.get()).queue();
-		return sendAnswer(message.getTextChannel(), answer);
-	}
-	
 	protected Message sendAnswer(TextChannel channel, String answer){
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setColor(Color.GREEN);
 		eb.setDescription(answer);
-		
-		return channel.sendMessage(eb.build()).complete();
+		return sendAnswer(channel, eb.build());
+	}
+	
+	protected Message sendAnswer(Message message, String answer, String title){
+		message.addReaction(Emotes.CHECK.get()).queue();
+		return sendAnswer(message.getTextChannel(), answer, title);
+	}
+	
+	protected Message sendAnswer(TextChannel channel, String answer, String title){
+		EmbedBuilder eb = new EmbedBuilder();
+		eb.setColor(Color.GREEN);
+		eb.setTitle(title);
+		eb.setDescription(answer);
+		return sendAnswer(channel, eb.build());
+	}
+	
+	protected Message sendAnswer(Message message, MessageEmbed answer){
+		message.addReaction(Emotes.CHECK.get()).queue();
+		return sendAnswer(message.getTextChannel(), answer);
 	}
 	
 	protected Message sendAnswer(TextChannel channel, MessageEmbed answer){
 		return channel.sendMessage(answer).complete();
 	}
 	
-	protected Message sendError(Message message, String error){
+	public Message sendError(Message message, String error){
 		message.addReaction(Emotes.X.get()).queue();
-		return sendError(message, error);
+		return sendError(message.getTextChannel(), error);
 	}
 	
 	protected Message sendError(TextChannel channel, String error){

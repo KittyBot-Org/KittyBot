@@ -1,4 +1,4 @@
-package de.anteiku.kittybot;
+package de.anteiku.kittybot.utils;
 
 import java.awt.*;
 

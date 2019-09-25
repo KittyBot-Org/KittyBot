@@ -1,7 +1,7 @@
 package de.anteiku.kittybot.poll;
 
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.Logger;
+import de.anteiku.kittybot.utils.Logger;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 

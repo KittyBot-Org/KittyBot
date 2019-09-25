@@ -3,7 +3,7 @@ package de.anteiku.kittybot.commands;
 import de.anteiku.kittybot.KittyBot;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 
-public class FeedCommand extends Command{
+public class FeedCommand extends ACommand{
 
 	public static final String COMMAND = "feed";
 	public static final String USAGE = "feed <@user>";
@@ -16,12 +16,11 @@ public class FeedCommand extends Command{
 
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
-		if(args.length != 1){
+		if(args.length == 0){
 			sendUsage(event.getMessage());
 			return;
 		}
 		sendReactionImage(event, "feed", "feeds");
-		
 	}
 
 }

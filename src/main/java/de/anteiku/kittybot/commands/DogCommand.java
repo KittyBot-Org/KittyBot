@@ -1,20 +1,19 @@
 package de.anteiku.kittybot.commands;
 
-import de.anteiku.kittybot.API;
-import de.anteiku.kittybot.Colors;
-import de.anteiku.kittybot.Emotes;
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.Logger;
+import de.anteiku.kittybot.utils.Colors;
+import de.anteiku.kittybot.utils.Emotes;
+import de.anteiku.kittybot.utils.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 
-public class DogCommand extends Command{
+public class DogCommand extends ACommand{
 
 	public static String COMMAND = "dog";
 	public static String USAGE = "dog";
 	public static String DESCRIPTION = "Sends a random dog";
-	public static String[] ALIAS = {"hund", "doggo"};
+	protected static String[] ALIAS = {"hund", "doggo"};
 
 	public DogCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);

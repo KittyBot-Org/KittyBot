@@ -1,8 +1,8 @@
 package de.anteiku.kittybot.commands;
 
-import de.anteiku.kittybot.API;
-import de.anteiku.kittybot.Emotes;
 import de.anteiku.kittybot.KittyBot;
+import de.anteiku.kittybot.utils.API;
+import de.anteiku.kittybot.utils.Emotes;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
@@ -17,14 +17,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class RolesCommand extends Command{
+public class RolesCommand extends ACommand{
 	
 	public static String COMMAND = "roles";
 	public static String USAGE = "roles <add|remove|list>";
 	public static String DESCRIPTION = "Used to manage your roles";
-	public static String[] ALIAS = {"r", "rollen"};
+	protected static String[] ALIAS = {"r", "rollen"};
 	
-	public static String title = "Self-assignable roles:";
+	private static String title = "Self-assignable roles:";
 	
 	public RolesCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
@@ -51,58 +51,55 @@ public class RolesCommand extends Command{
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		if(args.length > 0){
 			if(args[0].equals("?") || args[0].equals("help")){
-				sendUsage(event.getChannel());
+				sendUsage(event.getMessage());
 			}
 			if(event.getMember().isOwner() || event.getMember().hasPermission(Permission.ADMINISTRATOR)){
 				List<Role> roles = event.getMessage().getMentionedRoles();
-				if(roles.size() > 0){
+				if(! roles.isEmpty()){
 					if(args[0].equalsIgnoreCase("add")){
 						main.database.addSelfAssignableRoles(event.getGuild().getId(), API.toArray(roles));
-						sendAnswer(event.getChannel(), "Roles added!");
+						sendAnswer(event.getMessage(), "Roles added!");
 					}
 					else if(args[0].equalsIgnoreCase("remove")){
 						main.database.removeSelfAssignableRoles(event.getGuild().getId(), API.toArray(roles));
-						sendAnswer(event.getChannel(), "Roles removed!");
+						sendAnswer(event.getMessage(), "Roles removed!");
 					}
 					else{
-						event.getMessage().addReaction(Emotes.QUESTION.get()).queue();
-						sendUsage(event.getChannel());
+						sendUsage(event.getMessage());
 					}
 				}
 				else{
 					if(args[0].equalsIgnoreCase("list")){
 						Map<Role, String> map = getRoleEmoteMap(event.getGuild());
 						if(map.size() == 0){
-							sendAnswer(event.getChannel(), "There are no roles added!");
+							sendAnswer(event.getMessage(), "There are no roles added!");
 						}
 						else{
 							String message = "";
 							for(Map.Entry<Role, String> m : map.entrySet()){
 								message += m.getKey().getAsMention() + ", ";
 							}
-							sendAnswer(event.getChannel(), "Roles: " + message);
+							sendAnswer(event.getMessage(), "Roles: " + message);
 						}
 					}
 					else{
-						event.getMessage().addReaction(Emotes.QUESTION.get()).queue();
-						sendError(event.getChannel(), "Please mention roles!");
+						sendError(event.getMessage(), "Please mention roles!");
 					}
 				}
 			}
 			else{
-				event.getMessage().addReaction(Emotes.X.get()).queue();
-				sendError(event.getChannel(), "You need to be an administrator to use this command!");
+				sendError(event.getMessage(), "You need to be an administrator to use this command!");
 			}
 		}
 		else{
 			Map<Role, String> roles = getRoleEmoteMap(event.getGuild());
 			if(roles.size() == 0){
-				sendError(event.getChannel(), "No self-assignable roles configured!\nIf you are an admin use `.roles add @role @role ...` to add roles!");
+				sendError(event.getMessage(), "No self-assignable roles configured!\nIf you are an admin use `.roles add @role @role ...` to add roles!");
 				return;
 			}
 			EmbedBuilder eb = new EmbedBuilder();
 			eb.setTitle(title);
-			eb.appendDescription("To get a role react to this message with the specified Emote\nTo remove react another time!");
+			eb.appendDescription("To get a specified role press the given emote under this message. To remove it press the emote again");
 			eb.setColor(Color.MAGENTA);
 			String value = "";
 			for(Map.Entry<Role, String> k : roles.entrySet()){
@@ -128,7 +125,6 @@ public class RolesCommand extends Command{
 				}
 				else{
 					event.getGuild().getController().addSingleRoleToMember(event.getMember(), r.getKey()).queue();
-					
 				}
 				event.getReaction().removeReaction(event.getUser()).queue();
 			}

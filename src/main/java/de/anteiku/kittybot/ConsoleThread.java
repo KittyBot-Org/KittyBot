@@ -1,5 +1,7 @@
 package de.anteiku.kittybot;
 
+import de.anteiku.kittybot.utils.Logger;
+
 import java.util.Scanner;
 
 public class ConsoleThread extends Thread{

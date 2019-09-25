@@ -1,10 +1,10 @@
 package de.anteiku.kittybot.commands;
 
 import de.anteiku.emojiutils.EmojiUtils;
-import de.anteiku.kittybot.API;
-import de.anteiku.kittybot.Emotes;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.poll.Poll;
+import de.anteiku.kittybot.utils.API;
+import de.anteiku.kittybot.utils.Emotes;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -18,12 +18,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-public class PollCommand extends Command{
+public class PollCommand extends ACommand{
 	
 	public static String COMMAND = "poll";
 	public static String USAGE = "poll <list|create (topic) (<hours>h <minutes>min <seconds>s) (answer 1) (answer 2) ... (answer 9) |delete>";
 	public static String DESCRIPTION = "Used to create polls";
-	public static String[] ALIAS = {"survey", "umfrage"};
+	protected static String[] ALIAS = {"survey", "umfrage"};
 	
 	public PollCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);

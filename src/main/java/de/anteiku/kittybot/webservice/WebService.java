@@ -2,8 +2,8 @@ package de.anteiku.kittybot.webservice;
 
 import bell.oauth.discord.main.OAuthBuilder;
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.Logger;
 import de.anteiku.kittybot.poll.Poll;
+import de.anteiku.kittybot.utils.Logger;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import spark.ModelAndView;

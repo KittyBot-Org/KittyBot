@@ -1,21 +1,20 @@
 package de.anteiku.kittybot.commands;
 
-import de.anteiku.kittybot.API;
-import de.anteiku.kittybot.Emotes;
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.Logger;
+import de.anteiku.kittybot.utils.Emotes;
+import de.anteiku.kittybot.utils.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 
 import java.awt.*;
 
-public class CatCommand extends Command{
+public class CatCommand extends ACommand{
 
 	public static String COMMAND = "cat";
 	public static String USAGE = "cat";
 	public static String DESCRIPTION = "Sends a random cat";
-	public static String[] ALIAS = {"kitty", "katze"};
+	protected static String[] ALIAS = {"kitty", "katze"};
 
 	public CatCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);

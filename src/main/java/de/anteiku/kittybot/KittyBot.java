@@ -10,10 +10,11 @@ import de.anteiku.kittybot.events.OnGuildMessageReceivedEvent;
 import de.anteiku.kittybot.poll.PollManager;
 import de.anteiku.kittybot.tasks.PollTask;
 import de.anteiku.kittybot.tasks.TaskManager;
+import de.anteiku.kittybot.utils.CommandManager;
+import de.anteiku.kittybot.utils.Logger;
 import de.anteiku.kittybot.webservice.WebService;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
 import okhttp3.OkHttpClient;
 
@@ -42,7 +43,7 @@ public class KittyBot{
 	
 	public KittyBot(){
 		httpClient = new OkHttpClient();
-		logger = new Logger(this);
+		logger = new Logger();
 		
 		config = new Config("options.cfg");
 		
@@ -53,10 +54,10 @@ public class KittyBot{
 			Logger.print("Please set the api token in '" + config.getName() + "'!");
 			close();
 		}
+		rand = new Random();
+		new ConsoleThread(this);
 		try{
-			JDABuilder jdaBuilder = new JDABuilder(discordToken);
-			jda = jdaBuilder.build().awaitReady();
-			rand = new Random();
+			jda = new JDABuilder(discordToken).setGame(Game.listening("you!")).addEventListener(new OnGuildMessageReceivedEvent(this)).addEventListener(new OnGuildMemberJoinEvent(this)).addEventListener(new OnGuildMemberLeaveEvent(this)).addEventListener(new OnGuildMessageReactionAddEvent(this)).build().awaitReady();
 			
 			database = new Database(this);
 			pollManager = new PollManager(this);
@@ -84,16 +85,6 @@ public class KittyBot{
 			commandManager.add(new LoginCommand(this));
 			commandManager.add(new OptionsCommand(this));
 			commandManager.add(new TestCommand(this));
-			
-			jda.getPresence().setStatus(OnlineStatus.ONLINE);
-			jda.getPresence().setGame(Game.listening("you!"));
-			
-			jda.addEventListener(new OnGuildMessageReceivedEvent(this));
-			jda.addEventListener(new OnGuildMemberJoinEvent(this));
-			jda.addEventListener(new OnGuildMemberLeaveEvent(this));
-			jda.addEventListener(new OnGuildMessageReactionAddEvent(this));
-			
-			new ConsoleThread(this);
 			
 			taskManager = new TaskManager(this);
 			taskManager.registerTask(new PollTask(this));

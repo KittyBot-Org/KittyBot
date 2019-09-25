@@ -1,6 +1,6 @@
 package de.anteiku.kittybot.config;
 
-import de.anteiku.kittybot.Logger;
+import de.anteiku.kittybot.utils.Logger;
 
 import java.io.*;
 import java.util.HashMap;

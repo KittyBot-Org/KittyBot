@@ -1,6 +1,6 @@
 package de.anteiku.kittybot.poll;
 
-import de.anteiku.kittybot.API;
+import de.anteiku.kittybot.utils.API;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 
@@ -19,7 +19,7 @@ public class Poll{
 	public Poll(TextChannel channel, String id, String topic, String duration, String[] answers){
 		this.channelId = channel.getId();
 		this.id = id;
-		this.guildId = guildId;
+		this.guildId = channel.getGuild().getId();
 		this.topic = topic;
 		this.closed = false;
 		this.votes = new LinkedHashMap<>();

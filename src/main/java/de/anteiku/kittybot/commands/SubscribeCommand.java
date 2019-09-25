@@ -5,12 +5,12 @@ import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.Arrays;
 
-public class SubscribeCommand extends Command{
+public class SubscribeCommand extends ACommand{
 	
 	public static String COMMAND = "subscribe";
 	public static String USAGE = "subscribe <daily|weekly> <tag> <tag> ... <tag>";
 	public static String DESCRIPTION = "Subscribes to Hentai pictures";
-	public static String[] ALIAS = {"sub", "abonieren", "abo"};
+	protected static String[] ALIAS = {"sub", "abonieren", "abo"};
 	
 	public SubscribeCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);

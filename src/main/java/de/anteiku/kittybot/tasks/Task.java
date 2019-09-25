@@ -1,8 +1,8 @@
 package de.anteiku.kittybot.tasks;
 
-import de.anteiku.kittybot.API;
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.Logger;
+import de.anteiku.kittybot.utils.API;
+import de.anteiku.kittybot.utils.Logger;
 
 public abstract class Task extends Thread{
 	

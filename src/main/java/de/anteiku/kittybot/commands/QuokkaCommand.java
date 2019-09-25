@@ -3,12 +3,12 @@ package de.anteiku.kittybot.commands;
 import de.anteiku.kittybot.KittyBot;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 
-public class QuokkaCommand extends Command{
+public class QuokkaCommand extends ACommand{
 	
 	public static String COMMAND = "quokka";
 	public static String USAGE = "quokka";
 	public static String DESCRIPTION = "Sends a random quokka";
-	public static String[] ALIAS = {};
+	protected static String[] ALIAS = {};
 	
 	public QuokkaCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);

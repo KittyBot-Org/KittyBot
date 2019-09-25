@@ -1,8 +1,8 @@
 package de.anteiku.kittybot.commands;
 
-import de.anteiku.kittybot.Emotes;
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.Logger;
+import de.anteiku.kittybot.utils.Emotes;
+import de.anteiku.kittybot.utils.Logger;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
@@ -10,14 +10,14 @@ import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEv
 import java.util.Arrays;
 import java.util.List;
 
-public class NekoCommand extends Command{
+public class NekoCommand extends ACommand{
 
 	public static final String rawNekos = "femdom, tickle, classic, ngif, erofeet, meow, erok, poke, les, v3, hololewd, nekoapi_v3.1, lewdk, keta, feetg, nsfw_neko_gif, eroyuri, kiss, 8ball, kuni, tits, pussy_jpg, cum_jpg, pussy, lewdkemo, lizard, slap, lewd, cum, cuddle, spank, smallboobs, goose, Random_hentai_gif, avatar, fox_girl, nsfw_avatar, hug, gecg, boobs, pat, feet, smug, kemonomimi, solog, holo, wallpaper, bj, woof, yuri, trap, anal, baka, blowjob, holoero, feed, neko, gasm, hentai, futanari, ero, solo, waifu, pwankg, eron, erokemo";
 	public static final List<String> nekos = Arrays.asList(rawNekos.split(", "));
 	public static String COMMAND = "neko";
 	public static String USAGE = "neko <" + rawNekos + ">";
 	public static String DESCRIPTION = "Sends a random/specified neko";
-	public static String[] ALIAS = {};
+	protected static String[] ALIAS = {};
 
 	public NekoCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);

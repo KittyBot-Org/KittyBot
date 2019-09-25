@@ -1,10 +1,10 @@
 package de.anteiku.kittybot.database;
 
-import de.anteiku.kittybot.API;
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.Logger;
-import de.anteiku.kittybot.Password;
 import de.anteiku.kittybot.poll.Poll;
+import de.anteiku.kittybot.utils.API;
+import de.anteiku.kittybot.utils.Logger;
+import de.anteiku.kittybot.utils.RandomKey;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisCommands;
@@ -290,9 +290,9 @@ public class Database{
 	}
 	
 	private String generateUniqueKey(){
-		String key = Password.generate(32);
+		String key = RandomKey.generate(32);
 		while(sessionExists(key)){
-			key = Password.generate(32);
+			key = RandomKey.generate(32);
 		}
 		return key;
 	}

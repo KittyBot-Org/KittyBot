@@ -1,4 +1,4 @@
-package de.anteiku.kittybot;
+package de.anteiku.kittybot.utils;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -10,26 +10,19 @@ import java.util.TimeZone;
 public class Logger{
 	
 	private static PrintStream errorStream;
-	private static SimpleDateFormat sdf;
 	private static boolean DEBUG = false;
-	private KittyBot main;
-	private File errorFile;
+	private static SimpleDateFormat sdf;
 	
-	public Logger(KittyBot main){
-		this.main = main;
+	public Logger(){
 		sdf = new SimpleDateFormat("HH:mm:ss");
 		sdf.setTimeZone(TimeZone.getTimeZone("GMT+2"));
-		createErrorLogFile();
-	}
-	
-	private void createErrorLogFile(){
 		LocalDateTime date = LocalDateTime.now();
 		String errorLogName = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss"));
 		File logDir = new File("logs");
 		if(logDir.mkdir()){
 			System.out.println("Created Error Log Dir: '" + logDir.getAbsolutePath() + "'");
 		}
-		errorFile = new File(logDir, "bot-log-" + errorLogName + ".log");
+		File errorFile = new File(logDir, "bot-log-" + errorLogName + ".log");
 		if(!errorFile.exists()){
 			try{
 				if(!errorFile.createNewFile()){

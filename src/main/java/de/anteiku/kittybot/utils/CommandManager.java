@@ -1,9 +1,7 @@
-package de.anteiku.kittybot.commands;
+package de.anteiku.kittybot.utils;
 
-import de.anteiku.kittybot.API;
-import de.anteiku.kittybot.Emotes;
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.Logger;
+import de.anteiku.kittybot.commands.ACommand;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 
@@ -12,9 +10,9 @@ import java.util.regex.Pattern;
 
 public class CommandManager{
 	
-	public Map<String, Command> commands;
+	public Map<String, ACommand> commands;
 	public Map<Long, Long> msgCtrl = new HashMap<>();
-	public Map<Long, Command> controllableMsgs = new HashMap<>();
+	public Map<Long, ACommand> controllableMsgs = new HashMap<>();
 	public Map<Long, Long> commandMessages = new HashMap<>();
 	private KittyBot main;
 	
@@ -23,25 +21,25 @@ public class CommandManager{
 		commands = new LinkedHashMap<>();
 	}
 	
-	public void add(Command cmd){
+	public void add(ACommand cmd){
 		commands.put(cmd.getCommand(), cmd);
 	}
 	
-	public void addListenerCmd(long message, long command, Command cmd, long allowed){
+	public void addListenerCmd(long message, Message command, ACommand cmd, long allowed){
+		addListenerCmd(message, command.getIdLong(), cmd, allowed);
+	}
+	
+	public void addListenerCmd(long message, long command, ACommand cmd, long allowed){
 		msgCtrl.put(message, allowed);
 		controllableMsgs.put(message, cmd);
 		commandMessages.put(message, command);
 	}
 	
-	public void addListenerCmd(long message, Message command, Command cmd, long allowed){
-		addListenerCmd(message, command.getIdLong(), cmd, allowed);
-	}
-	
-	public void addListenerCmd(Message message, long command, Command cmd, long allowed){
+	public void addListenerCmd(Message message, long command, ACommand cmd, long allowed){
 		addListenerCmd(message.getIdLong(), command, cmd, allowed);
 	}
 	
-	public void addListenerCmd(Message message, Message command, Command cmd, long allowed){
+	public void addListenerCmd(Message message, Message command, ACommand cmd, long allowed){
 		addListenerCmd(message.getIdLong(), command.getIdLong(), cmd, allowed);
 	}
 	
@@ -50,8 +48,8 @@ public class CommandManager{
 		String message = event.getMessage().getContentRaw();
 		String prefix = main.database.getCommandPrefix(event.getGuild().getId());
 		String command = getCommand(message, prefix);
-		for(Map.Entry<String, Command> c : commands.entrySet()){
-			Command cmd = c.getValue();
+		for(Map.Entry<String, ACommand> c : commands.entrySet()){
+			ACommand cmd = c.getValue();
 			if(cmd.checkCmd(command)){
 				event.getChannel().sendTyping().complete();
 				try{
@@ -60,8 +58,7 @@ public class CommandManager{
 					Logger.print("Command: '" + command + "' by: '" + event.getAuthor().getName() + "' from: '" + event.getGuild().getName() + "' took '" + API.getMs(start) + "'ms");
 				}
 				catch(ArgumentException e){
-					cmd.sendError(event.getChannel(), e.getMessage());
-					event.getMessage().addReaction(Emotes.QUESTION.get()).queue();
+					cmd.sendError(event.getMessage(), e.getMessage());
 					Logger.error(e);
 				}
 				return;

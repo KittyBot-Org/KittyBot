@@ -4,7 +4,7 @@ import de.anteiku.kittybot.KittyBot;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 
-public class LoginCommand extends Command{
+public class LoginCommand extends ACommand{
 	
 	public static final String COMMAND = "login";
 	public static final String USAGE = "login";
