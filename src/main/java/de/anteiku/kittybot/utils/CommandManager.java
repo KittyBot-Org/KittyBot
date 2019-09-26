@@ -51,17 +51,14 @@ public class CommandManager{
 		for(Map.Entry<String, ACommand> c : commands.entrySet()){
 			ACommand cmd = c.getValue();
 			if(cmd.checkCmd(command)){
-				event.getChannel().sendTyping().complete();
-				try{
-					String[] args = getArgs(message, prefix);
-					cmd.run(args, event);
-					Logger.print("Command: '" + command + "' by: '" + event.getAuthor().getName() + "' from: '" + event.getGuild().getName() + "' took '" + API.getMs(start) + "'ms");
+				event.getChannel().sendTyping().queue();
+				String[] args = getArgs(message, prefix);
+				if(args == null){
+					cmd.sendError(event.getMessage(), "Please fix your");
+					return;
 				}
-				catch(ArgumentException e){
-					cmd.sendError(event.getMessage(), e.getMessage());
-					Logger.error(e);
-				}
-				return;
+				cmd.run(args, event);
+				Logger.print("Command: '" + command + "' by: '" + event.getAuthor().getName() + "' from: '" + event.getGuild().getName() + "' took '" + API.getMs(start) + "'ms");
 			}
 		}
 	}
@@ -70,7 +67,7 @@ public class CommandManager{
 		return raw.split(" ")[0].replaceFirst(Pattern.quote(prefix), "");
 	}
 	
-	private String[] getArgs(String message, String prefix) throws ArgumentException{
+	private String[] getArgs(String message, String prefix){
 		String command = getCommand(message, prefix);
 		String raw = message.substring(command.length() + 1).trim();
 		boolean b = false;
@@ -82,10 +79,12 @@ public class CommandManager{
 				continue;
 			}
 			else if((s.startsWith("(") && b)){
-				throw new ArgumentException("Missing '(' in: '" + raw + "'\n" + Emotes.WHITESPACE.repeat("Missing '(' in: '".length() + raw.indexOf(s)) + "^");
+				return null;
+				//throw new ArgumentException("Missing '(' in: '" + raw + "'\n" + Emotes.WHITESPACE.repeat("Missing '(' in: '".length() + raw.indexOf(s)) + "^");
 			}
 			else if(s.endsWith(")") && ! b){
-				throw new ArgumentException("Missing ')' in: '" + raw + "'\n" + Emotes.WHITESPACE.repeat("Missing '(' in: '".length() + raw.indexOf(s)) + "^");
+				return null;
+				//throw new ArgumentException("Missing ')' in: '" + raw + "'\n" + Emotes.WHITESPACE.repeat("Missing '(' in: '".length() + raw.indexOf(s)) + "^");
 			}
 			if(s.startsWith("(")){
 				b = true;
@@ -105,7 +104,8 @@ public class CommandManager{
 			}
 		}
 		if(b){
-			throw new ArgumentException("Missing ')' in: '" + raw + "'\n" + Emotes.WHITESPACE.repeat(("Missing '(' in: '").length() + raw.length()) + "^");
+			return null;
+			//throw new ArgumentException("Missing ')' in: '" + raw + "'\n" + Emotes.WHITESPACE.repeat(("Missing '(' in: '").length() + raw.length()) + "^");
 		}
 		return Arrays.copyOf(args.toArray(), args.size(), String[].class);
 	}

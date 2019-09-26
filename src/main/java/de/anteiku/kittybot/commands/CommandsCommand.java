@@ -25,21 +25,43 @@ public class CommandsCommand extends ACommand{
 	}
 	
 	public void nextPage(Message message){
-		String footer = message.getEmbeds().get(0).getFooter().getText();
-		int page = Integer.parseInt(footer.substring(footer.indexOf("Page: ") + 6, footer.indexOf("/"))) + 1;
+		int page = getPageByMessage(message) + 1;
 		if(page <= getMaxPages()){
 			String[] args = {String.valueOf(page)};
 			message.editMessage(buildCommands(args, main.database.getCommandPrefix(message.getGuild().getId()))).queue();
 		}
 	}
 	
-	public void prevPage(Message message){
+	//TODO a lot of refactoring and optimization
+	private int getPageByMessage(Message message){
 		String footer = message.getEmbeds().get(0).getFooter().getText();
-		int page = Integer.parseInt(footer.substring(footer.indexOf("Page: ") + 6, footer.indexOf("/"))) - 1;
-		if(page >= 1){
-			String[] args = {String.valueOf(page)};
-			message.editMessage(buildCommands(args, main.database.getCommandPrefix(message.getGuild().getId()))).queue();
+		return Integer.parseInt(footer.substring(footer.indexOf("Page: ") + 6, footer.indexOf("/")));
+		
+	}
+	
+	private MessageEmbed buildCommands(String[] args, String prefix){
+		int page = 0;
+		if(args.length == 1){
+			page = Integer.parseInt(args[0]) - 1;
 		}
+		else if(args.length != 0){
+			return null;
+		}
+		
+		EmbedBuilder eb = new EmbedBuilder();
+		eb.setColor(Color.CYAN);
+		eb.setDescription("For more specified information use `" + prefix + "<command> ?`");
+		
+		int i = 0;
+		for(Map.Entry<String, ACommand> c : main.commandManager.commands.entrySet()){
+			if((i >= page * PAGECOUNT) && (i < page * PAGECOUNT + PAGECOUNT)){
+				ACommand cmd = c.getValue();
+				eb.addField("**" + prefix + cmd.getCommand() + ":** ", " :small_blue_diamond:" + cmd.getDescription(), false);
+			}
+			i++;
+		}
+		eb.setFooter("Page: " + (page + 1) + "/" + getMaxPages() + " - use reaction to navigate!", "https://cdn.discordapp.com/attachments/576923247652634664/589135880963227730/download.png");
+		return eb.build();
 	}
 	
 	@Override
@@ -55,40 +77,22 @@ public class CommandsCommand extends ACommand{
 		super.reactionAdd(command, event);
 	}
 	
+	public void prevPage(Message message){
+		int page = getPageByMessage(message) - 1;
+		if(page >= 1){
+			String[] args = {String.valueOf(page)};
+			message.editMessage(buildCommands(args, main.database.getCommandPrefix(message.getGuild().getId()))).queue();
+		}
+	}
+	
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
-		Message message = event.getChannel().sendMessage(buildCommands(args, main.database.getCommandPrefix(event.getGuild().getId()))).complete();
+		Message message = sendAnswer(event.getMessage(), buildCommands(args, main.database.getCommandPrefix(event.getGuild().getId())));
 		main.commandManager.addListenerCmd(message, event.getMessage(), this, - 1L);
 		
 		message.addReaction(Emotes.ARROW_LEFT.get()).queue();
 		message.addReaction(Emotes.ARROW_RIGHT.get()).queue();
 		message.addReaction(Emotes.WASTEBASKET.get()).queue();
-	}
-	
-	private MessageEmbed buildCommands(String[] args, String prefix){
-		Map<String, ACommand> commands = main.commandManager.commands;
-		int page = 0;
-		if(args.length == 1){
-			page = Integer.parseInt(args[0]) - 1;
-		}
-		else if(args.length != 0){
-			return null;
-		}
-		
-		EmbedBuilder eb = new EmbedBuilder();
-		eb.setColor(Color.CYAN);
-		eb.setDescription("For more specified information use `" + prefix + "<command> ?`");
-		
-		int i = 0;
-		for(Map.Entry<String, ACommand> c : commands.entrySet()){
-			if((i >= page * PAGECOUNT) && (i < page * PAGECOUNT + PAGECOUNT)){
-				ACommand cmd = c.getValue();
-				eb.addField("**" + prefix + cmd.getCommand() + ":** ", " :small_blue_diamond:" + cmd.getDescription(), false);
-			}
-			i++;
-		}
-		eb.setFooter("Page: " + (page + 1) + "/" + getMaxPages() + " - use reaction to navigate!", "https://cdn.discordapp.com/attachments/576923247652634664/589135880963227730/download.png");
-		return eb.build();
 	}
 	
 	private int getMaxPages(){

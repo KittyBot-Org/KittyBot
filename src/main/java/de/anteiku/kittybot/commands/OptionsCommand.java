@@ -19,6 +19,7 @@ public class OptionsCommand extends ACommand{
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 	
+	//TODO renaming sub-commands & displaying set values
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		if(args.length > 0){

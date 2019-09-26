@@ -1,6 +1,7 @@
 package de.anteiku.kittybot.commands;
 
 import de.anteiku.kittybot.KittyBot;
+import de.anteiku.kittybot.utils.Emotes;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 
 public class QuokkaCommand extends ACommand{
@@ -16,12 +17,7 @@ public class QuokkaCommand extends ACommand{
 	
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
-		try{
-			sendUnsplashImage(event.getMessage(), "quokka");
-		}
-		catch(NullPointerException e){
-			sendError(event.getChannel(), "No quokka found!");
-		}
+		sendUnsplashImage(event.getMessage(), "quokka").addReaction(Emotes.QUOKKA.get()).queue();
 	}
 	
 }

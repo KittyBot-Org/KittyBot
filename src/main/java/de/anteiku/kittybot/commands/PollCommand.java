@@ -29,6 +29,7 @@ public class PollCommand extends ACommand{
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 	
+	//TODO refactoring and fixing some arg stuff
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		if(args[0].equalsIgnoreCase("?") || args[0].equalsIgnoreCase("help") || args.length > 12 || args.length < 5){

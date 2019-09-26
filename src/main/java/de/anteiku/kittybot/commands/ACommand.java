@@ -7,7 +7,10 @@ import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.utils.Emotes;
 import de.anteiku.kittybot.utils.Logger;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.MessageEmbed;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
 import okhttp3.Request;
@@ -71,14 +74,6 @@ public abstract class ACommand{
 			event.getReaction().removeReaction(event.getUser()).queue();
 			sendUsage(event.getChannel());
 		}
-	}
-	
-	protected Message sendPrivate(PrivateChannel channel, String message){
-		EmbedBuilder eb = new EmbedBuilder();
-		eb.setColor(Color.GREEN);
-		eb.setDescription(message);
-		
-		return channel.sendMessage(eb.build()).complete();
 	}
 	
 	protected Message sendPrivate(Message message, MessageEmbed eb){
@@ -170,14 +165,20 @@ public abstract class ACommand{
 			if(mentioned.lastIndexOf(",") != - 1){
 				mentioned.deleteCharAt(mentioned.lastIndexOf(","));
 			}
-			return sendAnswer(event.getMessage(), new EmbedBuilder().setDescription(event.getAuthor().getAsMention() + " " + text + " " + mentioned).setImage(getNeko(type)).build());
+			String url = getNeko(type);
+			if(url == null){
+				return sendError(event.getMessage(), "Unknown error occurred while getting image for `" + type + "`");
+			}
+			return sendAnswer(event.getMessage(), new EmbedBuilder().setDescription(event.getAuthor().getAsMention() + " " + text + " " + mentioned).setImage(url).build());
 		}
 	}
 	
 	protected Message sendImage(TextChannel channel, String url){
-		EmbedBuilder eb = new EmbedBuilder();
-		eb.setImage(url);
-		return sendAnswer(channel, eb.build());
+		return sendAnswer(channel, new EmbedBuilder().setImage(url).setColor(Color.GREEN).build());
+	}
+	
+	protected Message sendImage(Message message, String url){
+		return sendAnswer(message, new EmbedBuilder().setImage(url).setColor(Color.GREEN).build());
 	}
 	
 	protected String getNeko(String type){

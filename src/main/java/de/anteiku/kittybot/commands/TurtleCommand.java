@@ -1,6 +1,7 @@
 package de.anteiku.kittybot.commands;
 
 import de.anteiku.kittybot.KittyBot;
+import de.anteiku.kittybot.utils.Emotes;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 
 public class TurtleCommand extends ACommand{
@@ -16,7 +17,7 @@ public class TurtleCommand extends ACommand{
 	
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
-		sendUnsplashImage(event.getMessage(), "turtle");
+		sendUnsplashImage(event.getMessage(), "turtle").addReaction(Emotes.TURTLE.get()).queue();
 	}
 	
 }

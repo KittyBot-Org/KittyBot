@@ -30,6 +30,7 @@ public class RolesCommand extends ACommand{
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 	
+	//TODO refactoring und fixing arg stuff
 	private Map<Role, String> getRoleEmoteMap(Guild guild){
 		Set<String> roleIds = main.database.getSelfAssignableRoles(guild.getId());
 		Map<Role, String> map = new LinkedHashMap<>();

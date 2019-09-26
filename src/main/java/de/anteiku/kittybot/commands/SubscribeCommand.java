@@ -16,6 +16,7 @@ public class SubscribeCommand extends ACommand{
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 	
+	//TODO everything lmao
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		if(args.length < 2){
