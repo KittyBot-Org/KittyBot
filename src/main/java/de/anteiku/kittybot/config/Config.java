@@ -40,6 +40,7 @@ public class Config{
 		values.put("discord_client_secret", "your discord bot secret");
 		values.put("host", "https://bla.de");
 		values.put("unsplash_client_id", "your unsplash client id");
+		values.put("default_prefix", ".");
 		return values;
 	}
 	

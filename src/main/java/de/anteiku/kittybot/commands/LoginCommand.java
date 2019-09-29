@@ -9,7 +9,7 @@ public class LoginCommand extends ACommand{
 	public static final String COMMAND = "login";
 	public static final String USAGE = "login";
 	public static final String DESCRIPTION = "Used to get the login link for the [webinterface](http://anteiku.de/login)";
-	public static final String[] ALIAS = {"webinterface"};
+	protected static final String[] ALIAS = {"webinterface"};
 	
 	public LoginCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);

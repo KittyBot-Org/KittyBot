@@ -10,7 +10,6 @@ import de.anteiku.kittybot.events.OnGuildMessageReceivedEvent;
 import de.anteiku.kittybot.poll.PollManager;
 import de.anteiku.kittybot.tasks.PollTask;
 import de.anteiku.kittybot.tasks.TaskManager;
-import de.anteiku.kittybot.utils.CommandManager;
 import de.anteiku.kittybot.utils.Logger;
 import de.anteiku.kittybot.webservice.WebService;
 import net.dv8tion.jda.core.JDA;
@@ -26,6 +25,7 @@ public class KittyBot{
 	public final OkHttpClient httpClient;
 	public String unsplashClientId;
 	public String host;
+	public String defaultPrefix;
 	
 	public JDA jda;
 	public Logger logger;
@@ -48,6 +48,7 @@ public class KittyBot{
 		config = new Config("options.cfg");
 		
 		String discordToken = config.get("discord_token");
+		defaultPrefix = config.get("default_prefix");
 		host = config.get("host");
 		unsplashClientId = config.get("unsplash_client_id");
 		if(discordToken.equals("") || unsplashClientId.equals("")){

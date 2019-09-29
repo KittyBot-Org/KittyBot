@@ -1,0 +1,17 @@
+#your bot discord token
+discord_token=Usza8fgzZUdbntzint7nNGNg&n87r23w
+
+#your bot discord id
+discord_client_id=7832785765872
+
+#your bot discord secret
+discord_client_secret=2uix3liuwqxagfhuuimwu
+
+#your website url...
+host=http://anteiku.de
+
+#your unsplash client id...
+unsplash_client_id=13h5487875tv48c497c8498v8df
+
+#your wished default prefix
+default_prefix=.

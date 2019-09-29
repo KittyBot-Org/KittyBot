@@ -1,7 +1,8 @@
-package de.anteiku.kittybot.utils;
+package de.anteiku.kittybot.commands;
 
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.commands.ACommand;
+import de.anteiku.kittybot.utils.API;
+import de.anteiku.kittybot.utils.Logger;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 

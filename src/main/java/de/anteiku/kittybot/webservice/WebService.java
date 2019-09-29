@@ -54,10 +54,10 @@ public class WebService{
 		});
 		path("/guild", () -> {
 			before("", this::checkDiscordLogin);
-			get("", new GuildTemplateRoute(main), new HtmlTemplateEngine());
+			get("", new GuildRoute(main), new HtmlTemplateEngine());
 			path("/:guildId", () -> {
 				before("", this::checkGuildPerms);
-				get("", new GuildTemplateRoute(main), new HtmlTemplateEngine());
+				get("", new GuildRoute(main), new HtmlTemplateEngine());
 				redirect.get("/", "/login");
 				path("/commandprefix", () -> {
 					get("/get", this::getCommandPrefix);

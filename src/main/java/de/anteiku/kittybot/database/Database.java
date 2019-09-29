@@ -47,7 +47,10 @@ public class Database{
 	private RedisCommands<String, String> users;
 	private RedisCommands<String, String> sessions;
 	
+	private KittyBot main;
+	
 	public Database(KittyBot main){
+		this.main = main;
 		try{
 			client = RedisClient.create("redis://localhost:6379");
 			conn = client.connect();
@@ -68,10 +71,10 @@ public class Database{
 			Logger.print("Connection to Redis Server failed!");
 			main.close();
 		}
-		init(main);
+		init();
 	}
 	
-	private void init(KittyBot main){
+	private void init(){
 		for(Guild guild : main.jda.getGuilds()){
 			if(!isGuildRegistered(guild)){
 				registerGuild(guild);
@@ -119,7 +122,7 @@ public class Database{
 	
 	private void registerGuild(String guildId){
 		Logger.print("Registering new guild: '" + guildId + "'");
-		setCommandPrefix(guildId, ".");
+		setCommandPrefix(guildId, main.defaultPrefix);
 		//addSelfAssignableRoles(guildId);
 		setWelcomeChannelId(guildId, "-1");
 		setWelcomeMessage(guildId, "Welcome [username] to this server!");

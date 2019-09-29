@@ -7,11 +7,11 @@ import spark.Request;
 import spark.Response;
 import spark.TemplateViewRoute;
 
-public class GuildTemplateRoute implements TemplateViewRoute{
+public class GuildRoute implements TemplateViewRoute{
 	
 	private KittyBot main;
 	
-	public GuildTemplateRoute(KittyBot main){
+	public GuildRoute(KittyBot main){
 		this.main = main;
 	}
 	
@@ -24,12 +24,15 @@ public class GuildTemplateRoute implements TemplateViewRoute{
 			User user = main.jda.getUserById(main.database.getSession(request.cookie("key")));
 			if(request.pathInfo().equalsIgnoreCase("/guild")){
 				obj.addRegex("template", WebService.readFile("/html/overview-template.html"));
+				obj.addRegex("headertext", "Select Guild");
+				obj.addRegex("title", "Select Guild");
 			}
 			else{
 				String guildId = request.params("guildId");
+				obj.addRegex("title", "Configure: " + main.jda.getGuildById(guildId).getName());
+				obj.addRegex("headertext", "Configure: " + main.jda.getGuildById(guildId).getName());
 				obj.addRegex("template", WebService.readFile("/html/settings-template.html"));
 				obj.addRegex("guildname", main.jda.getGuildById(guildId).getName());
-				obj.addRegex("guildid", guildId);
 				obj.addRegex("guildiconurl", main.jda.getGuildById(guildId).getIconUrl());
 			}
 			obj.addRegex("usericonurl", user.getAvatarUrl());

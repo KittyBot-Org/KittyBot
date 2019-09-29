@@ -1,25 +1,10 @@
 package de.anteiku.kittybot.utils;
 
-import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.entities.TextChannel;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 public class API{
-	
-	public static List<String> toList(List<Role> roles){
-		List<String> list = new ArrayList<>();
-		for(Role role : roles){
-			list.add(role.getId());
-		}
-		return list;
-	}
 	
 	public static String[] toArray(List<Role> roles){
 		String[] list = new String[]{};
@@ -29,28 +14,6 @@ public class API{
 			i++;
 		}
 		return list;
-	}
-	
-	public static String[] toArray(Set<String> list){
-		String[] array = new String[list.size()];
-		int i = 0;
-		for(String string : list){
-			array[i] = string;
-			i++;
-		}
-		return array;
-	}
-	
-	public static List<String> channelsToList(List<TextChannel> channels){
-		List<String> list = new ArrayList<>();
-		for(TextChannel channel : channels){
-			list.add(channel.getId());
-		}
-		return list;
-	}
-	
-	public static List<String> toList(String[] array){
-		return new ArrayList<>(Arrays.asList(array));
 	}
 	
 	public static String[] toArrayy(List<String> list){
@@ -81,40 +44,6 @@ public class API{
 			}
 		}
 		return strings;
-	}
-	
-	public static boolean contains(String string, String[] strings){
-		for(String s : strings){
-			if(s.equalsIgnoreCase(string)){
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public static String getIdByMention(String mention){
-		if((mention.startsWith("<@!")) && (mention.endsWith(">"))){
-			return mention.substring(3, mention.length() - 1);
-		}
-		if((mention.startsWith("<@")) && (mention.endsWith(">"))){
-			return mention.substring(2, mention.length() - 1);
-		}
-		return null;
-	}
-	
-	
-	public static String getNameByUser(Member member){
-		if(member.getNickname() != null){
-			return member.getNickname();
-		}
-		return member.getUser().getName();
-	}
-	
-	public static Message sendTTSMessage(TextChannel channel, String text){
-		MessageBuilder mb = new MessageBuilder();
-		mb.setTTS(true);
-		mb.setContent(text);
-		return channel.sendMessage(mb.build()).complete();
 	}
 	
 	public static String parseDiscordEmoji(int value){
