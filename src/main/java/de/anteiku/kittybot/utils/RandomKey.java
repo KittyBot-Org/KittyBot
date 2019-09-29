@@ -1,7 +1,5 @@
 package de.anteiku.kittybot.utils;
 
-import java.util.Random;
-
 public class RandomKey{
 	
 	private static final String CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -16,9 +14,8 @@ public class RandomKey{
 	
 	public static String generate(int length){
 		StringBuilder builder = new StringBuilder();
-		Random random = new Random();
 		while(length-- != 0){
-			builder.append(CHARS.charAt(random.nextInt() * CHARS.length()));
+			builder.append(CHARS.charAt((int)(Math.random() * CHARS.length())));
 		}
 		return builder.toString();
 	}
