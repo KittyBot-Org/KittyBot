@@ -30,7 +30,7 @@ public class OnGuildMessageReceivedEvent extends ListenerAdapter{
 				EmbedBuilder eb = new EmbedBuilder();
 				eb.setColor(Color.ORANGE);
 				eb.setTitle("Do you need help?");
-				eb.setDescription("If you want to know my prefix it's `" + main.database.getCommandPrefix(event.getGuild().getId()) + "`\nIf you need more help run `.help` or `.commands`" + Emotes.TEAM_KITTY.get());
+				eb.setDescription("Do you want to know what my prefix is?\nIt is `" + main.database.getCommandPrefix(event.getGuild().getId()) + "`\nIf you need more help run `" + main.database.getCommandPrefix(event.getGuild().getId()) + "help` or `" + main.database.getCommandPrefix(event.getGuild().getId()) + "commands`" + Emotes.TEAM_KITTY.get());
 				event.getChannel().sendMessage(eb.build()).complete();
 			}
 		}
