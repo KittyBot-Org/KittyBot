@@ -27,6 +27,11 @@ public abstract class ACommand{
 	protected String description;
 	protected String[] alias;
 	
+	protected Message sendAnswer(Message message, String answer){
+		addStatus(message, Status.OK);
+		return sendAnswer(message.getTextChannel(), answer);
+	}
+	
 	protected ACommand(KittyBot main, String command, String usage, String description, String[] alias){
 		this.main = main;
 		this.command = command;
@@ -76,6 +81,25 @@ public abstract class ACommand{
 		}
 	}
 	
+	protected void addStatus(Message message, Status status){
+		Emotes emote;
+		switch(status){
+			case OK:
+				emote = Emotes.CHECK;
+				break;
+			case ERROR:
+				emote = Emotes.X;
+				break;
+			case QUESTION:
+			default:
+				emote = Emotes.QUESTION;
+				break;
+			
+		}
+		message.addReaction(emote.get()).queue();
+		//TODO delete reaction after like 10seks
+	}
+	
 	protected Message sendPrivate(Message message, MessageEmbed eb){
 		return message.getAuthor().openPrivateChannel().complete().sendMessage(eb).complete();
 	}
@@ -84,9 +108,9 @@ public abstract class ACommand{
 		return message.getAuthor().openPrivateChannel().complete().sendMessage(new EmbedBuilder().setDescription(msg).build()).complete();
 	}
 	
-	protected Message sendAnswer(Message message, String answer){
-		message.addReaction(Emotes.CHECK.get()).queue();
-		return sendAnswer(message.getTextChannel(), answer);
+	protected Message sendAnswer(Message message, String answer, String title){
+		addStatus(message, Status.OK);
+		return sendAnswer(message.getTextChannel(), answer, title);
 	}
 	
 	protected Message sendAnswer(TextChannel channel, String answer){
@@ -96,9 +120,9 @@ public abstract class ACommand{
 		return sendAnswer(channel, eb.build());
 	}
 	
-	protected Message sendAnswer(Message message, String answer, String title){
-		message.addReaction(Emotes.CHECK.get()).queue();
-		return sendAnswer(message.getTextChannel(), answer, title);
+	protected Message sendAnswer(Message message, MessageEmbed answer){
+		addStatus(message, Status.OK);
+		return sendAnswer(message.getTextChannel(), answer);
 	}
 	
 	protected Message sendAnswer(TextChannel channel, String answer, String title){
@@ -109,18 +133,18 @@ public abstract class ACommand{
 		return sendAnswer(channel, eb.build());
 	}
 	
-	protected Message sendAnswer(Message message, MessageEmbed answer){
-		message.addReaction(Emotes.CHECK.get()).queue();
-		return sendAnswer(message.getTextChannel(), answer);
+	public Message sendError(Message message, String error){
+		addStatus(message, Status.ERROR);
+		return sendError(message.getTextChannel(), error);
 	}
 	
 	protected Message sendAnswer(TextChannel channel, MessageEmbed answer){
 		return channel.sendMessage(answer).complete();
 	}
 	
-	public Message sendError(Message message, String error){
-		message.addReaction(Emotes.X.get()).queue();
-		return sendError(message.getTextChannel(), error);
+	protected Message sendUsage(Message message, String usage){
+		addStatus(message, Status.QUESTION);
+		return sendUsage(message.getTextChannel(), usage);
 	}
 	
 	protected Message sendError(TextChannel channel, String error){
@@ -135,9 +159,8 @@ public abstract class ACommand{
 		return sendUsage(message.getTextChannel(), usage);
 	}
 	
-	protected Message sendUsage(Message message, String usage){
-		message.addReaction(Emotes.QUESTION.get()).queue();
-		return sendUsage(message.getTextChannel(), usage);
+	protected enum Status{
+		OK, ERROR, QUESTION
 	}
 	
 	protected Message sendUsage(TextChannel channel){

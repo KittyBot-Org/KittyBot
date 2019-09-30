@@ -1,5 +1,46 @@
 @charset "UTF-8";
 
+@media all and (min-width: 46em){
+	.other{
+		width: 25%;
+	}
+}
+
+@media all and (max-width: 46em){
+	.other{
+		width: 100%;
+	}
+}
+//TODO jedes 2. unterschiedliche Farbe
+//TODO swipe to left/right to circle between features
+//TODO scroll back to top button(right bottom corner)
+//TODO footer with some information
+.box{
+	width: 100%;
+	display: flex;
+	flex-wrap: test;
+	justify-content: center;
+	align-items: center;
+
+}
+.other{
+	text-wrap: bla;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 * {
 	box-sizing: border-box
 }
