@@ -18,6 +18,7 @@ import okhttp3.Request;
 import java.awt.*;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public abstract class ACommand{
 	
@@ -38,6 +39,24 @@ public abstract class ACommand{
 		this.usage = usage;
 		this.description = description;
 		this.alias = alias;
+	}
+	
+	protected void addStatus(Message message, Status status){
+		Emotes emote;
+		switch(status){
+			case OK:
+				emote = Emotes.CHECK;
+				break;
+			case ERROR:
+				emote = Emotes.X;
+				break;
+			case QUESTION:
+			default:
+				emote = Emotes.QUESTION;
+				break;
+		}
+		message.addReaction(emote.get()).queue();
+		message.getTextChannel().removeReactionById(message.getId(), emote.get()).queueAfter(5, TimeUnit.SECONDS);
 	}
 	
 	public abstract void run(String[] args, GuildMessageReceivedEvent event);
@@ -81,23 +100,8 @@ public abstract class ACommand{
 		}
 	}
 	
-	protected void addStatus(Message message, Status status){
-		Emotes emote;
-		switch(status){
-			case OK:
-				emote = Emotes.CHECK;
-				break;
-			case ERROR:
-				emote = Emotes.X;
-				break;
-			case QUESTION:
-			default:
-				emote = Emotes.QUESTION;
-				break;
-			
-		}
-		message.addReaction(emote.get()).queue();
-		//TODO delete reaction after like 10seks
+	protected enum Status{
+		OK, ERROR, QUESTION
 	}
 	
 	protected Message sendPrivate(Message message, MessageEmbed eb){
@@ -157,10 +161,6 @@ public abstract class ACommand{
 	
 	protected Message sendUsage(Message message){
 		return sendUsage(message.getTextChannel(), usage);
-	}
-	
-	protected enum Status{
-		OK, ERROR, QUESTION
 	}
 	
 	protected Message sendUsage(TextChannel channel){

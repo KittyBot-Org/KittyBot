@@ -1,0 +1,137 @@
+@b-bg: #3c3c3c;
+@b-fc: #ffffff;
+@b-bc: darken(@b-bg, 10%);
+
+@button-dark: #212121;
+@button: lighten(@button-dark, 5%);
+
+@discord: #7289DA;
+@discord-dark: darken(@discord, 5%);
+
+@media all and (min-width: 50em){
+	.container-box{
+		max-width: 25%;
+	}
+	#body{
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+	}
+
+}
+@media all and (min-width: 30em) and (max-width: 50em){
+	#body{
+		display: grid;
+		grid-template-columns: 50% 50%;
+		grid-template-rows: auto auto;
+		align-items: stretch;
+		justify-items: stretch;
+	}
+
+}
+@media all and (max-width: 30em){
+	.container-box{
+		max-width: 100%;
+	}
+	#body{
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+}
+
+#header{
+	flex-direction: column;
+}
+
+.container{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	padding: 0.5em;
+	&-header{
+		width: 100%;
+		text-align: center;
+		& h1{
+			font-size: 4em;
+			margin: 0;
+		}
+		& img{
+			display: inline;
+		}
+		& p{
+			margin-top: 0;
+			font-size: 1.5em;
+		}
+	}
+	&-box{
+		border: 2px @b-bc solid;
+		border-radius: 1em;
+		padding: 0.5em;
+		margin: 0.5em;
+		text-align: center;
+		&-label{
+			font-weight: bold;
+		}
+		&-content{
+			& a{
+				text-decoration: none;
+				& button{
+					padding: 0.5em;
+					border: 2px @button-dark;
+					border-radius: 1em;
+					background-color: @button;
+					color: @b-fc;
+					font-size: 1.5em;
+					font-weight: bold;
+					&:hover{
+						background-color: @button-dark;
+						transition: background-color 0.3s;
+						cursor: pointer;
+					}
+				}
+			}
+		}
+	}
+}
+
+#discord{
+	display: inline-block;
+	text-decoration: none;
+	& button{
+		display: flex;
+		align-items: center;
+		border: 3px @discord-dark solid;
+		border-radius: 2em;
+		padding: 0.5em;
+		background-color: @discord;
+		color: @b-fc;
+		font-size: 1.5em;
+		font-weight: bold;
+		&:hover{
+			background-color: @discord-dark;
+			transition: background-color 0.3s;
+			cursor: pointer;
+		}
+		& img{
+			width: 2em;
+		}
+	}
+}
+
+html, body{
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	color: @b-fc;
+	font-size: 1em;
+	font-family: 'Roboto', sans-serif;
+	background-color: @b-bg;
+}
+
+* {
+	box-sizing: border-box
+}
