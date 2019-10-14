@@ -15,7 +15,6 @@ import java.util.*;
 public class Database{
 	
 	private static final String SEP = ":";
-	private static final long TIMEOUT = 30 * 60000L;
 	
 	private static class GUILD{
 		static final String COMMANDPREFIX = "command_prefix";

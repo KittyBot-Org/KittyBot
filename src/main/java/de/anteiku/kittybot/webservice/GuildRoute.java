@@ -29,8 +29,8 @@ public class GuildRoute implements TemplateViewRoute{
 			}
 			else{
 				String guildId = request.params("guildId");
-				obj.addRegex("title", "Configure: " + main.jda.getGuildById(guildId).getName());
-				obj.addRegex("headertext", "Configure: " + main.jda.getGuildById(guildId).getName());
+				obj.addRegex("title", main.jda.getGuildById(guildId).getName());
+				obj.addRegex("headertext", main.jda.getGuildById(guildId).getName());
 				obj.addRegex("template", WebService.readFile("/html/settings-template.html"));
 				obj.addRegex("guildname", main.jda.getGuildById(guildId).getName());
 				obj.addRegex("guildiconurl", main.jda.getGuildById(guildId).getIconUrl());
@@ -42,7 +42,7 @@ public class GuildRoute implements TemplateViewRoute{
 		}
 		else{
 			response.redirect("/");
-			model = new ModelAndView(new WebService.HtmlObject(response.body()), "login.html");
+			model = new ModelAndView(new WebService.HtmlObject(response.body()), "guild.html");
 		}
 		
 		return model;
