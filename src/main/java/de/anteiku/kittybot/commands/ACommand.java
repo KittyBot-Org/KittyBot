@@ -232,8 +232,7 @@ public abstract class ACommand{
 	protected Message sendLocalImage(Message message, String image){
 		try{
 			Request request = new Request.Builder().url("http://anteiku.de:9000/" + image).build();
-			JsonParser jp = new JsonParser();
-			String url = jp.parse(main.httpClient.newCall(request).execute().body().string()).getAsJsonObject().get("urls").getAsJsonObject().get("regular").getAsString();
+			String url = main.httpClient.newCall(request).execute().body().string();
 			return sendImage(message.getTextChannel(), url);
 		}
 		catch(IOException e){
