@@ -7,13 +7,13 @@ import java.util.List;
 public class API{
 	
 	public static String[] toArray(List<Role> roles){
-		String[] list = new String[]{};
+		String[] array = new String[roles.size()];
 		int i = 0;
 		for(Role role : roles){
-			list[i] = role.getId();
+			array[i] = role.getId();
 			i++;
 		}
-		return list;
+		return array;
 	}
 	
 	public static String[] toArrayy(List<String> list){

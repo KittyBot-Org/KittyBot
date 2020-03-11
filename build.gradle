@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'de.anteiku'
-version '2.4.2'
+version '2.5'
 
 mainClassName = 'de.anteiku.kittybot.KittyBot'
 compileJava.options.encoding = 'UTF-8'

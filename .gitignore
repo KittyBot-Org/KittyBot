@@ -1,13 +1,9 @@
-options.cfg
 build/
 .gradle/
 .idea/
 logs/
 .history
-
-.DS_Store
-node_modules
-/dist
+options.cfg
 
 # local env files
 .env.local
