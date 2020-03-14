@@ -17,8 +17,8 @@ public class Database{
     
     public Database(KittyBot main){
         this.main = main;
-        this.sql = SQL.newInstance("localhost", "3306", "root", "");
-        sql.use("kittybot");
+        this.sql = SQL.newInstance(main.config.get("mysql_host"), main.config.get("mysql_port"), main.config.get("mysql_user"), main.config.get("mysql_password"));
+        sql.use(main.config.get("mysql_db"));
         sql.execute("CREATE TABLE IF NOT EXISTS `guilds` (\n" + "`id` varchar(18) NOT NULL PRIMARY KEY,\n" + "`command_prefix` varchar(1) NOT NULL,\n" + "`request_channel_id` varchar(18) NOT NULL,\n" + "`requests_enabled` tinyint(1) NOT NULL,\n" + "`welcome_channel_id` varchar(18) NOT NULL,\n" + "`welcome_message` text NOT NULL,\n" + "`welcome_message_enabled` tinyint(1) NOT NULL,\n" + "`nsfw_enabled` tinyint(1) NOT NULL\n" + ")");
         sql.execute("CREATE TABLE IF NOT EXISTS `self_assignable_roles` (\n" + "`id` varchar(18) NOT NULL,\n" + "`guild_id` varchar(18) NOT NULL,\n" + "`emote_id` varchar(18) NOT NULL\n)");
         //sql.execute("CREATE TABLE IF NOT EXISTS `polls` (\n" + "`id` varchar(18) NOT NULL PRIMARY KEY,\n" + "`guild_id` varchar(18) NOT NULL,\n" + "`channel_id` varchar(18) NOT NULL,\n" + "`title` text NOT NULL,\n" + "`created_by` varchar(18) NOT NULL,\n" + "`created_at` timestamp NOT NULL DEFAULT current_timestamp(),\n" + "`goes_until` timestamp NOT NULL DEFAULT current_timestamp()\n" + ")");

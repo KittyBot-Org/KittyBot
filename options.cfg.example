@@ -10,6 +10,12 @@ discord_client_secret=2uix3liuwqxagfhuuimwu
 #your discord id to send logs/errors
 admin_discord_id=170939974227591168
 
+mysql_host=localhost
+mysql_port=3306
+mysql_db=kittybot
+mysql_user=root
+mysql_password=
+
 #your website url...
 host=http://anteiku.de
 
