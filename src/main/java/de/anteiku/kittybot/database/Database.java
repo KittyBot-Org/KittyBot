@@ -1,284 +1,211 @@
 package de.anteiku.kittybot.database;
 
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.poll.Poll;
-import de.anteiku.kittybot.utils.API;
 import de.anteiku.kittybot.utils.Logger;
 import de.anteiku.kittybot.utils.RandomKey;
+import de.anteiku.kittybot.utils.ValuePair;
 import net.dv8tion.jda.core.entities.Guild;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-public class Database {
-
+public class Database{
+    
     private SQL sql;
     private KittyBot main;
-
-    public Database(KittyBot main) {
+    
+    public Database(KittyBot main){
         this.main = main;
-        this.sql = SQL.newInstance("localhost", "3306", "root", "", "kittybot");
-        sql.execute("CREATE TABLE IF NOT EXISTS `guilds` (\n" +
-                "`id` varchar(18) NOT NULL PRIMARY KEY,\n" +
-                "`command_prefix` varchar(1) NOT NULL,\n" +
-                "`welcome_channel` varchar(18) NOT NULL,\n" +
-                "`welcome_message` text NOT NULL,\n" +
-                "`welcome_message_enabled` tinyint(1) NOT NULL,\n" +
-                "`nsfw_enabled` tinyint(1) NOT NULL\n" +
-                ")");
-        sql.execute("CREATE TABLE IF NOT EXISTS `polls` (\n" +
-                "`id` varchar(18) NOT NULL PRIMARY KEY,\n" +
-                "`guild_id` varchar(18) NOT NULL,\n" +
-                "`channel_id` varchar(18) NOT NULL,\n" +
-                "`title` text NOT NULL,\n" +
-                "`created_by` varchar(18) NOT NULL,\n" +
-                "`created_at` timestamp NOT NULL DEFAULT current_timestamp(),\n" +
-                "`goes_until` timestamp NOT NULL DEFAULT current_timestamp()\n" +
-                ")");
-        sql.execute("CREATE TABLE IF NOT EXISTS `poll_answers` (\n" +
-                "`id` varchar(18) NOT NULL PRIMARY KEY,\n" +
-                "`answer` text NOT NULL\n" +
-                ")");
-        sql.execute("CREATE TABLE IF NOT EXISTS `poll_votes` (\n" +
-                "`id` varchar(18) NOT NULL PRIMARY KEY,\n" +
-                "`created_by` varchar(18) NOT NULL,\n" +
-                "`created_at` timestamp NOT NULL DEFAULT current_timestamp(),\n" +
-                "`value` varchar(18) NOT NULL\n" +
-                ")");
-        sql.execute("CREATE TABLE IF NOT EXISTS `sessions` (\n" +
-                "`id` varchar(18) NOT NULL PRIMARY KEY,\n" +
-                "`user_id` varchar(18) NOT NULL\n" +
-                ")");
+        this.sql = SQL.newInstance("localhost", "3306", "root", "");
+        sql.use("kittybot");
+        sql.execute("CREATE TABLE IF NOT EXISTS `guilds` (\n" + "`id` varchar(18) NOT NULL PRIMARY KEY,\n" + "`command_prefix` varchar(1) NOT NULL,\n" + "`request_channel_id` varchar(18) NOT NULL,\n" + "`requests_enabled` tinyint(1) NOT NULL,\n" + "`welcome_channel_id` varchar(18) NOT NULL,\n" + "`welcome_message` text NOT NULL,\n" + "`welcome_message_enabled` tinyint(1) NOT NULL,\n" + "`nsfw_enabled` tinyint(1) NOT NULL\n" + ")");
+        sql.execute("CREATE TABLE IF NOT EXISTS `self_assignable_roles` (\n" + "`id` varchar(18) NOT NULL,\n" + "`guild_id` varchar(18) NOT NULL,\n" + "`emote_id` varchar(18) NOT NULL\n)");
+        //sql.execute("CREATE TABLE IF NOT EXISTS `polls` (\n" + "`id` varchar(18) NOT NULL PRIMARY KEY,\n" + "`guild_id` varchar(18) NOT NULL,\n" + "`channel_id` varchar(18) NOT NULL,\n" + "`title` text NOT NULL,\n" + "`created_by` varchar(18) NOT NULL,\n" + "`created_at` timestamp NOT NULL DEFAULT current_timestamp(),\n" + "`goes_until` timestamp NOT NULL DEFAULT current_timestamp()\n" + ")");
+        //sql.execute("CREATE TABLE IF NOT EXISTS `poll_answers` (\n" + "`id` varchar(18) NOT NULL PRIMARY KEY,\n" + "`answer` text NOT NULL\n" + ")");
+        //sql.execute("CREATE TABLE IF NOT EXISTS `poll_votes` (\n" + "`id` varchar(18) NOT NULL PRIMARY KEY,\n" + "`created_by` varchar(18) NOT NULL,\n" + "`created_at` timestamp NOT NULL DEFAULT current_timestamp(),\n" + "`value` varchar(18) NOT NULL\n" + ")");
+        sql.execute("CREATE TABLE IF NOT EXISTS `sessions` (\n" + "`id` varchar(18) NOT NULL PRIMARY KEY,\n" + "`user_id` varchar(18) NOT NULL\n" + ")");
+        init();
     }
-
-    private void init() {
-		for (Guild guild : main.jda.getGuilds()) {
-			if (!isGuildRegistered(guild)) {
-				registerGuild(guild);
-			}
-		}
-	}
-
-    public void close() {
-		Logger.print("Closing connection to database...");
-		sql.close();
-	}
-
-    public void setUserToken(String userId, String token) {
-        sql.execute("INSERT INTO `sessions` (id, user_id) VALUES (" + token + ", " + userId + ")");
+    
+    private void init(){
+        for(Guild guild : main.jda.getGuilds()){
+            if(! isGuildRegistered(guild)){
+                registerGuild(guild);
+            }
+        }
     }
-
-    public String getUserToken(String userId) {
-		try {
-			return sql.query("SELECT * FROM `sessions` WHERE `id` = '" + userId + "'").getString("id");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
+    
+    public void close(){
+        Logger.print("Closing connection to database...");
+        sql.close();
+    }
+    
     /*
      * Guild specified methods
      */
-
-    private boolean isGuildRegistered(Guild guild) {
-		return sql.exists("SELECT FROM `guilds` WHERE `id` = '" + guild.getId() + "'");
-	}
-
-    private void registerGuild(Guild guild) {
-        registerGuild(guild.getId());
+    
+    private boolean isGuildRegistered(Guild guild){
+        return sql.exists("SELECT * FROM `guilds` WHERE `id` = '" + guild.getId() + "'");
     }
-
-    private void registerGuild(String guildId) {
-        Logger.print("Registering new guild: '" + guildId + "'");
-        setCommandPrefix(guildId, main.defaultPrefix);
-        //addSelfAssignableRoles(guildId);
-        setWelcomeChannelId(guildId, "-1");
-        setWelcomeMessage(guildId, "Welcome [username] to this server!");
-        set(guildId, GUILD.WELCOMEMESSAGEENABLED, "false");
-        set(guildId, GUILD.NSFWENABLED, "true");
+    
+    
+    private boolean registerGuild(Guild guild){
+        Logger.print("Registering new guild: '" + guild.getId() + "'");
+        return sql.execute("INSERT INTO `guilds` (id, command_prefix, request_channel_id, requests_enabled, welcome_channel_id, welcome_message, welcome_message_enabled, nsfw_enabled) " + "VALUES ('" + guild.getId() + "', '" + main.defaultPrefix + "', '-1', 0, '" + guild.getDefaultChannel().getId() + "', 'Welcome [username] to this server!', 1, 1)");
     }
-
-    private String get(String guildId, String key) {
-        return guilds.get(guildId + SEP + key);
-    }
-
-    private Set<String> getSet(String guildId, String key) {
-        return guilds.smembers(guildId + SEP + key);
-    }
-
-    private void set(String guildId, String key, String value) {
-        guilds.set(guildId + SEP + key, value);
-    }
-
-    private void add(String guildId, String key, String... value) {
-        guilds.sadd(guildId + SEP + key, value);
-    }
-
-    private void remove(String guildId, String key, String... value) {
-        guilds.srem(guildId + SEP + key, value);
-    }
-
-    public String getCommandPrefix(String guildId) {
-        return get(guildId, GUILD.COMMANDPREFIX);
-    }
-
-    public void setCommandPrefix(String guildId, String prefix) {
-        set(guildId, GUILD.COMMANDPREFIX, prefix);
-    }
-
-    public Set<String> getSelfAssignableRoles(String guildId) {
-        return getSet(guildId, GUILD.SELFASSIGNABLEROLES);
-    }
-
-    public void addSelfAssignableRoles(String guildId, String... roleId) {
-        add(guildId, GUILD.SELFASSIGNABLEROLES, roleId);
-    }
-
-    public void removeSelfAssignableRoles(String guildId, String... roleId) {
-        remove(guildId, GUILD.SELFASSIGNABLEROLES, roleId);
-    }
-
-    public String getWelcomeChannelId(String guildId) {
-        return get(guildId, GUILD.WELCOMECHANNELID);
-    }
-
-    public void setWelcomeChannelId(String guildId, String channelId) {
-        set(guildId, GUILD.WELCOMECHANNELID, channelId);
-    }
-
-    public String getWelcomeMessage(String guildId) {
-        return get(guildId, GUILD.WELCOMEMESSAGE);
-    }
-
-    public boolean getWelcomeMessageEnabled(String guildId) {
-        return Boolean.parseBoolean(get(guildId, GUILD.WELCOMEMESSAGEENABLED));
-    }
-
-    public void setWelcomeMessageEnabled(String guildId, boolean enabled) {
-        set(guildId, GUILD.WELCOMEMESSAGEENABLED, String.valueOf(enabled));
-    }
-
-    public boolean getNSFWEnabled(String guildId) {
-        return Boolean.parseBoolean(get(guildId, GUILD.NSFWENABLED));
-    }
-
-    public void setNSFWEnabled(String guildId, boolean enabled) {
-        set(guildId, GUILD.NSFWENABLED, String.valueOf(enabled));
-    }
-
-    public void setWelcomeMessage(String guildId, String message) {
-        set(guildId, GUILD.WELCOMEMESSAGE, message);
-    }
-
-    /*
-     * Poll specified methods
-     */
-
-    public String newPollId() {
-        String value = polls.get(POLL.UNIQUE_ID);
-        int id;
-        if (value == null) {
-            id = 0;
-        } else {
-            id = Integer.parseInt(value);
-            id++;
+    
+    private Map<String, String> get(String guildId, String... keys){
+        Map<String, String> map = new HashMap<>();
+        ResultSet result = sql.query("SELECT " + String.join(", ", keys) + " FROM `guilds` WHERE `id` = '" + guildId + "'");
+        try{
+            if(result.absolute(1)){
+                for(String key : keys){
+                    map.put(key, result.getString(key));
+                }
+                return map;
+            }
         }
-        polls.set(POLL.UNIQUE_ID, String.valueOf(id));
-        return String.valueOf(id);
+        catch(SQLException e){
+            Logger.error(e);
+        }
+        return null;
     }
-
-    public String getFromPolls(String pollId, String key) {
-        return polls.get(pollId + SEP + key);
+    
+    private String get(String guildId, String key){
+        ResultSet result = sql.query("SELECT " + key + " FROM `guilds` WHERE `id` = '" + guildId + "'");
+        try{
+            if(result.absolute(1)){
+                return result.getString(key);
+            }
+        }
+        catch(SQLException e){
+            Logger.error(e);
+        }
+        return null;
     }
-
-    private Set<String> getPollsSet(String pollId, String key) {
-        return polls.smembers(pollId + SEP + key);
+    
+    private boolean set(String guildId, String key, String value) {
+        return sql.execute("UPDATE `guilds` SET `" + key + "`='" + value + "' WHERE `id` = '" + guildId + "'");
     }
-
-    private void setFromPoll(String pollId, String key, String value) {
-        polls.set(pollId + SEP + key, value);
+    
+    private boolean set(String guildId, String key, int value) {
+        return sql.execute("UPDATE `guilds` SET `" + key + "`=" + value + "' WHERE `id` = '" + guildId + "'");
     }
-
-    private void setSet(String pollId, String key, String[] value) {
-        if (value.length > 0) {
-            polls.sadd(pollId + SEP + key, value);
+    
+    public String getCommandPrefix(String guildId){
+        return get(guildId, "command_prefix");
+    }
+    
+    public void setCommandPrefix(String guildId, String prefix){
+        set(guildId, "command_prefix", prefix);
+    }
+    
+    public Set<ValuePair<String, String>> getSelfAssignableRoles(String guildId){
+        String[] keys = {"id", "guild_id", "emote_id"};
+        Set<ValuePair<String, String>> set = new HashSet<>();
+        ResultSet result = sql.query("SELECT " + String.join(", ", keys) + " FROM `self_assignable_roles` WHERE `guild_id` = '" + guildId + "'");
+        try{
+            while(result.next()){
+                set.add(new ValuePair<>(result.getString("id"), result.getString("emote_id")));
+            }
+            return set;
+        }
+        catch(SQLException e){
+            Logger.error(e);
+        }
+        return null;
+    }
+    
+    public void addSelfAssignableRoles(String guildId, Map<String, String> roles){
+        for(Map.Entry<String, String> role : roles.entrySet()) {
+            sql.execute("INSERT INTO `self_assignable_roles` (id, guild_id, emote_id) VALUES ('" + role.getKey() + "', '" + guildId + "', '" + role.getValue() + "')");
         }
     }
-
-    public Map<String, Poll> getPolls(String guildId) {
-        Map<String, Poll> polls = new HashMap<>();
-        for (String p : getSet(guildId, GUILD.POLLS)) {
-            polls.put(p, getPoll(p));
-        }
-        return polls;
+    
+    public void addSelfAssignableRole(String guildId, String role, String emote){
+        addSelfAssignableRoles(guildId, new HashMap<>(Collections.singletonMap(role, emote)));
     }
-
-    public Poll getPoll(String pollId) {
-        Map<String, List<String>> map = new LinkedHashMap<>();
-        for (String a : getPollsSet(pollId, POLL.ANSWERS)) {
-            map.put(a, new ArrayList<>(getSet(pollId, a)));
-        }
-        return new Poll(
-                getFromPolls(pollId, POLL.CHANNEL_ID),
-                getFromPolls(pollId, pollId),
-                getFromPolls(pollId, POLL.GUILD_ID),
-                getFromPolls(pollId, POLL.TOPIC),
-                Boolean.parseBoolean(getFromPolls(pollId, POLL.CLOSED)),
-                map,
-                Long.parseLong(getFromPolls(pollId, POLL.CREATION_TIME)),
-                Long.parseLong(getFromPolls(pollId, POLL.END_TIME))
-        );
-    }
-
-    public void setPoll(Poll poll) {
-        add(GUILD.POLLS, poll.getId());
-        setFromPoll(poll.getId(), POLL.CHANNEL_ID, poll.getChannelId());
-        setFromPoll(poll.getId(), POLL.GUILD_ID, poll.getChannelId());
-        setFromPoll(poll.getId(), POLL.CLOSED, String.valueOf(poll.isClosed()));
-        setFromPoll(poll.getId(), POLL.CREATION_TIME, String.valueOf(poll.getCreationTime()));
-        setFromPoll(poll.getId(), POLL.END_TIME, String.valueOf(poll.getEndTime()));
-        setFromPoll(poll.getId(), POLL.TOPIC, poll.getTopic());
-        for (Map.Entry<String, List<String>> a : poll.getVotes().entrySet()) {
-            setSet(poll.getId(), a.getKey(), API.toArrayy(a.getValue()));
+    
+    public void removeSelfAssignableRoles(String guildId,  Set<String> roles){
+        for(String role : roles) {
+            sql.execute("DELETE FROM `self_assignable_roles` WHERE `id` = '" + role + "' and `guild_id` = '" + guildId + "'");
         }
     }
-
-    public void deletePolls() {
-	/*	for(Guild g : main.jda.getGuilds()){
-			guilds.srem(g.getId() + SEP + GUILD.POLLS, API.toArray(getSet(g.getId(), GUILD.POLLS)));
-		} */
-        polls.flushdb();
-        polls.save();
+    
+    public void removeSelfAssignableRole(String guildId,  String role){
+        removeSelfAssignableRoles(guildId, new HashSet<>(Collections.singleton(role)));
     }
-
+    
+    public String getWelcomeChannelId(String guildId){
+        return get(guildId, "welcome_channel_id");
+    }
+    
+    public void setWelcomeChannelId(String guildId, String channelId){
+        set(guildId, "welcome_channel_id", channelId);
+    }
+    
+    public String getWelcomeMessage(String guildId){
+        return get(guildId, "welcome_message");
+    }
+    
+    public void setWelcomeMessage(String guildId, String message){
+        set(guildId, "welcome_message", message);
+    }
+    
+    public boolean getWelcomeMessageEnabled(String guildId){
+        return Boolean.getBoolean(get(guildId, "welcome_message_enabled"));
+    }
+    
+    public void setWelcomeMessageEnabled(String guildId, boolean enabled){
+        set(guildId, "welcome_message_enabled", enabled ? 1 : 0);
+    }
+    
+    public boolean getNSFWEnabled(String guildId){
+        return Boolean.getBoolean(get(guildId, "nsfw_enabled"));
+    }
+    
+    public void setNSFWEnabled(String guildId, boolean enabled){
+        set(guildId, "nsfw_enabled", enabled ? 1 : 0);
+    }
+    
     /*
      * Session specified methods
      */
-
-    public boolean sessionExists(String key) {
-        return sessions.exists(key) > 0;
+    
+    public boolean sessionExists(String key){
+        return sql.exists("SELECT * from `sessions` WHERE `id` = '" + key + "'");
     }
-
-    private String generateUniqueKey() {
+    
+    private String generateUniqueKey(){
         String key = RandomKey.generate(32);
-        while (sessionExists(key)) {
+        while(sessionExists(key)){
             key = RandomKey.generate(32);
         }
         return key;
     }
-
-    public String addSession(String userId) {
+    
+    public String addSession(String userId){
         String key = generateUniqueKey();
-        sessions.set(key, userId);
+        sql.query("INSERT INTO `sessions` (id, user_id) VALUES ('" + key + "', '" + userId + "')");
         return key;
     }
-
-    public void deleteSession(String key) {
-        sessions.del(key);
+    
+    public void deleteSession(String key){
+        sql.query("DELETE FROM `sessions` WHERE `id` = '" + key + "'");
     }
-
-    public String getSession(String key) {
-        return sessions.get(key);
+    
+    public String getSession(String key){
+        ResultSet result = sql.query("SELECT * from `sessions` WHERE `id` = '" + key + "'");
+        try{
+            if(result.absolute(1)){
+                return result.getString("user_id");
+            }
+        }
+        catch(SQLException e){
+            Logger.error(e);
+        }
+        return null;
     }
-
+    
 }

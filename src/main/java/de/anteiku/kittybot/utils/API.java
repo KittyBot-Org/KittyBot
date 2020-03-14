@@ -1,8 +1,9 @@
 package de.anteiku.kittybot.utils;
 
+import net.dv8tion.jda.core.entities.Emote;
 import net.dv8tion.jda.core.entities.Role;
 
-import java.util.List;
+import java.util.*;
 
 public class API{
 	
@@ -15,6 +16,28 @@ public class API{
 		}
 		return array;
 	}
+	
+	public static Set<String> toSet(List<Role> roles){
+		Set<String> set = new HashSet<>();
+		for(Role role : roles){
+			set.add(role.getId());
+		}
+		return set;
+	}
+	
+	public static Map<String, String> toMap(List<Role> roles, List<Emote> emotes) {
+		Map<String, String> map = new HashMap<>();
+		int i = 0;
+		for(Role role : roles) {
+			if(emotes.size() <= i) {
+				break;
+			}
+			map.put(role.getId(), emotes.get(i).getId());
+			i++;
+		}
+		return map;
+	}
+	
 	
 	public static String[] toArrayy(List<String> list){
 		String[] array = new String[list.size()];

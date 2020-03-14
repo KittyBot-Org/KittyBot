@@ -6,36 +6,36 @@ import java.sql.*;
 
 public class SQL {
 
-    public static final String VARCHAR = "VARCHAR";
-    public static final String BOOLEAN = "TINYINT";
-
-    public static final String NOT_NULL = "NO NULL";
-    public static final String PRIMARY_KEY = "PRIMARY KEY";
-
     private Connection conn;
 
-    public static SQL newInstance(String host, String port, String user, String password,String db) {
-        return new SQL(host, port, user, password, db);
+    public static SQL newInstance(String host, String port, String user, String password) {
+        return new SQL(host, port, user, password);
     }
 
-    public SQL(String host, String port, String user, String password,String db) {
-        this.conn = init(host, port, user, password, db);
+    public SQL(String host, String port, String user, String password) {
+        this.conn = init(host, port, user, password);
     }
 
-    private Connection init(String host, String port, String user, String password,String db) {
+    private Connection init(String host, String port, String user, String password) {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            return DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + db + "", user, password);
+            return DriverManager.getConnection("jdbc:mysql://" + host + ":" + port, user, password);
         }
         catch (Exception e) {
+            Logger.debug("error here");
             Logger.error(e);
         }
         return null;
+    }
+    
+    public void use(String db) {
+        execute("CREATE DATABASE IF NOT EXISTS " + db + "");
+        execute("USE `" + db + "`");
     }
 
     public boolean execute(String query) {
         try {
             Statement statement = this.conn.createStatement();
+            Logger.print(query);
             return statement.execute(query);
         } catch (SQLException e) {
             Logger.error(e);

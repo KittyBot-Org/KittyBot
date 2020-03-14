@@ -2,8 +2,8 @@ package de.anteiku.kittybot.webservice;
 
 import bell.oauth.discord.main.OAuthBuilder;
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.poll.Poll;
 import de.anteiku.kittybot.utils.Logger;
+import de.anteiku.kittybot.utils.ValuePair;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import spark.ModelAndView;
@@ -14,10 +14,7 @@ import spark.TemplateEngine;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static spark.Spark.*;
 
@@ -40,12 +37,6 @@ public class WebService{
 		get("/logout", new LogoutRoute(main), new HtmlTemplateEngine());
 		redirect.get("/guild/", "/guild");
 		
-		path("/poll", () -> {
-			path("/:pollId", () -> {
-				get("/get", this::getPoll);
-			});
-		});
-		
 		path("/user", () -> {
 			before("", this::checkDiscordLogin);
 			path("/me", ()->{
@@ -66,9 +57,6 @@ public class WebService{
 				});
 				path("/roles", () -> {
 					get("/get", this::getAllRoles);
-				});
-				path("/polls", () -> {
-					get("/get", this::getAllPolls);
 				});
 				path("/icon", () -> {
 					get("/get", this::getIcon);
@@ -139,35 +127,6 @@ public class WebService{
 		return main.jda.getGuildById(request.params(":guildId")).getIconUrl();
 	}
 	
-	private String getAllPolls(Request request, Response response){
-		StringBuilder json = new StringBuilder("{\"polls\": [");
-		User user = main.jda.retrieveUserById(request.cookie("user_id")).complete();
-		for(Guild guild : main.jda.getMutualGuilds(user)){
-			json.append("\"").append(guild.getId()).append("\":[");
-			for(Map.Entry<String, Poll> p : main.database.getPolls(guild.getId()).entrySet()){
-				Poll poll = p.getValue();
-				json.append("{\"id\": \"").append(poll.getId()).append("\", \"topic\": \"").append(poll.getTopic()).append("\", \"iconurl\": \"").append(guild.getIconUrl()).append("\"}, ");
-			}
-		}
-		json.append("]}");
-		if(json.lastIndexOf(",") != -1){
-			json.deleteCharAt(json.lastIndexOf(","));
-		}
-		return json.toString();
-	}
-	
-	private String getPoll(Request request, Response response){
-		StringBuilder json = new StringBuilder("{\"poll\": {");
-		Poll poll = main.database.getPoll(request.params(":pollId:"));
-		json.append("{\"id\": \"").append(poll.getId()).append("\", \"topic\": \"").append(poll.getTopic()).append("\", \"iconurl\": \"").append(" ").append("\"}");
-		
-		json.append("}}");
-		if(json.lastIndexOf(",") != -1){
-			json.deleteCharAt(json.lastIndexOf(","));
-		}
-		return json.toString();
-	}
-	
 	private String getGuilds(Request request, Response response){
 		StringBuilder json = new StringBuilder("{\"guilds\": [");
 		User user = main.jda.getUserById(main.database.getSession(request.cookie("key")));
@@ -212,31 +171,28 @@ public class WebService{
 	}
 	
 	private String getSelfAssignableRoles(Request request, Response response){
-		Set<String> roles = main.database.getSelfAssignableRoles(request.params(":guildId"));
+		Set<ValuePair<String, String>> roles = main.database.getSelfAssignableRoles(request.params(":guildId"));
 		Guild guild = main.jda.getGuildById(request.params(":guildId"));
 		StringBuilder json = new StringBuilder("{\"selfassignableroles\": [");
 		if(!roles.isEmpty()){
-			for(String r : roles){
-				json.append("{\"name\": \"").append(guild.getRoleById(r).getName()).append("\", \"id\": \"").append(r).append("\"}, ");
+			for(ValuePair<String, String> role : roles){
+				json.append("{\"name\": \"").append(guild.getRoleById(role.getKey()).getName()).append("\", \"id\": \"").append(role.getKey()).append("\", \"emote: \n").append(guild.getEmoteById(role.getValue()).getImageUrl()).append("\"},");
 			}
 		}
 		json.append("]}");
 		if(json.lastIndexOf(",") != -1){
 			json.deleteCharAt(json.lastIndexOf(","));
 		}
-		//System.out.println("getSelfAssignableRoles(): '" + json.toString() + "'");
 		return json.toString();
 	}
 	
 	private String removeSelfAssignableRole(Request request, Response response){
-		main.database.removeSelfAssignableRoles(request.params(":guildId"), request.params(":value"));
-		//System.out.println("removeSelfAssignableRole()");
+		main.database.removeSelfAssignableRole(request.params(":guildId"), request.params(":value"));
 		return "{\"status\": \"ok\" }";
 	}
 	
 	private String addSelfAssignableRole(Request request, Response response){
-		main.database.addSelfAssignableRoles(request.params(":guildId"), request.params(":value"));
-		//System.out.println("addSelfAssignableRole()");
+		main.database.addSelfAssignableRole(request.params(":guildId"), request.params(":value"), request.params(":emote"));
 		return "{\"status\": \"ok\"}";
 	}
 	
@@ -244,13 +200,11 @@ public class WebService{
 		StringBuilder json = new StringBuilder("{");
 		String channelId = main.database.getWelcomeChannelId(request.params(":guildId"));
 		json.append("\"welcomechannel\": \"").append(channelId).append("\"").append("}");
-		//System.out.println("getWelcomeChannel(): '" + json.toString() + "'");
 		return json.toString();
 	}
 	
 	private String setWelcomeChannel(Request request, Response response){
 		main.database.setWelcomeChannelId(request.params(":guildId"), request.params(":value"));
-		//System.out.println("setWelcomeChannel()");
 		return "{\"status\": \"ok\"}";
 	}
 	
