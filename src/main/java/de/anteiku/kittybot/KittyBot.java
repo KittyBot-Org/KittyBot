@@ -7,8 +7,6 @@ import de.anteiku.kittybot.events.OnGuildMemberJoinEvent;
 import de.anteiku.kittybot.events.OnGuildMemberLeaveEvent;
 import de.anteiku.kittybot.events.OnGuildMessageReactionAddEvent;
 import de.anteiku.kittybot.events.OnGuildMessageReceivedEvent;
-import de.anteiku.kittybot.poll.PollManager;
-import de.anteiku.kittybot.tasks.PollTask;
 import de.anteiku.kittybot.tasks.TaskManager;
 import de.anteiku.kittybot.utils.Logger;
 import de.anteiku.kittybot.webservice.WebService;
@@ -31,7 +29,6 @@ public class KittyBot{
 	public Logger logger;
 	public Config config;
 	public CommandManager commandManager;
-	public PollManager pollManager;
 	public TaskManager taskManager;
 	public Database database;
 	public WebService webService;
@@ -61,13 +58,12 @@ public class KittyBot{
 			jda = new JDABuilder(discordToken).setGame(Game.listening("you!")).addEventListener(new OnGuildMessageReceivedEvent(this)).addEventListener(new OnGuildMemberJoinEvent(this)).addEventListener(new OnGuildMemberLeaveEvent(this)).addEventListener(new OnGuildMessageReactionAddEvent(this)).build().awaitReady();
 			
 			database = new Database(this);
-			pollManager = new PollManager(this);
+			//pollManager = new PollManager(this);
 			
 			commandManager = new CommandManager(this);
 			commandManager.add(new HelpCommand(this));
 			commandManager.add(new CommandsCommand(this));
 			commandManager.add(new RolesCommand(this));
-			commandManager.add(new PollCommand(this));
 			commandManager.add(new ScreenShareCommand(this));
 			commandManager.add(new QuokkaCommand(this));
 			commandManager.add(new TurtleCommand(this));
@@ -87,8 +83,7 @@ public class KittyBot{
 			commandManager.add(new TestCommand(this));
 			
 			taskManager = new TaskManager(this);
-			taskManager.registerTask(new PollTask(this));
-			webService = new WebService(this, 80);
+			//webService = new WebService(this, 80);
 		}
 		catch(LoginException | InterruptedException e){
 			Logger.error(e);
@@ -98,7 +93,6 @@ public class KittyBot{
 	
 	public void close(){
 		try{
-			pollManager.close();
 			database.close();
 			logger.close();
 			System.exit(0);

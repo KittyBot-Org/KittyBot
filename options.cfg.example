@@ -7,6 +7,9 @@ discord_client_id=7832785765872
 #your bot discord secret
 discord_client_secret=2uix3liuwqxagfhuuimwu
 
+#your discord id to send logs/errors
+admin_discord_id=170939974227591168
+
 #your website url...
 host=http://anteiku.de
 
