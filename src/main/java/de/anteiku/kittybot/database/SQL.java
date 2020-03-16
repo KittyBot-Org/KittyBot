@@ -18,7 +18,7 @@ public class SQL {
 
     private Connection init(String host, String port, String user, String password) {
         try {
-            return DriverManager.getConnection("jdbc:mysql://" + host + ":" + port, user, password);
+            return DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "?autoReconnect=true", user, password);
         }
         catch (Exception e) {
             Logger.error(e);
