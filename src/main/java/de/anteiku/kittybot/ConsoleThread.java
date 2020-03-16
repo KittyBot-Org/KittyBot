@@ -26,24 +26,21 @@ public class ConsoleThread extends Thread{
 	}
 	
 	public void command(String cmd){
-		if(cmd.equalsIgnoreCase("stop")){
-			Logger.print("Stopping KittyBot...");
-			main.close();
-		}
-		else if(cmd.equalsIgnoreCase("reload")){
-			Logger.print("Unknown Command! Use 'help' or '?' for a overview of commands");
-		}
-		else if(cmd.equalsIgnoreCase("debug")){
-			if(Logger.getDebug()){
-				Logger.setDebug(false);
-			}
-			else{
-				Logger.setDebug(true);
-			}
-			Logger.print("Debug Mode: '" + Logger.getDebug() + "'");
-		}
-		else{
-			Logger.print("Unknown Command! Use 'help' or '?' for a overview of commands");
+		switch(cmd.toLowerCase()) {
+			case "stop":
+				Logger.print("Stopping KittyBot...");
+				main.close();
+				break;
+			case "reload":
+				Logger.print("Reloading KittyBot...");
+				break;
+			case "debug":
+				Logger.setDebug(!Logger.getDebug());
+				Logger.print("Debug Mode: '" + Logger.getDebug() + "'");
+				break;
+			default:
+				Logger.print("Unknown Command! Use 'help' or '?' for a overview of commands");
+				break;
 		}
 	}
 	

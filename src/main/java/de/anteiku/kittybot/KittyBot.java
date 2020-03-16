@@ -40,7 +40,7 @@ public class KittyBot{
 	
 	public KittyBot(){
 		httpClient = new OkHttpClient();
-		logger = new Logger();
+		logger = new Logger(this);
 		
 		config = new Config("options.cfg");
 		
@@ -55,16 +55,21 @@ public class KittyBot{
 		rand = new Random();
 		new ConsoleThread(this);
 		try{
-			jda = new JDABuilder(discordToken).setGame(Game.listening("you!")).addEventListener(new OnGuildMessageReceivedEvent(this)).addEventListener(new OnGuildMemberJoinEvent(this)).addEventListener(new OnGuildMemberLeaveEvent(this)).addEventListener(new OnGuildMessageReactionAddEvent(this)).build().awaitReady();
+			jda = new JDABuilder(discordToken)
+				.setGame(Game.listening("you!"))
+				.addEventListener(new OnGuildMessageReceivedEvent(this))
+				.addEventListener(new OnGuildMemberJoinEvent(this))
+				.addEventListener(new OnGuildMemberLeaveEvent(this))
+				.addEventListener(new OnGuildMessageReactionAddEvent(this))
+				.build()
+				.awaitReady();
 			
 			database = new Database(this);
-			//pollManager = new PollManager(this);
 			
 			commandManager = new CommandManager(this);
 			commandManager.add(new HelpCommand(this));
 			commandManager.add(new CommandsCommand(this));
 			commandManager.add(new RolesCommand(this));
-			commandManager.add(new ScreenShareCommand(this));
 			commandManager.add(new QuokkaCommand(this));
 			commandManager.add(new TurtleCommand(this));
 			commandManager.add(new CatCommand(this));
@@ -83,9 +88,8 @@ public class KittyBot{
 			commandManager.add(new TestCommand(this));
 			
 			taskManager = new TaskManager(this);
-			//webService = new WebService(this, 80);
 		}
-		catch(LoginException | InterruptedException e){
+		catch(Exception e){
 			Logger.error(e);
 			close();
 		}

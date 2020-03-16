@@ -154,7 +154,7 @@ public abstract class ACommand{
 	protected Message sendError(TextChannel channel, String error){
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setColor(Color.RED);
-		eb.addField("Error:", "`" + error + "`", true);
+		eb.addField("Error:", error, true);
 		
 		return channel.sendMessage(eb.build()).complete();
 	}

@@ -21,7 +21,6 @@ public class SQL {
             return DriverManager.getConnection("jdbc:mysql://" + host + ":" + port, user, password);
         }
         catch (Exception e) {
-            Logger.debug("error here");
             Logger.error(e);
         }
         return null;
@@ -35,7 +34,7 @@ public class SQL {
     public boolean execute(String query) {
         try {
             Statement statement = this.conn.createStatement();
-            Logger.print(query);
+            Logger.debug(query);
             return statement.execute(query);
         } catch (SQLException e) {
             Logger.error(e);
@@ -46,6 +45,7 @@ public class SQL {
     public ResultSet query(String query) {
         try {
             Statement statement = this.conn.createStatement();
+            Logger.debug(query);
             return statement.executeQuery(query);
         } catch (SQLException e) {
             Logger.error(e);

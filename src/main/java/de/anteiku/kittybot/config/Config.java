@@ -38,6 +38,12 @@ public class Config{
 		values.put("discord_token", "your discord token");
 		values.put("discord_client_id", "your discord bot id");
 		values.put("discord_client_secret", "your discord bot secret");
+		values.put("admin_discord_id", "your discord id");
+		values.put("mysql_host", "localhost");
+		values.put("mysql_port", "3306");
+		values.put("mysql_db", "kittybot");
+		values.put("mysql_user", "root");
+		values.put("mysql_password", "your mysql user password");
 		values.put("host", "https://bla.de");
 		values.put("unsplash_client_id", "your unsplash client id");
 		values.put("default_prefix", ".");

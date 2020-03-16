@@ -31,13 +31,10 @@ public class RolesCommand extends ACommand{
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 	
-	//TODO refactoring und fixing arg stuff
 	private Map<Role, Emote> getRoleEmoteMap(Guild guild){
 		Set<ValuePair<String, String>> roles = main.database.getSelfAssignableRoles(guild.getId());
 		Map<Role, Emote> map = new LinkedHashMap<>();
-		int i = 0;
 		for(ValuePair<String, String> entry : roles){
-			Logger.print("Key: " + entry.getKey());
 			Role role = guild.getRoleById(entry.getKey());
 			if(role == null){
 				main.database.removeSelfAssignableRoles(guild.getId(), new HashSet<>(Collections.singleton(entry.getKey())));
@@ -45,7 +42,6 @@ public class RolesCommand extends ACommand{
 			else{
 				map.put(role, guild.getEmoteById(entry.getValue()));
 			}
-			i++;
 		}
 		return map;
 	}
