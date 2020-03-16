@@ -40,7 +40,7 @@ public class RolesCommand extends ACommand{
 				main.database.removeSelfAssignableRoles(guild.getId(), new HashSet<>(Collections.singleton(entry.getKey())));
 			}
 			else{
-				map.put(role, guild.getEmoteById(entry.getValue()));
+				map.put(role, guild.getJDA().getEmoteById(entry.getValue()));
 			}
 		}
 		return map;
@@ -55,7 +55,7 @@ public class RolesCommand extends ACommand{
 			if(event.getMember().isOwner() || event.getMember().hasPermission(Permission.ADMINISTRATOR)){
 				List<Role> roles = event.getMessage().getMentionedRoles();
 				List<Emote> emotes = event.getMessage().getEmotes();
-				if(! roles.isEmpty()){
+				if(!roles.isEmpty() && !emotes.isEmpty()){
 					if(args[0].equalsIgnoreCase("add")){
 						main.database.addSelfAssignableRoles(event.getGuild().getId(), API.toMap(roles, emotes));
 						sendAnswer(event.getMessage(), "Roles added!");
@@ -83,7 +83,7 @@ public class RolesCommand extends ACommand{
 						}
 					}
 					else{
-						sendError(event.getMessage(), "Please mention roles!");
+						sendError(event.getMessage(), "Please be sure to mention a role & a custom discord emote");
 					}
 				}
 			}
