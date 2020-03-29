@@ -1,8 +1,9 @@
 package de.anteiku.kittybot.events;
 
 import de.anteiku.kittybot.KittyBot;
-import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import de.anteiku.kittybot.utils.ReactiveMessage;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class OnGuildMessageReactionAddEvent extends ListenerAdapter{
 	
@@ -17,10 +18,10 @@ public class OnGuildMessageReactionAddEvent extends ListenerAdapter{
 		if(event.getMember().getUser().isBot() || event.getMember().getUser().isFake()){
 			return;
 		}
-		Long messageId = event.getMessageIdLong();
 		
-		if((main.commandManager.controllableMsgs.containsKey(messageId)) && ((main.commandManager.msgCtrl.get(messageId) == - 1L) || (main.commandManager.msgCtrl.get(messageId) == event.getUser().getIdLong()))){
-			main.commandManager.controllableMsgs.get(messageId).reactionAdd(event.getChannel().getMessageById(main.commandManager.commandMessages.get(messageId)).complete(), event);
+		ReactiveMessage reactiveMessage = main.commandManager.getReactiveMessage(event.getGuild(), event.getMessageId());
+		if(reactiveMessage != null && (reactiveMessage.userId.equals("-1") || reactiveMessage.userId.equals(event.getUserId()))){
+			main.commandManager.commands.get(reactiveMessage.command).reactionAdd(event.getChannel().retrieveMessageById(reactiveMessage.commandId).complete(), event);
 		}
 	}
 	

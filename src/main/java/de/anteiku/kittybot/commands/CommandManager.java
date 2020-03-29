@@ -3,8 +3,11 @@ package de.anteiku.kittybot.commands;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.utils.API;
 import de.anteiku.kittybot.utils.Logger;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
+import de.anteiku.kittybot.utils.ReactiveMessage;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -26,24 +29,18 @@ public class CommandManager{
 		commands.put(cmd.getCommand(), cmd);
 	}
 	
-	public void addListenerCmd(long message, Message command, ACommand cmd, long allowed){
-		addListenerCmd(message, command.getIdLong(), cmd, allowed);
+	public void addReactiveMessage(GuildMessageReceivedEvent event, Message message, ACommand cmd, String allowed){
+		main.database.addReactiveMessage(event.getGuild().getId(), event.getAuthor().getId(), message.getId(), event.getMessage().getId(), cmd.command, allowed);
 	}
 	
-	public void addListenerCmd(long message, long command, ACommand cmd, long allowed){
-		msgCtrl.put(message, allowed);
-		controllableMsgs.put(message, cmd);
-		commandMessages.put(message, command);
+	public void removeReactiveMessage(Guild guild, String messageId) {
+		main.database.removeReactiveMessage(guild.getId(), messageId);
 	}
 	
-	public void addListenerCmd(Message message, long command, ACommand cmd, long allowed){
-		addListenerCmd(message.getIdLong(), command, cmd, allowed);
+	public ReactiveMessage getReactiveMessage(Guild guild, String message) {
+		return main.database.isReactiveMessage(guild.getId(), message);
 	}
-	
-	public void addListenerCmd(Message message, Message command, ACommand cmd, long allowed){
-		addListenerCmd(message.getIdLong(), command.getIdLong(), cmd, allowed);
-	}
-	
+
 	public void checkCommands(GuildMessageReceivedEvent event){
 		long start = System.nanoTime();
 		String message = event.getMessage().getContentRaw();

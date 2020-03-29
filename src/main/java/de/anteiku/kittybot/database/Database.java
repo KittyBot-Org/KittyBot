@@ -3,8 +3,9 @@ package de.anteiku.kittybot.database;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.utils.Logger;
 import de.anteiku.kittybot.utils.RandomKey;
+import de.anteiku.kittybot.utils.ReactiveMessage;
 import de.anteiku.kittybot.utils.ValuePair;
-import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.api.entities.Guild;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,20 +18,71 @@ public class Database{
     
     public Database(KittyBot main){
         this.main = main;
-        this.sql = SQL.newInstance(main.config.get("mysql_host"), main.config.get("mysql_port"), main.config.get("mysql_user"), main.config.get("mysql_password"));
+        this.sql = SQL.newInstance(main.config.get("mysql_host"), main.config.get("mysql_port"), main.config.get("mysql_user"), main.config.get("mysql_password"), main.config.get("mysql_db"));
         sql.use(main.config.get("mysql_db"));
-        sql.execute("CREATE TABLE IF NOT EXISTS `guilds` (\n" + "`id` varchar(18) NOT NULL PRIMARY KEY,\n" + "`command_prefix` varchar(1) NOT NULL,\n" + "`request_channel_id` varchar(18) NOT NULL,\n" + "`requests_enabled` tinyint(1) NOT NULL,\n" + "`welcome_channel_id` varchar(18) NOT NULL,\n" + "`welcome_message` text NOT NULL,\n" + "`welcome_message_enabled` tinyint(1) NOT NULL,\n" + "`nsfw_enabled` tinyint(1) NOT NULL\n" + ")");
-        sql.execute("CREATE TABLE IF NOT EXISTS `self_assignable_roles` (\n" + "`id` varchar(18) NOT NULL,\n" + "`guild_id` varchar(18) NOT NULL,\n" + "`emote_id` varchar(18) NOT NULL\n)");
-        sql.execute("CREATE TABLE IF NOT EXISTS `requests` (\n" + "`id` varchar(18) NOT NULL,\n" + "`guild_id` varchar(18) NOT NULL,\n" + "`emote_id` varchar(18) NOT NULL\n)");
+        sql.execute("CREATE TABLE IF NOT EXISTS `guilds` (" +
+            "`id` varchar(18) NOT NULL," +
+            "`command_prefix` varchar(1) NOT NULL," +
+            "`request_channel_id` varchar(18) NOT NULL," +
+            "`requests_enabled` tinyint(1) NOT NULL," +
+            "`welcome_channel_id` varchar(18) NOT NULL," +
+            "`welcome_message` text NOT NULL," +
+            "`welcome_message_enabled` tinyint(1) NOT NULL," +
+            "`nsfw_enabled` tinyint(1) NOT NULL," +
+            "PRIMARY KEY(id)" +
+            ")");
+        sql.execute("CREATE TABLE IF NOT EXISTS `self_assignable_roles` (" +
+            "`id` varchar(18) NOT NULL," +
+            "`guild_id` varchar(18) NOT NULL," +
+            "`emote_id` varchar(18) NOT NULL," +
+            "PRIMARY KEY(id, guild_id)" +
+            ")");
+        /*sql.execute("CREATE TABLE IF NOT EXISTS `requests` (" +
+            "`id` int NOT NULL AUTO_INCREMENT," +
+            "`user_id` varchar(18) NOT NULL" +
+            "`guild_id` varchar(18) NOT NULL," +
+            "`title` varchar(32) NOT NULL," +
+            "`body` text(512) NOT NULL," +
+            "`answered` tinyint(1) NOT NULL," +
+            "`accepted` tinyint(1) NOT NULL," +
+            "`creation_time` varchar(20) NOT NULL," +
+            "PRIMARY KEY(id)" +
+            ")");*/
+        sql.execute("CREATE TABLE IF NOT EXISTS `sessions` (" +
+            "`id` varchar(18) NOT NULL," +
+            "`user_id` varchar(18) NOT NULL," +
+            "PRIMARY KEY(id)" +
+            ")");
         //sql.execute("CREATE TABLE IF NOT EXISTS `polls` (\n" + "`id` varchar(18) NOT NULL PRIMARY KEY,\n" + "`guild_id` varchar(18) NOT NULL,\n" + "`channel_id` varchar(18) NOT NULL,\n" + "`title` text NOT NULL,\n" + "`created_by` varchar(18) NOT NULL,\n" + "`created_at` timestamp NOT NULL DEFAULT current_timestamp(),\n" + "`goes_until` timestamp NOT NULL DEFAULT current_timestamp()\n" + ")");
         //sql.execute("CREATE TABLE IF NOT EXISTS `poll_answers` (\n" + "`id` varchar(18) NOT NULL PRIMARY KEY,\n" + "`answer` text NOT NULL\n" + ")");
         //sql.execute("CREATE TABLE IF NOT EXISTS `poll_votes` (\n" + "`id` varchar(18) NOT NULL PRIMARY KEY,\n" + "`created_by` varchar(18) NOT NULL,\n" + "`created_at` timestamp NOT NULL DEFAULT current_timestamp(),\n" + "`value` varchar(18) NOT NULL\n" + ")");
-        sql.execute("CREATE TABLE IF NOT EXISTS `sessions` (\n" + "`id` varchar(18) NOT NULL PRIMARY KEY,\n" + "`user_id` varchar(18) NOT NULL\n" + ")");
+        sql.execute("CREATE TABLE IF NOT EXISTS `reactive_messages` (" +
+            "`id` varchar(18) NOT NULL," +
+            "`user_id` varchar(18) NOT NULL," +
+            "`guild_id` varchar(18) NOT NULL," +
+            "`command_id` varchar(18) NOT NULL," +
+            "`command` varchar(18) NOT NULL," +
+            "`allowed` varchar(18) NOT NULL," +
+            "PRIMARY KEY(id, user_id, guild_id)" +
+            ")");
+        sql.execute("CREATE TABLE IF NOT EXISTS `statistics` (" +
+            "`user_id` varchar(18) NOT NULL," +
+            "`guild_id` varchar(18) NOT NULL," +
+            "`xp` int NOT NULL," +
+            "`level` int NOT NULL," +
+            "`bot_calls` int NOT NULL," +
+            "`voice_time` int NOT NULL," +
+            "`message_count` int NOT NULL," +
+            "`emote_count` int NOT NULL," +
+            "`last_active` varchar(20) NOT NULL," +
+            "PRIMARY KEY(user_id, guild_id)" +
+            ")");
         init();
     }
     
     private void init(){
         for(Guild guild : main.jda.getGuilds()){
+            Logger.print("Loading Guild: `" + guild.getName() + "`...");
             if(! isGuildRegistered(guild)){
                 registerGuild(guild);
             }
@@ -168,6 +220,27 @@ public class Database{
     
     public void setNSFWEnabled(String guildId, boolean enabled){
         set(guildId, "nsfw_enabled", enabled ? 1 : 0);
+    }
+    
+    public void addReactiveMessage(String guildId, String userId, String messageId, String commandId, String command, String allowed) {
+        sql.execute("INSERT INTO `reactive_messages` (id, command_id, user_id, guild_id, command, allowed) VALUES ('" + messageId + "', '" + commandId + "', '" + userId + "', '" + guildId + "', '" + command + "', '" + allowed + "')");
+    }
+    
+    public void removeReactiveMessage(String guildId, String messageId) {
+        sql.execute("DELETE FROM `reactive_messages` WHERE `id` = '" + messageId + "' AND `guild_id` = '" + guildId + "'");
+    }
+    
+    public ReactiveMessage isReactiveMessage(String guildId, String messageId) {
+        ResultSet result = sql.query("SELECT * FROM `reactive_messages` WHERE `id` = '" + messageId + "' AND `guild_id` = '" + guildId + "'");
+        try{
+            if(result.absolute(1)){
+                return new ReactiveMessage(result.getString("id"), result.getString("user_id"), result.getString("command_id"), result.getString("command"), result.getString("allowed"));
+            }
+        }
+        catch(SQLException e){
+            Logger.error(e);
+        }
+        return null;
     }
     
     /*

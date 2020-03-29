@@ -3,22 +3,23 @@ package de.anteiku.kittybot.database;
 import de.anteiku.kittybot.utils.Logger;
 
 import java.sql.*;
+import java.util.Map;
 
 public class SQL {
 
     private Connection conn;
 
-    public static SQL newInstance(String host, String port, String user, String password) {
-        return new SQL(host, port, user, password);
+    public static SQL newInstance(String host, String port, String user, String password, String database) {
+        return new SQL(host, port, user, password, database);
     }
 
-    public SQL(String host, String port, String user, String password) {
-        this.conn = init(host, port, user, password);
+    public SQL(String host, String port, String user, String password, String database) {
+        this.conn = init(host, port, user, password, database);
     }
 
-    private Connection init(String host, String port, String user, String password) {
+    private Connection init(String host, String port, String user, String password, String database) {
         try {
-            return DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "?autoReconnect=true", user, password);
+            return DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true", user, password);
         }
         catch (Exception e) {
             Logger.error(e);

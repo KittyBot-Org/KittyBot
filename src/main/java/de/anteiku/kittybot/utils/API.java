@@ -1,7 +1,7 @@
 package de.anteiku.kittybot.utils;
 
-import net.dv8tion.jda.core.entities.Emote;
-import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.api.entities.Emote;
+import net.dv8tion.jda.api.entities.Role;
 
 import java.util.*;
 

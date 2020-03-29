@@ -1,8 +1,7 @@
 package de.anteiku.kittybot.utils;
 
 import de.anteiku.kittybot.KittyBot;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.PrivateChannel;
+import net.dv8tion.jda.api.entities.PrivateChannel;
 
 import java.io.*;
 import java.text.SimpleDateFormat;

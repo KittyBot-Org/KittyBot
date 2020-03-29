@@ -2,10 +2,10 @@ package de.anteiku.kittybot.commands;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.utils.Emotes;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 import java.awt.*;
 
@@ -31,7 +31,7 @@ public class HelpCommand extends ACommand{
 		eb.addField(":globe_with_meridians: Webinterface:", Emotes.BLANK.get() + " :small_blue_diamond: Click [here](http://anteiku.de/login) to login with discord and manage your guilds!.",true);
 		Message message = sendAnswer(event.getMessage(), eb.build());
 		
-		main.commandManager.addListenerCmd(message, event.getMessage(), this, - 1L);
+		main.commandManager.addReactiveMessage(event, message, this, "-1");
 		message.addReaction(Emotes.WASTEBASKET.get()).queue();
 	}
 	

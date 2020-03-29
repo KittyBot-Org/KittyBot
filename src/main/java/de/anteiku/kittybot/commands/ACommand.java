@@ -6,13 +6,13 @@ import com.google.gson.JsonSyntaxException;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.utils.Emotes;
 import de.anteiku.kittybot.utils.Logger;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageEmbed;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import okhttp3.Request;
 
 import java.awt.*;
@@ -93,6 +93,7 @@ public abstract class ACommand{
 		if(event.getReactionEmote().getName().equals(Emotes.WASTEBASKET.get())){
 			event.getChannel().deleteMessageById(event.getMessageId()).queue();
 			command.delete().queue();
+			main.commandManager.removeReactiveMessage(event.getGuild(), event.getMessageId());
 		}
 		else if(event.getReactionEmote().getName().equals(Emotes.QUESTION.get())){
 			event.getReaction().removeReaction(event.getUser()).queue();

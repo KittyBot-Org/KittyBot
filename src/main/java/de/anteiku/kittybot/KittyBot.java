@@ -3,20 +3,17 @@ package de.anteiku.kittybot;
 import de.anteiku.kittybot.commands.*;
 import de.anteiku.kittybot.config.Config;
 import de.anteiku.kittybot.database.Database;
-import de.anteiku.kittybot.events.OnGuildMemberJoinEvent;
-import de.anteiku.kittybot.events.OnGuildMemberLeaveEvent;
-import de.anteiku.kittybot.events.OnGuildMessageReactionAddEvent;
-import de.anteiku.kittybot.events.OnGuildMessageReceivedEvent;
+import de.anteiku.kittybot.events.*;
 import de.anteiku.kittybot.tasks.TaskManager;
 import de.anteiku.kittybot.utils.Logger;
 import de.anteiku.kittybot.webservice.WebService;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import okhttp3.OkHttpClient;
 
-import javax.security.auth.login.LoginException;
-import java.util.Random;
+import java.util.*;
 
 public class KittyBot{
 	
@@ -55,12 +52,31 @@ public class KittyBot{
 		rand = new Random();
 		new ConsoleThread(this);
 		try{
-			jda = new JDABuilder(discordToken)
-				.setGame(Game.listening("you!"))
-				.addEventListener(new OnGuildMessageReceivedEvent(this))
-				.addEventListener(new OnGuildMemberJoinEvent(this))
-				.addEventListener(new OnGuildMemberLeaveEvent(this))
-				.addEventListener(new OnGuildMessageReactionAddEvent(this))
+			jda = JDABuilder.create(
+					GatewayIntent.GUILD_MEMBERS,
+					GatewayIntent.GUILD_VOICE_STATES,
+					GatewayIntent.GUILD_PRESENCES,
+					GatewayIntent.GUILD_MESSAGES,
+					GatewayIntent.GUILD_MESSAGE_TYPING,
+					GatewayIntent.GUILD_MESSAGE_REACTIONS,
+					GatewayIntent.GUILD_EMOJIS,
+					
+					GatewayIntent.DIRECT_MESSAGES,
+					GatewayIntent.DIRECT_MESSAGE_REACTIONS,
+					GatewayIntent.DIRECT_MESSAGE_TYPING
+				)
+				.setToken(discordToken)
+				.setActivity(Activity.of(Activity.ActivityType.LISTENING, "to you!", "https://github.com/TopiSenpai/KittyBot"))
+				.addEventListeners(
+					new OnGuildMemberJoinEvent(this),
+					new OnGuildMemberRemoveEvent(this),
+					new OnGuildMemberUpdateBoostTimeEvent(this),
+					new OnGuildMessageReactionAddEvent(this),
+					new OnGuildMessageReceivedEvent(this),
+					new OnGuildVoiceJoinEvent(this),
+					new OnGuildVoiceLeaveEvent(this),
+					new OnGuildVoiceMoveEvent(this)
+				)
 				.build()
 				.awaitReady();
 			

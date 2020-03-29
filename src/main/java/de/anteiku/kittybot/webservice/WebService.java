@@ -4,8 +4,8 @@ import bell.oauth.discord.main.OAuthBuilder;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.utils.Logger;
 import de.anteiku.kittybot.utils.ValuePair;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.*;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
@@ -25,45 +25,24 @@ public class WebService{
 	
 	public WebService(KittyBot main, int port){
 		this.main = main;
-		oAuth = new OAuthBuilder(main.config.get("discord_client_id"), main.config.get("discord_client_secret"));
-		oAuth.setScopes(new String[]{"guilds", "identify"});
-		oAuth.setRedirectURI(main.host + "/trylogin");
 		port(port);
-		staticFileLocation("/public");
-		get("/", new IndexRoute(main), new HtmlTemplateEngine());
-		get("/documentation", new DocumentationRoute(main), new HtmlTemplateEngine());
-		get("/login", new LoginRoute(main), new HtmlTemplateEngine());
-		get("/trylogin", new TryLoginRoute(main), new HtmlTemplateEngine());
-		get("/logout", new LogoutRoute(main), new HtmlTemplateEngine());
-		redirect.get("/guild/", "/guild");
 		
 		path("/user", () -> {
 			before("", this::checkDiscordLogin);
-			path("/me", ()->{
-				get("/guilds/get", this::getGuilds);
-			});
+			path("/me", () -> get("/guilds/get", this::getGuilds));
 		});
 		path("/guild", () -> {
 			before("", this::checkDiscordLogin);
-			get("", new GuildRoute(main), new HtmlTemplateEngine());
 			path("/:guildId", () -> {
 				before("", this::checkGuildPerms);
-				get("", new GuildRoute(main), new HtmlTemplateEngine());
-				redirect.get("/", "/login");
 				path("/commandprefix", () -> {
 					get("/get", this::getCommandPrefix);
 					get("/set/:value", this::setCommandPrefix);
 					get("/set/", this::setCommandPrefix);
 				});
-				path("/roles", () -> {
-					get("/get", this::getAllRoles);
-				});
-				path("/icon", () -> {
-					get("/get", this::getIcon);
-				});
-				path("/channels", () -> {
-					get("/get", this::getAllChannels);
-				});
+				path("/roles", () -> get("/get", this::getAllRoles));
+				path("/icon", () -> get("/get", this::getIcon));
+				path("/channels", () -> get("/get", this::getAllChannels));
 				path("/selfassignableroles", () -> {
 					get("/get", this::getSelfAssignableRoles);
 					get("/add/:value", this::addSelfAssignableRole);

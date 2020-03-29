@@ -2,9 +2,9 @@ package de.anteiku.kittybot.events;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.utils.Emotes;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.awt.*;
 
@@ -31,7 +31,7 @@ public class OnGuildMessageReceivedEvent extends ListenerAdapter{
 				eb.setColor(Color.ORANGE);
 				eb.setTitle("Do you need help?");
 				eb.setDescription("Do you want to know what my prefix is?\nIt is `" + main.database.getCommandPrefix(event.getGuild().getId()) + "`\nIf you need more help run `" + main.database.getCommandPrefix(event.getGuild().getId()) + "help` or `" + main.database.getCommandPrefix(event.getGuild().getId()) + "commands`" + Emotes.TEAM_KITTY.get());
-				event.getChannel().sendMessage(eb.build()).complete();
+				event.getChannel().sendMessage(eb.build()).queue();
 			}
 		}
 	}

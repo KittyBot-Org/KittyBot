@@ -22,7 +22,7 @@ dependencies {
 
     compile 'net.aksingh:owm-japis:2.5.3.0'
 
-    compile 'net.dv8tion:JDA:3.8.3_464'
+    compile 'net.dv8tion:JDA:4.1.1_126'
 
     compile 'org.slf4j:slf4j-jdk14:1.7.5'
 

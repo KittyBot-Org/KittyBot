@@ -3,16 +3,15 @@ package de.anteiku.kittybot.commands;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.utils.API;
 import de.anteiku.kittybot.utils.Emotes;
-import de.anteiku.kittybot.utils.Logger;
 import de.anteiku.kittybot.utils.ValuePair;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Emote;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Emote;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 import java.awt.*;
 import java.util.*;
@@ -55,36 +54,29 @@ public class RolesCommand extends ACommand{
 			if(event.getMember().isOwner() || event.getMember().hasPermission(Permission.ADMINISTRATOR)){
 				List<Role> roles = event.getMessage().getMentionedRoles();
 				List<Emote> emotes = event.getMessage().getEmotes();
-				if(!roles.isEmpty() && !emotes.isEmpty()){
-					if(args[0].equalsIgnoreCase("add")){
-						main.database.addSelfAssignableRoles(event.getGuild().getId(), API.toMap(roles, emotes));
-						sendAnswer(event.getMessage(), "Roles added!");
-					}
-					else if(args[0].equalsIgnoreCase("remove")){
-						main.database.removeSelfAssignableRoles(event.getGuild().getId(), API.toSet(roles));
-						sendAnswer(event.getMessage(), "Roles removed!");
+				if(args[0].equalsIgnoreCase("add") && !roles.isEmpty() && !emotes.isEmpty()){
+					main.database.addSelfAssignableRoles(event.getGuild().getId(), API.toMap(roles, emotes));
+					sendAnswer(event.getMessage(), "Roles added!");
+				}
+				else if(args[0].equalsIgnoreCase("remove") && !roles.isEmpty()){
+					main.database.removeSelfAssignableRoles(event.getGuild().getId(), API.toSet(roles));
+					sendAnswer(event.getMessage(), "Roles removed!");
+				}
+				else if(args[0].equalsIgnoreCase("list")){
+					Map<Role, Emote> map = getRoleEmoteMap(event.getGuild());
+					if(map.size() == 0){
+						sendAnswer(event.getMessage(), "There are no roles added!");
 					}
 					else{
-						sendUsage(event.getMessage());
+						String message = "";
+						for(Map.Entry<Role, Emote> m : map.entrySet()){
+							message += m.getKey().getAsMention() + ", ";
+						}
+						sendAnswer(event.getMessage(), "Roles: " + message);
 					}
 				}
 				else{
-					if(args[0].equalsIgnoreCase("list")){
-						Map<Role, Emote> map = getRoleEmoteMap(event.getGuild());
-						if(map.size() == 0){
-							sendAnswer(event.getMessage(), "There are no roles added!");
-						}
-						else{
-							String message = "";
-							for(Map.Entry<Role, Emote> m : map.entrySet()){
-								message += m.getKey().getAsMention() + ", ";
-							}
-							sendAnswer(event.getMessage(), "Roles: " + message);
-						}
-					}
-					else{
-						sendError(event.getMessage(), "Please be sure to mention a role & a custom discord emote");
-					}
+					sendError(event.getMessage(), "Please be sure to mention a role & a custom discord emote");
 				}
 			}
 			else{
@@ -107,7 +99,7 @@ public class RolesCommand extends ACommand{
 			}
 			eb.addField("**Emote:**" + Emotes.BLANK.get() + "**Role:**", value, true);
 			Message message = event.getChannel().sendMessage(eb.build()).complete();
-			main.commandManager.addListenerCmd(message, event.getMessage(), this, - 1L);
+			main.commandManager.addReactiveMessage(event, message, this, event.getAuthor().getId());
 			for(Map.Entry<Role, Emote> r : roles.entrySet()){
 				message.addReaction(r.getValue()).queue();
 			}
@@ -117,14 +109,15 @@ public class RolesCommand extends ACommand{
 	
 	@Override
 	public void reactionAdd(Message command, GuildMessageReactionAddEvent event){
+		super.reactionAdd(command, event);
 		Map<Role, Emote> roles = getRoleEmoteMap(event.getGuild());
 		for(Map.Entry<Role, Emote> r : roles.entrySet()){
-			if(event.getReactionEmote().getId().equals(r.getValue().getId())){
+			if(event.getReactionEmote().isEmote() && event.getReactionEmote().getId().equals(r.getValue().getId())){
 				if(event.getMember().getRoles().contains(r.getKey())){
-					event.getGuild().getController().removeSingleRoleFromMember(event.getMember(), r.getKey()).queue();
+					event.getGuild().removeRoleFromMember(event.getMember(), r.getKey()).queue();
 				}
 				else{
-					event.getGuild().getController().addSingleRoleToMember(event.getMember(), r.getKey()).queue();
+					event.getGuild().addRoleToMember(event.getMember(), r.getKey()).queue();
 				}
 				event.getReaction().removeReaction(event.getUser()).queue();
 			}

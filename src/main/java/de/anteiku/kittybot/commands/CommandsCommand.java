@@ -2,11 +2,11 @@ package de.anteiku.kittybot.commands;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.utils.Emotes;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageEmbed;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 import java.awt.*;
 import java.util.Map;
@@ -67,11 +67,11 @@ public class CommandsCommand extends ACommand{
 	@Override
 	public void reactionAdd(Message command, GuildMessageReactionAddEvent event){
 		if(event.getReactionEmote().getName().equals(Emotes.ARROW_LEFT.get())){
-			prevPage(event.getChannel().getMessageById(event.getMessageId()).complete());
+			prevPage(event.getChannel().retrieveMessageById(event.getMessageId()).complete());
 			event.getReaction().removeReaction(event.getUser()).queue();
 		}
 		else if(event.getReactionEmote().getName().equals(Emotes.ARROW_RIGHT.get())){
-			nextPage(event.getChannel().getMessageById(event.getMessageId()).complete());
+			nextPage(event.getChannel().retrieveMessageById(event.getMessageId()).complete());
 			event.getReaction().removeReaction(event.getUser()).queue();
 		}
 		super.reactionAdd(command, event);
@@ -88,7 +88,7 @@ public class CommandsCommand extends ACommand{
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		Message message = sendAnswer(event.getMessage(), buildCommands(args, main.database.getCommandPrefix(event.getGuild().getId())));
-		main.commandManager.addListenerCmd(message, event.getMessage(), this, - 1L);
+		main.commandManager.addReactiveMessage(event, message, this, "-1");
 		
 		message.addReaction(Emotes.ARROW_LEFT.get()).queue();
 		message.addReaction(Emotes.ARROW_RIGHT.get()).queue();

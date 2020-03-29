@@ -2,9 +2,9 @@ package de.anteiku.kittybot.commands;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.utils.Emotes;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,7 +35,7 @@ public class NekoCommand extends ACommand{
 		}
 		if(args.length > 0 && nekos.contains(args[0])){
 			Message message = sendImage(event.getMessage(), getNeko(args[0]));
-			main.commandManager.addListenerCmd(message, event.getMessage(), this, - 1L);
+			main.commandManager.addReactiveMessage(event, message, this, "-1");
 			message.addReaction(Emotes.WASTEBASKET.get()).queue();
 		}
 		else{
