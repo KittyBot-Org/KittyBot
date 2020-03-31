@@ -77,10 +77,9 @@ public class Database{
             "`last_active` varchar(20) NOT NULL," +
             "PRIMARY KEY(user_id, guild_id)" +
             ")");
-        init();
     }
     
-    private void init(){
+    public void init(){
         for(Guild guild : main.jda.getGuilds()){
             Logger.print("Loading Guild: `" + guild.getName() + "`...");
             if(! isGuildRegistered(guild)){
