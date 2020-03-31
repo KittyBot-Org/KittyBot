@@ -1,4 +1,4 @@
-FROM gradle:jdk11 as builder
+FROM gradle:jdk11 as build
 
 COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
@@ -9,6 +9,6 @@ FROM openjdk:11-jdk-slim-buster
 
 WORKDIR /home/kittybot
 
-ADD /home/gradle/src/build/libs/KittyBot-*.jar KittyBot.jar
+COPY --from=build /home/gradle/src/build/libs/KittyBot-*.jar KittyBot.jar
 
-CMD ["java", "-jar", "KittyBot.jar"]
+ENTRYPOINT ["java", "-jar", "KittyBot.jar"]

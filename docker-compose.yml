@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+    bot:
+        build: .
+        volumes: 
+            - ./options.cfg:/home/kittybot/options.cfg
+        restart: on-failure
+        depends_on:
+            - database
+    database:
+        image: mysql:latest
+        restart: always
+        environment:
+            MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+            MYSQL_DATABASE: 'kittybot'
+            MYSQL_USER: 'kittybot'
+            MYSQL_PASSWORD: '12345678'
+            MYSQL_ROOT_HOST: '%'
+        volumes:
+            - /home/mysql/data:/var/lib/mysql
+        expose:
+            - 3306
+        ports:
+            - 3306:3306
