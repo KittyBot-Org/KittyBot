@@ -13,6 +13,8 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import okhttp3.OkHttpClient;
 
+import java.sql.SQLException;
+import java.sql.Time;
 import java.util.*;
 
 public class KittyBot{
@@ -40,6 +42,34 @@ public class KittyBot{
 		logger = new Logger(this);
 		
 		config = new Config("options.cfg");
+
+		boolean connected = false;
+		int tries = 0;
+		while(!connected) {
+			tries++;
+			try{
+				database = new Database(this);
+				connected = true;
+			}
+			catch(SQLException e) {
+				Logger.error(e);
+				Logger.print("Could not connect to database...");
+				Logger.print("Retrying in 5 seconds...");
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException ex) {
+					Logger.error(ex);
+				}
+			}
+			finally {
+				if(tries > 20) {
+					Logger.print("Too many retries...");
+					Logger.print("Shutting down KittyBot...");
+					System.exit(1);
+				}
+			}
+
+		}
 		
 		String discordToken = config.get("discord_token");
 		defaultPrefix = config.get("default_prefix");
@@ -79,8 +109,6 @@ public class KittyBot{
 				)
 				.build()
 				.awaitReady();
-			
-			database = new Database(this);
 			
 			commandManager = new CommandManager(this);
 			commandManager.add(new HelpCommand(this));

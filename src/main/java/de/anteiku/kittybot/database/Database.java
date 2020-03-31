@@ -16,7 +16,7 @@ public class Database{
     private SQL sql;
     private KittyBot main;
     
-    public Database(KittyBot main){
+    public Database(KittyBot main) throws SQLException {
         this.main = main;
         this.sql = SQL.newInstance(main.config.get("mysql_host"), main.config.get("mysql_port"), main.config.get("mysql_user"), main.config.get("mysql_password"), main.config.get("mysql_db"));
         sql.use(main.config.get("mysql_db"));

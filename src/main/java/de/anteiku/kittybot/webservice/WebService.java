@@ -1,6 +1,5 @@
 package de.anteiku.kittybot.webservice;
 
-import bell.oauth.discord.main.OAuthBuilder;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.utils.Logger;
 import de.anteiku.kittybot.utils.ValuePair;
@@ -21,8 +20,7 @@ import static spark.Spark.*;
 public class WebService{
 	
 	private KittyBot main;
-	public OAuthBuilder oAuth;
-	
+
 	public WebService(KittyBot main, int port){
 		this.main = main;
 		port(port);
