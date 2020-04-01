@@ -13,11 +13,6 @@ services:
         restart: always
         env_file:
             - config.env
-#        environment:
-#            MYSQL_ROOT_PASSWORD: 'YOU_ROOT_PASSWORD'
-#            MYSQL_DATABASE: 'YOUR_DATA_BASE'
-#            MYSQL_USER: 'YOUR_USER'
-#            MYSQL_PASSWORD: 'YOUR_PASSWORD'
         volumes:
             - /home/mysql/data:/var/lib/mysql
     watchtower:

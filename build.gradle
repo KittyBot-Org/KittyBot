@@ -24,6 +24,8 @@ dependencies {
 
     compile 'com.sparkjava:spark-core:2.9.1'
 
+    compile 'com.google.code.gson:gson:2.8.6'
+
     compile 'mysql:mysql-connector-java:8.0.19'
 }
 
