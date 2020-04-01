@@ -208,8 +208,7 @@ public abstract class ACommand{
 	protected String getNeko(String type){
 		try{
 			Request request = new Request.Builder().url("https://nekos.life/api/v2/img/" + type).build();
-			JsonParser jp = new JsonParser();
-			return jp.parse(main.httpClient.newCall(request).execute().body().string()).getAsJsonObject().get("url").getAsString();
+			return JsonParser.parseString(main.httpClient.newCall(request).execute().body().string()).getAsJsonObject().get("url").getAsString();
 		}
 		catch(IOException e){
 			Logger.error(e);
@@ -220,8 +219,7 @@ public abstract class ACommand{
 	protected Message sendUnsplashImage(Message message, String search){
 		try{
 			Request request = new Request.Builder().url("https://unsplash.com/photos/random/?client_id=" + main.unsplashClientId + "&query=" + search).build();
-			JsonParser jp = new JsonParser();
-			String url = jp.parse(main.httpClient.newCall(request).execute().body().string()).getAsJsonObject().get("urls").getAsJsonObject().get("regular").getAsString();
+			String url = JsonParser.parseString(main.httpClient.newCall(request).execute().body().string()).getAsJsonObject().get("urls").getAsJsonObject().get("regular").getAsString();
 			return sendImage(message.getTextChannel(), url);
 		}
 		catch(JsonIOException | JsonSyntaxException | IOException e){
