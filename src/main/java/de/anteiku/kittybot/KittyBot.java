@@ -14,7 +14,6 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import okhttp3.OkHttpClient;
 
 import java.sql.SQLException;
-import java.sql.Time;
 import java.util.*;
 
 public class KittyBot{
@@ -22,7 +21,7 @@ public class KittyBot{
 	public final OkHttpClient httpClient;
 	public String unsplashClientId;
 	public String host;
-	public String defaultPrefix;
+	public String defaultPrefix = ".";
 	
 	public JDA jda;
 	public Logger logger;
@@ -72,7 +71,6 @@ public class KittyBot{
 		}
 		
 		String discordToken = config.get("discord_token");
-		defaultPrefix = config.get("default_prefix");
 		host = config.get("host");
 		unsplashClientId = config.get("unsplash_client_id");
 		if(discordToken.equals("") || unsplashClientId.equals("")){
@@ -82,7 +80,8 @@ public class KittyBot{
 		rand = new Random();
 		new ConsoleThread(this);
 		try{
-			jda = JDABuilder.create(
+			jda = JDABuilder
+				.create(
 					GatewayIntent.GUILD_MEMBERS,
 					GatewayIntent.GUILD_VOICE_STATES,
 					GatewayIntent.GUILD_PRESENCES,
@@ -96,7 +95,7 @@ public class KittyBot{
 					GatewayIntent.DIRECT_MESSAGE_TYPING
 				)
 				.setToken(discordToken)
-				.setActivity(Activity.of(Activity.ActivityType.LISTENING, "to you!", "https://github.com/TopiSenpai/KittyBot"))
+				.setActivity(Activity.of(Activity.ActivityType.LISTENING, "to you!"))
 				.addEventListeners(
 					new OnGuildMemberJoinEvent(this),
 					new OnGuildMemberRemoveEvent(this),

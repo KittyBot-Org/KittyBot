@@ -6,7 +6,6 @@ import de.anteiku.kittybot.utils.Logger;
 import de.anteiku.kittybot.utils.ReactiveMessage;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.*;
