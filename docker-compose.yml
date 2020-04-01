@@ -5,21 +5,17 @@ services:
         build: .
         volumes: 
             - ./options.cfg:/home/kittybot/options.cfg
-        restart: on-failure
+        restart: always
         depends_on:
             - database
     database:
         image: mysql:latest
         restart: always
         environment:
-            MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
-            MYSQL_DATABASE: 'kittybot'
-            MYSQL_USER: 'kittybot'
-            MYSQL_PASSWORD: '12345678'
+            MYSQL_ROOT_PASSWORD: 'YOU_ROOT_PASSWORD'
+            MYSQL_DATABASE: 'YOUR_DATA_BASE'
+            MYSQL_USER: 'YOUR_USER'
+            MYSQL_PASSWORD: 'YOUR_PASSWORD'
             MYSQL_ROOT_HOST: '%'
         volumes:
             - /home/mysql/data:/var/lib/mysql
-        expose:
-            - 3306
-        ports:
-            - 3306:3306
