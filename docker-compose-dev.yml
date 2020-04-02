@@ -17,9 +17,3 @@ services:
             - config.env
         volumes:
             - /home/mysql/data:/var/lib/mysql
-    watchtower:
-        image: containrrr/watchtower
-        volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
-            - /home/docker/config.json:/config.json
-        command: --interval 5
