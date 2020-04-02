@@ -6,6 +6,8 @@ services:
         restart: on-failure
         env_file:
             - config.env
+	environment:
+	    - MYSQL_ROOT_HOST=%
         volumes:
             - /home/mysql:/var/lib/mysql
     bot:
