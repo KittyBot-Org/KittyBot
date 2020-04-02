@@ -38,7 +38,6 @@ public class KittyBot{
 	public String MYSQL_PASSWORD;
 	
 	public String DEFAULT_PREFIX = ".";
-	public String HOST;
 	public String UNSPLASH_CLIENT_ID;
 	
 	public static void main(String[] args){
@@ -149,11 +148,10 @@ public class KittyBot{
 		
 		MYSQL_HOST = System.getenv("MYSQL_HOST");
 		MYSQL_PORT = System.getenv("MYSQL_PORT");
-		MYSQL_DB = System.getenv("MYSQL_DB");
+		MYSQL_DB = System.getenv("MYSQL_DATABASE");
 		MYSQL_USER = System.getenv("MYSQL_USER");
 		MYSQL_PASSWORD = System.getenv("MYSQL_PASSWORD");
 		
-		HOST = System.getenv("HOST");
 		UNSPLASH_CLIENT_ID = System.getenv("UNSPLASH_CLIENT_ID");
 	}
 	
