@@ -20,8 +20,13 @@ public class OnGuildMessageReactionAddEvent extends ListenerAdapter{
 		}
 		
 		ReactiveMessage reactiveMessage = main.commandManager.getReactiveMessage(event.getGuild(), event.getMessageId());
-		if(reactiveMessage != null && (reactiveMessage.userId.equals("-1") || reactiveMessage.userId.equals(event.getUserId()))){
-			main.commandManager.commands.get(reactiveMessage.command).reactionAdd(event.getChannel().retrieveMessageById(reactiveMessage.commandId).complete(), event);
+		if(reactiveMessage != null) {
+			if(reactiveMessage.allowed.equals("-1") || reactiveMessage.allowed.equals(event.getUserId())) {
+				main.commandManager.commands.get(reactiveMessage.command).reactionAdd(event.getChannel().retrieveMessageById(reactiveMessage.commandId).complete(), event);
+			}
+			else {
+				event.getReaction().removeReaction(event.getUser()).queue();
+			}
 		}
 	}
 	

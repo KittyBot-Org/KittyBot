@@ -99,7 +99,7 @@ public class RolesCommand extends ACommand{
 			}
 			eb.addField("**Emote:**" + Emotes.BLANK.get() + "**Role:**", value, true);
 			Message message = event.getChannel().sendMessage(eb.build()).complete();
-			main.commandManager.addReactiveMessage(event, message, this, event.getAuthor().getId());
+			main.commandManager.addReactiveMessage(event, message, this, "-1");
 			for(Map.Entry<Role, Emote> r : roles.entrySet()){
 				message.addReaction(r.getValue()).queue();
 			}
