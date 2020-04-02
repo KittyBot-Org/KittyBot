@@ -72,9 +72,12 @@ public class Logger{
 				message = message.substring(0, 1993) + "...";
 			}
 			message += "\n```";
-			PrivateChannel channel = main.jda.getUserById(main.ADMIN_DISCORD_ID).openPrivateChannel().complete();
-			channel.sendMessage(message).queue();
+			sendDM(message);
 		}
+	}
+
+	public static void sendDM(String message) {
+		main.jda.getUserById(main.ADMIN_DISCORD_ID).openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(message).queue());
 	}
 	
 	public static void debug(String string){

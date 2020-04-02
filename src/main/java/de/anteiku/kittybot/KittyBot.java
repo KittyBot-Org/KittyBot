@@ -51,31 +51,21 @@ public class KittyBot{
 		logger = new Logger(this);
 		
 		boolean connected = false;
-		int tries = 0;
 		while(!connected) {
-			tries++;
 			try{
 				database = new Database(this);
 				connected = true;
 			}
 			catch(SQLException e) {
-				Logger.error(e);
+				//Logger.error(e); don't want to spam console with this
 				Logger.print("Could not connect to database...");
 				Logger.print("Retrying in 5 seconds...");
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(5000);
 				} catch (InterruptedException ex) {
 					Logger.error(ex);
 				}
 			}
-			finally {
-				if(tries > 20) {
-					Logger.print("Too many retries...");
-					Logger.print("Shutting down KittyBot...");
-					System.exit(1);
-				}
-			}
-
 		}
 		
 		rand = new Random();
@@ -134,6 +124,7 @@ public class KittyBot{
 			commandManager.add(new TestCommand(this));
 			
 			taskManager = new TaskManager(this);
+			Logger.sendDM("KittyBot started!");
 		}
 		catch(Exception e){
 			Logger.error(e);
