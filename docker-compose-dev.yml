@@ -16,4 +16,4 @@ services:
         env_file:
             - config.env
         volumes:
-            - /home/mysql/data:/var/lib/mysql
+            - /home/mysql/dev:/var/lib/mysql

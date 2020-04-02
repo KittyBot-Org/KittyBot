@@ -9,7 +9,7 @@ services:
         environment:
             - MYSQL_ROOT_HOST=%
         volumes:
-            - /home/mysql:/var/lib/mysql
+            - /home/mysql/1:/var/lib/mysql
     bot:
         image: topisenpai/kittybot:latest
         restart: on-failure
@@ -22,7 +22,6 @@ services:
         restart: on-failure
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
-            - /home/docker/config.json:/config.json
         command: --interval 5
         depends_on:
             - bot
