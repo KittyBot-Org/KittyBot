@@ -14,9 +14,6 @@ import java.util.regex.Pattern;
 public class CommandManager{
 	
 	public Map<String, ACommand> commands;
-	public Map<Long, Long> msgCtrl = new HashMap<>();
-	public Map<Long, ACommand> controllableMsgs = new HashMap<>();
-	public Map<Long, Long> commandMessages = new HashMap<>();
 	private KittyBot main;
 	
 	public CommandManager(KittyBot main){

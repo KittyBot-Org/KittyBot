@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+    bot:
+        build: .
+        restart: always
+        env_file:
+            - config.env
+        volumes:
+            - ./options.cfg:/home/kittybot/options.cfg
+        depends_on:
+            - database
+    database:
+        image: mysql:latest
+        restart: always
+        env_file:
+            - config.env
+        volumes:
+            - /home/mysql/data:/var/lib/mysql
+    watchtower:
+        image: containrrr/watchtower
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /home/docker/config.json:/config.json
+        command: --interval 5

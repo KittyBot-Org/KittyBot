@@ -72,7 +72,7 @@ public class Logger{
 				message = message.substring(0, 1993) + "...";
 			}
 			message += "\n```";
-			PrivateChannel channel = main.jda.getUserById(main.config.get("admin_discord_id")).openPrivateChannel().complete();
+			PrivateChannel channel = main.jda.getUserById(main.ADMIN_DISCORD_ID).openPrivateChannel().complete();
 			channel.sendMessage(message).queue();
 		}
 	}

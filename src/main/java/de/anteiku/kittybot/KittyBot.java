@@ -1,7 +1,6 @@
 package de.anteiku.kittybot;
 
 import de.anteiku.kittybot.commands.*;
-import de.anteiku.kittybot.config.Config;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.events.*;
 import de.anteiku.kittybot.tasks.TaskManager;
@@ -19,29 +18,39 @@ import java.util.*;
 public class KittyBot{
 	
 	public final OkHttpClient httpClient;
-	public String unsplashClientId;
-	public String host;
-	public String defaultPrefix = ".";
 	
 	public JDA jda;
 	public Logger logger;
-	public Config config;
 	public CommandManager commandManager;
 	public TaskManager taskManager;
 	public Database database;
 	public WebService webService;
 	public Random rand;
 	
+	public String DISCORD_BOT_TOKEN;
+	public String DISCORD_BOT_SECRET;
+	public String ADMIN_DISCORD_ID;
+	
+	public String MYSQL_HOST;
+	public String MYSQL_PORT;
+	public String MYSQL_DB;
+	public String MYSQL_USER;
+	public String MYSQL_PASSWORD;
+	
+	public String DEFAULT_PREFIX = ".";
+	public String HOST;
+	public String UNSPLASH_CLIENT_ID;
+	
 	public static void main(String[] args){
 		new KittyBot();
 	}
 	
 	public KittyBot(){
+		setEnvVars();
+		
 		httpClient = new OkHttpClient();
 		logger = new Logger(this);
 		
-		config = new Config("options.cfg");
-
 		boolean connected = false;
 		int tries = 0;
 		while(!connected) {
@@ -70,13 +79,6 @@ public class KittyBot{
 
 		}
 		
-		String discordToken = config.get("discord_token");
-		host = config.get("host");
-		unsplashClientId = config.get("unsplash_client_id");
-		if(discordToken.equals("") || unsplashClientId.equals("")){
-			Logger.print("Please set the api token in '" + config.getName() + "'!");
-			close();
-		}
 		rand = new Random();
 		new ConsoleThread(this);
 		try{
@@ -94,8 +96,8 @@ public class KittyBot{
 					GatewayIntent.DIRECT_MESSAGE_REACTIONS,
 					GatewayIntent.DIRECT_MESSAGE_TYPING
 				)
-				.setToken(discordToken)
-				.setActivity(Activity.of(Activity.ActivityType.LISTENING, "to you!"))
+				.setToken(DISCORD_BOT_TOKEN)
+				.setActivity(Activity.listening("to you!"))
 				.addEventListeners(
 					new OnGuildMemberJoinEvent(this),
 					new OnGuildMemberRemoveEvent(this),
@@ -140,7 +142,22 @@ public class KittyBot{
 		}
 	}
 	
-	public void close(){
+	private void setEnvVars() {
+		DISCORD_BOT_TOKEN = System.getenv("DISCORD_BOT_TOKEN");
+		DISCORD_BOT_SECRET = System.getenv("DISCORD_BOT_SECRET");
+		ADMIN_DISCORD_ID = System.getenv("ADMIN_DISCORD_ID");
+		
+		MYSQL_HOST = System.getenv("MYSQL_HOST");
+		MYSQL_PORT = System.getenv("MYSQL_PORT");
+		MYSQL_DB = System.getenv("MYSQL_DB");
+		MYSQL_USER = System.getenv("MYSQL_USER");
+		MYSQL_PASSWORD = System.getenv("MYSQL_PASSWORD");
+		
+		HOST = System.getenv("HOST");
+		UNSPLASH_CLIENT_ID = System.getenv("UNSPLASH_CLIENT_ID");
+	}
+	
+	public void close() {
 		try{
 			database.close();
 			logger.close();
@@ -149,7 +166,6 @@ public class KittyBot{
 		catch(NullPointerException e){
 			System.exit(0);
 		}
-		
 	}
 	
 }

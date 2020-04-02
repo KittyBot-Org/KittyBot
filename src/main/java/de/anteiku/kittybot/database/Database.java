@@ -18,8 +18,8 @@ public class Database{
     
     public Database(KittyBot main) throws SQLException {
         this.main = main;
-        this.sql = SQL.newInstance(main.config.get("mysql_host"), main.config.get("mysql_port"), main.config.get("mysql_user"), main.config.get("mysql_password"), main.config.get("mysql_db"));
-        sql.use(main.config.get("mysql_db"));
+        this.sql = SQL.newInstance(main.MYSQL_HOST, main.MYSQL_PORT, main.MYSQL_USER, main.MYSQL_PASSWORD, main.MYSQL_DB);
+        //sql.use(main.MYSQL_DB);
         sql.execute("CREATE TABLE IF NOT EXISTS `guilds` (" +
             "`id` varchar(18) NOT NULL," +
             "`command_prefix` varchar(1) NOT NULL," +
@@ -104,7 +104,7 @@ public class Database{
     
     private boolean registerGuild(Guild guild){
         Logger.print("Registering new guild: '" + guild.getId() + "'");
-        return sql.execute("INSERT INTO `guilds` (id, command_prefix, request_channel_id, requests_enabled, welcome_channel_id, welcome_message, welcome_message_enabled, nsfw_enabled) " + "VALUES ('" + guild.getId() + "', '" + main.defaultPrefix + "', '-1', 0, '" + guild.getDefaultChannel().getId() + "', 'Welcome [username] to this server!', 1, 1)");
+        return sql.execute("INSERT INTO `guilds` (id, command_prefix, request_channel_id, requests_enabled, welcome_channel_id, welcome_message, welcome_message_enabled, nsfw_enabled) " + "VALUES ('" + guild.getId() + "', '" + main.DEFAULT_PREFIX + "', '-1', 0, '" + guild.getDefaultChannel().getId() + "', 'Welcome [username] to this server!', 1, 1)");
     }
     
     private Map<String, String> get(String guildId, String... keys){

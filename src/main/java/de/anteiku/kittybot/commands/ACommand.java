@@ -218,7 +218,7 @@ public abstract class ACommand{
 	
 	protected Message sendUnsplashImage(Message message, String search){
 		try{
-			Request request = new Request.Builder().url("https://unsplash.com/photos/random/?client_id=" + main.unsplashClientId + "&query=" + search).build();
+			Request request = new Request.Builder().url("https://unsplash.com/photos/random/?client_id=" + main.UNSPLASH_CLIENT_ID + "&query=" + search).build();
 			String url = JsonParser.parseString(main.httpClient.newCall(request).execute().body().string()).getAsJsonObject().get("urls").getAsJsonObject().get("regular").getAsString();
 			return sendImage(message.getTextChannel(), url);
 		}

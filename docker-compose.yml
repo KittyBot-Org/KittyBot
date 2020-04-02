@@ -1,23 +1,26 @@
 version: '3.7'
 
 services:
-    bot:
-        build: .
-        volumes: 
-            - ./options.cfg:/home/kittybot/options.cfg
-        restart: always
-        depends_on:
-            - database
     database:
         image: mysql:latest
-        restart: always
+        restart: on-failure
         env_file:
             - config.env
         volumes:
-            - /home/mysql/data:/var/lib/mysql
+            - /home/mysql:/var/lib/mysql
+    bot:
+        image: topisenpai/kittybot:latest
+        restart: on-failure
+        env_file:
+            - config.env
+        depends_on:
+            - database
     watchtower:
-        image: containrrr/watchtower
+        image: containrrr/watchtower:latest
+        restart: on-failure
         volumes:
-        - /var/run/docker.sock:/var/run/docker.sock
-        - /home/docker/config.json:/config.json
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /home/docker/config.json:/config.json
         command: --interval 5
+        depends_on:
+            - bot
