@@ -6,8 +6,6 @@ services:
         restart: always
         env_file:
             - config.env
-        environment:
-            - MYSQL_ROOT_HOST=%
         volumes:
             - /home/mysql/live:/var/lib/mysql
     bot:
@@ -17,11 +15,3 @@ services:
             - config.env
         depends_on:
             - database
-    watchtower:
-        image: containrrr/watchtower:latest
-        restart: always
-        volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
-        command: --interval 60
-        depends_on:
-            - bot
