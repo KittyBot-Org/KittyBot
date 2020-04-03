@@ -7,7 +7,7 @@ if [[ "$1" == "dev" ]]; then
 	mode="development"
 fi
 
-echo "Starting Docker Containers in $mode..."
+echo "Starting containers in $mode mode..."
 
 docker-compose -f $file up -d
 
