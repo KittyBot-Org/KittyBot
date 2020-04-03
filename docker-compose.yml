@@ -9,7 +9,7 @@ services:
         environment:
             - MYSQL_ROOT_HOST=%
         volumes:
-            - /home/mysql/1:/var/lib/mysql
+            - /home/mysql/live:/var/lib/mysql
     bot:
         image: topisenpai/kittybot:latest
         restart: on-failure

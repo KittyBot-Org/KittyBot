@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
     bot:
-        build: .
+        image: topisenpai/kittybot:staging
         restart: always
         env_file:
             - config.env
@@ -14,4 +14,4 @@ services:
         env_file:
             - config.env
         volumes:
-            - /home/mysql/dev:/var/lib/mysql
+            - /home/mysql/staging:/var/lib/mysql
