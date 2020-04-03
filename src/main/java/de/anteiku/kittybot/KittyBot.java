@@ -121,6 +121,7 @@ public class KittyBot{
 			commandManager.add(new CuddleCommand(this));
 			commandManager.add(new KurapikaCommand(this));
 			commandManager.add(new OptionsCommand(this));
+			commandManager.add(new EmoteStealCommand(this));
 			commandManager.add(new TestCommand(this));
 			
 			taskManager = new TaskManager(this);

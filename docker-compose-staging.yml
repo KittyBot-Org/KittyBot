@@ -1,13 +1,6 @@
 version: '3.7'
 
 services:
-    bot:
-        image: topisenpai/kittybot:staging
-        restart: always
-        env_file:
-            - config.env
-        depends_on:
-            - database
     database:
         image: mysql:latest
         restart: always
@@ -15,11 +8,10 @@ services:
             - config.env
         volumes:
             - /home/mysql/staging:/var/lib/mysql
-    watchtower:
-        image: containrrr/watchtower:latest
+    bot:
+        image: topisenpai/kittybot:staging
         restart: always
-        volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
-        command: --interval 60
+        env_file:
+            - config.env
         depends_on:
-            - bot
+            - database
