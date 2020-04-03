@@ -3,7 +3,7 @@ version: '3.7'
 services:
     database:
         image: mysql:latest
-        restart: on-failure
+        restart: always
         env_file:
             - config.env
         environment:
@@ -12,16 +12,16 @@ services:
             - /home/mysql/live:/var/lib/mysql
     bot:
         image: topisenpai/kittybot:latest
-        restart: on-failure
+        restart: always
         env_file:
             - config.env
         depends_on:
             - database
     watchtower:
         image: containrrr/watchtower:latest
-        restart: on-failure
+        restart: always
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
-        command: --interval 5
+        command: --interval 60
         depends_on:
             - bot
