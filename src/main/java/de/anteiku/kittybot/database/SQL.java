@@ -3,7 +3,6 @@ package de.anteiku.kittybot.database;
 import de.anteiku.kittybot.utils.Logger;
 
 import java.sql.*;
-import java.util.Map;
 
 public class SQL {
 
@@ -22,7 +21,6 @@ public class SQL {
     }
     
     public void use(String db) {
-        execute("CREATE DATABASE IF NOT EXISTS " + db + "");
         execute("USE `" + db + "`");
     }
 

@@ -6,7 +6,9 @@ import com.google.gson.JsonSyntaxException;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.utils.Emotes;
 import de.anteiku.kittybot.utils.Logger;
+import de.anteiku.kittybot.utils.ReactiveMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -89,10 +91,10 @@ public abstract class ACommand{
 		return usage;
 	}
 	
-	public void reactionAdd(Message command, GuildMessageReactionAddEvent event){
-		if(event.getReactionEmote().getName().equals(Emotes.WASTEBASKET.get())){
+	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
+		if(event.getReactionEmote().getName().equals(Emotes.WASTEBASKET.get()) && (event.getUserId().equals(reactiveMessage.userId) || event.getMember().hasPermission(Permission.MESSAGE_MANAGE))){
 			event.getChannel().deleteMessageById(event.getMessageId()).queue();
-			command.delete().queue();
+			event.getChannel().deleteMessageById(reactiveMessage.commandId).queue();
 			main.commandManager.removeReactiveMessage(event.getGuild(), event.getMessageId());
 		}
 		else if(event.getReactionEmote().getName().equals(Emotes.QUESTION.get())){

@@ -2,6 +2,7 @@ package de.anteiku.kittybot.commands;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.utils.Emotes;
+import de.anteiku.kittybot.utils.ReactiveMessage;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
@@ -23,8 +24,8 @@ public class NekoCommand extends ACommand{
 	}
 
 	@Override
-	public void reactionAdd(Message command, GuildMessageReactionAddEvent event){
-		super.reactionAdd(command, event);
+	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
+		super.reactionAdd(reactiveMessage, event);
 	}
 
 	@Override

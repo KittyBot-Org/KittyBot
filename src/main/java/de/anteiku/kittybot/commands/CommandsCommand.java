@@ -2,6 +2,7 @@ package de.anteiku.kittybot.commands;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.utils.Emotes;
+import de.anteiku.kittybot.utils.ReactiveMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -65,7 +66,7 @@ public class CommandsCommand extends ACommand{
 	}
 	
 	@Override
-	public void reactionAdd(Message command, GuildMessageReactionAddEvent event){
+	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
 		if(event.getReactionEmote().getName().equals(Emotes.ARROW_LEFT.get())){
 			prevPage(event.getChannel().retrieveMessageById(event.getMessageId()).complete());
 			event.getReaction().removeReaction(event.getUser()).queue();
@@ -74,7 +75,7 @@ public class CommandsCommand extends ACommand{
 			nextPage(event.getChannel().retrieveMessageById(event.getMessageId()).complete());
 			event.getReaction().removeReaction(event.getUser()).queue();
 		}
-		super.reactionAdd(command, event);
+		super.reactionAdd(reactiveMessage, event);
 	}
 	
 	public void prevPage(Message message){
