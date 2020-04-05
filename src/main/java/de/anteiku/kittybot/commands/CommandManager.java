@@ -45,10 +45,10 @@ public class CommandManager{
 		for(Map.Entry<String, ACommand> c : commands.entrySet()){
 			ACommand cmd = c.getValue();
 			if(cmd.checkCmd(command)){
-				event.getChannel().sendTyping().queue();
+				//event.getChannel().sendTyping().queue(); answer is sending too fast and I don't want to block the thread lol
 				String[] args = getArgs(message, prefix);
 				if(args == null){
-					cmd.sendError(event.getMessage(), "Please fix your");
+					cmd.sendError(event.getMessage(), "Please fix your dafuq?!");
 					return;
 				}
 				cmd.run(args, event);

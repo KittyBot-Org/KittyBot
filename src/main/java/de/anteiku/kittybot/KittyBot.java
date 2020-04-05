@@ -4,6 +4,7 @@ import de.anteiku.kittybot.commands.*;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.events.*;
 import de.anteiku.kittybot.tasks.TaskManager;
+import de.anteiku.kittybot.utils.Config;
 import de.anteiku.kittybot.utils.Logger;
 import de.anteiku.kittybot.webservice.WebService;
 import net.dv8tion.jda.api.JDA;
@@ -45,10 +46,9 @@ public class KittyBot{
 	}
 	
 	public KittyBot(){
-		setEnvVars();
-		
-		httpClient = new OkHttpClient();
 		logger = new Logger(this);
+		httpClient = new OkHttpClient();
+		setEnvVars();
 		
 		boolean connected = false;
 		while(!connected) {
@@ -57,9 +57,9 @@ public class KittyBot{
 				connected = true;
 			}
 			catch(SQLException e) {
-				//Logger.error(e); don't want to spam console with this
 				Logger.print("Could not connect to database...");
 				Logger.print("Retrying in 5 seconds...");
+				Logger.error(e);
 				try {
 					Thread.sleep(5000);
 				} catch (InterruptedException ex) {
@@ -105,23 +105,25 @@ public class KittyBot{
 			commandManager = new CommandManager(this);
 			commandManager.add(new HelpCommand(this));
 			commandManager.add(new CommandsCommand(this));
+			commandManager.add(new EmoteStealCommand(this));
 			commandManager.add(new RolesCommand(this));
+			
+			commandManager.add(new PatCommand(this));
+			commandManager.add(new PokeCommand(this));
+			commandManager.add(new HugCommand(this));
+			commandManager.add(new CuddleCommand(this));
+			commandManager.add(new KissCommand(this));
+			commandManager.add(new TickleCommand(this));
+			commandManager.add(new FeedCommand(this));
+			commandManager.add(new SlapCommand(this));
+			
+			commandManager.add(new KurapikaCommand(this));
 			commandManager.add(new QuokkaCommand(this));
 			commandManager.add(new TurtleCommand(this));
 			commandManager.add(new CatCommand(this));
 			commandManager.add(new DogCommand(this));
 			commandManager.add(new NekoCommand(this));
-			commandManager.add(new PokeCommand(this));
-			commandManager.add(new TickleCommand(this));
-			commandManager.add(new HugCommand(this));
-			commandManager.add(new FeedCommand(this));
-			commandManager.add(new KissCommand(this));
-			commandManager.add(new SlapCommand(this));
-			commandManager.add(new PatCommand(this));
-			commandManager.add(new CuddleCommand(this));
-			commandManager.add(new KurapikaCommand(this));
 			commandManager.add(new OptionsCommand(this));
-			commandManager.add(new EmoteStealCommand(this));
 			commandManager.add(new TestCommand(this));
 			
 			taskManager = new TaskManager(this);
@@ -134,17 +136,31 @@ public class KittyBot{
 	}
 	
 	private void setEnvVars() {
-		DISCORD_BOT_TOKEN = System.getenv("DISCORD_BOT_TOKEN");
-		DISCORD_BOT_SECRET = System.getenv("DISCORD_BOT_SECRET");
-		ADMIN_DISCORD_ID = System.getenv("ADMIN_DISCORD_ID");
-		
-		MYSQL_HOST = System.getenv("MYSQL_HOST");
-		MYSQL_PORT = System.getenv("MYSQL_PORT");
-		MYSQL_DB = System.getenv("MYSQL_DATABASE");
-		MYSQL_USER = System.getenv("MYSQL_USER");
-		MYSQL_PASSWORD = System.getenv("MYSQL_PASSWORD");
-		
-		UNSPLASH_CLIENT_ID = System.getenv("UNSPLASH_CLIENT_ID");
+		Config cfg = new Config("config.env");
+		if(cfg.exists()){
+			Logger.print("Loading env vars from file...");
+			DISCORD_BOT_TOKEN = cfg.get("DISCORD_BOT_TOKEN");
+			DISCORD_BOT_SECRET = cfg.get("DISCORD_BOT_SECRET");
+			ADMIN_DISCORD_ID =cfg.get("ADMIN_DISCORD_ID");
+			MYSQL_HOST = cfg.get("MYSQL_HOST");
+			MYSQL_PORT = cfg.get("MYSQL_PORT");
+			MYSQL_DB = cfg.get("MYSQL_DATABASE");
+			MYSQL_USER = cfg.get("MYSQL_USER");
+			MYSQL_PASSWORD = cfg.get("MYSQL_PASSWORD");
+			UNSPLASH_CLIENT_ID = cfg.get("UNSPLASH_CLIENT_ID");
+		}
+		else {
+			Logger.print("Loading env vars from system...");
+			DISCORD_BOT_TOKEN = System.getenv("DISCORD_BOT_TOKEN");
+			DISCORD_BOT_SECRET = System.getenv("DISCORD_BOT_SECRET");
+			ADMIN_DISCORD_ID = System.getenv("ADMIN_DISCORD_ID");
+			MYSQL_HOST = System.getenv("MYSQL_HOST");
+			MYSQL_PORT = System.getenv("MYSQL_PORT");
+			MYSQL_DB = System.getenv("MYSQL_DATABASE");
+			MYSQL_USER = System.getenv("MYSQL_USER");
+			MYSQL_PASSWORD = System.getenv("MYSQL_PASSWORD");
+			UNSPLASH_CLIENT_ID = System.getenv("UNSPLASH_CLIENT_ID");
+		}
 	}
 	
 	public void close() {

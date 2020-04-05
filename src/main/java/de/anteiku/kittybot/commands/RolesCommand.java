@@ -3,6 +3,7 @@ package de.anteiku.kittybot.commands;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.utils.API;
 import de.anteiku.kittybot.utils.Emotes;
+import de.anteiku.kittybot.utils.ReactiveMessage;
 import de.anteiku.kittybot.utils.ValuePair;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -108,8 +109,8 @@ public class RolesCommand extends ACommand{
 	}
 	
 	@Override
-	public void reactionAdd(Message command, GuildMessageReactionAddEvent event){
-		super.reactionAdd(command, event);
+	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
+		super.reactionAdd(reactiveMessage, event);
 		Map<Role, Emote> roles = getRoleEmoteMap(event.getGuild());
 		for(Map.Entry<Role, Emote> r : roles.entrySet()){
 			if(event.getReactionEmote().isEmote() && event.getReactionEmote().getId().equals(r.getValue().getId())){
