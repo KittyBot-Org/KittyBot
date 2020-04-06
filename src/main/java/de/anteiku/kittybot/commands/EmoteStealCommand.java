@@ -5,6 +5,7 @@ import de.anteiku.kittybot.utils.Logger;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Icon;
+import net.dv8tion.jda.api.entities.ListedEmote;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.io.IOException;
@@ -30,33 +31,34 @@ public class EmoteStealCommand extends ACommand{
 			return;
 		}
 		List<Emote> emotes = event.getMessage().getEmotes();
+		List<Emote> guildEmotes = event.getGuild().getEmotes();
+		int emotesStolen = 0;
+		int emotesNotStolen = 0;
 		if(!emotes.isEmpty()) {
-			boolean success = true;
 			for(Emote emote : emotes) {
-				if(emote.getGuild().getId().equals(event.getGuild().getId())) {
+				if(guildEmotes.contains(emote)) {
+					emotesNotStolen++;
 					continue;
 				}
 				try{
-					Icon icon = Icon.from(new URL(emote.getImageUrl()).openStream());
-					event.getGuild().createEmote(emote.getName(), icon).queue();
+					event.getGuild().createEmote(emote.getName(), Icon.from(new URL(emote.getImageUrl()).openStream())).queue();
+					emotesStolen++;
 				}
 				catch(IOException e){
 					Logger.error(e);
 					sendError(event.getMessage(), "There was a problem stealing " + emote.getAsMention());
-					success = false;
+					emotesNotStolen++;
 				}
 			}
-			if(success) {
-				StringBuilder msg = new StringBuilder("Following emote");
-				if(emotes.size() > 1) {
-					msg.append("s");
-				}
-				msg.append(" stolen: \n");
-				for(Emote emote : emotes) {
-					msg.append(emote.getAsMention()).append(" ");
-				}
-				sendAnswer(event.getMessage(), msg.toString());
+			String emotesStolenMsg = "";
+			String emotesNotStolenMsg = "";
+			if(emotesStolen > 0) {
+				emotesStolenMsg = emotesStolen + " Emotes stolen\n";
 			}
+			if(emotesNotStolen > 0) {
+				emotesNotStolenMsg = emotesNotStolen + " Emotes not stolen";
+			}
+			sendAnswer(event.getMessage(), emotesStolenMsg + emotesNotStolenMsg);
 		}
 		else {
 			sendUsage(event.getChannel());
