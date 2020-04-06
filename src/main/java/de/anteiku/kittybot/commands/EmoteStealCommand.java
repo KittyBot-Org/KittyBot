@@ -14,7 +14,7 @@ import java.util.List;
 public class EmoteStealCommand extends ACommand{
 
 	public static String COMMAND = "steal";
-	public static String USAGE = "steal <Emote/ID, ...>";
+	public static String USAGE = "steal <Emote, Emote, ...>";
 	public static String DESCRIPTION = "Steals some emotes";
 	protected static String[] ALIAS = {"grab", "klau"};
 
