@@ -30,15 +30,6 @@ public class EmoteStealCommand extends ACommand{
 			return;
 		}
 		List<Emote> emotes = event.getMessage().getEmotes();
-		for(String arg : args) {
-			try{
-				Long.parseLong(arg);
-				emotes.add(event.getGuild().retrieveEmoteById(arg).complete());
-			}
-			catch(NumberFormatException e) {
-				Logger.error(e);
-			}
-		}
 		if(!emotes.isEmpty()) {
 			boolean success = true;
 			for(Emote emote : emotes) {
