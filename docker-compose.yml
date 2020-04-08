@@ -7,7 +7,7 @@ services:
         env_file:
             - config.env
         volumes:
-            - /home/mysql/live:/var/lib/mysql
+            - ./.mysql/live:/var/lib/mysql
     bot:
         image: topisenpai/kittybot:latest
         restart: always
