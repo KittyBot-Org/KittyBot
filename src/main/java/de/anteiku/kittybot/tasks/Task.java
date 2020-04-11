@@ -1,43 +1,48 @@
 package de.anteiku.kittybot.tasks;
 
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.utils.API;
 import de.anteiku.kittybot.utils.Logger;
 
-public abstract class Task extends Thread{
+import java.util.concurrent.TimeUnit;
+
+public abstract class Task implements Runnable{
 	
 	protected KittyBot main;
 	protected String name;
-	protected long sleep;
-	protected boolean running = true;
+	protected long delay;
+	protected TimeUnit timeUnit;
 	
-	protected Task(KittyBot main, String name, long sleep){
+	protected Task(KittyBot main, String name, long sleep, TimeUnit timeUnit){
 		this.main = main;
 		this.name = name;
-		this.sleep = sleep;
-		start();
+		this.delay = sleep;
+		this.timeUnit = timeUnit;
 	}
 	
 	@Override
 	public void run(){
-		while(running){
-			long start = System.nanoTime();
-			Logger.debug("Running task '" + name + "'!");
-			task();
-			Logger.debug("Task '" + name + "' finished! took '" + API.getMs(start) + "'ms");
-			try{
-				sleep(sleep);
-			}
-			catch(InterruptedException e){
-				Logger.error(e);
-			}
-		}
+		long start = System.currentTimeMillis();
+		Logger.debug("Running task '" + name + "'!");
+		task();
+		Logger.debug("Task '" + name + "' finished! took '" + (System.currentTimeMillis() - start) / 1000 + "'ms");
 	}
 	
 	abstract void task();
 	
-	public String getTaskName(){
+	public void stop(){
+		main.taskManager.stop(name, false);
+	}
+	
+	public String getName(){
 		return name;
+	}
+	
+	public long getDelay(){
+		return delay;
+	}
+	
+	public TimeUnit getTimeUnit(){
+		return timeUnit;
 	}
 	
 }

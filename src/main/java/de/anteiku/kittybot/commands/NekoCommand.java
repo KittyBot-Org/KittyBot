@@ -31,13 +31,16 @@ public class NekoCommand extends ACommand{
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		if(! event.getChannel().isNSFW()){
-			sendError(event.getMessage(), "Sorry but this command can only be used in nsfw channels");
+			sendError(event, "Sorry but this command can only be used in nsfw channels");
 			return;
 		}
 		if(args.length > 0 && nekos.contains(args[0])){
-			Message message = sendImage(event.getMessage(), getNeko(args[0]));
-			main.commandManager.addReactiveMessage(event, message, this, "-1");
-			message.addReaction(Emotes.WASTEBASKET.get()).queue();
+			sendImage(event.getMessage(), getNeko(args[0])).queue(
+				message -> {
+					main.commandManager.addReactiveMessage(event, message, this, "-1");
+					message.addReaction(Emotes.WASTEBASKET.get()).queue();
+				}
+			);
 		}
 		else{
 			sendUsage(event.getMessage());

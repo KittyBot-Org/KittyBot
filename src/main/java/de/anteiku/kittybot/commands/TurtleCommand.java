@@ -17,7 +17,9 @@ public class TurtleCommand extends ACommand{
 	
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
-		sendUnsplashImage(event.getMessage(), "turtle").addReaction(Emotes.TURTLE.get()).queue();
+		sendUnsplashImage(event.getMessage(), "turtle").queue(
+			message -> message.addReaction(Emotes.TURTLE.get()).queue()
+		);
 	}
 	
 }

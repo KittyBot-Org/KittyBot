@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 public class PatCommand extends ACommand{
 
 	public static String COMMAND = "pat";
-	public static String USAGE = "pat <@user>";
+	public static String USAGE = "pat <@user, ...>";
 	public static String DESCRIPTION = "Sends a pat to a user";
 	protected static String[] ALIAS = {"tätschel"};
 
@@ -17,10 +17,10 @@ public class PatCommand extends ACommand{
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		if(args.length == 0){
-			sendUsage(event.getMessage());
+			sendUsage(event);
 			return;
 		}
-		sendReactionImage(event, "pat", "pats");
+		sendReactionImage(event, "pat", "pats").queue();
 	}
 
 }

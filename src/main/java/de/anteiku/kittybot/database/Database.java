@@ -6,6 +6,7 @@ import de.anteiku.kittybot.utils.RandomKey;
 import de.anteiku.kittybot.utils.ReactiveMessage;
 import de.anteiku.kittybot.utils.ValuePair;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -67,7 +68,7 @@ public class Database{
             "`allowed` varchar(18) NOT NULL," +
             "PRIMARY KEY(id, user_id, guild_id)" +
             ")");
-		sql.execute("CREATE TABLE IF NOT EXISTS `statistics` (" +
+		sql.execute("CREATE TABLE IF NOT EXISTS `user_statistics` (" +
             "`user_id` varchar(18) NOT NULL," +
             "`guild_id` varchar(18) NOT NULL," +
             "`xp` int NOT NULL," +
@@ -78,6 +79,15 @@ public class Database{
             "`emote_count` int NOT NULL," +
             "`last_active` varchar(20) NOT NULL," +
             "PRIMARY KEY(user_id, guild_id)" +
+            ")");
+		sql.execute("CREATE TABLE IF NOT EXISTS `commands` (" +
+            "`id` varchar(18) NOT NULL," +
+            "`guild_id` varchar(18) NOT NULL," +
+            "`user_id` varchar(18) NOT NULL," +
+            "`command` varchar(18) NOT NULL," +
+            "`processing_time` int NOT NULL," +
+            "`time` varchar(20) NOT NULL," +
+            "PRIMARY KEY(id, guild_id)" +
             ")");
 	}
 	
@@ -96,6 +106,30 @@ public class Database{
 	}
 	
 	/*
+	 * Command Statistic specified methods
+	 */
+	
+	public boolean addCommandStatistics(String guildId, String commandId, String userId, String command, long processingTime){
+		return sql.execute("INSERT INTO `commands` (id, guild_id, user_id, command, processing_time, time) VALUES ('" + commandId + "', '" + guildId + "', '" + userId + "', '" + command + "', '" + processingTime + "', '" + System.currentTimeMillis() + "')");
+	}
+	
+	public Map<Long, Long> getCommandStatistics(String guildId, long from, long to){
+		Map<Long, Long> map = new LinkedHashMap<>();
+		ResultSet result = sql.query("SELECT * FROM `commands` WHERE `guild_id` = '" + guildId + "' and `time` > '" + from + "' and `time` < '" + to + "'");
+		try{
+			while(result.next()){
+				map.put(result.getLong("time"), result.getLong("processing_time"));
+			}
+			return map;
+		}
+		catch(SQLException e){
+			Logger.error(e);
+		}
+		return null;
+	}
+	
+	
+	/*
 	 * Guild specified methods
 	 */
 	
@@ -103,10 +137,9 @@ public class Database{
 		return sql.exists("SELECT * FROM `guilds` WHERE `id` = '" + guild.getId() + "'");
 	}
 	
-	
 	private boolean registerGuild(Guild guild){
 		Logger.print("Registering new guild: '" + guild.getId() + "'");
-		return sql.execute("INSERT INTO `guilds` (id, command_prefix, request_channel_id, requests_enabled, welcome_channel_id, welcome_message, welcome_message_enabled, nsfw_enabled) " + "VALUES ('" + guild.getId() + "', '" + main.DEFAULT_PREFIX + "', '-1', 0, '" + guild.getDefaultChannel().getId() + "', 'Welcome [username] to this server!', 1, 1)");
+		return sql.execute("INSERT INTO `guilds` (id, command_prefix, request_channel_id, requests_enabled, welcome_channel_id, welcome_message, welcome_message_enabled, nsfw_enabled) VALUES ('" + guild.getId() + "', '" + main.DEFAULT_PREFIX + "', '-1', 0, '" + guild.getDefaultChannel().getId() + "', 'Welcome [username] to this server!', 1, 1)");
 	}
 	
 	private Map<String, String> get(String guildId, String... keys){

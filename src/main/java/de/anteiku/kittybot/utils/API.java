@@ -49,10 +49,6 @@ public class API{
 		return array;
 	}
 	
-	public static long getMs(long start){
-		return (System.nanoTime() - start) / 1000000;
-	}
-	
 	public static String[] subArray(String[] array, int start){
 		return subArray(array, start, array.length);
 	}

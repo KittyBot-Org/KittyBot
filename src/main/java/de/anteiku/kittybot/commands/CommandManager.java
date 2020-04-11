@@ -52,7 +52,9 @@ public class CommandManager{
 					return;
 				}
 				cmd.run(args, event);
-				Logger.print("Command: '" + command + "' by: '" + event.getAuthor().getName() + "' from: '" + event.getGuild().getName() + "' took '" + API.getMs(start) + "'ms");
+				long processingTime = (System.nanoTime() - start) / 1000000;
+				main.database.addCommandStatistics(event.getGuild().getId(), event.getMessageId(), event.getAuthor().getId(), command, processingTime);
+				Logger.print("Command: '" + command + "' by: '" + event.getAuthor().getName() + "' from: '" + event.getGuild().getName() + "' took '" + processingTime + "'ms");
 			}
 		}
 	}

@@ -27,7 +27,7 @@ public class EmoteStealCommand extends ACommand{
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		if(!event.getMember().hasPermission(Permission.MANAGE_EMOTES)){
-			sendError(event.getMessage(), "Sorry you don't have the permission to manage emotes :(");
+			sendError(event, "Sorry you don't have the permission to manage emotes :(");
 			return;
 		}
 		List<Emote> emotes = event.getMessage().getEmotes();
@@ -46,7 +46,7 @@ public class EmoteStealCommand extends ACommand{
 				}
 				catch(IOException e){
 					Logger.error(e);
-					sendError(event.getMessage(), "There was a problem stealing " + emote.getAsMention());
+					sendError(event, "There was a problem stealing " + emote.getAsMention());
 					emotesNotStolen++;
 				}
 			}
@@ -58,10 +58,10 @@ public class EmoteStealCommand extends ACommand{
 			if(emotesNotStolen > 0) {
 				emotesNotStolenMsg = emotesNotStolen + " Emotes not stolen";
 			}
-			sendAnswer(event.getMessage(), emotesStolenMsg + emotesNotStolenMsg);
+			sendAnswer(event, emotesStolenMsg + emotesNotStolenMsg);
 		}
 		else {
-			sendUsage(event.getChannel());
+			sendUsage(event);
 		}
 	}
 

@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 public class KissCommand extends ACommand{
 
 	public static String COMMAND = "kiss";
-	public static String USAGE = "kiss <@user>";
+	public static String USAGE = "kiss <@user, ...>";
 	public static String DESCRIPTION = "Sends a kiss to a user";
 	protected static String[] ALIAS = {"küss"};
 
@@ -17,10 +17,10 @@ public class KissCommand extends ACommand{
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		if(args.length == 0){
-			sendUsage(event.getMessage());
+			sendUsage(event);
 			return;
 		}
-		sendReactionImage(event, "kiss", "kisses");
+		sendReactionImage(event, "kiss", "kisses").queue();;
 	}
 
 }

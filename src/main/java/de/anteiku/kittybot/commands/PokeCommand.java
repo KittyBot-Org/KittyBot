@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 public class PokeCommand extends ACommand{
 	
 	public static String COMMAND = "poke";
-	public static String USAGE = "poke <@user>";
+	public static String USAGE = "poke <@user, ...>";
 	public static String DESCRIPTION = "Pokes a user";
 	protected static String[] ALIAS = {"stups"};
 	
@@ -17,10 +17,10 @@ public class PokeCommand extends ACommand{
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		if(args.length == 0){
-			sendUsage(event.getMessage());
+			sendUsage(event);
 			return;
 		}
-		sendReactionImage(event, "poke", "pokes");
+		sendReactionImage(event, "poke", "pokes").queue();
 	}
 	
 }

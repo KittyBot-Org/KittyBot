@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import okhttp3.OkHttpClient;
 
 import java.sql.SQLException;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class KittyBot{
@@ -25,8 +26,9 @@ public class KittyBot{
 	public CommandManager commandManager;
 	public TaskManager taskManager;
 	public Database database;
-	public WebService webService;
 	public Random rand;
+	
+	public DateTimeFormatter dateFormatter;
 	
 	public String DISCORD_BOT_TOKEN;
 	public String DISCORD_BOT_SECRET;
@@ -49,6 +51,8 @@ public class KittyBot{
 		logger = new Logger(this);
 		httpClient = new OkHttpClient();
 		setEnvVars();
+		
+		dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy-HH:mm");
 		
 		boolean connected = false;
 		while(!connected) {
@@ -117,13 +121,14 @@ public class KittyBot{
 			commandManager.add(new FeedCommand(this));
 			commandManager.add(new SlapCommand(this));
 			
-			commandManager.add(new KurapikaCommand(this));
 			commandManager.add(new QuokkaCommand(this));
 			commandManager.add(new TurtleCommand(this));
 			commandManager.add(new CatCommand(this));
 			commandManager.add(new DogCommand(this));
 			commandManager.add(new NekoCommand(this));
 			commandManager.add(new OptionsCommand(this));
+			commandManager.add(new EvalCommand(this));
+			commandManager.add(new CommandStatisticsCommand(this));
 			commandManager.add(new TestCommand(this));
 			
 			taskManager = new TaskManager(this);

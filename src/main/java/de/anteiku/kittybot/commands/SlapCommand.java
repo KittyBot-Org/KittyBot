@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 public class SlapCommand extends ACommand{
 	
 	public static String COMMAND = "slap";
-	public static String USAGE = "slap <@user>";
+	public static String USAGE = "slap <@user, ...>";
 	public static String DESCRIPTION = "Slaps a user";
 	protected static String[] ALIAS = {"schlag"};
 	
@@ -17,10 +17,10 @@ public class SlapCommand extends ACommand{
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		if(args.length == 0){
-			sendUsage(event.getMessage());
+			sendUsage(event);
 			return;
 		}
-		sendReactionImage(event, "slap", "slaps");
+		sendReactionImage(event, "slap", "slaps").queue();
 	}
 	
 }

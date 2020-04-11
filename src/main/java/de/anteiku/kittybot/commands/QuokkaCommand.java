@@ -17,7 +17,7 @@ public class QuokkaCommand extends ACommand{
 	
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
-		sendUnsplashImage(event.getMessage(), "quokka").addReaction(Emotes.QUOKKA.get()).queue();
+		sendUnsplashImage(event.getMessage(), "quokka").queue();
 	}
 	
 }

@@ -5,10 +5,10 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 public class FeedCommand extends ACommand{
 
-	public static final String COMMAND = "feed";
-	public static final String USAGE = "feed <@user>";
-	public static final String DESCRIPTION = "Feeds a user";
-	protected static final String[] ALIAS = {"füttern"};
+	public static String COMMAND = "feed";
+	public static String USAGE = "feed <@user, ...>";
+	public static String DESCRIPTION = "Feeds a user";
+	protected static String[] ALIAS = {"füttern"};
 
 	public FeedCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
@@ -17,10 +17,10 @@ public class FeedCommand extends ACommand{
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		if(args.length == 0){
-			sendUsage(event.getMessage());
+			sendUsage(event);
 			return;
 		}
-		sendReactionImage(event, "feed", "feeds");
+		sendReactionImage(event, "feed", "feeds").queue();
 	}
 
 }

@@ -2,47 +2,46 @@ package de.anteiku.kittybot.tasks;
 
 import de.anteiku.kittybot.KittyBot;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 
 public class TaskManager{
 	
 	private KittyBot main;
+	private ScheduledExecutorService ses;
 	
 	private Map<String, Task> tasks;
+	private Map<String, ScheduledFuture<?>> runningTasks;
 	
 	public TaskManager(KittyBot main){
 		this.main = main;
-		init();
+		tasks = new LinkedHashMap<>();
+		runningTasks = new LinkedHashMap<>();
+		ses = Executors.newScheduledThreadPool(1);
 	}
-	
-	private void init(){
-		tasks = new HashMap<>();
+
+	public void addTask(Task task){
+		tasks.put(task.getName(), task);
 	}
 	
 	public void startAll(){
 		for(Map.Entry<String, Task> t : tasks.entrySet()){
-			t.getValue().start();
+			Task task = t.getValue();
+			runningTasks.put(t.getKey(), ses.scheduleAtFixedRate(task, 0, task.getDelay(), task.getTimeUnit()));
 		}
 	}
 	
-	public void stopAll(){
-		for(Map.Entry<String, Task> t : tasks.entrySet()){
-			t.getValue().start();
+	public void stop(String task, boolean interrupt){
+		runningTasks.get(task).cancel(interrupt);
+	}
+	
+	public void stopAll(boolean interrupt){
+		for(Map.Entry<String, ScheduledFuture<?>> t : runningTasks.entrySet()){
+			t.getValue().cancel(interrupt);
 		}
 	}
-	
-	public void registerTask(Task task){
-		tasks.put(task.getTaskName(), task);
-	}
-	
-	public void unregisterTask(Task task){
-		tasks.remove(task);
-	}
-	
-	public void unregisterTask(String task){
-		tasks.remove(task);
-	}
-	
 	
 }
