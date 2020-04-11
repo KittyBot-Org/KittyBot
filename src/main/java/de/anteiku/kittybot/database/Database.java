@@ -6,6 +6,7 @@ import de.anteiku.kittybot.utils.RandomKey;
 import de.anteiku.kittybot.utils.ReactiveMessage;
 import de.anteiku.kittybot.utils.ValuePair;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
