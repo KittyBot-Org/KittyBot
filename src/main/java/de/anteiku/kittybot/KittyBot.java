@@ -6,7 +6,6 @@ import de.anteiku.kittybot.events.*;
 import de.anteiku.kittybot.tasks.TaskManager;
 import de.anteiku.kittybot.utils.Config;
 import de.anteiku.kittybot.utils.Logger;
-import de.anteiku.kittybot.webservice.WebService;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -48,6 +47,7 @@ public class KittyBot{
 	}
 	
 	public KittyBot(){
+
 		logger = new Logger(this);
 		httpClient = new OkHttpClient();
 		setEnvVars();

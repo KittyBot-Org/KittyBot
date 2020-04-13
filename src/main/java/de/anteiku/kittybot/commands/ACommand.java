@@ -18,6 +18,7 @@ import okhttp3.Request;
 
 import java.awt.*;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -127,6 +128,16 @@ public abstract class ACommand{
 	
 	protected MessageAction sendAnswer(TextChannel channel, MessageEmbed answer){
 		return channel.sendMessage(answer);
+	}
+
+	protected MessageAction sendAnswer(GuildMessageReceivedEvent event, byte[] file, String fileName, MessageEmbed embed) {
+		// add attachment://[the file name with extension] in embed
+		return sendAnswer(event, embed).addFile(file, fileName);
+	}
+
+	protected MessageAction sendAnswer(GuildMessageReceivedEvent event, InputStream file, String fileName, MessageEmbed embed){
+		// add attachment://[the file name with extension] in embed
+		return sendAnswer(event, embed).addFile(file, fileName);
 	}
 	
 	protected MessageAction sendAnswer(Message message, String answer, String title){
