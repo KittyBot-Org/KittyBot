@@ -156,8 +156,8 @@ public class Database{
 		return prefix;
 	}
 	
-	public void setCommandPrefix(String guildId, String prefix){
-		set(guildId, "command_prefix", prefix);
+	public boolean setCommandPrefix(String guildId, String prefix){
+		return set(guildId, "command_prefix", prefix);
 	}
 	
 	public Set<ValuePair<String, String>> getSelfAssignableRoles(String guildId){
@@ -176,20 +176,26 @@ public class Database{
 		return null;
 	}
 	
-	public void addSelfAssignableRoles(String guildId, Map<String, String> roles){
+	public boolean addSelfAssignableRoles(String guildId, Map<String, String> roles){
+		boolean result = true;
 		for(Map.Entry<String, String> role : roles.entrySet()) {
-			sql.execute("INSERT INTO `self_assignable_roles` (id, guild_id, emote_id) VALUES ('" + role.getKey() + "', '" + guildId + "', '" + role.getValue() + "')");
+			boolean r = sql.execute("INSERT INTO `self_assignable_roles` (id, guild_id, emote_id) VALUES ('" + role.getKey() + "', '" + guildId + "', '" + role.getValue() + "')");
+			if(!r) return result = false;
 		}
+		return result;
 	}
 	
-	public void addSelfAssignableRole(String guildId, String role, String emote){
-		addSelfAssignableRoles(guildId, new HashMap<>(Collections.singletonMap(role, emote)));
+	public boolean addSelfAssignableRole(String guildId, String role, String emote){
+		return addSelfAssignableRoles(guildId, new HashMap<>(Collections.singletonMap(role, emote)));
 	}
 	
-	public void removeSelfAssignableRoles(String guildId,  Set<String> roles){
+	public boolean removeSelfAssignableRoles(String guildId,  Set<String> roles){
+		boolean result = true;
 		for(String role : roles) {
-			sql.execute("DELETE FROM `self_assignable_roles` WHERE `id` = '" + role + "' and `guild_id` = '" + guildId + "'");
+			boolean r = sql.execute("DELETE FROM `self_assignable_roles` WHERE `id` = '" + role + "' and `guild_id` = '" + guildId + "'");
+			if(!r) return result = false;
 		}
+		return result;
 	}
 	
 	public void removeSelfAssignableRole(String guildId,  String role){
@@ -200,40 +206,40 @@ public class Database{
 		return get(guildId, "welcome_channel_id");
 	}
 	
-	public void setWelcomeChannelId(String guildId, String channelId){
-		set(guildId, "welcome_channel_id", channelId);
+	public boolean setWelcomeChannelId(String guildId, String channelId){
+		return set(guildId, "welcome_channel_id", channelId);
 	}
 	
 	public String getWelcomeMessage(String guildId){
 		return get(guildId, "welcome_message");
 	}
 	
-	public void setWelcomeMessage(String guildId, String message){
-		set(guildId, "welcome_message", message);
+	public boolean setWelcomeMessage(String guildId, String message){
+		return set(guildId, "welcome_message", message);
 	}
 	
 	public boolean getWelcomeMessageEnabled(String guildId){
 		return Boolean.getBoolean(get(guildId, "welcome_message_enabled"));
 	}
 	
-	public void setWelcomeMessageEnabled(String guildId, boolean enabled){
-		set(guildId, "welcome_message_enabled", enabled ? 1 : 0);
+	public boolean setWelcomeMessageEnabled(String guildId, boolean enabled){
+		return set(guildId, "welcome_message_enabled", enabled ? 1 : 0);
 	}
 	
 	public boolean getNSFWEnabled(String guildId){
 		return Boolean.getBoolean(get(guildId, "nsfw_enabled"));
 	}
 	
-	public void setNSFWEnabled(String guildId, boolean enabled){
-		set(guildId, "nsfw_enabled", enabled ? 1 : 0);
+	public boolean setNSFWEnabled(String guildId, boolean enabled){
+		return set(guildId, "nsfw_enabled", enabled ? 1 : 0);
 	}
 	
-	public void addReactiveMessage(String guildId, String userId, String messageId, String commandId, String command, String allowed) {
-		sql.execute("INSERT INTO `reactive_messages` (id, command_id, user_id, guild_id, command, allowed) VALUES ('" + messageId + "', '" + commandId + "', '" + userId + "', '" + guildId + "', '" + command + "', '" + allowed + "')");
+	public boolean addReactiveMessage(String guildId, String userId, String messageId, String commandId, String command, String allowed) {
+		return sql.execute("INSERT INTO `reactive_messages` (id, command_id, user_id, guild_id, command, allowed) VALUES ('" + messageId + "', '" + commandId + "', '" + userId + "', '" + guildId + "', '" + command + "', '" + allowed + "')");
 	}
 	
-	public void removeReactiveMessage(String guildId, String messageId) {
-		sql.execute("DELETE FROM `reactive_messages` WHERE `id` = '" + messageId + "' AND `guild_id` = '" + guildId + "'");
+	public boolean removeReactiveMessage(String guildId, String messageId) {
+		return sql.execute("DELETE FROM `reactive_messages` WHERE `id` = '" + messageId + "' AND `guild_id` = '" + guildId + "'");
 	}
 	
 	public ReactiveMessage isReactiveMessage(String guildId, String messageId) {
@@ -271,8 +277,8 @@ public class Database{
 		return key;
 	}
 	
-	public void deleteSession(String key){
-		sql.query("DELETE FROM `sessions` WHERE `id` = '" + key + "'");
+	public boolean deleteSession(String key){
+		return sql.execute("DELETE FROM `sessions` WHERE `id` = '" + key + "'");
 	}
 	
 	public String getSession(String key){
