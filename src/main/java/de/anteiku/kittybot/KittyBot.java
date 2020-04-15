@@ -92,6 +92,7 @@ public class KittyBot{
 				.setToken(DISCORD_BOT_TOKEN)
 				.setActivity(Activity.listening("to you!"))
 				.addEventListeners(
+					new OnGuildJoinEvent(this),
 					new OnGuildMemberJoinEvent(this),
 					new OnGuildMemberRemoveEvent(this),
 					new OnGuildMemberUpdateBoostTimeEvent(this),
@@ -128,7 +129,6 @@ public class KittyBot{
 			commandManager.add(new NekoCommand(this));
 			commandManager.add(new OptionsCommand(this));
 			commandManager.add(new EvalCommand(this));
-			commandManager.add(new CommandStatisticsCommand(this));
 			commandManager.add(new TestCommand(this));
 			
 			taskManager = new TaskManager(this);

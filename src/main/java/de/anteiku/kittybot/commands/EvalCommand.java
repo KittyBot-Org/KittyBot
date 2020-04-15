@@ -30,6 +30,7 @@ public class EvalCommand extends ACommand{
 	            "java.io," +
 	            "java.lang," +
 	            "java.util," +
+				"Packages.de.anteiku.kittybot.utils.Logger" +
 	            "Packages.net.dv8tion.jda.api," +
 	            "Packages.net.dv8tion.jda.api.entities," +
 	            "Packages.net.dv8tion.jda.api.entities.impl," +
@@ -44,9 +45,11 @@ public class EvalCommand extends ACommand{
 	
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
-		
 		if(event.getAuthor().getId().equals(main.ADMIN_DISCORD_ID)){
 			try{
+				engine.put("main", main);
+				engine.put("logger", main.logger);
+				engine.put("database", main.database);
 				engine.put("event", event);
 				engine.put("message", event.getMessage());
 				engine.put("channel", event.getChannel());
@@ -61,7 +64,7 @@ public class EvalCommand extends ACommand{
 				Object out = engine.eval(
 			"(function() {" +
 					"with (imports) {" +
-					event.getMessage().getContentDisplay().substring(args[0].length()) +
+					event.getMessage().getContentDisplay().substring(command.length() + 1) +
 					"}" +
 					"})();");
 				sendAnswer(event.getMessage(), out == null ? "Executed without error." : out.toString());

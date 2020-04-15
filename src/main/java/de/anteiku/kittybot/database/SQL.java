@@ -6,7 +6,7 @@ import java.sql.*;
 
 public class SQL {
 
-    private Connection conn;
+    public Connection conn;
 
     public static SQL newInstance(String host, String port, String user, String password, String database) throws SQLException {
         return new SQL(host, port, user, password, database);

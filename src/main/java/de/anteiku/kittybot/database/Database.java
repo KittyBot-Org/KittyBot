@@ -14,7 +14,7 @@ import java.util.*;
 
 public class Database{
 	
-	private SQL sql;
+	public SQL sql;
 	private KittyBot main;
 	private Map<String, String> commandPrefixes;
 	
