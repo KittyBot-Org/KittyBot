@@ -2,7 +2,8 @@ FROM gradle:jdk11 as build
 
 COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
-RUN gradle build
+RUN gradle clean
+RUN gradle build --warning-mode all
 
 
 FROM openjdk:11-jdk-slim-buster

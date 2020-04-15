@@ -2,5 +2,6 @@ build/
 .history
 .gradle/
 .idea/
+.mysql/
 logs/
 config.env
