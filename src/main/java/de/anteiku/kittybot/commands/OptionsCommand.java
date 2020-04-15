@@ -25,17 +25,26 @@ public class OptionsCommand extends ACommand{
 		if(args.length > 0){
 			if(event.getMember().isOwner() || event.getMember().hasPermission(Permission.ADMINISTRATOR)){
 				if(args[0].equalsIgnoreCase("prefix") && args.length == 2){
-					main.database.setCommandPrefix(event.getGuild().getId(), args[1]);
+					if(main.database.setCommandPrefix(event.getGuild().getId(), args[1])){
+						sendError(event.getMessage(), "There was an error while processing your command :(");
+						return;
+					}
 					sendAnswer(event.getMessage(), "Prefix set to: `" + args[1] + "`");
 				}
 				else if(args[0].equalsIgnoreCase("nsfw")){
 					if(args.length >= 2){
 						if(args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("ja") || args[1].equalsIgnoreCase("yes") || args[1].equalsIgnoreCase("on")){
-							main.database.setNSFWEnabled(event.getGuild().getId(), true);
+							if(main.database.setNSFWEnabled(event.getGuild().getId(), true)){
+								sendError(event.getMessage(), "There was an error while processing your command :(");
+								return;
+							}
 							sendAnswer(event.getMessage(), "NSFW `activated`");
 						}
 						else if(args[1].equalsIgnoreCase("false") || args[1].equalsIgnoreCase("nein") || args[1].equalsIgnoreCase("no") || args[1].equalsIgnoreCase("off")){
-							main.database.setNSFWEnabled(event.getGuild().getId(), false);
+							if(main.database.setNSFWEnabled(event.getGuild().getId(), false)){
+								sendError(event.getMessage(), "There was an error while processing your command :(");
+								return;
+							}
 							sendAnswer(event.getMessage(), "NSFW `deactivated`");
 						}
 						else{
@@ -43,7 +52,10 @@ public class OptionsCommand extends ACommand{
 						}
 					}
 					else{
-						main.database.setNSFWEnabled(event.getGuild().getId(), main.database.getNSFWEnabled(event.getGuild().getId()));
+						if(main.database.setNSFWEnabled(event.getGuild().getId(), main.database.getNSFWEnabled(event.getGuild().getId()))){
+							sendError(event.getMessage(), "There was an error while processing your command :(");
+							return;
+						}
 						String state;
 						if(main.database.getNSFWEnabled(event.getGuild().getId())){
 							state = "activated";
@@ -57,7 +69,10 @@ public class OptionsCommand extends ACommand{
 				else if(args[0].equalsIgnoreCase("welcomechannel")){
 					List<TextChannel> channels = event.getMessage().getMentionedChannels();
 					if(channels.size() == 1){
-						main.database.setWelcomeChannelId(event.getGuild().getId(), channels.get(0).getId());
+						if(main.database.setWelcomeChannelId(event.getGuild().getId(), channels.get(0).getId())){
+							sendError(event.getMessage(), "There was an error while processing your command :(");
+							return;
+						}
 						sendAnswer(event.getMessage(), channels.get(0).getAsMention() + " set as welcome channel!");
 					}
 					else{
@@ -70,17 +85,26 @@ public class OptionsCommand extends ACommand{
 						return;
 					}
 					else if(args[1].equalsIgnoreCase("enable") || args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("on") || args[1].equalsIgnoreCase("an")){
-						main.database.setWelcomeMessageEnabled(event.getGuild().getId(), true);
+						if(main.database.setWelcomeMessageEnabled(event.getGuild().getId(), true)){
+							sendError(event.getMessage(), "There was an error while processing your command :(");
+							return;
+						}
 						sendAnswer(event.getMessage(), "Welcome messages enabled!");
 						return;
 					}
 					else if(args[1].equalsIgnoreCase("disable") || args[1].equalsIgnoreCase("false") || args[1].equalsIgnoreCase("off") || args[1].equalsIgnoreCase("aus")){
-						main.database.setWelcomeMessageEnabled(event.getGuild().getId(), false);
+						if(main.database.setWelcomeMessageEnabled(event.getGuild().getId(), false)){
+							sendError(event.getMessage(), "There was an error while processing your command :(");
+							return;
+						}
 						sendAnswer(event.getMessage(), "Welcome messages disabled!");
 						return;
 					}
 					String message = String.join(" ", API.subArray(args, 1));
-					main.database.setWelcomeMessage(event.getGuild().getId(), message);
+					if(main.database.setWelcomeMessage(event.getGuild().getId(), message)){
+						sendError(event.getMessage(), "There was an error while processing your command :(");
+						return;
+					}
 					sendAnswer(event.getMessage(), "Welcome message set to: ");
 				}
 				else{
