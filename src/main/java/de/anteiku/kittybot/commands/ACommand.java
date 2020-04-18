@@ -1,20 +1,22 @@
 package de.anteiku.kittybot.commands;
 
-import com.google.gson.JsonIOException;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.utils.Emotes;
-import de.anteiku.kittybot.utils.Logger;
-import de.anteiku.kittybot.utils.ReactiveMessage;
+import de.anteiku.kittybot.objects.ReactiveMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import okhttp3.Request;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.IOException;
@@ -24,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class ACommand{
 	
+	protected static final Logger LOG = LoggerFactory.getLogger(ACommand.class);
 	protected KittyBot main;
 	protected String command;
 	protected String usage;
@@ -257,19 +260,7 @@ public abstract class ACommand{
 			return JsonParser.parseString(main.httpClient.newCall(request).execute().body().string()).getAsJsonObject().get("url").getAsString();
 		}
 		catch(IOException e){
-			Logger.error(e);
-		}
-		return null;
-	}
-	
-	protected MessageAction sendUnsplashImage(Message message, String search){
-		try{
-			Request request = new Request.Builder().url("https://unsplash.com/photos/random/?client_id=" + main.UNSPLASH_CLIENT_ID + "&query=" + search).build();
-			String url = JsonParser.parseString(main.httpClient.newCall(request).execute().body().string()).getAsJsonObject().get("urls").getAsJsonObject().get("regular").getAsString();
-			return sendImage(message.getTextChannel(), url);
-		}
-		catch(JsonIOException | JsonSyntaxException | IOException e){
-			Logger.error(e);
+			LOG.error("Error while retrieving Neko", e);
 		}
 		return null;
 	}
@@ -281,7 +272,7 @@ public abstract class ACommand{
 			return sendImage(message.getTextChannel(), url);
 		}
 		catch(IOException e){
-			Logger.error(e);
+			LOG.error("Error while sending local image", e);
 		}
 		return null;
 	}

@@ -1,7 +1,6 @@
 package de.anteiku.kittybot.commands;
 
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.utils.Logger;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
@@ -30,7 +29,6 @@ public class EvalCommand extends ACommand{
 	            "java.io," +
 	            "java.lang," +
 	            "java.util," +
-				"Packages.de.anteiku.kittybot.utils.Logger" +
 	            "Packages.net.dv8tion.jda.api," +
 	            "Packages.net.dv8tion.jda.api.entities," +
 	            "Packages.net.dv8tion.jda.api.entities.impl," +
@@ -39,7 +37,7 @@ public class EvalCommand extends ACommand{
 	            "Packages.net.dv8tion.jda.api.utils);");
 		}
 		catch (ScriptException e){
-			Logger.error(e);
+			LOG.error("Error while initializing script engine", e);
 		}
 	}
 	
@@ -48,7 +46,6 @@ public class EvalCommand extends ACommand{
 		if(event.getAuthor().getId().equals(main.ADMIN_DISCORD_ID)){
 			try{
 				engine.put("main", main);
-				engine.put("logger", main.logger);
 				engine.put("database", main.database);
 				engine.put("event", event);
 				engine.put("message", event.getMessage());

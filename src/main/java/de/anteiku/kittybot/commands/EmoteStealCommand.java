@@ -1,11 +1,9 @@
 package de.anteiku.kittybot.commands;
 
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.utils.Logger;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Icon;
-import net.dv8tion.jda.api.entities.ListedEmote;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.io.IOException;
@@ -45,7 +43,7 @@ public class EmoteStealCommand extends ACommand{
 					emotesStolen++;
 				}
 				catch(IOException e){
-					Logger.error(e);
+					LOG.error("Error while stealing emote in guild " + event.getGuild().getId(), e);
 					sendError(event, "There was a problem stealing " + emote.getAsMention());
 					emotesNotStolen++;
 				}

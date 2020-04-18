@@ -7,7 +7,7 @@ public class PatCommand extends ACommand{
 
 	public static String COMMAND = "pat";
 	public static String USAGE = "pat <@user, ...>";
-	public static String DESCRIPTION = "Sends a pat to a user";
+	public static String DESCRIPTION = "Pats to a user";
 	protected static String[] ALIAS = {"tätschel"};
 
 	public PatCommand(KittyBot main){

@@ -1,22 +1,21 @@
 package de.anteiku.kittybot.commands;
 
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.utils.API;
+import de.anteiku.kittybot.utils.Utils;
 import de.anteiku.kittybot.utils.Emotes;
-import de.anteiku.kittybot.utils.ReactiveMessage;
-import de.anteiku.kittybot.utils.ValuePair;
+import de.anteiku.kittybot.objects.ReactiveMessage;
+import de.anteiku.kittybot.objects.ValuePair;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 public class RolesCommand extends ACommand{
 	
@@ -25,7 +24,7 @@ public class RolesCommand extends ACommand{
 	public static String DESCRIPTION = "Used to manage your roles";
 	protected static String[] ALIAS = {"r", "rollen"};
 	
-	private static String title = "Self-assignable roles:";
+	private static final String title = "Self-assignable roles:";
 	
 	public RolesCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
@@ -56,11 +55,11 @@ public class RolesCommand extends ACommand{
 				List<Role> roles = event.getMessage().getMentionedRoles();
 				List<Emote> emotes = event.getMessage().getEmotes();
 				if(args[0].equalsIgnoreCase("add") && !roles.isEmpty() && !emotes.isEmpty()){
-					main.database.addSelfAssignableRoles(event.getGuild().getId(), API.toMap(roles, emotes));
+					main.database.addSelfAssignableRoles(event.getGuild().getId(), Utils.toMap(roles, emotes));
 					sendAnswer(event, "Roles added!");
 				}
 				else if(args[0].equalsIgnoreCase("remove") && !roles.isEmpty()){
-					main.database.removeSelfAssignableRoles(event.getGuild().getId(), API.toSet(roles));
+					main.database.removeSelfAssignableRoles(event.getGuild().getId(), Utils.toSet(roles));
 					sendAnswer(event, "Roles removed!");
 				}
 				else if(args[0].equalsIgnoreCase("list")){

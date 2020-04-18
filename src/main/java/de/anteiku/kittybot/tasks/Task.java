@@ -1,13 +1,15 @@
 package de.anteiku.kittybot.tasks;
 
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.utils.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
 public abstract class Task implements Runnable{
 	
 	protected KittyBot main;
+	protected static final Logger LOG = LoggerFactory.getLogger(Task.class);
 	protected String name;
 	protected long delay;
 	protected TimeUnit timeUnit;
@@ -22,9 +24,9 @@ public abstract class Task implements Runnable{
 	@Override
 	public void run(){
 		long start = System.currentTimeMillis();
-		Logger.debug("Running task '" + name + "'!");
+		LOG.info("Running task '{}'!", name);
 		task();
-		Logger.debug("Task '" + name + "' finished! took '" + (System.currentTimeMillis() - start) / 1000 + "'ms");
+		LOG.info("Task '{}' finished! took {}ms", name, (System.currentTimeMillis() - start) / 1000);
 	}
 	
 	abstract void task();

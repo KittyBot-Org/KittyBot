@@ -41,7 +41,7 @@ public enum Emotes{
 	
 	public static final String WHITESPACE = "�";
 	
-	private String emote;
+	private final String emote;
 	
 	Emotes(String name){
 		if(name.matches("[0-9]+")){

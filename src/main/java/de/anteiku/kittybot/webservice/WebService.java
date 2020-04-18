@@ -1,8 +1,7 @@
 package de.anteiku.kittybot.webservice;
 
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.utils.Logger;
-import de.anteiku.kittybot.utils.ValuePair;
+import de.anteiku.kittybot.objects.ValuePair;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import spark.ModelAndView;
@@ -10,16 +9,16 @@ import spark.Request;
 import spark.Response;
 import spark.TemplateEngine;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static spark.Spark.*;
 
 public class WebService{
 	
-	private KittyBot main;
+	private final KittyBot main;
 
 	public WebService(KittyBot main, int port){
 		this.main = main;
@@ -240,7 +239,7 @@ public class WebService{
 	public static class HtmlObject{
 		
 		private String body;
-		private Map<String, String > map;
+		private final Map<String, String > map;
 		
 		public HtmlObject(String body, Map<String, String> map){
 			this.body = body;
@@ -275,21 +274,6 @@ public class WebService{
 			return ((HtmlObject)modelAndView.getModel()).getBody();
 		}
 		
-	}
-	
-	public static String readFile(String path){
-		StringBuilder text = new StringBuilder();
-		try{
-			BufferedReader br = new BufferedReader(new InputStreamReader(WebService.class.getResourceAsStream(path)));
-			String line;
-			while((line = br.readLine()) != null){
-				text.append(line).append(System.lineSeparator());
-			}
-		}
-		catch(IOException | NullPointerException e){
-			Logger.error(e);
-		}
-		return text.toString();
 	}
 	
 }

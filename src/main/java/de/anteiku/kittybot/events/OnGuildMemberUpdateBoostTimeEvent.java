@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class OnGuildMemberUpdateBoostTimeEvent extends ListenerAdapter{
 	
-	private KittyBot main;
+	private final KittyBot main;
 	
 	public OnGuildMemberUpdateBoostTimeEvent(KittyBot main){
 		this.main = main;

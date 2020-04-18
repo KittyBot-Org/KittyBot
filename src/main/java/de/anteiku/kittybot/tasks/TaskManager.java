@@ -10,11 +10,11 @@ import java.util.concurrent.ScheduledFuture;
 
 public class TaskManager{
 	
-	private KittyBot main;
-	private ScheduledExecutorService ses;
+	private final KittyBot main;
+	private final ScheduledExecutorService ses;
 	
-	private Map<String, Task> tasks;
-	private Map<String, ScheduledFuture<?>> runningTasks;
+	private final Map<String, Task> tasks;
+	private final Map<String, ScheduledFuture<?>> runningTasks;
 	
 	public TaskManager(KittyBot main){
 		this.main = main;

@@ -1,12 +1,14 @@
 package de.anteiku.kittybot.database;
 
-import de.anteiku.kittybot.utils.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 
 public class SQL {
 
-    public Connection conn;
+    private final Connection conn;
+    private static final Logger LOG = LoggerFactory.getLogger(Database.class);
 
     public static SQL newInstance(String host, String port, String user, String password, String database) throws SQLException {
         return new SQL(host, port, user, password, database);
@@ -31,12 +33,12 @@ public class SQL {
     public boolean execute(String query, boolean retry) {
         try {
             Statement statement = this.conn.createStatement();
-            Logger.debug(query);
+            LOG.debug(query);
             return statement.execute(query);
         }
         catch (SQLException e) {
             if(retry) return execute(query, false);
-            Logger.error(e);
+            LOG.error("Error while executing sql command", e);
         }
         return false;
     }
@@ -48,11 +50,12 @@ public class SQL {
     public ResultSet query(String query, boolean retry) {
         try {
             Statement statement = this.conn.createStatement();
-            Logger.debug(query);
+            LOG.debug(query);
             return statement.executeQuery(query);
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             if(retry) return query(query, false);
-            Logger.error(e);
+            LOG.error("Error while querying sql command", e);
         }
         return null;
     }
@@ -64,9 +67,10 @@ public class SQL {
     public boolean exists(String query, boolean retry) {
         try {
             return query(query).absolute(1);
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             if(retry) return exists(query, false);
-            Logger.error(e);
+            LOG.error("Error while checking if sql entry exists", e);
         }
         return false;
     }
@@ -74,8 +78,9 @@ public class SQL {
     public void close() {
         try {
             this.conn.close();
-        } catch (SQLException e) {
-            Logger.error(e);
+        }
+        catch (SQLException e) {
+            LOG.error("Error while closing sql connection", e);
         }
     }
 }

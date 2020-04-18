@@ -1,7 +1,6 @@
 package de.anteiku.kittybot.events;
 
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.utils.Emotes;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.audit.ActionType;
 import net.dv8tion.jda.api.audit.AuditLogEntry;
@@ -15,7 +14,7 @@ import java.time.Instant;
 public class OnGuildJoinEvent extends ListenerAdapter{
 	
 	
-	private KittyBot main;
+	private final KittyBot main;
 	
 	public OnGuildJoinEvent(KittyBot main){
 		this.main = main;

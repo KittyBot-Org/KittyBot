@@ -1,12 +1,12 @@
 package de.anteiku.kittybot.database;
 
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.utils.Logger;
-import de.anteiku.kittybot.utils.RandomKey;
-import de.anteiku.kittybot.utils.ReactiveMessage;
-import de.anteiku.kittybot.utils.ValuePair;
+import de.anteiku.kittybot.utils.Utils;
+import de.anteiku.kittybot.objects.ReactiveMessage;
+import de.anteiku.kittybot.objects.ValuePair;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,14 +15,14 @@ import java.util.*;
 public class Database{
 	
 	public SQL sql;
-	private KittyBot main;
-	private Map<String, String> commandPrefixes;
+	private static final Logger LOG = LoggerFactory.getLogger(Database.class);
+	private final KittyBot main;
+	private final Map<String, String> commandPrefixes;
 	
 	public Database(KittyBot main) throws SQLException {
 		this.main = main;
 		commandPrefixes = new HashMap<>();
-		this.sql = SQL.newInstance(main.MYSQL_HOST, main.MYSQL_PORT, main.MYSQL_USER, main.MYSQL_PASSWORD, main.MYSQL_DB);
-		//sql.use(main.MYSQL_DB);
+		sql = SQL.newInstance(main.MYSQL_HOST, main.MYSQL_PORT, main.MYSQL_USER, main.MYSQL_PASSWORD, main.MYSQL_DB);
 		sql.execute("CREATE TABLE IF NOT EXISTS `guilds` (" +
 	        "`id` varchar(18) NOT NULL," +
 	        "`command_prefix` varchar(1) NOT NULL," +
@@ -93,7 +93,7 @@ public class Database{
 	
 	public void init(){
 		for(Guild guild : main.jda.getGuilds()){
-			Logger.print("Loading Guild: `" + guild.getName() + "`...");
+			LOG.debug("Loading Guild: {}...", guild.getName());
 			if(! isGuildRegistered(guild)){
 				registerGuild(guild);
 			}
@@ -101,8 +101,24 @@ public class Database{
 	}
 	
 	public void close(){
-		Logger.print("Closing connection to database...");
+		LOG.debug("Closing connection to database...");
 		sql.close();
+	}
+	
+	public static Database connect(KittyBot main){
+		while(true) {
+			try{
+				return new Database(main);
+			}
+			catch(SQLException e) {
+				LOG.error("Could not connect to database...\nRetrying in 5 seconds...", e);
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException ex) {
+					LOG.error("Error putting thread to sleep", e);
+				}
+			}
+		}
 	}
 	
 	/*
@@ -123,7 +139,7 @@ public class Database{
 			return map;
 		}
 		catch(SQLException e){
-			Logger.error(e);
+			LOG.error("Error while getting command statistics from guild" + guildId, e);
 		}
 		return null;
 	}
@@ -138,7 +154,7 @@ public class Database{
 	}
 	
 	private boolean registerGuild(Guild guild){
-		Logger.print("Registering new guild: '" + guild.getId() + "'");
+		LOG.debug("Registering new guild: {}", guild.getId());
 		return sql.execute("INSERT INTO `guilds` (id, command_prefix, request_channel_id, requests_enabled, welcome_channel_id, welcome_message, welcome_message_enabled, nsfw_enabled) VALUES ('" + guild.getId() + "', '" + main.DEFAULT_PREFIX + "', '-1', 0, '" + guild.getDefaultChannel().getId() + "', 'Welcome [username] to this server!', 1, 1)");
 	}
 	
@@ -154,7 +170,7 @@ public class Database{
 			}
 		}
 		catch(SQLException e){
-			Logger.error(e);
+			LOG.error("Error while getting keys" + Arrays.toString(keys) + " from guild " + guildId, e);
 		}
 		return null;
 	}
@@ -167,7 +183,7 @@ public class Database{
 			}
 		}
 		catch(SQLException e){
-			Logger.error(e);
+			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
 		}
 		return null;
 	}
@@ -204,7 +220,7 @@ public class Database{
 			return set;
 		}
 		catch(SQLException e){
-			Logger.error(e);
+			LOG.error("Error while getting self-assignable roles from guild " + guildId, e);
 		}
 		return null;
 	}
@@ -213,7 +229,9 @@ public class Database{
 		boolean result = true;
 		for(Map.Entry<String, String> role : roles.entrySet()) {
 			boolean r = sql.execute("INSERT INTO `self_assignable_roles` (id, guild_id, emote_id) VALUES ('" + role.getKey() + "', '" + guildId + "', '" + role.getValue() + "')");
-			if(!r) return result = false;
+			if(!r){
+				result = false;
+			}
 		}
 		return result;
 	}
@@ -226,7 +244,9 @@ public class Database{
 		boolean result = true;
 		for(String role : roles) {
 			boolean r = sql.execute("DELETE FROM `self_assignable_roles` WHERE `id` = '" + role + "' and `guild_id` = '" + guildId + "'");
-			if(!r) return result = false;
+			if(!r){
+				result = false;
+			}
 		}
 		return result;
 	}
@@ -283,7 +303,7 @@ public class Database{
 			}
 		}
 		catch(SQLException e){
-			Logger.error(e);
+			LOG.error("Error while checking reactive message for guild " +  guildId + " message " + messageId, e);
 		}
 		return null;
 	}
@@ -297,9 +317,9 @@ public class Database{
 	}
 	
 	private String generateUniqueKey(){
-		String key = RandomKey.generate(32);
+		String key = Utils.generate(32);
 		while(sessionExists(key)){
-			key = RandomKey.generate(32);
+			key = Utils.generate(32);
 		}
 		return key;
 	}
@@ -322,7 +342,7 @@ public class Database{
 			}
 		}
 		catch(SQLException e){
-			Logger.error(e);
+			LOG.error("Error while getting session", e);
 		}
 		return null;
 	}
