@@ -2,9 +2,8 @@ package de.anteiku.kittybot.commands;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.utils.Emotes;
-import de.anteiku.kittybot.utils.ReactiveMessage;
+import de.anteiku.kittybot.objects.ReactiveMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
@@ -30,10 +29,13 @@ public class HelpCommand extends ACommand{
 		eb.addField(Emotes.CONSOLE.get() + " Commands:", Emotes.BLANK.get() + " :small_blue_diamond: You want to see **all my available commands**?\n" + Emotes.BLANK.get() + " " + Emotes.BLANK.get() + " Use ``.commands``", true);
 		eb.addField(":question: Help:", Emotes.BLANK.get() + " :small_blue_diamond: You want to **report bugs or suggest new features**?\n" + Emotes.BLANK.get() + " " + Emotes.BLANK.get() + " Message my owner on " + Emotes.TWITTER.get() + " [Twitter](https://Twitter.com/TopiDragneel) or " + Emotes.DISCORD.get() + " ``Toπ#4184``!", true);
 		eb.addField(":globe_with_meridians: Webinterface:", Emotes.BLANK.get() + " :small_blue_diamond: Click [here](http://anteiku.de/login) to login with discord and manage your guilds!.",true);
-		Message message = sendAnswer(event.getMessage(), eb.build());
+		sendAnswer(event.getMessage(), eb.build()).queue(
+			message -> {
+				main.commandManager.addReactiveMessage(event, message, this, "-1");
+				message.addReaction(Emotes.WASTEBASKET.get()).queue();
+			}
+		);
 		
-		main.commandManager.addReactiveMessage(event, message, this, "-1");
-		message.addReaction(Emotes.WASTEBASKET.get()).queue();
 	}
 	
 	@Override

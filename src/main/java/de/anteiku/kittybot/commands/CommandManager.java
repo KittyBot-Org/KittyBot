@@ -1,20 +1,23 @@
 package de.anteiku.kittybot.commands;
 
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.utils.API;
-import de.anteiku.kittybot.utils.Logger;
-import de.anteiku.kittybot.utils.ReactiveMessage;
+import de.anteiku.kittybot.objects.ReactiveMessage;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class CommandManager{
 	
+	private final KittyBot main;
+	private static final Logger LOG = LoggerFactory.getLogger(CommandManager.class);
 	public Map<String, ACommand> commands;
-	private KittyBot main;
 	
 	public CommandManager(KittyBot main){
 		this.main = main;
@@ -37,71 +40,34 @@ public class CommandManager{
 		return main.database.isReactiveMessage(guild.getId(), message);
 	}
 
-	public void checkCommands(GuildMessageReceivedEvent event){
+	public boolean checkCommands(GuildMessageReceivedEvent event){
 		long start = System.nanoTime();
 		String message = event.getMessage().getContentRaw();
 		String prefix = main.database.getCommandPrefix(event.getGuild().getId());
-		String command = getCommand(message, prefix);
-		for(Map.Entry<String, ACommand> c : commands.entrySet()){
-			ACommand cmd = c.getValue();
-			if(cmd.checkCmd(command)){
-				//event.getChannel().sendTyping().queue(); answer is sending too fast and I don't want to block the thread lol
-				String[] args = getArgs(message, prefix);
-				if(args == null){
-					cmd.sendError(event.getMessage(), "Please fix your dafuq?!");
-					return;
+		if(message.startsWith(prefix)){
+			String command = getCommand(message, prefix);
+			for(Map.Entry<String, ACommand> c : commands.entrySet()){
+				ACommand cmd = c.getValue();
+				if(cmd.checkCmd(command)){
+					//event.getChannel().sendTyping().queue(); answer is sending too fast and I don't want to block the thread lol
+					cmd.run(getArgs(message), event);
+					long processingTime = (System.nanoTime() - start) / 1000000;
+					main.database.addCommandStatistics(event.getGuild().getId(), event.getMessageId(), event.getAuthor().getId(), command, processingTime);
+					LOG.info("Command: {}, by: {}, from: {}, took {}ms", command, event.getAuthor().getName(), event.getGuild().getName(), processingTime);
+					return true;
 				}
-				cmd.run(args, event);
-				Logger.print("Command: '" + command + "' by: '" + event.getAuthor().getName() + "' from: '" + event.getGuild().getName() + "' took '" + API.getMs(start) + "'ms");
 			}
 		}
+		return false;
 	}
 	
 	private String getCommand(String raw, String prefix){
 		return raw.split(" ")[0].replaceFirst(Pattern.quote(prefix), "");
 	}
 	
-	private String[] getArgs(String message, String prefix){
-		String command = getCommand(message, prefix);
-		String raw = message.substring(command.length() + 1).trim();
-		boolean b = false;
-		StringBuilder string = new StringBuilder();
-		ArrayList<String> args = new ArrayList<>();
-		for(String s : raw.split(" ")){
-			if(s.startsWith("(") && s.endsWith(")") && ! b){
-				args.add(s.substring(1, s.length() - 1));
-				continue;
-			}
-			else if((s.startsWith("(") && b)){
-				return null;
-				//throw new ArgumentException("Missing '(' in: '" + raw + "'\n" + Emotes.WHITESPACE.repeat("Missing '(' in: '".length() + raw.indexOf(s)) + "^");
-			}
-			else if(s.endsWith(")") && ! b){
-				return null;
-				//throw new ArgumentException("Missing ')' in: '" + raw + "'\n" + Emotes.WHITESPACE.repeat("Missing '(' in: '".length() + raw.indexOf(s)) + "^");
-			}
-			if(s.startsWith("(")){
-				b = true;
-			}
-			if(b){
-				string.append(s).append(" ");
-			}
-			else{
-				if(! s.equals("")){
-					args.add(s);
-				}
-			}
-			if(s.endsWith(")")){
-				b = false;
-				args.add(string.substring(1, string.length() - 2));
-				string.delete(0, string.length());
-			}
-		}
-		if(b){
-			return null;
-			//throw new ArgumentException("Missing ')' in: '" + raw + "'\n" + Emotes.WHITESPACE.repeat(("Missing '(' in: '").length() + raw.length()) + "^");
-		}
-		return Arrays.copyOf(args.toArray(), args.size(), String[].class);
+	private String[] getArgs(String message){
+		String[] args = message.split(" ");
+		return Arrays.copyOfRange(args, 1, args.length);
 	}
 	
 }

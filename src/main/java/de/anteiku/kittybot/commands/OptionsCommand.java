@@ -1,7 +1,7 @@
 package de.anteiku.kittybot.commands;
 
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.utils.API;
+import de.anteiku.kittybot.utils.Utils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -100,7 +100,7 @@ public class OptionsCommand extends ACommand{
 						sendAnswer(event.getMessage(), "Welcome messages disabled!");
 						return;
 					}
-					String message = String.join(" ", API.subArray(args, 1));
+					String message = String.join(" ", Utils.subArray(args, 1));
 					if(main.database.setWelcomeMessage(event.getGuild().getId(), message)){
 						sendError(event.getMessage(), "There was an error while processing your command :(");
 						return;

@@ -10,7 +10,7 @@ import java.awt.*;
 
 public class OnGuildMessageReceivedEvent extends ListenerAdapter{
 	
-	private KittyBot main;
+	private final KittyBot main;
 	
 	public OnGuildMessageReceivedEvent(KittyBot main){
 		this.main = main;
@@ -21,6 +21,10 @@ public class OnGuildMessageReceivedEvent extends ListenerAdapter{
 		if(event.getAuthor().isBot() || event.getAuthor().isFake()){
 			return;
 		}
+		if(main.commandManager.checkCommands(event)){
+			return;
+		}
+		
 		if(event.getMessage().getContentRaw().startsWith(main.database.getCommandPrefix(event.getGuild().getId()))){
 			main.commandManager.checkCommands(event);
 		}

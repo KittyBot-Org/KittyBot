@@ -2,7 +2,7 @@ package de.anteiku.kittybot.commands;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.utils.Emotes;
-import de.anteiku.kittybot.utils.ReactiveMessage;
+import de.anteiku.kittybot.objects.ReactiveMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -65,19 +65,6 @@ public class CommandsCommand extends ACommand{
 		return eb.build();
 	}
 	
-	@Override
-	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
-		if(event.getReactionEmote().getName().equals(Emotes.ARROW_LEFT.get())){
-			prevPage(event.getChannel().retrieveMessageById(event.getMessageId()).complete());
-			event.getReaction().removeReaction(event.getUser()).queue();
-		}
-		else if(event.getReactionEmote().getName().equals(Emotes.ARROW_RIGHT.get())){
-			nextPage(event.getChannel().retrieveMessageById(event.getMessageId()).complete());
-			event.getReaction().removeReaction(event.getUser()).queue();
-		}
-		super.reactionAdd(reactiveMessage, event);
-	}
-	
 	public void prevPage(Message message){
 		int page = getPageByMessage(message) - 1;
 		if(page >= 1){
@@ -88,12 +75,28 @@ public class CommandsCommand extends ACommand{
 	
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
-		Message message = sendAnswer(event.getMessage(), buildCommands(args, main.database.getCommandPrefix(event.getGuild().getId())));
-		main.commandManager.addReactiveMessage(event, message, this, "-1");
+		sendAnswer(event.getMessage(), buildCommands(args, main.database.getCommandPrefix(event.getGuild().getId()))).queue(
+			message -> {
+				main.commandManager.addReactiveMessage(event, message, this, "-1");
+				message.addReaction(Emotes.ARROW_LEFT.get()).queue();
+				message.addReaction(Emotes.ARROW_RIGHT.get()).queue();
+				message.addReaction(Emotes.WASTEBASKET.get()).queue();
+			}
+		);
 		
-		message.addReaction(Emotes.ARROW_LEFT.get()).queue();
-		message.addReaction(Emotes.ARROW_RIGHT.get()).queue();
-		message.addReaction(Emotes.WASTEBASKET.get()).queue();
+	}
+	
+	@Override
+	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
+		if(event.getReactionEmote().getName().equals(Emotes.ARROW_LEFT.get())){
+			event.getChannel().retrieveMessageById(event.getMessageId()).queue(this::prevPage);
+			event.getReaction().removeReaction(event.getUser()).queue();
+		}
+		else if(event.getReactionEmote().getName().equals(Emotes.ARROW_RIGHT.get())){
+			event.getChannel().retrieveMessageById(event.getMessageId()).queue(this::nextPage);
+			event.getReaction().removeReaction(event.getUser()).queue();
+		}
+		super.reactionAdd(reactiveMessage, event);
 	}
 	
 	private int getMaxPages(){

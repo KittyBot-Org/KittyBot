@@ -5,28 +5,29 @@ import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.events.*;
 import de.anteiku.kittybot.tasks.TaskManager;
 import de.anteiku.kittybot.utils.Config;
-import de.anteiku.kittybot.utils.Logger;
-import de.anteiku.kittybot.webservice.WebService;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import okhttp3.OkHttpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.sql.SQLException;
-import java.util.*;
+import java.time.format.DateTimeFormatter;
+import java.util.Random;
 
 public class KittyBot{
 	
 	public final OkHttpClient httpClient;
 	
 	public JDA jda;
-	public Logger logger;
+	private static final Logger LOG = LoggerFactory.getLogger(KittyBot.class);
 	public CommandManager commandManager;
 	public TaskManager taskManager;
 	public Database database;
-	public WebService webService;
 	public Random rand;
+	
+	public DateTimeFormatter dateFormatter;
 	
 	public String DISCORD_BOT_TOKEN;
 	public String DISCORD_BOT_SECRET;
@@ -39,37 +40,21 @@ public class KittyBot{
 	public String MYSQL_PASSWORD;
 	
 	public String DEFAULT_PREFIX = ".";
-	public String UNSPLASH_CLIENT_ID;
 	
 	public static void main(String[] args){
 		new KittyBot();
 	}
 	
 	public KittyBot(){
-		logger = new Logger(this);
+
 		httpClient = new OkHttpClient();
 		setEnvVars();
 		
-		boolean connected = false;
-		while(!connected) {
-			try{
-				database = new Database(this);
-				connected = true;
-			}
-			catch(SQLException e) {
-				Logger.print("Could not connect to database...");
-				Logger.print("Retrying in 5 seconds...");
-				Logger.error(e);
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException ex) {
-					Logger.error(ex);
-				}
-			}
-		}
+		dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy-HH:mm");
+		
+		database = Database.connect(this);
 		
 		rand = new Random();
-		new ConsoleThread(this);
 		try{
 			jda = JDABuilder
 				.create(
@@ -88,6 +73,7 @@ public class KittyBot{
 				.setToken(DISCORD_BOT_TOKEN)
 				.setActivity(Activity.listening("to you!"))
 				.addEventListeners(
+					new OnGuildJoinEvent(this),
 					new OnGuildMemberJoinEvent(this),
 					new OnGuildMemberRemoveEvent(this),
 					new OnGuildMemberUpdateBoostTimeEvent(this),
@@ -117,20 +103,18 @@ public class KittyBot{
 			commandManager.add(new FeedCommand(this));
 			commandManager.add(new SlapCommand(this));
 			
-			commandManager.add(new KurapikaCommand(this));
-			commandManager.add(new QuokkaCommand(this));
-			commandManager.add(new TurtleCommand(this));
 			commandManager.add(new CatCommand(this));
 			commandManager.add(new DogCommand(this));
 			commandManager.add(new NekoCommand(this));
 			commandManager.add(new OptionsCommand(this));
+			commandManager.add(new EvalCommand(this));
 			commandManager.add(new TestCommand(this));
 			
 			taskManager = new TaskManager(this);
-			Logger.sendDM("KittyBot started!");
+			//Logger.sendDM("KittyBot started!");
 		}
 		catch(Exception e){
-			Logger.error(e);
+			LOG.error("Error while initializing JDA", e);
 			close();
 		}
 	}
@@ -138,7 +122,7 @@ public class KittyBot{
 	private void setEnvVars() {
 		Config cfg = new Config("config.env");
 		if(cfg.exists()){
-			Logger.print("Loading env vars from file...");
+			LOG.debug("Loading env vars from file...");
 			DISCORD_BOT_TOKEN = cfg.get("DISCORD_BOT_TOKEN");
 			DISCORD_BOT_SECRET = cfg.get("DISCORD_BOT_SECRET");
 			ADMIN_DISCORD_ID =cfg.get("ADMIN_DISCORD_ID");
@@ -147,10 +131,9 @@ public class KittyBot{
 			MYSQL_DB = cfg.get("MYSQL_DATABASE");
 			MYSQL_USER = cfg.get("MYSQL_USER");
 			MYSQL_PASSWORD = cfg.get("MYSQL_PASSWORD");
-			UNSPLASH_CLIENT_ID = cfg.get("UNSPLASH_CLIENT_ID");
 		}
 		else {
-			Logger.print("Loading env vars from system...");
+			LOG.debug("Loading env vars from system...");
 			DISCORD_BOT_TOKEN = System.getenv("DISCORD_BOT_TOKEN");
 			DISCORD_BOT_SECRET = System.getenv("DISCORD_BOT_SECRET");
 			ADMIN_DISCORD_ID = System.getenv("ADMIN_DISCORD_ID");
@@ -159,19 +142,12 @@ public class KittyBot{
 			MYSQL_DB = System.getenv("MYSQL_DATABASE");
 			MYSQL_USER = System.getenv("MYSQL_USER");
 			MYSQL_PASSWORD = System.getenv("MYSQL_PASSWORD");
-			UNSPLASH_CLIENT_ID = System.getenv("UNSPLASH_CLIENT_ID");
 		}
 	}
 	
 	public void close() {
-		try{
-			database.close();
-			logger.close();
-			System.exit(0);
-		}
-		catch(NullPointerException e){
-			System.exit(0);
-		}
+		database.close();
+		System.exit(0);
 	}
 	
 }

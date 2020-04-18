@@ -1,11 +1,9 @@
 package de.anteiku.kittybot.commands;
 
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.utils.Logger;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Icon;
-import net.dv8tion.jda.api.entities.ListedEmote;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.io.IOException;
@@ -27,7 +25,7 @@ public class EmoteStealCommand extends ACommand{
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		if(!event.getMember().hasPermission(Permission.MANAGE_EMOTES)){
-			sendError(event.getMessage(), "Sorry you don't have the permission to manage emotes :(");
+			sendError(event, "Sorry you don't have the permission to manage emotes :(");
 			return;
 		}
 		List<Emote> emotes = event.getMessage().getEmotes();
@@ -45,8 +43,8 @@ public class EmoteStealCommand extends ACommand{
 					emotesStolen++;
 				}
 				catch(IOException e){
-					Logger.error(e);
-					sendError(event.getMessage(), "There was a problem stealing " + emote.getAsMention());
+					LOG.error("Error while stealing emote in guild " + event.getGuild().getId(), e);
+					sendError(event, "There was a problem stealing " + emote.getAsMention());
 					emotesNotStolen++;
 				}
 			}
@@ -58,10 +56,10 @@ public class EmoteStealCommand extends ACommand{
 			if(emotesNotStolen > 0) {
 				emotesNotStolenMsg = emotesNotStolen + " Emotes not stolen";
 			}
-			sendAnswer(event.getMessage(), emotesStolenMsg + emotesNotStolenMsg);
+			sendAnswer(event, emotesStolenMsg + emotesNotStolenMsg);
 		}
 		else {
-			sendUsage(event.getChannel());
+			sendUsage(event);
 		}
 	}
 

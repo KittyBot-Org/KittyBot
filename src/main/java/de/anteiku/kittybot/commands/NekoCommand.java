@@ -2,8 +2,7 @@ package de.anteiku.kittybot.commands;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.utils.Emotes;
-import de.anteiku.kittybot.utils.ReactiveMessage;
-import net.dv8tion.jda.api.entities.Message;
+import de.anteiku.kittybot.objects.ReactiveMessage;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
@@ -31,13 +30,16 @@ public class NekoCommand extends ACommand{
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		if(! event.getChannel().isNSFW()){
-			sendError(event.getMessage(), "Sorry but this command can only be used in nsfw channels");
+			sendError(event, "Sorry but this command can only be used in nsfw channels");
 			return;
 		}
 		if(args.length > 0 && nekos.contains(args[0])){
-			Message message = sendImage(event.getMessage(), getNeko(args[0]));
-			main.commandManager.addReactiveMessage(event, message, this, "-1");
-			message.addReaction(Emotes.WASTEBASKET.get()).queue();
+			sendImage(event.getMessage(), getNeko(args[0])).queue(
+				message -> {
+					main.commandManager.addReactiveMessage(event, message, this, "-1");
+					message.addReaction(Emotes.WASTEBASKET.get()).queue();
+				}
+			);
 		}
 		else{
 			sendUsage(event.getMessage());

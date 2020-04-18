@@ -6,8 +6,8 @@ public enum Emotes{
 	
 	//CUSTOM EMOTES
 	BLANK("594914315463557121"),
+	KITTY_BLINK("699378560065994813"),
 	TEAM_KITTY("593061412146774016"),
-	QUOKKA("594880799640125451"),
 	TWITTER("595291425990639658"),
 	CONSOLE("595296169693806803"),
 	INVITE("595297943192600577"),
@@ -41,7 +41,7 @@ public enum Emotes{
 	
 	public static final String WHITESPACE = "�";
 	
-	private String emote;
+	private final String emote;
 	
 	Emotes(String name){
 		if(name.matches("[0-9]+")){

@@ -18,7 +18,7 @@ repositories {
 dependencies {
     compile 'com.github.TopiSenpai:EmojiUtils:1.0'
 
-    compile 'net.dv8tion:JDA:4.1.1_126'
+    compile 'net.dv8tion:JDA:4.1.1_134'
 
     compile 'org.slf4j:slf4j-jdk14:1.7.5'
 
@@ -27,5 +27,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.6'
 
     compile 'mysql:mysql-connector-java:8.0.19'
+
+    compile 'org.knowm.xchart:xchart:3.6.2'
 }
 

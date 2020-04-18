@@ -1,14 +1,17 @@
 package de.anteiku.kittybot.utils;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Config{
 	
 	private static final String SEPARATOR = "=";
-	private File file;
-	private Map<String, String> config;
+	private final File file;
+	private final Map<String, String> config;
 	
 	public Config(String filePath){
 		file = new File(filePath);
@@ -35,7 +38,7 @@ public class Config{
 			reader.close();
 		}
 		catch(IOException e){
-			Logger.error(e);
+			e.printStackTrace();
 		}
 	}
 	

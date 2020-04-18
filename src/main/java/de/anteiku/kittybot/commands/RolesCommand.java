@@ -1,22 +1,21 @@
 package de.anteiku.kittybot.commands;
 
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.utils.API;
+import de.anteiku.kittybot.utils.Utils;
 import de.anteiku.kittybot.utils.Emotes;
-import de.anteiku.kittybot.utils.ReactiveMessage;
-import de.anteiku.kittybot.utils.ValuePair;
+import de.anteiku.kittybot.objects.ReactiveMessage;
+import de.anteiku.kittybot.objects.ValuePair;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 public class RolesCommand extends ACommand{
 	
@@ -25,7 +24,7 @@ public class RolesCommand extends ACommand{
 	public static String DESCRIPTION = "Used to manage your roles";
 	protected static String[] ALIAS = {"r", "rollen"};
 	
-	private static String title = "Self-assignable roles:";
+	private static final String title = "Self-assignable roles:";
 	
 	public RolesCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
@@ -50,61 +49,70 @@ public class RolesCommand extends ACommand{
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		if(args.length > 0){
 			if(args[0].equals("?") || args[0].equals("help")){
-				sendUsage(event.getMessage());
+				sendUsage(event);
 			}
 			if(event.getMember().isOwner() || event.getMember().hasPermission(Permission.ADMINISTRATOR)){
 				List<Role> roles = event.getMessage().getMentionedRoles();
 				List<Emote> emotes = event.getMessage().getEmotes();
 				if(args[0].equalsIgnoreCase("add") && !roles.isEmpty() && !emotes.isEmpty()){
-					main.database.addSelfAssignableRoles(event.getGuild().getId(), API.toMap(roles, emotes));
-					sendAnswer(event.getMessage(), "Roles added!");
+					main.database.addSelfAssignableRoles(event.getGuild().getId(), Utils.toMap(roles, emotes));
+					sendAnswer(event, "Roles added!");
 				}
 				else if(args[0].equalsIgnoreCase("remove") && !roles.isEmpty()){
-					main.database.removeSelfAssignableRoles(event.getGuild().getId(), API.toSet(roles));
-					sendAnswer(event.getMessage(), "Roles removed!");
+					main.database.removeSelfAssignableRoles(event.getGuild().getId(), Utils.toSet(roles));
+					sendAnswer(event, "Roles removed!");
 				}
 				else if(args[0].equalsIgnoreCase("list")){
 					Map<Role, Emote> map = getRoleEmoteMap(event.getGuild());
 					if(map.size() == 0){
-						sendAnswer(event.getMessage(), "There are no roles added!");
+						sendAnswer(event, "There are no roles added!");
 					}
 					else{
-						String message = "";
+						StringBuilder message = new StringBuilder();
 						for(Map.Entry<Role, Emote> m : map.entrySet()){
-							message += m.getKey().getAsMention() + ", ";
+							message.append(m.getKey().getAsMention()).append(", ");
 						}
-						sendAnswer(event.getMessage(), "Roles: " + message);
+						sendAnswer(event, "Roles: " + message.toString());
 					}
 				}
 				else{
-					sendError(event.getMessage(), "Please be sure to mention a role & a custom discord emote");
+					sendError(event, "Please be sure to mention a role & a custom discord emote");
 				}
 			}
 			else{
-				sendError(event.getMessage(), "You need to be an administrator to use this command!");
+				sendError(event, "You need to be an administrator to use this command!");
 			}
 		}
 		else{
 			Map<Role, Emote> roles = getRoleEmoteMap(event.getGuild());
 			if(roles.size() == 0){
-				sendError(event.getMessage(), "No self-assignable roles configured!\nIf you are an admin use `.roles add @role @role ...` to add roles!");
+				sendError(event, "No self-assignable roles configured!\nIf you are an admin use `.roles add @role @role ...` to add roles!");
 				return;
 			}
 			EmbedBuilder eb = new EmbedBuilder();
 			eb.setTitle(title);
 			eb.appendDescription("To get a specified role press the given emote under this message. To remove it press the emote again");
 			eb.setColor(Color.MAGENTA);
+			//StringBuilder value = new StringBuilder();
 			String value = "";
 			for(Map.Entry<Role, Emote> k : roles.entrySet()){
+//				value.append(k.getValue().getAsMention())
+//					.append(Emotes.BLANK.get())
+//					.append(Emotes.BLANK.get())
+//					.append(k.getKey().getAsMention())
+//					.append("\n");
 				value += k.getValue().getAsMention() + Emotes.BLANK.get() + Emotes.BLANK.get() + k.getKey().getAsMention() + "\n";
 			}
 			eb.addField("**Emote:**" + Emotes.BLANK.get() + "**Role:**", value, true);
-			Message message = event.getChannel().sendMessage(eb.build()).complete();
-			main.commandManager.addReactiveMessage(event, message, this, "-1");
-			for(Map.Entry<Role, Emote> r : roles.entrySet()){
-				message.addReaction(r.getValue()).queue();
-			}
-			message.addReaction(Emotes.WASTEBASKET.get()).queue();
+			sendAnswer(event, eb.build()).queue(
+				message -> {
+					main.commandManager.addReactiveMessage(event, message, this, "-1");
+					for(Map.Entry<Role, Emote> role : roles.entrySet()){
+						message.addReaction(role.getValue()).queue();
+					}
+					message.addReaction(Emotes.WASTEBASKET.get()).queue();
+				}
+			);
 		}
 	}
 	
