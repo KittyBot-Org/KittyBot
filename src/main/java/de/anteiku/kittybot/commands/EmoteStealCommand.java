@@ -70,7 +70,7 @@ public class EmoteStealCommand extends ACommand{
 				}
 			}
 			catch(MalformedURLException | URISyntaxException e){
-				sendError(event.getMessage(), "Please provide a valid url");
+				sendError(event, "Please provide a valid url");
 			}
 		}
 		else{
