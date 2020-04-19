@@ -3,17 +3,20 @@ package de.anteiku.kittybot.commands;
 import de.anteiku.kittybot.KittyBot;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emote;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Icon;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
 public class EmoteStealCommand extends ACommand{
 
 	public static String COMMAND = "steal";
-	public static String USAGE = "steal <Emote, Emote, ...>";
+	public static String USAGE = "steal <Emote, Emote, ...> or <url> <name>";
 	public static String DESCRIPTION = "Steals some emotes";
 	protected static String[] ALIAS = {"grab", "klau"};
 
@@ -38,12 +41,10 @@ public class EmoteStealCommand extends ACommand{
 					emotesNotStolen++;
 					continue;
 				}
-				try{
-					event.getGuild().createEmote(emote.getName(), Icon.from(new URL(emote.getImageUrl()).openStream())).queue();
+				if(createEmoteFromURL(event.getGuild(), emote.getName(), emote.getImageUrl())){
 					emotesStolen++;
 				}
-				catch(IOException e){
-					LOG.error("Error while stealing emote in guild " + event.getGuild().getId(), e);
+				else{
 					sendError(event, "There was a problem stealing " + emote.getAsMention());
 					emotesNotStolen++;
 				}
@@ -58,9 +59,34 @@ public class EmoteStealCommand extends ACommand{
 			}
 			sendAnswer(event, emotesStolenMsg + emotesNotStolenMsg);
 		}
-		else {
+		else if(args.length >= 2){
+			try {
+				new URL(args[0]).toURI();
+				if(createEmoteFromURL(event.getGuild(), args[1], args[0])){
+					sendAnswer(event, "Emote stolen");
+				}
+				else{
+					sendError(event, "There was a problem creating the emote");
+				}
+			}
+			catch(MalformedURLException | URISyntaxException e){
+				sendError(event.getMessage(), "Please provide a valid url");
+			}
+		}
+		else{
 			sendUsage(event);
 		}
+	}
+	
+	private boolean createEmoteFromURL(Guild guild, String name, String url){
+		try{
+			guild.createEmote(name, Icon.from(new URL(url).openStream())).queue();
+			return true;
+		}
+		catch(IOException e){
+			LOG.error("Error while creating emote in guild " + guild.getId(), e);
+		}
+		return false;
 	}
 
 }
