@@ -7,19 +7,16 @@ import java.sql.*;
 
 public class SQL {
 
-    private final Connection conn;
     private static final Logger LOG = LoggerFactory.getLogger(Database.class);
+
+    private final Connection conn;
 
     public static SQL newInstance(String host, String port, String user, String password, String database) throws SQLException {
         return new SQL(host, port, user, password, database);
     }
 
     public SQL(String host, String port, String user, String password, String database) throws SQLException {
-        this.conn = init(host, port, user, password, database);
-    }
-
-    private Connection init(String host, String port, String user, String password, String database) throws SQLException {
-        return DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true", user, password);
+        this.conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true", user, password);
     }
     
     public void use(String db) {

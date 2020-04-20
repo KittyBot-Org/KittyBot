@@ -18,10 +18,10 @@ import java.util.Random;
 
 public class KittyBot{
 	
-	public final OkHttpClient httpClient;
-	
-	public JDA jda;
 	private static final Logger LOG = LoggerFactory.getLogger(KittyBot.class);
+
+	public JDA jda;
+	public final OkHttpClient httpClient;
 	public CommandManager commandManager;
 	public TaskManager taskManager;
 	public Database database;

@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 public abstract class ACommand{
 	
 	protected static final Logger LOG = LoggerFactory.getLogger(ACommand.class);
+
 	protected KittyBot main;
 	protected String command;
 	protected String usage;
@@ -34,7 +35,9 @@ public abstract class ACommand{
 	protected String[] alias;
 	
 	protected enum Status{
-		OK, ERROR, QUESTION
+		OK,
+		ERROR,
+		QUESTION
 	}
 	
 	protected ACommand(KittyBot main, String command, String usage, String description, String[] alias){
@@ -170,11 +173,12 @@ public abstract class ACommand{
 	}
 	
 	protected MessageAction sendAnswer(TextChannel channel, String answer, String title){
-		EmbedBuilder eb = new EmbedBuilder();
-		eb.setColor(Color.GREEN);
-		eb.setTitle(title);
-		eb.setDescription(answer);
-		return sendAnswer(channel, eb.build());
+		return sendAnswer(channel, new EmbedBuilder()
+			.setColor(Color.GREEN)
+			.setTitle(title)
+			.setDescription(answer)
+			.build()
+		);
 	}
 	
 	/* Send Error */
