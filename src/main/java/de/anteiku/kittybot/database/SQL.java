@@ -3,6 +3,9 @@ package de.anteiku.kittybot.database;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.*;
 
 public class SQL {
@@ -21,6 +24,23 @@ public class SQL {
     
     public void use(String db) {
         execute("USE `" + db + "`", false);
+    }
+
+    public void createTable(String table){
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+
+        File file = new File(classLoader.getResource("sql_tables/" + table + ".sql").getFile());
+        if(file.exists()){
+            try {
+                execute(new String(Files.readAllBytes(file.toPath())), false);
+            }
+            catch (IOException e) {
+                LOG.error("Error while reading sql table file: " + table, e);
+            }
+        }
+        else{
+            LOG.error("Unable to find given sql table file: {}", table);
+        }
     }
 
     public boolean execute(String query) {

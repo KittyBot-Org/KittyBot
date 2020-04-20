@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -110,12 +111,12 @@ public abstract class ACommand{
 	}
 	
 	/* Send Private Message*/
-	protected RestAction<Message> sendPrivate(Message message, MessageEmbed eb){
-		return message.getAuthor().openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage(eb));
+	protected RestAction<Message> sendPrivate(Message message, EmbedBuilder eb){
+		return message.getAuthor().openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage(eb.setTimestamp(Instant.now()).build()));
 	}
 	
 	protected RestAction<Message> sendPrivate(Message message, String msg){
-		return sendPrivate(message, new EmbedBuilder().setDescription(msg).build());
+		return sendPrivate(message, new EmbedBuilder().setDescription(msg));
 	}
 	
 	/* Send No permission Message*/
@@ -132,16 +133,16 @@ public abstract class ACommand{
 		sendAnswer(event.getMessage(), answer).queue();
 	}
 	
-	protected MessageAction sendAnswer(TextChannel channel, MessageEmbed answer){
-		return channel.sendMessage(answer);
+	protected MessageAction sendAnswer(TextChannel channel, EmbedBuilder answer){
+		return channel.sendMessage(answer.setTimestamp(Instant.now()).build());
 	}
 
-	protected MessageAction sendAnswer(GuildMessageReceivedEvent event, byte[] file, String fileName, MessageEmbed embed) {
+	protected MessageAction sendAnswer(GuildMessageReceivedEvent event, byte[] file, String fileName, EmbedBuilder embed) {
 		// add attachment://[the file name with extension] in embed
 		return sendAnswer(event, embed).addFile(file, fileName);
 	}
 
-	protected MessageAction sendAnswer(GuildMessageReceivedEvent event, InputStream file, String fileName, MessageEmbed embed){
+	protected MessageAction sendAnswer(GuildMessageReceivedEvent event, InputStream file, String fileName, EmbedBuilder embed){
 		// add attachment://[the file name with extension] in embed
 		return sendAnswer(event, embed).addFile(file, fileName);
 	}
@@ -157,19 +158,19 @@ public abstract class ACommand{
 	}
 	
 	protected MessageAction sendAnswer(TextChannel channel, String answer){
-		EmbedBuilder eb = new EmbedBuilder();
-		eb.setColor(Color.GREEN);
-		eb.setDescription(answer);
-		return sendAnswer(channel, eb.build());
+		return sendAnswer(channel, new EmbedBuilder()
+			.setColor(Color.GREEN)
+			.setDescription(answer)
+		);
 	}
 	
-	protected MessageAction sendAnswer(Message message, MessageEmbed answer){
+	protected MessageAction sendAnswer(Message message, EmbedBuilder answer){
 		addStatus(message, Status.OK);
 		return sendAnswer(message.getTextChannel(), answer);
 	}
 	
-	protected MessageAction sendAnswer(GuildMessageReceivedEvent event, MessageEmbed answer){
-		return sendAnswer(event.getMessage(), answer);
+	protected MessageAction sendAnswer(GuildMessageReceivedEvent event, EmbedBuilder answer){
+		return sendAnswer(event.getMessage(), answer.setAuthor(event.getAuthor().getName(), event.getMessage().getJumpUrl(), event.getAuthor().getAvatarUrl()));
 	}
 	
 	protected MessageAction sendAnswer(TextChannel channel, String answer, String title){
@@ -177,7 +178,6 @@ public abstract class ACommand{
 			.setColor(Color.GREEN)
 			.setTitle(title)
 			.setDescription(answer)
-			.build()
 		);
 	}
 	
@@ -192,11 +192,11 @@ public abstract class ACommand{
 	}
 	
 	protected MessageAction sendError(TextChannel channel, String error){
-		EmbedBuilder eb = new EmbedBuilder();
-		eb.setColor(Color.RED);
-		eb.addField("Error:", error, true);
-		
-		return channel.sendMessage(eb.build());
+		return channel.sendMessage(new EmbedBuilder()
+			.setColor(Color.RED)
+			.addField("Error:", error, true)
+			.build()
+		);
 	}
 	
 	/* Send Usage */
@@ -222,40 +222,56 @@ public abstract class ACommand{
 	}
 	
 	protected MessageAction sendUsage(TextChannel channel, String usage){
-		EmbedBuilder eb = new EmbedBuilder();
-		eb.setColor(Color.ORANGE);
-		eb.addField("Command usage:", "`" + main.database.getCommandPrefix(channel.getGuild().getId()) + usage + "`", true);
-		
-		return channel.sendMessage(eb.build());
+		return channel.sendMessage(new EmbedBuilder()
+			.setColor(Color.ORANGE)
+			.addField("Command usage:", "`" + main.database.getCommandPrefix(channel.getGuild().getId()) + usage + "`", true)
+			.setTimestamp(Instant.now())
+			.build()
+		);
 	}
 	
 	protected MessageAction sendReactionImage(GuildMessageReceivedEvent event, String type, String text){
 		List<User> users = event.getMessage().getMentionedUsers();
-		if(users.isEmpty() || users.contains(event.getAuthor())){
-			return sendError(event.getMessage(), "You need to mention a User(or not yourself :p)");
+		StringBuilder message = new StringBuilder();
+		if(users.isEmpty()){
+			return sendError(event.getMessage(), "Please mention a user");
+		}
+		else if(users.contains(event.getAuthor()) && users.size() == 1){
+			message.append("You can't ")
+				.append(type)
+				.append(" yourself so I ")
+				.append(type)
+				.append("you ")
+				.append(event.getAuthor().getAsMention())
+				.append("!");
 		}
 		else{
-			StringBuilder mentioned = new StringBuilder();
+			message.append(event.getAuthor().getAsMention())
+				.append(" ")
+				.append(text)
+				.append(" ");
+
 			for(User user : users){
-				mentioned.append(user.getAsMention()).append(", ");
+				if(user.getId().equals(event.getAuthor().getId())) continue;
+				message.append(user.getAsMention()).append(", ");
 			}
-			if(mentioned.lastIndexOf(",") != - 1){
-				mentioned.deleteCharAt(mentioned.lastIndexOf(","));
+			if(message.lastIndexOf(",") != - 1){
+				message.deleteCharAt(message.lastIndexOf(","));
 			}
-			String url = getNeko(type);
-			if(url == null){
-				return sendError(event.getMessage(), "Unknown error occurred while getting image for `" + type + "`");
-			}
-			return sendAnswer(event.getMessage(), new EmbedBuilder().setDescription(event.getAuthor().getAsMention() + " " + text + " " + mentioned).setImage(url).build());
 		}
+		String url = getNeko(type);
+		if(url == null){
+			return sendError(event.getMessage(), "Unknown error occurred while getting image for `" + type + "`");
+		}
+		return sendAnswer(event.getMessage(), new EmbedBuilder().setDescription(message).setImage(url));
 	}
 	
 	protected MessageAction sendImage(TextChannel channel, String url){
-		return sendAnswer(channel, new EmbedBuilder().setImage(url).setColor(Color.GREEN).build());
+		return sendAnswer(channel, new EmbedBuilder().setImage(url).setColor(Color.GREEN));
 	}
 	
 	protected MessageAction sendImage(Message message, String url){
-		return sendAnswer(message, new EmbedBuilder().setImage(url).setColor(Color.GREEN).build());
+		return sendAnswer(message, new EmbedBuilder().setImage(url).setColor(Color.GREEN));
 	}
 	
 	protected String getNeko(String type){

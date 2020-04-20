@@ -23,72 +23,16 @@ public class Database{
 		this.main = main;
 		commandPrefixes = new HashMap<>();
 		sql = SQL.newInstance(main.MYSQL_HOST, main.MYSQL_PORT, main.MYSQL_USER, main.MYSQL_PASSWORD, main.MYSQL_DB);
-		sql.execute("CREATE TABLE IF NOT EXISTS `guilds` (" +
-	        "`id` varchar(18) NOT NULL," +
-	        "`command_prefix` varchar(1) NOT NULL," +
-	        "`request_channel_id` varchar(18) NOT NULL," +
-	        "`requests_enabled` tinyint(1) NOT NULL," +
-	        "`welcome_channel_id` varchar(18) NOT NULL," +
-	        "`welcome_message` text NOT NULL," +
-	        "`welcome_message_enabled` tinyint(1) NOT NULL," +
-	        "`nsfw_enabled` tinyint(1) NOT NULL," +
-	        "PRIMARY KEY(id)" +
-	        ")");
-		sql.execute("CREATE TABLE IF NOT EXISTS `self_assignable_roles` (" +
-            "`id` varchar(18) NOT NULL," +
-            "`guild_id` varchar(18) NOT NULL," +
-            "`emote_id` varchar(18) NOT NULL," +
-            "PRIMARY KEY(id, guild_id)" +
-            ")");
-        /*sql.execute("CREATE TABLE IF NOT EXISTS `requests` (" +
-            "`id` int NOT NULL AUTO_INCREMENT," +
-            "`user_id` varchar(18) NOT NULL" +
-            "`guild_id` varchar(18) NOT NULL," +
-            "`title` varchar(32) NOT NULL," +
-            "`body` text(512) NOT NULL," +
-            "`answered` tinyint(1) NOT NULL," +
-            "`accepted` tinyint(1) NOT NULL," +
-            "`creation_time` varchar(20) NOT NULL," +
-            "PRIMARY KEY(id)" +
-            ")");*/
-		sql.execute("CREATE TABLE IF NOT EXISTS `sessions` (" +
-	        "`id` varchar(18) NOT NULL," +
-	        "`user_id` varchar(18) NOT NULL," +
-	        "PRIMARY KEY(id)" +
-	        ")");
+		sql.createTable("guilds");
+		sql.createTable("self_assignable_roles");
+		sql.createTable("commands");
+		sql.createTable("reactive_messages");
+		sql.createTable("user_statistics");
+        //sql.createTable("requests");
+		sql.createTable("sessions");
 		//sql.execute("CREATE TABLE IF NOT EXISTS `polls` (\n" + "`id` varchar(18) NOT NULL PRIMARY KEY,\n" + "`guild_id` varchar(18) NOT NULL,\n" + "`channel_id` varchar(18) NOT NULL,\n" + "`title` text NOT NULL,\n" + "`created_by` varchar(18) NOT NULL,\n" + "`created_at` timestamp NOT NULL DEFAULT current_timestamp(),\n" + "`goes_until` timestamp NOT NULL DEFAULT current_timestamp()\n" + ")");
-		//sql.execute("CREATE TABLE IF NOT EXISTS `poll_answers` (\n" + "`id` varchar(18) NOT NULL PRIMARY KEY,\n" + "`answer` text NOT NULL\n" + ")");
 		//sql.execute("CREATE TABLE IF NOT EXISTS `poll_votes` (\n" + "`id` varchar(18) NOT NULL PRIMARY KEY,\n" + "`created_by` varchar(18) NOT NULL,\n" + "`created_at` timestamp NOT NULL DEFAULT current_timestamp(),\n" + "`value` varchar(18) NOT NULL\n" + ")");
-		sql.execute("CREATE TABLE IF NOT EXISTS `reactive_messages` (" +
-            "`id` varchar(18) NOT NULL," +
-            "`user_id` varchar(18) NOT NULL," +
-            "`guild_id` varchar(18) NOT NULL," +
-            "`command_id` varchar(18) NOT NULL," +
-            "`command` varchar(18) NOT NULL," +
-            "`allowed` varchar(18) NOT NULL," +
-            "PRIMARY KEY(id, user_id, guild_id)" +
-            ")");
-		sql.execute("CREATE TABLE IF NOT EXISTS `user_statistics` (" +
-            "`user_id` varchar(18) NOT NULL," +
-            "`guild_id` varchar(18) NOT NULL," +
-            "`xp` int NOT NULL," +
-            "`level` int NOT NULL," +
-            "`bot_calls` int NOT NULL," +
-            "`voice_time` int NOT NULL," +
-            "`message_count` int NOT NULL," +
-            "`emote_count` int NOT NULL," +
-            "`last_active` varchar(20) NOT NULL," +
-            "PRIMARY KEY(user_id, guild_id)" +
-            ")");
-		sql.execute("CREATE TABLE IF NOT EXISTS `commands` (" +
-            "`id` varchar(18) NOT NULL," +
-            "`guild_id` varchar(18) NOT NULL," +
-            "`user_id` varchar(18) NOT NULL," +
-            "`command` varchar(18) NOT NULL," +
-            "`processing_time` int NOT NULL," +
-            "`time` varchar(20) NOT NULL," +
-            "PRIMARY KEY(id, guild_id)" +
-            ")");
+		//sql.execute("CREATE TABLE IF NOT EXISTS `poll_answers` (\n" + "`id` varchar(18) NOT NULL PRIMARY KEY,\n" + "`answer` text NOT NULL\n" + ")");
 	}
 	
 	public void init(){

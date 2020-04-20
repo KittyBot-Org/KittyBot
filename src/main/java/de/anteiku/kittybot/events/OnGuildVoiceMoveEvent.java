@@ -13,6 +13,7 @@ public class OnGuildVoiceMoveEvent extends ListenerAdapter{
 	}
 	
 	public void onGuildVoiceMoveEvent(GuildVoiceMoveEvent event){
+		//TODO
 	}
 	
 }

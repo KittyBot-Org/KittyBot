@@ -21,21 +21,17 @@ public class OnGuildMessageReceivedEvent extends ListenerAdapter{
 		if(event.getAuthor().isBot() || event.getAuthor().isFake()){
 			return;
 		}
-		if(main.commandManager.checkCommands(event)){
-			return;
-		}
-		
-		if(event.getMessage().getContentRaw().startsWith(main.database.getCommandPrefix(event.getGuild().getId()))){
-			main.commandManager.checkCommands(event);
-		}
-		else if(event.getMessage().getMentionedUsers().size() == 1){
-			if(event.getMessage().getMentionedUsers().get(0).getId().equals(main.jda.getSelfUser().getId())){
+		if(!main.commandManager.checkCommands(event)){
+			if(event.getMessage().getMentionedUsers().size() == 1 && event.getMessage().getMentionedUsers().get(0).getId().equals(main.jda.getSelfUser().getId())) {
 				event.getMessage().addReaction(Emotes.QUESTION.get()).queue();
-				EmbedBuilder eb = new EmbedBuilder();
-				eb.setColor(Color.ORANGE);
-				eb.setTitle("Do you need help?");
-				eb.setDescription("Do you want to know what my prefix is?\nIt is `" + main.database.getCommandPrefix(event.getGuild().getId()) + "`\nIf you need more help run `" + main.database.getCommandPrefix(event.getGuild().getId()) + "help` or `" + main.database.getCommandPrefix(event.getGuild().getId()) + "commands`" + Emotes.TEAM_KITTY.get());
-				event.getChannel().sendMessage(eb.build()).queue();
+				event.getChannel().sendMessage(new EmbedBuilder()
+					.setColor(Color.ORANGE)
+					.setTitle("Do you need help?")
+					.setDescription("Do you want to know what my prefix is?\n" +
+						"It is `" + main.database.getCommandPrefix(event.getGuild().getId()) + "`\n" +
+						"If you need more help run `" + main.database.getCommandPrefix(event.getGuild().getId()) + "help` or `" + main.database.getCommandPrefix(event.getGuild().getId()) + "commands`" + Emotes.TEAM_KITTY.get())
+					.build()
+				).queue();
 			}
 		}
 	}
