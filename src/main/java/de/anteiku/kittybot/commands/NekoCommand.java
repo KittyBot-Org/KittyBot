@@ -42,7 +42,7 @@ public class NekoCommand extends ACommand{
 			);
 		}
 		else{
-			sendUsage(event.getMessage());
+			sendUsage(event);
 		}
 	}
 

@@ -18,7 +18,7 @@ repositories {
 dependencies {
     compile 'com.github.TopiSenpai:EmojiUtils:1.0'
 
-    compile 'net.dv8tion:JDA:4.1.1_134'
+    compile 'net.dv8tion:JDA:4.1.1_137'
 
     compile 'org.slf4j:slf4j-jdk14:1.7.5'
 

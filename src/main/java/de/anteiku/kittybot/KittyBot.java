@@ -102,7 +102,8 @@ public class KittyBot{
 			commandManager.add(new TickleCommand(this));
 			commandManager.add(new FeedCommand(this));
 			commandManager.add(new SlapCommand(this));
-			
+			commandManager.add(new BakaCommand(this));
+
 			commandManager.add(new CatCommand(this));
 			commandManager.add(new DogCommand(this));
 			commandManager.add(new NekoCommand(this));
