@@ -29,7 +29,7 @@ public class HelpCommand extends ACommand{
 		eb.addField(Emotes.CONSOLE.get() + " Commands:", Emotes.BLANK.get() + " :small_blue_diamond: You want to see **all my available commands**?\n" + Emotes.BLANK.get() + " " + Emotes.BLANK.get() + " Use ``.commands``", true);
 		eb.addField(":question: Help:", Emotes.BLANK.get() + " :small_blue_diamond: You want to **report bugs or suggest new features**?\n" + Emotes.BLANK.get() + " " + Emotes.BLANK.get() + " Message my owner on " + Emotes.TWITTER.get() + " [Twitter](https://Twitter.com/TopiDragneel) or " + Emotes.DISCORD.get() + " ``Toπ#4184``!", true);
 		eb.addField(":globe_with_meridians: Webinterface:", Emotes.BLANK.get() + " :small_blue_diamond: Click [here](http://anteiku.de/login) to login with discord and manage your guilds!.",true);
-		sendAnswer(event.getMessage(), eb.build()).queue(
+		sendAnswer(event.getMessage(), eb).queue(
 			message -> {
 				main.commandManager.addReactiveMessage(event, message, this, "-1");
 				message.addReaction(Emotes.WASTEBASKET.get()).queue();

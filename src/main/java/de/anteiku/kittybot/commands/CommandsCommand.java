@@ -29,7 +29,7 @@ public class CommandsCommand extends ACommand{
 		int page = getPageByMessage(message) + 1;
 		if(page <= getMaxPages()){
 			String[] args = {String.valueOf(page)};
-			message.editMessage(buildCommands(args, main.database.getCommandPrefix(message.getGuild().getId()))).queue();
+			message.editMessage(buildCommands(args, main.database.getCommandPrefix(message.getGuild().getId())).build()).queue();
 		}
 	}
 	
@@ -40,7 +40,7 @@ public class CommandsCommand extends ACommand{
 		
 	}
 	
-	private MessageEmbed buildCommands(String[] args, String prefix){
+	private EmbedBuilder buildCommands(String[] args, String prefix){
 		int page = 0;
 		if(args.length == 1){
 			page = Integer.parseInt(args[0]) - 1;
@@ -62,14 +62,14 @@ public class CommandsCommand extends ACommand{
 			i++;
 		}
 		eb.setFooter("Page: " + (page + 1) + "/" + getMaxPages() + " - use reaction to navigate!", "https://cdn.discordapp.com/attachments/576923247652634664/589135880963227730/download.png");
-		return eb.build();
+		return eb;
 	}
 	
 	public void prevPage(Message message){
 		int page = getPageByMessage(message) - 1;
 		if(page >= 1){
 			String[] args = {String.valueOf(page)};
-			message.editMessage(buildCommands(args, main.database.getCommandPrefix(message.getGuild().getId()))).queue();
+			message.editMessage(buildCommands(args, main.database.getCommandPrefix(message.getGuild().getId())).build()).queue();
 		}
 	}
 	

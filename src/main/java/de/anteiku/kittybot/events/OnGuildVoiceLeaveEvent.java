@@ -13,6 +13,7 @@ public class OnGuildVoiceLeaveEvent extends ListenerAdapter{
 	}
 	
 	public void onGuildVoiceLeaveEvent(GuildVoiceLeaveEvent event){
+		//TODO
 	}
 	
 }

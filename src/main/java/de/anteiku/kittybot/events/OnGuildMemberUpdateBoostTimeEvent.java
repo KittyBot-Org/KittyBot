@@ -14,6 +14,7 @@ public class OnGuildMemberUpdateBoostTimeEvent extends ListenerAdapter{
 	
 	@Override
 	public void onGuildMemberUpdateBoostTime(GuildMemberUpdateBoostTimeEvent event){
+		//TODO
 	}
 	
 }

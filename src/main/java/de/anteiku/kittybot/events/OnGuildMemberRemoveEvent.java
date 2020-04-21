@@ -14,7 +14,7 @@ public class  OnGuildMemberRemoveEvent extends ListenerAdapter{
 	
 	@Override
 	public void onGuildMemberRemove(GuildMemberRemoveEvent event){
-	
+		//TODO
 	}
 	
 }

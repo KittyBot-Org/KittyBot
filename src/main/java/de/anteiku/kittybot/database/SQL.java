@@ -3,27 +3,44 @@ package de.anteiku.kittybot.database;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.*;
 
 public class SQL {
 
-    private final Connection conn;
     private static final Logger LOG = LoggerFactory.getLogger(Database.class);
+
+    private final Connection conn;
 
     public static SQL newInstance(String host, String port, String user, String password, String database) throws SQLException {
         return new SQL(host, port, user, password, database);
     }
 
     public SQL(String host, String port, String user, String password, String database) throws SQLException {
-        this.conn = init(host, port, user, password, database);
-    }
-
-    private Connection init(String host, String port, String user, String password, String database) throws SQLException {
-        return DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true", user, password);
+        this.conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true", user, password);
     }
     
     public void use(String db) {
         execute("USE `" + db + "`", false);
+    }
+
+    public void createTable(String table){
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+
+        File file = new File(classLoader.getResource("sql_tables/" + table + ".sql").getFile());
+        if(file.exists()){
+            try {
+                execute(new String(Files.readAllBytes(file.toPath())), false);
+            }
+            catch (IOException e) {
+                LOG.error("Error while reading sql table file: " + table, e);
+            }
+        }
+        else{
+            LOG.error("Unable to find given sql table file: {}", table);
+        }
     }
 
     public boolean execute(String query) {

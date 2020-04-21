@@ -13,6 +13,7 @@ public class OnGuildVoiceJoinEvent extends ListenerAdapter{
 	}
 	
 	public void onGuildVoiceJoinEvent(GuildVoiceJoinEvent event){
+		//TODO
 	}
 	
 }

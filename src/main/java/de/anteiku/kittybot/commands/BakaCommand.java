@@ -3,14 +3,14 @@ package de.anteiku.kittybot.commands;
 import de.anteiku.kittybot.KittyBot;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class CuddleCommand extends ACommand{
-	
-	public static String COMMAND = "cuddle";
-	public static String USAGE = "cuddle <@user, ...>";
-	public static String DESCRIPTION = "Cuddles a user";
-	protected static String[] ALIAS = {"knuddel"};
-	
-	public CuddleCommand(KittyBot main){
+public class BakaCommand extends ACommand{
+
+	public static String COMMAND = "baka";
+	public static String USAGE = "baka <@user, ...>";
+	public static String DESCRIPTION = "Says baka to a user";
+	protected static String[] ALIAS = {"dummy", "dummi"};
+
+	public BakaCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 	
@@ -20,7 +20,7 @@ public class CuddleCommand extends ACommand{
 			sendUsage(event);
 			return;
 		}
-		sendReactionImage(event, "cuddle", "cuddles").queue();
+		sendReactionImage(event, "baka", "said baka to").queue();
 	}
 	
 }

@@ -18,10 +18,10 @@ import java.util.Random;
 
 public class KittyBot{
 	
-	public final OkHttpClient httpClient;
-	
-	public JDA jda;
 	private static final Logger LOG = LoggerFactory.getLogger(KittyBot.class);
+
+	public JDA jda;
+	public final OkHttpClient httpClient;
 	public CommandManager commandManager;
 	public TaskManager taskManager;
 	public Database database;
@@ -102,7 +102,8 @@ public class KittyBot{
 			commandManager.add(new TickleCommand(this));
 			commandManager.add(new FeedCommand(this));
 			commandManager.add(new SlapCommand(this));
-			
+			commandManager.add(new BakaCommand(this));
+
 			commandManager.add(new CatCommand(this));
 			commandManager.add(new DogCommand(this));
 			commandManager.add(new NekoCommand(this));
