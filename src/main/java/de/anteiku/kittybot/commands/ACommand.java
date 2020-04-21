@@ -241,7 +241,7 @@ public abstract class ACommand{
 				.append(type)
 				.append(" yourself so I ")
 				.append(type)
-				.append("you ")
+				.append(" you ")
 				.append(event.getAuthor().getAsMention())
 				.append("!");
 		}
