@@ -6,6 +6,8 @@ import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.events.*;
 import de.anteiku.kittybot.tasks.TaskManager;
 import de.anteiku.kittybot.utils.Config;
+import de.anteiku.kittybot.utils.Emotes;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -14,6 +16,8 @@ import okhttp3.OkHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
+import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
@@ -111,7 +115,18 @@ public class KittyBot{
 			commandManager.add(new TestCommand(this));
 			
 			taskManager = new TaskManager(this);
-			//Logger.sendDM("KittyBot started!");
+			jda.openPrivateChannelById(ADMIN_DISCORD_ID).queue(
+				privateChannel -> privateChannel.sendMessage(
+					new EmbedBuilder()
+						.setTitle(jda.getSelfUser().getName())
+						.setDescription("Hellowo I'm ready!")
+						.setThumbnail(jda.getSelfUser().getAvatarUrl())
+						.setColor(new Color(76, 80, 193))
+						.setFooter(jda.getSelfUser().getName(), jda.getSelfUser().getAvatarUrl())
+						.setTimestamp(Instant.now())
+						.build()
+				).queue()
+			);
 		}
 		catch(Exception e){
 			LOG.error("Error while initializing JDA", e);
