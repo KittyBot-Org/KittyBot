@@ -102,25 +102,8 @@ public class Database{
 		return sql.execute("INSERT INTO `guilds` (id, command_prefix, request_channel_id, requests_enabled, welcome_channel_id, welcome_message, welcome_message_enabled, nsfw_enabled) VALUES ('" + guild.getId() + "', '" + main.DEFAULT_PREFIX + "', '-1', 0, '" + guild.getDefaultChannel().getId() + "', 'Welcome [username] to this server!', 1, 1)");
 	}
 	
-	private Map<String, String> get(String guildId, String... keys){
-		Map<String, String> map = new HashMap<>();
-		ResultSet result = sql.query("SELECT " + String.join(", ", keys) + " FROM `guilds` WHERE `id` = '" + guildId + "'");
-		try{
-			if(result.absolute(1)){
-				for(String key : keys){
-					map.put(key, result.getString(key));
-				}
-				return map;
-			}
-		}
-		catch(SQLException e){
-			LOG.error("Error while getting keys" + Arrays.toString(keys) + " from guild " + guildId, e);
-		}
-		return null;
-	}
-	
 	private String get(String guildId, String key){
-		ResultSet result = sql.query("SELECT " + key + " FROM `guilds` WHERE `id` = '" + guildId + "'");
+		ResultSet result = sql.getProperty("guilds", "id", guildId);
 		try{
 			if(result.absolute(1)){
 				return result.getString(key);
@@ -133,11 +116,11 @@ public class Database{
 	}
 	
 	private boolean set(String guildId, String key, String value) {
-		return sql.execute("UPDATE `guilds` SET `" + key + "`='" + value + "' WHERE `id` = '" + guildId + "'");
+		return sql.setProperty("guilds", key, value, "id", guildId);
 	}
 	
 	private boolean set(String guildId, String key, int value) {
-		return sql.execute("UPDATE `guilds` SET `" + key + "`=" + value + "' WHERE `id` = '" + guildId + "'");
+		return sql.setProperty("guilds", key, value, "id", guildId);
 	}
 	
 	public String getCommandPrefix(String guildId){
@@ -150,7 +133,11 @@ public class Database{
 	}
 	
 	public boolean setCommandPrefix(String guildId, String prefix){
-		return set(guildId, "command_prefix", prefix);
+		boolean result = set(guildId, "command_prefix", prefix);
+		if(result){
+			commandPrefixes.put(guildId, prefix);
+		}
+		return result;
 	}
 	
 	public Set<ValuePair<String, String>> getSelfAssignableRoles(String guildId){
@@ -250,6 +237,27 @@ public class Database{
 			LOG.error("Error while checking reactive message for guild " +  guildId + " message " + messageId, e);
 		}
 		return null;
+	}
+	
+	/*
+	 * User stats specified methods
+	 */
+	
+	public long getUserVoiceState(String guildId, String userId){
+		ResultSet result = sql.query("SELECT `joined_voice` FROM `user_statistics` WHERE `guild_id` = '" + userId + "' and `user_id` = '" + guildId + "'");
+		try{
+			return Long.parseLong(result.getString("joined_voice"));
+		}
+		catch(SQLException e){
+			LOG.error("Error while requesting voice state for user " + userId + " in guild: " + guildId, e);
+		}
+		return -1L;
+	}
+	
+	public void setUserVoiceState(String guildId, String userId, long joined){
+		if(sql.update("UPDATE `user_statistics` SET `joined_voice`='" + joined + "' WHERE `guild_id` = '" + guildId + "' and `user_id` = '" + userId + "'") == 0){
+			//addUserStatistics(guildId, userId);
+		}
 	}
 	
 	/*

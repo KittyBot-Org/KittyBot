@@ -1,12 +1,17 @@
 package de.anteiku.kittybot.database;
 
+import de.anteiku.kittybot.KittyBot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import spark.utils.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.sql.*;
+import java.util.Objects;
 
 public class SQL {
 
@@ -25,21 +30,41 @@ public class SQL {
     public void use(String db) {
         execute("USE `" + db + "`", false);
     }
+    
+    public boolean setProperty(String table, String row, String value, String checkRow, String checkValue){
+        return execute("UPDATE `" + table + "` SET `" + row + "`='" + value + "' WHERE `" + checkRow + "` = '" + checkValue + "'");
+    }
+    
+    public boolean setProperty(String table, String row, int value, String checkRow, String checkValue){
+        return execute("UPDATE `" + table + "` SET `" + row + "`='" + value + "' WHERE `" + checkRow + "` = '" + checkValue + "'");
+    }
+    
+    public ResultSet getProperty(String table, String checkRow, String checkValue){
+        return query("SELECT * FROM `" + table + "`  WHERE `" + checkRow + "` = '" + checkValue + "'");
+    }
+    
+    public String getSingleProperty(String table, String checkRow, String checkValue, String property){
+        try{
+            ResultSet result = getProperty(table, checkRow, checkValue);
+            if(!result.first()){
+                return null;
+            }
+            return result.getString(property);
+        }
+        catch(SQLException e){
+            LOG.error("Error while getting single property", e);
+        }
+        return null;
+    }
 
     public void createTable(String table){
-        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-
-        File file = new File(classLoader.getResource("sql_tables/" + table + ".sql").getFile());
-        if(file.exists()){
-            try {
-                execute(new String(Files.readAllBytes(file.toPath())), false);
-            }
-            catch (IOException e) {
-                LOG.error("Error while reading sql table file: " + table, e);
-            }
+        try{
+            String sql = IOUtils.toString(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("sql_tables/" + table + ".sql")));
+            LOG.info("Read sql table from resources: {}", table);
+            execute(sql, false);
         }
-        else{
-            LOG.error("Unable to find given sql table file: {}", table);
+        catch(IOException e){
+            LOG.error("Error while reading sql table file: " + table, e);
         }
     }
 
@@ -49,15 +74,30 @@ public class SQL {
 
     public boolean execute(String query, boolean retry) {
         try {
-            Statement statement = this.conn.createStatement();
             LOG.debug(query);
-            return statement.execute(query);
+            return this.conn.createStatement().execute(query);
         }
         catch (SQLException e) {
             if(retry) return execute(query, false);
             LOG.error("Error while executing sql command", e);
         }
         return false;
+    }
+    
+    public int update(String query) {
+        return update(query, true);
+    }
+    
+    public int update(String query, boolean retry) {
+        try {
+            LOG.debug(query);
+            return this.conn.createStatement().executeUpdate(query);
+        }
+        catch (SQLException e) {
+            if(retry) return update(query, false);
+            LOG.error("Error while executing sql command", e);
+        }
+        return -1;
     }
 
     public ResultSet query(String query) {

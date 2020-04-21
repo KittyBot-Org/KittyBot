@@ -1,6 +1,7 @@
-package de.anteiku.kittybot.commands;
+package de.anteiku.kittybot.commands.commands;
 
 import de.anteiku.kittybot.KittyBot;
+import de.anteiku.kittybot.commands.ACommand;
 import de.anteiku.kittybot.utils.Emotes;
 import de.anteiku.kittybot.objects.ReactiveMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -10,6 +11,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 import java.awt.*;
+import java.time.Instant;
 import java.util.Map;
 
 public class CommandsCommand extends ACommand{
@@ -62,6 +64,7 @@ public class CommandsCommand extends ACommand{
 			i++;
 		}
 		eb.setFooter("Page: " + (page + 1) + "/" + getMaxPages() + " - use reaction to navigate!", "https://cdn.discordapp.com/attachments/576923247652634664/589135880963227730/download.png");
+		eb.setTimestamp(Instant.now());
 		return eb;
 	}
 	
@@ -75,7 +78,7 @@ public class CommandsCommand extends ACommand{
 	
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
-		sendAnswer(event.getMessage(), buildCommands(args, main.database.getCommandPrefix(event.getGuild().getId()))).queue(
+		sendAnswer(event, buildCommands(args, main.database.getCommandPrefix(event.getGuild().getId()))).queue(
 			message -> {
 				main.commandManager.addReactiveMessage(event, message, this, "-1");
 				message.addReaction(Emotes.ARROW_LEFT.get()).queue();
