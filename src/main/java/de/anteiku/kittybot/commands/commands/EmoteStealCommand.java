@@ -1,11 +1,14 @@
-package de.anteiku.kittybot.commands;
+package de.anteiku.kittybot.commands.commands;
 
 import de.anteiku.kittybot.KittyBot;
+import de.anteiku.kittybot.commands.ACommand;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Icon;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.ContextException;
+import net.dv8tion.jda.api.requests.restaction.AuditableRestAction;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -41,11 +44,10 @@ public class EmoteStealCommand extends ACommand{
 					emotesNotStolen++;
 					continue;
 				}
-				if(createEmoteFromURL(event.getGuild(), emote.getName(), emote.getImageUrl())){
+				if(createEmoteFromURL(event, emote.getName(), emote.getImageUrl())){
 					emotesStolen++;
 				}
 				else{
-					sendError(event, "There was a problem stealing " + emote.getAsMention());
 					emotesNotStolen++;
 				}
 			}
@@ -62,11 +64,8 @@ public class EmoteStealCommand extends ACommand{
 		else if(args.length >= 2){
 			try {
 				new URL(args[0]).toURI();
-				if(createEmoteFromURL(event.getGuild(), args[1], args[0])){
+				if(createEmoteFromURL(event, args[1], args[0])){
 					sendAnswer(event, "Emote stolen");
-				}
-				else{
-					sendError(event, "There was a problem creating the emote");
 				}
 			}
 			catch(MalformedURLException | URISyntaxException e){
@@ -78,13 +77,17 @@ public class EmoteStealCommand extends ACommand{
 		}
 	}
 	
-	private boolean createEmoteFromURL(Guild guild, String name, String url){
+	private boolean createEmoteFromURL(GuildMessageReceivedEvent event, String name, String url){
 		try{
-			guild.createEmote(name, Icon.from(new URL(url).openStream())).queue();
+			event.getGuild().createEmote(name, Icon.from(new URL(url).openStream())).queue(
+					null,
+					failure -> sendError(event, "Error creating emote: " + failure.getMessage())
+			);
 			return true;
 		}
 		catch(IOException e){
-			LOG.error("Error while creating emote in guild " + guild.getId(), e);
+			LOG.error("Error while creating emote in guild " + event.getGuild().getId(), e);
+			sendError(event, "There was a problem creating the emote");
 		}
 		return false;
 	}

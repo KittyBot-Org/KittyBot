@@ -1,6 +1,7 @@
 package de.anteiku.kittybot;
 
 import de.anteiku.kittybot.commands.*;
+import de.anteiku.kittybot.commands.commands.*;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.events.*;
 import de.anteiku.kittybot.tasks.TaskManager;
@@ -79,9 +80,7 @@ public class KittyBot{
 					new OnGuildMemberUpdateBoostTimeEvent(this),
 					new OnGuildMessageReactionAddEvent(this),
 					new OnGuildMessageReceivedEvent(this),
-					new OnGuildVoiceJoinEvent(this),
-					new OnGuildVoiceLeaveEvent(this),
-					new OnGuildVoiceMoveEvent(this)
+					new OnGuildVoiceEvent(this)
 				)
 				.build()
 				.awaitReady();
