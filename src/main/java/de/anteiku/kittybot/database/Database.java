@@ -133,11 +133,8 @@ public class Database{
 	}
 	
 	public boolean setCommandPrefix(String guildId, String prefix){
-		boolean result = set(guildId, "command_prefix", prefix);
-		if(result){
-			commandPrefixes.put(guildId, prefix);
-		}
-		return result;
+		commandPrefixes.put(guildId, prefix);
+		return set(guildId, "command_prefix", prefix);
 	}
 	
 	public Set<ValuePair<String, String>> getSelfAssignableRoles(String guildId){
