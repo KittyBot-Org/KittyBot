@@ -91,47 +91,54 @@ public class KittyBot{
 
 			database.init();
 
-			commandManager = new CommandManager(this);
-			commandManager.add(new HelpCommand(this));
-			commandManager.add(new CommandsCommand(this));
-			commandManager.add(new EmoteStealCommand(this));
-			commandManager.add(new RolesCommand(this));
-			
-			commandManager.add(new PatCommand(this));
-			commandManager.add(new PokeCommand(this));
-			commandManager.add(new HugCommand(this));
-			commandManager.add(new CuddleCommand(this));
-			commandManager.add(new KissCommand(this));
-			commandManager.add(new TickleCommand(this));
-			commandManager.add(new FeedCommand(this));
-			commandManager.add(new SlapCommand(this));
-			commandManager.add(new BakaCommand(this));
-
-			commandManager.add(new CatCommand(this));
-			commandManager.add(new DogCommand(this));
-			commandManager.add(new NekoCommand(this));
-			commandManager.add(new OptionsCommand(this));
-			commandManager.add(new EvalCommand(this));
-			commandManager.add(new TestCommand(this));
+			commandManager = new CommandManager(this)
+				.addCommands(
+					new HelpCommand(this),
+					new CommandsCommand(this),
+					new EmoteStealCommand(this),
+					new RolesCommand(this),
+					
+					new PatCommand(this),
+					new PokeCommand(this),
+					new HugCommand(this),
+					new CuddleCommand(this),
+					new KissCommand(this),
+					new TickleCommand(this),
+					new FeedCommand(this),
+					new SlapCommand(this),
+					new BakaCommand(this),
+		
+					new CatCommand(this),
+					new DogCommand(this),
+					new NekoCommand(this),
+					new OptionsCommand(this),
+					new EvalCommand(this),
+					new TestCommand(this)
+				);
 			
 			taskManager = new TaskManager(this);
-			jda.openPrivateChannelById(ADMIN_DISCORD_ID).queue(
-				privateChannel -> privateChannel.sendMessage(
-					new EmbedBuilder()
-						.setTitle(jda.getSelfUser().getName())
-						.setDescription("Hellowo I'm ready!")
-						.setThumbnail(jda.getSelfUser().getAvatarUrl())
-						.setColor(new Color(76, 80, 193))
-						.setFooter(jda.getSelfUser().getName(), jda.getSelfUser().getAvatarUrl())
-						.setTimestamp(Instant.now())
-						.build()
-				).queue()
-			);
+			
+			sendDMToOwnerAdmin(jda.getSelfUser().getName(), "Hellowo I'm ready!");
 		}
 		catch(Exception e){
 			LOG.error("Error while initializing JDA", e);
 			close();
 		}
+	}
+	
+	public void sendDMToOwnerAdmin(String title, String description){
+		jda.openPrivateChannelById(ADMIN_DISCORD_ID).queue(
+			privateChannel -> privateChannel.sendMessage(
+				new EmbedBuilder()
+					.setTitle(title)
+					.setDescription(description)
+					.setThumbnail(jda.getSelfUser().getAvatarUrl())
+					.setColor(new Color(76, 80, 193))
+					.setFooter(jda.getSelfUser().getName(), jda.getSelfUser().getAvatarUrl())
+					.setTimestamp(Instant.now())
+					.build()
+			).queue()
+		);
 	}
 	
 	private void setEnvVars() {

@@ -22,7 +22,7 @@ public class OnGuildMessageReceivedEvent extends ListenerAdapter{
 			return;
 		}
 		if(!main.commandManager.checkCommands(event)){
-			if(event.getMessage().getMentionedUsers().size() == 1 && event.getMessage().getMentionedUsers().get(0).getId().equals(main.jda.getSelfUser().getId())) {
+			/*if(event.getMessage().getMentionedUsers().size() == 1 && event.getMessage().getMentionedUsers().get(0).getId().equals(main.jda.getSelfUser().getId())) {
 				event.getMessage().addReaction(Emotes.QUESTION.get()).queue();
 				event.getChannel().sendMessage(new EmbedBuilder()
 					.setColor(Color.ORANGE)
@@ -32,7 +32,7 @@ public class OnGuildMessageReceivedEvent extends ListenerAdapter{
 						"If you need more help run `" + main.database.getCommandPrefix(event.getGuild().getId()) + "help` or `" + main.database.getCommandPrefix(event.getGuild().getId()) + "commands`" + Emotes.TEAM_KITTY.get())
 					.build()
 				).queue();
-			}
+			}*/
 		}
 	}
 	

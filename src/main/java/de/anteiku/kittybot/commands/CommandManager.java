@@ -21,11 +21,14 @@ public class CommandManager{
 	
 	public CommandManager(KittyBot main){
 		this.main = main;
-		commands = new LinkedHashMap<>();
+		this.commands = new LinkedHashMap<>();
 	}
 	
-	public void add(ACommand cmd){
-		commands.put(cmd.getCommand(), cmd);
+	public CommandManager addCommands(ACommand... commands){
+		for(ACommand command : commands){
+			this.commands.put(command.getCommand(), command);
+		}
+		return this;
 	}
 	
 	public void addReactiveMessage(GuildMessageReceivedEvent event, Message message, ACommand cmd, String allowed){
@@ -42,10 +45,9 @@ public class CommandManager{
 
 	public boolean checkCommands(GuildMessageReceivedEvent event){
 		long start = System.nanoTime();
-		String message = event.getMessage().getContentRaw();
-		String prefix = main.database.getCommandPrefix(event.getGuild().getId());
-		if(message.startsWith(prefix)){
-			String command = getCommand(message, prefix);
+		String message = startsWithPrefix(event.getGuild(), event.getMessage().getContentRaw());
+		if(message != null){
+			String command = getCommand(message);
 			for(Map.Entry<String, ACommand> c : commands.entrySet()){
 				ACommand cmd = c.getValue();
 				if(cmd.checkCmd(command)){
@@ -53,7 +55,7 @@ public class CommandManager{
 					cmd.run(getArgs(message), event);
 					long processingTime = (System.nanoTime() - start) / 1000000;
 					main.database.addCommandStatistics(event.getGuild().getId(), event.getMessageId(), event.getAuthor().getId(), command, processingTime);
-					LOG.info("Command: {}, by: {}, from: {}, took {}ms", command, event.getAuthor().getName(), event.getGuild().getName(), processingTime);
+					LOG.info("Command: {}, by: {}, from: {}, took: {}ms", command, event.getAuthor().getName(), event.getGuild().getName(), processingTime);
 					return true;
 				}
 			}
@@ -61,8 +63,18 @@ public class CommandManager{
 		return false;
 	}
 	
-	private String getCommand(String raw, String prefix){
-		return raw.split(" ")[0].replaceFirst(Pattern.quote(prefix), "");
+	private String startsWithPrefix(Guild guild, String message){
+		String prefix;
+		if(message.startsWith(prefix = main.database.getCommandPrefix(guild.getId())) ||
+			message.startsWith(prefix = "<@!" + guild.getSelfMember().getId() + ">") ||
+			message.startsWith(prefix = "<@" + guild.getSelfMember().getId() + ">")){
+			return message.substring(prefix.length()).trim();
+		}
+		return null;
+	}
+	
+	private String getCommand(String raw){
+		return raw.split(" ")[0];
 	}
 	
 	private String[] getArgs(String message){
