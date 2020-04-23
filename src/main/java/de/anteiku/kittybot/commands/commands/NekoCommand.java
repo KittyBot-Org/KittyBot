@@ -35,7 +35,7 @@ public class NekoCommand extends ACommand{
 			return;
 		}
 		if(args.length > 0 && nekos.contains(args[0])){
-			sendImage(event.getMessage(), getNeko(args[0])).queue(
+			image(event, getNeko(args[0])).queue(
 				message -> {
 					main.commandManager.addReactiveMessage(event, message, this, "-1");
 					message.addReaction(Emotes.WASTEBASKET.get()).queue();

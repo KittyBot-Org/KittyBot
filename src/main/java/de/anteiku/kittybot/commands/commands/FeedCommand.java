@@ -21,7 +21,7 @@ public class FeedCommand extends ACommand{
 			sendUsage(event);
 			return;
 		}
-		sendReactionImage(event, "feed", "feeds").queue();
+		sendReactionImage(event, "feed", "feeds");
 	}
 
 }

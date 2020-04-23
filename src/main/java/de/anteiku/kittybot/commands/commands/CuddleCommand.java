@@ -21,7 +21,7 @@ public class CuddleCommand extends ACommand{
 			sendUsage(event);
 			return;
 		}
-		sendReactionImage(event, "cuddle", "cuddles").queue();
+		sendReactionImage(event, "cuddle", "cuddles");
 	}
 	
 }

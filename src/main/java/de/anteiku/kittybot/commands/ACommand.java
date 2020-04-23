@@ -85,10 +85,6 @@ public abstract class ACommand{
 			event.getChannel().deleteMessageById(reactiveMessage.commandId).queue();
 			main.commandManager.removeReactiveMessage(event.getGuild(), event.getMessageId());
 		}
-		else if(event.getReactionEmote().getName().equals(Emotes.QUESTION.get())){
-			event.getReaction().removeReaction(event.getUser()).queue();
-			sendUsage(event.getChannel());
-		}
 	}
 	
 	protected void addStatus(Message message, Status status){
@@ -121,120 +117,89 @@ public abstract class ACommand{
 	
 	/* Send No permission Message*/
 	protected void sendNoPermission(GuildMessageReceivedEvent event){
-		sendNoPermission2(event).queue();
+		noPermission(event).queue();
 	}
 	
-	protected MessageAction sendNoPermission2(GuildMessageReceivedEvent event){
-		return sendError(event.getMessage(), "Sorry you have no permission to run this command :(");
+	protected MessageAction noPermission(GuildMessageReceivedEvent event){
+		return error(event, "Sorry you don't have the permission to use this command :(");
 	}
 	
 	/* Send Answer */
 	protected void sendAnswer(GuildMessageReceivedEvent event, String answer){
-		sendAnswer(event.getMessage(), answer).queue();
+		answer(event, answer).queue();
 	}
 	
-	protected MessageAction sendAnswer(TextChannel channel, EmbedBuilder answer){
-		return channel.sendMessage(answer.setTimestamp(Instant.now()).build());
-	}
-
-	protected MessageAction sendAnswer(GuildMessageReceivedEvent event, byte[] file, String fileName, EmbedBuilder embed) {
-		// add attachment://[the file name with extension] in embed
-		return sendAnswer(event, embed).addFile(file, fileName);
-	}
-
-	protected MessageAction sendAnswer(GuildMessageReceivedEvent event, InputStream file, String fileName, EmbedBuilder embed){
-		// add attachment://[the file name with extension] in embed
-		return sendAnswer(event, embed).addFile(file, fileName);
-	}
-	
-	protected MessageAction sendAnswer(Message message, String answer, String title){
-		addStatus(message, Status.OK);
-		return sendAnswer(message.getTextChannel(), answer, title);
-	}
-	
-	protected MessageAction sendAnswer(Message message, String answer){
-		addStatus(message, Status.OK);
-		return sendAnswer(message.getTextChannel(), answer);
-	}
-	
-	protected MessageAction sendAnswer(TextChannel channel, String answer){
-		return sendAnswer(channel, new EmbedBuilder()
-			.setColor(Color.GREEN)
+	protected MessageAction answer(GuildMessageReceivedEvent event, String answer){
+		return answer(event, new EmbedBuilder()
 			.setDescription(answer)
 		);
 	}
 	
-	protected MessageAction sendAnswer(Message message, EmbedBuilder answer){
-		addStatus(message, Status.OK);
-		return sendAnswer(message.getTextChannel(), answer);
-	}
-	
-	protected MessageAction sendAnswer(GuildMessageReceivedEvent event, EmbedBuilder answer){
-		return sendAnswer(event.getMessage(), answer.setAuthor(event.getAuthor().getName(), event.getMessage().getJumpUrl(), event.getAuthor().getAvatarUrl()));
-	}
-	
-	protected MessageAction sendAnswer(TextChannel channel, String answer, String title){
-		return sendAnswer(channel, new EmbedBuilder()
+	protected MessageAction answer(GuildMessageReceivedEvent event, EmbedBuilder answer){
+		addStatus(event.getMessage(), Status.OK);
+		return event.getChannel().sendMessage(answer
 			.setColor(Color.GREEN)
-			.setTitle(title)
-			.setDescription(answer)
+			.setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
+			.setTimestamp(Instant.now())
+			.build()
 		);
+	}
+
+	protected MessageAction answer(GuildMessageReceivedEvent event, byte[] file, String fileName, EmbedBuilder embed) {
+		// add attachment://[the file name with extension] in embed
+		return answer(event, embed).addFile(file, fileName);
+	}
+
+	protected MessageAction answer(GuildMessageReceivedEvent event, InputStream file, String fileName, EmbedBuilder embed){
+		// add attachment://[the file name with extension] in embed
+		return answer(event, embed).addFile(file, fileName);
 	}
 	
 	/* Send Error */
 	protected void sendError(GuildMessageReceivedEvent event, String error){
-		sendError(event.getMessage(), error).queue();
+		error(event, error).queue();
 	}
 	
-	protected MessageAction sendError(Message message, String error){
-		addStatus(message, Status.ERROR);
-		return sendError(message.getTextChannel(), error);
-	}
-	
-	protected MessageAction sendError(TextChannel channel, String error){
-		return channel.sendMessage(new EmbedBuilder()
+	protected MessageAction error(GuildMessageReceivedEvent event, String error){
+		addStatus(event.getMessage(), Status.ERROR);
+		return event.getChannel().sendMessage(new EmbedBuilder()
 			.setColor(Color.RED)
 			.addField("Error:", error, true)
+			.setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
+			.setTimestamp(Instant.now())
 			.build()
 		);
 	}
 	
 	/* Send Usage */
 	protected void sendUsage(GuildMessageReceivedEvent event, String usage){
-		sendUsage(event.getMessage(), usage).queue();
+		usage(event, usage).queue();
 	}
 	
 	protected void sendUsage(GuildMessageReceivedEvent event){
-		sendUsage(event.getMessage(), usage).queue();
+		usage(event, usage).queue();
 	}
 	
-	protected MessageAction sendUsage(Message message, String usage){
-		addStatus(message, Status.QUESTION);
-		return sendUsage(message.getTextChannel(), usage);
-	}
-	
-	protected MessageAction sendUsage(Message message){
-		return sendUsage(message.getTextChannel(), usage);
-	}
-	
-	protected MessageAction sendUsage(TextChannel channel){
-		return sendUsage(channel, usage);
-	}
-	
-	protected MessageAction sendUsage(TextChannel channel, String usage){
-		return channel.sendMessage(new EmbedBuilder()
+	protected MessageAction usage(GuildMessageReceivedEvent event, String usage){
+		addStatus(event.getMessage(), Status.QUESTION);
+		return event.getChannel().sendMessage(new EmbedBuilder()
 			.setColor(Color.ORANGE)
-			.addField("Command usage:", "`" + main.database.getCommandPrefix(channel.getGuild().getId()) + usage + "`", true)
+			.addField("Command usage:", "`" + main.database.getCommandPrefix(event.getGuild().getId()) + usage + "`", true)
+			.setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
 			.setTimestamp(Instant.now())
 			.build()
 		);
 	}
 	
-	protected MessageAction sendReactionImage(GuildMessageReceivedEvent event, String type, String text){
+	protected void sendReactionImage(GuildMessageReceivedEvent event, String type, String text){
+		reactionImage(event, type, text).queue();
+	}
+	
+	protected MessageAction reactionImage(GuildMessageReceivedEvent event, String type, String text){
 		List<User> users = event.getMessage().getMentionedUsers();
 		StringBuilder message = new StringBuilder();
 		if(users.isEmpty()){
-			return sendError(event.getMessage(), "Please mention a user");
+			return error(event, "Please mention a user");
 		}
 		else if(users.contains(event.getAuthor()) && users.size() == 1){
 			message.append("You can't ")
@@ -261,17 +226,13 @@ public abstract class ACommand{
 		}
 		String url = getNeko(type);
 		if(url == null){
-			return sendError(event.getMessage(), "Unknown error occurred while getting image for `" + type + "`");
+			return error(event, "Unknown error occurred while getting image for `" + type + "`");
 		}
-		return sendAnswer(event.getMessage(), new EmbedBuilder().setDescription(message).setImage(url));
+		return answer(event, new EmbedBuilder().setDescription(message).setImage(url));
 	}
 	
-	protected MessageAction sendImage(TextChannel channel, String url){
-		return sendAnswer(channel, new EmbedBuilder().setImage(url).setColor(Color.GREEN));
-	}
-	
-	protected MessageAction sendImage(Message message, String url){
-		return sendAnswer(message, new EmbedBuilder().setImage(url).setColor(Color.GREEN));
+	protected MessageAction image(GuildMessageReceivedEvent event, String url){
+		return answer(event, new EmbedBuilder().setImage(url).setColor(Color.GREEN));
 	}
 	
 	protected String getNeko(String type){
@@ -285,11 +246,11 @@ public abstract class ACommand{
 		return null;
 	}
 	
-	protected MessageAction sendLocalImage(Message message, String image){
+	protected MessageAction localImage(GuildMessageReceivedEvent event, String image){
 		try{
 			Request request = new Request.Builder().url("http://anteiku.de:9000/" + image).build();
 			String url = main.httpClient.newCall(request).execute().body().string();
-			return sendImage(message.getTextChannel(), url);
+			return image(event, url);
 		}
 		catch(IOException e){
 			LOG.error("Error while sending local image", e);

@@ -21,7 +21,7 @@ public class PokeCommand extends ACommand{
 			sendUsage(event);
 			return;
 		}
-		sendReactionImage(event, "poke", "pokes").queue();
+		sendReactionImage(event, "poke", "pokes");
 	}
 	
 }

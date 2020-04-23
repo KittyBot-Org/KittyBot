@@ -21,7 +21,7 @@ public class HugCommand extends ACommand{
 			sendUsage(event);
 			return;
 		}
-		sendReactionImage(event, "hug", "hugs").queue();
+		sendReactionImage(event, "hug", "hugs");
 	}
 
 }

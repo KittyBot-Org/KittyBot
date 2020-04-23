@@ -21,7 +21,7 @@ public class TickleCommand extends ACommand{
 			sendUsage(event);
 			return;
 		}
-		sendReactionImage(event, "tickle", "tickles").queue();
+		sendReactionImage(event, "tickle", "tickles");
 	}
 	
 }
