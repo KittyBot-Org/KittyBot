@@ -22,17 +22,18 @@ public class OnGuildMessageReceivedEvent extends ListenerAdapter{
 			return;
 		}
 		if(!main.commandManager.checkCommands(event)){
-			/*if(event.getMessage().getMentionedUsers().size() == 1 && event.getMessage().getMentionedUsers().get(0).getId().equals(main.jda.getSelfUser().getId())) {
+			if(event.getMessage().getMentionedUsers().size() == 1 && event.getMessage().getMentionedUsers().get(0).getId().equals(main.jda.getSelfUser().getId())) {
 				event.getMessage().addReaction(Emotes.QUESTION.get()).queue();
-				event.getChannel().sendMessage(new EmbedBuilder()
-					.setColor(Color.ORANGE)
-					.setTitle("Do you need help?")
-					.setDescription("Do you want to know what my prefix is?\n" +
-						"It is `" + main.database.getCommandPrefix(event.getGuild().getId()) + "`\n" +
-						"If you need more help run `" + main.database.getCommandPrefix(event.getGuild().getId()) + "help` or `" + main.database.getCommandPrefix(event.getGuild().getId()) + "commands`" + Emotes.TEAM_KITTY.get())
-					.build()
+				event.getChannel().sendMessage(
+					new EmbedBuilder()
+						.setColor(Color.ORANGE)
+						.setTitle("Do you need help?")
+						.setDescription("Do you want to know what my prefix is?\n" +
+							"It is `" + main.database.getCommandPrefix(event.getGuild().getId()) + "`\n" +
+							"If you need more help run `" + main.database.getCommandPrefix(event.getGuild().getId()) + "help` or `" + main.database.getCommandPrefix(event.getGuild().getId()) + "commands`" + Emotes.KITTY_BLINK.get())
+						.build()
 				).queue();
-			}*/
+			}
 		}
 	}
 	
