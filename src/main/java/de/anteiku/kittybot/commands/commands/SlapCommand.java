@@ -21,7 +21,7 @@ public class SlapCommand extends ACommand{
 			sendUsage(event);
 			return;
 		}
-		sendReactionImage(event, "slap", "slaps").queue();
+		sendReactionImage(event, "slap", "slaps");
 	}
 	
 }

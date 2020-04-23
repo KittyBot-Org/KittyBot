@@ -65,7 +65,7 @@ public class EvalCommand extends ACommand{
 					event.getMessage().getContentDisplay().substring(command.length() + 1) +
 					"}" +
 					"})();");
-				sendAnswer(event.getMessage(), out == null ? "Executed without error." : out.toString());
+				sendAnswer(event, out == null ? "Executed without error." : out.toString());
 			}
 			catch(Exception e){
 				sendError(event, e.getMessage());

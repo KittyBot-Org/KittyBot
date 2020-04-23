@@ -27,34 +27,34 @@ public class OptionsCommand extends ACommand{
 			if(event.getMember().isOwner() || event.getMember().hasPermission(Permission.ADMINISTRATOR)){
 				if(args[0].equalsIgnoreCase("prefix") && args.length == 2){
 					if(main.database.setCommandPrefix(event.getGuild().getId(), args[1])){
-						sendError(event.getMessage(), "There was an error while processing your command :(");
+						sendError(event, "There was an error while processing your command :(");
 						return;
 					}
-					sendAnswer(event.getMessage(), "Prefix set to: `" + args[1] + "`");
+					sendAnswer(event, "Prefix set to: `" + args[1] + "`");
 				}
 				else if(args[0].equalsIgnoreCase("nsfw")){
 					if(args.length >= 2){
 						if(args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("ja") || args[1].equalsIgnoreCase("yes") || args[1].equalsIgnoreCase("on")){
 							if(main.database.setNSFWEnabled(event.getGuild().getId(), true)){
-								sendError(event.getMessage(), "There was an error while processing your command :(");
+								sendError(event, "There was an error while processing your command :(");
 								return;
 							}
-							sendAnswer(event.getMessage(), "NSFW `activated`");
+							sendAnswer(event, "NSFW `activated`");
 						}
 						else if(args[1].equalsIgnoreCase("false") || args[1].equalsIgnoreCase("nein") || args[1].equalsIgnoreCase("no") || args[1].equalsIgnoreCase("off")){
 							if(main.database.setNSFWEnabled(event.getGuild().getId(), false)){
-								sendError(event.getMessage(), "There was an error while processing your command :(");
+								sendError(event, "There was an error while processing your command :(");
 								return;
 							}
-							sendAnswer(event.getMessage(), "NSFW `deactivated`");
+							sendAnswer(event, "NSFW `deactivated`");
 						}
 						else{
-							sendUsage(event.getMessage(), "options nsfw <on|off|yes|no|on|off|ja|nein>");
+							sendUsage(event, "options nsfw <on|off|yes|no|on|off|ja|nein>");
 						}
 					}
 					else{
 						if(main.database.setNSFWEnabled(event.getGuild().getId(), main.database.getNSFWEnabled(event.getGuild().getId()))){
-							sendError(event.getMessage(), "There was an error while processing your command :(");
+							sendError(event, "There was an error while processing your command :(");
 							return;
 						}
 						String state;
@@ -64,60 +64,60 @@ public class OptionsCommand extends ACommand{
 						else{
 							state = "deactivated";
 						}
-						sendAnswer(event.getMessage(), "NSFW set to: `" + state + "`");
+						sendAnswer(event, "NSFW set to: `" + state + "`");
 					}
 				}
 				else if(args[0].equalsIgnoreCase("welcomechannel")){
 					List<TextChannel> channels = event.getMessage().getMentionedChannels();
 					if(channels.size() == 1){
 						if(main.database.setWelcomeChannelId(event.getGuild().getId(), channels.get(0).getId())){
-							sendError(event.getMessage(), "There was an error while processing your command :(");
+							sendError(event, "There was an error while processing your command :(");
 							return;
 						}
-						sendAnswer(event.getMessage(), channels.get(0).getAsMention() + " set as welcome channel!");
+						sendAnswer(event, channels.get(0).getAsMention() + " set as welcome channel!");
 					}
 					else{
-						sendUsage(event.getMessage(), "options welcomechannel <#TextChannel>");
+						sendUsage(event, "options welcomechannel <#TextChannel>");
 					}
 				}
 				else if(args[0].equalsIgnoreCase("welcomemessage")){
 					if(args[1].equalsIgnoreCase("?") || args[1].equalsIgnoreCase("help")){
-						sendUsage(event.getMessage(), "options welcomemessage <message> ([randomwelcomemessage] = random Discord welcome message, [username] = joined member)");
+						sendUsage(event, "options welcomemessage <message> ([randomwelcomemessage] = random Discord welcome message, [username] = joined member)");
 						return;
 					}
 					else if(args[1].equalsIgnoreCase("enable") || args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("on") || args[1].equalsIgnoreCase("an")){
 						if(main.database.setWelcomeMessageEnabled(event.getGuild().getId(), true)){
-							sendError(event.getMessage(), "There was an error while processing your command :(");
+							sendError(event, "There was an error while processing your command :(");
 							return;
 						}
-						sendAnswer(event.getMessage(), "Welcome messages enabled!");
+						sendAnswer(event, "Welcome messages enabled!");
 						return;
 					}
 					else if(args[1].equalsIgnoreCase("disable") || args[1].equalsIgnoreCase("false") || args[1].equalsIgnoreCase("off") || args[1].equalsIgnoreCase("aus")){
 						if(main.database.setWelcomeMessageEnabled(event.getGuild().getId(), false)){
-							sendError(event.getMessage(), "There was an error while processing your command :(");
+							sendError(event, "There was an error while processing your command :(");
 							return;
 						}
-						sendAnswer(event.getMessage(), "Welcome messages disabled!");
+						sendAnswer(event, "Welcome messages disabled!");
 						return;
 					}
 					String message = String.join(" ", Utils.subArray(args, 1));
 					if(main.database.setWelcomeMessage(event.getGuild().getId(), message)){
-						sendError(event.getMessage(), "There was an error while processing your command :(");
+						sendError(event, "There was an error while processing your command :(");
 						return;
 					}
-					sendAnswer(event.getMessage(), "Welcome message set to: ");
+					sendAnswer(event, "Welcome message set to: ");
 				}
 				else{
-					sendUsage(event.getMessage());
+					sendUsage(event);
 				}
 			}
 			else{
-				sendError(event.getMessage(), "You need to be an administrator to use this command!");
+				sendError(event, "You need to be an administrator to use this command!");
 			}
 		}
 		else{
-			sendUsage(event.getMessage());
+			sendUsage(event);
 		}
 	}
 	

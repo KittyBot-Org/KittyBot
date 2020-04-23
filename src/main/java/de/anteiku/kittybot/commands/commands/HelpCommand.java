@@ -23,14 +23,14 @@ public class HelpCommand extends ACommand{
 	
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
-		EmbedBuilder eb = new EmbedBuilder();
-		eb.setColor(Color.orange);
-		eb.setThumbnail(event.getJDA().getSelfUser().getEffectiveAvatarUrl());
-		eb.addField(Emotes.INVITE.get() + " Invite:", Emotes.BLANK.get() + " :small_blue_diamond: You want me on your server? Klick [here](https://discordapp.com/api/oauth2/authorize?client_id=587697058602025011&permissions=8&scope=bot) to invite me!", true);
-		eb.addField(Emotes.CONSOLE.get() + " Commands:", Emotes.BLANK.get() + " :small_blue_diamond: You want to see **all my available commands**?\n" + Emotes.BLANK.get() + " " + Emotes.BLANK.get() + " Use ``.commands``", true);
-		eb.addField(":question: Help:", Emotes.BLANK.get() + " :small_blue_diamond: You want to **report bugs or suggest new features**?\n" + Emotes.BLANK.get() + " " + Emotes.BLANK.get() + " Message my owner on " + Emotes.TWITTER.get() + " [Twitter](https://Twitter.com/TopiDragneel) or " + Emotes.DISCORD.get() + " ``Toπ#4184``!", true);
-		eb.addField(":globe_with_meridians: Webinterface:", Emotes.BLANK.get() + " :small_blue_diamond: Click [here](http://anteiku.de/login) to login with discord and manage your guilds!.",true);
-		sendAnswer(event.getMessage(), eb).queue(
+		answer(event, new EmbedBuilder()
+			.setColor(Color.orange)
+			.setThumbnail(event.getJDA().getSelfUser().getEffectiveAvatarUrl())
+			.addField(Emotes.INVITE.get() + " Invite:", Emotes.BLANK.get() + " :small_blue_diamond: You want me on your server? Klick [here](https://discordapp.com/api/oauth2/authorize?client_id=587697058602025011&permissions=8&scope=bot) to invite me!", true)
+			.addField(Emotes.CONSOLE.get() + " Commands:", Emotes.BLANK.get() + " :small_blue_diamond: You want to see **all my available commands**?\n" + Emotes.BLANK.get() + " " + Emotes.BLANK.get() + " Use ``.commands``", true)
+			.addField(":question: Help:", Emotes.BLANK.get() + " :small_blue_diamond: You want to **report bugs or suggest new features**?\n" + Emotes.BLANK.get() + " " + Emotes.BLANK.get() + " Message my owner on " + Emotes.TWITTER.get() + " [Twitter](https://Twitter.com/TopiDragneel) or " + Emotes.DISCORD.get() + " ``Toπ#4184``!", true)
+			.addField(":globe_with_meridians: Webinterface:", Emotes.BLANK.get() + " :small_blue_diamond: Click [here](http://anteiku.de/login) to login with discord and manage your guilds!.",true)
+		).queue(
 			message -> {
 				main.commandManager.addReactiveMessage(event, message, this, "-1");
 				message.addReaction(Emotes.WASTEBASKET.get()).queue();

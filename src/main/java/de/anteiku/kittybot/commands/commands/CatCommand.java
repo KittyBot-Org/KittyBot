@@ -19,7 +19,7 @@ public class CatCommand extends ACommand{
 
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
-		sendImage(event.getMessage(), getNeko("meow")).queue(
+		image(event, getNeko("meow")).queue(
 			message -> message.addReaction(Emotes.CAT.get()).queue()
 		);
 	}

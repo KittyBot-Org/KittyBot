@@ -21,7 +21,7 @@ public class PatCommand extends ACommand{
 			sendUsage(event);
 			return;
 		}
-		sendReactionImage(event, "pat", "pats").queue();
+		sendReactionImage(event, "pat", "pats");
 	}
 
 }

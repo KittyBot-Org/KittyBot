@@ -21,7 +21,7 @@ public class BakaCommand extends ACommand{
 			sendUsage(event);
 			return;
 		}
-		sendReactionImage(event, "baka", "said baka to").queue();
+		sendReactionImage(event, "baka", "said baka to");
 	}
 	
 }

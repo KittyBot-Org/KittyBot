@@ -105,7 +105,7 @@ public class RolesCommand extends ACommand{
 				value += k.getValue().getAsMention() + Emotes.BLANK.get() + Emotes.BLANK.get() + k.getKey().getAsMention() + "\n";
 			}
 			eb.addField("**Emote:**" + Emotes.BLANK.get() + "**Role:**", value, true);
-			sendAnswer(event, eb).queue(
+			answer(event, eb).queue(
 				message -> {
 					main.commandManager.addReactiveMessage(event, message, this, "-1");
 					for(Map.Entry<Role, Emote> role : roles.entrySet()){

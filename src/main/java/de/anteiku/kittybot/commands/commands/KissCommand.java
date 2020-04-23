@@ -21,7 +21,7 @@ public class KissCommand extends ACommand{
 			sendUsage(event);
 			return;
 		}
-		sendReactionImage(event, "kiss", "kisses").queue();
+		sendReactionImage(event, "kiss", "kisses");
 	}
 
 }

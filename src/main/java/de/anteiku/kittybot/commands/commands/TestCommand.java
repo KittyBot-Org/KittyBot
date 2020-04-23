@@ -17,7 +17,7 @@ public class TestCommand extends ACommand{
 	
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
-		sendAnswer(event.getMessage(), "Test command working!");
+		sendAnswer(event, "Test command working!");
 	}
 	
 }
