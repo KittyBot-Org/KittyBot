@@ -5,13 +5,12 @@ import de.anteiku.emojiutils.EmojiUtils;
 public enum Emotes{
 	
 	//CUSTOM EMOTES
-	BLANK("594914315463557121"),
-	KITTY_BLINK("699378560065994813"),
-	TEAM_KITTY("593061412146774016"),
-	TWITTER("595291425990639658"),
-	CONSOLE("595296169693806803"),
-	INVITE("595297943192600577"),
-	DISCORD("595302847562907649"),
+	BLANK("blank", "702992080653516810"),
+	KITTY_BLINK("KittyBlink", "666742934045196304", true),
+	TWITTER("twitter", "702991502045085696"),
+	CONSOLE("console", "702991438287470643"),
+	INVITE("invite", "702991540171046993"),
+	DISCORD("discord", "702991398840041505"),
 	
 	//UNICODE EMOTES
 	ARROW_RIGHT("arrow_right"),
@@ -43,13 +42,21 @@ public enum Emotes{
 	
 	private final String emote;
 	
-	Emotes(String name){
-		if(name.matches("[0-9]+")){
-			this.emote = "<:emote:" + name + "> ";
+	Emotes(String name, String id, boolean animated){
+		if(animated){
+			this.emote = "<a:" + name + ":" + id + "> ";
 		}
 		else{
-			this.emote = EmojiUtils.getEmoji(name);
+			this.emote = "<:" + name + ":" + id + "> ";
 		}
+	}
+	
+	Emotes(String name, String id){
+		this.emote = "<:" + name + ":" + id + "> ";
+	}
+	
+	Emotes(String name){
+		this.emote = EmojiUtils.getEmoji(name);
 	}
 	
 	public String get(){
