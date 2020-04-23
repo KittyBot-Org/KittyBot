@@ -2,8 +2,8 @@ package de.anteiku.kittybot.commands.commands;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.commands.ACommand;
-import de.anteiku.kittybot.utils.Emotes;
 import de.anteiku.kittybot.objects.ReactiveMessage;
+import de.anteiku.kittybot.utils.Emotes;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
@@ -11,16 +11,16 @@ import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEve
 import java.awt.*;
 
 public class HelpCommand extends ACommand{
-	
+
 	public static String COMMAND = "help";
 	public static String USAGE = "help";
 	public static String DESCRIPTION = "Shows some help stuff";
 	protected static String[] ALIAS = {"?"};
-	
+
 	public HelpCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
-	
+
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		answer(event, new EmbedBuilder()
@@ -38,10 +38,10 @@ public class HelpCommand extends ACommand{
 		);
 		
 	}
-	
+
 	@Override
 	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
 		super.reactionAdd(reactiveMessage, event);
 	}
-	
+
 }

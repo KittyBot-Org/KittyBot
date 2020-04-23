@@ -1,8 +1,6 @@
 package de.anteiku.kittybot.events;
 
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.utils.Emotes;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -10,16 +8,16 @@ import java.awt.*;
 import java.time.Instant;
 
 public class OnGuildMessageReceivedEvent extends ListenerAdapter{
-	
+
 	private final KittyBot main;
-	
+
 	public OnGuildMessageReceivedEvent(KittyBot main){
 		this.main = main;
 	}
-	
+
 	@Override
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event){
-		if(event.getAuthor().isBot() || event.getAuthor().isFake()){
+		if(event.getAuthor().isBot()||event.getAuthor().isFake()){
 			return;
 		}
 		if(!main.commandManager.checkCommands(event)){
@@ -42,5 +40,5 @@ public class OnGuildMessageReceivedEvent extends ListenerAdapter{
 			}
 		}
 	}
-	
+
 }

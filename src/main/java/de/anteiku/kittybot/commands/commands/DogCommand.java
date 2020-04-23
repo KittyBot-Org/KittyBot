@@ -18,9 +18,7 @@ public class DogCommand extends ACommand{
 
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
-		image(event, getNeko("woof")).queue(
-			message -> message.addReaction(Emotes.DOG.get()).queue()
-		);
+		image(event, getNeko("woof")).queue(message -> message.addReaction(Emotes.DOG.get()).queue());
 	}
 
 }

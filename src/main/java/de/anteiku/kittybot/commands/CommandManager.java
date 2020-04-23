@@ -11,35 +11,35 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class CommandManager{
-	
-	private final KittyBot main;
+
 	private static final Logger LOG = LoggerFactory.getLogger(CommandManager.class);
+	private final KittyBot main;
 	public Map<String, ACommand> commands;
-	
+
 	public CommandManager(KittyBot main){
 		this.main = main;
 		this.commands = new LinkedHashMap<>();
 	}
-	
+
 	public CommandManager addCommands(ACommand... commands){
 		for(ACommand command : commands){
 			this.commands.put(command.getCommand(), command);
 		}
 		return this;
 	}
-	
+
 	public void addReactiveMessage(GuildMessageReceivedEvent event, Message message, ACommand cmd, String allowed){
-		main.database.addReactiveMessage(event.getGuild().getId(), event.getAuthor().getId(), message.getId(), event.getMessage().getId(), cmd.command, allowed);
+		main.database.addReactiveMessage(
+			event.getGuild().getId(), event.getAuthor().getId(), message.getId(), event.getMessage().getId(), cmd.command, allowed);
 	}
-	
-	public void removeReactiveMessage(Guild guild, String messageId) {
+
+	public void removeReactiveMessage(Guild guild, String messageId){
 		main.database.removeReactiveMessage(guild.getId(), messageId);
 	}
-	
-	public ReactiveMessage getReactiveMessage(Guild guild, String message) {
+
+	public ReactiveMessage getReactiveMessage(Guild guild, String message){
 		return main.database.isReactiveMessage(guild.getId(), message);
 	}
 
@@ -54,32 +54,35 @@ public class CommandManager{
 					//event.getChannel().sendTyping().queue(); answer is sending too fast and I don't want to block the thread lol
 					cmd.run(getArgs(message), event);
 					long processingTime = (System.nanoTime() - start) / 1000000;
-					main.database.addCommandStatistics(event.getGuild().getId(), event.getMessageId(), event.getAuthor().getId(), command, processingTime);
-					LOG.info("Command: {}, by: {}, from: {}, took: {}ms", command, event.getAuthor().getName(), event.getGuild().getName(), processingTime);
+					main.database.addCommandStatistics(
+						event.getGuild().getId(), event.getMessageId(), event.getAuthor().getId(), command, processingTime);
+					LOG.info(
+						"Command: {}, by: {}, from: {}, took: {}ms", command, event.getAuthor().getName(), event.getGuild().getName(),
+						processingTime
+					);
 					return true;
 				}
 			}
 		}
 		return false;
 	}
-	
+
 	private String startsWithPrefix(Guild guild, String message){
 		String prefix;
-		if(message.startsWith(prefix = main.database.getCommandPrefix(guild.getId())) ||
-			message.startsWith(prefix = "<@!" + guild.getSelfMember().getId() + ">") ||
-			message.startsWith(prefix = "<@" + guild.getSelfMember().getId() + ">")){
+		if(message.startsWith(prefix = main.database.getCommandPrefix(guild.getId()))||message.startsWith(
+			prefix = "<@!" + guild.getSelfMember().getId() + ">")||message.startsWith(prefix = "<@" + guild.getSelfMember().getId() + ">")){
 			return message.substring(prefix.length()).trim();
 		}
 		return null;
 	}
-	
+
 	private String getCommand(String raw){
 		return raw.split(" ")[0];
 	}
-	
+
 	private String[] getArgs(String message){
 		String[] args = message.split(" ");
 		return Arrays.copyOfRange(args, 1, args.length);
 	}
-	
+
 }

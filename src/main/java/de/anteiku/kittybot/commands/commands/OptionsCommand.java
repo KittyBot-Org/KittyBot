@@ -10,22 +10,22 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import java.util.List;
 
 public class OptionsCommand extends ACommand{
-	
+
 	public static String COMMAND = "options";
 	public static String USAGE = "options <prefix|welcomechannel|welcomemessage|nsfw> <value>";
 	public static String DESCRIPTION = "Used to set some guild specified options";
 	protected static String[] ALIAS = {"opts", "opt"};
-	
+
 	public OptionsCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
-	
+
 	//TODO renaming sub-commands & displaying set values
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		if(args.length > 0){
-			if(event.getMember().isOwner() || event.getMember().hasPermission(Permission.ADMINISTRATOR)){
-				if(args[0].equalsIgnoreCase("prefix") && args.length == 2){
+			if(event.getMember().isOwner()||event.getMember().hasPermission(Permission.ADMINISTRATOR)){
+				if(args[0].equalsIgnoreCase("prefix")&&args.length == 2){
 					if(main.database.setCommandPrefix(event.getGuild().getId(), args[1])){
 						sendError(event, "There was an error while processing your command :(");
 						return;
@@ -34,14 +34,16 @@ public class OptionsCommand extends ACommand{
 				}
 				else if(args[0].equalsIgnoreCase("nsfw")){
 					if(args.length >= 2){
-						if(args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("ja") || args[1].equalsIgnoreCase("yes") || args[1].equalsIgnoreCase("on")){
+						if(args[1].equalsIgnoreCase("true")||args[1].equalsIgnoreCase("ja")||args[1].equalsIgnoreCase(
+							"yes")||args[1].equalsIgnoreCase("on")){
 							if(main.database.setNSFWEnabled(event.getGuild().getId(), true)){
 								sendError(event, "There was an error while processing your command :(");
 								return;
 							}
 							sendAnswer(event, "NSFW `activated`");
 						}
-						else if(args[1].equalsIgnoreCase("false") || args[1].equalsIgnoreCase("nein") || args[1].equalsIgnoreCase("no") || args[1].equalsIgnoreCase("off")){
+						else if(args[1].equalsIgnoreCase("false")||args[1].equalsIgnoreCase("nein")||args[1].equalsIgnoreCase(
+							"no")||args[1].equalsIgnoreCase("off")){
 							if(main.database.setNSFWEnabled(event.getGuild().getId(), false)){
 								sendError(event, "There was an error while processing your command :(");
 								return;
@@ -81,11 +83,15 @@ public class OptionsCommand extends ACommand{
 					}
 				}
 				else if(args[0].equalsIgnoreCase("welcomemessage")){
-					if(args[1].equalsIgnoreCase("?") || args[1].equalsIgnoreCase("help")){
-						sendUsage(event, "options welcomemessage <message> ([randomwelcomemessage] = random Discord welcome message, [username] = joined member)");
+					if(args[1].equalsIgnoreCase("?")||args[1].equalsIgnoreCase("help")){
+						sendUsage(
+							event,
+							"options welcomemessage <message> ([randomwelcomemessage] = random Discord welcome message, [username] = joined member)"
+						);
 						return;
 					}
-					else if(args[1].equalsIgnoreCase("enable") || args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("on") || args[1].equalsIgnoreCase("an")){
+					else if(args[1].equalsIgnoreCase("enable")||args[1].equalsIgnoreCase("true")||args[1].equalsIgnoreCase(
+						"on")||args[1].equalsIgnoreCase("an")){
 						if(main.database.setWelcomeMessageEnabled(event.getGuild().getId(), true)){
 							sendError(event, "There was an error while processing your command :(");
 							return;
@@ -93,7 +99,8 @@ public class OptionsCommand extends ACommand{
 						sendAnswer(event, "Welcome messages enabled!");
 						return;
 					}
-					else if(args[1].equalsIgnoreCase("disable") || args[1].equalsIgnoreCase("false") || args[1].equalsIgnoreCase("off") || args[1].equalsIgnoreCase("aus")){
+					else if(args[1].equalsIgnoreCase("disable")||args[1].equalsIgnoreCase("false")||args[1].equalsIgnoreCase(
+						"off")||args[1].equalsIgnoreCase("aus")){
 						if(main.database.setWelcomeMessageEnabled(event.getGuild().getId(), false)){
 							sendError(event, "There was an error while processing your command :(");
 							return;
@@ -120,5 +127,5 @@ public class OptionsCommand extends ACommand{
 			sendUsage(event);
 		}
 	}
-	
+
 }

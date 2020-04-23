@@ -4,11 +4,8 @@ import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.commands.ACommand;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emote;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Icon;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.exceptions.ContextException;
-import net.dv8tion.jda.api.requests.restaction.AuditableRestAction;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -38,9 +35,9 @@ public class EmoteStealCommand extends ACommand{
 		List<Emote> guildEmotes = event.getGuild().getEmotes();
 		int emotesStolen = 0;
 		int emotesNotStolen = 0;
-		if(!emotes.isEmpty()) {
-			for(Emote emote : emotes) {
-				if(guildEmotes.contains(emote)) {
+		if(!emotes.isEmpty()){
+			for(Emote emote : emotes){
+				if(guildEmotes.contains(emote)){
 					emotesNotStolen++;
 					continue;
 				}
@@ -53,16 +50,16 @@ public class EmoteStealCommand extends ACommand{
 			}
 			String emotesStolenMsg = "";
 			String emotesNotStolenMsg = "";
-			if(emotesStolen > 0) {
+			if(emotesStolen > 0){
 				emotesStolenMsg = emotesStolen + " Emotes stolen\n";
 			}
-			if(emotesNotStolen > 0) {
+			if(emotesNotStolen > 0){
 				emotesNotStolenMsg = emotesNotStolen + " Emotes not stolen";
 			}
 			sendAnswer(event, emotesStolenMsg + emotesNotStolenMsg);
 		}
 		else if(args.length >= 2){
-			try {
+			try{
 				new URL(args[0]).toURI();
 				if(createEmoteFromURL(event, args[1], args[0])){
 					sendAnswer(event, "Emote stolen");
@@ -76,13 +73,11 @@ public class EmoteStealCommand extends ACommand{
 			sendUsage(event);
 		}
 	}
-	
+
 	private boolean createEmoteFromURL(GuildMessageReceivedEvent event, String name, String url){
 		try{
 			event.getGuild().createEmote(name, Icon.from(new URL(url).openStream())).queue(
-					null,
-					failure -> sendError(event, "Error creating emote: " + failure.getMessage())
-			);
+				null, failure -> sendError(event, "Error creating emote: " + failure.getMessage()));
 			return true;
 		}
 		catch(IOException e){

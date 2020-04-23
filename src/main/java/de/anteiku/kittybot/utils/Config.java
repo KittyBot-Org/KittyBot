@@ -8,11 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Config{
-	
+
 	private static final String SEPARATOR = "=";
 	private final File file;
 	private final Map<String, String> config;
-	
+
 	public Config(String filePath){
 		file = new File(filePath);
 		config = new HashMap<>();
@@ -20,11 +20,11 @@ public class Config{
 			load();
 		}
 	}
-	
+
 	public boolean exists(){
 		return file.exists();
 	}
-	
+
 	private void load(){
 		try{
 			BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -41,9 +41,9 @@ public class Config{
 			e.printStackTrace();
 		}
 	}
-	
+
 	public String get(String key){
 		return config.get(key);
 	}
-	
+
 }

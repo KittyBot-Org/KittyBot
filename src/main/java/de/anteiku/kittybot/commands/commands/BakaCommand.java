@@ -14,7 +14,7 @@ public class BakaCommand extends ACommand{
 	public BakaCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
-	
+
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		if(args.length == 0){
@@ -23,5 +23,5 @@ public class BakaCommand extends ACommand{
 		}
 		sendReactionImage(event, "baka", "said baka to");
 	}
-	
+
 }
