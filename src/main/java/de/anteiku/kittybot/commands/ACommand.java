@@ -106,18 +106,29 @@ public abstract class ACommand{
 		);
 	}
 	
-	/* Send Private Message*/
-	protected RestAction<Message> sendPrivate(Message message, EmbedBuilder eb){
-		return message.getAuthor().openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage(eb.setTimestamp(Instant.now()).build()));
+	protected void queue(MessageAction messageAction, GuildMessageReceivedEvent event){
+		messageAction.queue(
+			null,
+			failure -> sendError(event, "There was an error processing your command!\nError: " + failure.getLocalizedMessage())
+		);
 	}
 	
-	protected RestAction<Message> sendPrivate(Message message, String msg){
-		return sendPrivate(message, new EmbedBuilder().setDescription(msg));
+	
+	/* Send Private Message*/
+	protected void sendPrivateMessage(GuildMessageReceivedEvent event, EmbedBuilder eb){
+		privateMessage(event, eb).queue(
+			null,
+			failure -> sendError(event, "There was an error processing your command!\nError: " + failure.getLocalizedMessage())
+		);
+	}
+	
+	protected RestAction<Message> privateMessage(GuildMessageReceivedEvent event, EmbedBuilder eb){
+		return event.getAuthor().openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage(eb.setTimestamp(Instant.now()).build()));
 	}
 	
 	/* Send No permission Message*/
 	protected void sendNoPermission(GuildMessageReceivedEvent event){
-		noPermission(event).queue();
+		queue(noPermission(event), event);
 	}
 	
 	protected MessageAction noPermission(GuildMessageReceivedEvent event){
@@ -126,7 +137,7 @@ public abstract class ACommand{
 	
 	/* Send Answer */
 	protected void sendAnswer(GuildMessageReceivedEvent event, String answer){
-		answer(event, answer).queue();
+		queue(answer(event, answer), event);
 	}
 	
 	protected MessageAction answer(GuildMessageReceivedEvent event, String answer){
@@ -173,11 +184,11 @@ public abstract class ACommand{
 	
 	/* Send Usage */
 	protected void sendUsage(GuildMessageReceivedEvent event, String usage){
-		usage(event, usage).queue();
+		queue(usage(event, usage), event);
 	}
 	
 	protected void sendUsage(GuildMessageReceivedEvent event){
-		usage(event, usage).queue();
+		queue(usage(event, usage), event);
 	}
 	
 	protected MessageAction usage(GuildMessageReceivedEvent event, String usage){
@@ -192,7 +203,7 @@ public abstract class ACommand{
 	}
 	
 	protected void sendReactionImage(GuildMessageReceivedEvent event, String type, String text){
-		reactionImage(event, type, text).queue();
+		queue(reactionImage(event, type, text), event);
 	}
 	
 	protected MessageAction reactionImage(GuildMessageReceivedEvent event, String type, String text){
