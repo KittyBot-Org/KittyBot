@@ -38,10 +38,14 @@ public class RolesCommand extends ACommand{
 			Role role = guild.getRoleById(entry.getKey());
 			if(role == null){
 				main.database.removeSelfAssignableRoles(guild.getId(), new HashSet<>(Collections.singleton(entry.getKey())));
+				continue;
 			}
-			else{
-				map.put(role, guild.getJDA().getEmoteById(entry.getValue()));
+			Emote emote = guild.getJDA().getEmoteById(entry.getValue());
+			if(emote == null){
+				main.database.removeSelfAssignableRoles(guild.getId(), new HashSet<>(Collections.singleton(entry.getKey())));
+				continue;
 			}
+			map.put(role, emote);
 		}
 		return map;
 	}
@@ -87,24 +91,18 @@ public class RolesCommand extends ACommand{
 		else{
 			Map<Role, Emote> roles = getRoleEmoteMap(event.getGuild());
 			if(roles.size() == 0){
-				sendError(event, "No self-assignable roles configured!\nIf you are an admin use `.roles add @role @role ...` to add roles!");
+				sendError(event, "No self-assignable roles configured!\nIf you are an admin use `.roles add @role :emote: @role :emote:...` to add roles!");
 				return;
 			}
-			EmbedBuilder eb = new EmbedBuilder();
-			eb.setTitle(title);
-			eb.appendDescription("To get a specified role press the given emote under this message. To remove it press the emote again");
-			eb.setColor(Color.MAGENTA);
-			//StringBuilder value = new StringBuilder();
+			EmbedBuilder eb = new EmbedBuilder()
+				.setTitle(title)
+				.setDescription("To get/remove a role click reaction emote. " + Emotes.KITTY_BLINK.get() + "\n\n")
+				.setColor(Color.MAGENTA);
 			String value = "";
 			for(Map.Entry<Role, Emote> k : roles.entrySet()){
-//				value.append(k.getValue().getAsMention())
-//					.append(Emotes.BLANK.get())
-//					.append(Emotes.BLANK.get())
-//					.append(k.getKey().getAsMention())
-//					.append("\n");
-				value += k.getValue().getAsMention() + Emotes.BLANK.get() + Emotes.BLANK.get() + k.getKey().getAsMention() + "\n";
+				value += k.getValue().getAsMention()  + Emotes.BLANK.get() + Emotes.BLANK.get() + k.getKey().getAsMention() + "\n";
 			}
-			eb.addField("**Emote:**" + Emotes.BLANK.get() + "**Role:**", value, true);
+			eb.appendDescription("**Emote:**" + Emotes.BLANK.get() + "**Role:**\n" + value);
 			answer(event, eb).queue(
 				message -> {
 					main.commandManager.addReactiveMessage(event, message, this, "-1");
