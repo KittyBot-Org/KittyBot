@@ -139,8 +139,10 @@ public abstract class ACommand{
 	protected MessageAction answer(GuildMessageReceivedEvent event, EmbedBuilder answer){
 		addStatus(event.getMessage(), Status.OK);
 		return event.getChannel().sendMessage(
-			answer.setColor(Color.GREEN).setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl()).setTimestamp(
-				Instant.now()).build());
+			answer
+				.setColor(Color.GREEN)
+				.setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
+				.setTimestamp(Instant.now()).build());
 	}
 
 	protected MessageAction answer(GuildMessageReceivedEvent event, byte[] file, String fileName, EmbedBuilder embed){

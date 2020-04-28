@@ -90,28 +90,29 @@ public class RolesCommand extends ACommand{
 		else{
 			Map<Role, Emote> roles = getRoleEmoteMap(event.getGuild());
 			if(roles.size() == 0){
-				sendError(event, "No self-assignable roles configured!\nIf you are an admin use `.roles add @role :emote: @role :emote:...` to add roles!");
+				sendError(
+					event, "No self-assignable roles configured!\nIf you are an admin use `.roles add @role :emote: @role :emote:...` to add roles!");
 				return;
 			}
-			EmbedBuilder eb = new EmbedBuilder()
-				.setTitle(title)
-				.setDescription("To get/remove a role click reaction emote. " + Emotes.KITTY_BLINK.get() + "\n\n")
-				.setColor(Color.MAGENTA);
 			String value = "";
 			for(Map.Entry<Role, Emote> k : roles.entrySet()){
-				value += k.getValue().getAsMention()  + Emotes.BLANK.get() + Emotes.BLANK.get() + k.getKey().getAsMention() + "\n";
+				value += k.getValue().getAsMention() + Emotes.BLANK.get() + Emotes.BLANK.get() + k.getKey().getAsMention() + "\n";
 			}
-			eb.appendDescription("**Emote:**" + Emotes.BLANK.get() + "**Role:**\n" + value);
-			answer(event, eb).queue(
+			answer(event, new EmbedBuilder()
+				.setTitle(title)
+				.setDescription("To get/remove a role click reaction emote. " + Emotes.KITTY_BLINK.get() + "\n\n")
+				.setColor(Color.MAGENTA)
+				.appendDescription("**Emote:**" + Emotes.BLANK.get() + "**Role:**\n" + value)
+			).queue(
 				message -> {
 					main.commandManager.addReactiveMessage(event, message, this, "-1");
 					for(Map.Entry<Role, Emote> role : roles.entrySet()){
 						message.addReaction(role.getValue()).queue();
 					}
 					message.addReaction(Emotes.WASTEBASKET.get()).queue();
+					message.addReaction(Emotes.WASTEBASKET.get()).queue();
 				}
-				message.addReaction(Emotes.WASTEBASKET.get()).queue();
-			});
+			);
 		}
 	}
 
