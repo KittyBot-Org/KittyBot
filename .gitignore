@@ -2,13 +2,5 @@ build/
 .history/
 .gradle/
 .mysql/
+.idea/
 config.env
-.idea/dictionaries/
-.idea/shelf/
-.idea/compiler.xml
-.idea/dbnavigator.xml
-.idea/gradle.xml
-.idea/jarRepositories.xml
-.idea/misc.xml
-.idea/vcs.xml
-.idea/workspace.xml
