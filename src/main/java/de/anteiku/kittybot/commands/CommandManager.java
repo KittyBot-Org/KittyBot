@@ -50,16 +50,17 @@ public class CommandManager{
 			String command = getCommand(message);
 			for(Map.Entry<String, ACommand> c : commands.entrySet()){
 				ACommand cmd = c.getValue();
-				if(cmd.checkCmd(command)){
+				if(cmd.checkCommand(command)){
 					//event.getChannel().sendTyping().queue(); answer is sending too fast and I don't want to block the thread lol
-					cmd.run(getArgs(message), event);
+					if(cmd.checkPermissions(event.getMember())){
+						cmd.run(getArgs(message), event);
+					}
+					else{
+						cmd.sendNoPermission(event);
+					}
 					long processingTime = (System.nanoTime() - start) / 1000000;
-					main.database.addCommandStatistics(
-						event.getGuild().getId(), event.getMessageId(), event.getAuthor().getId(), command, processingTime);
-					LOG.info(
-						"Command: {}, by: {}, from: {}, took: {}ms", command, event.getAuthor().getName(), event.getGuild().getName(),
-						processingTime
-					);
+					main.database.addCommandStatistics(event.getGuild().getId(), event.getMessageId(), event.getAuthor().getId(), command, processingTime);
+					LOG.info("Command: {}, by: {}, from: {}, took: {}ms", command, event.getAuthor().getName(), event.getGuild().getName(), processingTime);
 					return true;
 				}
 			}

@@ -6,6 +6,7 @@ import de.anteiku.kittybot.objects.ReactiveMessage;
 import de.anteiku.kittybot.utils.Emotes;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -32,6 +33,7 @@ public abstract class ACommand{
 	protected String usage;
 	protected String description;
 	protected String[] alias;
+	protected Permission[] permissions;
 
 	protected ACommand(KittyBot main, String command, String usage, String description, String[] alias){
 		this.main = main;
@@ -39,20 +41,34 @@ public abstract class ACommand{
 		this.usage = usage;
 		this.description = description;
 		this.alias = alias;
+		this.permissions = new Permission[]{};
+	}
+
+	protected ACommand(KittyBot main, String command, String usage, String description, String[] alias, Permission[] permissions){
+		this.main = main;
+		this.command = command;
+		this.usage = usage;
+		this.description = description;
+		this.alias = alias;
+		this.permissions = permissions;
 	}
 
 	public abstract void run(String[] args, GuildMessageReceivedEvent event);
 
-	public boolean checkCmd(String cmd){
-		if(cmd.equalsIgnoreCase(command)){
+	public boolean checkCommand(String command){
+		if(command.equalsIgnoreCase(this.command)){
 			return true;
 		}
 		for(String a : alias){
-			if(a.equalsIgnoreCase(cmd)){
+			if(a.equalsIgnoreCase(command)){
 				return true;
 			}
 		}
 		return false;
+	}
+
+	public boolean checkPermissions(Member author){
+		return author.hasPermission(permissions);
 	}
 
 	public String[] getAlias(){
@@ -119,12 +135,25 @@ public abstract class ACommand{
 	}
 
 	/* Send No permission Message*/
-	protected void sendNoPermission(GuildMessageReceivedEvent event){
-		queue(noPermission(event), event);
+	protected void sendNoPermissions(GuildMessageReceivedEvent event, Permission... permissions){
+		queue(noPermission(event, permissions), event);
 	}
 
-	protected MessageAction noPermission(GuildMessageReceivedEvent event){
-		return error(event, "Sorry you don't have the permission to use this command :(");
+	protected MessageAction noPermission(GuildMessageReceivedEvent event, Permission... permissions){
+		StringBuilder perms = new StringBuilder("Sorry you don't have the following permissions: ");
+		for(Permission permission : permissions){
+			perms.append(permission.getName()).append(", ");
+		}
+		perms.delete(perms.length() - 2, perms.length());
+		return error(event, perms.toString());
+	}
+
+	protected void sendNoPermission(GuildMessageReceivedEvent event){
+		queue(noPermission(event, permissions), event);
+	}
+
+	protected void sendNoPermission(GuildMessageReceivedEvent event, String message){
+		sendError(event, message);
 	}
 
 	/* Send Answer */

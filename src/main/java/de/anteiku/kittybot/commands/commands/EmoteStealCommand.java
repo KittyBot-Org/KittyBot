@@ -62,7 +62,7 @@ public class EmoteStealCommand extends ACommand{
 			try{
 				new URL(args[0]).toURI();
 				if(createEmoteFromURL(event, args[1], args[0])){
-					sendAnswer(event, "Emote stolen");
+					sendAnswer(event, "Emote created");
 				}
 			}
 			catch(MalformedURLException | URISyntaxException e){
@@ -77,7 +77,8 @@ public class EmoteStealCommand extends ACommand{
 	private boolean createEmoteFromURL(GuildMessageReceivedEvent event, String name, String url){
 		try{
 			event.getGuild().createEmote(name, Icon.from(new URL(url).openStream())).queue(
-				null, failure -> sendError(event, "Error creating emote: " + failure.getMessage()));
+				null, failure -> sendError(event, "Error creating emote: " + failure.getMessage())
+			);
 			return true;
 		}
 		catch(IOException e){

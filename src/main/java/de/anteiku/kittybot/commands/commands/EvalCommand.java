@@ -59,7 +59,7 @@ public class EvalCommand extends ACommand{
 			}
 		}
 		else{
-			sendNoPermission(event);
+			sendNoPermission(event, "This command can only be ran buy the bot owner :)");
 		}
 	}
 

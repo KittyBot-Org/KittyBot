@@ -53,15 +53,12 @@ public class KittyBot{
 			jda = JDABuilder.create(
 				GatewayIntent.GUILD_MEMBERS,
 				GatewayIntent.GUILD_VOICE_STATES,
-				GatewayIntent.GUILD_PRESENCES,
 				GatewayIntent.GUILD_MESSAGES,
-				GatewayIntent.GUILD_MESSAGE_TYPING,
 				GatewayIntent.GUILD_MESSAGE_REACTIONS,
 				GatewayIntent.GUILD_EMOJIS,
 
 				GatewayIntent.DIRECT_MESSAGES,
-				GatewayIntent.DIRECT_MESSAGE_REACTIONS,
-				GatewayIntent.DIRECT_MESSAGE_TYPING
+				GatewayIntent.DIRECT_MESSAGE_REACTIONS
 			).setToken(DISCORD_BOT_TOKEN).setActivity(Activity.listening("to you!")).addEventListeners(
 				new OnGuildJoinEvent(this),
 				new OnGuildMemberJoinEvent(this),
@@ -77,8 +74,12 @@ public class KittyBot{
 			commandManager = new CommandManager(this).addCommands(
 				new HelpCommand(this),
 				new CommandsCommand(this),
-				new EmoteStealCommand(this),
+
 				new RolesCommand(this),
+				new BanCommand(this),
+				new KickCommand(this),
+				new EmoteStealCommand(this),
+
 				new PatCommand(this),
 				new PokeCommand(this),
 				new HugCommand(this),
@@ -88,9 +89,12 @@ public class KittyBot{
 				new FeedCommand(this),
 				new SlapCommand(this),
 				new BakaCommand(this),
+
 				new CatCommand(this),
 				new DogCommand(this),
+
 				new NekoCommand(this),
+
 				new OptionsCommand(this),
 				new EvalCommand(this),
 				new TestCommand(this)
@@ -117,14 +121,11 @@ public class KittyBot{
 					.setTitle(title)
 					.setDescription(description)
 					.setThumbnail(jda.getSelfUser().getAvatarUrl())
-					.setColor(
-						new Color(76, 80, 193)
-					)
+					.setColor(new Color(76, 80, 193))
 					.setFooter(jda.getSelfUser().getName(), jda.getSelfUser().getAvatarUrl())
-					.setTimestamp(
-						Instant.now()
-					).build()
-			).queue());
+					.setTimestamp(Instant.now()).build()
+			).queue()
+		);
 	}
 
 	private void setEnvVars(){

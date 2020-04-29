@@ -18,7 +18,7 @@ public class CommandsCommand extends ACommand{
 	public static String COMMAND = "commands";
 	public static String USAGE = "commands <page>";
 	public static String DESCRIPTION = "Lists all aviable commands";
-	public static double PAGECOUNT = 5;
+	public static double PAGE_COUNT = 5;
 	protected static String[] ALIAS = {"cmds"};
 
 	public CommandsCommand(KittyBot main){
@@ -55,7 +55,7 @@ public class CommandsCommand extends ACommand{
 
 		int i = 0;
 		for(Map.Entry<String, ACommand> c : main.commandManager.commands.entrySet()){
-			if((i >= page * PAGECOUNT)&&(i < page * PAGECOUNT + PAGECOUNT)){
+			if((i >= page * PAGE_COUNT)&&(i < page * PAGE_COUNT + PAGE_COUNT)){
 				ACommand cmd = c.getValue();
 				eb.addField("**" + prefix + cmd.getCommand() + ":** ", " :small_blue_diamond:" + cmd.getDescription(), false);
 			}
@@ -102,7 +102,7 @@ public class CommandsCommand extends ACommand{
 	}
 
 	private int getMaxPages(){
-		return (int) Math.ceil((double) main.commandManager.commands.size() / PAGECOUNT);
+		return (int) Math.ceil((double) main.commandManager.commands.size() / PAGE_COUNT);
 	}
 
 }
