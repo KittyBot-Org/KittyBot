@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS `requests` (
-    `id` int NOT NULL AUTO_INCREMENT,
+    `request_id` int NOT NULL AUTO_INCREMENT,
     `user_id` varchar(18) NOT NULL
     `guild_id` varchar(18) NOT NULL,
     `title` varchar(32) NOT NULL,
@@ -7,5 +7,5 @@ CREATE TABLE IF NOT EXISTS `requests` (
     `answered` tinyint(1) NOT NULL,
     `accepted` tinyint(1) NOT NULL,
     `creation_time` varchar(20) NOT NULL,
-    PRIMARY KEY(id)
+    PRIMARY KEY(request_id)
 )

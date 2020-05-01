@@ -14,20 +14,20 @@ import java.net.URL;
 import java.util.List;
 
 public class EmoteStealCommand extends ACommand{
-
+	
 	public static String COMMAND = "steal";
 	public static String USAGE = "steal <Emote, Emote, ...> or <url> <name>";
 	public static String DESCRIPTION = "Steals some emotes";
 	protected static String[] ALIAS = {"grab", "klau"};
-
+	
 	public EmoteStealCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
 		this.main = main;
 	}
-
+	
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
-		if(!event.getMember().hasPermission(Permission.MANAGE_EMOTES)){
+		if(! event.getMember().hasPermission(Permission.MANAGE_EMOTES)){
 			sendError(event, "Sorry you don't have the permission to manage emotes :(");
 			return;
 		}
@@ -35,7 +35,7 @@ public class EmoteStealCommand extends ACommand{
 		List<Emote> guildEmotes = event.getGuild().getEmotes();
 		int emotesStolen = 0;
 		int emotesNotStolen = 0;
-		if(!emotes.isEmpty()){
+		if(! emotes.isEmpty()){
 			for(Emote emote : emotes){
 				if(guildEmotes.contains(emote)){
 					emotesNotStolen++;
@@ -62,7 +62,7 @@ public class EmoteStealCommand extends ACommand{
 			try{
 				new URL(args[0]).toURI();
 				if(createEmoteFromURL(event, args[1], args[0])){
-					sendAnswer(event, "Emote created");
+					sendAnswer(event, "Emote stolen");
 				}
 			}
 			catch(MalformedURLException | URISyntaxException e){
@@ -73,12 +73,10 @@ public class EmoteStealCommand extends ACommand{
 			sendUsage(event);
 		}
 	}
-
+	
 	private boolean createEmoteFromURL(GuildMessageReceivedEvent event, String name, String url){
 		try{
-			event.getGuild().createEmote(name, Icon.from(new URL(url).openStream())).queue(
-				null, failure -> sendError(event, "Error creating emote: " + failure.getMessage())
-			);
+			event.getGuild().createEmote(name, Icon.from(new URL(url).openStream())).queue(null, failure->sendError(event, "Error creating emote: " + failure.getMessage()));
 			return true;
 		}
 		catch(IOException e){
@@ -87,5 +85,5 @@ public class EmoteStealCommand extends ACommand{
 		}
 		return false;
 	}
-
+	
 }

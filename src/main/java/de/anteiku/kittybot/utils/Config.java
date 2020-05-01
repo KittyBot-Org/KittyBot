@@ -8,11 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Config{
-
+	
 	private static final String SEPARATOR = "=";
 	private final File file;
 	private final Map<String, String> config;
-
+	
 	public Config(String filePath){
 		file = new File(filePath);
 		config = new HashMap<>();
@@ -20,18 +20,14 @@ public class Config{
 			load();
 		}
 	}
-
-	public boolean exists(){
-		return file.exists();
-	}
-
+	
 	private void load(){
 		try{
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 			String line;
 			while((line = reader.readLine()) != null){
 				int i = line.indexOf(SEPARATOR);
-				if(i != -1){
+				if(i != - 1){
 					config.put(line.substring(0, i), line.substring(i + 1));
 				}
 			}
@@ -41,9 +37,13 @@ public class Config{
 			e.printStackTrace();
 		}
 	}
-
+	
+	public boolean exists(){
+		return file.exists();
+	}
+	
 	public String get(String key){
 		return config.get(key);
 	}
-
+	
 }

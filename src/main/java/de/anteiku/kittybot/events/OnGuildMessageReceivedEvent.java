@@ -10,37 +10,24 @@ import java.awt.*;
 import java.time.Instant;
 
 public class OnGuildMessageReceivedEvent extends ListenerAdapter{
-
+	
 	private final KittyBot main;
-
+	
 	public OnGuildMessageReceivedEvent(KittyBot main){
 		this.main = main;
 	}
-
+	
 	@Override
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event){
-		if(event.getAuthor().isBot() || event.getAuthor().isFake() || event.isWebhookMessage()){
+		if(event.getAuthor().isBot() || event.getAuthor().isFake()){
 			return;
 		}
-		if(!main.commandManager.checkCommands(event)){
-			if(event.getMessage().getMentionedUsers().size() == 1 && event.getMessage().getMentionedUsers().get(0).getId().equals(main.jda.getSelfUser().getId())) {
+		if(! main.commandManager.checkCommands(event)){
+			if(event.getMessage().getMentionedUsers().size() == 1 && event.getMessage().getMentionedUsers().get(0).getId().equals(main.jda.getSelfUser().getId())){
 				event.getMessage().addReaction(Emotes.QUESTION.get()).queue();
-				event.getChannel().sendMessage(new EmbedBuilder()
-					.setColor(Color.ORANGE)
-					.setTitle("Do you need help?")
-					.setDescription(
-						"My current prefix for this guild is `" + main.database.getCommandPrefix(event.getGuild().getId()) + "`\n" +
-						"If you don't like my prefix you can ping me directly!\n" +
-						"To have a look at all my commands use `" + main.database.getCommandPrefix(event.getGuild().getId()) + "cmds`\n" +
-						"To get help use`" + main.database.getCommandPrefix(event.getGuild().getId()) + "help`"
-					)
-					.setThumbnail(event.getJDA().getSelfUser().getAvatarUrl())
-					.setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
-					.setTimestamp(Instant.now())
-					.build()
-				).queue();
+				event.getChannel().sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setTitle("Do you need help?").setDescription("My current prefix for this guild is `" + main.database.getCommandPrefix(event.getGuild().getId()) + "`\n" + "If you don't like my prefix you can ping me directly!\n" + "To have a look at all my commands use `" + main.database.getCommandPrefix(event.getGuild().getId()) + "cmds`\n" + "To get help use`" + main.database.getCommandPrefix(event.getGuild().getId()) + "help`").setThumbnail(event.getJDA().getSelfUser().getAvatarUrl()).setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl()).setTimestamp(Instant.now()).build()).queue();
 			}
 		}
 	}
-
+	
 }

@@ -5,38 +5,10 @@ import de.anteiku.emojiutils.EmojiUtils;
 public enum Emotes{
 	
 	//CUSTOM EMOTES
-	BLANK("blank", "702992080653516810"),
-	KITTY_BLINK("KittyBlink", "666742934045196304", true),
-	TWITTER("twitter", "702991502045085696"),
-	CONSOLE("console", "702991438287470643"),
-	INVITE("invite", "702991540171046993"),
-	DISCORD("discord", "702991398840041505"),
+	BLANK("blank", "702992080653516810"), KITTY_BLINK("KittyBlink", "666742934045196304", true), TWITTER("twitter", "702991502045085696"), CONSOLE("console", "702991438287470643"), INVITE("invite", "702991540171046993"), DISCORD("discord", "702991398840041505"),
 	
 	//UNICODE EMOTES
-	ARROW_RIGHT("arrow_right"),
-	ARROW_LEFT("arrow_left"),
-	WASTEBASKET("wastebasket"),
-	NEW("new"),
-	QUESTION("question"),
-	REFRESH("arrows_counterclockwise"),
-	CHECK("white_check_mark"),
-	EMAIL("email"),
-	X("x"),
-	ZERO("zero"),
-	ONE("one"),
-	TWO("two"),
-	THREE("three"),
-	FOUR("four"),
-	FIVE("five"),
-	SIX("six"),
-	SEVEN("seven"),
-	EIGHT("eight"),
-	NINE("nine"),
-	CAT("cat"),
-	DOG("dog"),
-	TURTLE("turtle"),
-	WOLF("wolf"),
-	FOX("fox");
+	ARROW_RIGHT("arrow_right"), ARROW_LEFT("arrow_left"), WASTEBASKET("wastebasket"), NEW("new"), QUESTION("question"), REFRESH("arrows_counterclockwise"), CHECK("white_check_mark"), EMAIL("email"), X("x"), ZERO("zero"), ONE("one"), TWO("two"), THREE("three"), FOUR("four"), FIVE("five"), SIX("six"), SEVEN("seven"), EIGHT("eight"), NINE("nine"), CAT("cat"), DOG("dog"), TURTLE("turtle"), WOLF("wolf"), FOX("fox");
 	
 	public static final String WHITESPACE = "�";
 	
@@ -62,5 +34,5 @@ public enum Emotes{
 	public String get(){
 		return emote;
 	}
-
+	
 }

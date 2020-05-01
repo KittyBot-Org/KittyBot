@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import okhttp3.OkHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +21,7 @@ import java.time.Instant;
 import java.util.Random;
 
 public class KittyBot{
-
+	
 	private static final Logger LOG = LoggerFactory.getLogger(KittyBot.class);
 	public final OkHttpClient httpClient;
 	public JDA jda;
@@ -28,39 +29,43 @@ public class KittyBot{
 	public TaskManager taskManager;
 	public Database database;
 	public Random rand;
-
+	
 	public String DISCORD_BOT_TOKEN;
 	public String DISCORD_BOT_SECRET;
 	public String ADMIN_DISCORD_ID;
-
+	
 	public String MYSQL_HOST;
 	public String MYSQL_PORT;
 	public String MYSQL_DB;
 	public String MYSQL_USER;
 	public String MYSQL_PASSWORD;
-
+	
 	public String DEFAULT_PREFIX = ".";
-
+	
 	public KittyBot(){
-
+		
 		httpClient = new OkHttpClient();
 		setEnvVars();
-
+		
 		database = Database.connect(this);
-
+		
 		rand = new Random();
 		try{
 			jda = JDABuilder.create(
-				GatewayIntent.GUILD_MEMBERS,
-				GatewayIntent.GUILD_VOICE_STATES,
-				GatewayIntent.GUILD_MESSAGES,
-				GatewayIntent.GUILD_MESSAGE_REACTIONS,
-				GatewayIntent.GUILD_EMOJIS,
-
-				GatewayIntent.DIRECT_MESSAGES,
-				GatewayIntent.DIRECT_MESSAGE_REACTIONS
-			).setToken(DISCORD_BOT_TOKEN).setActivity(Activity.listening("to you!")).addEventListeners(
-				new OnGuildJoinEvent(this),
+					GatewayIntent.GUILD_MEMBERS,
+					GatewayIntent.GUILD_VOICE_STATES,
+					GatewayIntent.GUILD_MESSAGES,
+					GatewayIntent.GUILD_MESSAGE_REACTIONS,
+					GatewayIntent.GUILD_EMOJIS,
+					
+					GatewayIntent.DIRECT_MESSAGES,
+					GatewayIntent.DIRECT_MESSAGE_REACTIONS
+			)
+	        .disableCache(CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS)
+	        .setToken(DISCORD_BOT_TOKEN)
+	        .setActivity(Activity.listening("to you!"))
+			.addEventListeners(
+			    new OnGuildJoinEvent(this),
 				new OnGuildMemberJoinEvent(this),
 				new OnGuildMemberRemoveEvent(this),
 				new OnGuildMemberUpdateBoostTimeEvent(this),
@@ -68,40 +73,37 @@ public class KittyBot{
 				new OnGuildMessageReceivedEvent(this),
 				new OnGuildVoiceEvent(this)
 			).build().awaitReady();
-
+			
 			database.init();
-
-			commandManager = new CommandManager(this).addCommands(
-				new HelpCommand(this),
-				new CommandsCommand(this),
-
-				new RolesCommand(this),
-				new BanCommand(this),
-				new KickCommand(this),
-				new EmoteStealCommand(this),
-
-				new PatCommand(this),
-				new PokeCommand(this),
-				new HugCommand(this),
-				new CuddleCommand(this),
-				new KissCommand(this),
-				new TickleCommand(this),
-				new FeedCommand(this),
-				new SlapCommand(this),
-				new BakaCommand(this),
-
-				new CatCommand(this),
-				new DogCommand(this),
-
-				new NekoCommand(this),
-
-				new OptionsCommand(this),
-				new EvalCommand(this),
-				new TestCommand(this)
-			);
-
+			
+			commandManager = new CommandManager(this)
+				.addCommands(
+					new HelpCommand(this),
+					new CommandsCommand(this),
+					new EmoteStealCommand(this),
+					new RolesCommand(this),
+					
+					new PatCommand(this),
+					new PokeCommand(this),
+					new HugCommand(this),
+					new CuddleCommand(this),
+					new KissCommand(this),
+					new TickleCommand(this),
+					new FeedCommand(this),
+					new SlapCommand(this),
+					new BakaCommand(this),
+					
+					new CatCommand(this),
+					new DogCommand(this),
+					new NekoCommand(this),
+					
+					new OptionsCommand(this),
+					new EvalCommand(this),
+					new TestCommand(this)
+				);
+			
 			taskManager = new TaskManager(this);
-
+			
 			sendDMToOwnerAdmin(jda.getSelfUser().getName(), "Hellowo I'm ready!");
 		}
 		catch(Exception e){
@@ -109,25 +111,7 @@ public class KittyBot{
 			close();
 		}
 	}
-
-	public static void main(String[] args){
-		new KittyBot();
-	}
-
-	public void sendDMToOwnerAdmin(String title, String description){
-		jda.openPrivateChannelById(ADMIN_DISCORD_ID).queue(
-			privateChannel -> privateChannel.sendMessage(
-				new EmbedBuilder()
-					.setTitle(title)
-					.setDescription(description)
-					.setThumbnail(jda.getSelfUser().getAvatarUrl())
-					.setColor(new Color(76, 80, 193))
-					.setFooter(jda.getSelfUser().getName(), jda.getSelfUser().getAvatarUrl())
-					.setTimestamp(Instant.now()).build()
-			).queue()
-		);
-	}
-
+	
 	private void setEnvVars(){
 		Config cfg = new Config("config.env");
 		if(cfg.exists()){
@@ -153,10 +137,18 @@ public class KittyBot{
 			MYSQL_PASSWORD = System.getenv("MYSQL_PASSWORD");
 		}
 	}
-
+	
+	public void sendDMToOwnerAdmin(String title, String description){
+		jda.openPrivateChannelById(ADMIN_DISCORD_ID).queue(privateChannel->privateChannel.sendMessage(new EmbedBuilder().setTitle(title).setDescription(description).setThumbnail(jda.getSelfUser().getAvatarUrl()).setColor(new Color(76, 80, 193)).setFooter(jda.getSelfUser().getName(), jda.getSelfUser().getAvatarUrl()).setTimestamp(Instant.now()).build()).queue());
+	}
+	
 	public void close(){
 		database.close();
 		System.exit(0);
 	}
-
+	
+	public static void main(String[] args){
+		new KittyBot();
+	}
+	
 }
