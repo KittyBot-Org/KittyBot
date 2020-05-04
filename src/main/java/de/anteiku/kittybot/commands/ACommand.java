@@ -2,13 +2,11 @@ package de.anteiku.kittybot.commands;
 
 import com.google.gson.JsonParser;
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.utils.Emotes;
 import de.anteiku.kittybot.objects.ReactiveMessage;
+import de.anteiku.kittybot.utils.Emotes;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
@@ -28,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 public abstract class ACommand{
 	
 	protected static final Logger LOG = LoggerFactory.getLogger(ACommand.class);
-
+	
 	protected KittyBot main;
 	protected String command;
 	protected String usage;
@@ -36,9 +34,7 @@ public abstract class ACommand{
 	protected String[] alias;
 	
 	protected enum Status{
-		OK,
-		ERROR,
-		QUESTION
+		OK, ERROR, QUESTION
 	}
 	
 	protected ACommand(KittyBot main, String command, String usage, String description, String[] alias){
@@ -87,6 +83,35 @@ public abstract class ACommand{
 		}
 	}
 	
+	/* Send Private Message*/
+	protected void sendPrivateMessage(GuildMessageReceivedEvent event, EmbedBuilder eb){
+		privateMessage(event, eb).queue(null,
+			failure -> sendError(event, "There was an error processing your command!\nError: " + failure.getLocalizedMessage())
+		);
+	}
+	
+	protected RestAction<Message> privateMessage(GuildMessageReceivedEvent event, EmbedBuilder eb){
+		return event.getAuthor().openPrivateChannel().flatMap(
+				privateChannel -> privateChannel.sendMessage(eb.setTimestamp(Instant.now()).build())
+		);
+	}
+	
+	/* Send Error */
+	protected void sendError(GuildMessageReceivedEvent event, String error){
+		error(event, error).queue();
+	}
+	
+	protected MessageAction error(GuildMessageReceivedEvent event, String error){
+		addStatus(event.getMessage(), Status.ERROR);
+		return event.getChannel().sendMessage(new EmbedBuilder()
+			.setColor(Color.RED)
+			.addField("Error:", error, true)
+			.setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
+			.setTimestamp(Instant.now())
+			.build()
+		);
+	}
+	
 	protected void addStatus(Message message, Status status){
 		Emotes emote;
 		switch(status){
@@ -106,26 +131,6 @@ public abstract class ACommand{
 		);
 	}
 	
-	protected void queue(MessageAction messageAction, GuildMessageReceivedEvent event){
-		messageAction.queue(
-			null,
-			failure -> sendError(event, "There was an error processing your command!\nError: " + failure.getLocalizedMessage())
-		);
-	}
-	
-	
-	/* Send Private Message*/
-	protected void sendPrivateMessage(GuildMessageReceivedEvent event, EmbedBuilder eb){
-		privateMessage(event, eb).queue(
-			null,
-			failure -> sendError(event, "There was an error processing your command!\nError: " + failure.getLocalizedMessage())
-		);
-	}
-	
-	protected RestAction<Message> privateMessage(GuildMessageReceivedEvent event, EmbedBuilder eb){
-		return event.getAuthor().openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage(eb.setTimestamp(Instant.now()).build()));
-	}
-	
 	/* Send No permission Message*/
 	protected void sendNoPermission(GuildMessageReceivedEvent event){
 		queue(noPermission(event), event);
@@ -140,46 +145,32 @@ public abstract class ACommand{
 		queue(answer(event, answer), event);
 	}
 	
+	protected void queue(MessageAction messageAction, GuildMessageReceivedEvent event){
+		messageAction.queue(null, failure->sendError(event, "There was an error processing your command!\nError: " + failure.getLocalizedMessage()));
+	}
+	
 	protected MessageAction answer(GuildMessageReceivedEvent event, String answer){
-		return answer(event, new EmbedBuilder()
-			.setDescription(answer)
-		);
+		return answer(event, new EmbedBuilder().setDescription(answer));
 	}
 	
 	protected MessageAction answer(GuildMessageReceivedEvent event, EmbedBuilder answer){
 		addStatus(event.getMessage(), Status.OK);
 		return event.getChannel().sendMessage(answer
-			.setColor(Color.GREEN)
-			.setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
-			.setTimestamp(Instant.now())
-			.build()
+            .setColor(Color.GREEN)
+            .setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
+            .setTimestamp(Instant.now())
+            .build()
 		);
 	}
-
-	protected MessageAction answer(GuildMessageReceivedEvent event, byte[] file, String fileName, EmbedBuilder embed) {
+	
+	protected MessageAction answer(GuildMessageReceivedEvent event, byte[] file, String fileName, EmbedBuilder embed){
 		// add attachment://[the file name with extension] in embed
 		return answer(event, embed).addFile(file, fileName);
 	}
-
+	
 	protected MessageAction answer(GuildMessageReceivedEvent event, InputStream file, String fileName, EmbedBuilder embed){
 		// add attachment://[the file name with extension] in embed
 		return answer(event, embed).addFile(file, fileName);
-	}
-	
-	/* Send Error */
-	protected void sendError(GuildMessageReceivedEvent event, String error){
-		error(event, error).queue();
-	}
-	
-	protected MessageAction error(GuildMessageReceivedEvent event, String error){
-		addStatus(event.getMessage(), Status.ERROR);
-		return event.getChannel().sendMessage(new EmbedBuilder()
-			.setColor(Color.RED)
-			.addField("Error:", error, true)
-			.setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
-			.setTimestamp(Instant.now())
-			.build()
-		);
 	}
 	
 	/* Send Usage */
@@ -187,19 +178,19 @@ public abstract class ACommand{
 		queue(usage(event, usage), event);
 	}
 	
-	protected void sendUsage(GuildMessageReceivedEvent event){
-		queue(usage(event, usage), event);
-	}
-	
 	protected MessageAction usage(GuildMessageReceivedEvent event, String usage){
 		addStatus(event.getMessage(), Status.QUESTION);
 		return event.getChannel().sendMessage(new EmbedBuilder()
-			.setColor(Color.ORANGE)
-			.addField("Command usage:", "`" + main.database.getCommandPrefix(event.getGuild().getId()) + usage + "`", true)
-			.setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
-			.setTimestamp(Instant.now())
-			.build()
+            .setColor(Color.ORANGE)
+            .addField("Command usage:", "`" + main.database.getCommandPrefix(event.getGuild().getId()) + usage + "`", true)
+            .setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
+            .setTimestamp(Instant.now())
+            .build()
 		);
+	}
+	
+	protected void sendUsage(GuildMessageReceivedEvent event){
+		queue(usage(event, usage), event);
 	}
 	
 	protected void sendReactionImage(GuildMessageReceivedEvent event, String type, String text){
@@ -213,22 +204,14 @@ public abstract class ACommand{
 			return error(event, "Please mention a user");
 		}
 		else if(users.contains(event.getAuthor()) && users.size() == 1){
-			message.append("You can't ")
-				.append(type)
-				.append(" yourself so I ")
-				.append(type)
-				.append(" you ")
-				.append(event.getAuthor().getAsMention())
-				.append("!");
+			message.append("You can't ").append(type).append(" yourself so I ").append(type).append(" you ").append(event.getAuthor().getAsMention()).append("!");
 		}
 		else{
-			message.append(event.getAuthor().getAsMention())
-				.append(" ")
-				.append(text)
-				.append(" ");
-
+			message.append(event.getAuthor().getAsMention()).append(" ").append(text).append(" ");
+			
 			for(User user : users){
-				if(user.getId().equals(event.getAuthor().getId())) continue;
+				if(user.getId().equals(event.getAuthor().getId()))
+					continue;
 				message.append(user.getAsMention()).append(", ");
 			}
 			if(message.lastIndexOf(",") != - 1){
@@ -240,10 +223,6 @@ public abstract class ACommand{
 			return error(event, "Unknown error occurred while getting image for `" + type + "`");
 		}
 		return answer(event, new EmbedBuilder().setDescription(message).setImage(url));
-	}
-	
-	protected MessageAction image(GuildMessageReceivedEvent event, String url){
-		return answer(event, new EmbedBuilder().setImage(url).setColor(Color.GREEN));
 	}
 	
 	protected String getNeko(String type){
@@ -267,6 +246,10 @@ public abstract class ACommand{
 			LOG.error("Error while sending local image", e);
 		}
 		return null;
+	}
+	
+	protected MessageAction image(GuildMessageReceivedEvent event, String url){
+		return answer(event, new EmbedBuilder().setImage(url).setColor(Color.GREEN));
 	}
 	
 }

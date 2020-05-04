@@ -20,12 +20,12 @@ public class OnGuildVoiceEvent extends ListenerAdapter{
 	}
 	
 	@Override
-	public void onGuildVoiceLeave(GuildVoiceLeaveEvent event){
+	public void onGuildVoiceMove(GuildVoiceMoveEvent event){
 	
 	}
 	
 	@Override
-	public void onGuildVoiceMove(GuildVoiceMoveEvent event){
+	public void onGuildVoiceLeave(GuildVoiceLeaveEvent event){
 	
 	}
 	

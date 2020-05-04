@@ -2,10 +2,10 @@ package de.anteiku.kittybot.commands.commands;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.commands.ACommand;
-import de.anteiku.kittybot.utils.Utils;
-import de.anteiku.kittybot.utils.Emotes;
 import de.anteiku.kittybot.objects.ReactiveMessage;
 import de.anteiku.kittybot.objects.ValuePair;
+import de.anteiku.kittybot.utils.Emotes;
+import de.anteiku.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emote;
@@ -20,34 +20,14 @@ import java.util.*;
 
 public class RolesCommand extends ACommand{
 	
+	private static final String title = "Self-assignable roles:";
 	public static String COMMAND = "roles";
 	public static String USAGE = "roles <add|remove|list>";
 	public static String DESCRIPTION = "Used to manage your roles";
 	protected static String[] ALIAS = {"r", "rollen"};
 	
-	private static final String title = "Self-assignable roles:";
-	
 	public RolesCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
-	}
-	
-	private Map<Role, Emote> getRoleEmoteMap(Guild guild){
-		Set<ValuePair<String, String>> roles = main.database.getSelfAssignableRoles(guild.getId());
-		Map<Role, Emote> map = new LinkedHashMap<>();
-		for(ValuePair<String, String> entry : roles){
-			Role role = guild.getRoleById(entry.getKey());
-			if(role == null){
-				main.database.removeSelfAssignableRoles(guild.getId(), new HashSet<>(Collections.singleton(entry.getKey())));
-				continue;
-			}
-			Emote emote = guild.getJDA().getEmoteById(entry.getValue());
-			if(emote == null){
-				main.database.removeSelfAssignableRoles(guild.getId(), new HashSet<>(Collections.singleton(entry.getKey())));
-				continue;
-			}
-			map.put(role, emote);
-		}
-		return map;
 	}
 	
 	@Override
@@ -59,11 +39,11 @@ public class RolesCommand extends ACommand{
 			if(event.getMember().isOwner() || event.getMember().hasPermission(Permission.ADMINISTRATOR)){
 				List<Role> roles = event.getMessage().getMentionedRoles();
 				List<Emote> emotes = event.getMessage().getEmotes();
-				if(args[0].equalsIgnoreCase("add") && !roles.isEmpty() && !emotes.isEmpty()){
+				if(args[0].equalsIgnoreCase("add") && ! roles.isEmpty() && ! emotes.isEmpty()){
 					main.database.addSelfAssignableRoles(event.getGuild().getId(), Utils.toMap(roles, emotes));
 					sendAnswer(event, "Roles added!");
 				}
-				else if(args[0].equalsIgnoreCase("remove") && !roles.isEmpty()){
+				else if(args[0].equalsIgnoreCase("remove") && ! roles.isEmpty()){
 					main.database.removeSelfAssignableRoles(event.getGuild().getId(), Utils.toSet(roles));
 					sendAnswer(event, "Roles removed!");
 				}
@@ -94,25 +74,38 @@ public class RolesCommand extends ACommand{
 				sendError(event, "No self-assignable roles configured!\nIf you are an admin use `.roles add @role :emote: @role :emote:...` to add roles!");
 				return;
 			}
-			EmbedBuilder eb = new EmbedBuilder()
-				.setTitle(title)
-				.setDescription("To get/remove a role click reaction emote. " + Emotes.KITTY_BLINK.get() + "\n\n")
-				.setColor(Color.MAGENTA);
 			String value = "";
 			for(Map.Entry<Role, Emote> k : roles.entrySet()){
-				value += k.getValue().getAsMention()  + Emotes.BLANK.get() + Emotes.BLANK.get() + k.getKey().getAsMention() + "\n";
+				value += k.getValue().getAsMention() + Emotes.BLANK.get() + Emotes.BLANK.get() + k.getKey().getAsMention() + "\n";
 			}
-			eb.appendDescription("**Emote:**" + Emotes.BLANK.get() + "**Role:**\n" + value);
-			answer(event, eb).queue(
-				message -> {
-					main.commandManager.addReactiveMessage(event, message, this, "-1");
-					for(Map.Entry<Role, Emote> role : roles.entrySet()){
-						message.addReaction(role.getValue()).queue();
-					}
-					message.addReaction(Emotes.WASTEBASKET.get()).queue();
+			answer(event, new EmbedBuilder().setTitle(title).setDescription("To get/remove a role click reaction emote. " + Emotes.KITTY_BLINK.get() + "\n\n").setColor(Color.MAGENTA).appendDescription("**Emote:**" + Emotes.BLANK.get() + "**Role:**\n" + value)).queue(message->{
+				main.commandManager.addReactiveMessage(event, message, this, "-1");
+				for(Map.Entry<Role, Emote> role : roles.entrySet()){
+					message.addReaction(role.getValue()).queue();
 				}
-			);
+				message.addReaction(Emotes.WASTEBASKET.get()).queue();
+				message.addReaction(Emotes.WASTEBASKET.get()).queue();
+			});
 		}
+	}
+	
+	private Map<Role, Emote> getRoleEmoteMap(Guild guild){
+		Set<ValuePair<String, String>> roles = main.database.getSelfAssignableRoles(guild.getId());
+		Map<Role, Emote> map = new LinkedHashMap<>();
+		for(ValuePair<String, String> entry : roles){
+			Role role = guild.getRoleById(entry.getKey());
+			if(role == null){
+				main.database.removeSelfAssignableRoles(guild.getId(), new HashSet<>(Collections.singleton(entry.getKey())));
+				continue;
+			}
+			Emote emote = guild.getJDA().getEmoteById(entry.getValue());
+			if(emote == null){
+				main.database.removeSelfAssignableRoles(guild.getId(), new HashSet<>(Collections.singleton(entry.getKey())));
+				continue;
+			}
+			map.put(role, emote);
+		}
+		return map;
 	}
 	
 	@Override

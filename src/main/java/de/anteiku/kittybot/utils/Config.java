@@ -21,17 +21,16 @@ public class Config{
 		}
 	}
 	
-	public boolean exists(){
-		return file.exists();
-	}
-	
 	private void load(){
 		try{
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 			String line;
 			while((line = reader.readLine()) != null){
+				if(line.startsWith("#")){
+					continue;
+				}
 				int i = line.indexOf(SEPARATOR);
-				if(i != -1){
+				if(i != - 1){
 					config.put(line.substring(0, i), line.substring(i + 1));
 				}
 			}
@@ -40,6 +39,10 @@ public class Config{
 		catch(IOException e){
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean exists(){
+		return file.exists();
 	}
 	
 	public String get(String key){

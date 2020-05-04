@@ -8,8 +8,8 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class Task implements Runnable{
 	
-	protected KittyBot main;
 	protected static final Logger LOG = LoggerFactory.getLogger(Task.class);
+	protected KittyBot main;
 	protected String name;
 	protected long delay;
 	protected TimeUnit timeUnit;

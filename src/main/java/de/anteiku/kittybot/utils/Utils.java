@@ -25,11 +25,11 @@ public class Utils{
 		return set;
 	}
 	
-	public static Map<String, String> toMap(List<Role> roles, List<Emote> emotes) {
+	public static Map<String, String> toMap(List<Role> roles, List<Emote> emotes){
 		Map<String, String> map = new HashMap<>();
 		int i = 0;
-		for(Role role : roles) {
-			if(emotes.size() <= i) {
+		for(Role role : roles){
+			if(emotes.size() <= i){
 				break;
 			}
 			map.put(role.getId(), emotes.get(i).getId());

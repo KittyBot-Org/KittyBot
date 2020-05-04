@@ -19,7 +19,7 @@ import static spark.Spark.*;
 public class WebService{
 	
 	private final KittyBot main;
-
+	
 	public WebService(KittyBot main, int port){
 		this.main = main;
 		port(port);
@@ -69,6 +69,21 @@ public class WebService{
 		}
 	}
 	
+	private String getGuilds(Request request, Response response){
+		StringBuilder json = new StringBuilder("{\"guilds\": [");
+		User user = main.jda.getUserById(main.database.getSession(request.cookie("key")));
+		for(Guild guild : main.jda.getMutualGuilds(user)){
+			if(guild.getMember(user).hasPermission(Permission.ADMINISTRATOR)){
+				json.append("{\"name\": \"").append(guild.getName()).append("\", \"id\": \"").append(guild.getId()).append("\", \"iconurl\": \"").append(guild.getIconUrl()).append("\"}, ");
+			}
+		}
+		json.append("]}");
+		if(json.lastIndexOf(",") != -1){
+			json.deleteCharAt(json.lastIndexOf(","));
+		}
+		return json.toString();
+	}
+	
 	private void checkGuildPerms(Request request, Response response){
 		String guildId = request.params(":guildId");
 		Guild guild = main.jda.getGuildById(guildId);
@@ -88,48 +103,20 @@ public class WebService{
 		}
 	}
 	
-	public boolean loggedIn(Request request){
-		String key = request.cookie("key");
-		if(key == null){
-			return false;
+	private String getCommandPrefix(Request request, Response response){
+		//System.out.println("getCommandPrefix(): '" + json.toString() + "'");
+		return "{\"commandprefix\": \"" + main.database.getCommandPrefix(request.params(":guildId")) + "\"}";
+	}
+	
+	private String setCommandPrefix(Request request, Response response){
+		if(request.params(":value") == null){
+			main.database.setCommandPrefix(request.params(":guildId"), ".");
 		}
 		else{
-			return main.database.sessionExists(key);
+			main.database.setCommandPrefix(request.params(":guildId"), request.params(":value"));
 		}
-	}
-	
-	private String getIcon(Request request, Response response){
-		//System.out.println("getIcon());
-		return main.jda.getGuildById(request.params(":guildId")).getIconUrl();
-	}
-	
-	private String getGuilds(Request request, Response response){
-		StringBuilder json = new StringBuilder("{\"guilds\": [");
-		User user = main.jda.getUserById(main.database.getSession(request.cookie("key")));
-		for(Guild guild : main.jda.getMutualGuilds(user)){
-			if(guild.getMember(user).hasPermission(Permission.ADMINISTRATOR)){
-				json.append("{\"name\": \"").append(guild.getName()).append("\", \"id\": \"").append(guild.getId()).append("\", \"iconurl\": \"").append(guild.getIconUrl()).append("\"}, ");
-			}
-		}
-		json.append("]}");
-		if(json.lastIndexOf(",") != -1){
-			json.deleteCharAt(json.lastIndexOf(","));
-		}
-		return json.toString();
-	}
-	
-	private String getAllChannels(Request request, Response response){
-		List<TextChannel> channels = main.jda.getGuildById(request.params(":guildId")).getTextChannels();
-		StringBuilder json = new StringBuilder("{\"channels\": [");
-		for(TextChannel c : channels){
-			json.append("{\"name\": \"").append(c.getName()).append("\", \"id\": \"").append(c.getId()).append("\"}, ");
-		}
-		json.append("]}");
-		if(json.lastIndexOf(",") != -1){
-			json.deleteCharAt(json.lastIndexOf(","));
-		}
-		//System.out.println("getAllChannels(): '" + json.toString() + "'");
-		return json.toString();
+		//System.out.println("setCommandPrefix()");
+		return "{\"status\": \"ok\"}";
 	}
 	
 	private String getAllRoles(Request request, Response response){
@@ -143,6 +130,25 @@ public class WebService{
 			json.deleteCharAt(json.lastIndexOf(","));
 		}
 		//System.out.println("getAllRoles(): '" + json.toString() + "'");
+		return json.toString();
+	}
+	
+	private String getIcon(Request request, Response response){
+		//System.out.println("getIcon());
+		return main.jda.getGuildById(request.params(":guildId")).getIconUrl();
+	}
+	
+	private String getAllChannels(Request request, Response response){
+		List<TextChannel> channels = main.jda.getGuildById(request.params(":guildId")).getTextChannels();
+		StringBuilder json = new StringBuilder("{\"channels\": [");
+		for(TextChannel c : channels){
+			json.append("{\"name\": \"").append(c.getName()).append("\", \"id\": \"").append(c.getId()).append("\"}, ");
+		}
+		json.append("]}");
+		if(json.lastIndexOf(",") != -1){
+			json.deleteCharAt(json.lastIndexOf(","));
+		}
+		//System.out.println("getAllChannels(): '" + json.toString() + "'");
 		return json.toString();
 	}
 	
@@ -162,14 +168,14 @@ public class WebService{
 		return json.toString();
 	}
 	
-	private String removeSelfAssignableRole(Request request, Response response){
-		main.database.removeSelfAssignableRole(request.params(":guildId"), request.params(":value"));
-		return "{\"status\": \"ok\" }";
-	}
-	
 	private String addSelfAssignableRole(Request request, Response response){
 		main.database.addSelfAssignableRole(request.params(":guildId"), request.params(":value"), request.params(":emote"));
 		return "{\"status\": \"ok\"}";
+	}
+	
+	private String removeSelfAssignableRole(Request request, Response response){
+		main.database.removeSelfAssignableRole(request.params(":guildId"), request.params(":value"));
+		return "{\"status\": \"ok\" }";
 	}
 	
 	private String getWelcomeChannel(Request request, Response response){
@@ -181,6 +187,17 @@ public class WebService{
 	
 	private String setWelcomeChannel(Request request, Response response){
 		main.database.setWelcomeChannelId(request.params(":guildId"), request.params(":value"));
+		return "{\"status\": \"ok\"}";
+	}
+	
+	private String getNSFWEnabled(Request request, Response response){
+		//System.out.println("getNSFWEnabled(): '" + main.database.getNSFWEnabled(request.params(":guildId")) + "'");
+		return "{\"nsfwenabled\": " + main.database.getNSFWEnabled(request.params(":guildId")) + "}";
+	}
+	
+	private String setNSFWEnabled(Request request, Response response){
+		main.database.setNSFWEnabled(request.params(":guildId"), Boolean.parseBoolean(request.params(":value")));
+		//System.out.println("setNSFWEnabled()");
 		return "{\"status\": \"ok\"}";
 	}
 	
@@ -198,48 +215,31 @@ public class WebService{
 		return "{\"status\": \"ok\"}";
 	}
 	
-	private String getWelcomeMessageEnabled(Request request, Response response){
-		//System.out.println("getWelcomeMessageEnabled(): '" + main.database.getWelcomeMessageEnabled(request.params(":guildId")) + "'");
-		return "{\"welcomemessageenabled\": " + main.database.getWelcomeMessageEnabled(request.params(":guildId")) + "}";
-	}
-	
 	private String setWelcomeMessageEnabled(Request request, Response response){
 		main.database.setWelcomeMessageEnabled(request.params(":guildId"), Boolean.parseBoolean(request.params(":value")));
 		//System.out.println("setWelcomeMessageEnabled()");
 		return "{\"status\": \"ok\"}";
 	}
 	
-	private String getNSFWEnabled(Request request, Response response){
-		//System.out.println("getNSFWEnabled(): '" + main.database.getNSFWEnabled(request.params(":guildId")) + "'");
-		return "{\"nsfwenabled\": " + main.database.getNSFWEnabled(request.params(":guildId")) + "}";
+	private String getWelcomeMessageEnabled(Request request, Response response){
+		//System.out.println("getWelcomeMessageEnabled(): '" + main.database.getWelcomeMessageEnabled(request.params(":guildId")) + "'");
+		return "{\"welcomemessageenabled\": " + main.database.getWelcomeMessageEnabled(request.params(":guildId")) + "}";
 	}
 	
-	private String setNSFWEnabled(Request request, Response response){
-		main.database.setNSFWEnabled(request.params(":guildId"), Boolean.parseBoolean(request.params(":value")));
-		//System.out.println("setNSFWEnabled()");
-		return "{\"status\": \"ok\"}";
-	}
-	
-	private String getCommandPrefix(Request request, Response response){
-		//System.out.println("getCommandPrefix(): '" + json.toString() + "'");
-		return "{\"commandprefix\": \"" + main.database.getCommandPrefix(request.params(":guildId")) + "\"}";
-	}
-	
-	private String setCommandPrefix(Request request, Response response){
-		if(request.params(":value") == null){
-			main.database.setCommandPrefix(request.params(":guildId"), ".");
+	public boolean loggedIn(Request request){
+		String key = request.cookie("key");
+		if(key == null){
+			return false;
 		}
 		else{
-			main.database.setCommandPrefix(request.params(":guildId"), request.params(":value"));
+			return main.database.sessionExists(key);
 		}
-		//System.out.println("setCommandPrefix()");
-		return "{\"status\": \"ok\"}";
 	}
 	
 	public static class HtmlObject{
 		
+		private final Map<String, String> map;
 		private String body;
-		private final Map<String, String > map;
 		
 		public HtmlObject(String body, Map<String, String> map){
 			this.body = body;

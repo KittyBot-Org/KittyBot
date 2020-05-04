@@ -11,4 +11,5 @@ public class ReactiveMessage{
 		this.command = command;
 		this.allowed = allowed;
 	}
+	
 }

@@ -2,8 +2,8 @@ package de.anteiku.kittybot.commands.commands;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.commands.ACommand;
-import de.anteiku.kittybot.utils.Emotes;
 import de.anteiku.kittybot.objects.ReactiveMessage;
+import de.anteiku.kittybot.utils.Emotes;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
@@ -18,16 +18,11 @@ public class NekoCommand extends ACommand{
 	public static String USAGE = "neko <" + stringNekos + ">";
 	public static String DESCRIPTION = "Sends a random/specified neko";
 	protected static String[] ALIAS = {};
-
+	
 	public NekoCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
-
-	@Override
-	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
-		super.reactionAdd(reactiveMessage, event);
-	}
-
+	
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		if(! event.getChannel().isNSFW()){
@@ -35,16 +30,19 @@ public class NekoCommand extends ACommand{
 			return;
 		}
 		if(args.length > 0 && nekos.contains(args[0])){
-			image(event, getNeko(args[0])).queue(
-				message -> {
-					main.commandManager.addReactiveMessage(event, message, this, "-1");
-					message.addReaction(Emotes.WASTEBASKET.get()).queue();
-				}
-			);
+			image(event, getNeko(args[0])).queue(message->{
+				main.commandManager.addReactiveMessage(event, message, this, "-1");
+				message.addReaction(Emotes.WASTEBASKET.get()).queue();
+			});
 		}
 		else{
 			sendUsage(event);
 		}
 	}
-
+	
+	@Override
+	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
+		super.reactionAdd(reactiveMessage, event);
+	}
+	
 }

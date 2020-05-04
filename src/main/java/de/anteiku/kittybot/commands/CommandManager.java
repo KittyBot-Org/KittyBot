@@ -11,12 +11,11 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class CommandManager{
 	
-	private final KittyBot main;
 	private static final Logger LOG = LoggerFactory.getLogger(CommandManager.class);
+	private final KittyBot main;
 	public Map<String, ACommand> commands;
 	
 	public CommandManager(KittyBot main){
@@ -35,14 +34,14 @@ public class CommandManager{
 		main.database.addReactiveMessage(event.getGuild().getId(), event.getAuthor().getId(), message.getId(), event.getMessage().getId(), cmd.command, allowed);
 	}
 	
-	public void removeReactiveMessage(Guild guild, String messageId) {
+	public void removeReactiveMessage(Guild guild, String messageId){
 		main.database.removeReactiveMessage(guild.getId(), messageId);
 	}
 	
-	public ReactiveMessage getReactiveMessage(Guild guild, String message) {
+	public ReactiveMessage getReactiveMessage(Guild guild, String message){
 		return main.database.isReactiveMessage(guild.getId(), message);
 	}
-
+	
 	public boolean checkCommands(GuildMessageReceivedEvent event){
 		long start = System.nanoTime();
 		String message = startsWithPrefix(event.getGuild(), event.getMessage().getContentRaw());
@@ -65,9 +64,7 @@ public class CommandManager{
 	
 	private String startsWithPrefix(Guild guild, String message){
 		String prefix;
-		if(message.startsWith(prefix = main.database.getCommandPrefix(guild.getId())) ||
-			message.startsWith(prefix = "<@!" + guild.getSelfMember().getId() + ">") ||
-			message.startsWith(prefix = "<@" + guild.getSelfMember().getId() + ">")){
+		if(message.startsWith(prefix = main.database.getCommandPrefix(guild.getId())) || message.startsWith(prefix = "<@!" + guild.getSelfMember().getId() + ">") || message.startsWith(prefix = "<@" + guild.getSelfMember().getId() + ">")){
 			return message.substring(prefix.length()).trim();
 		}
 		return null;

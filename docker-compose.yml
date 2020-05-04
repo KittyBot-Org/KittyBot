@@ -2,12 +2,17 @@ version: '3.7'
 
 services:
     database:
-        image: mysql:latest
+        image: postgres:9.6.17-alpine
         restart: always
         env_file:
             - config.env
         volumes:
-            - ./.mysql/live:/var/lib/mysql
+            - ./.postgres/live:/var/lib/postgresql/data
+    lavalink:
+        image: fredboat/lavalink:master-
+        restart: always
+        volumes:
+            - ./application.yml:/opt/Lavalink/application.yml
     bot:
         image: topisenpai/kittybot:latest
         restart: always
@@ -15,3 +20,4 @@ services:
             - config.env
         depends_on:
             - database
+            - lavalink

@@ -22,7 +22,7 @@ public class TaskManager{
 		runningTasks = new LinkedHashMap<>();
 		ses = Executors.newScheduledThreadPool(1);
 	}
-
+	
 	public void addTask(Task task){
 		tasks.put(task.getName(), task);
 	}
