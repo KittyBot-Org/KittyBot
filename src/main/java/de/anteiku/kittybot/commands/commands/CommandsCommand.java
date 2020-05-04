@@ -50,7 +50,7 @@ public class CommandsCommand extends ACommand{
 	
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
-		answer(event, buildCommands(args, main.database.getCommandPrefix(event.getGuild().getId()))).queue(message->{
+		event.getChannel().sendMessage(buildCommands(args, main.database.getCommandPrefix(event.getGuild().getId())).build()).queue(message->{
 			main.commandManager.addReactiveMessage(event, message, this, "-1");
 			message.addReaction(Emotes.ARROW_LEFT.get()).queue();
 			message.addReaction(Emotes.ARROW_RIGHT.get()).queue();

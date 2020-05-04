@@ -10,12 +10,12 @@ import java.util.Objects;
 
 public class SQL{
 	
-	private static final Logger LOG = LoggerFactory.getLogger(Database.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SQL.class);
 	
 	private final Connection conn;
 	
 	public SQL(String host, String port, String user, String password, String database) throws SQLException{
-		this.conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true", user, password);
+		this.conn = DriverManager.getConnection("jdbc:postgresql://" + host + ":" + port + "/" + database, user, password);
 	}
 	
 	public static SQL newInstance(String host, String port, String user, String password, String database) throws SQLException{
@@ -23,19 +23,19 @@ public class SQL{
 	}
 	
 	public void use(String db){
-		execute("USE `" + db + "`", false);
+		execute("USE " + db + "", false);
 	}
 	
 	public boolean setProperty(String table, String row, String value, String checkRow, String checkValue){
-		return execute("UPDATE `" + table + "` SET `" + row + "`='" + value + "' WHERE `" + checkRow + "` = '" + checkValue + "'");
+		return execute("UPDATE " + table + " SET " + row + "='" + value + "' WHERE " + checkRow + " = '" + checkValue + "'");
 	}
 	
 	public boolean setProperty(String table, String row, int value, String checkRow, String checkValue){
-		return execute("UPDATE `" + table + "` SET `" + row + "`='" + value + "' WHERE `" + checkRow + "` = '" + checkValue + "'");
+		return execute("UPDATE " + table + " SET " + row + "='" + value + "' WHERE " + checkRow + " = '" + checkValue + "'");
 	}
 	
 	public ResultSet getProperty(String table, String checkRow, String checkValue){
-		return query("SELECT * FROM `" + table + "`  WHERE `" + checkRow + "` = '" + checkValue + "'");
+		return query("SELECT * FROM " + table + "  WHERE " + checkRow + " = '" + checkValue + "'");
 	}
 	
 	public String getSingleProperty(String table, String checkRow, String checkValue, String property){
@@ -121,7 +121,7 @@ public class SQL{
 	
 	public boolean exists(String query, boolean retry){
 		try{
-			return query(query).absolute(1);
+			return query(query).next();
 		}
 		catch(SQLException e){
 			if(retry)

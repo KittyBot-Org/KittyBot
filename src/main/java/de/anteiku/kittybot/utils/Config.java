@@ -26,6 +26,9 @@ public class Config{
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 			String line;
 			while((line = reader.readLine()) != null){
+				if(line.startsWith("#")){
+					continue;
+				}
 				int i = line.indexOf(SEPARATOR);
 				if(i != - 1){
 					config.put(line.substring(0, i), line.substring(i + 1));

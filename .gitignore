@@ -4,3 +4,4 @@ build/
 .mysql/
 .idea/
 config.env
+application.yml

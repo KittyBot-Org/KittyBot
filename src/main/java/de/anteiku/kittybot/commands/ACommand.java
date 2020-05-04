@@ -33,6 +33,10 @@ public abstract class ACommand{
 	protected String description;
 	protected String[] alias;
 	
+	protected enum Status{
+		OK, ERROR, QUESTION
+	}
+	
 	protected ACommand(KittyBot main, String command, String usage, String description, String[] alias){
 		this.main = main;
 		this.command = command;
@@ -81,11 +85,15 @@ public abstract class ACommand{
 	
 	/* Send Private Message*/
 	protected void sendPrivateMessage(GuildMessageReceivedEvent event, EmbedBuilder eb){
-		privateMessage(event, eb).queue(null, failure->sendError(event, "There was an error processing your command!\nError: " + failure.getLocalizedMessage()));
+		privateMessage(event, eb).queue(null,
+			failure -> sendError(event, "There was an error processing your command!\nError: " + failure.getLocalizedMessage())
+		);
 	}
 	
 	protected RestAction<Message> privateMessage(GuildMessageReceivedEvent event, EmbedBuilder eb){
-		return event.getAuthor().openPrivateChannel().flatMap(privateChannel->privateChannel.sendMessage(eb.setTimestamp(Instant.now()).build()));
+		return event.getAuthor().openPrivateChannel().flatMap(
+				privateChannel -> privateChannel.sendMessage(eb.setTimestamp(Instant.now()).build())
+		);
 	}
 	
 	/* Send Error */
@@ -95,7 +103,13 @@ public abstract class ACommand{
 	
 	protected MessageAction error(GuildMessageReceivedEvent event, String error){
 		addStatus(event.getMessage(), Status.ERROR);
-		return event.getChannel().sendMessage(new EmbedBuilder().setColor(Color.RED).addField("Error:", error, true).setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl()).setTimestamp(Instant.now()).build());
+		return event.getChannel().sendMessage(new EmbedBuilder()
+			.setColor(Color.RED)
+			.addField("Error:", error, true)
+			.setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
+			.setTimestamp(Instant.now())
+			.build()
+		);
 	}
 	
 	protected void addStatus(Message message, Status status){
@@ -112,7 +126,9 @@ public abstract class ACommand{
 				emote = Emotes.QUESTION;
 				break;
 		}
-		message.addReaction(emote.get()).queue(success->message.getTextChannel().removeReactionById(message.getId(), emote.get()).queueAfter(5, TimeUnit.SECONDS));
+		message.addReaction(emote.get()).queue(
+			success -> message.getTextChannel().removeReactionById(message.getId(), emote.get()).queueAfter(5, TimeUnit.SECONDS)
+		);
 	}
 	
 	/* Send No permission Message*/
@@ -139,7 +155,12 @@ public abstract class ACommand{
 	
 	protected MessageAction answer(GuildMessageReceivedEvent event, EmbedBuilder answer){
 		addStatus(event.getMessage(), Status.OK);
-		return event.getChannel().sendMessage(answer.setColor(Color.GREEN).setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl()).setTimestamp(Instant.now()).build());
+		return event.getChannel().sendMessage(answer
+            .setColor(Color.GREEN)
+            .setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
+            .setTimestamp(Instant.now())
+            .build()
+		);
 	}
 	
 	protected MessageAction answer(GuildMessageReceivedEvent event, byte[] file, String fileName, EmbedBuilder embed){
@@ -159,7 +180,13 @@ public abstract class ACommand{
 	
 	protected MessageAction usage(GuildMessageReceivedEvent event, String usage){
 		addStatus(event.getMessage(), Status.QUESTION);
-		return event.getChannel().sendMessage(new EmbedBuilder().setColor(Color.ORANGE).addField("Command usage:", "`" + main.database.getCommandPrefix(event.getGuild().getId()) + usage + "`", true).setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl()).setTimestamp(Instant.now()).build());
+		return event.getChannel().sendMessage(new EmbedBuilder()
+            .setColor(Color.ORANGE)
+            .addField("Command usage:", "`" + main.database.getCommandPrefix(event.getGuild().getId()) + usage + "`", true)
+            .setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
+            .setTimestamp(Instant.now())
+            .build()
+		);
 	}
 	
 	protected void sendUsage(GuildMessageReceivedEvent event){
@@ -223,10 +250,6 @@ public abstract class ACommand{
 	
 	protected MessageAction image(GuildMessageReceivedEvent event, String url){
 		return answer(event, new EmbedBuilder().setImage(url).setColor(Color.GREEN));
-	}
-	
-	protected enum Status{
-		OK, ERROR, QUESTION
 	}
 	
 }
