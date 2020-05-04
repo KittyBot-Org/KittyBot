@@ -1,7 +1,7 @@
 build/
 .history/
 .gradle/
-.mysql/
+.postgres/
 .idea/
 config.env
 application.yml
