@@ -30,6 +30,7 @@ public class Database{
 		sql.createTable("user_statistics");
 		//sql.createTable("requests");
 		//sql.createTable("sessions");
+		//should delete those
 		//sql.execute("CREATE TABLE IF NOT EXISTS polls (\n" + "id varchar(18) NOT NULL PRIMARY KEY,\n" + "guild_id varchar(18) NOT NULL,\n" + "channel_id varchar(18) NOT NULL,\n" + "title text NOT NULL,\n" + "created_by varchar(18) NOT NULL,\n" + "created_at timestamp NOT NULL DEFAULT current_timestamp(),\n" + "goes_until timestamp NOT NULL DEFAULT current_timestamp()\n" + ")");
 		//sql.execute("CREATE TABLE IF NOT EXISTS poll_votes (\n" + "id varchar(18) NOT NULL PRIMARY KEY,\n" + "created_by varchar(18) NOT NULL,\n" + "created_at timestamp NOT NULL DEFAULT current_timestamp(),\n" + "value varchar(18) NOT NULL\n" + ")");
 		//sql.execute("CREATE TABLE IF NOT EXISTS poll_answers (\n" + "id varchar(18) NOT NULL PRIMARY KEY,\n" + "answer text NOT NULL\n" + ")");
