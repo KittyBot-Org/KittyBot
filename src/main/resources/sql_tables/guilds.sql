@@ -9,4 +9,4 @@ CREATE TABLE IF NOT EXISTS guilds (
     nsfw_enabled boolean NOT NULL,
     inactive_role varchar(18) NOT NULL,
     PRIMARY KEY(guild_id)
-)
+);

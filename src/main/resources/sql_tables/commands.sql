@@ -6,4 +6,4 @@ CREATE TABLE IF NOT EXISTS commands (
     processing_time int NOT NULL,
     time varchar(20) NOT NULL,
     PRIMARY KEY(message_id, guild_id)
-)
+);

@@ -6,4 +6,4 @@ CREATE TABLE IF NOT EXISTS reactive_messages (
     command varchar(18) NOT NULL,
     allowed varchar(18) NOT NULL,
     PRIMARY KEY(message_id, user_id, guild_id)
-)
+);

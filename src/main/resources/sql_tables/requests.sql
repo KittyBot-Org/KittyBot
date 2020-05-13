@@ -8,4 +8,4 @@ CREATE TABLE IF NOT EXISTS requests (
     accepted boolean NOT NULL,
     creation_time varchar(20) NOT NULL,
     PRIMARY KEY(request_id)
-)
+);

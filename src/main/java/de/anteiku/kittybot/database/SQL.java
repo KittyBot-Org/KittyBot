@@ -23,19 +23,19 @@ public class SQL{
 	}
 	
 	public void use(String db){
-		execute("USE " + db + "", false);
+		execute("USE " + db + ";", false);
 	}
 	
 	public boolean setProperty(String table, String row, String value, String checkRow, String checkValue){
-		return execute("UPDATE " + table + " SET " + row + "='" + value + "' WHERE " + checkRow + " = '" + checkValue + "'");
+		return execute("UPDATE " + table + " SET " + row + "='" + value + "' WHERE " + checkRow + " = '" + checkValue + "';");
 	}
 	
 	public boolean setProperty(String table, String row, int value, String checkRow, String checkValue){
-		return execute("UPDATE " + table + " SET " + row + "='" + value + "' WHERE " + checkRow + " = '" + checkValue + "'");
+		return execute("UPDATE " + table + " SET " + row + "='" + value + "' WHERE " + checkRow + " = '" + checkValue + "';");
 	}
 	
 	public ResultSet getProperty(String table, String checkRow, String checkValue){
-		return query("SELECT * FROM " + table + "  WHERE " + checkRow + " = '" + checkValue + "'");
+		return query("SELECT * FROM " + table + "  WHERE " + checkRow + " = '" + checkValue + "';");
 	}
 	
 	public String getSingleProperty(String table, String checkRow, String checkValue, String property){
