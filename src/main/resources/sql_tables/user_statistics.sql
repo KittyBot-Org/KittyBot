@@ -9,4 +9,4 @@ CREATE TABLE IF NOT EXISTS user_statistics (
     emote_count int NOT NULL,
     last_active varchar(20) NOT NULL,
     PRIMARY KEY(user_id, guild_id)
-)
+);
