@@ -5,7 +5,7 @@ WORKDIR /home/gradle/src
 RUN gradle build --warning-mode all
 
 
-FROM openjdk:11-alpine
+FROM openjdk:11-jdk-slim-buster
 
 WORKDIR /home/kittybot
 
