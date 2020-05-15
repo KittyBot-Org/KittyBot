@@ -4,4 +4,3 @@ build/
 .postgres/
 .idea/
 config.env
-application.yml
