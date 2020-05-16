@@ -3,6 +3,7 @@ package de.anteiku.kittybot.database;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.objects.ReactiveMessage;
 import de.anteiku.kittybot.objects.ValuePair;
+import de.anteiku.kittybot.utils.Config;
 import de.anteiku.kittybot.utils.Utils;
 import net.dv8tion.jda.api.entities.Guild;
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ public class Database{
 	public Database(KittyBot main) throws SQLException{
 		this.main = main;
 		commandPrefixes = new HashMap<>();
-		sql = SQL.newInstance(main.DB_HOST, main.DB_PORT, main.DB_USER, main.DB_PASSWORD, main.DB_DB);
+		sql = SQL.newInstance(Config.DB_HOST, Config.DB_PORT, Config.DB_USER, Config.DB_PASSWORD, Config.DB_DB);
 		sql.createTable("guilds");
 		sql.createTable("self_assignable_roles");
 		sql.createTable("commands");
@@ -73,7 +74,7 @@ public class Database{
 	
 	private boolean registerGuild(Guild guild){
 		LOG.debug("Registering new guild: {}", guild.getId());
-		return sql.execute("INSERT INTO guilds (guild_id, command_prefix, request_channel_id, requests_enabled, welcome_channel_id, welcome_message, welcome_message_enabled, nsfw_enabled, inactive_role) VALUES ('" + guild.getId() + "', '" + main.DEFAULT_PREFIX + "', '-1', '0', '" + guild.getDefaultChannel().getId() + "', 'Welcome [username] to this server!', '1', '1', '-1');");
+		return sql.execute("INSERT INTO guilds (guild_id, command_prefix, request_channel_id, requests_enabled, welcome_channel_id, welcome_message, welcome_message_enabled, nsfw_enabled, inactive_role) VALUES ('" + guild.getId() + "', '" + Config.DEFAULT_PREFIX + "', '-1', '0', '" + guild.getDefaultChannel().getId() + "', 'Welcome [username] to this server!', '1', '1', '-1');");
 	}
 	
 	public void close(){

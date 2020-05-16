@@ -1,0 +1,22 @@
+discord:
+    bot_token:
+    bot_id:
+    bot_secret:
+    admin_id:
+
+postgres:
+    host:
+    port:
+    database:
+    user:
+    password:
+
+lavalink_nodes:
+    lavalink_1:
+        host:
+        port:
+        password:
+    lavalink_2:
+        host:
+        port:
+        password:
