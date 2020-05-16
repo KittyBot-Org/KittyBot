@@ -1,6 +1,5 @@
-build/
 .history/
 .gradle/
-.postgres/
 .idea/
-config.env
+build/
+config.yml

@@ -14,8 +14,10 @@ import de.anteiku.kittybot.commands.CommandManager;
 import de.anteiku.kittybot.commands.commands.*;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.events.*;
+import de.anteiku.kittybot.objects.LavalinkNode;
 import de.anteiku.kittybot.tasks.TaskManager;
 import de.anteiku.kittybot.utils.Config;
+import lavalink.client.io.Lavalink;
 import lavalink.client.io.jda.JdaLavalink;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -35,33 +37,16 @@ import java.util.Random;
 public class KittyBot{
 	
 	private static final Logger LOG = LoggerFactory.getLogger(KittyBot.class);
+	
 	public final OkHttpClient httpClient;
 	public JDA jda;
 	public JdaLavalink lavalink;
 	
 	public AudioPlayerManager playerManager;
-	
 	public CommandManager commandManager;
 	public TaskManager taskManager;
 	public Database database;
 	public Random rand;
-	
-	public String DISCORD_BOT_TOKEN;
-	public String DISCORD_BOT_SECRET;
-	public String DISCORD_BOT_ID;
-	public String ADMIN_DISCORD_ID;
-	
-	public String DB_HOST;
-	public String DB_PORT;
-	public String DB_DB;
-	public String DB_USER;
-	public String DB_PASSWORD;
-	
-	public String LAVALINK_HOST;
-	public String LAVALINK_PORT;
-	public String LAVALINK_PASSWORD;
-	
-	public String DEFAULT_PREFIX = ".";
 	
 	public static void main(String[] args){
 		new KittyBot();
@@ -74,14 +59,17 @@ public class KittyBot{
 	public KittyBot(){
 		LOG.info("Starting KittyBot...");
 		httpClient = new OkHttpClient();
-		setEnvVars();
+		
+		Config.load("config.yml");
 		
 		database = Database.connect(this);
 		rand = new Random();
 		
 		try{
-			lavalink = new JdaLavalink(DISCORD_BOT_ID, 1, this::getShardById);
-			lavalink.addNode(new URI("ws://" + LAVALINK_HOST + ":" + LAVALINK_PORT), LAVALINK_PASSWORD);
+			lavalink = new JdaLavalink(Config.DISCORD_BOT_ID, 1, this::getShardById);
+			for(LavalinkNode node : Config.LAVALINK_NODES){
+				lavalink.addNode(new URI("ws://" + node.host + ":" + node.port), node.password);
+			}
 			
 			playerManager = new DefaultAudioPlayerManager();
 			playerManager.registerSourceManager(new YoutubeAudioSourceManager());
@@ -105,7 +93,7 @@ public class KittyBot{
 				GatewayIntent.DIRECT_MESSAGE_REACTIONS
 			)
 	        .disableCache(CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS)
-	        .setToken(DISCORD_BOT_TOKEN)
+	        .setToken(Config.DISCORD_BOT_TOKEN)
 	        .setActivity(Activity.listening("to you!"))
 			.addEventListeners(
 			    new OnGuildJoinEvent(this),
@@ -168,39 +156,8 @@ public class KittyBot{
 		}
 	}
 	
-	private void setEnvVars(){
-		Config cfg = new Config("config.env");
-		if(cfg.exists()){
-			LOG.debug("Loading env vars from file...");
-		}
-		else{
-			LOG.debug("Loading env vars from system...");
-		}
-		DISCORD_BOT_TOKEN = loadEvnVar(cfg, "DISCORD_BOT_TOKEN");
-		DISCORD_BOT_ID = loadEvnVar(cfg, "DISCORD_BOT_ID");
-		DISCORD_BOT_SECRET = loadEvnVar(cfg, "DISCORD_BOT_SECRET");
-		ADMIN_DISCORD_ID = loadEvnVar(cfg, "ADMIN_DISCORD_ID");
-		
-		DB_HOST = loadEvnVar(cfg, "POSTGRES_HOST");
-		DB_PORT = loadEvnVar(cfg, "POSTGRES_PORT");
-		DB_DB = loadEvnVar(cfg, "POSTGRES_DB");
-		DB_USER = loadEvnVar(cfg, "POSTGRES_USER");
-		DB_PASSWORD = loadEvnVar(cfg, "POSTGRES_PASSWORD");
-		
-		LAVALINK_HOST = loadEvnVar(cfg, "LAVALINK_HOST");
-		LAVALINK_PORT = loadEvnVar(cfg, "LAVALINK_PORT");
-		LAVALINK_PASSWORD = loadEvnVar(cfg, "LAVALINK_PASSWORD");
-	}
-	
-	private String loadEvnVar(Config cfg, String var) {
-		if(cfg.exists()){
-			return cfg.get(var);
-		}
-		return System.getenv(var);
-	}
-	
 	public void sendDMToOwnerAdmin(JDA jda, String title, String description){
-		jda.openPrivateChannelById(ADMIN_DISCORD_ID).queue(
+		jda.openPrivateChannelById(Config.DISCORD_ADMIN_ID).queue(
 			privateChannel -> privateChannel.sendMessage(new EmbedBuilder()
 				.setTitle(title)
 				.setDescription(description)
