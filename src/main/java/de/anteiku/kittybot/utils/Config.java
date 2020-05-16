@@ -38,8 +38,8 @@ public class Config{
 			
 			Map<String, Object> discord = (Map<String, Object>) config.get("discord");
 			DISCORD_BOT_TOKEN = String.valueOf(discord.get("bot_token"));
-			DISCORD_BOT_SECRET = String.valueOf(discord.get("bot_id"));
-			DISCORD_BOT_ID = String.valueOf(discord.get("bot_secret"));
+			DISCORD_BOT_SECRET = String.valueOf(discord.get("bot_secret"));
+			DISCORD_BOT_ID = String.valueOf(discord.get("bot_id"));
 			DISCORD_ADMIN_ID = String.valueOf(discord.get("admin_id"));
 			
 			Map<String, Object> postgres = (Map<String, Object>) config.get("postgres");
