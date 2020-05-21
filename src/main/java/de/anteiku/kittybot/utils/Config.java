@@ -20,6 +20,7 @@ public class Config{
 	public static String DISCORD_BOT_SECRET;
 	public static String DISCORD_BOT_ID;
 	public static String DISCORD_ADMIN_ID;
+	public static String DISCORD_INVITE_LINK;
 	
 	public static String DB_HOST;
 	public static String DB_PORT;
@@ -41,6 +42,7 @@ public class Config{
 			DISCORD_BOT_SECRET = String.valueOf(discord.get("bot_secret"));
 			DISCORD_BOT_ID = String.valueOf(discord.get("bot_id"));
 			DISCORD_ADMIN_ID = String.valueOf(discord.get("admin_id"));
+			DISCORD_INVITE_LINK = String.valueOf(discord.get("invite_link"));
 			
 			Map<String, Object> postgres = (Map<String, Object>) config.get("postgres");
 			DB_HOST = String.valueOf(postgres.get("host"));

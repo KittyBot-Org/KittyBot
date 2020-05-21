@@ -72,7 +72,7 @@ public class Database{
 	 * Command Statistic specified methods
 	 */
 	
-	private boolean registerGuild(Guild guild){
+	public boolean registerGuild(Guild guild){
 		LOG.debug("Registering new guild: {}", guild.getId());
 		return sql.execute("INSERT INTO guilds (guild_id, command_prefix, request_channel_id, requests_enabled, welcome_channel_id, welcome_message, welcome_message_enabled, nsfw_enabled, inactive_role) VALUES ('" + guild.getId() + "', '" + Config.DEFAULT_PREFIX + "', '-1', '0', '" + guild.getDefaultChannel().getId() + "', 'Welcome [username] to this server!', '1', '1', '-1');");
 	}
