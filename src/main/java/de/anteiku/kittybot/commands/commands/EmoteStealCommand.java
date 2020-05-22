@@ -27,7 +27,7 @@ public class EmoteStealCommand extends ACommand{
 	
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
-		if(! event.getMember().hasPermission(Permission.MANAGE_EMOTES)){
+		if(!event.getMember().hasPermission(Permission.MANAGE_EMOTES)){
 			sendError(event, "Sorry you don't have the permission to manage emotes :(");
 			return;
 		}

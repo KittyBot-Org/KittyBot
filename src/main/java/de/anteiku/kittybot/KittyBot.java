@@ -73,12 +73,10 @@ public class KittyBot{
 			
 			playerManager = new DefaultAudioPlayerManager();
 			playerManager.registerSourceManager(new YoutubeAudioSourceManager());
-			playerManager.registerSourceManager(new SoundCloudAudioSourceManager());
 			playerManager.registerSourceManager(new BandcampAudioSourceManager());
 			playerManager.registerSourceManager(new VimeoAudioSourceManager());
 			playerManager.registerSourceManager(new TwitchStreamAudioSourceManager());
 			playerManager.registerSourceManager(new HttpAudioSourceManager());
-			playerManager.registerSourceManager(new LocalAudioSourceManager());
 			
 			AudioSourceManagers.registerRemoteSources(playerManager);
 			
@@ -143,6 +141,7 @@ public class KittyBot{
 					
 					new OptionsCommand(this),
 					new EvalCommand(this),
+					new HastebinCommand(this),
 					new TestCommand(this)
 				);
 			
