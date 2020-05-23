@@ -28,7 +28,7 @@ public class Config{
 	public static String DB_USER;
 	public static String DB_PASSWORD;
 	
-	public static List<LavalinkNode> LAVALINK_NODES;
+	protected static List<LavalinkNode> LAVALINK_NODES;
 	
 	public static String DEFAULT_PREFIX = ".";
 	
@@ -52,8 +52,7 @@ public class Config{
 			DB_PASSWORD = String.valueOf(postgres.get("password"));
 			
 			LAVALINK_NODES = new ArrayList<>();
-			Map<String, Object> lavalink_nodes = (Map<String, Object>) config.get("lavalink_nodes");
-			for(Map.Entry<String, Object> entry : lavalink_nodes.entrySet()){
+			for(Map.Entry<String, Object> entry : ((Map<String, Object>) config.get("lavalink_nodes")).entrySet()){
 				Map<String, Object> node = (Map<String, Object>) entry.getValue();
 				LAVALINK_NODES.add(new LavalinkNode(String.valueOf(node.get("host")), String.valueOf(node.get("port")), String.valueOf(node.get("password"))));
 			}
