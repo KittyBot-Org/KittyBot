@@ -27,9 +27,6 @@ import static spark.Spark.*;
 public class WebService{
 	
 	private static final Logger LOG = LoggerFactory.getLogger(WebService.class);
-	private static final String DISCORD_REDIRECT_URL = "http://localhost:6969/login";
-	private static final String REDIRECT_URL = "http://localhost:6969/discord_login";
-	private static final String SUCCESS_LOGIN_URL = "http://localhost/guilds";
 	private static final String OK = "{\"status\": 200}";;
 	
 	private KittyBot main;
@@ -46,9 +43,18 @@ public class WebService{
 		stateController = new DefaultStateController();
 		oAuthClient = new OAuth2ClientImpl(Long.parseLong(Config.DISCORD_BOT_ID), Config.DISCORD_BOT_SECRET, sessionController, stateController, main.httpClient);
 		
+		String url = Config.DISCORD_REDIRECT_URL;
+		final String originUrl;
+		int i = url.indexOf(":");
+		if(i == -1){
+			originUrl = url;
+		}
+		else{
+			originUrl = url.substring(i, url.length() - 1);
+		}
 		port(port);
 		before((request, response) -> {
-			response.header("Access-Control-Allow-Origin", "http://localhost");
+			response.header("Access-Control-Allow-Origin", originUrl);
 			response.header("Access-Control-Allow-Credentials", "true");
 			response.header("Content-Type", "application/json");
 		});
@@ -110,9 +116,9 @@ public class WebService{
 	private String discordLogin(Request request, Response response){
 		String key = request.cookie("key");
 		if(key == null || !main.database.sessionExists(key)){
-			response.redirect(oAuthClient.generateAuthorizationURL(DISCORD_REDIRECT_URL, scopes));
+			response.redirect(oAuthClient.generateAuthorizationURL(Config.DISCORD_REDIRECT_URL + "/login", scopes));
 		}
-		response.redirect(SUCCESS_LOGIN_URL);
+		response.redirect(Config.DISCORD_REDIRECT_URL + "guilds");
 		return OK;
 	}
 	
@@ -125,7 +131,7 @@ public class WebService{
 			OAuth2User user = oAuthClient.getUser(session).complete();
 			main.database.addSession(user.getId(), key);
 			response.cookie("/", "key", key, -1, false);
-			response.redirect(SUCCESS_LOGIN_URL);
+			response.redirect(Config.DISCORD_REDIRECT_URL + "/guilds");
 		}
 		catch(InvalidStateException | IOException e){
 			LOG.error("State is invalid", e);
@@ -136,17 +142,17 @@ public class WebService{
 	private String getUserInfo(Request request, Response response){
 		String cookie = request.cookie("key");
 		if(cookie == null){
-			response.redirect(REDIRECT_URL);
+			response.redirect(Config.DISCORD_REDIRECT_URL + "/discord_login");
 			return buildError(401, "Please login");
 		}
 		String userId = main.database.getSession(cookie);
 		if(userId == null){
-			response.redirect(REDIRECT_URL);
+			response.redirect(Config.DISCORD_REDIRECT_URL + "/discord_login");
 			return buildError(404, "Session not found");
 		}
 		User user = main.jda.retrieveUserById(userId).complete();
 		if(user == null){
-			response.redirect(REDIRECT_URL);
+			response.redirect(Config.DISCORD_REDIRECT_URL + "/discord_login");
 			return buildError(404, "User not found");
 		}
 		Collection<String> guilds = new ArrayList<>();

@@ -3,6 +3,8 @@ discord:
     bot_id:
     bot_secret:
     admin_id:
+    invite_link:
+    redirect_url:
 
 postgres:
     host:
