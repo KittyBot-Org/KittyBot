@@ -1,279 +1,208 @@
 package de.anteiku.kittybot.webservice;
 
+import com.jagrosh.jdautilities.oauth2.OAuth2Client;
+import com.jagrosh.jdautilities.oauth2.Scope;
+import com.jagrosh.jdautilities.oauth2.entities.OAuth2User;
+import com.jagrosh.jdautilities.oauth2.entities.impl.OAuth2ClientImpl;
+import com.jagrosh.jdautilities.oauth2.exceptions.InvalidStateException;
+import com.jagrosh.jdautilities.oauth2.session.DefaultSessionController;
+import com.jagrosh.jdautilities.oauth2.session.Session;
+import com.jagrosh.jdautilities.oauth2.state.DefaultStateController;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.objects.ValuePair;
+import de.anteiku.kittybot.utils.Config;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import spark.ModelAndView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.Request;
 import spark.Response;
-import spark.TemplateEngine;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import static spark.Spark.*;
 
 public class WebService{
 	
-	private final KittyBot main;
+	private static final Logger LOG = LoggerFactory.getLogger(WebService.class);
+	private static final String DISCORD_REDIRECT_URL = "http://localhost:6969/login";
+	private static final String REDIRECT_URL = "http://localhost:6969/discord_login";
+	private static final String SUCCESS_LOGIN_URL = "http://localhost/guilds";
+	private static final String OK = "{\"status\": 200}";;
+	
+	private KittyBot main;
+	private Scope[] scopes;
+	private OAuth2Client oAuthClient;
+	private DefaultSessionController sessionController;
+	private DefaultStateController stateController;
 	
 	public WebService(KittyBot main, int port){
 		this.main = main;
-		port(port);
 		
+		scopes = new Scope[]{Scope.IDENTIFY};
+		sessionController = new DefaultSessionController();
+		stateController = new DefaultStateController();
+		oAuthClient = new OAuth2ClientImpl(Long.parseLong(Config.DISCORD_BOT_ID), Config.DISCORD_BOT_SECRET, sessionController, stateController, main.httpClient);
+		
+		port(port);
+		before((request, response) -> {
+			response.header("Access-Control-Allow-Origin", "http://localhost");
+			response.header("Access-Control-Allow-Credentials", "true");
+			response.header("Content-Type", "application/json");
+		});
 		path("/user", () -> {
 			before("", this::checkDiscordLogin);
-			path("/me", () -> get("/guilds/get", this::getGuilds));
+			get("/me", this::getUserInfo);
 		});
+		get("/discord_login", this::discordLogin);
+		get("/login", this::login);
 		path("/guild", () -> {
 			before("", this::checkDiscordLogin);
 			path("/:guildId", () -> {
 				before("", this::checkGuildPerms);
-				path("/commandprefix", () -> {
-					get("/get", this::getCommandPrefix);
-					get("/set/:value", this::setCommandPrefix);
-					get("/set/", this::setCommandPrefix);
-				});
-				path("/roles", () -> get("/get", this::getAllRoles));
-				path("/icon", () -> get("/get", this::getIcon));
-				path("/channels", () -> get("/get", this::getAllChannels));
-				path("/selfassignableroles", () -> {
-					get("/get", this::getSelfAssignableRoles);
-					get("/add/:value", this::addSelfAssignableRole);
-					get("/remove/:value", this::removeSelfAssignableRole);
-				});
-				path("/welcomechannel", () -> {
-					get("/get", this::getWelcomeChannel);
-					get("/set/:value", this::setWelcomeChannel);
-				});
-				path("/nsfw", () -> {
-					get("/get", this::getNSFWEnabled);
-					get("/set/:value", this::setNSFWEnabled);
-				});
-				path("/welcomemessage", () -> {
-					get("/get", this::getWelcomeMessage);
-					get("/set/:value", this::setWelcomeMessage);
-					get("/enabled/set/:value", this::setWelcomeMessageEnabled);
-					get("/enabled/get", this::getWelcomeMessageEnabled);
+				path("/roles", () -> get("/get", this::getRoles));
+				path("/channels", () -> get("/get", this::getChannels));
+				path("/emotes", () -> get("/get", this::getEmotes));
+				path("/settings", () -> {
+					get("/get", this::getGuildSettings);
+					post("/set", this::setGuildSettings);
 				});
 			});
 		});
 	}
 	
-	private void checkDiscordLogin(Request request, Response response){
-		if(!loggedIn(request)){
-			halt(401, "<a href='/login'>Please login with discord!</a>");
-		}
+	private String buildError(int code, String error){
+		return String.format("{\"status\": %d, \"error\": \"%s\"}", code, error);
 	}
 	
-	private String getGuilds(Request request, Response response){
-		StringBuilder json = new StringBuilder("{\"guilds\": [");
-		User user = main.jda.getUserById(main.database.getSession(request.cookie("key")));
-		for(Guild guild : main.jda.getMutualGuilds(user)){
-			if(guild.getMember(user).hasPermission(Permission.ADMINISTRATOR)){
-				json.append("{\"name\": \"").append(guild.getName()).append("\", \"id\": \"").append(guild.getId()).append("\", \"iconurl\": \"").append(guild.getIconUrl()).append("\"}, ");
-			}
+	private void checkDiscordLogin(Request request, Response response){
+		String key = request.cookie("key");
+		if(key == null || !main.database.sessionExists(key)){
+			halt(401, buildError(401, "Please login with discord to continue"));
 		}
-		json.append("]}");
-		if(json.lastIndexOf(",") != -1){
-			json.deleteCharAt(json.lastIndexOf(","));
-		}
-		return json.toString();
 	}
 	
 	private void checkGuildPerms(Request request, Response response){
 		String guildId = request.params(":guildId");
 		Guild guild = main.jda.getGuildById(guildId);
 		if(guild == null){
-			halt(401, "<a href='/login'>Please login with discord!</a>");
+			halt(404, buildError(404, "I'm not in that guild"));
 		}
-		else{
-			Member member = guild.getMemberById(main.database.getSession(request.cookie("key")));
-			if(member == null){
-				halt(401, "<a href='/login'>Please login with discord!</a>");
-			}
-			else{
-				if(!member.hasPermission(Permission.ADMINISTRATOR)){
-					halt(401, "<a href='/login'>Please login with discord!</a>");
-				}
-			}
+		Member member = guild.retrieveMemberById(main.database.getSession(request.cookie("key"))).complete();
+		if(member == null){
+			halt(404, buildError(404, "I was not able to find that member"));
+		}
+		if(!member.hasPermission(Permission.ADMINISTRATOR)){
+			halt(401, buildError(401, "You have no permission for this guild"));
 		}
 	}
 	
-	private String getCommandPrefix(Request request, Response response){
-		//System.out.println("getCommandPrefix(): '" + json.toString() + "'");
-		return "{\"commandprefix\": \"" + main.database.getCommandPrefix(request.params(":guildId")) + "\"}";
-	}
-	
-	private String setCommandPrefix(Request request, Response response){
-		if(request.params(":value") == null){
-			main.database.setCommandPrefix(request.params(":guildId"), ".");
-		}
-		else{
-			main.database.setCommandPrefix(request.params(":guildId"), request.params(":value"));
-		}
-		//System.out.println("setCommandPrefix()");
-		return "{\"status\": \"ok\"}";
-	}
-	
-	private String getAllRoles(Request request, Response response){
-		List<Role> roles = main.jda.getGuildById(request.params(":guildId")).getRoles();
-		StringBuilder json = new StringBuilder("{\"roles\": [");
-		for(Role r : roles){
-			json.append("{\"name\": \"").append(r.getName()).append("\", \"id\": \"").append(r.getId()).append("\"}, ");
-		}
-		json.append("]}");
-		if(json.lastIndexOf(",") != -1){
-			json.deleteCharAt(json.lastIndexOf(","));
-		}
-		//System.out.println("getAllRoles(): '" + json.toString() + "'");
-		return json.toString();
-	}
-	
-	private String getIcon(Request request, Response response){
-		//System.out.println("getIcon());
-		return main.jda.getGuildById(request.params(":guildId")).getIconUrl();
-	}
-	
-	private String getAllChannels(Request request, Response response){
-		List<TextChannel> channels = main.jda.getGuildById(request.params(":guildId")).getTextChannels();
-		StringBuilder json = new StringBuilder("{\"channels\": [");
-		for(TextChannel c : channels){
-			json.append("{\"name\": \"").append(c.getName()).append("\", \"id\": \"").append(c.getId()).append("\"}, ");
-		}
-		json.append("]}");
-		if(json.lastIndexOf(",") != -1){
-			json.deleteCharAt(json.lastIndexOf(","));
-		}
-		//System.out.println("getAllChannels(): '" + json.toString() + "'");
-		return json.toString();
-	}
-	
-	private String getSelfAssignableRoles(Request request, Response response){
-		Set<ValuePair<String, String>> roles = main.database.getSelfAssignableRoles(request.params(":guildId"));
+	private Guild getGuild(Request request){
 		Guild guild = main.jda.getGuildById(request.params(":guildId"));
-		StringBuilder json = new StringBuilder("{\"selfassignableroles\": [");
-		if(!roles.isEmpty()){
-			for(ValuePair<String, String> role : roles){
-				json.append("{\"name\": \"").append(guild.getRoleById(role.getKey()).getName()).append("\", \"id\": \"").append(role.getKey()).append("\", \"emote: \n").append(guild.getEmoteById(role.getValue()).getImageUrl()).append("\"},");
-			}
+		if(guild == null){
+			halt(404, buildError(404, "Guild not found"));
 		}
-		json.append("]}");
-		if(json.lastIndexOf(",") != -1){
-			json.deleteCharAt(json.lastIndexOf(","));
-		}
-		return json.toString();
+		return guild;
 	}
 	
-	private String addSelfAssignableRole(Request request, Response response){
-		main.database.addSelfAssignableRole(request.params(":guildId"), request.params(":value"), request.params(":emote"));
-		return "{\"status\": \"ok\"}";
-	}
-	
-	private String removeSelfAssignableRole(Request request, Response response){
-		main.database.removeSelfAssignableRole(request.params(":guildId"), request.params(":value"));
-		return "{\"status\": \"ok\" }";
-	}
-	
-	private String getWelcomeChannel(Request request, Response response){
-		StringBuilder json = new StringBuilder("{");
-		String channelId = main.database.getWelcomeChannelId(request.params(":guildId"));
-		json.append("\"welcomechannel\": \"").append(channelId).append("\"").append("}");
-		return json.toString();
-	}
-	
-	private String setWelcomeChannel(Request request, Response response){
-		main.database.setWelcomeChannelId(request.params(":guildId"), request.params(":value"));
-		return "{\"status\": \"ok\"}";
-	}
-	
-	private String getNSFWEnabled(Request request, Response response){
-		//System.out.println("getNSFWEnabled(): '" + main.database.getNSFWEnabled(request.params(":guildId")) + "'");
-		return "{\"nsfwenabled\": " + main.database.getNSFWEnabled(request.params(":guildId")) + "}";
-	}
-	
-	private String setNSFWEnabled(Request request, Response response){
-		main.database.setNSFWEnabled(request.params(":guildId"), Boolean.parseBoolean(request.params(":value")));
-		//System.out.println("setNSFWEnabled()");
-		return "{\"status\": \"ok\"}";
-	}
-	
-	private String getWelcomeMessage(Request request, Response response){
-/*		StringBuilder json = new StringBuilder("{");
-		json.append("\"welcomemessage\": \"").append(main.database.getWelcomeMessage(request.params(":guildId"))).append("\"");
-		json.append("}");
-		//System.out.println("getWelcomeMessage(): '" + json.toString() + "'"); */
-		return main.database.getWelcomeMessage(request.params(":guildId"));
-	}
-	
-	private String setWelcomeMessage(Request request, Response response){
-		main.database.setWelcomeMessage(request.params(":guildId"), request.params(":value").trim());
-		//System.out.println("setWelcomeMessage()");
-		return "{\"status\": \"ok\"}";
-	}
-	
-	private String setWelcomeMessageEnabled(Request request, Response response){
-		main.database.setWelcomeMessageEnabled(request.params(":guildId"), Boolean.parseBoolean(request.params(":value")));
-		//System.out.println("setWelcomeMessageEnabled()");
-		return "{\"status\": \"ok\"}";
-	}
-	
-	private String getWelcomeMessageEnabled(Request request, Response response){
-		//System.out.println("getWelcomeMessageEnabled(): '" + main.database.getWelcomeMessageEnabled(request.params(":guildId")) + "'");
-		return "{\"welcomemessageenabled\": " + main.database.getWelcomeMessageEnabled(request.params(":guildId")) + "}";
-	}
-	
-	public boolean loggedIn(Request request){
+	private String discordLogin(Request request, Response response){
 		String key = request.cookie("key");
-		if(key == null){
-			return false;
+		if(key == null || !main.database.sessionExists(key)){
+			response.redirect(oAuthClient.generateAuthorizationURL(DISCORD_REDIRECT_URL, scopes));
 		}
-		else{
-			return main.database.sessionExists(key);
-		}
+		response.redirect(SUCCESS_LOGIN_URL);
+		return OK;
 	}
 	
-	public static class HtmlObject{
-		
-		private final Map<String, String> map;
-		private String body;
-		
-		public HtmlObject(String body, Map<String, String> map){
-			this.body = body;
-			this.map = map;
+	private String login(Request request, Response response){
+		String code = request.queryParams("code");
+		String state = request.queryParams("state");
+		try{
+			String key = main.database.generateUniqueKey();
+			Session session = oAuthClient.startSession(code, state, key, scopes).complete();
+			OAuth2User user = oAuthClient.getUser(session).complete();
+			main.database.addSession(user.getId(), key);
+			response.cookie("/", "key", key, -1, false);
+			response.redirect(SUCCESS_LOGIN_URL);
 		}
-		
-		public HtmlObject(String body){
-			this.body = body;
-			this.map = new LinkedHashMap<>();
+		catch(InvalidStateException | IOException e){
+			LOG.error("State is invalid", e);
 		}
-		
-		public String getBody(){
-			for(Map.Entry<String, String> e : map.entrySet()){
-				if(e.getKey() != null && e.getValue() != null){
-					body = body.replaceAll(e.getKey(), e.getValue());
-				}
+		return OK;
+	}
+	
+	private String getUserInfo(Request request, Response response){
+		String cookie = request.cookie("key");
+		if(cookie == null){
+			response.redirect(REDIRECT_URL);
+			return buildError(401, "Please login");
+		}
+		String userId = main.database.getSession(cookie);
+		if(userId == null){
+			response.redirect(REDIRECT_URL);
+			return buildError(404, "Session not found");
+		}
+		User user = main.jda.retrieveUserById(userId).complete();
+		if(user == null){
+			response.redirect(REDIRECT_URL);
+			return buildError(404, "User not found");
+		}
+		Collection<String> guilds = new ArrayList<>();
+		for(Guild guild : main.jda.getMutualGuilds(user)){
+			if(guild.getMember(user).hasPermission(Permission.ADMINISTRATOR)){
+				guilds.add(String.format("{\"id\": \"%s\", \"name\": \"%s\", \"icon\": \"%s\"}", guild.getId(), guild.getName(), guild.getIconUrl()));
 			}
-			return body;
 		}
-		
-		public void addRegex(String regex, String value){
-			regex = regex.toLowerCase();
-			map.put(":" + regex + ":", value);
-		}
-		
+		return String.format("{\"name\": \"%s\", \"icon\": \"%s\", \"guilds\": [%s]}", user.getName(), user.getEffectiveAvatarUrl(), String.join(", ", guilds));
 	}
 	
-	private static class HtmlTemplateEngine extends TemplateEngine{
-		
-		@Override
-		public String render(ModelAndView modelAndView){
-			return ((HtmlObject)modelAndView.getModel()).getBody();
+	private String getRoles(Request request, Response response){
+		Guild guild = getGuild(request);
+		Collection<String> roles = new ArrayList<>();
+		for(Role role : guild.getRoles()){
+			roles.add(String.format("{\"name\": \"%s\", \"id\": \"%s\"}", role.getName(), role.getId()));
 		}
-		
+		return String.format("{\"roles\": [%s]}", String.join(", ", roles));
+	}
+	
+	private String getChannels(Request request, Response response){
+		Guild guild = getGuild(request);
+		Collection<String> channels = new ArrayList<>();
+		for(TextChannel channel : guild.getTextChannels()){
+			channels.add(String.format("{\"name\": \"%s\", \"id\": \"%s\"}", channel.getName(), channel.getId()));
+		}
+		return String.format("{\"channels\": [%s]}", String.join(", ", channels));
+	}
+	
+	private String getEmotes(Request request, Response response){
+		Guild guild = getGuild(request);
+		Collection<String> emotes = new ArrayList<>();
+		for(Emote emote : guild.getEmotes()){
+			emotes.add(String.format("{\"name\": \"%s\", \"id\": \"%s\"}", emote.getName(), emote.getId()));
+		}
+		return String.format("{\"emotes\": [%s]}", String.join(", ", emotes));
+	}
+	
+	private String getGuildSettings(Request request, Response response){
+		String guildId = request.params(":guildId");
+		Collection<String> selfAssignableRoles = new ArrayList<>();
+		for(ValuePair<String, String> role : main.database.getSelfAssignableRoles(guildId)){
+			selfAssignableRoles.add(String.format("{\"role\": \"%s\", \"emote\": \"%s\"}", role.getKey(), role.getValue()));
+		}
+		return String.format("{\"prefix\": \"%s\", \"welcome_message_enabled\": %b, \"welcome_message\": \"%s\", \"welcome_channel_id\": \"%s\", \"nsfw_enabled\": %b, \"self_assignable_roles\": [%s]}",
+			main.database.getCommandPrefix(guildId),
+			main.database.getWelcomeMessageEnabled(guildId),
+			main.database.getWelcomeMessage(guildId),
+			main.database.getWelcomeChannelId(guildId),
+			main.database.getNSFWEnabled(guildId),
+			String.join(", ", selfAssignableRoles)
+		);
+	}
+	
+	private String setGuildSettings(Request request, Response response){
+		return "";
 	}
 	
 }

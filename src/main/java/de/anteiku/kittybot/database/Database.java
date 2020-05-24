@@ -29,8 +29,8 @@ public class Database{
 		sql.createTable("commands");
 		sql.createTable("reactive_messages");
 		sql.createTable("user_statistics");
+		sql.createTable("sessions");
 		//sql.createTable("requests");
-		//sql.createTable("sessions");
 		//should delete those
 		//sql.execute("CREATE TABLE IF NOT EXISTS polls (\n" + "id varchar(18) NOT NULL PRIMARY KEY,\n" + "guild_id varchar(18) NOT NULL,\n" + "channel_id varchar(18) NOT NULL,\n" + "title text NOT NULL,\n" + "created_by varchar(18) NOT NULL,\n" + "created_at timestamp NOT NULL DEFAULT current_timestamp(),\n" + "goes_until timestamp NOT NULL DEFAULT current_timestamp()\n" + ")");
 		//sql.execute("CREATE TABLE IF NOT EXISTS poll_votes (\n" + "id varchar(18) NOT NULL PRIMARY KEY,\n" + "created_by varchar(18) NOT NULL,\n" + "created_at timestamp NOT NULL DEFAULT current_timestamp(),\n" + "value varchar(18) NOT NULL\n" + ")");
@@ -265,13 +265,11 @@ public class Database{
 	 * Session specified methods
 	 */
 	
-	public String addSession(String userId){
-		String key = generateUniqueKey();
-		sql.query("INSERT INTO sessions (id, user_id) VALUES ('" + key + "', '" + userId + "');");
-		return key;
+	public void addSession(String userId, String key){
+		sql.execute("INSERT INTO sessions (session_id, user_id) VALUES ('" + key + "', '" + userId + "');");
 	}
 	
-	private String generateUniqueKey(){
+	public String generateUniqueKey(){
 		String key = Utils.generate(32);
 		while(sessionExists(key)){
 			key = Utils.generate(32);
@@ -280,17 +278,17 @@ public class Database{
 	}
 	
 	public boolean sessionExists(String key){
-		return sql.exists("SELECT * from sessions WHERE id = '" + key + "';");
+		return sql.exists("SELECT * from sessions WHERE session_id = '" + key + "';");
 	}
 	
 	public boolean deleteSession(String key){
-		return sql.execute("DELETE FROM sessions WHERE id = '" + key + "';");
+		return sql.execute("DELETE FROM sessions WHERE session_id = '" + key + "';");
 	}
 	
 	public String getSession(String key){
-		ResultSet result = sql.query("SELECT * from sessions WHERE id = '" + key + "';");
+		ResultSet result = sql.query("SELECT * from sessions WHERE session_id = '" + key + "';");
 		try{
-			if(result.absolute(1)){
+			if(result.next()){
 				return result.getString("user_id");
 			}
 		}
