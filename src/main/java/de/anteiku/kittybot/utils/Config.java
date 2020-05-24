@@ -30,7 +30,7 @@ public class Config{
 	public static String DB_USER;
 	public static String DB_PASSWORD;
 	
-	protected static List<LavalinkNode> LAVALINK_NODES;
+	public static List<LavalinkNode> LAVALINK_NODES;
 	
 	public static String DEFAULT_PREFIX = ".";
 	
