@@ -13,6 +13,7 @@ import de.anteiku.kittybot.objects.ValuePair;
 import de.anteiku.kittybot.utils.Config;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Request;
@@ -160,10 +161,10 @@ public class WebService{
 		Collection<String> guilds = new ArrayList<>();
 		for(Guild guild : main.jda.getMutualGuilds(user)){
 			if(guild.getMember(user).hasPermission(Permission.ADMINISTRATOR)){
-				guilds.add(String.format("{\"id\": \"%s\", \"name\": \"%s\", \"icon\": \"%s\"}", guild.getId(), guild.getName(), guild.getIconUrl()));
+				guilds.add(String.format("{\"id\": \"%s\", \"name\": \"%s\", \"icon\": \"%s\"}", guild.getId(), JSONObject.quote(guild.getName()), guild.getIconUrl()));
 			}
 		}
-		return String.format("{\"name\": \"%s\", \"icon\": \"%s\", \"guilds\": [%s]}", user.getName(), user.getEffectiveAvatarUrl(), String.join(", ", guilds));
+		return String.format("{\"name\": \"%s\", \"icon\": \"%s\", \"guilds\": [%s]}", JSONObject.quote(user.getName()), user.getEffectiveAvatarUrl(), String.join(", ", guilds));
 	}
 	
 	private String getRoles(Request request, Response response){
@@ -200,9 +201,9 @@ public class WebService{
 			selfAssignableRoles.add(String.format("{\"role\": \"%s\", \"emote\": \"%s\"}", role.getKey(), role.getValue()));
 		}
 		return String.format("{\"prefix\": \"%s\", \"welcome_message_enabled\": %b, \"welcome_message\": \"%s\", \"welcome_channel_id\": \"%s\", \"nsfw_enabled\": %b, \"self_assignable_roles\": [%s]}",
-			main.database.getCommandPrefix(guildId),
+			JSONObject.quote(main.database.getCommandPrefix(guildId)),
 			main.database.getWelcomeMessageEnabled(guildId),
-			main.database.getWelcomeMessage(guildId),
+			JSONObject.quote(main.database.getWelcomeMessage(guildId)),
 			main.database.getWelcomeChannelId(guildId),
 			main.database.getNSFWEnabled(guildId),
 			String.join(", ", selfAssignableRoles)
