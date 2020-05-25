@@ -43,7 +43,7 @@ public class WebService{
 		stateController = new DefaultStateController();
 		oAuthClient = new OAuth2ClientImpl(Long.parseLong(Config.DISCORD_BOT_ID), Config.DISCORD_BOT_SECRET, sessionController, stateController, main.httpClient);
 		
-    String url = Config.DISCORD_REDIRECT_URL;
+		String url = Config.DISCORD_REDIRECT_URL;
 		final String originUrl;
 		int i = url.indexOf(":");
 		if(i == -1){
@@ -118,7 +118,7 @@ public class WebService{
 		if(key == null || !main.database.sessionExists(key)){
 			response.redirect(oAuthClient.generateAuthorizationURL(Config.DISCORD_REDIRECT_URL + "/login", scopes));
 		}
-		response.redirect(Config.DISCORD_REDIRECT_URL + "guilds");
+		response.redirect(Config.DISCORD_WEBSITE_URL + "/guilds");
 		return OK;
 	}
 	
@@ -131,7 +131,7 @@ public class WebService{
 			OAuth2User user = oAuthClient.getUser(session).complete();
 			main.database.addSession(user.getId(), key);
 			response.cookie("/", "key", key, -1, false);
-			response.redirect(Config.DISCORD_REDIRECT_URL + "/guilds");
+			response.redirect(Config.DISCORD_WEBSITE_URL + "/guilds");
 		}
 		catch(InvalidStateException | IOException e){
 			LOG.error("State is invalid", e);
