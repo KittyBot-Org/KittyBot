@@ -43,7 +43,7 @@ public class WebService{
 		stateController = new DefaultStateController();
 		oAuthClient = new OAuth2ClientImpl(Long.parseLong(Config.DISCORD_BOT_ID), Config.DISCORD_BOT_SECRET, sessionController, stateController, main.httpClient);
 		
-		String url = Config.DISCORD_REDIRECT_URL;
+    String url = Config.DISCORD_REDIRECT_URL;
 		final String originUrl;
 		int i = url.indexOf(":");
 		if(i == -1){
