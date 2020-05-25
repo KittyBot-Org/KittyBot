@@ -19,6 +19,8 @@ import spark.Request;
 import spark.Response;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -42,16 +44,16 @@ public class WebService{
 		sessionController = new DefaultSessionController();
 		stateController = new DefaultStateController();
 		oAuthClient = new OAuth2ClientImpl(Long.parseLong(Config.DISCORD_BOT_ID), Config.DISCORD_BOT_SECRET, sessionController, stateController, main.httpClient);
-		
-		String url = Config.DISCORD_REDIRECT_URL;
-		final String originUrl;
-		int i = url.indexOf(":");
-		if(i == -1){
-			originUrl = url;
+
+		URL url = null;
+		try{
+			url = new URL(Config.DISCORD_REDIRECT_URL);
 		}
-		else{
-			originUrl = url.substring(i, url.length() - 1);
+		catch(MalformedURLException e){
+			LOG.error("Invalid redirect URLprovided", e);
 		}
+		final String originUrl = String.format("%s://%s", url.getProtocol(), url.getHost());
+
 		port(port);
 		before((request, response) -> {
 			response.header("Access-Control-Allow-Origin", originUrl);
