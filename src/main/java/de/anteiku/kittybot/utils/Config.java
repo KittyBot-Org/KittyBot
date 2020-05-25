@@ -47,6 +47,7 @@ public class Config{
 			DISCORD_INVITE_LINK = String.valueOf(discord.get("invite_link"));
 			DISCORD_REDIRECT_URL = String.valueOf(discord.get("redirect_url"));
 			DISCORD_WEBSITE_URL = String.valueOf(discord.get("website_url"));
+
 			
 			Map<String, Object> postgres = (Map<String, Object>) config.get("postgres");
 			DB_HOST = String.valueOf(postgres.get("host"));
