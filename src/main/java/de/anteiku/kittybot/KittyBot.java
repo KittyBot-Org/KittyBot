@@ -5,8 +5,6 @@ import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.source.bandcamp.BandcampAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.source.local.LocalAudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.vimeo.VimeoAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
@@ -17,7 +15,7 @@ import de.anteiku.kittybot.events.*;
 import de.anteiku.kittybot.objects.LavalinkNode;
 import de.anteiku.kittybot.tasks.TaskManager;
 import de.anteiku.kittybot.utils.Config;
-import lavalink.client.io.Lavalink;
+import de.anteiku.kittybot.webservice.WebService;
 import lavalink.client.io.jda.JdaLavalink;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -41,6 +39,7 @@ public class KittyBot{
 	public final OkHttpClient httpClient;
 	public JDA jda;
 	public JdaLavalink lavalink;
+	public WebService webService;
 	
 	public AudioPlayerManager playerManager;
 	public CommandManager commandManager;
@@ -144,6 +143,8 @@ public class KittyBot{
 					new HastebinCommand(this),
 					new TestCommand(this)
 				);
+			
+			webService = new WebService(this, 6969);
 			
 			taskManager = new TaskManager(this);
 			
