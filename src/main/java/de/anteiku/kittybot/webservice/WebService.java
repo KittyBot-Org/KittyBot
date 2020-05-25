@@ -47,7 +47,7 @@ public class WebService{
 
 		URL url = null;
 		try{
-			url = new URL(Config.DISCORD_REDIRECT_URL);
+			url = new URL(Config.DISCORD_WEBSITE_URL);
 		}
 		catch(MalformedURLException e){
 			LOG.error("Invalid redirect URLprovided", e);
