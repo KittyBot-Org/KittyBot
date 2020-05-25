@@ -44,7 +44,7 @@ public class Config{
 			DISCORD_BOT_ID = String.valueOf(discord.get("bot_id"));
 			DISCORD_ADMIN_ID = String.valueOf(discord.get("admin_id"));
 			DISCORD_INVITE_LINK = String.valueOf(discord.get("invite_link"));
-			DISCORD_REDIRECT_URL = String.valueOf(discord.get("discord_redirect_url"));
+			DISCORD_REDIRECT_URL = String.valueOf(discord.get("redirect_url"));
 			
 			Map<String, Object> postgres = (Map<String, Object>) config.get("postgres");
 			DB_HOST = String.valueOf(postgres.get("host"));
