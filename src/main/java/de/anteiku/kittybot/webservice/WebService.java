@@ -118,7 +118,7 @@ public class WebService{
 		if(key == null || !main.database.sessionExists(key)){
 			response.redirect(oAuthClient.generateAuthorizationURL(Config.DISCORD_REDIRECT_URL + "/login", scopes));
 		}
-		response.redirect(Config.DISCORD_WEBSITE_URL");
+		response.redirect(Config.DISCORD_WEBSITE_URL);
 		return OK;
 	}
 	
@@ -131,7 +131,7 @@ public class WebService{
 			OAuth2User user = oAuthClient.getUser(session).complete();
 			main.database.addSession(user.getId(), key);
 			response.cookie("key", key);
-			response.redirect(Config.DISCORD_WEBSITE_URL");
+			response.redirect(Config.DISCORD_WEBSITE_URL);
 		}
 		catch(InvalidStateException | IOException e){
 			LOG.error("State is invalid", e);
