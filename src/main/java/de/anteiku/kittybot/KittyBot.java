@@ -91,7 +91,7 @@ public class KittyBot{
 			)
 	        .disableCache(CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS)
 	        .setToken(Config.DISCORD_BOT_TOKEN)
-	        .setActivity(Activity.listening("to you!"))
+	        .setActivity(Activity.listening("you!"))
 			.addEventListeners(
 			    new OnGuildJoinEvent(this),
 				new OnGuildMemberJoinEvent(this),
