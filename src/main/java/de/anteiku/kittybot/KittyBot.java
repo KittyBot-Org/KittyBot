@@ -133,7 +133,8 @@ public class KittyBot{
 					new FeedCommand(this),
 					new SlapCommand(this),
 					new BakaCommand(this),
-					
+					new SpankCommand(this),
+
 					new CatCommand(this),
 					new DogCommand(this),
 					new NekoCommand(this),
