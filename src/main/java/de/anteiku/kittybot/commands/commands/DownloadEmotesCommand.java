@@ -8,14 +8,14 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.List;
 
-public class EmoteCommand extends ACommand{
+public class DownloadEmotesCommand extends ACommand{
 
-	public static String COMMAND = "emote";
-	public static String USAGE = "emote <Emote, Emote, ...>";
-	public static String DESCRIPTION = "Prints download links to emotes";
-	protected static String[] ALIAS = {};
+	public static String COMMAND = "downloademotes";
+	public static String USAGE = "downloademotes <Emote, Emote, ...>";
+	public static String DESCRIPTION = "Prints a ssh command to download the given emotes";
+	protected static String[] ALIAS = {"dle", "dlemotes"};
 
-	public EmoteCommand(KittyBot main){
+	public DownloadEmotesCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
 		this.main = main;
 	}
@@ -27,13 +27,13 @@ public class EmoteCommand extends ACommand{
 			StringBuilder links = new StringBuilder();
 			for(Emote emote : emotes){
 				String link = emote.getImageUrl();
-				if(links.length() + link.length() > Message.MAX_CONTENT_LENGTH - 20){
-					sendAnswer(event, "Emote links: \n" + links.toString());
+				if(links.length() + (" -O " + link).length() > Message.MAX_CONTENT_LENGTH - 20){
+					sendAnswer(event, "Command: \ncurl" + links.toString());
 					links = new StringBuilder();
 				}
-				links.append(link).append("\n");
+				links.append(" -O ").append(link);
 			}
-			sendAnswer(event, "Emote links: \n" + links.toString());
+			sendAnswer(event, "Command: \ncurl" + links.toString());
 		}
 		else{
 			sendUsage(event);

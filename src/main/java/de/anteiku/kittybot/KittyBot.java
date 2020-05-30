@@ -112,7 +112,7 @@ public class KittyBot{
 					new HelpCommand(this),
 					new CommandsCommand(this),
 					new EmoteStealCommand(this),
-					new EmoteCommand(this),
+					new DownloadEmotesCommand(this),
 					new RolesCommand(this),
 
 					new PlayCommand(this),
