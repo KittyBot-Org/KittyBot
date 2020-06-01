@@ -10,16 +10,16 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import java.util.List;
 
 public class OptionsCommand extends ACommand{
-	
+
 	public static String COMMAND = "options";
 	public static String USAGE = "options <prefix|welcomechannel|welcomemessage|nsfw> <value>";
 	public static String DESCRIPTION = "Used to set some guild specified options";
 	protected static String[] ALIAS = {"opts", "opt"};
-	
+
 	public OptionsCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
-	
+
 	//TODO renaming sub-commands & displaying set values
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
@@ -120,5 +120,5 @@ public class OptionsCommand extends ACommand{
 			sendUsage(event);
 		}
 	}
-	
+
 }

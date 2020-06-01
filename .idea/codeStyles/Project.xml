@@ -1,9 +1,5 @@
 <component name="ProjectCodeStyleConfiguration">
   <code_scheme name="Project" version="173">
-    <JavaCodeStyleSettings>
-      <option name="JD_ADD_BLANK_AFTER_PARM_COMMENTS" value="true" />
-      <option name="JD_ADD_BLANK_AFTER_RETURN" value="true" />
-    </JavaCodeStyleSettings>
     <DBN-PSQL>
       <case-options enabled="true">
         <option name="KEYWORD_CASE" value="lower" />
@@ -28,6 +24,10 @@
         <option name="ITERATION_ELEMENTS_WRAPPING" value="chop_down_if_not_single" />
       </formatting-settings>
     </DBN-SQL>
+    <JavaCodeStyleSettings>
+      <option name="JD_ADD_BLANK_AFTER_PARM_COMMENTS" value="true" />
+      <option name="JD_ADD_BLANK_AFTER_RETURN" value="true" />
+    </JavaCodeStyleSettings>
     <codeStyleSettings language="JAVA">
       <option name="RIGHT_MARGIN" value="150" />
       <option name="KEEP_FIRST_COLUMN_COMMENT" value="false" />

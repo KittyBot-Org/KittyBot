@@ -19,7 +19,7 @@ public class DownloadEmotesCommand extends ACommand{
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
 		this.main = main;
 	}
-	
+
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		List<Emote> emotes = event.getMessage().getEmotes();
@@ -39,5 +39,5 @@ public class DownloadEmotesCommand extends ACommand{
 			sendUsage(event);
 		}
 	}
-	
+
 }

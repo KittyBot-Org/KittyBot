@@ -14,7 +14,7 @@ public class SpankCommand extends ACommand{
 	public SpankCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
-	
+
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		if(!event.getChannel().isNSFW()){
@@ -27,5 +27,5 @@ public class SpankCommand extends ACommand{
 		}
 		sendReactionImage(event, "spank", "spanks");
 	}
-	
+
 }

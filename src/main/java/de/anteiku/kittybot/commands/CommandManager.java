@@ -1,7 +1,7 @@
 package de.anteiku.kittybot.commands;
 
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.objects.ReactiveMessage;
+import de.anteiku.kittybot.utils.ReactiveMessage;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -13,35 +13,35 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class CommandManager{
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(CommandManager.class);
 	private final KittyBot main;
 	public Map<String, ACommand> commands;
-	
+
 	public CommandManager(KittyBot main){
 		this.main = main;
 		this.commands = new LinkedHashMap<>();
 	}
-	
+
 	public CommandManager addCommands(ACommand... commands){
 		for(ACommand command : commands){
 			this.commands.put(command.getCommand(), command);
 		}
 		return this;
 	}
-	
+
 	public void addReactiveMessage(GuildMessageReceivedEvent event, Message message, ACommand cmd, String allowed){
 		main.database.addReactiveMessage(event.getGuild().getId(), event.getAuthor().getId(), message.getId(), event.getMessage().getId(), cmd.command, allowed);
 	}
-	
+
 	public void removeReactiveMessage(Guild guild, String messageId){
 		main.database.removeReactiveMessage(guild.getId(), messageId);
 	}
-	
+
 	public ReactiveMessage getReactiveMessage(Guild guild, String message){
 		return main.database.isReactiveMessage(guild.getId(), message);
 	}
-	
+
 	public boolean checkCommands(GuildMessageReceivedEvent event){
 		long start = System.nanoTime();
 		String message = startsWithPrefix(event.getGuild(), event.getMessage().getContentRaw());
@@ -61,7 +61,7 @@ public class CommandManager{
 		}
 		return false;
 	}
-	
+
 	private String startsWithPrefix(Guild guild, String message){
 		String prefix;
 		if(message.startsWith(prefix = main.database.getCommandPrefix(guild.getId())) || message.startsWith(prefix = "<@!" + guild.getSelfMember().getId() + ">") || message.startsWith(prefix = "<@" + guild.getSelfMember().getId() + ">")){
@@ -69,14 +69,14 @@ public class CommandManager{
 		}
 		return null;
 	}
-	
+
 	private String getCommand(String raw){
 		return raw.split(" ")[0];
 	}
-	
+
 	private String[] getArgs(String message){
-		String[] args = message.split(" ");
+		String[] args = message.split(" ", 2);
 		return Arrays.copyOfRange(args, 1, args.length);
 	}
-	
+
 }

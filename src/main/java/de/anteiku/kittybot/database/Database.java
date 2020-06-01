@@ -1,9 +1,11 @@
 package de.anteiku.kittybot.database;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.objects.ReactiveMessage;
-import de.anteiku.kittybot.objects.ValuePair;
 import de.anteiku.kittybot.utils.Config;
+import de.anteiku.kittybot.utils.ReactiveMessage;
 import de.anteiku.kittybot.utils.Utils;
 import net.dv8tion.jda.api.entities.Guild;
 import org.slf4j.Logger;
@@ -14,12 +16,12 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class Database{
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(Database.class);
 	private final KittyBot main;
 	private final Map<String, String> commandPrefixes;
 	public SQL sql;
-	
+
 	public Database(KittyBot main) throws SQLException{
 		this.main = main;
 		commandPrefixes = new HashMap<>();
@@ -36,7 +38,7 @@ public class Database{
 		//sql.execute("CREATE TABLE IF NOT EXISTS poll_votes (\n" + "id varchar(18) NOT NULL PRIMARY KEY,\n" + "created_by varchar(18) NOT NULL,\n" + "created_at timestamp NOT NULL DEFAULT current_timestamp(),\n" + "value varchar(18) NOT NULL\n" + ")");
 		//sql.execute("CREATE TABLE IF NOT EXISTS poll_answers (\n" + "id varchar(18) NOT NULL PRIMARY KEY,\n" + "answer text NOT NULL\n" + ")");
 	}
-	
+
 	public static Database connect(KittyBot main){
 		LOG.info("Connecting to database...");
 		while(true){
@@ -54,43 +56,43 @@ public class Database{
 			}
 		}
 	}
-	
+
 	public void init(){
 		for(Guild guild : main.jda.getGuilds()){
 			LOG.debug("Loading Guild: {}...", guild.getName());
-			if(! isGuildRegistered(guild)){
+			if(!isGuildRegistered(guild)){
 				registerGuild(guild);
 			}
 		}
 	}
-	
+
 	private boolean isGuildRegistered(Guild guild){
 		return sql.exists("SELECT * FROM guilds WHERE guild_id = '" + guild.getId() + "';");
 	}
-	
+
 	/*
 	 * Command Statistic specified methods
 	 */
-	
+
 	public boolean registerGuild(Guild guild){
 		LOG.debug("Registering new guild: {}", guild.getId());
 		return sql.execute("INSERT INTO guilds (guild_id, command_prefix, request_channel_id, requests_enabled, welcome_channel_id, welcome_message, welcome_message_enabled, nsfw_enabled, inactive_role) VALUES ('" + guild.getId() + "', '" + Config.DEFAULT_PREFIX + "', '-1', '0', '" + guild.getDefaultChannel().getId() + "', 'Welcome [username] to this server!', '1', '1', '-1');");
 	}
-	
+
 	public void close(){
 		LOG.debug("Closing connection to database...");
 		sql.close();
 	}
-	
-	
+
+
 	/*
 	 * Guild specified methods
 	 */
-	
+
 	public boolean addCommandStatistics(String guildId, String commandId, String userId, String command, long processingTime){
 		return sql.execute("INSERT INTO commands (message_id, guild_id, user_id, command, processing_time, time) VALUES ('" + commandId + "', '" + guildId + "', '" + userId + "', '" + command + "', '" + processingTime + "', '" + System.currentTimeMillis() + "');");
 	}
-	
+
 	public Map<Long, Long> getCommandStatistics(String guildId, long from, long to){
 		Map<Long, Long> map = new LinkedHashMap<>();
 		ResultSet result = sql.query("SELECT * FROM commands WHERE guild_id = '" + guildId + "' and time > '" + from + "' and time < '" + to + "';");
@@ -105,7 +107,7 @@ public class Database{
 		}
 		return null;
 	}
-	
+
 	public String getCommandPrefix(String guildId){
 		String prefix = commandPrefixes.get(guildId);
 		if(prefix == null){
@@ -114,7 +116,7 @@ public class Database{
 		}
 		return prefix;
 	}
-	
+
 	private String get(String guildId, String key){
 		ResultSet result = sql.getProperty("guilds", "guild_id", guildId);
 		try{
@@ -127,106 +129,126 @@ public class Database{
 		}
 		return null;
 	}
-	
+
 	public boolean setCommandPrefix(String guildId, String prefix){
 		commandPrefixes.put(guildId, prefix);
 		return set(guildId, "command_prefix", prefix);
 	}
-	
+
 	private boolean set(String guildId, String key, String value){
 		return sql.setProperty("guilds", key, value, "guild_id", guildId);
 	}
-	
-	public Set<ValuePair<String, String>> getSelfAssignableRoles(String guildId){
-		String[] keys = {"role_id", "guild_id", "emote_id"};
-		Set<ValuePair<String, String>> set = new HashSet<>();
-		ResultSet result = sql.query("SELECT " + String.join(", ", keys) + " FROM self_assignable_roles WHERE guild_id = '" + guildId + "';");
+
+	public boolean addSelfAssignableRole(String guildId, String role, String emote){
+		return addSelfAssignableRoles(guildId, new HashMap<>(Collections.singletonMap(role, emote)));
+	}
+
+	public boolean addSelfAssignableRoles(String guildId, Map<String, String> roles){
+		boolean result = true;
+		for(Map.Entry<String, String> role : roles.entrySet()){
+			boolean r = sql.execute("INSERT INTO self_assignable_roles (role_id, guild_id, emote_id) VALUES ('" + role.getKey() + "', '" + guildId + "', '" + role.getValue() + "');");
+			if(!r){
+				result = false;
+			}
+		}
+		return result;
+	}
+
+	public void removeSelfAssignableRole(String guildId, String role){
+		removeSelfAssignableRoles(guildId, new HashSet<>(Collections.singleton(role)));
+	}
+
+	public boolean removeSelfAssignableRoles(String guildId, Set<String> roles){
+		boolean result = true;
+		for(String role : roles){
+			boolean r = sql.execute("DELETE FROM self_assignable_roles WHERE role_id = '" + role + "' and guild_id = '" + guildId + "';");
+			if(!r){
+				result = false;
+			}
+		}
+		return result;
+	}
+
+	public void setSelfAssignableRoles(String guildId, JsonArray newRoles){
+		Map<String, String> roles = getSelfAssignableRoles(guildId);
+		Map<String, String> addRoles = new HashMap<>();
+		Set<String> removeRoles = new HashSet<>();
+		for(Map.Entry<String, String> valuePair : roles.entrySet()){
+			JsonObject obj = new JsonObject();
+			obj.addProperty("role_id", valuePair.getKey());
+			obj.addProperty("emote_id", valuePair.getValue());
+			if(!newRoles.contains(obj)){
+				newRoles.remove(obj);
+				removeRoles.add(valuePair.getKey());
+			}
+		}
+		for(JsonElement ele : newRoles){
+			JsonObject obj = ele.getAsJsonObject();
+			addRoles.put(obj.get("role_id").getAsString(), obj.get("emote_id").getAsString());
+		}
+		removeSelfAssignableRoles(guildId, removeRoles);
+		addSelfAssignableRoles(guildId, addRoles);
+	}
+
+	public Map<String, String> getSelfAssignableRoles(String guildId){
+		Map<String, String> map = new HashMap<>();
+		ResultSet result = sql.query("SELECT role_id, emote_id FROM self_assignable_roles WHERE guild_id = '" + guildId + "';");
 		try{
 			while(result.next()){
-				set.add(new ValuePair<>(result.getString("role_id"), result.getString("emote_id")));
+				map.put(result.getString("role_id"), result.getString("emote_id"));
 			}
-			return set;
+			return map;
 		}
 		catch(SQLException e){
 			LOG.error("Error while getting self-assignable roles from guild " + guildId, e);
 		}
 		return null;
 	}
-	
-	public boolean addSelfAssignableRole(String guildId, String role, String emote){
-		return addSelfAssignableRoles(guildId, new HashMap<>(Collections.singletonMap(role, emote)));
-	}
-	
-	public boolean addSelfAssignableRoles(String guildId, Map<String, String> roles){
-		boolean result = true;
-		for(Map.Entry<String, String> role : roles.entrySet()){
-			boolean r = sql.execute("INSERT INTO self_assignable_roles (role_id, guild_id, emote_id) VALUES ('" + role.getKey() + "', '" + guildId + "', '" + role.getValue() + "');");
-			if(! r){
-				result = false;
-			}
-		}
-		return result;
-	}
-	
-	public void removeSelfAssignableRole(String guildId, String role){
-		removeSelfAssignableRoles(guildId, new HashSet<>(Collections.singleton(role)));
-	}
-	
-	public boolean removeSelfAssignableRoles(String guildId, Set<String> roles){
-		boolean result = true;
-		for(String role : roles){
-			boolean r = sql.execute("DELETE FROM self_assignable_roles WHERE role_id = '" + role + "' and guild_id = '" + guildId + "';");
-			if(! r){
-				result = false;
-			}
-		}
-		return result;
-	}
-	
+
 	public String getWelcomeChannelId(String guildId){
 		return get(guildId, "welcome_channel_id");
 	}
-	
+
 	public boolean setWelcomeChannelId(String guildId, String channelId){
 		return set(guildId, "welcome_channel_id", channelId);
 	}
-	
+
 	public String getWelcomeMessage(String guildId){
 		return get(guildId, "welcome_message");
 	}
-	
+
 	public boolean setWelcomeMessage(String guildId, String message){
 		return set(guildId, "welcome_message", message);
 	}
-	
+
 	public boolean getWelcomeMessageEnabled(String guildId){
 		return Boolean.getBoolean(get(guildId, "welcome_message_enabled"));
 	}
-	
+
 	public boolean setWelcomeMessageEnabled(String guildId, boolean enabled){
 		return set(guildId, "welcome_message_enabled", enabled ? 1 : 0);
 	}
-	
+
 	private boolean set(String guildId, String key, int value){
 		return sql.setProperty("guilds", key, value, "guild_id", guildId);
 	}
-	
+
 	public boolean getNSFWEnabled(String guildId){
 		return Boolean.getBoolean(get(guildId, "nsfw_enabled"));
 	}
-	
+
 	public boolean setNSFWEnabled(String guildId, boolean enabled){
 		return set(guildId, "nsfw_enabled", enabled ? 1 : 0);
 	}
-	
+
 	public boolean addReactiveMessage(String guildId, String userId, String messageId, String commandId, String command, String allowed){
 		return sql.execute("INSERT INTO reactive_messages (message_id, command_id, user_id, guild_id, command, allowed) VALUES ('" + messageId + "', '" + commandId + "', '" + userId + "', '" + guildId + "', '" + command + "', '" + allowed + "');");
 	}
-	
+
 	public boolean removeReactiveMessage(String guildId, String messageId){
 		return sql.execute("DELETE FROM reactive_messages WHERE message_id = '" + messageId + "' AND guild_id = '" + guildId + "';");
 	}
-	
+
 	public ReactiveMessage isReactiveMessage(String guildId, String messageId){
 		ResultSet result = sql.query("SELECT * FROM reactive_messages WHERE message_id = '" + messageId + "' AND guild_id = '" + guildId + "';");
 		try{
@@ -239,11 +261,11 @@ public class Database{
 		}
 		return null;
 	}
-	
+
 	/*
 	 * User stats specified methods
 	 */
-	
+
 	public long getUserVoiceState(String guildId, String userId){
 		ResultSet result = sql.query("SELECT joined_voice FROM user_statistics WHERE guild_id = '" + userId + "' and user_id = '" + guildId + "';");
 		try{
@@ -252,23 +274,23 @@ public class Database{
 		catch(SQLException e){
 			LOG.error("Error while requesting voice state for user " + userId + " in guild: " + guildId, e);
 		}
-		return - 1L;
+		return -1L;
 	}
-	
+
 	public void setUserVoiceState(String guildId, String userId, long joined){
 		if(sql.update("UPDATE user_statistics SET joined_voice='" + joined + "' WHERE guild_id = '" + guildId + "' and user_id = '" + userId + "';") == 0){
 			//addUserStatistics(guildId, userId);
 		}
 	}
-	
+
 	/*
 	 * Session specified methods
 	 */
-	
+
 	public void addSession(String userId, String key){
 		sql.execute("INSERT INTO sessions (session_id, user_id) VALUES ('" + key + "', '" + userId + "');");
 	}
-	
+
 	public String generateUniqueKey(){
 		String key = Utils.generate(32);
 		while(sessionExists(key)){
@@ -276,15 +298,15 @@ public class Database{
 		}
 		return key;
 	}
-	
+
 	public boolean sessionExists(String key){
 		return sql.exists("SELECT * from sessions WHERE session_id = '" + key + "';");
 	}
-	
+
 	public boolean deleteSession(String key){
 		return sql.execute("DELETE FROM sessions WHERE session_id = '" + key + "';");
 	}
-	
+
 	public String getSession(String key){
 		ResultSet result = sql.query("SELECT * from sessions WHERE session_id = '" + key + "';");
 		try{
@@ -297,5 +319,5 @@ public class Database{
 		}
 		return null;
 	}
-	
+
 }
