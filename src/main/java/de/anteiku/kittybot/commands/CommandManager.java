@@ -75,7 +75,7 @@ public class CommandManager{
 	}
 
 	private String[] getArgs(String message){
-		String[] args = message.split(" ", 2);
+		String[] args = message.split(" ");
 		return Arrays.copyOfRange(args, 1, args.length);
 	}
 
