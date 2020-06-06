@@ -220,7 +220,7 @@ public class WebService{
 		}
 		Collection<String> emotes = new ArrayList<>();
 		for(Emote emote : guild.getEmotes()){
-			emotes.add(String.format("{\"name\": \"%s\", \"id\": \"%s\"}", emote.getName(), emote.getId()));
+			emotes.add(String.format("{\"name\": \"%s\", \"id\": \"%s\", \"url\": \"%s\"}", emote.getName(), emote.getId(), emote.getImageUrl()));
 		}
 		return String.format("{\"emotes\": [%s]}", String.join(", ", emotes));
 	}
