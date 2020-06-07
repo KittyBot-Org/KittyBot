@@ -16,7 +16,8 @@ repositories {
 }
 
 dependencies {
-    compile 'net.dv8tion:JDA:4.1.1_152'
+
+    compile 'net.dv8tion:JDA:4.1.1_160'
 
     compile 'com.jagrosh:jda-utilities:3.0.3'
 
