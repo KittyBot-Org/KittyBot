@@ -54,9 +54,12 @@ public class Config{
 			DB_PASSWORD = String.valueOf(postgres.get("password"));
 
 			LAVALINK_NODES = new ArrayList<>();
-			for(Map.Entry<String, Object> entry : ((Map<String, Object>) config.get("lavalink_nodes")).entrySet()){
-				Map<String, Object> node = (Map<String, Object>) entry.getValue();
-				LAVALINK_NODES.add(new LavalinkNode(String.valueOf(node.get("host")), String.valueOf(node.get("port")), String.valueOf(node.get("password"))));
+			Map<String, Object> nodes = (Map<String, Object>) config.get("lavalink_nodes");
+			if(nodes != null){
+				for(Map.Entry<String, Object> entry : nodes.entrySet()) {
+					Map<String, Object> node = (Map<String, Object>) entry.getValue();
+					LAVALINK_NODES.add(new LavalinkNode(String.valueOf(node.get("host")), String.valueOf(node.get("port")), String.valueOf(node.get("password"))));
+				}
 			}
 		}
 		catch(FileNotFoundException e){
