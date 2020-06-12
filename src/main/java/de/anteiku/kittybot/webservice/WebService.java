@@ -260,13 +260,13 @@ public class WebService{
 			main.database.setWelcomeMessageEnabled(guildId, json.get("welcome_message_enabled").getAsBoolean());
 		}
 		if(json.get("welcome_message") != null){
-			main.database.setWelcomeMessage(guildId, json.get("welcome_message_enabled").getAsString());
+			main.database.setWelcomeMessage(guildId, json.get("welcome_message").getAsString());
 		}
 		if(json.get("welcome_channel_id") != null){
 			main.database.setWelcomeChannelId(guildId, json.get("welcome_channel_id").getAsString());
 		}
 		if(json.get("nsfw_enabled") != null){
-			main.database.setNSFWEnabled(guildId, json.get("welcome_channel_id").getAsBoolean());
+			main.database.setNSFWEnabled(guildId, json.get("nsfw_enabled").getAsBoolean());
 		}
 		if(json.get("self_assignable_roles") != null){
 			main.database.setSelfAssignableRoles(guildId, json.get("self_assignable_roles").getAsJsonArray());

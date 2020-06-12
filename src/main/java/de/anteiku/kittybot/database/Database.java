@@ -184,7 +184,7 @@ public class Database{
 		}
 		for(JsonElement ele : newRoles){
 			JsonObject obj = ele.getAsJsonObject();
-			addRoles.put(obj.get("role_id").getAsString(), obj.get("emote_id").getAsString());
+			addRoles.put(obj.get("role").getAsString(), obj.get("emote").getAsString());
 		}
 		removeSelfAssignableRoles(guildId, removeRoles);
 		addSelfAssignableRoles(guildId, addRoles);
