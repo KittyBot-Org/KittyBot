@@ -68,6 +68,7 @@ public class WebService{
 		path("/guilds", () -> {
 			before("/*", (request, response) -> response.header("Content-Type", "application/json"));
 			before("/*", this::checkDiscordLogin);
+			get("/all", this::getAllGuilds);
 			path("/:guildId", () -> {
 				before("/*", this::checkGuildPerms);
 				path("/roles", () -> get("/get", this::getRoles));
@@ -164,6 +165,28 @@ public class WebService{
 			}
 		}
 		return String.format("{\"name\": %s, \"icon\": %s, \"guilds\": [%s]}", JSONObject.quote(user.getName()), JSONObject.quote(user.getEffectiveAvatarUrl()), String.join(", ", guilds));
+	}
+
+	private String getAllGuilds(Request request, Response response){
+		String auth = request.headers("Authorization");
+		if(auth == null){
+			response.status(401);
+			return error("Please login");
+		}
+		String userId = main.database.getSession(auth);
+		if(userId == null){
+			response.status(404);
+			return error("Session not found");
+		}
+		if(!userId.equals(Config.DISCORD_ADMIN_ID)){
+			response.status(403);
+			return error("Only admins have access to this!");
+		}
+		Collection<String> guilds = new ArrayList<>();
+		for(Guild guild : main.jda.getGuildCache()){
+			guilds.add(String.format("{\"id\": %s, \"name\": %s, \"icon\": %s}", JSONObject.quote(guild.getId()), JSONObject.quote(guild.getName()), JSONObject.quote(guild.getIconUrl())));
+		}
+		return "{\"guilds\": [" + String.join(", ", guilds) + "]}";
 	}
 
 	private void checkGuildPerms(Request request, Response response){
