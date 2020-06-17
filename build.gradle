@@ -19,7 +19,7 @@ dependencies {
 
     implementation 'net.dv8tion:JDA:4.1.1_165'
 
-    implementation 'com.jagrosh:jda-utilities:3.0.3'
+    implementation 'com.jagrosh:jda-utilities:3.0.4'
 
     implementation 'com.github.TopiSenpai:EmojiUtils:1.0'
 
