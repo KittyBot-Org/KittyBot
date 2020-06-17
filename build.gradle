@@ -37,7 +37,7 @@ dependencies {
 
     implementation 'org.yaml:snakeyaml:1.26'
 
-    implementation 'org.postgresql:postgresql:42.2.12'
+    implementation 'org.postgresql:postgresql:42.2.13'
 
     //implementation 'org.knowm.xchart:xchart:3.6.2'
 }
