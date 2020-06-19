@@ -164,7 +164,7 @@ public class WebService{
 				guilds.add(String.format("{\"id\": %s, \"name\": %s, \"icon\": %s}", JSONObject.quote(guild.getId()), JSONObject.quote(guild.getName()), JSONObject.quote(guild.getIconUrl())));
 			}
 		}
-		return String.format("{\"name\": %s, \"icon\": %s, \"guilds\": [%s]}", JSONObject.quote(user.getName()), JSONObject.quote(user.getEffectiveAvatarUrl()), String.join(", ", guilds));
+		return String.format("{\"name\": %s, \"id\": %s, \"icon\": %s, \"guilds\": [%s]}", JSONObject.quote(user.getName()), JSONObject.quote(user.getId()), JSONObject.quote(user.getEffectiveAvatarUrl()), String.join(", ", guilds));
 	}
 
 	private String getAllGuilds(Request request, Response response){
@@ -184,7 +184,7 @@ public class WebService{
 		}
 		Collection<String> guilds = new ArrayList<>();
 		for(Guild guild : main.jda.getGuildCache()){
-			guilds.add(String.format("{\"id\": %s, \"name\": %s, \"icon\": %s}", JSONObject.quote(guild.getId()), JSONObject.quote(guild.getName()), JSONObject.quote(guild.getIconUrl())));
+			guilds.add(String.format("{\"id\": %s, \"name\": %s, \"icon\": %s, \"count\": %d}", JSONObject.quote(guild.getId()), JSONObject.quote(guild.getName()), JSONObject.quote(guild.getIconUrl()), guild.getMemberCount()));
 		}
 		return "{\"guilds\": [" + String.join(", ", guilds) + "]}";
 	}
