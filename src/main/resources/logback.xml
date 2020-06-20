@@ -19,7 +19,7 @@
         </encoder>
     </appender>
 
-    <logger name="spark.http.matching.MatcherFilter" level="warn" />
+    <logger name="spark.http.matching.MatcherFilter" level="info" />
 
     <root level="INFO">
         <appender-ref ref="STDOUT" />
