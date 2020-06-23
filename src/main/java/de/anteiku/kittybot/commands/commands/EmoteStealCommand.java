@@ -44,6 +44,7 @@ public class EmoteStealCommand extends ACommand{
 			else{
 				sendError(event, "The image provided is not a valid image file");
 			}
+			return;
 		}
 		List<Emote> emotes = event.getMessage().getEmotes();
 		List<Emote> guildEmotes = event.getGuild().getEmotes();
