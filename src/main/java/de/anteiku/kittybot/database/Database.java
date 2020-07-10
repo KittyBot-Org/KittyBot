@@ -130,6 +130,19 @@ public class Database{
 		return null;
 	}
 
+	private Boolean getBoolean(String guildId, String key){
+		ResultSet result = sql.getProperty("guilds", "guild_id", guildId);
+		try{
+			if(result.next()){
+				return result.getBoolean(key);
+			}
+		}
+		catch(SQLException e){
+			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
+		}
+		return false;
+	}
+
 	public boolean setCommandPrefix(String guildId, String prefix){
 		commandPrefixes.put(guildId, prefix);
 		return set(guildId, "command_prefix", prefix);
@@ -222,7 +235,7 @@ public class Database{
 	}
 
 	public boolean getWelcomeMessageEnabled(String guildId){
-		return Boolean.getBoolean(get(guildId, "welcome_message_enabled"));
+		return getBoolean(guildId, "welcome_message_enabled");
 	}
 
 	public boolean setWelcomeMessageEnabled(String guildId, boolean enabled){
@@ -234,7 +247,7 @@ public class Database{
 	}
 
 	public boolean getNSFWEnabled(String guildId){
-		return Boolean.getBoolean(get(guildId, "nsfw_enabled"));
+		return getBoolean(guildId, "nsfw_enabled");
 	}
 
 	public boolean setNSFWEnabled(String guildId, boolean enabled){
