@@ -204,7 +204,6 @@ public class WebService{
 			}
 			if(!member.hasPermission(Permission.ADMINISTRATOR)){
 				halt(401, error("You have no permission for this guild"));
-				return;
 			}
 		}
 	}
@@ -280,7 +279,6 @@ public class WebService{
 			main.database.setCommandPrefix(guildId, json.get("prefix").getAsString());
 		}
 		if(json.get("welcome_message_enabled") != null){
-			LOG.info("welcome_message_enabled" + json.get("welcome_message_enabled").getAsString());
 			main.database.setWelcomeMessageEnabled(guildId, json.get("welcome_message_enabled").getAsBoolean());
 		}
 		if(json.get("welcome_message") != null){
