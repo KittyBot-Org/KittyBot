@@ -38,7 +38,7 @@ public class EmoteStealCommand extends ACommand{
 		if(!event.getMessage().getAttachments().isEmpty() && args.length > 0){
 			var attachment = event.getMessage().getAttachments().get(0); //Users can't add multiple attachments in one message
 			var extension = attachment.getFileExtension();
-			if(extension != null && (extension.equalsIgnoreCase("png") || extension.equalsIgnoreCase("jpg") ||extension.equalsIgnoreCase("gif") ||extension.equalsIgnoreCase("webm"))){
+			if(extension != null && (extension.equalsIgnoreCase("png") || extension.equalsIgnoreCase("jpg") ||extension.equalsIgnoreCase("gif") ||extension.equalsIgnoreCase("webp"))){
 				attachment.retrieveInputStream().thenAccept(inputStream -> createEmote(event, args[0],inputStream));
 			}
 			else{
