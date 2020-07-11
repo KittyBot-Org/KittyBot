@@ -19,7 +19,7 @@ public class OnGuildMemberJoinEvent extends ListenerAdapter{
 	@Override
 	public void onGuildMemberJoin(GuildMemberJoinEvent event){
 		String id = main.database.getWelcomeChannelId(event.getGuild().getId());
-		if(!id.equals("-1") || main.database.getWelcomeMessageEnabled(event.getGuild().getId())){
+		if(!id.equals("-1") && main.database.getWelcomeMessageEnabled(event.getGuild().getId())){
 			TextChannel channel = event.getGuild().getTextChannelById(id);
 			if(channel != null){
 				channel.sendMessage(generateJoinMessage(main.database.getWelcomeMessage(event.getGuild().getId()), event.getUser())).queue();

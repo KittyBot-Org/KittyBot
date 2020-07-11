@@ -1,8 +1,8 @@
 package de.anteiku.kittybot.database;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import spark.utils.IOUtils;
 
 import java.io.IOException;
 import java.sql.*;
