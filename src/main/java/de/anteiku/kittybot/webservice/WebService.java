@@ -42,11 +42,10 @@ public class WebService{
 		DefaultSessionController sessionController = new DefaultSessionController();
 		DefaultStateController stateController = new DefaultStateController();
 		oAuthClient = new OAuth2ClientImpl(Long.parseLong(Config.DISCORD_BOT_ID), Config.DISCORD_BOT_SECRET, sessionController, stateController, main.httpClient);
-
-		var app = Javalin.create(config -> {
+		Javalin.create(config -> {
 			config.enableCorsForOrigin(Config.DISCORD_ORIGIN_URL);
-		}).start(port);
-		app.routes(() -> {
+		}).routes(() -> {
+			before("/*", ctx -> LOG.info(ctx.path()));
 			get("/discord_login", this::discordLogin);
 			post("/login", this::login);
 			path("/user", () -> {
@@ -67,7 +66,7 @@ public class WebService{
 					});
 				});
 			});
-		});
+		}).start(port);
 	}
 
 	private void discordLogin(Context ctx){
