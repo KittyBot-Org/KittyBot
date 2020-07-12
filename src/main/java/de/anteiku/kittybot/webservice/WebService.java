@@ -45,7 +45,7 @@ public class WebService{
 		Javalin.create(config -> {
 			config.enableCorsForOrigin(Config.DISCORD_ORIGIN_URL);
 		}).routes(() -> {
-			before("/*", ctx -> LOG.info(ctx.path()));
+			before("*", ctx -> LOG.info(ctx.path()));
 			get("/discord_login", this::discordLogin);
 			post("/login", this::login);
 			path("/user", () -> {
