@@ -43,9 +43,10 @@ public class WebService{
 		DefaultStateController stateController = new DefaultStateController();
 		oAuthClient = new OAuth2ClientImpl(Long.parseLong(Config.DISCORD_BOT_ID), Config.DISCORD_BOT_SECRET, sessionController, stateController, main.httpClient);
 
-		Javalin.create(config -> {
+		var app = Javalin.create(config -> {
 			config.enableCorsForOrigin(Config.DISCORD_ORIGIN_URL);
-		}).routes(() -> {
+		}).start(port);
+		app.routes(() -> {
 			get("/discord_login", this::discordLogin);
 			post("/login", this::login);
 			path("/user", () -> {
@@ -53,7 +54,6 @@ public class WebService{
 				get("/me", this::getUserInfo);
 			});
 			path("/guilds", () -> {
-				before("/*", (cxt) -> cxt.header("Content-Type", "application/json"));
 				before("/*", this::checkDiscordLogin);
 				get("/all", this::getAllGuilds);
 				path("/:guildId", () -> {
@@ -67,7 +67,7 @@ public class WebService{
 					});
 				});
 			});
-		}).start(port);
+		});
 	}
 
 	private void discordLogin(Context ctx){
@@ -89,7 +89,7 @@ public class WebService{
 			Session session = oAuthClient.startSession(code, state, key, scopes).complete();
 			OAuth2User user = oAuthClient.getUser(session).complete();
 			main.database.addSession(user.getId(), key);
-			result(ctx, "{\"key\": " + JSONObject.quote(key) + "}");
+			ok(ctx, "{\"key\": " + JSONObject.quote(key) + "}");
 		}
 		catch(InvalidStateException e){
 			error(ctx, 401, "State invalid/expired please try again");
@@ -131,7 +131,7 @@ public class WebService{
 				guilds.add(String.format("{\"id\": %s, \"name\": %s, \"icon\": %s}", JSONObject.quote(guild.getId()), JSONObject.quote(guild.getName()), JSONObject.quote(guild.getIconUrl())));
 			}
 		}
-		result(ctx, String.format("{\"name\": %s, \"id\": %s, \"icon\": %s, \"guilds\": [%s]}", JSONObject.quote(user.getName()), JSONObject.quote(user.getId()), JSONObject.quote(user.getEffectiveAvatarUrl()), String.join(", ", guilds)));
+		ok(ctx, String.format("{\"name\": %s, \"id\": %s, \"icon\": %s, \"guilds\": [%s]}", JSONObject.quote(user.getName()), JSONObject.quote(user.getId()), JSONObject.quote(user.getEffectiveAvatarUrl()), String.join(", ", guilds)));
 	}
 
 	private void getAllGuilds(Context ctx){
@@ -153,7 +153,7 @@ public class WebService{
 		for(Guild guild : main.jda.getGuildCache()){
 			guilds.add(String.format("{\"id\": %s, \"name\": %s, \"icon\": %s, \"count\": %d}", JSONObject.quote(guild.getId()), JSONObject.quote(guild.getName()), JSONObject.quote(guild.getIconUrl()), guild.getMemberCount()));
 		}
-		result(ctx, "{\"guilds\": [" + String.join(", ", guilds) + "]}");
+		ok(ctx, "{\"guilds\": [" + String.join(", ", guilds) + "]}");
 	}
 
 	private void checkGuildPerms(Context ctx){
@@ -185,7 +185,7 @@ public class WebService{
 		for(Role role : guild.getRoles()){
 			roles.add(String.format("{\"name\": \"%s\", \"id\": \"%s\"}", role.getName(), role.getId()));
 		}
-		result(ctx, String.format("{\"roles\": [%s]}", String.join(", ", roles)));
+		ok(ctx, String.format("{\"roles\": [%s]}", String.join(", ", roles)));
 	}
 
 	private void getChannels(Context ctx){
@@ -198,7 +198,7 @@ public class WebService{
 		for(TextChannel channel : guild.getTextChannels()){
 			channels.add(String.format("{\"name\": \"%s\", \"id\": \"%s\"}", channel.getName(), channel.getId()));
 		}
-		result(ctx, String.format("{\"channels\": [%s]}", String.join(", ", channels)));
+		ok(ctx, String.format("{\"channels\": [%s]}", String.join(", ", channels)));
 	}
 
 	private void getEmotes(Context ctx){
@@ -211,7 +211,7 @@ public class WebService{
 		for(Emote emote : guild.getEmotes()){
 			emotes.add(String.format("{\"name\": \"%s\", \"id\": \"%s\", \"url\": \"%s\"}", emote.getName(), emote.getId(), emote.getImageUrl()));
 		}
-		result(ctx, String.format("{\"emotes\": [%s]}", String.join(", ", emotes)));
+		ok(ctx, String.format("{\"emotes\": [%s]}", String.join(", ", emotes)));
 	}
 
 	private void getGuildSettings(Context ctx){
@@ -225,7 +225,7 @@ public class WebService{
 		for(Map.Entry<String, String> role : roles.entrySet()){
 			selfAssignableRoles.add(String.format("{\"role\": \"%s\", \"emote\": \"%s\"}", role.getKey(), role.getValue()));
 		}
-		result(ctx, String.format("{\"prefix\": %s, \"welcome_message_enabled\": %b, \"welcome_message\": %s, \"welcome_channel_id\":%s, \"nsfw_enabled\": %b, \"self_assignable_roles\": [%s]}",
+		ok(ctx, String.format("{\"prefix\": %s, \"welcome_message_enabled\": %b, \"welcome_message\": %s, \"welcome_channel_id\":%s, \"nsfw_enabled\": %b, \"self_assignable_roles\": [%s]}",
 				JSONObject.quote(main.database.getCommandPrefix(guildId)),
 				main.database.getWelcomeMessageEnabled(guildId),
 				JSONObject.quote(main.database.getWelcomeMessage(guildId)),
@@ -264,15 +264,20 @@ public class WebService{
 	}
 
 	private void error(Context ctx, int code, String error){
-		ctx.status(code);
-		ctx.result("{\"error\": \"" + error + "\"}");
+		result(ctx, code, "{\"error\": \"" + error + "\"}");
 	}
 
 	private void ok(Context ctx){
-		ctx.result("{\"status\": \"ok\"}");
+		result(ctx, 200, "{\"status\": \"ok\"}");
 	}
 
-	private void result(Context ctx, String result){
+	private void ok(Context ctx, String result){
+		result(ctx, 200, result);
+	}
+
+	private void result(Context ctx, int code, String result){
+		ctx.header("Content-Type", "application/json");
+		ctx.status(code);
 		ctx.result(result);
 	}
 
