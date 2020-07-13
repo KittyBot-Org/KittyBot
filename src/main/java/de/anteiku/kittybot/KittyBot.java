@@ -41,7 +41,7 @@ public class KittyBot{
 	public JdaLavalink lavalink;
 	public WebService webService;
 
-	public AudioPlayerManager playerManager;
+	public AudioPlayerManager audioPlayerManager;
 	public CommandManager commandManager;
 	public TaskManager taskManager;
 	public Database database;
@@ -62,14 +62,14 @@ public class KittyBot{
 				lavalink.addNode(new URI("ws://" + node.host + ":" + node.port), node.password);
 			}
 
-			playerManager = new DefaultAudioPlayerManager();
-			playerManager.registerSourceManager(new YoutubeAudioSourceManager());
-			playerManager.registerSourceManager(new BandcampAudioSourceManager());
-			playerManager.registerSourceManager(new VimeoAudioSourceManager());
-			playerManager.registerSourceManager(new TwitchStreamAudioSourceManager());
-			playerManager.registerSourceManager(new HttpAudioSourceManager());
+			audioPlayerManager = new DefaultAudioPlayerManager();
+			audioPlayerManager.registerSourceManager(new YoutubeAudioSourceManager());
+			audioPlayerManager.registerSourceManager(new BandcampAudioSourceManager());
+			audioPlayerManager.registerSourceManager(new VimeoAudioSourceManager());
+			audioPlayerManager.registerSourceManager(new TwitchStreamAudioSourceManager());
+			audioPlayerManager.registerSourceManager(new HttpAudioSourceManager());
 
-			AudioSourceManagers.registerRemoteSources(playerManager);
+			AudioSourceManagers.registerRemoteSources(audioPlayerManager);
 
 			jda = JDABuilder.create(
 					GatewayIntent.GUILD_MEMBERS,

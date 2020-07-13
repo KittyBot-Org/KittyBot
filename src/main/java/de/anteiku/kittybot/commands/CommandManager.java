@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -16,11 +17,13 @@ public class CommandManager{
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommandManager.class);
 	private final KittyBot main;
-	public Map<String, ACommand> commands;
+	public final Map<String, ACommand> commands;
+	private final Map<String, MusicPlayer> musicPlayers;
 
 	public CommandManager(KittyBot main){
 		this.main = main;
 		this.commands = new LinkedHashMap<>();
+		this.musicPlayers = new HashMap<>();
 	}
 
 	public CommandManager addCommands(ACommand... commands){
@@ -42,16 +45,30 @@ public class CommandManager{
 		return main.database.isReactiveMessage(guild.getId(), message);
 	}
 
+	public void addMusicPlayer(Guild guild, MusicPlayer player){
+		musicPlayers.put(guild.getId(), player);
+	}
+
+	public MusicPlayer getMusicPlayer(Guild guild){
+		return musicPlayers.get(guild.getId());
+	}
+
+	public void destroyMusicPlayer(Guild guild, String controllerId){
+		main.lavalink.getLink(guild).destroy();
+		main.commandManager.removeReactiveMessage(guild, controllerId);
+		musicPlayers.remove(guild.getId());
+	}
+
 	public boolean checkCommands(GuildMessageReceivedEvent event){
 		long start = System.nanoTime();
 		String message = startsWithPrefix(event.getGuild(), event.getMessage().getContentRaw());
 		if(message != null){
-			String command = getCommand(message);
+			String command = getCommandString(message);
 			for(Map.Entry<String, ACommand> c : commands.entrySet()){
 				ACommand cmd = c.getValue();
 				if(cmd.checkCmd(command)){
 					//event.getChannel().sendTyping().queue(); answer is sending too fast and I don't want to block the thread lol
-					cmd.run(getArgs(message), event);
+					cmd.run(getCommandArguments(message), event);
 					long processingTime = (System.nanoTime() - start) / 1000000;
 					main.database.addCommandStatistics(event.getGuild().getId(), event.getMessageId(), event.getAuthor().getId(), command, processingTime);
 					LOG.info("Command: {}, by: {}, from: {}, took: {}ms", command, event.getAuthor().getName(), event.getGuild().getName(), processingTime);
@@ -70,11 +87,11 @@ public class CommandManager{
 		return null;
 	}
 
-	private String getCommand(String raw){
+	private String getCommandString(String raw){
 		return raw.split(" ")[0];
 	}
 
-	private String[] getArgs(String message){
+	private String[] getCommandArguments(String message){
 		String[] args = message.split(" ");
 		return Arrays.copyOfRange(args, 1, args.length);
 	}

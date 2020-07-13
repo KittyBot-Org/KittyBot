@@ -10,6 +10,10 @@ import java.util.Objects;
 
 public class SQL{
 
+	//TODO do this below
+	//TODO delete this shit code :)
+	//TODO do this above
+
 	private static final Logger LOG = LoggerFactory.getLogger(SQL.class);
 
 	private final Connection conn;
