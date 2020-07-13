@@ -2,7 +2,7 @@ FROM gradle:jdk11 as build
 
 COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
-RUN gradle shadowJar --warning-mode all --no-daemon
+RUN gradle shadowJar --warning-mode all --no-daemon --watch-fs
 
 FROM openjdk:11-jdk-slim-buster
 
