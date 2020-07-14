@@ -55,23 +55,28 @@ public class CommandManager{
 
 	public void destroyMusicPlayer(Guild guild, String controllerId){
 		main.lavalink.getLink(guild).destroy();
-		main.commandManager.removeReactiveMessage(guild, controllerId);
+		removeReactiveMessage(guild, controllerId);
 		musicPlayers.remove(guild.getId());
 	}
 
 	public boolean checkCommands(GuildMessageReceivedEvent event){
 		long start = System.nanoTime();
-		String message = startsWithPrefix(event.getGuild(), event.getMessage().getContentRaw());
+		String message = removeComamndPrefix(event.getGuild(), event.getMessage().getContentRaw());
 		if(message != null){
 			String command = getCommandString(message);
 			for(Map.Entry<String, ACommand> c : commands.entrySet()){
-				ACommand cmd = c.getValue();
+				var cmd = c.getValue();
 				if(cmd.checkCmd(command)){
 					//event.getChannel().sendTyping().queue(); answer is sending too fast and I don't want to block the thread lol
-					cmd.run(getCommandArguments(message), event);
-					long processingTime = (System.nanoTime() - start) / 1000000;
-					main.database.addCommandStatistics(event.getGuild().getId(), event.getMessageId(), event.getAuthor().getId(), command, processingTime);
-					LOG.info("Command: {}, by: {}, from: {}, took: {}ms", command, event.getAuthor().getName(), event.getGuild().getName(), processingTime);
+					var args = getCommandArguments(message);
+					cmd.run(args, event);
+					long processingTime = System.nanoTime() - start;
+					main.database.addCommandStatistics(
+						event.getGuild().getId(), event.getMessageId(), event.getAuthor().getId(), command, processingTime);
+					LOG.info(
+						"Command: {}, args: {}, by: {}, from: {}, took: {}ns", command, args, event.getAuthor().getName(), event.getGuild().getName(),
+						processingTime
+					);
 					return true;
 				}
 			}
@@ -79,9 +84,11 @@ public class CommandManager{
 		return false;
 	}
 
-	private String startsWithPrefix(Guild guild, String message){
+	private String removeComamndPrefix(Guild guild, String message){
 		String prefix;
-		if(message.startsWith(prefix = main.database.getCommandPrefix(guild.getId())) || message.startsWith(prefix = "<@!" + guild.getSelfMember().getId() + ">") || message.startsWith(prefix = "<@" + guild.getSelfMember().getId() + ">")){
+		var botId = guild.getSelfMember().getId();
+		if(message.startsWith(prefix = main.database.getCommandPrefix(guild.getId()))||message.startsWith(
+			prefix = "<@!" + botId + ">")||message.startsWith(prefix = "<@" + botId + ">")){
 			return message.substring(prefix.length()).trim();
 		}
 		return null;
