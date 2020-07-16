@@ -10,7 +10,7 @@ WORKDIR /home/kittybot
 
 COPY --from=build /home/gradle/src/build/libs/KittyBot-*-all.jar KittyBot.jar
 
-RUN apk --no-cache add curl
+RUN sudo apt install -y curl
 
 ENTRYPOINT ["java"]
 CMD ["-jar", "KittyBot.jar"]
