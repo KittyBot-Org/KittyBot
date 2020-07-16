@@ -46,6 +46,7 @@ public class WebService{
 			config.enableCorsForOrigin(Config.DISCORD_ORIGIN_URL);
 		}).routes(() -> {
 			get("/discord_login", this::discordLogin);
+			get("/health_check", ctx -> ctx.result("alive"));
 			post("/login", this::login);
 			path("/user", () -> {
 				before("/*", this::checkDiscordLogin);
