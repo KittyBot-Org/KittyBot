@@ -4,6 +4,7 @@ import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.utils.ReactiveMessage;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,11 +19,13 @@ public class CommandManager{
 	private static final Logger LOG = LoggerFactory.getLogger(CommandManager.class);
 	private final KittyBot main;
 	public final Map<String, ACommand> commands;
+	private final Map<String, String> commandResponses;
 	private final Map<String, MusicPlayer> musicPlayers;
 
 	public CommandManager(KittyBot main){
 		this.main = main;
 		this.commands = new LinkedHashMap<>();
+		this.commandResponses = new HashMap<>();
 		this.musicPlayers = new HashMap<>();
 	}
 
@@ -33,8 +36,19 @@ public class CommandManager{
 		return this;
 	}
 
-	public void addReactiveMessage(GuildMessageReceivedEvent event, Message message, ACommand cmd, String allowed){
-		main.database.addReactiveMessage(event.getGuild().getId(), event.getAuthor().getId(), message.getId(), event.getMessage().getId(), cmd.command, allowed);
+	public void addCommandResponse(Message command, Message response){
+		commandResponses.put(command.getId(), response.getId());
+	}
+
+	public void processCommandResponseDelete(TextChannel channel, String command){
+		var commandResponse = commandResponses.get(command);
+		if(commandResponse != null){
+			channel.deleteMessageById(commandResponse).queue();
+		}
+	}
+
+	public void addReactiveMessage(CommandContext ctx, Message message, ACommand cmd, String allowed){
+		main.database.addReactiveMessage(ctx.getGuild().getId(), ctx.getUser().getId(), message.getId(), ctx.getMessage().getId(), cmd.command, allowed);
 	}
 
 	public void removeReactiveMessage(Guild guild, String messageId){
@@ -61,22 +75,18 @@ public class CommandManager{
 
 	public boolean checkCommands(GuildMessageReceivedEvent event){
 		long start = System.nanoTime();
-		String message = removeComamndPrefix(event.getGuild(), event.getMessage().getContentRaw());
+		String message = cutCommandPrefix(event.getGuild(), event.getMessage().getContentRaw());
 		if(message != null){
 			String command = getCommandString(message);
 			for(Map.Entry<String, ACommand> c : commands.entrySet()){
 				var cmd = c.getValue();
 				if(cmd.checkCmd(command)){
 					//event.getChannel().sendTyping().queue(); answer is sending too fast and I don't want to block the thread lol
-					var args = getCommandArguments(message);
-					cmd.run(args, event);
+					var ctx = new CommandContextImpl(event, command, getCommandArguments(message));
+					cmd.run(ctx);
 					long processingTime = System.nanoTime() - start;
-					main.database.addCommandStatistics(
-						event.getGuild().getId(), event.getMessageId(), event.getAuthor().getId(), command, processingTime);
-					LOG.info(
-						"Command: {}, args: {}, by: {}, from: {}, took: {}ns", command, args, event.getAuthor().getName(), event.getGuild().getName(),
-						processingTime
-					);
+					main.database.addCommandStatistics(event.getGuild().getId(), event.getMessageId(), event.getAuthor().getId(), command, processingTime);
+					LOG.info("Command: {}, args: {}, by: {}, from: {}, took: {}ns", command, ctx.getArgs(), event.getAuthor().getName(), event.getGuild().getName(), processingTime);
 					return true;
 				}
 			}
@@ -84,7 +94,7 @@ public class CommandManager{
 		return false;
 	}
 
-	private String removeComamndPrefix(Guild guild, String message){
+	private String cutCommandPrefix(Guild guild, String message){
 		String prefix;
 		var botId = guild.getSelfMember().getId();
 		if(message.startsWith(prefix = main.database.getCommandPrefix(guild.getId()))||message.startsWith(

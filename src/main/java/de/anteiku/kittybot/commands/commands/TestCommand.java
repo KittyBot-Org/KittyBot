@@ -2,7 +2,7 @@ package de.anteiku.kittybot.commands.commands;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.commands.ACommand;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import de.anteiku.kittybot.commands.CommandContext;
 
 public class TestCommand extends ACommand{
 
@@ -16,8 +16,8 @@ public class TestCommand extends ACommand{
 	}
 
 	@Override
-	public void run(String[] args, GuildMessageReceivedEvent event){
-		sendAnswer(event, "Test command working!");
+	public void run(CommandContext ctx){
+		sendAnswer(ctx, "Test command working!");
 	}
 
 }

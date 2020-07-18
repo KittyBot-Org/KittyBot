@@ -1,8 +1,10 @@
 package de.anteiku.kittybot.utils;
 
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Role;
 
+import java.time.Duration;
 import java.util.*;
 
 public class Utils{
@@ -52,6 +54,17 @@ public class Utils{
 			}
 		}
 		return strings;
+	}
+
+	public static String formatDuration(long length){
+		Duration duration = Duration.ofMillis(length);
+		var seconds = duration.toSecondsPart();
+		return String.format("%d:%s", duration.toMinutes(), seconds > 9 ? seconds : "0" + seconds);
+	}
+
+	public static String formatTrackTitle(AudioTrack track){
+		var info = track.getInfo();
+		return "[" + info.title + "]" + "(" + info.uri + ")";
 	}
 
 }

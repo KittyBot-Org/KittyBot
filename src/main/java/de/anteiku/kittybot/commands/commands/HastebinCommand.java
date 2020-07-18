@@ -3,8 +3,8 @@ package de.anteiku.kittybot.commands.commands;
 import com.google.gson.JsonParser;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.commands.ACommand;
+import de.anteiku.kittybot.commands.CommandContext;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -27,8 +27,8 @@ public class HastebinCommand extends ACommand{
 	}
 
 	@Override
-	public void run(String[] args, GuildMessageReceivedEvent event){
-		List<Message.Attachment> attachments = event.getMessage().getAttachments();
+	public void run(CommandContext ctx){
+		List<Message.Attachment> attachments = ctx.getMessage().getAttachments();
 		if(!attachments.isEmpty()){
 			for(Message.Attachment attachment : attachments){
 				if(!attachment.isImage() && !attachment.isVideo()){
@@ -37,7 +37,7 @@ public class HastebinCommand extends ACommand{
 						RequestBody body = RequestBody.create(MediaType.parse("text/html; charset=utf-8"), text);
 						Request request = new Request.Builder().url("https://hastebin.com/documents").method("POST", body).build();
 						String result = main.httpClient.newCall(request).execute().body().string();
-						sendAnswer(event, "[here](https://hastebin.com/" + JsonParser.parseString(result).getAsJsonObject().get("key").getAsString() + ") is a hastebin.com");
+						sendAnswer(ctx, "[here](https://hastebin.com/" + JsonParser.parseString(result).getAsJsonObject().get("key").getAsString() + ") is a hastebin.com");
 					}
 					catch(IOException e){
 						e.printStackTrace();
@@ -52,7 +52,7 @@ public class HastebinCommand extends ACommand{
 			}
 		}
 		else{
-			sendError(event, "Please provide a file");
+			sendError(ctx, "Please provide a file");
 		}
 	}
 

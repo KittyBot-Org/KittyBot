@@ -8,7 +8,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
@@ -41,7 +40,13 @@ public abstract class ACommand{
 		this.alias = alias;
 	}
 
-	public abstract void run(String[] args, GuildMessageReceivedEvent event);
+	protected enum Status{
+		OK,
+		ERROR,
+		QUESTION
+	}
+
+	public abstract void run(CommandContext ctx);
 
 	public boolean checkCmd(String cmd){
 		if(cmd.equalsIgnoreCase(command)){
@@ -75,37 +80,12 @@ public abstract class ACommand{
 		if(event.getReactionEmote().getName().equals(Emotes.WASTEBASKET.get()) && (event.getUserId().equals(reactiveMessage.userId) || event.getMember().hasPermission(Permission.MESSAGE_MANAGE))){
 			event.getChannel().deleteMessageById(event.getMessageId()).queue();
 			event.getChannel().deleteMessageById(reactiveMessage.commandId).queue();
-			main.commandManager.removeReactiveMessage(event.getGuild(), event.getMessageId());
+			KittyBot.commandManager.removeReactiveMessage(event.getGuild(), event.getMessageId());
 		}
 	}
 
-	/* Send Private Message*/
-	protected void sendPrivateMessage(GuildMessageReceivedEvent event, EmbedBuilder eb){
-		privateMessage(event, eb).queue(null,
-				failure -> sendError(event, "There was an error processing your command!\nError: " + failure.getLocalizedMessage())
-		);
-	}
-
-	protected RestAction<Message> privateMessage(GuildMessageReceivedEvent event, EmbedBuilder eb){
-		return event.getAuthor().openPrivateChannel().flatMap(
-				privateChannel -> privateChannel.sendMessage(eb.setTimestamp(Instant.now()).build())
-		);
-	}
-
-	/* Send Error */
-	protected void sendError(GuildMessageReceivedEvent event, String error){
-		error(event, error).queue();
-	}
-
-	protected MessageAction error(GuildMessageReceivedEvent event, String error){
-		addStatus(event.getMessage(), Status.ERROR);
-		return event.getChannel().sendMessage(new EmbedBuilder()
-				.setColor(Color.RED)
-				.addField("Error:", error, true)
-				.setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
-				.setTimestamp(Instant.now())
-				.build()
-		);
+	protected void queue(MessageAction messageAction, CommandContext ctx){
+		messageAction.queue(success -> KittyBot.commandManager.addCommandResponse(ctx.getMessage(), success), failure -> sendError(ctx, "There was an error processing your command!\nError: " + failure.getLocalizedMessage()));
 	}
 
 	protected void addStatus(Message message, Status status){
@@ -127,86 +107,105 @@ public abstract class ACommand{
 		);
 	}
 
-	/* Send No permission Message*/
-	protected void sendNoPermission(GuildMessageReceivedEvent event){
-		queue(noPermission(event), event);
-	}
-
-	protected MessageAction noPermission(GuildMessageReceivedEvent event){
-		return error(event, "Sorry you don't have the permission to use this command :(");
-	}
-
-	/* Send Answer */
-	protected void sendAnswer(GuildMessageReceivedEvent event, String answer){
-		queue(answer(event, answer), event);
-	}
-
-	protected void queue(MessageAction messageAction, GuildMessageReceivedEvent event){
-		messageAction.queue(null, failure -> sendError(event, "There was an error processing your command!\nError: " + failure.getLocalizedMessage()));
-	}
-
-	protected MessageAction answer(GuildMessageReceivedEvent event, String answer){
-		return answer(event, new EmbedBuilder().setDescription(answer));
-	}
-
-	protected MessageAction answer(GuildMessageReceivedEvent event, EmbedBuilder answer){
-		addStatus(event.getMessage(), Status.OK);
-		return event.getChannel().sendMessage(answer
-				.setColor(Color.GREEN)
-				.setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
-				.setTimestamp(Instant.now())
-				.build()
+	protected void sendPrivateMessage(CommandContext ctx, EmbedBuilder eb){
+		privateMessage(ctx, eb).queue(null,
+				failure -> sendError(ctx, "There was an error processing your command!\nError: " + failure.getLocalizedMessage())
 		);
 	}
 
-	protected MessageAction answer(GuildMessageReceivedEvent event, byte[] file, String fileName, EmbedBuilder embed){
-		// add attachment://[the file name with extension] in embed
-		return answer(event, embed).addFile(file, fileName);
-	}
-
-	protected MessageAction answer(GuildMessageReceivedEvent event, InputStream file, String fileName, EmbedBuilder embed){
-		// add attachment://[the file name with extension] in embed
-		return answer(event, embed).addFile(file, fileName);
-	}
-
-	/* Send Usage */
-	protected void sendUsage(GuildMessageReceivedEvent event, String usage){
-		queue(usage(event, usage), event);
-	}
-
-	protected MessageAction usage(GuildMessageReceivedEvent event, String usage){
-		addStatus(event.getMessage(), Status.QUESTION);
-		return event.getChannel().sendMessage(new EmbedBuilder()
-				.setColor(Color.ORANGE)
-				.addField("Command usage:", "`" + main.database.getCommandPrefix(event.getGuild().getId()) + usage + "`", true)
-				.setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
-				.setTimestamp(Instant.now())
-				.build()
+	protected RestAction<Message> privateMessage(CommandContext ctx, EmbedBuilder eb){
+		return ctx.getUser().openPrivateChannel().flatMap(
+				privateChannel -> privateChannel.sendMessage(eb.setTimestamp(Instant.now()).build())
 		);
 	}
 
-	protected void sendUsage(GuildMessageReceivedEvent event){
-		queue(usage(event, usage), event);
+	protected void sendNoPermission(CommandContext ctx){
+		queue(noPermission(ctx), ctx);
 	}
 
-	protected void sendReactionImage(GuildMessageReceivedEvent event, String type, String text){
-		queue(reactionImage(event, type, text), event);
+	protected MessageAction noPermission(CommandContext ctx){
+		return error(ctx, "Sorry you don't have the permission to use this command :(");
 	}
 
-	protected MessageAction reactionImage(GuildMessageReceivedEvent event, String type, String text){
-		List<User> users = event.getMessage().getMentionedUsers();
+	protected void sendError(CommandContext ctx, String error){
+		queue(error(ctx, error), ctx);
+	}
+
+	protected MessageAction error(CommandContext ctx, String error){
+		addStatus(ctx.getMessage(), Status.ERROR);
+		return ctx.getChannel().sendMessage(new EmbedBuilder()
+			.setColor(Color.RED)
+			.addField("Error:", error, true)
+			.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
+			.setTimestamp(Instant.now())
+			.build()
+		);
+	}
+
+	protected void sendAnswer(CommandContext ctx, String answer){
+		queue(answer(ctx, answer), ctx);
+	}
+
+	protected MessageAction answer(CommandContext ctx, String answer){
+		return answer(ctx, new EmbedBuilder().setDescription(answer));
+	}
+
+	protected MessageAction answer(CommandContext ctx, byte[] file, String fileName, EmbedBuilder embed){
+		// add attachment://[the file name with extension] in embed
+		return answer(ctx, embed).addFile(file, fileName);
+	}
+
+	protected MessageAction answer(CommandContext ctx, InputStream file, String fileName, EmbedBuilder embed){
+		// add attachment://[the file name with extension] in embed
+		return answer(ctx, embed).addFile(file, fileName);
+	}
+
+	protected MessageAction answer(CommandContext ctx, EmbedBuilder answer){
+		addStatus(ctx.getMessage(), Status.OK);
+		return ctx.getChannel().sendMessage(answer
+			.setColor(Color.GREEN)
+			.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
+			.setTimestamp(Instant.now())
+			.build()
+		);
+	}
+
+	protected void sendUsage(CommandContext ctx){
+		queue(usage(ctx, usage), ctx);
+	}
+
+	protected void sendUsage(CommandContext ctx, String usage){
+		queue(usage(ctx, usage), ctx);
+	}
+
+	protected MessageAction usage(CommandContext ctx, String usage){
+		addStatus(ctx.getMessage(), Status.QUESTION);
+		return answer(ctx, new EmbedBuilder()
+			.setColor(Color.ORANGE)
+			.addField("Command usage:", "`" + main.database.getCommandPrefix(ctx.getGuild().getId()) + usage + "`", true)
+			.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
+			.setTimestamp(Instant.now())
+		);
+	}
+
+	protected void sendReactionImage(CommandContext ctx, String type, String text){
+		queue(reactionImage(ctx, type, text), ctx);
+	}
+
+	protected MessageAction reactionImage(CommandContext ctx, String type, String text){
+		List<User> users = ctx.getMessage().getMentionedUsers();
 		StringBuilder message = new StringBuilder();
 		if(users.isEmpty()){
-			return error(event, "Please mention a user");
+			return error(ctx, "Please mention a user");
 		}
-		else if(users.contains(event.getAuthor()) && users.size() == 1){
-			message.append("You can't ").append(type).append(" yourself so I ").append(type).append(" you ").append(event.getAuthor().getAsMention()).append("!");
+		else if(users.contains(ctx.getUser()) && users.size() == 1){
+			message.append("You can't ").append(type).append(" yourself so I ").append(type).append(" you ").append(ctx.getUser().getAsMention()).append("!");
 		}
 		else{
-			message.append(event.getAuthor().getAsMention()).append(" ").append(text).append(" ");
+			message.append(ctx.getUser().getAsMention()).append(" ").append(text).append(" ");
 
 			for(User user : users){
-				if(user.getId().equals(event.getAuthor().getId())){
+				if(user.getId().equals(ctx.getUser().getId())){
 					continue;
 				}
 				message.append(user.getAsMention()).append(", ");
@@ -217,9 +216,9 @@ public abstract class ACommand{
 		}
 		String url = getNeko(type);
 		if(url == null){
-			return error(event, "Unknown error occurred while getting image for `" + type + "`");
+			return error(ctx, "Unknown error occurred while getting image for `" + type + "`");
 		}
-		return answer(event, new EmbedBuilder().setDescription(message).setImage(url));
+		return answer(ctx, new EmbedBuilder().setDescription(message).setImage(url));
 	}
 
 	protected String getNeko(String type){
@@ -233,26 +232,8 @@ public abstract class ACommand{
 		return null;
 	}
 
-	protected MessageAction localImage(GuildMessageReceivedEvent event, String image){
-		try{
-			Request request = new Request.Builder().url("http://anteiku.de:9000/" + image).build();
-			String url = main.httpClient.newCall(request).execute().body().string();
-			return image(event, url);
-		}
-		catch(IOException e){
-			LOG.error("Error while sending local image", e);
-		}
-		return null;
-	}
-
-	protected MessageAction image(GuildMessageReceivedEvent event, String url){
-		return answer(event, new EmbedBuilder().setImage(url).setColor(Color.GREEN));
-	}
-
-	protected enum Status{
-		OK,
-		ERROR,
-		QUESTION
+	protected MessageAction image(CommandContext ctx, String url){
+		return answer(ctx, new EmbedBuilder().setImage(url).setColor(Color.GREEN));
 	}
 
 }

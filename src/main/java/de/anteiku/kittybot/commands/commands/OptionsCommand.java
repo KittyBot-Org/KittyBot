@@ -2,10 +2,10 @@ package de.anteiku.kittybot.commands.commands;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.commands.ACommand;
+import de.anteiku.kittybot.commands.CommandContext;
 import de.anteiku.kittybot.utils.Utils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.List;
 
@@ -22,102 +22,102 @@ public class OptionsCommand extends ACommand{
 
 	//TODO renaming sub-commands & displaying set values
 	@Override
-	public void run(String[] args, GuildMessageReceivedEvent event){
-		if(args.length > 0){
-			if(event.getMember().isOwner() || event.getMember().hasPermission(Permission.ADMINISTRATOR)){
-				if(args[0].equalsIgnoreCase("prefix") && args.length == 2){
-					if(main.database.setCommandPrefix(event.getGuild().getId(), args[1])){
-						sendError(event, "There was an error while processing your command :(");
+	public void run(CommandContext ctx){
+		if(ctx.getArgs().length > 0){
+			if(ctx.getMember().isOwner() || ctx.getMember().hasPermission(Permission.ADMINISTRATOR)){
+				if(ctx.getArgs()[0].equalsIgnoreCase("prefix") && ctx.getArgs().length == 2){
+					if(main.database.setCommandPrefix(ctx.getGuild().getId(), ctx.getArgs()[1])){
+						sendError(ctx, "There was an error while processing your command :(");
 						return;
 					}
-					sendAnswer(event, "Prefix set to: `" + args[1] + "`");
+					sendAnswer(ctx, "Prefix set to: `" + ctx.getArgs()[1] + "`");
 				}
-				else if(args[0].equalsIgnoreCase("nsfw")){
-					if(args.length >= 2){
-						if(args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("ja") || args[1].equalsIgnoreCase("yes") || args[1].equalsIgnoreCase("on")){
-							if(main.database.setNSFWEnabled(event.getGuild().getId(), true)){
-								sendError(event, "There was an error while processing your command :(");
+				else if(ctx.getArgs()[0].equalsIgnoreCase("nsfw")){
+					if(ctx.getArgs().length >= 2){
+						if(ctx.getArgs()[1].equalsIgnoreCase("true") || ctx.getArgs()[1].equalsIgnoreCase("ja") || ctx.getArgs()[1].equalsIgnoreCase("yes") || ctx.getArgs()[1].equalsIgnoreCase("on")){
+							if(main.database.setNSFWEnabled(ctx.getGuild().getId(), true)){
+								sendError(ctx, "There was an error while processing your command :(");
 								return;
 							}
-							sendAnswer(event, "NSFW `activated`");
+							sendAnswer(ctx, "NSFW `activated`");
 						}
-						else if(args[1].equalsIgnoreCase("false") || args[1].equalsIgnoreCase("nein") || args[1].equalsIgnoreCase("no") || args[1].equalsIgnoreCase("off")){
-							if(main.database.setNSFWEnabled(event.getGuild().getId(), false)){
-								sendError(event, "There was an error while processing your command :(");
+						else if(ctx.getArgs()[1].equalsIgnoreCase("false") || ctx.getArgs()[1].equalsIgnoreCase("nein") || ctx.getArgs()[1].equalsIgnoreCase("no") || ctx.getArgs()[1].equalsIgnoreCase("off")){
+							if(main.database.setNSFWEnabled(ctx.getGuild().getId(), false)){
+								sendError(ctx, "There was an error while processing your command :(");
 								return;
 							}
-							sendAnswer(event, "NSFW `deactivated`");
+							sendAnswer(ctx, "NSFW `deactivated`");
 						}
 						else{
-							sendUsage(event, "options nsfw <on|off|yes|no|on|off|ja|nein>");
+							sendUsage(ctx, "options nsfw <on|off|yes|no|on|off|ja|nein>");
 						}
 					}
 					else{
-						if(main.database.setNSFWEnabled(event.getGuild().getId(), main.database.getNSFWEnabled(event.getGuild().getId()))){
-							sendError(event, "There was an error while processing your command :(");
+						if(main.database.setNSFWEnabled(ctx.getGuild().getId(), main.database.getNSFWEnabled(ctx.getGuild().getId()))){
+							sendError(ctx, "There was an error while processing your command :(");
 							return;
 						}
 						String state;
-						if(main.database.getNSFWEnabled(event.getGuild().getId())){
+						if(main.database.getNSFWEnabled(ctx.getGuild().getId())){
 							state = "activated";
 						}
 						else{
 							state = "deactivated";
 						}
-						sendAnswer(event, "NSFW set to: `" + state + "`");
+						sendAnswer(ctx, "NSFW set to: `" + state + "`");
 					}
 				}
-				else if(args[0].equalsIgnoreCase("welcomechannel")){
-					List<TextChannel> channels = event.getMessage().getMentionedChannels();
+				else if(ctx.getArgs()[0].equalsIgnoreCase("welcomechannel")){
+					List<TextChannel> channels = ctx.getMessage().getMentionedChannels();
 					if(channels.size() == 1){
-						if(main.database.setWelcomeChannelId(event.getGuild().getId(), channels.get(0).getId())){
-							sendError(event, "There was an error while processing your command :(");
+						if(main.database.setWelcomeChannelId(ctx.getGuild().getId(), channels.get(0).getId())){
+							sendError(ctx, "There was an error while processing your command :(");
 							return;
 						}
-						sendAnswer(event, channels.get(0).getAsMention() + " set as welcome channel!");
+						sendAnswer(ctx, channels.get(0).getAsMention() + " set as welcome channel!");
 					}
 					else{
-						sendUsage(event, "options welcomechannel <#TextChannel>");
+						sendUsage(ctx, "options welcomechannel <#TextChannel>");
 					}
 				}
-				else if(args[0].equalsIgnoreCase("welcomemessage")){
-					if(args[1].equalsIgnoreCase("?") || args[1].equalsIgnoreCase("help")){
-						sendUsage(event, "options welcomemessage <message> ([randomwelcomemessage] = random Discord welcome message, [username] = joined member)");
+				else if(ctx.getArgs()[0].equalsIgnoreCase("welcomemessage")){
+					if(ctx.getArgs()[1].equalsIgnoreCase("?") || ctx.getArgs()[1].equalsIgnoreCase("help")){
+						sendUsage(ctx, "options welcomemessage <message> ([randomwelcomemessage] = random Discord welcome message, [username] = joined member)");
 						return;
 					}
-					else if(args[1].equalsIgnoreCase("enable") || args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("on") || args[1].equalsIgnoreCase("an")){
-						if(main.database.setWelcomeMessageEnabled(event.getGuild().getId(), true)){
-							sendError(event, "There was an error while processing your command :(");
+					else if(ctx.getArgs()[1].equalsIgnoreCase("enable") || ctx.getArgs()[1].equalsIgnoreCase("true") || ctx.getArgs()[1].equalsIgnoreCase("on") || ctx.getArgs()[1].equalsIgnoreCase("an")){
+						if(main.database.setWelcomeMessageEnabled(ctx.getGuild().getId(), true)){
+							sendError(ctx, "There was an error while processing your command :(");
 							return;
 						}
-						sendAnswer(event, "Welcome messages enabled!");
+						sendAnswer(ctx, "Welcome messages enabled!");
 						return;
 					}
-					else if(args[1].equalsIgnoreCase("disable") || args[1].equalsIgnoreCase("false") || args[1].equalsIgnoreCase("off") || args[1].equalsIgnoreCase("aus")){
-						if(main.database.setWelcomeMessageEnabled(event.getGuild().getId(), false)){
-							sendError(event, "There was an error while processing your command :(");
+					else if(ctx.getArgs()[1].equalsIgnoreCase("disable") || ctx.getArgs()[1].equalsIgnoreCase("false") || ctx.getArgs()[1].equalsIgnoreCase("off") || ctx.getArgs()[1].equalsIgnoreCase("aus")){
+						if(main.database.setWelcomeMessageEnabled(ctx.getGuild().getId(), false)){
+							sendError(ctx, "There was an error while processing your command :(");
 							return;
 						}
-						sendAnswer(event, "Welcome messages disabled!");
+						sendAnswer(ctx, "Welcome messages disabled!");
 						return;
 					}
-					String message = String.join(" ", Utils.subArray(args, 1));
-					if(main.database.setWelcomeMessage(event.getGuild().getId(), message)){
-						sendError(event, "There was an error while processing your command :(");
+					String message = String.join(" ", Utils.subArray(ctx.getArgs(), 1));
+					if(main.database.setWelcomeMessage(ctx.getGuild().getId(), message)){
+						sendError(ctx, "There was an error while processing your command :(");
 						return;
 					}
-					sendAnswer(event, "Welcome message set to: ");
+					sendAnswer(ctx, "Welcome message set to: ");
 				}
 				else{
-					sendUsage(event);
+					sendUsage(ctx);
 				}
 			}
 			else{
-				sendError(event, "You need to be an administrator to use this command!");
+				sendError(ctx, "You need to be an administrator to use this command!");
 			}
 		}
 		else{
-			sendUsage(event);
+			sendUsage(ctx);
 		}
 	}
 

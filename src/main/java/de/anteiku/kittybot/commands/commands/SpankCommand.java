@@ -2,7 +2,7 @@ package de.anteiku.kittybot.commands.commands;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.commands.ACommand;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import de.anteiku.kittybot.commands.CommandContext;
 
 public class SpankCommand extends ACommand{
 
@@ -16,16 +16,16 @@ public class SpankCommand extends ACommand{
 	}
 
 	@Override
-	public void run(String[] args, GuildMessageReceivedEvent event){
-		if(!event.getChannel().isNSFW()){
-			sendError(event, "Sorry but this command can only be used in nsfw channels");
+	public void run(CommandContext ctx){
+		if(!ctx.getChannel().isNSFW()){
+			sendError(ctx, "Sorry but this command can only be used in nsfw channels");
 			return;
 		}
-		if(args.length == 0){
-			sendUsage(event);
+		if(ctx.getArgs().length == 0){
+			sendUsage(ctx);
 			return;
 		}
-		sendReactionImage(event, "spank", "spanks");
+		sendReactionImage(ctx, "spank", "spanks");
 	}
 
 }

@@ -1,151 +1,138 @@
 package de.anteiku.kittybot.database;
 
-import org.apache.commons.io.IOUtils;
+import com.zaxxer.hikari.HikariDataSource;
+import de.anteiku.kittybot.utils.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.sql.*;
-import java.util.Objects;
+import java.util.Scanner;
 
 public class SQL{
 
-	//TODO do this below
-	//TODO delete this shit code :)
-	//TODO do this above
-
 	private static final Logger LOG = LoggerFactory.getLogger(SQL.class);
 
-	private final Connection conn;
+	private static HikariDataSource dataSource;
 
-	public SQL(String host, String port, String user, String password, String database) throws SQLException{
-		this.conn = DriverManager.getConnection("jdbc:postgresql://" + host + ":" + port + "/" + database, user, password);
-	}
-
-	public static SQL newInstance(String host, String port, String user, String password, String database) throws SQLException{
-		return new SQL(host, port, user, password, database);
-	}
-
-	public void use(String db){
-		execute("USE " + db + ";", false);
-	}
-
-	public boolean setProperty(String table, String row, String value, String checkRow, String checkValue){
-		return execute("UPDATE " + table + " SET " + row + "='" + value + "' WHERE " + checkRow + " = '" + checkValue + "';");
-	}
-
-	public boolean setProperty(String table, String row, int value, String checkRow, String checkValue){
-		return execute("UPDATE " + table + " SET " + row + "='" + value + "' WHERE " + checkRow + " = '" + checkValue + "';");
-	}
-
-	public ResultSet getProperty(String table, String checkRow, String checkValue){
-		return query("SELECT * FROM " + table + "  WHERE " + checkRow + " = '" + checkValue + "';");
-	}
-
-	public String getSingleProperty(String table, String checkRow, String checkValue, String property){
+	static{
 		try{
-			ResultSet result = getProperty(table, checkRow, checkValue);
-			if(!result.first()){
-				return null;
-			}
-			return result.getString(property);
+			dataSource = new HikariDataSource();
+			dataSource.setDriverClassName("org.postgresql.Driver");
+
+			dataSource.setJdbcUrl("jdbc:postgresql://" + Config.DB_HOST + ":" + Config.DB_PORT + "/" + Config.DB_DB);
+			dataSource.setUsername(Config.DB_USER);
+			dataSource.setPassword(Config.DB_PASSWORD);
+
+			dataSource.setMinimumIdle(100);
+			dataSource.setMaximumPoolSize(2000);
+			dataSource.setAutoCommit(true);
+			dataSource.setLoginTimeout(3);
+		}
+		catch(SQLException e) {
+			LOG.error("Error while initializing database connection", e);
+		}
+	}
+
+	public static Connection getConnection() throws NullPointerException{
+		try{
+			return dataSource.getConnection();
 		}
 		catch(SQLException e){
-			LOG.error("Error while getting single property", e);
+			LOG.error("Error while fetching connection from datasource", e);
 		}
-		return null;
+		throw new NullPointerException("Datasource returned empty connection");
 	}
 
-	public void createTable(String table){
+	public static void createTable(String table){
 		try{
-			String sql = IOUtils.toString(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("sql_tables/" + table + ".sql")));
+			Scanner scanner = new Scanner(SQL.class.getClassLoader().getResourceAsStream("sql_tables/" + table + ".sql")).useDelimiter("\\A");
+			String sql = scanner.hasNext() ? scanner.next() : "";
 			LOG.info("Read sql table from resources: {}", table);
-			execute(sql, false);
+			getConnection().createStatement().execute(sql);
 		}
-		catch(IOException e){
+		catch(SQLException e){
 			LOG.error("Error while reading sql table file: " + table, e);
 		}
 	}
 
-	public boolean execute(String query){
-		return execute(query, true);
-	}
-
-	public boolean execute(String query, boolean retry){
+	public static PreparedStatement prepStatement(String sql) throws NullPointerException{
 		try{
-			LOG.debug(query);
-			return this.conn.createStatement().execute(query);
+			LOG.debug("prepareStatement sql: {}", sql);
+			return getConnection().prepareStatement(sql);
 		}
 		catch(SQLException e){
-			if(retry){
-				return execute(query, false);
-			}
-			LOG.error("Error while executing sql command", e);
+			LOG.error("Error preparing statement", e);
+		}
+		catch(NullPointerException e){
+			LOG.error("Error connection is null", e);
+		}
+		throw new NullPointerException("Error getting preparedStatement");
+	}
+
+	public static PreparedStatement prepStatement(String sql, int resultSetType) throws NullPointerException{
+		try{
+			LOG.debug("prepareStatement sql: {}", sql);
+			return getConnection().prepareStatement(sql, resultSetType);
+		}
+		catch(SQLException e){
+			LOG.error("Error preparing statement", e);
+		}
+		catch(NullPointerException e){
+			LOG.error("Error connection is null", e);
+		}
+		throw new NullPointerException("Error getting preparedStatement");
+	}
+
+	public static boolean execute(PreparedStatement preparedStatement){
+		try{
+			return preparedStatement.execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error executing prepared statement", e);
 		}
 		return false;
 	}
 
-	public int update(String query){
-		return update(query, true);
-	}
-
-	public int update(String query, boolean retry){
+	public static ResultSet executeWithResult(PreparedStatement preparedStatement){
 		try{
-			LOG.debug(query);
-			return this.conn.createStatement().executeUpdate(query);
+			preparedStatement.executeUpdate();
+			return preparedStatement.getGeneratedKeys();
 		}
 		catch(SQLException e){
-			if(retry){
-				return update(query, false);
-			}
-			LOG.error("Error while executing sql command", e);
-		}
-		return -1;
-	}
-
-	public ResultSet query(String query){
-		return query(query, true);
-	}
-
-	public ResultSet query(String query, boolean retry){
-		try{
-			Statement statement = this.conn.createStatement();
-			LOG.debug(query);
-			return statement.executeQuery(query);
-		}
-		catch(SQLException e){
-			if(retry){
-				return query(query, false);
-			}
-			LOG.error("Error while querying sql command", e);
+			LOG.error("Error while executeWithResult prepared statement", e);
 		}
 		return null;
 	}
 
-	public boolean exists(String query){
-		return exists(query, true);
-	}
-
-	public boolean exists(String query, boolean retry){
+	public static ResultSet query(PreparedStatement preparedStatement){
 		try{
-			return query(query).next();
+			return preparedStatement.executeQuery();
 		}
 		catch(SQLException e){
-			if(retry){
-				return exists(query, false);
-			}
-			LOG.error("Error while checking if sql entry exists", e);
+			LOG.error("Error query prepared statement", e);
+		}
+		return null;
+	}
+
+	public static int update(PreparedStatement preparedStatement){
+		try{
+			return preparedStatement.executeUpdate();
+		}
+		catch(SQLException e){
+			LOG.error("Error update prepared statement", e);
+		}
+		return -1;
+	}
+
+	public static boolean exists(PreparedStatement preparedStatement){
+		try{
+			var result = query(preparedStatement);
+			return result != null && result.next();
+		}
+		catch(SQLException e){
+			LOG.error("Error exists prepared statement", e);
 		}
 		return false;
-	}
-
-	public void close(){
-		try{
-			this.conn.close();
-		}
-		catch(SQLException e){
-			LOG.error("Error while closing sql connection", e);
-		}
 	}
 
 }

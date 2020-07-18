@@ -15,20 +15,49 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-public class Database{
+public class OldDatabase{
 
-	private static final Logger LOG = LoggerFactory.getLogger(Database.class);
-	private static final Map<String, String> commandPrefixes = new HashMap<>();
+	private static final Logger LOG = LoggerFactory.getLogger(OldDatabase.class);
+	private final KittyBot main;
+	private final Map<String, String> commandPrefixes;
+	public SQL sql;
 
-	private Database(){}
+	public OldDatabase(KittyBot main) throws SQLException{
+		this.main = main;
+		commandPrefixes = new HashMap<>();
+		sql = SQL.newInstance(Config.DB_HOST, Config.DB_PORT, Config.DB_USER, Config.DB_PASSWORD, Config.DB_DB);
+		sql.createTable("guilds");
+		sql.createTable("self_assignable_roles");
+		sql.createTable("commands");
+		sql.createTable("reactive_messages");
+		sql.createTable("user_statistics");
+		sql.createTable("sessions");
+		//sql.createTable("requests");
+		//should delete those
+		//sql.execute("CREATE TABLE IF NOT EXISTS polls (\n" + "id varchar(18) NOT NULL PRIMARY KEY,\n" + "guild_id varchar(18) NOT NULL,\n" + "channel_id varchar(18) NOT NULL,\n" + "title text NOT NULL,\n" + "created_by varchar(18) NOT NULL,\n" + "created_at timestamp NOT NULL DEFAULT current_timestamp(),\n" + "goes_until timestamp NOT NULL DEFAULT current_timestamp()\n" + ")");
+		//sql.execute("CREATE TABLE IF NOT EXISTS poll_votes (\n" + "id varchar(18) NOT NULL PRIMARY KEY,\n" + "created_by varchar(18) NOT NULL,\n" + "created_at timestamp NOT NULL DEFAULT current_timestamp(),\n" + "value varchar(18) NOT NULL\n" + ")");
+		//sql.execute("CREATE TABLE IF NOT EXISTS poll_answers (\n" + "id varchar(18) NOT NULL PRIMARY KEY,\n" + "answer text NOT NULL\n" + ")");
+	}
 
-	public static void init(KittyBot main){
-		SQL.createTable("guilds");
-		SQL.createTable("self_assignable_roles");
-		SQL.createTable("commands");
-		SQL.createTable("reactive_messages");
-		SQL.createTable("user_statistics");
-		SQL.createTable("sessions");
+	public static OldDatabase connect(KittyBot main){
+		LOG.info("Connecting to database...");
+		while(true){
+			try{
+				return new OldDatabase(main);
+			}
+			catch(SQLException e){
+				LOG.error("Could not connect to database...\nRetrying in 5 seconds...", e);
+				try{
+					Thread.sleep(5000);
+				}
+				catch(InterruptedException ex){
+					LOG.error("Error putting thread to sleep", e);
+				}
+			}
+		}
+	}
+
+	public void init(){
 		for(Guild guild : main.jda.getGuilds()){
 			LOG.debug("Loading Guild: {}...", guild.getName());
 			if(!isGuildRegistered(guild)){
@@ -37,38 +66,28 @@ public class Database{
 		}
 	}
 
-	private static boolean isGuildRegistered(Guild guild){
-		var stmt = SQL.prepStatement("SELECT * FROM guilds WHERE guild_id = ?");
-		try{
-			stmt.setString(1, guild.getId());
-			return SQL.exists(stmt);
-		}
-		catch(SQLException | NullPointerException e){
-			LOG.error("Error while getting warehouse permissions", e);
-		}
+	private boolean isGuildRegistered(Guild guild){
+		return sql.exists("SELECT * FROM guilds WHERE guild_id = '" + guild.getId() + "';");
 	}
 
+	/*
+	 * Command Statistic specified methods
+	 */
 
-	public static boolean registerGuild(Guild guild){
+	public boolean registerGuild(Guild guild){
 		LOG.debug("Registering new guild: {}", guild.getId());
-		var stmt = SQL.prepStatement("INSERT INTO guilds (guild_id, command_prefix, request_channel_id, requests_enabled, welcome_channel_id, welcome_message, welcome_message_enabled, nsfw_enabled, inactive_role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
-		try{
-			stmt.setString(1, guild.getId());
-			stmt.setString(2, Config.DEFAULT_PREFIX);
-			stmt.setString(3, "-1");
-			stmt.setBoolean(4, false);
-			stmt.setString(5, guild.getDefaultChannel().getId());
-			stmt.setString(6, "Welcome [username] to this server!");
-			stmt.setBoolean(7, true);
-			stmt.setBoolean(8, true);
-			stmt.setBoolean(9, false);
-			return
-		}
-		catch(SQLException e){
-			LOG.error("Error registering guild", e);
-		}
-		return false;
+		return sql.execute("INSERT INTO guilds (guild_id, command_prefix, request_channel_id, requests_enabled, welcome_channel_id, welcome_message, welcome_message_enabled, nsfw_enabled, inactive_role) VALUES ('" + guild.getId() + "', '" + Config.DEFAULT_PREFIX + "', '-1', '0', '" + guild.getDefaultChannel().getId() + "', 'Welcome [username] to this server!', '1', '1', '-1');");
 	}
+
+	public void close(){
+		LOG.debug("Closing connection to database...");
+		sql.close();
+	}
+
+
+	/*
+	 * Guild specified methods
+	 */
 
 	public boolean addCommandStatistics(String guildId, String commandId, String userId, String command, long processingTime){
 		return sql.execute("INSERT INTO commands (message_id, guild_id, user_id, command, processing_time, time) VALUES ('" + commandId + "', '" + guildId + "', '" + userId + "', '" + command + "', '" + processingTime + "', '" + System.currentTimeMillis() + "');");

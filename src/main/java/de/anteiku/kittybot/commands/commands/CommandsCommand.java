@@ -2,11 +2,11 @@ package de.anteiku.kittybot.commands.commands;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.commands.ACommand;
+import de.anteiku.kittybot.commands.CommandContext;
 import de.anteiku.kittybot.utils.Emotes;
 import de.anteiku.kittybot.utils.ReactiveMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 import java.awt.*;
@@ -49,9 +49,9 @@ public class CommandsCommand extends ACommand{
 	}
 
 	@Override
-	public void run(String[] args, GuildMessageReceivedEvent event){
-		event.getChannel().sendMessage(buildCommands(args, main.database.getCommandPrefix(event.getGuild().getId())).build()).queue(message -> {
-			main.commandManager.addReactiveMessage(event, message, this, "-1");
+	public void run(CommandContext ctx){
+		ctx.getChannel().sendMessage(buildCommands(ctx.getArgs(), main.database.getCommandPrefix(ctx.getGuild().getId())).build()).queue(message -> {
+			KittyBot.commandManager.addReactiveMessage(ctx, message, this, "-1");
 			message.addReaction(Emotes.ARROW_LEFT.get()).queue();
 			message.addReaction(Emotes.ARROW_RIGHT.get()).queue();
 			message.addReaction(Emotes.WASTEBASKET.get()).queue();
@@ -73,7 +73,7 @@ public class CommandsCommand extends ACommand{
 		eb.setDescription("For more specified information use `" + prefix + "<command> ?`");
 
 		int i = 0;
-		for(Map.Entry<String, ACommand> c : main.commandManager.commands.entrySet()){
+		for(Map.Entry<String, ACommand> c : KittyBot.commandManager.commands.entrySet()){
 			if((i >= page * PAGECOUNT) && (i < page * PAGECOUNT + PAGECOUNT)){
 				ACommand cmd = c.getValue();
 				eb.addField("**" + prefix + cmd.getCommand() + ":** ", " :small_blue_diamond:" + cmd.getDescription(), false);
@@ -86,7 +86,7 @@ public class CommandsCommand extends ACommand{
 	}
 
 	private int getMaxPages(){
-		return (int) Math.ceil((double) main.commandManager.commands.size() / PAGECOUNT);
+		return (int) Math.ceil((double) KittyBot.commandManager.commands.size() / PAGECOUNT);
 	}
 
 	@Override
