@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '4.0.4'
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
 }
 
 group 'de.anteiku'
@@ -16,26 +16,24 @@ repositories {
 }
 
 dependencies {
-    compile 'net.dv8tion:JDA:4.1.1_152'
+    // discord/jda related
+    implementation 'net.dv8tion:JDA:4.2.0_179'
+    implementation 'com.github.FredBoat:Lavalink-Client:41e1025'
+    implementation 'com.jagrosh:jda-utilities:3.0.4'
+    implementation 'com.sedmelluq:lavaplayer:1.3.50'
 
-    compile 'com.jagrosh:jda-utilities:3.0.3'
+    // database
+    implementation 'com.zaxxer:HikariCP:2.5.1'
+    implementation 'org.postgresql:postgresql:42.2.14'
 
-    compile 'com.github.TopiSenpai:EmojiUtils:1.0'
+    // logging
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+    implementation 'io.sentry:sentry-logback:1.7.30'
 
-    compile 'com.github.FredBoat:Lavalink-Client:4.0'
-
-    compile 'com.sedmelluq:lavaplayer:1.3.49'
-
-    compile 'org.slf4j:slf4j-jdk14:1.7.5'
-
-    compile 'com.sparkjava:spark-core:2.9.1'
-
-    compile 'com.google.code.gson:gson:2.8.6'
-
-    compile 'org.yaml:snakeyaml:1.26'
-
-    compile 'org.postgresql:postgresql:42.2.12'
-
-    //compile 'org.knowm.xchart:xchart:3.6.2'
+    // other
+    implementation 'io.javalin:javalin:3.9.1'
+    implementation 'com.github.TopiSenpai:EmojiUtils:1.0'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'org.yaml:snakeyaml:1.26'
 }
 

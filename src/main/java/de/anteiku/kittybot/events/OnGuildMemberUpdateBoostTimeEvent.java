@@ -5,16 +5,16 @@ import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateBoostTime
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class OnGuildMemberUpdateBoostTimeEvent extends ListenerAdapter{
-	
+
 	private final KittyBot main;
-	
+
 	public OnGuildMemberUpdateBoostTimeEvent(KittyBot main){
 		this.main = main;
 	}
-	
+
 	@Override
 	public void onGuildMemberUpdateBoostTime(GuildMemberUpdateBoostTimeEvent event){
 		//TODO
 	}
-	
+
 }

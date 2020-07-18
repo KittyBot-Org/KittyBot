@@ -11,19 +11,19 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 public class EvalCommand extends ACommand{
-	
+
 	public static String COMMAND = "eval";
 	public static String USAGE = "eval <code>";
 	public static String DESCRIPTION = "Evals some Java Code";
 	protected static String[] ALIAS = {};
 	private ScriptEngine engine;
-	
+
 	public EvalCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
 		this.main = main;
 		initEngine();
 	}
-	
+
 	private void initEngine(){
 		engine = new ScriptEngineManager().getEngineByName("nashorn");
 		try{
@@ -33,7 +33,7 @@ public class EvalCommand extends ACommand{
 			LOG.error("Error while initializing script engine", e);
 		}
 	}
-	
+
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		if(event.getAuthor().getId().equals(Config.DISCORD_ADMIN_ID)){
@@ -49,7 +49,7 @@ public class EvalCommand extends ACommand{
 					engine.put("guild", event.getGuild());
 					engine.put("member", event.getMember());
 				}
-				
+
 				Object out = engine.eval("(function() {" + "with (imports) {" + event.getMessage().getContentDisplay().substring(command.length() + 1) + "}" + "})();");
 				sendAnswer(event, out == null ? "Executed without error." : out.toString());
 			}
@@ -61,5 +61,5 @@ public class EvalCommand extends ACommand{
 			sendNoPermission(event);
 		}
 	}
-	
+
 }

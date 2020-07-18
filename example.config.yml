@@ -5,6 +5,7 @@ discord:
     admin_id:
     invite_link:
     redirect_url:
+    origin_url:
 
 postgres:
     host:

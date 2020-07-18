@@ -16,16 +16,16 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class HastebinCommand extends ACommand{
-	
+
 	public static String COMMAND = "hastebin";
 	public static String USAGE = "hastebin <file>";
 	public static String DESCRIPTION = "creates a hastebin from the file";
 	protected static String[] ALIAS = {};
-	
+
 	public HastebinCommand(KittyBot main){
 		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
-	
+
 	@Override
 	public void run(String[] args, GuildMessageReceivedEvent event){
 		List<Message.Attachment> attachments = event.getMessage().getAttachments();
@@ -55,5 +55,5 @@ public class HastebinCommand extends ACommand{
 			sendError(event, "Please provide a file");
 		}
 	}
-	
+
 }
