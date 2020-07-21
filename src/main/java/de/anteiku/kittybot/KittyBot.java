@@ -11,6 +11,7 @@ import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager
 import de.anteiku.kittybot.commands.CommandManager;
 import de.anteiku.kittybot.commands.commands.*;
 import de.anteiku.kittybot.database.Database;
+import de.anteiku.kittybot.database.SQL;
 import de.anteiku.kittybot.events.*;
 import de.anteiku.kittybot.utils.Config;
 import de.anteiku.kittybot.utils.LavalinkNode;
@@ -41,7 +42,6 @@ public class KittyBot{
 	public static JdaLavalink lavalink;
 	public static AudioPlayerManager audioPlayerManager;
 	public static CommandManager commandManager;
-	public Database database;
 	public Random rand;
 
 	public KittyBot(){
@@ -50,7 +50,6 @@ public class KittyBot{
 
 		Config.load("config.yml");
 
-		database = Database.connect(this);
 		rand = new Random();
 
 		try{
@@ -95,7 +94,7 @@ public class KittyBot{
 				.setVoiceDispatchInterceptor(lavalink.getVoiceInterceptor())
 				.build().awaitReady();
 
-			database.init();
+			Database.init(this);
 
 			commandManager = new CommandManager(this)
 				.addCommands(
@@ -164,7 +163,7 @@ public class KittyBot{
 
 	public void close(){
 		lavalink.getLinks().forEach(Link::destroy);
-		database.close();
+		SQL.close();
 		System.exit(0);
 	}
 

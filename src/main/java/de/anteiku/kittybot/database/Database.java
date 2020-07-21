@@ -46,12 +46,13 @@ public class Database{
 		catch(SQLException | NullPointerException e){
 			LOG.error("Error while getting warehouse permissions", e);
 		}
+		return false;
 	}
 
 
 	public static boolean registerGuild(Guild guild){
 		LOG.debug("Registering new guild: {}", guild.getId());
-		var stmt = SQL.prepStatement("INSERT INTO guilds (guild_id, command_prefix, request_channel_id, requests_enabled, welcome_channel_id, welcome_message, welcome_message_enabled, nsfw_enabled, inactive_role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
+		var stmt = SQL.prepStatement("INSERT INTO guilds (guild_id, command_prefix, request_channel_id, requests_enabled, welcome_channel_id, welcome_message, welcome_message_enabled, nsfw_enabled, inactive_role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		try{
 			stmt.setString(1, guild.getId());
 			stmt.setString(2, Config.DEFAULT_PREFIX);
@@ -62,22 +63,40 @@ public class Database{
 			stmt.setBoolean(7, true);
 			stmt.setBoolean(8, true);
 			stmt.setBoolean(9, false);
-			return
+			SQL.execute(stmt);
+			return true;
 		}
 		catch(SQLException e){
-			LOG.error("Error registering guild", e);
+			LOG.error("Error registering guild: " + guild.getId(), e);
 		}
 		return false;
 	}
 
 	public boolean addCommandStatistics(String guildId, String commandId, String userId, String command, long processingTime){
-		return sql.execute("INSERT INTO commands (message_id, guild_id, user_id, command, processing_time, time) VALUES ('" + commandId + "', '" + guildId + "', '" + userId + "', '" + command + "', '" + processingTime + "', '" + System.currentTimeMillis() + "');");
+		var stmt = SQL.prepStatement("INSERT INTO commands (message_id, guild_id, user_id, command, processing_time, time) VALUES (?, ?, ?, ?, ?, ?)");
+		try{
+			stmt.setString(1, commandId);
+			stmt.setString(2, guildId);
+			stmt.setString(3, userId);
+			stmt.setString(4, command);
+			stmt.setLong(5, processingTime);
+			stmt.setLong(6,  System.currentTimeMillis());
+			return true;
+		}
+		catch(SQLException e){
+			LOG.error("Error adding command statistics for message: " + commandId, e);
+		}
+		return false;
 	}
 
 	public Map<Long, Long> getCommandStatistics(String guildId, long from, long to){
 		Map<Long, Long> map = new LinkedHashMap<>();
-		ResultSet result = sql.query("SELECT * FROM commands WHERE guild_id = '" + guildId + "' and time > '" + from + "' and time < '" + to + "';");
+		var stmt = SQL.prepStatement("SELECT * FROM commands WHERE guild_id = ? and time > ? and time < ?");
 		try{
+			stmt.setString(1, guildId);
+			stmt.setLong(1, from);
+			stmt.setLong(1, to);
+			var result = SQL.query(stmt);
 			while(result.next()){
 				map.put(result.getLong("time"), result.getLong("processing_time"));
 			}

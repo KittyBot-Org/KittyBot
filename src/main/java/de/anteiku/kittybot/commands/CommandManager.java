@@ -1,6 +1,7 @@
 package de.anteiku.kittybot.commands;
 
 import de.anteiku.kittybot.KittyBot;
+import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.utils.ReactiveMessage;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
@@ -48,15 +49,15 @@ public class CommandManager{
 	}
 
 	public void addReactiveMessage(CommandContext ctx, Message message, ACommand cmd, String allowed){
-		main.database.addReactiveMessage(ctx.getGuild().getId(), ctx.getUser().getId(), message.getId(), ctx.getMessage().getId(), cmd.command, allowed);
+		Database.addReactiveMessage(ctx.getGuild().getId(), ctx.getUser().getId(), message.getId(), ctx.getMessage().getId(), cmd.command, allowed);
 	}
 
 	public void removeReactiveMessage(Guild guild, String messageId){
-		main.database.removeReactiveMessage(guild.getId(), messageId);
+		Database.removeReactiveMessage(guild.getId(), messageId);
 	}
 
 	public ReactiveMessage getReactiveMessage(Guild guild, String message){
-		return main.database.isReactiveMessage(guild.getId(), message);
+		return Database.isReactiveMessage(guild.getId(), message);
 	}
 
 	public void addMusicPlayer(Guild guild, MusicPlayer player){
@@ -85,7 +86,7 @@ public class CommandManager{
 					var ctx = new CommandContextImpl(event, command, getCommandArguments(message));
 					cmd.run(ctx);
 					long processingTime = System.nanoTime() - start;
-					main.database.addCommandStatistics(event.getGuild().getId(), event.getMessageId(), event.getAuthor().getId(), command, processingTime);
+					Database.addCommandStatistics(event.getGuild().getId(), event.getMessageId(), event.getAuthor().getId(), command, processingTime);
 					LOG.info("Command: {}, args: {}, by: {}, from: {}, took: {}ns", command, ctx.getArgs(), event.getAuthor().getName(), event.getGuild().getName(), processingTime);
 					return true;
 				}
@@ -97,7 +98,7 @@ public class CommandManager{
 	private String cutCommandPrefix(Guild guild, String message){
 		String prefix;
 		var botId = guild.getSelfMember().getId();
-		if(message.startsWith(prefix = main.database.getCommandPrefix(guild.getId()))||message.startsWith(
+		if(message.startsWith(prefix = Database.getCommandPrefix(guild.getId()))||message.startsWith(
 			prefix = "<@!" + botId + ">")||message.startsWith(prefix = "<@" + botId + ">")){
 			return message.substring(prefix.length()).trim();
 		}

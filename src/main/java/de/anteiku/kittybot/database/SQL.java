@@ -43,6 +43,10 @@ public class SQL{
 		throw new NullPointerException("Datasource returned empty connection");
 	}
 
+	public static void close(){
+		dataSource.close();
+	}
+
 	public static void createTable(String table){
 		try{
 			Scanner scanner = new Scanner(SQL.class.getClassLoader().getResourceAsStream("sql_tables/" + table + ".sql")).useDelimiter("\\A");
