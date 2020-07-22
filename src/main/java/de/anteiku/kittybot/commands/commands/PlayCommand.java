@@ -2,13 +2,13 @@ package de.anteiku.kittybot.commands.commands;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.commands.ACommand;
+import de.anteiku.kittybot.commands.CommandContext;
 import de.anteiku.kittybot.commands.MusicPlayer;
 import de.anteiku.kittybot.utils.Emotes;
 import de.anteiku.kittybot.utils.ReactiveMessage;
 import lavalink.client.io.jda.JdaLink;
 import lavalink.client.player.LavalinkPlayer;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 public class PlayCommand extends ACommand{
@@ -25,27 +25,31 @@ public class PlayCommand extends ACommand{
 	}
 
 	@Override
-	public void run(String[] args, GuildMessageReceivedEvent event){
-		GuildVoiceState voiceState = event.getMember().getVoiceState();
+	public void run(CommandContext ctx){
+		if(ctx.getArgs().length == 0){
+			sendError(ctx, "Please provide a link or search term");
+			return;
+		}
+		GuildVoiceState voiceState = ctx.getMember().getVoiceState();
 		if(voiceState != null && voiceState.inVoiceChannel()){
-			JdaLink link = main.lavalink.getLink(event.getGuild());
+			JdaLink link = KittyBot.lavalink.getLink(ctx.getGuild());
 			link.connect(voiceState.getChannel());
 
 			LavalinkPlayer player = link.getPlayer();
 			MusicPlayer musicPlayer = new MusicPlayer(player);
 			player.addListener(musicPlayer);
-			main.commandManager.addMusicPlayer(event.getGuild(), musicPlayer);
-			musicPlayer.loadItem(this, event, args);
+			KittyBot.commandManager.addMusicPlayer(ctx.getGuild(), musicPlayer);
+			musicPlayer.loadItem(this, ctx, ctx.getArgs());
 		}
 		else{
-			sendError(event, "Please connect to a voice channel to play some stuff");
+			sendError(ctx, "Please connect to a voice channel to play some stuff");
 		}
 	}
 
 	@Override
 	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
 		if(event.getReactionEmote().isEmoji()){
-			var musicPlayer = main.commandManager.getMusicPlayer(event.getGuild());
+			var musicPlayer = KittyBot.commandManager.getMusicPlayer(event.getGuild());
 			if(musicPlayer == null){
 				return;
 			}
@@ -68,17 +72,17 @@ public class PlayCommand extends ACommand{
 			}
 			else if(emoji.equals(Emotes.VOLUME_DOWN.get())){
 				musicPlayer.changeVolume(-VOLUME_STEP);
-				//event.getChannel().editMessageById(event.getMessageId(), PlayCommand.buildMusicControlMessage(musicPlayer).build()).queue();
+				//ctx.getChannel().editMessageById(ctx.getMessageId(), PlayCommand.buildMusicControlMessage(musicPlayer).build()).queue();
 			}
 			else if(emoji.equals(Emotes.VOLUME_UP.get())){
 				musicPlayer.changeVolume(VOLUME_STEP);
-				//event.getChannel().editMessageById(event.getMessageId(), PlayCommand.buildMusicControlMessage(musicPlayer).build()).queue();
+				//ctx.getChannel().editMessageById(ctx.getMessageId(), PlayCommand.buildMusicControlMessage(musicPlayer).build()).queue();
 			}
 			else if(emoji.equals(Emotes.X.get())){
 				event.getChannel().deleteMessageById(event.getMessageId()).queue();// TODO deleting the message is bad :)
-				main.commandManager.destroyMusicPlayer(event.getGuild(), event.getMessageId());
+				KittyBot.commandManager.destroyMusicPlayer(event.getGuild(), event.getMessageId());
 			}
-			musicPlayer.updateMusicControlMessage(event.getChannel(), event.getMember());
+			musicPlayer.updateMusicControlMessage(event.getChannel());
 			event.getReaction().removeReaction(event.getUser()).queue();
 		}
 	}

@@ -1,34 +1,26 @@
 package de.anteiku.kittybot.commands;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
-import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
+import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.utils.Emotes;
+import de.anteiku.kittybot.utils.Utils;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavalinkPlayer;
 import lavalink.client.player.event.PlayerEventListenerAdapter;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Invite;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.awt.*;
-import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Queue;
 import java.util.*;
 
-/**
- * This class schedules tracks for the audio player. It contains the queue of tracks.
- * thx to https://github.com/DV8FromTheWorld/Yui <3
- */
 public class MusicPlayer extends PlayerEventListenerAdapter {
 
 	private static final int VOLUME_MAX = 200;
@@ -36,54 +28,73 @@ public class MusicPlayer extends PlayerEventListenerAdapter {
 	public static final String URL_PATTERN = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
 
 
-	public final LavalinkPlayer player;
+	private final LavalinkPlayer player;
 	private final Queue<AudioTrack> queue;
 	private final Deque<AudioTrack> history;
-	private boolean repeating = false;
 	private String messageId;
+	private String channelId;
 
 	public MusicPlayer(LavalinkPlayer player){
 		this.player = player;
 		this.queue = new LinkedList<>();
 		this.history = new LinkedList<>();
 	}
-	public void loadItem(ACommand command, GuildMessageReceivedEvent event, String... args){
+
+	public Queue<AudioTrack> getQueue(){
+		return queue;
+	}
+
+	public void loadItem(ACommand command, CommandContext ctx, String... args){
 		String search = String.join(" ", args);
 		if(!search.matches(URL_PATTERN)){
 			search = "ytsearch:" + search;
 		}
-		command.main.audioPlayerManager.loadItem(search, new AudioLoadResultHandler(){
+		KittyBot.audioPlayerManager.loadItem(search, new AudioLoadResultHandler(){
 
 			@Override
 			public void trackLoaded(AudioTrack track){
-				track.setUserData(event.getAuthor().getId());
+				track.setUserData(ctx.getUser().getId());
 				queue(track);
 				if(messageId == null){
-					sendMusicController(command, event);
+					sendMusicController(command, ctx);
+				}
+				else{
+					sendQueuedTracks(command, ctx, Collections.singletonList(track));
 				}
 			}
 
 			@Override
 			public void playlistLoaded(AudioPlaylist playlist){
 				for(AudioTrack track : playlist.getTracks()){
-					track.setUserData(event.getAuthor().getId());
+					track.setUserData(ctx.getUser().getId());
 					queue(track);
 				}
 				if(messageId == null){
-					sendMusicController(command, event);
+					sendMusicController(command, ctx);
+				}
+				else{
+					sendQueuedTracks(command, ctx, playlist.getTracks());
 				}
 			}
 
 			@Override
 			public void noMatches(){
-				command.sendError(event, "No matches found for ");
+				command.sendError(ctx, "No matches found for ");
 			}
 
 			@Override
 			public void loadFailed(FriendlyException exception){
-				command.sendError(event, "Failed to load track");
+				command.sendError(ctx, "Failed to load track");
 			}
 		});
+	}
+
+	private void sendQueuedTracks(ACommand command, CommandContext ctx, List<AudioTrack> tracks){
+		var message = new StringBuilder("Queued ").append(tracks.size()).append(" tracks:\n");
+		for(AudioTrack track : tracks){
+			message.append(Utils.formatTrackTitle(track)).append(" ").append(Utils.formatDuration(track.getDuration())).append("\n");
+		}
+		command.sendAnswer(ctx, message.toString());
 	}
 
 	public String getRequesterId(){ // credit to @canelex_ for that name :)
@@ -148,19 +159,10 @@ public class MusicPlayer extends PlayerEventListenerAdapter {
 		return volume;
 	}
 
-	public boolean isRepeating(){
-		return repeating;
-	}
-
-	public void setRepeating(boolean repeating){
-		this.repeating = repeating;
-	}
-
 	public boolean shuffle(){
 		System.out.println("Shuffle: " + queue.toString());
 		if(queue.size() > 1){
 			Collections.shuffle((List<?>) queue);
-			System.out.println("Shuffle: " + queue.toString());
 			return true;
 		}
 		return false;
@@ -172,25 +174,19 @@ public class MusicPlayer extends PlayerEventListenerAdapter {
 
 	@Override
 	public void onPlayerPause(IPlayer player){
-		System.out.println("onPlayerPause");
+
 	}
 
 	@Override
 	public void onPlayerResume(IPlayer player){
-		System.out.println("onPlayerResume");
+
 	}
 
 	@Override
 	public void onTrackEnd(IPlayer player, AudioTrack track, AudioTrackEndReason endReason){
-		System.out.println("onTrackEnd");
 		this.history.push(track);
 		if(endReason.mayStartNext){
-			if(repeating){
-				player.playTrack(track.makeClone());
-			}
-			else{
-				nextTrack();
-			}
+			nextTrack();
 		}
 	}
 
@@ -204,8 +200,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter {
 		System.out.println("onTrackStuck");
 	}
 
-	public void sendMusicController(ACommand command, GuildMessageReceivedEvent event){
-		var msg = event.getMessage();
+	public void sendMusicController(ACommand command, CommandContext ctx){
+		var msg = ctx.getMessage();
 		msg.getChannel().sendMessage(buildMusicControlMessage()
 			.setFooter(msg.getMember().getEffectiveName(), msg.getAuthor().getEffectiveAvatarUrl())
 			.setTimestamp(Instant.now())
@@ -213,7 +209,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter {
 		).queue(
 			message -> {
 				messageId = message.getId();
-				command.main.commandManager.addReactiveMessage(event, message, command, "-1");
+				channelId = message.getChannel().getId();
+				KittyBot.commandManager.addReactiveMessage(ctx, message, command, "-1");
 				message.addReaction(Emotes.VOLUME_DOWN.get()).queue();
 				message.addReaction(Emotes.VOLUME_UP.get()).queue();
 				message.addReaction(Emotes.BACK.get()).queue();
@@ -225,9 +222,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter {
 		);
 	}
 
-	public void updateMusicControlMessage(TextChannel channel, Member member){
+	public void updateMusicControlMessage(TextChannel channel){
 		channel.editMessageById(messageId, buildMusicControlMessage()
-			.setFooter(member.getEffectiveName(), member.getUser().getEffectiveAvatarUrl())
 			.setTimestamp(Instant.now())
 			.build()
 		).queue();
@@ -245,13 +241,11 @@ public class MusicPlayer extends PlayerEventListenerAdapter {
 		}
 		else{
 			AudioTrackInfo info = player.getPlayingTrack().getInfo();
-			Duration duration = Duration.ofMillis(info.length);
-			var seconds = duration.toSecondsPart();
 			embed.setColor(Color.GREEN)
 				.setTitle(info.title, info.uri)
 				.setThumbnail("https://i.ytimg.com/vi/" + info.identifier + "/maxresdefault.jpg")
 				.addField("Author", info.author, true)
-				.addField("Length", duration.toMinutes() + ":" + (seconds > 9 ? seconds : "0" + seconds), true)
+				.addField("Length", Utils.formatDuration(info.length), true)
 				.addField("Volume", player.getVolume() + "%", true);
 			if(player.isPaused()){
 				embed.setAuthor("Paused...");

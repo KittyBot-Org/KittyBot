@@ -2,9 +2,9 @@ package de.anteiku.kittybot.commands.commands;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.commands.ACommand;
+import de.anteiku.kittybot.commands.CommandContext;
 import de.anteiku.kittybot.utils.Config;
 import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -35,30 +35,29 @@ public class EvalCommand extends ACommand{
 	}
 
 	@Override
-	public void run(String[] args, GuildMessageReceivedEvent event){
-		if(event.getAuthor().getId().equals(Config.DISCORD_ADMIN_ID)){
+	public void run(CommandContext ctx){
+		if(ctx.getUser().getId().equals(Config.DISCORD_ADMIN_ID)){
 			try{
 				engine.put("main", main);
-				engine.put("database", main.database);
-				engine.put("event", event);
-				engine.put("message", event.getMessage());
-				engine.put("channel", event.getChannel());
-				engine.put("args", args);
-				engine.put("api", event.getJDA());
-				if(event.getChannel().getType().equals(ChannelType.TEXT)){
-					engine.put("guild", event.getGuild());
-					engine.put("member", event.getMember());
+				engine.put("ctx", ctx);
+				engine.put("message", ctx.getMessage());
+				engine.put("channel", ctx.getChannel());
+				engine.put("ctx.getArgs()", ctx.getArgs());
+				engine.put("api", ctx.getJDA());
+				if(ctx.getChannel().getType().equals(ChannelType.TEXT)){
+					engine.put("guild", ctx.getGuild());
+					engine.put("member", ctx.getMember());
 				}
 
-				Object out = engine.eval("(function() {" + "with (imports) {" + event.getMessage().getContentDisplay().substring(command.length() + 1) + "}" + "})();");
-				sendAnswer(event, out == null ? "Executed without error." : out.toString());
+				Object out = engine.eval("(function() {" + "with (imports) {" + ctx.getMessage().getContentDisplay().substring(command.length() + 1) + "}" + "})();");
+				sendAnswer(ctx, out == null ? "Executed without error." : out.toString());
 			}
 			catch(Exception e){
-				sendError(event, e.getMessage());
+				sendError(ctx, e.getMessage());
 			}
 		}
 		else{
-			sendNoPermission(event);
+			sendNoPermission(ctx);
 		}
 	}
 

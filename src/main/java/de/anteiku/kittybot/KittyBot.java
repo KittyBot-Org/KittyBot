@@ -11,11 +11,12 @@ import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager
 import de.anteiku.kittybot.commands.CommandManager;
 import de.anteiku.kittybot.commands.commands.*;
 import de.anteiku.kittybot.database.Database;
+import de.anteiku.kittybot.database.SQL;
 import de.anteiku.kittybot.events.*;
-import de.anteiku.kittybot.tasks.TaskManager;
 import de.anteiku.kittybot.utils.Config;
 import de.anteiku.kittybot.utils.LavalinkNode;
 import de.anteiku.kittybot.webservice.WebService;
+import lavalink.client.io.Link;
 import lavalink.client.io.jda.JdaLavalink;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -38,13 +39,9 @@ public class KittyBot{
 
 	public final OkHttpClient httpClient;
 	public JDA jda;
-	public JdaLavalink lavalink;
-	public WebService webService;
-
-	public AudioPlayerManager audioPlayerManager;
-	public CommandManager commandManager;
-	public TaskManager taskManager;
-	public Database database;
+	public static JdaLavalink lavalink;
+	public static AudioPlayerManager audioPlayerManager;
+	public static CommandManager commandManager;
 	public Random rand;
 
 	public KittyBot(){
@@ -53,7 +50,6 @@ public class KittyBot{
 
 		Config.load("config.yml");
 
-		database = Database.connect(this);
 		rand = new Random();
 
 		try{
@@ -80,67 +76,64 @@ public class KittyBot{
 
 					GatewayIntent.DIRECT_MESSAGES,
 					GatewayIntent.DIRECT_MESSAGE_REACTIONS
-			)
-					.disableCache(CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS)
-					.setToken(Config.DISCORD_BOT_TOKEN)
-					.setActivity(Activity.listening("you!"))
-					.addEventListeners(
-							new OnGuildJoinEvent(this),
-							new OnGuildMemberJoinEvent(this),
-							new OnGuildMemberRemoveEvent(this),
-							new OnGuildMemberUpdateBoostTimeEvent(this),
-							new OnGuildMessageReactionAddEvent(this),
-							new OnGuildMessageReceivedEvent(this),
-							new OnGuildVoiceEvent(this),
-							lavalink
-					)
-					.setVoiceDispatchInterceptor(lavalink.getVoiceInterceptor())
-					.build().awaitReady();
+				)
+				.disableCache(CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS)
+				.setToken(Config.DISCORD_BOT_TOKEN)
+				.setActivity(Activity.listening("you!"))
+				.addEventListeners(
+					new OnGuildJoinEvent(this),
+					new OnGuildMemberJoinEvent(this),
+					new OnGuildMemberRemoveEvent(this),
+					new OnGuildMemberUpdateBoostTimeEvent(this),
+					new OnGuildMessageReactionAddEvent(this),
+					new OnGuildMessageReceivedEvent(this),
+					new OnGuildMessageDeleteEvent(this),
+					new OnGuildVoiceEvent(this),
+					lavalink
+				)
+				.setVoiceDispatchInterceptor(lavalink.getVoiceInterceptor())
+				.build().awaitReady();
 
-			database.init();
+			Database.init(this);
 
 			commandManager = new CommandManager(this)
-					.addCommands(
-							new HelpCommand(this),
-							new CommandsCommand(this),
-							new EmoteStealCommand(this),
-							new DownloadEmotesCommand(this),
-							new RolesCommand(this),
+				.addCommands(
+					new HelpCommand(this),
+					new CommandsCommand(this),
+					new EmoteStealCommand(this),
+					new DownloadEmotesCommand(this),
+					new RolesCommand(this),
 
-							new PlayCommand(this),
-							new QueueCommand(this),
-							new StopCommand(this),
-							//                  new PlayingCommand(this),
-							//                  new ShuffleCommand(this),
-							//					new RepeatCommand(this),
-							//					new VolumeCommand(this),
-							//					new PauseCommand(this),
-							//					new ResumeCommand(this),
+					new PlayCommand(this),
+					new QueueCommand(this),
+					new StopCommand(this),
+					new ShuffleCommand(this),
+					new VolumeCommand(this),
+					new PauseCommand(this),
+					new SkipCommand(this),
 
-							new PatCommand(this),
-							new PokeCommand(this),
-							new HugCommand(this),
-							new CuddleCommand(this),
-							new KissCommand(this),
-							new TickleCommand(this),
-							new FeedCommand(this),
-							new SlapCommand(this),
-							new BakaCommand(this),
-							new SpankCommand(this),
+					new PatCommand(this),
+					new PokeCommand(this),
+					new HugCommand(this),
+					new CuddleCommand(this),
+					new KissCommand(this),
+					new TickleCommand(this),
+					new FeedCommand(this),
+					new SlapCommand(this),
+					new BakaCommand(this),
+					new SpankCommand(this),
 
-							new CatCommand(this),
-							new DogCommand(this),
-							new NekoCommand(this),
+					new CatCommand(this),
+					new DogCommand(this),
+					new NekoCommand(this),
 
-							new OptionsCommand(this),
-							new EvalCommand(this),
-							new HastebinCommand(this),
-							new TestCommand(this)
-					);
+					new OptionsCommand(this),
+					new EvalCommand(this),
+					new HastebinCommand(this),
+					new TestCommand(this)
+				);
 
-			webService = new WebService(this, 6969);
-
-			taskManager = new TaskManager(this);
+			new WebService(this, 6969);
 
 			sendDMToOwnerAdmin(jda, jda.getSelfUser().getName(), "Hellowo I'm ready!");
 		}
@@ -156,20 +149,21 @@ public class KittyBot{
 
 	public void sendDMToOwnerAdmin(JDA jda, String title, String description){
 		jda.openPrivateChannelById(Config.DISCORD_ADMIN_ID).queue(
-				privateChannel -> privateChannel.sendMessage(new EmbedBuilder()
-						.setTitle(title)
-						.setDescription(description)
-						.setThumbnail(jda.getSelfUser().getAvatarUrl())
-						.setColor(new Color(76, 80, 193))
-						.setFooter(jda.getSelfUser().getName(), jda.getSelfUser().getAvatarUrl())
-						.setTimestamp(Instant.now())
-						.build()
-				).queue()
+			privateChannel -> privateChannel.sendMessage(new EmbedBuilder()
+				.setTitle(title)
+				.setDescription(description)
+				.setThumbnail(jda.getSelfUser().getAvatarUrl())
+				.setColor(new Color(76, 80, 193))
+				.setFooter(jda.getSelfUser().getName(), jda.getSelfUser().getAvatarUrl())
+				.setTimestamp(Instant.now())
+				.build()
+			).queue()
 		);
 	}
 
 	public void close(){
-		database.close();
+		lavalink.getLinks().forEach(Link::destroy);
+		SQL.close();
 		System.exit(0);
 	}
 

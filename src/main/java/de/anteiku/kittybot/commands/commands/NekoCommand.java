@@ -2,9 +2,9 @@ package de.anteiku.kittybot.commands.commands;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.commands.ACommand;
+import de.anteiku.kittybot.commands.CommandContext;
 import de.anteiku.kittybot.utils.Emotes;
 import de.anteiku.kittybot.utils.ReactiveMessage;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 import java.util.Arrays;
@@ -24,19 +24,19 @@ public class NekoCommand extends ACommand{
 	}
 
 	@Override
-	public void run(String[] args, GuildMessageReceivedEvent event){
-		if(!event.getChannel().isNSFW()){
-			sendError(event, "Sorry but this command can only be used in nsfw channels");
+	public void run(CommandContext ctx){
+		if(!ctx.getChannel().isNSFW()){
+			sendError(ctx, "Sorry but this command can only be used in nsfw channels");
 			return;
 		}
-		if(args.length > 0 && nekos.contains(args[0])){
-			image(event, getNeko(args[0])).queue(message -> {
-				main.commandManager.addReactiveMessage(event, message, this, "-1");
+		if(ctx.getArgs().length > 0 && nekos.contains(ctx.getArgs()[0])){
+			image(ctx, getNeko(ctx.getArgs()[0])).queue(message -> {
+				KittyBot.commandManager.addReactiveMessage(ctx, message, this, "-1");
 				message.addReaction(Emotes.WASTEBASKET.get()).queue();
 			});
 		}
 		else{
-			sendUsage(event);
+			sendUsage(ctx);
 		}
 	}
 

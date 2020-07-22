@@ -1,8 +1,10 @@
 package de.anteiku.kittybot.commands.commands;
 
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.commands.ACommand;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import de.anteiku.kittybot.commands.CommandContext;
+import de.anteiku.kittybot.utils.Utils;
 
 public class QueueCommand extends ACommand{
 
@@ -17,14 +19,31 @@ public class QueueCommand extends ACommand{
 	}
 
 	@Override
-	public void run(String[] args, GuildMessageReceivedEvent event){
-		var musicPlayer = main.commandManager.getMusicPlayer(event.getGuild());
-		if(musicPlayer == null){
-			sendError(event, "No active music player found!");
+	public void run(CommandContext ctx){
+		var voiceState = ctx.getMember().getVoiceState();
+		if(!voiceState.inVoiceChannel()){
+			sendError(ctx, "To use this command you need to be connected to a voice channel");
 			return;
 		}
-
-		musicPlayer.loadItem(this, event, args);
+		var musicPlayer = KittyBot.commandManager.getMusicPlayer(ctx.getGuild());
+		if(musicPlayer == null){
+			sendError(ctx, "No active music player found!");
+			return;
+		}
+		if(ctx.getArgs().length == 0){
+			var queue = musicPlayer.getQueue();
+			if(queue.isEmpty()){
+				sendAnswer(ctx, "There are currently no tracks queued");
+				return;
+			}
+			StringBuilder message = new StringBuilder("Currently ").append(queue.size()).append(" tracks are queued:\n");
+			for(AudioTrack track : queue){
+				message.append(Utils.formatTrackTitle(track)).append(" ").append(Utils.formatDuration(track.getDuration())).append("\n");
+			}
+			sendAnswer(ctx, message.toString());
+			return;
+		}
+		musicPlayer.loadItem(this, ctx, ctx.getArgs());
 		//TODO maybe create one if no one is created yet?
 	}
 

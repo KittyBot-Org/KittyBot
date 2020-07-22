@@ -2,9 +2,9 @@ package de.anteiku.kittybot.commands.commands;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.commands.ACommand;
+import de.anteiku.kittybot.commands.CommandContext;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.List;
 
@@ -21,22 +21,22 @@ public class DownloadEmotesCommand extends ACommand{
 	}
 
 	@Override
-	public void run(String[] args, GuildMessageReceivedEvent event){
-		List<Emote> emotes = event.getMessage().getEmotes();
+	public void run(CommandContext ctx){
+		List<Emote> emotes = ctx.getMessage().getEmotes();
 		if(!emotes.isEmpty()){
 			StringBuilder links = new StringBuilder();
 			for(Emote emote : emotes){
 				String link = emote.getImageUrl();
 				if(links.length() + (" -O " + link).length() > Message.MAX_CONTENT_LENGTH - 20){
-					sendAnswer(event, "Command: \ncurl" + links.toString());
+					sendAnswer(ctx, "Command: \ncurl" + links.toString());
 					links = new StringBuilder();
 				}
 				links.append(" -O ").append(link);
 			}
-			sendAnswer(event, "Command: \ncurl" + links.toString());
+			sendAnswer(ctx, "Command: \ncurl" + links.toString());
 		}
 		else{
-			sendUsage(event);
+			sendUsage(ctx);
 		}
 	}
 

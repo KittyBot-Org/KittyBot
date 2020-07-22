@@ -15,14 +15,14 @@ public class OnGuildMessageReactionAddEvent extends ListenerAdapter{
 
 	@Override
 	public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event){
-		if(event.getMember().getUser().isBot() || event.getMember().getUser().isFake()){
+		if(event.getMember().getUser().isBot()){
 			return;
 		}
 
-		ReactiveMessage reactiveMessage = main.commandManager.getReactiveMessage(event.getGuild(), event.getMessageId());
+		ReactiveMessage reactiveMessage = KittyBot.commandManager.getReactiveMessage(event.getGuild(), event.getMessageId());
 		if(reactiveMessage != null){
 			if(reactiveMessage.allowed.equals("-1") || reactiveMessage.allowed.equals(event.getUserId())){
-				main.commandManager.commands.get(reactiveMessage.command).reactionAdd(reactiveMessage, event);
+				KittyBot.commandManager.commands.get(reactiveMessage.command).reactionAdd(reactiveMessage, event);
 			}
 			else{
 				event.getReaction().removeReaction(event.getUser()).queue();

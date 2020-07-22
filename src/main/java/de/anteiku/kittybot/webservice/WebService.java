@@ -11,6 +11,7 @@ import com.jagrosh.jdautilities.oauth2.session.DefaultSessionController;
 import com.jagrosh.jdautilities.oauth2.session.Session;
 import com.jagrosh.jdautilities.oauth2.state.DefaultStateController;
 import de.anteiku.kittybot.KittyBot;
+import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.utils.Config;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -42,9 +43,7 @@ public class WebService{
 		DefaultSessionController sessionController = new DefaultSessionController();
 		DefaultStateController stateController = new DefaultStateController();
 		oAuthClient = new OAuth2ClientImpl(Long.parseLong(Config.DISCORD_BOT_ID), Config.DISCORD_BOT_SECRET, sessionController, stateController, main.httpClient);
-		Javalin.create(config -> {
-			config.enableCorsForOrigin(Config.DISCORD_ORIGIN_URL);
-		}).routes(() -> {
+		Javalin.create(config -> config.enableCorsForOrigin(Config.DISCORD_ORIGIN_URL)).routes(() -> {
 			get("/discord_login", this::discordLogin);
 			get("/health_check", ctx -> ctx.result("alive"));
 			post("/login", this::login);
@@ -71,7 +70,7 @@ public class WebService{
 
 	private void discordLogin(Context ctx){
 		String key = ctx.header("Authorization");
-		if(key == null || !main.database.sessionExists(key)){
+		if(key == null || !Database.sessionExists(key)){
 			ctx.redirect(oAuthClient.generateAuthorizationURL(Config.DISCORD_REDIRECT_URL, scopes));
 		}
 		else{
@@ -84,10 +83,10 @@ public class WebService{
 		String code = json.get("code").getAsString();
 		String state = json.get("state").getAsString();
 		try{
-			String key = main.database.generateUniqueKey();
+			String key = Database.generateUniqueKey();
 			Session session = oAuthClient.startSession(code, state, key, scopes).complete();
 			OAuth2User user = oAuthClient.getUser(session).complete();
-			main.database.addSession(user.getId(), key);
+			Database.addSession(user.getId(), key);
 			ok(ctx, "{\"key\": " + JSONObject.quote(key) + "}");
 		}
 		catch(InvalidStateException e){
@@ -102,7 +101,7 @@ public class WebService{
 	private void checkDiscordLogin(Context ctx){
 		if(!ctx.method().equals("OPTIONS")){
 			String key = ctx.header("Authorization");
-			if(key == null || !main.database.sessionExists(key)){
+			if(key == null || !Database.sessionExists(key)){
 				error(ctx, 401, "Please login with discord to continue");
 			}
 		}
@@ -114,7 +113,7 @@ public class WebService{
 			error(ctx, 401, "Please login");
 			return;
 		}
-		String userId = main.database.getSession(auth);
+		String userId = Database.getSession(auth);
 		if(userId == null){
 			error(ctx, 404, "Session not found");
 			return;
@@ -139,7 +138,7 @@ public class WebService{
 			error(ctx, 401, "Please login");
 			return;
 		}
-		String userId = main.database.getSession(auth);
+		String userId = Database.getSession(auth);
 		if(userId == null){
 			error(ctx, 404, "Session not found");
 			return;
@@ -163,7 +162,7 @@ public class WebService{
 				error(ctx, 404, "guild not found");
 				return;
 			}
-			Member member = guild.retrieveMemberById(main.database.getSession(ctx.header("Authorization"))).complete();
+			Member member = guild.retrieveMemberById(Database.getSession(ctx.header("Authorization"))).complete();
 			if(member == null){
 				error(ctx, 404, "I could not find you int that guild");
 				return;
@@ -215,7 +214,7 @@ public class WebService{
 
 	private void getGuildSettings(Context ctx){
 		String guildId = ctx.pathParam(":guildId");
-		Map<String, String> roles = main.database.getSelfAssignableRoles(guildId);
+		Map<String, String> roles = Database.getSelfAssignableRoles(guildId);
 		if(roles == null || main.jda.getGuildById(guildId) == null){
 			error(ctx, 404, "guild not found");
 			return;
@@ -225,12 +224,12 @@ public class WebService{
 			selfAssignableRoles.add(String.format("{\"role\": \"%s\", \"emote\": \"%s\"}", role.getKey(), role.getValue()));
 		}
 		ok(ctx, String.format("{\"prefix\": %s, \"welcome_message_enabled\": %b, \"welcome_message\": %s, \"welcome_channel_id\":%s, \"nsfw_enabled\": %b, \"self_assignable_roles\": [%s]}",
-				JSONObject.quote(main.database.getCommandPrefix(guildId)),
-				main.database.getWelcomeMessageEnabled(guildId),
-				JSONObject.quote(main.database.getWelcomeMessage(guildId)),
-				JSONObject.quote(main.database.getWelcomeChannelId(guildId)),
-				main.database.getNSFWEnabled(guildId),
-				String.join(", ", selfAssignableRoles)
+			JSONObject.quote(Database.getCommandPrefix(guildId)),
+			Database.getWelcomeMessageEnabled(guildId),
+			JSONObject.quote(Database.getWelcomeMessage(guildId)),
+			JSONObject.quote(Database.getWelcomeChannelId(guildId)),
+			Database.getNSFWEnabled(guildId),
+			String.join(", ", selfAssignableRoles)
 		));
 	}
 
@@ -242,22 +241,22 @@ public class WebService{
 		}
 		JsonObject json = JsonParser.parseString(ctx.body()).getAsJsonObject();
 		if(json.get("prefix") != null){
-			main.database.setCommandPrefix(guildId, json.get("prefix").getAsString());
+			Database.setCommandPrefix(guildId, json.get("prefix").getAsString());
 		}
 		if(json.get("welcome_message_enabled") != null){
-			main.database.setWelcomeMessageEnabled(guildId, json.get("welcome_message_enabled").getAsBoolean());
+			Database.setWelcomeMessageEnabled(guildId, json.get("welcome_message_enabled").getAsBoolean());
 		}
 		if(json.get("welcome_message") != null){
-			main.database.setWelcomeMessage(guildId, json.get("welcome_message").getAsString());
+			Database.setWelcomeMessage(guildId, json.get("welcome_message").getAsString());
 		}
 		if(json.get("welcome_channel_id") != null){
-			main.database.setWelcomeChannelId(guildId, json.get("welcome_channel_id").getAsString());
+			Database.setWelcomeChannelId(guildId, json.get("welcome_channel_id").getAsString());
 		}
 		if(json.get("nsfw_enabled") != null){
-			main.database.setNSFWEnabled(guildId, json.get("nsfw_enabled").getAsBoolean());
+			Database.setNSFWEnabled(guildId, json.get("nsfw_enabled").getAsBoolean());
 		}
 		if(json.get("self_assignable_roles") != null){
-			main.database.setSelfAssignableRoles(guildId, json.get("self_assignable_roles").getAsJsonArray());
+			Database.setSelfAssignableRoles(guildId, json.get("self_assignable_roles").getAsJsonArray());
 		}
 		ok(ctx);
 	}
