@@ -2,7 +2,6 @@ package de.anteiku.kittybot.commands;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.apache.commons.collections4.Bag;
 
 import java.util.List;

@@ -2,6 +2,7 @@ package de.anteiku.kittybot.commands;
 
 import com.google.gson.JsonParser;
 import de.anteiku.kittybot.KittyBot;
+import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.utils.Emotes;
 import de.anteiku.kittybot.utils.ReactiveMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -182,7 +183,7 @@ public abstract class ACommand{
 		addStatus(ctx.getMessage(), Status.QUESTION);
 		return answer(ctx, new EmbedBuilder()
 			.setColor(Color.ORANGE)
-			.addField("Command usage:", "`" + main.database.getCommandPrefix(ctx.getGuild().getId()) + usage + "`", true)
+			.addField("Command usage:", "`" + Database.getCommandPrefix(ctx.getGuild().getId()) + usage + "`", true)
 			.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
 			.setTimestamp(Instant.now())
 		);

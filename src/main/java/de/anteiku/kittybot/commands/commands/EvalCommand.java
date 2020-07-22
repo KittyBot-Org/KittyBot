@@ -39,7 +39,6 @@ public class EvalCommand extends ACommand{
 		if(ctx.getUser().getId().equals(Config.DISCORD_ADMIN_ID)){
 			try{
 				engine.put("main", main);
-				engine.put("database", main.database);
 				engine.put("ctx", ctx);
 				engine.put("message", ctx.getMessage());
 				engine.put("channel", ctx.getChannel());

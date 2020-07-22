@@ -69,7 +69,7 @@ public class CommandManager{
 	}
 
 	public void destroyMusicPlayer(Guild guild, String controllerId){
-		main.lavalink.getLink(guild).destroy();
+		KittyBot.lavalink.getLink(guild).destroy();
 		removeReactiveMessage(guild, controllerId);
 		musicPlayers.remove(guild.getId());
 	}

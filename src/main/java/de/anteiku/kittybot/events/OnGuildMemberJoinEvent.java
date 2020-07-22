@@ -1,6 +1,7 @@
 package de.anteiku.kittybot.events;
 
 import de.anteiku.kittybot.KittyBot;
+import de.anteiku.kittybot.database.Database;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
@@ -18,11 +19,11 @@ public class OnGuildMemberJoinEvent extends ListenerAdapter{
 
 	@Override
 	public void onGuildMemberJoin(GuildMemberJoinEvent event){
-		String id = main.database.getWelcomeChannelId(event.getGuild().getId());
-		if(!id.equals("-1") && main.database.getWelcomeMessageEnabled(event.getGuild().getId())){
+		String id = Database.getWelcomeChannelId(event.getGuild().getId());
+		if(!id.equals("-1") && Database.getWelcomeMessageEnabled(event.getGuild().getId())){
 			TextChannel channel = event.getGuild().getTextChannelById(id);
 			if(channel != null){
-				channel.sendMessage(generateJoinMessage(main.database.getWelcomeMessage(event.getGuild().getId()), event.getUser())).queue();
+				channel.sendMessage(generateJoinMessage(Database.getWelcomeMessage(event.getGuild().getId()), event.getUser())).queue();
 			}
 		}
 	}

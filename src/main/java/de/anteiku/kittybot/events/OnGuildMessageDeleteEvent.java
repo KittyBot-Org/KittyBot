@@ -14,7 +14,7 @@ public class OnGuildMessageDeleteEvent extends ListenerAdapter{
 
 	@Override
 	public void onGuildMessageDelete(GuildMessageDeleteEvent event){
-		this.main.commandManager.processCommandResponseDelete(event.getChannel(), event.getMessageId());
+		KittyBot.commandManager.processCommandResponseDelete(event.getChannel(), event.getMessageId());
 	}
 
 }

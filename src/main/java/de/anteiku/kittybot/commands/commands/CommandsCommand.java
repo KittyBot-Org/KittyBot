@@ -3,6 +3,7 @@ package de.anteiku.kittybot.commands.commands;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.commands.ACommand;
 import de.anteiku.kittybot.commands.CommandContext;
+import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.utils.Emotes;
 import de.anteiku.kittybot.utils.ReactiveMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -18,7 +19,7 @@ public class CommandsCommand extends ACommand{
 	public static String COMMAND = "commands";
 	public static String USAGE = "commands <page>";
 	public static String DESCRIPTION = "Lists all aviable commands";
-	public static double PAGECOUNT = 5;
+	public static double PAGE_COUNT = 5;
 	protected static String[] ALIAS = {"cmds"};
 
 	public CommandsCommand(KittyBot main){
@@ -29,7 +30,7 @@ public class CommandsCommand extends ACommand{
 		int page = getPageByMessage(message) + 1;
 		if(page <= getMaxPages()){
 			String[] args = {String.valueOf(page)};
-			message.editMessage(buildCommands(args, main.database.getCommandPrefix(message.getGuild().getId())).build()).queue();
+			message.editMessage(buildCommands(args, Database.getCommandPrefix(message.getGuild().getId())).build()).queue();
 		}
 	}
 
@@ -44,13 +45,13 @@ public class CommandsCommand extends ACommand{
 		int page = getPageByMessage(message) - 1;
 		if(page >= 1){
 			String[] args = {String.valueOf(page)};
-			message.editMessage(buildCommands(args, main.database.getCommandPrefix(message.getGuild().getId())).build()).queue();
+			message.editMessage(buildCommands(args, Database.getCommandPrefix(message.getGuild().getId())).build()).queue();
 		}
 	}
 
 	@Override
 	public void run(CommandContext ctx){
-		ctx.getChannel().sendMessage(buildCommands(ctx.getArgs(), main.database.getCommandPrefix(ctx.getGuild().getId())).build()).queue(message -> {
+		ctx.getChannel().sendMessage(buildCommands(ctx.getArgs(), Database.getCommandPrefix(ctx.getGuild().getId())).build()).queue(message -> {
 			KittyBot.commandManager.addReactiveMessage(ctx, message, this, "-1");
 			message.addReaction(Emotes.ARROW_LEFT.get()).queue();
 			message.addReaction(Emotes.ARROW_RIGHT.get()).queue();
@@ -74,7 +75,7 @@ public class CommandsCommand extends ACommand{
 
 		int i = 0;
 		for(Map.Entry<String, ACommand> c : KittyBot.commandManager.commands.entrySet()){
-			if((i >= page * PAGECOUNT) && (i < page * PAGECOUNT + PAGECOUNT)){
+			if((i >= page * PAGE_COUNT) && (i < page * PAGE_COUNT + PAGE_COUNT)){
 				ACommand cmd = c.getValue();
 				eb.addField("**" + prefix + cmd.getCommand() + ":** ", " :small_blue_diamond:" + cmd.getDescription(), false);
 			}
@@ -86,7 +87,7 @@ public class CommandsCommand extends ACommand{
 	}
 
 	private int getMaxPages(){
-		return (int) Math.ceil((double) KittyBot.commandManager.commands.size() / PAGECOUNT);
+		return (int) Math.ceil((double) KittyBot.commandManager.commands.size() / PAGE_COUNT);
 	}
 
 	@Override
