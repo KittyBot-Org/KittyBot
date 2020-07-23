@@ -3,8 +3,9 @@ package de.anteiku.kittybot.commands.commands;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.commands.ACommand;
 import de.anteiku.kittybot.commands.CommandContext;
-import de.anteiku.kittybot.utils.Emotes;
-import de.anteiku.kittybot.utils.ReactiveMessage;
+import de.anteiku.kittybot.objects.Cache;
+import de.anteiku.kittybot.objects.Emotes;
+import de.anteiku.kittybot.objects.ReactiveMessage;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 import java.util.Arrays;
@@ -31,7 +32,7 @@ public class NekoCommand extends ACommand{
 		}
 		if(ctx.getArgs().length > 0 && nekos.contains(ctx.getArgs()[0])){
 			image(ctx, getNeko(ctx.getArgs()[0])).queue(message -> {
-				KittyBot.commandManager.addReactiveMessage(ctx, message, this, "-1");
+				Cache.addReactiveMessage(ctx, message, this, "-1");
 				message.addReaction(Emotes.WASTEBASKET.get()).queue();
 			});
 		}

@@ -3,6 +3,7 @@ package de.anteiku.kittybot.commands.commands;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.commands.ACommand;
 import de.anteiku.kittybot.commands.CommandContext;
+import de.anteiku.kittybot.objects.Cache;
 
 public class VolumeCommand extends ACommand{
 
@@ -23,7 +24,7 @@ public class VolumeCommand extends ACommand{
 			sendError(ctx, "To use this command you need to be connected to a voice channel");
 			return;
 		}
-		var musicPlayer = KittyBot.commandManager.getMusicPlayer(ctx.getGuild());
+		var musicPlayer = Cache.getMusicPlayer(ctx.getGuild());
 		if(musicPlayer == null){
 			sendError(ctx, "No active music player found!");
 			return;

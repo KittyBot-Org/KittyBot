@@ -3,7 +3,7 @@ package de.anteiku.kittybot.commands.commands;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.commands.ACommand;
 import de.anteiku.kittybot.commands.CommandContext;
-import de.anteiku.kittybot.utils.Config;
+import de.anteiku.kittybot.objects.Config;
 import net.dv8tion.jda.api.entities.ChannelType;
 
 import javax.script.ScriptEngine;
@@ -36,7 +36,7 @@ public class EvalCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		if(ctx.getUser().getId().equals(Config.DISCORD_ADMIN_ID)){
+		if(ctx.getUser().getId().equals(Config.ADMIN_ID)){
 			try{
 				engine.put("main", main);
 				engine.put("ctx", ctx);

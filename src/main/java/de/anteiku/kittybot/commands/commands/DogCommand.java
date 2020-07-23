@@ -3,7 +3,7 @@ package de.anteiku.kittybot.commands.commands;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.commands.ACommand;
 import de.anteiku.kittybot.commands.CommandContext;
-import de.anteiku.kittybot.utils.Emotes;
+import de.anteiku.kittybot.objects.Emotes;
 
 public class DogCommand extends ACommand{
 

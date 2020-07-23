@@ -4,8 +4,9 @@ import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.commands.ACommand;
 import de.anteiku.kittybot.commands.CommandContext;
 import de.anteiku.kittybot.commands.MusicPlayer;
-import de.anteiku.kittybot.utils.Emotes;
-import de.anteiku.kittybot.utils.ReactiveMessage;
+import de.anteiku.kittybot.objects.Cache;
+import de.anteiku.kittybot.objects.Emotes;
+import de.anteiku.kittybot.objects.ReactiveMessage;
 import lavalink.client.io.jda.JdaLink;
 import lavalink.client.player.LavalinkPlayer;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
@@ -38,7 +39,7 @@ public class PlayCommand extends ACommand{
 			LavalinkPlayer player = link.getPlayer();
 			MusicPlayer musicPlayer = new MusicPlayer(player);
 			player.addListener(musicPlayer);
-			KittyBot.commandManager.addMusicPlayer(ctx.getGuild(), musicPlayer);
+			Cache.addMusicPlayer(ctx.getGuild(), musicPlayer);
 			musicPlayer.loadItem(this, ctx, ctx.getArgs());
 		}
 		else{
@@ -49,7 +50,7 @@ public class PlayCommand extends ACommand{
 	@Override
 	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
 		if(event.getReactionEmote().isEmoji()){
-			var musicPlayer = KittyBot.commandManager.getMusicPlayer(event.getGuild());
+			var musicPlayer = Cache.getMusicPlayer(event.getGuild());
 			if(musicPlayer == null){
 				return;
 			}
@@ -80,7 +81,7 @@ public class PlayCommand extends ACommand{
 			}
 			else if(emoji.equals(Emotes.X.get())){
 				event.getChannel().deleteMessageById(event.getMessageId()).queue();// TODO deleting the message is bad :)
-				KittyBot.commandManager.destroyMusicPlayer(event.getGuild(), event.getMessageId());
+				Cache.destroyMusicPlayer(event.getGuild(), event.getMessageId());
 			}
 			musicPlayer.updateMusicControlMessage(event.getChannel());
 			event.getReaction().removeReaction(event.getUser()).queue();

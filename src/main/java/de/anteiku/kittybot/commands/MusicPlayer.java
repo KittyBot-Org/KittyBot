@@ -7,8 +7,9 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.utils.Emotes;
-import de.anteiku.kittybot.utils.Utils;
+import de.anteiku.kittybot.objects.Cache;
+import de.anteiku.kittybot.objects.Emotes;
+import de.anteiku.kittybot.Utils;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavalinkPlayer;
 import lavalink.client.player.event.PlayerEventListenerAdapter;
@@ -210,7 +211,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter {
 			message -> {
 				messageId = message.getId();
 				channelId = message.getChannel().getId();
-				KittyBot.commandManager.addReactiveMessage(ctx, message, command, "-1");
+				Cache.addReactiveMessage(ctx, message, command, "-1");
 				message.addReaction(Emotes.VOLUME_DOWN.get()).queue();
 				message.addReaction(Emotes.VOLUME_UP.get()).queue();
 				message.addReaction(Emotes.BACK.get()).queue();

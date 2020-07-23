@@ -1,4 +1,4 @@
-package de.anteiku.kittybot.utils;
+package de.anteiku.kittybot;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.entities.Emote;

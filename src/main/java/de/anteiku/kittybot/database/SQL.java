@@ -1,7 +1,7 @@
 package de.anteiku.kittybot.database;
 
 import com.zaxxer.hikari.HikariDataSource;
-import de.anteiku.kittybot.utils.Config;
+import de.anteiku.kittybot.objects.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

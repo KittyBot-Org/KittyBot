@@ -1,4 +1,4 @@
-package de.anteiku.kittybot.utils;
+package de.anteiku.kittybot.objects;
 
 public class ReactiveMessage{
 
