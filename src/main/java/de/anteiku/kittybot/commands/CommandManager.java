@@ -2,7 +2,7 @@ package de.anteiku.kittybot.commands;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.database.Database;
-import de.anteiku.kittybot.utils.ReactiveMessage;
+import de.anteiku.kittybot.objects.ReactiveMessage;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;

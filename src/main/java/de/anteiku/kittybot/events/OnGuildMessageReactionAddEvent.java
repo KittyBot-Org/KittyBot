@@ -1,7 +1,7 @@
 package de.anteiku.kittybot.events;
 
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.utils.ReactiveMessage;
+import de.anteiku.kittybot.objects.ReactiveMessage;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 

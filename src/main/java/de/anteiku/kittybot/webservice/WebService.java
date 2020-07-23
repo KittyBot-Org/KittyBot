@@ -12,7 +12,7 @@ import com.jagrosh.jdautilities.oauth2.session.Session;
 import com.jagrosh.jdautilities.oauth2.state.DefaultStateController;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.database.Database;
-import de.anteiku.kittybot.utils.Config;
+import de.anteiku.kittybot.objects.Config;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import net.dv8tion.jda.api.Permission;
@@ -42,8 +42,8 @@ public class WebService{
 		scopes = new Scope[]{Scope.IDENTIFY};
 		DefaultSessionController sessionController = new DefaultSessionController();
 		DefaultStateController stateController = new DefaultStateController();
-		oAuthClient = new OAuth2ClientImpl(Long.parseLong(Config.DISCORD_BOT_ID), Config.DISCORD_BOT_SECRET, sessionController, stateController, main.httpClient);
-		Javalin.create(config -> config.enableCorsForOrigin(Config.DISCORD_ORIGIN_URL)).routes(() -> {
+		oAuthClient = new OAuth2ClientImpl(Long.parseLong(Config.BOT_ID), Config.BOT_SECRET, sessionController, stateController, main.httpClient);
+		Javalin.create(config -> config.enableCorsForOrigin(Config.ORIGIN_URL)).routes(() -> {
 			get("/discord_login", this::discordLogin);
 			get("/health_check", ctx -> ctx.result("alive"));
 			post("/login", this::login);
@@ -71,10 +71,10 @@ public class WebService{
 	private void discordLogin(Context ctx){
 		String key = ctx.header("Authorization");
 		if(key == null || !Database.sessionExists(key)){
-			ctx.redirect(oAuthClient.generateAuthorizationURL(Config.DISCORD_REDIRECT_URL, scopes));
+			ctx.redirect(oAuthClient.generateAuthorizationURL(Config.REDIRECT_URL, scopes));
 		}
 		else{
-			ctx.redirect(Config.DISCORD_REDIRECT_URL);
+			ctx.redirect(Config.REDIRECT_URL);
 		}
 	}
 
@@ -143,7 +143,7 @@ public class WebService{
 			error(ctx, 404, "Session not found");
 			return;
 		}
-		if(!userId.equals(Config.DISCORD_ADMIN_ID)){
+		if(!userId.equals(Config.ADMIN_ID)){
 			error(ctx, 403, "Only admins have access to this!");
 			return;
 		}

@@ -4,7 +4,7 @@ import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.commands.ACommand;
 import de.anteiku.kittybot.commands.CommandContext;
 import de.anteiku.kittybot.database.Database;
-import de.anteiku.kittybot.utils.Utils;
+import de.anteiku.kittybot.Utils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
 

@@ -3,8 +3,9 @@ package de.anteiku.kittybot.commands;
 import com.google.gson.JsonParser;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.database.Database;
-import de.anteiku.kittybot.utils.Emotes;
-import de.anteiku.kittybot.utils.ReactiveMessage;
+
+import de.anteiku.kittybot.objects.Emotes;
+import de.anteiku.kittybot.objects.ReactiveMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
