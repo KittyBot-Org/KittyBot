@@ -20,4 +20,6 @@
 #### A Discord Bot to manage your roles
 ---
 
+# hewe to manyage uw discowd
+
 //TODO: README.md
