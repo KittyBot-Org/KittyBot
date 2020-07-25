@@ -2,6 +2,7 @@ package de.anteiku.kittybot.events;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.database.Database;
+import de.anteiku.kittybot.objects.Cache;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
@@ -23,6 +24,7 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 	public void onGuildMemberJoin(GuildMemberJoinEvent event){
 		String id = Database.getWelcomeChannelId(event.getGuild().getId());
 		if(!id.equals("-1") && Database.getWelcomeMessageEnabled(event.getGuild().getId())){
+			var invite = Cache.getUsedInvite(event.getGuild());
 			TextChannel channel = event.getGuild().getTextChannelById(id);
 			if(channel != null){
 				channel.sendMessage(generateJoinMessage(Database.getWelcomeMessage(event.getGuild().getId()), event.getUser())).queue();
@@ -41,7 +43,7 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 	}
 
 	private String generateJoinMessage(String message, User user){
-		String random = JOIN_MESSAGES[main.rand.nextInt(JOIN_MESSAGES.length - 1)];
+		String random = JOIN_MESSAGES[KittyBot.rand.nextInt(JOIN_MESSAGES.length - 1)];
 		message = message.replace("[randomwelcomemessage]", random);
 
 		message = message.replace("[username]", user.getAsMention());

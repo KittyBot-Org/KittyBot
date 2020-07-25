@@ -57,9 +57,12 @@ public class Config{
 			DB_PASSWORD = String.valueOf(config.get("db_password"));
 
 			LAVALINK_NODES = new ArrayList<>();
-			for(Map.Entry<?, ?> entry : ((Map<?, ?>) config.get("lavalink_nodes")).entrySet()) {
-				var node = (Map<?, ?>) entry.getValue();
-				LAVALINK_NODES.add(new LavalinkNode(String.valueOf(node.get("host")), String.valueOf(node.get("port")), String.valueOf(node.get("password"))));
+			var lavalinkNodes = config.get("lavalink_nodes");
+			if(lavalinkNodes != null){
+				for(Map.Entry<?, ?> entry : ((Map<?, ?>) lavalinkNodes).entrySet()) {
+					var node = (Map<?, ?>) entry.getValue();
+					LAVALINK_NODES.add(new LavalinkNode(String.valueOf(node.get("host")), String.valueOf(node.get("port")), String.valueOf(node.get("password"))));
+				}
 			}
 
 		}

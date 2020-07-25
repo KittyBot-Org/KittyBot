@@ -5,26 +5,37 @@ import de.anteiku.kittybot.commands.ACommand;
 import de.anteiku.kittybot.commands.CommandContext;
 import de.anteiku.kittybot.commands.MusicPlayer;
 import de.anteiku.kittybot.database.Database;
-import de.anteiku.kittybot.database.SQL;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Cache{
 
 	public static final Map<String, String> GUILD_PREFIXES = new HashMap<>();
-	public static final Map<Long, Invite> INVITES = new HashMap<>();
+	public static final Map<String, Map<String, InviteData>> INVITES = new HashMap<>();
 	public static final Map<String, MusicPlayer> MUSIC_PLAYERS = new HashMap<>();
 	public static final Map<String, ReactiveMessage> REACTIVE_MESSAGES = new HashMap<>();
 	public static final Map<String, String> COMMAND_RESPONSES = new HashMap<>();
 	public static final Map<String, Map<String, String>> SELF_ASSIGNABLE_ROLES = new HashMap<>();
 
 	private Cache(){}
+
+	public static void getUsedInvite(Guild guild){
+		guild.retrieveInvites().queue(invites -> {
+			for(Invite invite : invites){
+				var inviteData = INVITES.get(guild.getId()).get(invite.getCode());
+			}
+		});
+	}
+
+	public static void initInviteCache(JDA jda)
 
 	//Self Assignable Roles
 
@@ -40,7 +51,7 @@ public class Cache{
 
 	public static void setSelfAssignableRoles(String guildId, Map<String, String> selfAssignableRoles){
 		SELF_ASSIGNABLE_ROLES.put(guildId, selfAssignableRoles);
-		Database.setSelfAssignableRoles(guildId, selfAssignableRoles);
+		//Database.setSelfAssignableRoles(guildId, selfAssignableRoles);
 	}
 
 	//Command Prefixes

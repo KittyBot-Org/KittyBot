@@ -5,29 +5,25 @@ import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.ReactiveMessage;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class CommandManager{
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommandManager.class);
-	private final KittyBot main;
 	public final Map<String, ACommand> commands;
-	private final Map<String, String> commandResponses;
-	private final Map<String, MusicPlayer> musicPlayers;
 
-	public CommandManager(KittyBot main){
-		this.main = main;
+	public CommandManager(){
 		this.commands = new LinkedHashMap<>();
-		this.commandResponses = new HashMap<>();
-		this.musicPlayers = new HashMap<>();
+	}
+
+	public static CommandManager build(ACommand... commands){
+		return new CommandManager().addCommands(commands);
 	}
 
 	public CommandManager addCommands(ACommand... commands){
@@ -35,17 +31,6 @@ public class CommandManager{
 			this.commands.put(command.getCommand(), command);
 		}
 		return this;
-	}
-
-	public void addCommandResponse(Message command, Message response){
-		commandResponses.put(command.getId(), response.getId());
-	}
-
-	public void processCommandResponseDelete(TextChannel channel, String command){
-		var commandResponse = commandResponses.get(command);
-		if(commandResponse != null){
-			channel.deleteMessageById(commandResponse).queue();
-		}
 	}
 
 	public void addReactiveMessage(CommandContext ctx, Message message, ACommand cmd, String allowed){
@@ -58,20 +43,6 @@ public class CommandManager{
 
 	public ReactiveMessage getReactiveMessage(Guild guild, String message){
 		return Database.isReactiveMessage(guild.getId(), message);
-	}
-
-	public void addMusicPlayer(Guild guild, MusicPlayer player){
-		musicPlayers.put(guild.getId(), player);
-	}
-
-	public MusicPlayer getMusicPlayer(Guild guild){
-		return musicPlayers.get(guild.getId());
-	}
-
-	public void destroyMusicPlayer(Guild guild, String controllerId){
-		KittyBot.lavalink.getLink(guild).destroy();
-		removeReactiveMessage(guild, controllerId);
-		musicPlayers.remove(guild.getId());
 	}
 
 	public boolean checkCommands(GuildMessageReceivedEvent event){

@@ -43,15 +43,13 @@ public class KittyBot{
 	public static JdaLavalink lavalink;
 	public static AudioPlayerManager audioPlayerManager;
 	public static CommandManager commandManager;
-	public Random rand;
+	public static Random rand = new Random();
 
 	public KittyBot(){
 		LOG.info("Starting KittyBot...");
 		httpClient = new OkHttpClient();
 
 		Config.load("config.yml");
-
-		rand = new Random();
 
 		try{
 			lavalink = new JdaLavalink(Config.BOT_ID, 1, this::getShardById);
@@ -77,9 +75,7 @@ public class KittyBot{
 					GatewayIntent.DIRECT_MESSAGES,
 					GatewayIntent.DIRECT_MESSAGE_REACTIONS
 				)
-				.disableCache(CacheFlag.MEMBER_OVERRIDES)
-			                .setMemberCachePolicy(MemberCachePolicy.ALL)
-			                .setChunkingFilter(ChunkingFilter.ALL)
+				.disableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS)
 				.setToken(Config.BOT_TOKEN)
 	            .addEventListeners(
 		            new OnGuildJoinEvent(this),
@@ -87,14 +83,14 @@ public class KittyBot{
 		            new OnEmoteEvent(this),
 		            new OnGuildMessageEvent(this),
 		            new OnGuildVoiceEvent(this),
-		            new OnReadyEvent(this),
 		            lavalink
 	            )
 	            .setVoiceDispatchInterceptor(lavalink.getVoiceInterceptor())
-				.setActivity(Activity.playing("loading..."))
-	            .setStatus(OnlineStatus.DO_NOT_DISTURB)
+				.setActivity(Activity.watching("you \uD83D\uDC40"))
+	            .setStatus(OnlineStatus.ONLINE)
 	            .setGatewayEncoding(GatewayEncoding.ETF)
 				.build().awaitReady();
+
 			RestAction.setDefaultFailure(null);
 
 			Database.init(this);

@@ -4,6 +4,7 @@ import com.google.gson.JsonParser;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.database.Database;
 
+import de.anteiku.kittybot.objects.Cache;
 import de.anteiku.kittybot.objects.Emotes;
 import de.anteiku.kittybot.objects.ReactiveMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -28,11 +29,11 @@ public abstract class ACommand{
 
 	protected static final Logger LOG = LoggerFactory.getLogger(ACommand.class);
 
-	protected KittyBot main;
-	protected String command;
-	protected String usage;
-	protected String description;
-	protected String[] alias;
+	public KittyBot main;
+	public String command;
+	public String usage;
+	public String description;
+	public String[] alias;
 
 	protected ACommand(KittyBot main, String command, String usage, String description, String[] alias){
 		this.main = main;
@@ -87,7 +88,7 @@ public abstract class ACommand{
 	}
 
 	protected void queue(MessageAction messageAction, CommandContext ctx){
-		messageAction.queue(success -> KittyBot.commandManager.addCommandResponse(ctx.getMessage(), success), failure -> sendError(ctx, "There was an error processing your command!\nError: " + failure.getLocalizedMessage()));
+		messageAction.queue(success -> Cache.addCommandResponse(ctx.getMessage(), success), failure -> sendError(ctx, "There was an error processing your command!\nError: " + failure.getLocalizedMessage()));
 	}
 
 	protected void addStatus(Message message, Status status){
