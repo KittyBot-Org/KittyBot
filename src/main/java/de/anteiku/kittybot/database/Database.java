@@ -234,7 +234,7 @@ public class Database{
 			var stmt = SQL.prepStatement("DELETE FROM self_assignable_roles WHERE role_id = ? and guild_id = ?");
 			try {
 				stmt.setString(1, role);
-				stmt.setString(1, guildId);
+				stmt.setString(2, guildId);
 				boolean r = SQL.execute(stmt);
 				if(!r){
 					result = false;
