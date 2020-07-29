@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -105,6 +106,9 @@ public class Database{
 		catch(SQLException e){
 			LOG.error("Error while getting command statistics from guild" + guildId, e);
 		}
+		finally{
+			close(stmt);
+		}
 		return null;
 	}
 
@@ -125,6 +129,9 @@ public class Database{
 		}
 		catch(SQLException e){
 			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
+		}
+		finally{
+			close(stmt);
 		}
 		return null;
 	}
@@ -282,6 +289,9 @@ public class Database{
 		catch(SQLException e){
 			LOG.error("Error while getting self-assignable roles from guild " + guildId, e);
 		}
+		finally{
+			close(stmt);
+		}
 		return null;
 	}
 
@@ -360,6 +370,9 @@ public class Database{
 		catch(SQLException e){
 			LOG.error("Error while checking reactive message for guild " + guildId + " message " + messageId, e);
 		}
+		finally{
+			close(stmt);
+		}
 		return null;
 	}
 
@@ -377,6 +390,9 @@ public class Database{
 		}
 		catch(SQLException e){
 			LOG.error("Error while requesting voice state for user " + userId + " in guild: " + guildId, e);
+		}
+		finally{
+			close(stmt);
 		}
 		return -1L;
 	}
@@ -429,6 +445,9 @@ public class Database{
 		catch (SQLException e) {
 			LOG.error("Error checking if session exists", e);
 		}
+		finally{
+			close(stmt);
+		}
 		return false;
 	}
 
@@ -456,7 +475,19 @@ public class Database{
 		catch(SQLException e){
 			LOG.error("Error while getting session", e);
 		}
+		finally{
+			close(stmt);
+		}
 		return null;
+	}
+
+	private static void close(PreparedStatement stmt){
+		try{
+			stmt.close();
+		}
+		catch(SQLException e){
+			LOG.error("Error while closing statement", e);
+		}
 	}
 
 }

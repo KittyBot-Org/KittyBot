@@ -51,7 +51,9 @@ public class SQL{
 			Scanner scanner = new Scanner(SQL.class.getClassLoader().getResourceAsStream("sql_tables/" + table + ".sql")).useDelimiter("\\A");
 			String sql = scanner.hasNext() ? scanner.next() : "";
 			LOG.info("Read sql table from resources: {}", table);
-			getConnection().createStatement().execute(sql);
+			var stmt = getConnection().createStatement();
+			stmt.execute(sql);
+			stmt.close();
 		}
 		catch(SQLException e){
 			LOG.error("Error while reading sql table file: " + table, e);
@@ -86,12 +88,15 @@ public class SQL{
 		throw new NullPointerException("Error getting preparedStatement");
 	}
 
-	public static boolean execute(PreparedStatement preparedStatement){
+	public static boolean execute(PreparedStatement preparedStatement) throws SQLException{
 		try{
 			return preparedStatement.execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error executing prepared statement", e);
+		}
+		finally{
+			preparedStatement.close();
 		}
 		return false;
 	}
@@ -117,23 +122,29 @@ public class SQL{
 		return null;
 	}
 
-	public static int update(PreparedStatement preparedStatement){
+	public static int update(PreparedStatement preparedStatement) throws SQLException{
 		try{
 			return preparedStatement.executeUpdate();
 		}
 		catch(SQLException e){
 			LOG.error("Error update prepared statement", e);
 		}
+		finally{
+			preparedStatement.close();
+		}
 		return -1;
 	}
 
-	public static boolean exists(PreparedStatement preparedStatement){
+	public static boolean exists(PreparedStatement preparedStatement) throws SQLException{
 		try{
 			var result = query(preparedStatement);
 			return result != null && result.next();
 		}
 		catch(SQLException e){
 			LOG.error("Error exists prepared statement", e);
+		}
+		finally{
+			preparedStatement.close();
 		}
 		return false;
 	}
