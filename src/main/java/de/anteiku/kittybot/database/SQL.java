@@ -18,22 +18,15 @@ public class SQL{
 	private static HikariDataSource dataSource;
 
 	static{
-		try{
-			dataSource = new HikariDataSource();
-			dataSource.setDriverClassName("org.postgresql.Driver");
+		dataSource = new HikariDataSource();
+		dataSource.setDriverClassName("org.postgresql.Driver");
 
-			dataSource.setJdbcUrl("jdbc:postgresql://" + Config.DB_HOST + ":" + Config.DB_PORT + "/" + Config.DB_DB);
-			dataSource.setUsername(Config.DB_USER);
-			dataSource.setPassword(Config.DB_PASSWORD);
+		dataSource.setJdbcUrl("jdbc:postgresql://" + Config.DB_HOST + ":" + Config.DB_PORT + "/" + Config.DB_DB);
+		dataSource.setUsername(Config.DB_USER);
+		dataSource.setPassword(Config.DB_PASSWORD);
 
-			dataSource.setMinimumIdle(4);
-			dataSource.setMaximumPoolSize(16);
-			dataSource.setAutoCommit(true);
-			dataSource.setLoginTimeout(3);
-		}
-		catch(SQLException e) {
-			LOG.error("Error while initializing database connection", e);
-		}
+		dataSource.setMaximumPoolSize(16);
+		dataSource.setAutoCommit(true);
 	}
 
 	public static Connection getConnection() throws NullPointerException{
