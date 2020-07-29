@@ -26,9 +26,9 @@ public class SQL{
 		dataSource.setPassword(Config.DB_PASSWORD);
 
 		dataSource.setMaximumPoolSize(16);
-		dataSource.setConnectionTimeout(3600000);
-		dataSource.setIdleTimeout(600000);
-		dataSource.setMinimumIdle(4);
+		dataSource.setConnectionTimeout(60000);
+		dataSource.setIdleTimeout(2000);
+		dataSource.setMinimumIdle(2);
 	}
 
 	public static Connection getConnection() throws NullPointerException{
