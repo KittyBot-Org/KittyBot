@@ -106,9 +106,6 @@ public class Database{
 		catch(SQLException e){
 			LOG.error("Error while getting command statistics from guild" + guildId, e);
 		}
-		finally{
-			close(stmt);
-		}
 		return null;
 	}
 
@@ -278,9 +275,6 @@ public class Database{
 		catch(SQLException e){
 			LOG.error("Error while getting self-assignable roles from guild " + guildId, e);
 		}
-		finally{
-			close(stmt);
-		}
 		return null;
 	}
 
@@ -359,9 +353,6 @@ public class Database{
 		catch(SQLException e){
 			LOG.error("Error while checking reactive message for guild " + guildId + " message " + messageId, e);
 		}
-		finally{
-			close(stmt);
-		}
 		return null;
 	}
 
@@ -379,9 +370,6 @@ public class Database{
 		}
 		catch(SQLException e){
 			LOG.error("Error while requesting voice state for user " + userId + " in guild: " + guildId, e);
-		}
-		finally{
-			close(stmt);
 		}
 		return -1L;
 	}
@@ -431,11 +419,8 @@ public class Database{
 			stmt.setString(1, key);
 			return SQL.exists(stmt);
 		}
-		catch (SQLException e) {
+		catch (SQLException e){
 			LOG.error("Error checking if session exists", e);
-		}
-		finally{
-			close(stmt);
 		}
 		return false;
 	}
@@ -464,19 +449,7 @@ public class Database{
 		catch(SQLException e){
 			LOG.error("Error while getting session", e);
 		}
-		finally{
-			close(stmt);
-		}
 		return null;
-	}
-
-	private static void close(PreparedStatement stmt){
-		try{
-			stmt.close();
-		}
-		catch(SQLException e){
-			LOG.error("Error while closing statement", e);
-		}
 	}
 
 }

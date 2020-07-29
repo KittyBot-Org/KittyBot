@@ -29,7 +29,6 @@ public class SQL{
 		dataSource.setConnectionTimeout(3600000);
 		dataSource.setIdleTimeout(600000);
 		dataSource.setMinimumIdle(4);
-		dataSource.setAutoCommit(true);
 	}
 
 	public static Connection getConnection() throws NullPointerException{
@@ -51,16 +50,14 @@ public class SQL{
 			Scanner scanner = new Scanner(SQL.class.getClassLoader().getResourceAsStream("sql_tables/" + table + ".sql")).useDelimiter("\\A");
 			String sql = scanner.hasNext() ? scanner.next() : "";
 			LOG.info("Read sql table from resources: {}", table);
-			var stmt = getConnection().createStatement();
-			stmt.execute(sql);
-			stmt.close();
+			getConnection().createStatement().execute(sql);
 		}
 		catch(SQLException e){
 			LOG.error("Error while reading sql table file: " + table, e);
 		}
 	}
 
-	public static PreparedStatement prepStatement(String sql) throws NullPointerException{
+	public static PreparedStatement prepStatement(String sql){
 		try{
 			LOG.debug("prepareStatement sql: {}", sql);
 			return getConnection().prepareStatement(sql);
@@ -71,10 +68,10 @@ public class SQL{
 		catch(NullPointerException e){
 			LOG.error("Error connection is null", e);
 		}
-		throw new NullPointerException("Error getting preparedStatement");
+		return null;
 	}
 
-	public static PreparedStatement prepStatement(String sql, int resultSetType) throws NullPointerException{
+	public static PreparedStatement prepStatement(String sql, int resultSetType){
 		try{
 			LOG.debug("prepareStatement sql: {}", sql);
 			return getConnection().prepareStatement(sql, resultSetType);
@@ -85,18 +82,15 @@ public class SQL{
 		catch(NullPointerException e){
 			LOG.error("Error connection is null", e);
 		}
-		throw new NullPointerException("Error getting preparedStatement");
+		return null;
 	}
 
-	public static boolean execute(PreparedStatement preparedStatement) throws SQLException{
+	public static boolean execute(PreparedStatement preparedStatement){
 		try{
 			return preparedStatement.execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error executing prepared statement", e);
-		}
-		finally{
-			preparedStatement.close();
 		}
 		return false;
 	}
@@ -122,29 +116,23 @@ public class SQL{
 		return null;
 	}
 
-	public static int update(PreparedStatement preparedStatement) throws SQLException{
+	public static int update(PreparedStatement preparedStatement){
 		try{
 			return preparedStatement.executeUpdate();
 		}
 		catch(SQLException e){
 			LOG.error("Error update prepared statement", e);
 		}
-		finally{
-			preparedStatement.close();
-		}
 		return -1;
 	}
 
-	public static boolean exists(PreparedStatement preparedStatement) throws SQLException{
+	public static boolean exists(PreparedStatement preparedStatement){
 		try{
 			var result = query(preparedStatement);
 			return result != null && result.next();
 		}
 		catch(SQLException e){
 			LOG.error("Error exists prepared statement", e);
-		}
-		finally{
-			preparedStatement.close();
 		}
 		return false;
 	}
