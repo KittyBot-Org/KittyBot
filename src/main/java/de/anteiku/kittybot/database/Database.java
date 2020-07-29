@@ -247,22 +247,18 @@ public class Database{
 		return result;
 	}
 
-	public static void setSelfAssignableRoles(String guildId, JsonArray newRoles){
+	public static void setSelfAssignableRoles(String guildId, Map<String, String> newRoles){
 		Map<String, String> roles = getSelfAssignableRoles(guildId);
 		Map<String, String> addRoles = new HashMap<>();
 		Set<String> removeRoles = new HashSet<>();
 		for(Map.Entry<String, String> valuePair : roles.entrySet()){
-			JsonObject obj = new JsonObject();
-			obj.addProperty("role_id", valuePair.getKey());
-			obj.addProperty("emote_id", valuePair.getValue());
-			if(!newRoles.contains(obj)){
-				newRoles.remove(obj);
+			if(newRoles.get(valuePair.getKey()) == null){
+				newRoles.remove(valuePair.getKey());
 				removeRoles.add(valuePair.getKey());
 			}
 		}
-		for(JsonElement ele : newRoles){
-			JsonObject obj = ele.getAsJsonObject();
-			addRoles.put(obj.get("role").getAsString(), obj.get("emote").getAsString());
+		for(Map.Entry<String, String> ele : roles.entrySet()){
+			addRoles.put(ele.getKey(), ele.getValue());
 		}
 		removeSelfAssignableRoles(guildId, removeRoles);
 		addSelfAssignableRoles(guildId, addRoles);

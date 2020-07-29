@@ -1,5 +1,6 @@
 package de.anteiku.kittybot.webservice;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.jagrosh.jdautilities.oauth2.OAuth2Client;
@@ -22,9 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
@@ -256,7 +255,12 @@ public class WebService{
 			Database.setNSFWEnabled(guildId, json.get("nsfw_enabled").getAsBoolean());
 		}
 		if(json.get("self_assignable_roles") != null){
-			Database.setSelfAssignableRoles(guildId, json.get("self_assignable_roles").getAsJsonArray());
+			var roles = new HashMap<String, String>();
+			json.get("self_assignable_roles").getAsJsonArray().forEach(jsonElement -> {
+				var obj = jsonElement.getAsJsonObject();
+				roles.put(obj.get("role_id").getAsString(), obj.get("emote_id").getAsString());
+			});
+			Database.setSelfAssignableRoles(guildId, roles);
 		}
 		ok(ctx);
 	}

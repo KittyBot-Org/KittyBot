@@ -82,7 +82,10 @@ public class OptionsCommand extends ACommand{
 					}
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("welcomemessage")){
-					if(ctx.getArgs()[1].equalsIgnoreCase("?") || ctx.getArgs()[1].equalsIgnoreCase("help")){
+					if(ctx.getArgs().length < 2){
+
+					}
+					else if(ctx.getArgs()[1].equalsIgnoreCase("?") || ctx.getArgs()[1].equalsIgnoreCase("help")){
 						sendUsage(ctx, "options welcomemessage <message> ([randomwelcomemessage] = random Discord welcome message, [username] = joined member)");
 						return;
 					}

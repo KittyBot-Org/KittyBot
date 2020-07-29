@@ -1,28 +1,23 @@
 package de.anteiku.kittybot.events;
 
-import de.anteiku.kittybot.KittyBot;
-import net.dv8tion.jda.api.events.emote.EmoteRemovedEvent;
+import de.anteiku.kittybot.objects.Cache;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteCreateEvent;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteDeleteEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class OnInviteEvent extends ListenerAdapter{
 
-	private final KittyBot main;
-
-	public OnInviteEvent(KittyBot main){
-		this.main = main;
-	}
+	public OnInviteEvent(){}
 
 	@Override
 	public void onGuildInviteCreate(GuildInviteCreateEvent event){
-		event.getInvite().
+		Cache.addNewInvite(event.getInvite());
 	}
 
 
 	@Override
 	public void onGuildInviteDelete(GuildInviteDeleteEvent event){
-
+		Cache.deleteInvite(event.getGuild().getId(), event.getCode());
 	}
 
 }

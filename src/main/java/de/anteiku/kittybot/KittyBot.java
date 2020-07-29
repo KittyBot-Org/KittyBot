@@ -13,6 +13,7 @@ import de.anteiku.kittybot.commands.commands.*;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.database.SQL;
 import de.anteiku.kittybot.events.*;
+import de.anteiku.kittybot.objects.Cache;
 import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.LavalinkNode;
 import de.anteiku.kittybot.webservice.WebService;
@@ -66,30 +67,33 @@ public class KittyBot{
 			AudioSourceManagers.registerRemoteSources(audioPlayerManager);
 
 			jda = JDABuilder.create(
-					GatewayIntent.GUILD_MEMBERS,
-					GatewayIntent.GUILD_VOICE_STATES,
-					GatewayIntent.GUILD_MESSAGES,
-					GatewayIntent.GUILD_MESSAGE_REACTIONS,
-					GatewayIntent.GUILD_EMOJIS,
+				GatewayIntent.GUILD_MEMBERS,
+				GatewayIntent.GUILD_VOICE_STATES,
+				GatewayIntent.GUILD_MESSAGES,
+				GatewayIntent.GUILD_MESSAGE_REACTIONS,
+				GatewayIntent.GUILD_EMOJIS,
+				GatewayIntent.GUILD_INVITES,
 
-					GatewayIntent.DIRECT_MESSAGES,
-					GatewayIntent.DIRECT_MESSAGE_REACTIONS
-				)
-				.disableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS)
-				.setToken(Config.BOT_TOKEN)
-	            .addEventListeners(
-		            new OnGuildJoinEvent(this),
-		            new OnGuildMemberEvent(this),
-		            new OnEmoteEvent(this),
-		            new OnGuildMessageEvent(this),
-		            new OnGuildVoiceEvent(this),
-		            lavalink
-	            )
-	            .setVoiceDispatchInterceptor(lavalink.getVoiceInterceptor())
-				.setActivity(Activity.watching("you \uD83D\uDC40"))
-	            .setStatus(OnlineStatus.ONLINE)
-	            .setGatewayEncoding(GatewayEncoding.ETF)
-				.build().awaitReady();
+				GatewayIntent.DIRECT_MESSAGES,
+				GatewayIntent.DIRECT_MESSAGE_REACTIONS
+			)
+			.disableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS)
+			.setToken(Config.BOT_TOKEN)
+            .addEventListeners(
+	            new OnGuildJoinEvent(this),
+	            new OnGuildMemberEvent(this),
+	            new OnEmoteEvent(this),
+	            new OnGuildMessageEvent(this),
+	            new OnGuildVoiceEvent(this),
+	            new OnGuildReadyEvent(),
+	            new OnInviteEvent(),
+	            lavalink
+            )
+            .setVoiceDispatchInterceptor(lavalink.getVoiceInterceptor())
+			.setActivity(Activity.playing("loading..."))
+            .setStatus(OnlineStatus.DO_NOT_DISTURB)
+            .setGatewayEncoding(GatewayEncoding.ETF)
+			.build().awaitReady();
 
 			RestAction.setDefaultFailure(null);
 
@@ -132,6 +136,9 @@ public class KittyBot{
 			);
 
 			new WebService(this, 6969);
+
+			jda.getPresence().setActivity(Activity.watching("you \uD83D\uDC40"));
+			jda.getPresence().setStatus(OnlineStatus.ONLINE);
 		}
 		catch(Exception e){
 			LOG.error("Error while initializing JDA", e);

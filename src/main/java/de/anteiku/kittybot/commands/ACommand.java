@@ -83,7 +83,7 @@ public abstract class ACommand{
 		if(event.getReactionEmote().getName().equals(Emotes.WASTEBASKET.get()) && (event.getUserId().equals(reactiveMessage.userId) || event.getMember().hasPermission(Permission.MESSAGE_MANAGE))){
 			event.getChannel().deleteMessageById(event.getMessageId()).queue();
 			event.getChannel().deleteMessageById(reactiveMessage.commandId).queue();
-			KittyBot.commandManager.removeReactiveMessage(event.getGuild(), event.getMessageId());
+			Cache.removeReactiveMessage(event.getGuild(), event.getMessageId());
 		}
 	}
 

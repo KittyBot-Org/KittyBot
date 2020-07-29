@@ -4,6 +4,7 @@ import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.commands.ACommand;
 import de.anteiku.kittybot.commands.CommandContext;
 import de.anteiku.kittybot.database.Database;
+import de.anteiku.kittybot.objects.Cache;
 import de.anteiku.kittybot.objects.Emotes;
 import de.anteiku.kittybot.objects.ReactiveMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -52,7 +53,7 @@ public class CommandsCommand extends ACommand{
 	@Override
 	public void run(CommandContext ctx){
 		ctx.getChannel().sendMessage(buildCommands(ctx.getArgs(), Database.getCommandPrefix(ctx.getGuild().getId())).build()).queue(message -> {
-			KittyBot.commandManager.addReactiveMessage(ctx, message, this, "-1");
+			Cache.addReactiveMessage(ctx, message, this, "-1");
 			message.addReaction(Emotes.ARROW_LEFT.get()).queue();
 			message.addReaction(Emotes.ARROW_RIGHT.get()).queue();
 			message.addReaction(Emotes.WASTEBASKET.get()).queue();

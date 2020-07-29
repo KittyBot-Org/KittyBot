@@ -1,10 +1,7 @@
 package de.anteiku.kittybot.commands;
 
-import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.database.Database;
-import de.anteiku.kittybot.objects.ReactiveMessage;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,18 +28,6 @@ public class CommandManager{
 			this.commands.put(command.getCommand(), command);
 		}
 		return this;
-	}
-
-	public void addReactiveMessage(CommandContext ctx, Message message, ACommand cmd, String allowed){
-		Database.addReactiveMessage(ctx.getGuild().getId(), ctx.getUser().getId(), message.getId(), ctx.getMessage().getId(), cmd.command, allowed);
-	}
-
-	public void removeReactiveMessage(Guild guild, String messageId){
-		Database.removeReactiveMessage(guild.getId(), messageId);
-	}
-
-	public ReactiveMessage getReactiveMessage(Guild guild, String message){
-		return Database.isReactiveMessage(guild.getId(), message);
 	}
 
 	public boolean checkCommands(GuildMessageReceivedEvent event){

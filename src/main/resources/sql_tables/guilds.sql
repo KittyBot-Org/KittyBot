@@ -6,6 +6,8 @@ CREATE TABLE IF NOT EXISTS guilds (
     welcome_channel_id varchar(18) NOT NULL,
     welcome_message text NOT NULL,
     welcome_message_enabled boolean NOT NULL,
+    log_channel_id varchar(18) NOT NULL,
+    log_message_enabled boolean NOT NULL,
     nsfw_enabled boolean NOT NULL,
     inactive_role varchar(18) NOT NULL,
     PRIMARY KEY(guild_id)

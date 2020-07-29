@@ -10,6 +10,9 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.guild.invite.GuildInviteCreateEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 public class Cache{
+
+	private static final Logger LOG = LoggerFactory.getLogger(Cache.class);
 
 	public static final Map<String, String> GUILD_PREFIXES = new HashMap<>();
 	public static final Map<String, Map<String, InviteData>> INVITES = new HashMap<>();
@@ -27,15 +32,39 @@ public class Cache{
 
 	private Cache(){}
 
-	public static void getUsedInvite(Guild guild){
+	public static Invite getUsedInvite(Guild guild){
+		for(Invite invite : guild.retrieveInvites().complete()){
+			var oldInvite = INVITES.get(guild.getId()).get(invite.getCode());
+			if(oldInvite != null && oldInvite.getUses() < invite.getUses()){
+				return invite;
+			}
+		}
+		return null;
+	}
+
+	public static void deleteInvite(String guild, String code){
+		if(INVITES.get(guild) != null){
+			INVITES.get(guild).remove(code);
+		}
+	}
+
+	public static void addNewInvite(Invite invite){
+		var guildId = invite.getGuild().getId();
+		if(INVITES.get(guildId) == null){
+			INVITES.put(guildId, new HashMap<>());
+		}
+		INVITES.get(guildId).put(invite.getCode(), new InviteData(invite));
+	}
+
+	public static void initGuildInviteCache(Guild guild){
+		LOG.info("Initializing invite cache for guild: " + guild.getName() +"(" + guild.getId() + ")");
 		guild.retrieveInvites().queue(invites -> {
 			for(Invite invite : invites){
-				var inviteData = INVITES.get(guild.getId()).get(invite.getCode());
+				addNewInvite(invite);
 			}
 		});
 	}
 
-	public static void initInviteCache(JDA jda)
 
 	//Self Assignable Roles
 
@@ -53,6 +82,7 @@ public class Cache{
 		SELF_ASSIGNABLE_ROLES.put(guildId, selfAssignableRoles);
 		//Database.setSelfAssignableRoles(guildId, selfAssignableRoles);
 	}
+
 
 	//Command Prefixes
 

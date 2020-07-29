@@ -24,9 +24,10 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 	public void onGuildMemberJoin(GuildMemberJoinEvent event){
 		String id = Database.getWelcomeChannelId(event.getGuild().getId());
 		if(!id.equals("-1") && Database.getWelcomeMessageEnabled(event.getGuild().getId())){
-			var invite = Cache.getUsedInvite(event.getGuild());
 			TextChannel channel = event.getGuild().getTextChannelById(id);
 			if(channel != null){
+				var invite = Cache.getUsedInvite(event.getGuild());
+				channel.sendMessage("Used Invite: " + invite.getCode() + " from: " + invite.getInviter().getAsTag()).queue();
 				channel.sendMessage(generateJoinMessage(Database.getWelcomeMessage(event.getGuild().getId()), event.getUser())).queue();
 			}
 		}
