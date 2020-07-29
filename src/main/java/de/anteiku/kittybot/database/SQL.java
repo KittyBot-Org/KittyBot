@@ -15,7 +15,7 @@ public class SQL{
 
 	private static final Logger LOG = LoggerFactory.getLogger(SQL.class);
 
-	private static HikariDataSource dataSource;
+	private static final HikariDataSource dataSource;
 
 	static{
 		dataSource = new HikariDataSource();
@@ -26,6 +26,9 @@ public class SQL{
 		dataSource.setPassword(Config.DB_PASSWORD);
 
 		dataSource.setMaximumPoolSize(16);
+		dataSource.setConnectionTimeout(3600000);
+		dataSource.setIdleTimeout(600000);
+		dataSource.setMinimumIdle(4);
 		dataSource.setAutoCommit(true);
 	}
 
