@@ -115,25 +115,40 @@ public class Database{
 	public static String getCommandPrefix(String guildId){
 		String prefix = commandPrefixes.get(guildId);
 		if(prefix == null){
-			prefix = get(guildId, "command_prefix");
+			prefix = getString(guildId, "command_prefix");
 			commandPrefixes.put(guildId, prefix);
 		}
 		return prefix;
 	}
 
-	private static ResultSet getProperty(String guildId, String key){
+	private static String getString(String guildId, String key){
 		var stmt = SQL.prepStatement("SELECT * FROM guilds WHERE guild_id = ?");
 		try{
 			stmt.setString(1, guildId);
-			return SQL.query(stmt);
+			var result = SQL.query(stmt);
+			if(result.next()){
+				return result.getString(key);
+			}
 		}
 		catch(SQLException e){
 			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
 		}
-		finally{
-			close(stmt);
-		}
 		return null;
+	}
+
+	private static boolean getBoolean(String guildId, String key){
+		var stmt = SQL.prepStatement("SELECT * FROM guilds WHERE guild_id = ?");
+		try{
+			stmt.setString(1, guildId);
+			var result = SQL.query(stmt);
+			if(result.next()){
+				return result.getBoolean(key);
+			}
+		}
+		catch(SQLException e){
+			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
+		}
+		return false;
 	}
 
 	private static boolean setProperty(String guildId, String key, String value){
@@ -169,32 +184,6 @@ public class Database{
 			stmt.setBoolean(1, value);
 			stmt.setString(2, guildId);
 			return SQL.execute(stmt);
-		}
-		catch(SQLException e){
-			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
-		}
-		return false;
-	}
-
-	private static String get(String guildId, String key){
-		try{
-			var result = getProperty(guildId, key);
-			if(result.next()){
-				return result.getString(key);
-			}
-		}
-		catch(SQLException e){
-			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
-		}
-		return null;
-	}
-
-	private static boolean getBoolean(String guildId, String key){
-		try{
-			var result = getProperty(guildId, key);
-			if(result.next()){
-				return result.getBoolean(key);
-			}
 		}
 		catch(SQLException e){
 			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
@@ -296,7 +285,7 @@ public class Database{
 	}
 
 	public static String getWelcomeChannelId(String guildId){
-		return get(guildId, "welcome_channel_id");
+		return getString(guildId, "welcome_channel_id");
 	}
 
 	public static boolean setWelcomeChannelId(String guildId, String channelId){
@@ -304,7 +293,7 @@ public class Database{
 	}
 
 	public static String getWelcomeMessage(String guildId){
-		return get(guildId, "welcome_message");
+		return getString(guildId, "welcome_message");
 	}
 
 	public static boolean setWelcomeMessage(String guildId, String message){
