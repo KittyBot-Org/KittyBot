@@ -26,7 +26,7 @@ public class SQL{
 			dataSource.setUsername(Config.DB_USER);
 			dataSource.setPassword(Config.DB_PASSWORD);
 
-			dataSource.setMinimumIdle(100);
+			dataSource.setMinimumIdle(4);
 			dataSource.setMaximumPoolSize(16);
 			dataSource.setAutoCommit(true);
 			dataSource.setLoginTimeout(3);
