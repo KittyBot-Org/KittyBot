@@ -28,8 +28,10 @@ import okhttp3.OkHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.security.auth.login.LoginException;
 import java.awt.*;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.Random;
 
@@ -68,31 +70,31 @@ public class KittyBot{
 			AudioSourceManagers.registerRemoteSources(audioPlayerManager);
 
 			jda = JDABuilder.create(
-					GatewayIntent.GUILD_MEMBERS,
-					GatewayIntent.GUILD_VOICE_STATES,
-					GatewayIntent.GUILD_MESSAGES,
-					GatewayIntent.GUILD_MESSAGE_REACTIONS,
-					GatewayIntent.GUILD_EMOJIS,
+				GatewayIntent.GUILD_MEMBERS,
+				GatewayIntent.GUILD_VOICE_STATES,
+				GatewayIntent.GUILD_MESSAGES,
+				GatewayIntent.GUILD_MESSAGE_REACTIONS,
+				GatewayIntent.GUILD_EMOJIS,
 
-					GatewayIntent.DIRECT_MESSAGES,
-					GatewayIntent.DIRECT_MESSAGE_REACTIONS
-				)
-				.disableCache(CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS)
-				.setToken(Config.DISCORD_BOT_TOKEN)
-				.setActivity(Activity.listening("you!"))
-				.addEventListeners(
-					new OnGuildJoinEvent(this),
-					new OnGuildMemberJoinEvent(this),
-					new OnGuildMemberRemoveEvent(this),
-					new OnGuildMemberUpdateBoostTimeEvent(this),
-					new OnGuildMessageReactionAddEvent(this),
-					new OnGuildMessageReceivedEvent(this),
-					new OnGuildMessageDeleteEvent(this),
-					new OnGuildVoiceEvent(this),
-					lavalink
-				)
-				.setVoiceDispatchInterceptor(lavalink.getVoiceInterceptor())
-				.build().awaitReady();
+				GatewayIntent.DIRECT_MESSAGES,
+				GatewayIntent.DIRECT_MESSAGE_REACTIONS
+			)
+			.disableCache(CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS)
+			.setToken(Config.DISCORD_BOT_TOKEN)
+			.setActivity(Activity.listening("you!"))
+			.addEventListeners(
+				new OnGuildJoinEvent(this),
+				new OnGuildMemberJoinEvent(this),
+				new OnGuildMemberRemoveEvent(this),
+				new OnGuildMemberUpdateBoostTimeEvent(this),
+				new OnGuildMessageReactionAddEvent(this),
+				new OnGuildMessageReceivedEvent(this),
+				new OnGuildMessageDeleteEvent(this),
+				new OnGuildVoiceEvent(this),
+				lavalink
+			)
+			.setVoiceDispatchInterceptor(lavalink.getVoiceInterceptor())
+			.build().awaitReady();
 
 			Database.init(this);
 
@@ -137,7 +139,7 @@ public class KittyBot{
 
 			sendDMToOwnerAdmin(jda, jda.getSelfUser().getName(), "Hellowo I'm ready!");
 		}
-		catch(Exception e){
+		catch(InterruptedException | URISyntaxException | LoginException e){
 			LOG.error("Error while initializing JDA", e);
 			close();
 		}

@@ -1,5 +1,6 @@
 package de.anteiku.kittybot.database;
 
+import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import de.anteiku.kittybot.utils.Config;
 import org.slf4j.Logger;
@@ -18,17 +19,19 @@ public class SQL{
 	private static final HikariDataSource dataSource;
 
 	static{
-		dataSource = new HikariDataSource();
-		dataSource.setDriverClassName("org.postgresql.Driver");
+		var config = new HikariConfig();
+		config.setDriverClassName("org.postgresql.Driver");
 
-		dataSource.setJdbcUrl("jdbc:postgresql://" + Config.DB_HOST + ":" + Config.DB_PORT + "/" + Config.DB_DB);
-		dataSource.setUsername(Config.DB_USER);
-		dataSource.setPassword(Config.DB_PASSWORD);
+		config.setJdbcUrl("jdbc:postgresql://" + Config.DB_HOST + ":" + Config.DB_PORT + "/" + Config.DB_DB);
+		config.setUsername(Config.DB_USER);
+		config.setPassword(Config.DB_PASSWORD);
 
-		dataSource.setMaximumPoolSize(16);
-		dataSource.setConnectionTimeout(60000);
-		dataSource.setIdleTimeout(2000);
-		dataSource.setMinimumIdle(2);
+		//config.setMaximumPoolSize(16);
+		//config.setConnectionTimeout(60000);
+		//config.setIdleTimeout(2000);
+		//config.setMinimumIdle(2);
+
+		dataSource = new HikariDataSource(config);
 	}
 
 	public static Connection getConnection() throws NullPointerException{

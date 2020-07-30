@@ -45,7 +45,7 @@ public class Database{
 			return SQL.exists(stmt);
 		}
 		catch(SQLException | NullPointerException e){
-			LOG.error("Error while getting warehouse permissions", e);
+			LOG.error("Error while checking if guild exists", e);
 		}
 		return false;
 	}
