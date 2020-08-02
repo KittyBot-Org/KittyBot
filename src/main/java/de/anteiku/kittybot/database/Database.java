@@ -149,11 +149,10 @@ public class Database{
 	}
 
 	private static boolean setProperty(String guildId, String key, String value){
-		var stmt = SQL.prepStatement("UPDATE guilds SET ?=? WHERE guild_id = ?");
+		var stmt = SQL.prepStatement("UPDATE guilds SET " + key + "=? WHERE guild_id = ?");
 		try{
-			stmt.setString(1, key);
-			stmt.setString(2, value);
-			stmt.setString(3, guildId);
+			stmt.setString(1, value);
+			stmt.setString(2, guildId);
 			return SQL.execute(stmt);
 		}
 		catch(SQLException e){
