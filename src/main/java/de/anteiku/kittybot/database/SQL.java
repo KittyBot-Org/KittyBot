@@ -21,7 +21,6 @@ public class SQL{
 	static{
 		var config = new HikariConfig();
 		config.setDriverClassName("org.postgresql.Driver");
-
 		config.setJdbcUrl("jdbc:postgresql://" + Config.DB_HOST + ":" + Config.DB_PORT + "/" + Config.DB_DB);
 		config.setUsername(Config.DB_USER);
 		config.setPassword(Config.DB_PASSWORD);
@@ -31,7 +30,6 @@ public class SQL{
 		config.setConnectionTimeout(10000);
 		config.setIdleTimeout(600000);
 		config.setMaxLifetime(1800000);
-
 
 		dataSource = new HikariDataSource(config);
 	}

@@ -98,7 +98,7 @@ public class KittyBot{
 
 			Database.init(this);
 
-			commandManager = new CommandManager(this)
+			commandManager = new CommandManager()
 				.addCommands(
 					new HelpCommand(this),
 					new CommandsCommand(this),
