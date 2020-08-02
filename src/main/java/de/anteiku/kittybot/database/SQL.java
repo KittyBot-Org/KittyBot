@@ -26,10 +26,12 @@ public class SQL{
 		config.setUsername(Config.DB_USER);
 		config.setPassword(Config.DB_PASSWORD);
 
-		//config.setMaximumPoolSize(16);
-		//config.setConnectionTimeout(60000);
-		//config.setIdleTimeout(2000);
-		//config.setMinimumIdle(2);
+		config.setMinimumIdle(5);
+		config.setMaximumPoolSize(50);
+		config.setConnectionTimeout(10000);
+		config.setIdleTimeout(600000);
+		config.setMaxLifetime(1800000);
+
 
 		dataSource = new HikariDataSource(config);
 	}
