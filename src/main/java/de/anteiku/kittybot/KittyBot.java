@@ -141,6 +141,7 @@ public class KittyBot{
 
 			jda.getPresence().setActivity(Activity.watching("you \uD83D\uDC40"));
 			jda.getPresence().setStatus(OnlineStatus.ONLINE);
+			sendToPublicLogChannel(jda, Config.SUPPORT_GUILD, Config.LOG_CHANNEL, "me online now uwu");
 		}
 		catch(InterruptedException | URISyntaxException | LoginException e){
 			LOG.error("Error while initializing JDA", e);

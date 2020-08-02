@@ -4,7 +4,7 @@ bot_secret:
 admin_id:
 support_guild:
 log_channel:
-invite_link:
+invite_url:
 redirect_url:
 origin_url:
 
