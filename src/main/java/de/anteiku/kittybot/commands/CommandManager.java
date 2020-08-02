@@ -54,15 +54,15 @@ public class CommandManager{
 	private String cutCommandPrefix(Guild guild, String message){
 		String prefix;
 		var botId = guild.getSelfMember().getId();
-		if(message.startsWith(prefix = Database.getCommandPrefix(guild.getId()))||message.startsWith(
-			prefix = "<@!" + botId + ">")||message.startsWith(prefix = "<@" + botId + ">")){
+		if(message.startsWith(prefix = Database.getCommandPrefix(guild.getId())) || message.startsWith(
+			prefix = "<@!" + botId + ">") || message.startsWith(prefix = "<@" + botId + ">")){
 			return message.substring(prefix.length()).trim();
 		}
 		return null;
 	}
 
 	private String getCommandString(String raw){
-		return raw.split(" ")[0];
+		return raw.split("//s+")[0];
 	}
 
 	private String[] getCommandArguments(String message){
