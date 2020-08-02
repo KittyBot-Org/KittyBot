@@ -88,7 +88,9 @@ public abstract class ACommand{
 	}
 
 	protected void queue(MessageAction messageAction, CommandContext ctx){
-		messageAction.queue(success -> Cache.addCommandResponse(ctx.getMessage(), success), failure -> sendError(ctx, "There was an error processing your command!\nError: " + failure.getLocalizedMessage()));
+		if(messageAction != null){
+			messageAction.queue(success -> Cache.addCommandResponse(ctx.getMessage(), success), failure -> sendError(ctx, "There was an error processing your command!\nError: " + failure.getLocalizedMessage()));
+		}
 	}
 
 	protected void addStatus(Message message, Status status){
