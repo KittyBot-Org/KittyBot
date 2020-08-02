@@ -40,10 +40,9 @@ public class CommandManager{
 				if(cmd.checkCmd(command)){
 					//event.getChannel().sendTyping().queue(); answer is sending too fast and I don't want to block the thread lol
 					var ctx = new CommandContextImpl(event, command, getCommandArguments(message));
+					LOG.info("Command: {}, args: {}, by: {}, from: {}", command, ctx.getArgs(), event.getAuthor().getName(), event.getGuild().getName());
 					cmd.run(ctx);
-					long processingTime = System.nanoTime() - start;
-					Database.addCommandStatistics(event.getGuild().getId(), event.getMessageId(), event.getAuthor().getId(), command, processingTime);
-					LOG.info("Command: {}, args: {}, by: {}, from: {}, took: {}ns", command, ctx.getArgs(), event.getAuthor().getName(), event.getGuild().getName(), processingTime);
+					Database.addCommandStatistics(event.getGuild().getId(), event.getMessageId(), event.getAuthor().getId(), command, System.nanoTime() - start);
 					return true;
 				}
 			}
@@ -62,7 +61,7 @@ public class CommandManager{
 	}
 
 	private String getCommandString(String raw){
-		return raw.split("//s+")[0];
+		return raw.split("\\s+")[0];
 	}
 
 	private String[] getCommandArguments(String message){

@@ -30,8 +30,10 @@ import okhttp3.OkHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.security.auth.login.LoginException;
 import java.awt.*;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.Random;
 
@@ -140,7 +142,7 @@ public class KittyBot{
 			jda.getPresence().setActivity(Activity.watching("you \uD83D\uDC40"));
 			jda.getPresence().setStatus(OnlineStatus.ONLINE);
 		}
-		catch(Exception e){
+		catch(InterruptedException | URISyntaxException | LoginException e){
 			LOG.error("Error while initializing JDA", e);
 			close();
 		}

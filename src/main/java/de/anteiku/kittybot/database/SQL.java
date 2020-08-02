@@ -1,5 +1,6 @@
 package de.anteiku.kittybot.database;
 
+import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import de.anteiku.kittybot.objects.Config;
 import org.slf4j.Logger;
@@ -15,25 +16,22 @@ public class SQL{
 
 	private static final Logger LOG = LoggerFactory.getLogger(SQL.class);
 
-	private static HikariDataSource dataSource;
+	private static final HikariDataSource dataSource;
 
 	static{
-		try{
-			dataSource = new HikariDataSource();
-			dataSource.setDriverClassName("org.postgresql.Driver");
+		var config = new HikariConfig();
+		config.setDriverClassName("org.postgresql.Driver");
+		config.setJdbcUrl("jdbc:postgresql://" + Config.DB_HOST + ":" + Config.DB_PORT + "/" + Config.DB_DB);
+		config.setUsername(Config.DB_USER);
+		config.setPassword(Config.DB_PASSWORD);
 
-			dataSource.setJdbcUrl("jdbc:postgresql://" + Config.DB_HOST + ":" + Config.DB_PORT + "/" + Config.DB_DB);
-			dataSource.setUsername(Config.DB_USER);
-			dataSource.setPassword(Config.DB_PASSWORD);
+		config.setMinimumIdle(5);
+		config.setMaximumPoolSize(90);
+		config.setConnectionTimeout(10000);
+		config.setIdleTimeout(600000);
+		config.setMaxLifetime(1800000);
 
-			dataSource.setMinimumIdle(100);
-			dataSource.setMaximumPoolSize(32);
-			dataSource.setAutoCommit(true);
-			dataSource.setLoginTimeout(3);
-		}
-		catch(SQLException e) {
-			LOG.error("Error while initializing database connection", e);
-		}
+		dataSource = new HikariDataSource(config);
 	}
 
 	public static Connection getConnection() throws NullPointerException{
@@ -62,7 +60,7 @@ public class SQL{
 		}
 	}
 
-	public static PreparedStatement prepStatement(String sql) throws NullPointerException{
+	public static PreparedStatement prepStatement(String sql){
 		try{
 			LOG.debug("prepareStatement sql: {}", sql);
 			return getConnection().prepareStatement(sql);
@@ -73,10 +71,10 @@ public class SQL{
 		catch(NullPointerException e){
 			LOG.error("Error connection is null", e);
 		}
-		throw new NullPointerException("Error getting preparedStatement");
+		return null;
 	}
 
-	public static PreparedStatement prepStatement(String sql, int resultSetType) throws NullPointerException{
+	public static PreparedStatement prepStatement(String sql, int resultSetType){
 		try{
 			LOG.debug("prepareStatement sql: {}", sql);
 			return getConnection().prepareStatement(sql, resultSetType);
@@ -87,7 +85,7 @@ public class SQL{
 		catch(NullPointerException e){
 			LOG.error("Error connection is null", e);
 		}
-		throw new NullPointerException("Error getting preparedStatement");
+		return null;
 	}
 
 	public static boolean execute(PreparedStatement preparedStatement){

@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -44,7 +45,7 @@ public class Database{
 			return SQL.exists(stmt);
 		}
 		catch(SQLException | NullPointerException e){
-			LOG.error("Error while getting warehouse permissions", e);
+			LOG.error("Error while checking if guild exists", e);
 		}
 		return false;
 	}
@@ -111,17 +112,20 @@ public class Database{
 	public static String getCommandPrefix(String guildId){
 		String prefix = commandPrefixes.get(guildId);
 		if(prefix == null){
-			prefix = get(guildId, "command_prefix");
+			prefix = getString(guildId, "command_prefix");
 			commandPrefixes.put(guildId, prefix);
 		}
 		return prefix;
 	}
 
-	private static ResultSet getProperty(String guildId, String key){
+	private static String getString(String guildId, String key){
 		var stmt = SQL.prepStatement("SELECT * FROM guilds WHERE guild_id = ?");
 		try{
 			stmt.setString(1, guildId);
-			return SQL.query(stmt);
+			var result = SQL.query(stmt);
+			if(result.next()){
+				return result.getString(key);
+			}
 		}
 		catch(SQLException e){
 			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
@@ -129,12 +133,26 @@ public class Database{
 		return null;
 	}
 
-	private static boolean setProperty(String guildId, String key, String value){
-		var stmt = SQL.prepStatement("UPDATE guilds SET ?=? WHERE guild_id = ?");
+	private static boolean getBoolean(String guildId, String key){
+		var stmt = SQL.prepStatement("SELECT * FROM guilds WHERE guild_id = ?");
 		try{
-			stmt.setString(1, key);
-			stmt.setString(2, value);
-			stmt.setString(3, guildId);
+			stmt.setString(1, guildId);
+			var result = SQL.query(stmt);
+			if(result.next()){
+				return result.getBoolean(key);
+			}
+		}
+		catch(SQLException e){
+			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
+		}
+		return false;
+	}
+
+	private static boolean setProperty(String guildId, String key, String value){
+		var stmt = SQL.prepStatement("UPDATE guilds SET " + key + "=? WHERE guild_id = ?");
+		try{
+			stmt.setString(1, value);
+			stmt.setString(2, guildId);
 			return SQL.execute(stmt);
 		}
 		catch(SQLException e){
@@ -169,32 +187,6 @@ public class Database{
 		return false;
 	}
 
-	private static String get(String guildId, String key){
-		try{
-			var result = getProperty(guildId, key);
-			if(result.next()){
-				return result.getString(key);
-			}
-		}
-		catch(SQLException e){
-			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
-		}
-		return null;
-	}
-
-	private static boolean getBoolean(String guildId, String key){
-		try{
-			var result = getProperty(guildId, key);
-			if(result.next()){
-				return result.getBoolean(key);
-			}
-		}
-		catch(SQLException e){
-			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
-		}
-		return false;
-	}
-
 	public static boolean setCommandPrefix(String guildId, String prefix){
 		commandPrefixes.put(guildId, prefix);
 		return setProperty(guildId, "command_prefix", prefix);
@@ -207,11 +199,11 @@ public class Database{
 	public static boolean addSelfAssignableRoles(String guildId, Map<String, String> roles){
 		boolean result = true;
 		for(Map.Entry<String, String> role : roles.entrySet()){
-			var stmt = SQL.prepStatement("INSERT INTO self_assignable_roles (role_id, guild_id, emote_id) VALUES (?, ?, ?, ?)");
+			var stmt = SQL.prepStatement("INSERT INTO self_assignable_roles (role_id, guild_id, emote_id) VALUES (?, ?, ?)");
 			try {
 				stmt.setString(1, role.getKey());
 				stmt.setString(2, guildId);
-				stmt.setString(3, role.getKey());
+				stmt.setString(3, role.getValue());
 				boolean r = SQL.execute(stmt);
 				if(!r){
 					result = false;
@@ -234,7 +226,7 @@ public class Database{
 			var stmt = SQL.prepStatement("DELETE FROM self_assignable_roles WHERE role_id = ? and guild_id = ?");
 			try {
 				stmt.setString(1, role);
-				stmt.setString(1, guildId);
+				stmt.setString(2, guildId);
 				boolean r = SQL.execute(stmt);
 				if(!r){
 					result = false;
@@ -266,7 +258,7 @@ public class Database{
 
 	public static Map<String, String> getSelfAssignableRoles(String guildId){
 		Map<String, String> map = new HashMap<>();
-		var stmt = SQL.prepStatement("SELECT role_id, emote_id FROM self_assignable_roles WHERE guild_id = ?");
+		var stmt = SQL.prepStatement("SELECT * FROM self_assignable_roles WHERE guild_id = ?");
 		try{
 			stmt.setString(1, guildId);
 			ResultSet result = SQL.query(stmt);
@@ -282,7 +274,7 @@ public class Database{
 	}
 
 	public static String getWelcomeChannelId(String guildId){
-		return get(guildId, "welcome_channel_id");
+		return getString(guildId, "welcome_channel_id");
 	}
 
 	public static boolean setWelcomeChannelId(String guildId, String channelId){
@@ -290,7 +282,7 @@ public class Database{
 	}
 
 	public static String getWelcomeMessage(String guildId){
-		return get(guildId, "welcome_message");
+		return getString(guildId, "welcome_message");
 	}
 
 	public static boolean setWelcomeMessage(String guildId, String message){
@@ -422,7 +414,7 @@ public class Database{
 			stmt.setString(1, key);
 			return SQL.exists(stmt);
 		}
-		catch (SQLException e) {
+		catch (SQLException e){
 			LOG.error("Error checking if session exists", e);
 		}
 		return false;

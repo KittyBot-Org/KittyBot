@@ -165,12 +165,15 @@ public abstract class ACommand{
 
 	protected MessageAction answer(CommandContext ctx, EmbedBuilder answer){
 		addStatus(ctx.getMessage(), Status.OK);
-		return ctx.getChannel().sendMessage(answer
-			.setColor(Color.GREEN)
-			.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
-			.setTimestamp(Instant.now())
-			.build()
-		);
+		if(ctx.getGuild().getSelfMember().hasPermission(ctx.getChannel(), Permission.MESSAGE_WRITE)){
+			return ctx.getChannel().sendMessage(answer
+				.setColor(Color.GREEN)
+				.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
+				.setTimestamp(Instant.now())
+				.build()
+			);
+		}
+		return null;
 	}
 
 	protected void sendUsage(CommandContext ctx){

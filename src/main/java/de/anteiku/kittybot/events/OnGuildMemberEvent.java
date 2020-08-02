@@ -2,13 +2,14 @@ package de.anteiku.kittybot.events;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.database.Database;
-import de.anteiku.kittybot.objects.Cache;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateBoostTimeEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.RestAction;
 
 public class OnGuildMemberEvent extends ListenerAdapter{
 
@@ -26,9 +27,18 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 		if(!id.equals("-1") && Database.getWelcomeMessageEnabled(event.getGuild().getId())){
 			TextChannel channel = event.getGuild().getTextChannelById(id);
 			if(channel != null){
-				var invite = Cache.getUsedInvite(event.getGuild());
-				channel.sendMessage("Used Invite: " + invite.getCode() + " from: " + invite.getInviter().getAsTag()).queue();
-				channel.sendMessage(generateJoinMessage(Database.getWelcomeMessage(event.getGuild().getId()), event.getUser())).queue();
+				if(event.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE)){
+					channel.sendMessage(generateJoinMessage(Database.getWelcomeMessage(event.getGuild().getId()), event.getUser())).queue();
+				}
+				else{
+					event.getGuild().retrieveOwner().queue(
+						member -> member.getUser().openPrivateChannel().queue(
+							success -> success.sendMessage("I lack the permission to send welcome messages to " + channel.getAsMention() + ".\n" +
+									"You can disable them with `options welcomemessage off` if you don't like them").queue()
+						)
+					);
+				}
+
 			}
 		}
 	}
