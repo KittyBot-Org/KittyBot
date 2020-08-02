@@ -103,7 +103,7 @@ public class CommandManager{
 	}
 
 	private String getCommandString(String raw){
-		return raw.split("//s+")[0];
+		return raw.split("\\s+")[0];
 	}
 
 	private String[] getCommandArguments(String message){
