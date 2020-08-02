@@ -26,7 +26,7 @@ public class SQL{
 		config.setPassword(Config.DB_PASSWORD);
 
 		config.setMinimumIdle(5);
-		config.setMaximumPoolSize(50);
+		config.setMaximumPoolSize(90);
 		config.setConnectionTimeout(10000);
 		config.setIdleTimeout(600000);
 		config.setMaxLifetime(1800000);
