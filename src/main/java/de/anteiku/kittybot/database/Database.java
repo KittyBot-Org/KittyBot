@@ -204,7 +204,7 @@ public class Database{
 			try {
 				stmt.setString(1, role.getKey());
 				stmt.setString(2, guildId);
-				stmt.setString(3, role.getKey());
+				stmt.setString(3, role.getValue());
 				boolean r = SQL.execute(stmt);
 				if(!r){
 					result = false;
@@ -263,7 +263,7 @@ public class Database{
 
 	public static Map<String, String> getSelfAssignableRoles(String guildId){
 		Map<String, String> map = new HashMap<>();
-		var stmt = SQL.prepStatement("SELECT role_id, emote_id FROM self_assignable_roles WHERE guild_id = ?");
+		var stmt = SQL.prepStatement("SELECT * FROM self_assignable_roles WHERE guild_id = ?");
 		try{
 			stmt.setString(1, guildId);
 			ResultSet result = SQL.query(stmt);
