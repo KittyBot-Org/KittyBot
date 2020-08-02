@@ -99,7 +99,7 @@ public class KittyBot{
 
 			RestAction.setDefaultFailure(null);
 
-			Database.init(this);
+			Database.init(jda);
 
 			commandManager = CommandManager.build(
 				new HelpCommand(this),
@@ -139,8 +139,8 @@ public class KittyBot{
 
 			new WebService(this, 6969);
 
-			jda.getPresence().setActivity(Activity.watching("you \uD83D\uDC40"));
 			jda.getPresence().setStatus(OnlineStatus.ONLINE);
+			jda.getPresence().setActivity(Activity.watching("you \uD83D\uDC40"));
 			sendToPublicLogChannel(jda, Config.SUPPORT_GUILD, Config.LOG_CHANNEL, "me online now uwu");
 		}
 		catch(InterruptedException | URISyntaxException | LoginException e){

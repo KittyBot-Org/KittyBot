@@ -1,17 +1,13 @@
 package de.anteiku.kittybot.database;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.Utils;
 import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.ReactiveMessage;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -23,14 +19,14 @@ public class Database{
 
 	private Database(){}
 
-	public static void init(KittyBot main){
+	public static void init(JDA jda){
 		SQL.createTable("guilds");
 		SQL.createTable("self_assignable_roles");
 		SQL.createTable("commands");
 		SQL.createTable("reactive_messages");
 		SQL.createTable("user_statistics");
 		SQL.createTable("sessions");
-		for(Guild guild : main.jda.getGuilds()){
+		for(Guild guild : jda.getGuilds()){
 			LOG.debug("Loading Guild: {}...", guild.getName());
 			if(!isGuildRegistered(guild)){
 				registerGuild(guild);
