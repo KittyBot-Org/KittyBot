@@ -200,7 +200,7 @@ public class Database{
 	public static boolean addSelfAssignableRoles(String guildId, Map<String, String> roles){
 		boolean result = true;
 		for(Map.Entry<String, String> role : roles.entrySet()){
-			var stmt = SQL.prepStatement("INSERT INTO self_assignable_roles (role_id, guild_id, emote_id) VALUES (?, ?, ?, ?)");
+			var stmt = SQL.prepStatement("INSERT INTO self_assignable_roles (role_id, guild_id, emote_id) VALUES (?, ?, ?)");
 			try {
 				stmt.setString(1, role.getKey());
 				stmt.setString(2, guildId);
