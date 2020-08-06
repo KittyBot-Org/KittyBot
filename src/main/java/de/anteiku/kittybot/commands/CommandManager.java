@@ -1,6 +1,7 @@
 package de.anteiku.kittybot.commands;
 
 import de.anteiku.kittybot.database.Database;
+import de.anteiku.kittybot.objects.Cache;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import java.util.Map;
 public class CommandManager{
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommandManager.class);
+
 	public final Map<String, ACommand> commands;
 
 	public CommandManager(){
@@ -53,8 +55,8 @@ public class CommandManager{
 	private String cutCommandPrefix(Guild guild, String message){
 		String prefix;
 		var botId = guild.getSelfMember().getId();
-		if(message.startsWith(prefix = Database.getCommandPrefix(guild.getId())) || message.startsWith(
-			prefix = "<@!" + botId + ">") || message.startsWith(prefix = "<@" + botId + ">")){
+		if(message.startsWith(prefix = Cache.getCommandPrefix(guild.getId())) || message.startsWith(
+				prefix = "<@!" + botId + ">") || message.startsWith(prefix = "<@" + botId + ">")){
 			return message.substring(prefix.length()).trim();
 		}
 		return null;

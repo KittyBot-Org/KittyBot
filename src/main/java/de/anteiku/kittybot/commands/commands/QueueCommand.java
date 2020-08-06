@@ -2,10 +2,10 @@ package de.anteiku.kittybot.commands.commands;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.anteiku.kittybot.KittyBot;
+import de.anteiku.kittybot.Utils;
 import de.anteiku.kittybot.commands.ACommand;
 import de.anteiku.kittybot.commands.CommandContext;
 import de.anteiku.kittybot.objects.Cache;
-import de.anteiku.kittybot.Utils;
 
 public class QueueCommand extends ACommand{
 

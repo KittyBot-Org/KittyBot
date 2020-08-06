@@ -3,7 +3,6 @@ package de.anteiku.kittybot.commands;
 import com.google.gson.JsonParser;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.database.Database;
-
 import de.anteiku.kittybot.objects.Cache;
 import de.anteiku.kittybot.objects.Emotes;
 import de.anteiku.kittybot.objects.ReactiveMessage;
@@ -41,12 +40,6 @@ public abstract class ACommand{
 		this.usage = usage;
 		this.description = description;
 		this.alias = alias;
-	}
-
-	protected enum Status{
-		OK,
-		ERROR,
-		QUESTION
 	}
 
 	public abstract void run(CommandContext ctx);
@@ -93,25 +86,6 @@ public abstract class ACommand{
 		}
 	}
 
-	protected void addStatus(Message message, Status status){
-		Emotes emote;
-		switch(status){
-			case OK:
-				emote = Emotes.CHECK;
-				break;
-			case ERROR:
-				emote = Emotes.X;
-				break;
-			case QUESTION:
-			default:
-				emote = Emotes.QUESTION;
-				break;
-		}
-		message.addReaction(emote.get()).queue(
-				success -> message.getTextChannel().removeReactionById(message.getId(), emote.get()).queueAfter(5, TimeUnit.SECONDS)
-		);
-	}
-
 	protected void sendPrivateMessage(CommandContext ctx, EmbedBuilder eb){
 		privateMessage(ctx, eb).queue(null,
 				failure -> sendError(ctx, "There was an error processing your command!\nError: " + failure.getLocalizedMessage())
@@ -139,16 +113,20 @@ public abstract class ACommand{
 	protected MessageAction error(CommandContext ctx, String error){
 		addStatus(ctx.getMessage(), Status.ERROR);
 		return ctx.getChannel().sendMessage(new EmbedBuilder()
-			.setColor(Color.RED)
-			.addField("Error:", error, true)
-			.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
-			.setTimestamp(Instant.now())
-			.build()
+				.setColor(Color.RED)
+				.addField("Error:", error, true)
+				.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
+				.setTimestamp(Instant.now())
+				.build()
 		);
 	}
 
 	protected void sendAnswer(CommandContext ctx, String answer){
 		queue(answer(ctx, answer), ctx);
+	}
+
+	protected void sendAnswer(CommandContext ctx, EmbedBuilder embed){
+		queue(answer(ctx, embed), ctx);
 	}
 
 	protected MessageAction answer(CommandContext ctx, String answer){
@@ -160,22 +138,41 @@ public abstract class ACommand{
 		return answer(ctx, embed).addFile(file, fileName);
 	}
 
-	protected MessageAction answer(CommandContext ctx, InputStream file, String fileName, EmbedBuilder embed){
-		// add attachment://[the file name with extension] in embed
-		return answer(ctx, embed).addFile(file, fileName);
-	}
-
 	protected MessageAction answer(CommandContext ctx, EmbedBuilder answer){
 		addStatus(ctx.getMessage(), Status.OK);
 		if(ctx.getGuild().getSelfMember().hasPermission(ctx.getChannel(), Permission.MESSAGE_WRITE)){
 			return ctx.getChannel().sendMessage(answer
-				.setColor(Color.GREEN)
-				.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
-				.setTimestamp(Instant.now())
-				.build()
+					.setColor(Color.GREEN)
+					.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
+					.setTimestamp(Instant.now())
+					.build()
 			);
 		}
 		return null;
+	}
+
+	protected void addStatus(Message message, Status status){
+		Emotes emote;
+		switch(status){
+			case OK:
+				emote = Emotes.CHECK;
+				break;
+			case ERROR:
+				emote = Emotes.X;
+				break;
+			case QUESTION:
+			default:
+				emote = Emotes.QUESTION;
+				break;
+		}
+		message.addReaction(emote.get()).queue(
+				success -> message.getTextChannel().removeReactionById(message.getId(), emote.get()).queueAfter(5, TimeUnit.SECONDS)
+		);
+	}
+
+	protected MessageAction answer(CommandContext ctx, InputStream file, String fileName, EmbedBuilder embed){
+		// add attachment://[the file name with extension] in embed
+		return answer(ctx, embed).addFile(file, fileName);
 	}
 
 	protected void sendUsage(CommandContext ctx){
@@ -189,10 +186,10 @@ public abstract class ACommand{
 	protected MessageAction usage(CommandContext ctx, String usage){
 		addStatus(ctx.getMessage(), Status.QUESTION);
 		return answer(ctx, new EmbedBuilder()
-			.setColor(Color.ORANGE)
-			.addField("Command usage:", "`" + Database.getCommandPrefix(ctx.getGuild().getId()) + usage + "`", true)
-			.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
-			.setTimestamp(Instant.now())
+				.setColor(Color.ORANGE)
+				.addField("Command usage:", "`" + Database.getCommandPrefix(ctx.getGuild().getId()) + usage + "`", true)
+				.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
+				.setTimestamp(Instant.now())
 		);
 	}
 
@@ -242,6 +239,12 @@ public abstract class ACommand{
 
 	protected MessageAction image(CommandContext ctx, String url){
 		return answer(ctx, new EmbedBuilder().setImage(url).setColor(Color.GREEN));
+	}
+
+	protected enum Status{
+		OK,
+		ERROR,
+		QUESTION
 	}
 
 }

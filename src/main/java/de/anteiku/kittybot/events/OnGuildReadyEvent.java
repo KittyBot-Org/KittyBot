@@ -10,4 +10,5 @@ public class OnGuildReadyEvent extends ListenerAdapter{
 	public final void onGuildReady(GuildReadyEvent event){
 		Cache.initGuildInviteCache(event.getGuild());
 	}
+
 }

@@ -7,8 +7,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class OnInviteEvent extends ListenerAdapter{
 
-	public OnInviteEvent(){}
-
 	@Override
 	public void onGuildInviteCreate(GuildInviteCreateEvent event){
 		Cache.addNewInvite(event.getInvite());

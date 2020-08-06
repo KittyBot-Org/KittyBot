@@ -1,6 +1,5 @@
-package de.anteiku.kittybot.webservice;
+package de.anteiku.kittybot;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.jagrosh.jdautilities.oauth2.OAuth2Client;
@@ -11,7 +10,6 @@ import com.jagrosh.jdautilities.oauth2.exceptions.InvalidStateException;
 import com.jagrosh.jdautilities.oauth2.session.DefaultSessionController;
 import com.jagrosh.jdautilities.oauth2.session.Session;
 import com.jagrosh.jdautilities.oauth2.state.DefaultStateController;
-import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.Config;
 import io.javalin.Javalin;
@@ -23,7 +21,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
@@ -222,13 +223,18 @@ public class WebService{
 		for(Map.Entry<String, String> role : roles.entrySet()){
 			selfAssignableRoles.add(String.format("{\"role\": \"%s\", \"emote\": \"%s\"}", role.getKey(), role.getValue()));
 		}
-		ok(ctx, String.format("{\"prefix\": %s, \"welcome_message_enabled\": %b, \"welcome_message\": %s, \"welcome_channel_id\":%s, \"nsfw_enabled\": %b, \"self_assignable_roles\": [%s]}",
-			JSONObject.quote(Database.getCommandPrefix(guildId)),
-			Database.getWelcomeMessageEnabled(guildId),
-			JSONObject.quote(Database.getWelcomeMessage(guildId)),
-			JSONObject.quote(Database.getWelcomeChannelId(guildId)),
-			Database.getNSFWEnabled(guildId),
-			String.join(", ", selfAssignableRoles)
+		ok(ctx, String.format("{\"prefix\": %s, " +
+						"\"welcome_message_enabled\": %b, " +
+						"\"welcome_message\": %s, " +
+						"\"welcome_channel_id\":%s, " +
+						"\"nsfw_enabled\": %b, " +
+						"\"self_assignable_roles\": [%s]}",
+				JSONObject.quote(Database.getCommandPrefix(guildId)),
+				Database.getWelcomeMessageEnabled(guildId),
+				JSONObject.quote(Database.getWelcomeMessage(guildId)),
+				JSONObject.quote(Database.getWelcomeChannelId(guildId)),
+				Database.getNSFWEnabled(guildId),
+				String.join(", ", selfAssignableRoles)
 		));
 	}
 

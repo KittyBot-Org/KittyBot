@@ -23,10 +23,6 @@ public class CommandContextImpl implements CommandContext{
 		return event.getJDA();
 	}
 
-	public GuildMessageReceivedEvent getEvent(){
-		return this.event;
-	}
-
 	public Guild getGuild(){
 		return this.event.getGuild();
 	}
@@ -77,6 +73,10 @@ public class CommandContextImpl implements CommandContext{
 
 	public Bag<Role> getMentionedRolesBag(){
 		return this.event.getMessage().getMentionedRolesBag();
+	}
+
+	public GuildMessageReceivedEvent getEvent(){
+		return this.event;
 	}
 
 }

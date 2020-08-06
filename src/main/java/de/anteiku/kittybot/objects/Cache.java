@@ -5,23 +5,17 @@ import de.anteiku.kittybot.commands.ACommand;
 import de.anteiku.kittybot.commands.CommandContext;
 import de.anteiku.kittybot.commands.MusicPlayer;
 import de.anteiku.kittybot.database.Database;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.guild.invite.GuildInviteCreateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Cache{
-
-	private static final Logger LOG = LoggerFactory.getLogger(Cache.class);
 
 	public static final Map<String, String> GUILD_PREFIXES = new HashMap<>();
 	public static final Map<String, Map<String, InviteData>> INVITES = new HashMap<>();
@@ -29,6 +23,7 @@ public class Cache{
 	public static final Map<String, ReactiveMessage> REACTIVE_MESSAGES = new HashMap<>();
 	public static final Map<String, String> COMMAND_RESPONSES = new HashMap<>();
 	public static final Map<String, Map<String, String>> SELF_ASSIGNABLE_ROLES = new HashMap<>();
+	private static final Logger LOG = LoggerFactory.getLogger(Cache.class);
 
 	private Cache(){}
 
@@ -48,21 +43,21 @@ public class Cache{
 		}
 	}
 
+	public static void initGuildInviteCache(Guild guild){
+		LOG.info("Initializing invite cache for guild: " + guild.getName() + "(" + guild.getId() + ")");
+		guild.retrieveInvites().queue(invites -> {
+			for(Invite invite : invites){
+				addNewInvite(invite);
+			}
+		});
+	}
+
 	public static void addNewInvite(Invite invite){
 		var guildId = invite.getGuild().getId();
 		if(INVITES.get(guildId) == null){
 			INVITES.put(guildId, new HashMap<>());
 		}
 		INVITES.get(guildId).put(invite.getCode(), new InviteData(invite));
-	}
-
-	public static void initGuildInviteCache(Guild guild){
-		LOG.info("Initializing invite cache for guild: " + guild.getName() +"(" + guild.getId() + ")");
-		guild.retrieveInvites().queue(invites -> {
-			for(Invite invite : invites){
-				addNewInvite(invite);
-			}
-		});
 	}
 
 
@@ -135,14 +130,14 @@ public class Cache{
 
 	// Reactive Messages Cache
 
-	public static void addReactiveMessage(CommandContext ctx, Message message, ACommand cmd, String allowed){
-		REACTIVE_MESSAGES.put(message.getId(), new ReactiveMessage(ctx.getMessage().getId(), ctx.getUser().getId(), message.getId(), cmd.command, allowed));
-		Database.addReactiveMessage(ctx.getGuild().getId(), ctx.getUser().getId(), message.getId(), ctx.getMessage().getId(), cmd.command, allowed);
-	}
-
 	public static void removeReactiveMessage(Guild guild, String messageId){
 		REACTIVE_MESSAGES.remove(messageId);
 		Database.removeReactiveMessage(guild.getId(), messageId);
+	}
+
+	public static void addReactiveMessage(CommandContext ctx, Message message, ACommand cmd, String allowed){
+		REACTIVE_MESSAGES.put(message.getId(), new ReactiveMessage(ctx.getMessage().getId(), ctx.getUser().getId(), message.getId(), cmd.command, allowed));
+		Database.addReactiveMessage(ctx.getGuild().getId(), ctx.getUser().getId(), message.getId(), ctx.getMessage().getId(), cmd.command, allowed);
 	}
 
 	public static ReactiveMessage getReactiveMessage(Guild guild, String messageId){

@@ -1,10 +1,12 @@
 package de.anteiku.kittybot.commands.commands;
 
 import de.anteiku.kittybot.KittyBot;
+import de.anteiku.kittybot.Utils;
 import de.anteiku.kittybot.commands.ACommand;
 import de.anteiku.kittybot.commands.CommandContext;
 import de.anteiku.kittybot.database.Database;
-import de.anteiku.kittybot.Utils;
+import de.anteiku.kittybot.objects.Cache;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -24,13 +26,23 @@ public class OptionsCommand extends ACommand{
 	//TODO renaming sub-commands & displaying set values
 	@Override
 	public void run(CommandContext ctx){
-		if(ctx.getArgs().length > 0){
-			if(ctx.getMember().isOwner() || ctx.getMember().hasPermission(Permission.ADMINISTRATOR)){
+		if(ctx.getMember().isOwner() || ctx.getMember().hasPermission(Permission.ADMINISTRATOR)){
+			if(ctx.getArgs().length == 0){
+				var guildId = ctx.getGuild().getId();
+				var embed = new EmbedBuilder();
+				embed.setTitle("Guild options:");
+				embed.setDescription("These are the current guild options");
+				embed.addField("Command Prefix:", Cache.getCommandPrefix(guildId), false);
+				embed.addField("Welcome Messages Enabled:", String.valueOf(Database.getWelcomeMessageEnabled(guildId)), false);
+				embed.addField("Welcome Channel:", "<#" + Database.getWelcomeChannelId(guildId) + ">", false);
+				embed.addField("Welcome Message:", Database.getWelcomeMessage(guildId), false);
+				embed.addField("NSFW Enabled:", String.valueOf(Database.getNSFWEnabled(guildId)), false);
+				sendAnswer(ctx, embed);
+			}
+			else{
+
 				if(ctx.getArgs()[0].equalsIgnoreCase("prefix") && ctx.getArgs().length == 2){
-					if(Database.setCommandPrefix(ctx.getGuild().getId(), ctx.getArgs()[1])){
-						sendError(ctx, "There was an error while processing your command :(");
-						return;
-					}
+					Cache.setCommandPrefix(ctx.getGuild().getId(), ctx.getArgs()[1]);
 					sendAnswer(ctx, "Prefix set to: `" + ctx.getArgs()[1] + "`");
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("nsfw")){
@@ -116,12 +128,9 @@ public class OptionsCommand extends ACommand{
 					sendUsage(ctx);
 				}
 			}
-			else{
-				sendError(ctx, "You need to be an administrator to use this command!");
-			}
 		}
 		else{
-			sendUsage(ctx);
+			sendError(ctx, "You need to be an administrator to use this command!");
 		}
 	}
 

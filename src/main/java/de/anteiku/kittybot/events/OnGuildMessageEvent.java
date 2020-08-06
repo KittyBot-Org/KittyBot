@@ -16,12 +16,6 @@ import java.time.Instant;
 
 public class OnGuildMessageEvent extends ListenerAdapter{
 
-	private final KittyBot main;
-
-	public OnGuildMessageEvent(KittyBot main){
-		this.main = main;
-	}
-
 	@Override
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event){
 		if(event.getAuthor().isBot()){
@@ -38,6 +32,7 @@ public class OnGuildMessageEvent extends ListenerAdapter{
 	@Override
 	public void onGuildMessageDelete(GuildMessageDeleteEvent event){
 		Cache.deleteCommandResponse(event.getChannel(), event.getMessageId());
+		Database.removeReactiveMessage(event.getGuild().getId(), event.getMessageId());
 	}
 
 	@Override

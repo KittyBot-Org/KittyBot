@@ -2,7 +2,7 @@ package de.anteiku.kittybot.objects;
 
 import net.dv8tion.jda.api.entities.Invite;
 
-public class InviteData {
+public class InviteData{
 
 	private final String guildId;
 	private final String user;

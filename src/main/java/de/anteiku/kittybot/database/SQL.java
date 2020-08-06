@@ -25,23 +25,13 @@ public class SQL{
 		config.setUsername(Config.DB_USER);
 		config.setPassword(Config.DB_PASSWORD);
 
-		config.setMinimumIdle(5);
+		config.setMinimumIdle(80);
 		config.setMaximumPoolSize(90);
 		config.setConnectionTimeout(10000);
 		config.setIdleTimeout(600000);
 		config.setMaxLifetime(1800000);
 
 		dataSource = new HikariDataSource(config);
-	}
-
-	public static Connection getConnection() throws NullPointerException{
-		try{
-			return dataSource.getConnection();
-		}
-		catch(SQLException e){
-			LOG.error("Error while fetching connection from datasource", e);
-		}
-		throw new NullPointerException("Datasource returned empty connection");
 	}
 
 	public static void close(){
@@ -58,6 +48,16 @@ public class SQL{
 		catch(SQLException e){
 			LOG.error("Error while reading sql table file: " + table, e);
 		}
+	}
+
+	public static Connection getConnection() throws NullPointerException{
+		try{
+			return dataSource.getConnection();
+		}
+		catch(SQLException e){
+			LOG.error("Error while fetching connection from datasource", e);
+		}
+		throw new NullPointerException("Datasource returned empty connection");
 	}
 
 	public static PreparedStatement prepStatement(String sql){
@@ -109,16 +109,6 @@ public class SQL{
 		return null;
 	}
 
-	public static ResultSet query(PreparedStatement preparedStatement){
-		try{
-			return preparedStatement.executeQuery();
-		}
-		catch(SQLException e){
-			LOG.error("Error query prepared statement", e);
-		}
-		return null;
-	}
-
 	public static int update(PreparedStatement preparedStatement){
 		try{
 			return preparedStatement.executeUpdate();
@@ -138,6 +128,16 @@ public class SQL{
 			LOG.error("Error exists prepared statement", e);
 		}
 		return false;
+	}
+
+	public static ResultSet query(PreparedStatement preparedStatement){
+		try{
+			return preparedStatement.executeQuery();
+		}
+		catch(SQLException e){
+			LOG.error("Error query prepared statement", e);
+		}
+		return null;
 	}
 
 }

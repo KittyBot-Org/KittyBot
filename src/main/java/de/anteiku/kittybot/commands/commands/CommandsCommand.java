@@ -53,7 +53,7 @@ public class CommandsCommand extends ACommand{
 	@Override
 	public void run(CommandContext ctx){
 		ctx.getChannel().sendMessage(buildCommands(ctx.getArgs(), Database.getCommandPrefix(ctx.getGuild().getId())).build()).queue(message -> {
-			Cache.addReactiveMessage(ctx, message, this, "-1");
+			Cache.addReactiveMessage(ctx, message, this, ctx.getUser().getId());
 			message.addReaction(Emotes.ARROW_LEFT.get()).queue();
 			message.addReaction(Emotes.ARROW_RIGHT.get()).queue();
 			message.addReaction(Emotes.WASTEBASKET.get()).queue();

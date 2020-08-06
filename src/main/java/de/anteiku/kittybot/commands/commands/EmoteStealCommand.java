@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
 
 public class EmoteStealCommand extends ACommand{
@@ -36,8 +35,8 @@ public class EmoteStealCommand extends ACommand{
 		if(!ctx.getMessage().getAttachments().isEmpty() && ctx.getArgs().length > 0){
 			var attachment = ctx.getMessage().getAttachments().get(0); //Users can't add multiple attachments in one message
 			var extension = attachment.getFileExtension();
-			if(extension != null && (extension.equalsIgnoreCase("png") || extension.equalsIgnoreCase("jpg") ||extension.equalsIgnoreCase("gif") ||extension.equalsIgnoreCase("webp"))){
-				attachment.retrieveInputStream().thenAccept(inputStream -> createEmote(ctx, ctx.getArgs()[0],inputStream));
+			if(extension != null && (extension.equalsIgnoreCase("png") || extension.equalsIgnoreCase("jpg") || extension.equalsIgnoreCase("gif") || extension.equalsIgnoreCase("webp"))){
+				attachment.retrieveInputStream().thenAccept(inputStream -> createEmote(ctx, ctx.getArgs()[0], inputStream));
 			}
 			else{
 				sendError(ctx, "The image provided is not a valid image file");
@@ -61,19 +60,6 @@ public class EmoteStealCommand extends ACommand{
 		}
 	}
 
-	private void createEmote(CommandContext ctx, String name, String url){
-		try{
-			createEmote(ctx, name, new URL(url).openStream());
-		}
-		catch(MalformedURLException e){
-			sendError(ctx, "Please provide a valid url");
-		}
-		catch(IOException e){
-			LOG.error("Error with stream", e);
-			sendError(ctx, "Error creating emote please try again");
-		}
-	}
-
 	private void createEmote(CommandContext ctx, String name, InputStream inputStream){
 		try{
 			if(inputStream.available() > MAX_EMOTE_SIZE){
@@ -81,8 +67,21 @@ public class EmoteStealCommand extends ACommand{
 				return;
 			}
 			ctx.getGuild().createEmote(name, Icon.from(inputStream)).queue(
-				success -> sendAnswer(ctx, "Emote stolen"),
-				failure -> sendError(ctx, "Error creating emote: " + failure.getMessage()));
+					success -> sendAnswer(ctx, "Emote stolen"),
+					failure -> sendError(ctx, "Error creating emote: " + failure.getMessage()));
+		}
+		catch(IOException e){
+			LOG.error("Error with stream", e);
+			sendError(ctx, "Error creating emote please try again");
+		}
+	}
+
+	private void createEmote(CommandContext ctx, String name, String url){
+		try{
+			createEmote(ctx, name, new URL(url).openStream());
+		}
+		catch(MalformedURLException e){
+			sendError(ctx, "Please provide a valid url");
 		}
 		catch(IOException e){
 			LOG.error("Error with stream", e);
