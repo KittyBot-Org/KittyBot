@@ -45,7 +45,6 @@ public class Database{
 		return false;
 	}
 
-
 	public static boolean registerGuild(Guild guild){
 		LOG.debug("Registering new guild: {}", guild.getId());
 		var query = "INSERT INTO guilds (guild_id, command_prefix, request_channel_id, requests_enabled, welcome_channel_id, welcome_message, welcome_message_enabled, nsfw_enabled, inactive_role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -64,6 +63,75 @@ public class Database{
 		}
 		catch(SQLException e){
 			LOG.error("Error registering guild: " + guild.getId(), e);
+		}
+		return false;
+	}
+
+	private static boolean setProperty(String guildId, String key, int value){
+		var query = "UPDATE guilds SET " + key + "=? WHERE guild_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
+			stmt.setInt(1, value);
+			stmt.setString(2, guildId);
+			return SQL.execute(stmt);
+		}
+		catch(SQLException e){
+			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
+		}
+		return false;
+	}
+
+	private static boolean setProperty(String guildId, String key, String value){
+		var query = "UPDATE guilds SET " + key + "=? WHERE guild_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
+			stmt.setString(1, value);
+			stmt.setString(2, guildId);
+			return SQL.execute(stmt);
+		}
+		catch(SQLException e){
+			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
+		}
+		return false;
+	}
+
+	private static boolean setProperty(String guildId, String key, boolean value){
+		var query = "UPDATE guilds SET " + key + "=? WHERE guild_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
+			stmt.setBoolean(1, value);
+			stmt.setString(2, guildId);
+			return SQL.execute(stmt);
+		}
+		catch(SQLException e){
+			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
+		}
+		return false;
+	}
+
+	private static String getString(String guildId, String key){
+		var query = "SELECT * FROM guilds WHERE guild_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
+			stmt.setString(1, guildId);
+			var result = SQL.query(stmt);
+			if(result != null && result.next()){
+				return result.getString(key);
+			}
+		}
+		catch(SQLException e){
+			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
+		}
+		return null;
+	}
+
+	private static boolean getBoolean(String guildId, String key){
+		var query = "SELECT * FROM guilds WHERE guild_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
+			stmt.setString(1, guildId);
+			var result = SQL.query(stmt);
+			if(result != null && result.next()){
+				return result.getBoolean(key);
+			}
+		}
+		catch(SQLException e){
+			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
 		}
 		return false;
 	}
@@ -112,47 +180,6 @@ public class Database{
 		return getString(guildId, "command_prefix");
 	}
 
-	private static String getString(String guildId, String key){
-		var query = "SELECT * FROM guilds WHERE guild_id = ?";
-		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
-			stmt.setString(1, guildId);
-			var result = SQL.query(stmt);
-			if(result != null && result.next()){
-				return result.getString(key);
-			}
-		}
-		catch(SQLException e){
-			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
-		}
-		return null;
-	}
-
-	private static boolean setProperty(String guildId, String key, int value){
-		var query = "UPDATE guilds SET " + key + "=? WHERE guild_id = ?";
-		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
-			stmt.setInt(1, value);
-			stmt.setString(2, guildId);
-			return SQL.execute(stmt);
-		}
-		catch(SQLException e){
-			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
-		}
-		return false;
-	}
-
-	private static boolean setProperty(String guildId, String key, String value){
-		var query = "UPDATE guilds SET " + key + "=? WHERE guild_id = ?";
-		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
-			stmt.setString(1, value);
-			stmt.setString(2, guildId);
-			return SQL.execute(stmt);
-		}
-		catch(SQLException e){
-			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
-		}
-		return false;
-	}
-
 	public static void setSelfAssignableRoles(String guildId, Map<String, String> newRoles){
 		Map<String, String> roles = getSelfAssignableRoles(guildId);
 		Map<String, String> addRoles = new HashMap<>();
@@ -168,6 +195,30 @@ public class Database{
 		}
 		removeSelfAssignableRoles(guildId, removeRoles);
 		addSelfAssignableRoles(guildId, addRoles);
+	}
+
+	public static boolean addSelfAssignableRoles(String guildId, Map<String, String> roles){
+		boolean result = true;
+		for(Map.Entry<String, String> role : roles.entrySet()){
+			var query = "INSERT INTO self_assignable_roles (role_id, guild_id, emote_id) VALUES (?, ?, ?)";
+			try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
+				stmt.setString(1, role.getKey());
+				stmt.setString(2, guildId);
+				stmt.setString(3, role.getValue());
+				boolean r = SQL.execute(stmt);
+				if(!r){
+					result = false;
+				}
+			}
+			catch(SQLException e){
+				LOG.error("Error inserting self-assignable role", e);
+			}
+		}
+		return result;
+	}
+
+	public boolean addSelfAssignableRole(String guildId, String role, String emote){
+		return addSelfAssignableRoles(guildId, new HashMap<>(Collections.singletonMap(role, emote)));
 	}
 
 	public static Map<String, String> getSelfAssignableRoles(String guildId){
@@ -187,6 +238,10 @@ public class Database{
 		return null;
 	}
 
+	public void removeSelfAssignableRole(String guildId, String role){
+		removeSelfAssignableRoles(guildId, new HashSet<>(Collections.singleton(role)));
+	}
+
 	public static boolean removeSelfAssignableRoles(String guildId, Set<String> roles){
 		boolean result = true;
 		for(String role : roles){
@@ -201,26 +256,6 @@ public class Database{
 			}
 			catch(SQLException e){
 				LOG.error("Error removing self-assignable role: " + role + " guild " + guildId, e);
-			}
-		}
-		return result;
-	}
-
-	public static boolean addSelfAssignableRoles(String guildId, Map<String, String> roles){
-		boolean result = true;
-		for(Map.Entry<String, String> role : roles.entrySet()){
-			var query = "INSERT INTO self_assignable_roles (role_id, guild_id, emote_id) VALUES (?, ?, ?)";
-			try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
-				stmt.setString(1, role.getKey());
-				stmt.setString(2, guildId);
-				stmt.setString(3, role.getValue());
-				boolean r = SQL.execute(stmt);
-				if(!r){
-					result = false;
-				}
-			}
-			catch(SQLException e){
-				LOG.error("Error inserting self-assignable role", e);
 			}
 		}
 		return result;
@@ -246,36 +281,8 @@ public class Database{
 		return getBoolean(guildId, "welcome_message_enabled");
 	}
 
-	private static boolean getBoolean(String guildId, String key){
-		var query = "SELECT * FROM guilds WHERE guild_id = ?";
-		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
-			stmt.setString(1, guildId);
-			var result = SQL.query(stmt);
-			if(result != null && result.next()){
-				return result.getBoolean(key);
-			}
-		}
-		catch(SQLException e){
-			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
-		}
-		return false;
-	}
-
 	public static boolean setWelcomeMessageEnabled(String guildId, boolean enabled){
 		return setProperty(guildId, "welcome_message_enabled", enabled);
-	}
-
-	private static boolean setProperty(String guildId, String key, boolean value){
-		var query = "UPDATE guilds SET " + key + "=? WHERE guild_id = ?";
-		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
-			stmt.setBoolean(1, value);
-			stmt.setString(2, guildId);
-			return SQL.execute(stmt);
-		}
-		catch(SQLException e){
-			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
-		}
-		return false;
 	}
 
 	public static boolean getNSFWEnabled(String guildId){
@@ -284,6 +291,22 @@ public class Database{
 
 	public static boolean setNSFWEnabled(String guildId, boolean enabled){
 		return setProperty(guildId, "nsfw_enabled", enabled);
+	}
+
+	public static ReactiveMessage isReactiveMessage(String guildId, String messageId){
+		var query = "SELECT * FROM reactive_messages WHERE message_id = ? AND guild_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
+			stmt.setString(1, messageId);
+			stmt.setString(2, guildId);
+			var result = SQL.query(stmt);
+			if(result != null && result.next()){
+				return new ReactiveMessage(result.getString("message_id"), result.getString("user_id"), result.getString("command_id"), result.getString("command"), result.getString("allowed"));
+			}
+		}
+		catch(SQLException e){
+			LOG.error("Error while checking reactive message for guild " + guildId + " message " + messageId, e);
+		}
+		return null;
 	}
 
 	public static boolean addReactiveMessage(String guildId, String userId, String messageId, String commandId, String command, String allowed){
@@ -316,22 +339,6 @@ public class Database{
 		return false;
 	}
 
-	public static ReactiveMessage isReactiveMessage(String guildId, String messageId){
-		var query = "SELECT * FROM reactive_messages WHERE message_id = ? AND guild_id = ?";
-		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
-			stmt.setString(1, messageId);
-			stmt.setString(2, guildId);
-			var result = SQL.query(stmt);
-			if(result != null && result.next()){
-				return new ReactiveMessage(result.getString("message_id"), result.getString("user_id"), result.getString("command_id"), result.getString("command"), result.getString("allowed"));
-			}
-		}
-		catch(SQLException e){
-			LOG.error("Error while checking reactive message for guild " + guildId + " message " + messageId, e);
-		}
-		return null;
-	}
-
 	public static long getUserVoiceState(String guildId, String userId){
 		var query = "SELECT joined_voice FROM user_statistics WHERE guild_id = ? and user_id = ?";
 		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
@@ -361,10 +368,6 @@ public class Database{
 		}
 	}
 
-	/*
-	 * User stats specified methods
-	 */
-
 	public static void addSession(String userId, String key){
 		var query = "INSERT INTO sessions (session_id, user_id) VALUES (?, ?)";
 		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
@@ -384,10 +387,6 @@ public class Database{
 		}
 		return key;
 	}
-
-	/*
-	 * Session specified methods
-	 */
 
 	public static boolean sessionExists(String key){
 		var query = "SELECT * from sessions WHERE session_id = ?";
@@ -426,14 +425,6 @@ public class Database{
 			LOG.error("Error while getting session", e);
 		}
 		return null;
-	}
-
-	public boolean addSelfAssignableRole(String guildId, String role, String emote){
-		return addSelfAssignableRoles(guildId, new HashMap<>(Collections.singletonMap(role, emote)));
-	}
-
-	public void removeSelfAssignableRole(String guildId, String role){
-		removeSelfAssignableRoles(guildId, new HashSet<>(Collections.singleton(role)));
 	}
 
 }
