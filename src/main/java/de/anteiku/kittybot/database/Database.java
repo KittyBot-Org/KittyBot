@@ -34,8 +34,8 @@ public class Database{
 	}
 
 	private static boolean isGuildRegistered(Guild guild){
-		var stmt = SQL.prepStatement("SELECT * FROM guilds WHERE guild_id = ?");
-		try{
+		var query = "SELECT * FROM guilds WHERE guild_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, guild.getId());
 			return SQL.exists(stmt);
 		}
@@ -48,13 +48,13 @@ public class Database{
 
 	public static boolean registerGuild(Guild guild){
 		LOG.debug("Registering new guild: {}", guild.getId());
-		var stmt = SQL.prepStatement("INSERT INTO guilds (guild_id, command_prefix, request_channel_id, requests_enabled, welcome_channel_id, welcome_message, welcome_message_enabled, nsfw_enabled, inactive_role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-		try{
+		var query = "INSERT INTO guilds (guild_id, command_prefix, request_channel_id, requests_enabled, welcome_channel_id, welcome_message, welcome_message_enabled, nsfw_enabled, inactive_role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, guild.getId());
 			stmt.setString(2, Config.DEFAULT_PREFIX);
 			stmt.setString(3, "-1");
 			stmt.setBoolean(4, false);
-			stmt.setString(5, guild.getDefaultChannel().getId());
+			stmt.setString(5, guild.getDefaultChannel() == null ? "-1" : guild.getDefaultChannel().getId());
 			stmt.setString(6, "Welcome ${user} to this server!");
 			stmt.setBoolean(7, true);
 			stmt.setBoolean(8, true);
@@ -69,8 +69,8 @@ public class Database{
 	}
 
 	public static boolean addCommandStatistics(String guildId, String commandId, String userId, String command, long processingTime){
-		var stmt = SQL.prepStatement("INSERT INTO commands (message_id, guild_id, user_id, command, processing_time, time) VALUES (?, ?, ?, ?, ?, ?)");
-		try{
+		var query = "INSERT INTO commands (message_id, guild_id, user_id, command, processing_time, time) VALUES (?, ?, ?, ?, ?, ?)";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, commandId);
 			stmt.setString(2, guildId);
 			stmt.setString(3, userId);
@@ -87,13 +87,13 @@ public class Database{
 
 	public static Map<Long, Long> getCommandStatistics(String guildId, long from, long to){
 		Map<Long, Long> map = new LinkedHashMap<>();
-		var stmt = SQL.prepStatement("SELECT * FROM commands WHERE guild_id = ? and time > ? and time < ?");
-		try{
+		var query = "SELECT * FROM commands WHERE guild_id = ? and time > ? and time < ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, guildId);
 			stmt.setLong(1, from);
 			stmt.setLong(1, to);
 			var result = SQL.query(stmt);
-			while(result.next()){
+			while(result != null && result.next()){
 				map.put(result.getLong("time"), result.getLong("processing_time"));
 			}
 			return map;
@@ -104,16 +104,20 @@ public class Database{
 		return null;
 	}
 
+	public static boolean setCommandPrefix(String guildId, String prefix){
+		return setProperty(guildId, "command_prefix", prefix);
+	}
+
 	public static String getCommandPrefix(String guildId){
 		return getString(guildId, "command_prefix");
 	}
 
 	private static String getString(String guildId, String key){
-		var stmt = SQL.prepStatement("SELECT * FROM guilds WHERE guild_id = ?");
-		try{
+		var query = "SELECT * FROM guilds WHERE guild_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, guildId);
 			var result = SQL.query(stmt);
-			if(result.next()){
+			if(result != null && result.next()){
 				return result.getString(key);
 			}
 		}
@@ -124,8 +128,8 @@ public class Database{
 	}
 
 	private static boolean setProperty(String guildId, String key, int value){
-		var stmt = SQL.prepStatement("UPDATE guilds SET " + key + "=? WHERE guild_id = ?");
-		try{
+		var query = "UPDATE guilds SET " + key + "=? WHERE guild_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setInt(1, value);
 			stmt.setString(2, guildId);
 			return SQL.execute(stmt);
@@ -136,13 +140,9 @@ public class Database{
 		return false;
 	}
 
-	public static boolean setCommandPrefix(String guildId, String prefix){
-		return setProperty(guildId, "command_prefix", prefix);
-	}
-
 	private static boolean setProperty(String guildId, String key, String value){
-		var stmt = SQL.prepStatement("UPDATE guilds SET " + key + "=? WHERE guild_id = ?");
-		try{
+		var query = "UPDATE guilds SET " + key + "=? WHERE guild_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, value);
 			stmt.setString(2, guildId);
 			return SQL.execute(stmt);
@@ -172,8 +172,8 @@ public class Database{
 
 	public static Map<String, String> getSelfAssignableRoles(String guildId){
 		Map<String, String> map = new HashMap<>();
-		var stmt = SQL.prepStatement("SELECT * FROM self_assignable_roles WHERE guild_id = ?");
-		try{
+		var query = "SELECT * FROM self_assignable_roles WHERE guild_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, guildId);
 			ResultSet result = SQL.query(stmt);
 			while(result.next()){
@@ -190,8 +190,8 @@ public class Database{
 	public static boolean removeSelfAssignableRoles(String guildId, Set<String> roles){
 		boolean result = true;
 		for(String role : roles){
-			var stmt = SQL.prepStatement("DELETE FROM self_assignable_roles WHERE role_id = ? and guild_id = ?");
-			try{
+			var query = "DELETE FROM self_assignable_roles WHERE role_id = ? and guild_id = ?";
+			try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 				stmt.setString(1, role);
 				stmt.setString(2, guildId);
 				boolean r = SQL.execute(stmt);
@@ -209,8 +209,8 @@ public class Database{
 	public static boolean addSelfAssignableRoles(String guildId, Map<String, String> roles){
 		boolean result = true;
 		for(Map.Entry<String, String> role : roles.entrySet()){
-			var stmt = SQL.prepStatement("INSERT INTO self_assignable_roles (role_id, guild_id, emote_id) VALUES (?, ?, ?)");
-			try{
+			var query = "INSERT INTO self_assignable_roles (role_id, guild_id, emote_id) VALUES (?, ?, ?)";
+			try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 				stmt.setString(1, role.getKey());
 				stmt.setString(2, guildId);
 				stmt.setString(3, role.getValue());
@@ -247,11 +247,11 @@ public class Database{
 	}
 
 	private static boolean getBoolean(String guildId, String key){
-		var stmt = SQL.prepStatement("SELECT * FROM guilds WHERE guild_id = ?");
-		try{
+		var query = "SELECT * FROM guilds WHERE guild_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, guildId);
 			var result = SQL.query(stmt);
-			if(result.next()){
+			if(result != null && result.next()){
 				return result.getBoolean(key);
 			}
 		}
@@ -266,8 +266,8 @@ public class Database{
 	}
 
 	private static boolean setProperty(String guildId, String key, boolean value){
-		var stmt = SQL.prepStatement("UPDATE guilds SET " + key + "=? WHERE guild_id = ?");
-		try{
+		var query = "UPDATE guilds SET " + key + "=? WHERE guild_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setBoolean(1, value);
 			stmt.setString(2, guildId);
 			return SQL.execute(stmt);
@@ -287,8 +287,8 @@ public class Database{
 	}
 
 	public static boolean addReactiveMessage(String guildId, String userId, String messageId, String commandId, String command, String allowed){
-		var stmt = SQL.prepStatement("INSERT INTO reactive_messages (message_id, command_id, user_id, guild_id, command, allowed) VALUES (?, ?, ?, ?, ?, ?)");
-		try{
+		var query = "INSERT INTO reactive_messages (message_id, command_id, user_id, guild_id, command, allowed) VALUES (?, ?, ?, ?, ?, ?)";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, messageId);
 			stmt.setString(2, commandId);
 			stmt.setString(3, userId);
@@ -304,8 +304,8 @@ public class Database{
 	}
 
 	public static boolean removeReactiveMessage(String guildId, String messageId){
-		var stmt = SQL.prepStatement("DELETE FROM reactive_messages WHERE message_id = ? AND guild_id = ?");
-		try{
+		var query = "DELETE FROM reactive_messages WHERE message_id = ? AND guild_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, messageId);
 			stmt.setString(2, guildId);
 			SQL.execute(stmt);
@@ -317,12 +317,12 @@ public class Database{
 	}
 
 	public static ReactiveMessage isReactiveMessage(String guildId, String messageId){
-		var stmt = SQL.prepStatement("SELECT * FROM reactive_messages WHERE message_id = ? AND guild_id = ?");
-		try{
+		var query = "SELECT * FROM reactive_messages WHERE message_id = ? AND guild_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, messageId);
 			stmt.setString(2, guildId);
 			var result = SQL.query(stmt);
-			if(result.next()){
+			if(result != null && result.next()){
 				return new ReactiveMessage(result.getString("message_id"), result.getString("user_id"), result.getString("command_id"), result.getString("command"), result.getString("allowed"));
 			}
 		}
@@ -333,8 +333,8 @@ public class Database{
 	}
 
 	public static long getUserVoiceState(String guildId, String userId){
-		var stmt = SQL.prepStatement("SELECT joined_voice FROM user_statistics WHERE guild_id = ? and user_id = ?");
-		try{
+		var query = "SELECT joined_voice FROM user_statistics WHERE guild_id = ? and user_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			var result = SQL.query(stmt);
 			if(result != null){
 				return result.getLong("joined_voice");
@@ -347,8 +347,8 @@ public class Database{
 	}
 
 	public static void setUserVoiceState(String guildId, String userId, long joined){
-		var stmt = SQL.prepStatement("UPDATE user_statistics SET joined_voice=? WHERE guild_id = ? and user_id = ?");
-		try{
+		var query = "UPDATE user_statistics SET joined_voice=? WHERE guild_id = ? and user_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setLong(1, joined);
 			stmt.setString(2, guildId);
 			stmt.setString(3, userId);
@@ -366,8 +366,8 @@ public class Database{
 	 */
 
 	public static void addSession(String userId, String key){
-		var stmt = SQL.prepStatement("INSERT INTO sessions (session_id, user_id) VALUES (?, ?)");
-		try{
+		var query = "INSERT INTO sessions (session_id, user_id) VALUES (?, ?)";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, key);
 			stmt.setString(2, userId);
 			SQL.execute(stmt);
@@ -390,8 +390,8 @@ public class Database{
 	 */
 
 	public static boolean sessionExists(String key){
-		var stmt = SQL.prepStatement("SELECT * from sessions WHERE session_id = ?");
-		try{
+		var query = "SELECT * from sessions WHERE session_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, key);
 			return SQL.exists(stmt);
 		}
@@ -402,8 +402,8 @@ public class Database{
 	}
 
 	public static boolean deleteSession(String key){
-		var stmt = SQL.prepStatement("DELETE FROM sessions WHERE session_id = ?");
-		try{
+		var query = "DELETE FROM sessions WHERE session_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, key);
 			return SQL.execute(stmt);
 		}
@@ -414,11 +414,11 @@ public class Database{
 	}
 
 	public static String getSession(String key){
-		var stmt = SQL.prepStatement("SELECT * from sessions WHERE session_id = ?");
-		try{
+		var query = "SELECT * from sessions WHERE session_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, key);
 			var result = SQL.query(stmt);
-			if(result.next()){
+			if(result != null && result.next()){
 				return result.getString("user_id");
 			}
 		}

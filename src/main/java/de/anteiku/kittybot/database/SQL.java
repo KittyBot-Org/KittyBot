@@ -50,42 +50,8 @@ public class SQL{
 		}
 	}
 
-	public static Connection getConnection() throws NullPointerException{
-		try{
-			return dataSource.getConnection();
-		}
-		catch(SQLException e){
-			LOG.error("Error while fetching connection from datasource", e);
-		}
-		throw new NullPointerException("Datasource returned empty connection");
-	}
-
-	public static PreparedStatement prepStatement(String sql){
-		try{
-			LOG.debug("prepareStatement sql: {}", sql);
-			return getConnection().prepareStatement(sql);
-		}
-		catch(SQLException e){
-			LOG.error("Error preparing statement", e);
-		}
-		catch(NullPointerException e){
-			LOG.error("Error connection is null", e);
-		}
-		return null;
-	}
-
-	public static PreparedStatement prepStatement(String sql, int resultSetType){
-		try{
-			LOG.debug("prepareStatement sql: {}", sql);
-			return getConnection().prepareStatement(sql, resultSetType);
-		}
-		catch(SQLException e){
-			LOG.error("Error preparing statement", e);
-		}
-		catch(NullPointerException e){
-			LOG.error("Error connection is null", e);
-		}
-		return null;
+	public static Connection getConnection() throws SQLException{
+		return dataSource.getConnection();
 	}
 
 	public static boolean execute(PreparedStatement preparedStatement){
