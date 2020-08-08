@@ -14,13 +14,13 @@ import java.util.List;
 
 public class OptionsCommand extends ACommand{
 
-	public static String COMMAND = "options";
-	public static String USAGE = "options <prefix|welcomechannel|welcomemessage|nsfw> <value>";
-	public static String DESCRIPTION = "Used to set some guild specified options";
-	protected static String[] ALIAS = {"opts", "opt"};
+	public static final String COMMAND = "options";
+	public static final String USAGE = "options <prefix|welcomechannel|welcomemessage|nsfw> <value>";
+	public static final String DESCRIPTION = "Used to set some guild specified options";
+	protected static final String[] ALIAS = {"opts", "opt"};
 
-	public OptionsCommand(KittyBot main){
-		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
+	public OptionsCommand(){
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 
 	//TODO renaming sub-commands & displaying set values
@@ -33,28 +33,31 @@ public class OptionsCommand extends ACommand{
 				embed.setTitle("Guild options:");
 				embed.setDescription("These are the current guild options");
 				embed.addField("Command Prefix:", Cache.getCommandPrefix(guildId), false);
+				embed.addField("Announcement Channel:", "<#" + Database.getAnnouncementChannelId(guildId) + ">", false);
 				embed.addField("Welcome Messages Enabled:", String.valueOf(Database.getWelcomeMessageEnabled(guildId)), false);
-				embed.addField("Welcome Channel:", "<#" + Database.getWelcomeChannelId(guildId) + ">", false);
 				embed.addField("Welcome Message:", Database.getWelcomeMessage(guildId), false);
+				embed.addField("Leave Messages Enabled:", String.valueOf(Database.getLeaveMessageEnabled(guildId)), false);
+				embed.addField("Leave Message:", Database.getLeaveMessage(guildId), false);
+				embed.addField("Boost Messages Enabled:", String.valueOf(Database.getBoostMessageEnabled(guildId)), false);
+				embed.addField("Boost Message:", Database.getBoostMessage(guildId), false);
 				embed.addField("NSFW Enabled:", String.valueOf(Database.getNSFWEnabled(guildId)), false);
 				sendAnswer(ctx, embed);
 			}
 			else{
-
 				if(ctx.getArgs()[0].equalsIgnoreCase("prefix") && ctx.getArgs().length == 2){
 					Cache.setCommandPrefix(ctx.getGuild().getId(), ctx.getArgs()[1]);
 					sendAnswer(ctx, "Prefix set to: `" + ctx.getArgs()[1] + "`");
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("nsfw")){
 					if(ctx.getArgs().length >= 2){
-						if(ctx.getArgs()[1].equalsIgnoreCase("true") || ctx.getArgs()[1].equalsIgnoreCase("ja") || ctx.getArgs()[1].equalsIgnoreCase("yes") || ctx.getArgs()[1].equalsIgnoreCase("on")){
+						if(Utils.isEnable(ctx.getArgs()[1])){
 							if(Database.setNSFWEnabled(ctx.getGuild().getId(), true)){
 								sendError(ctx, "There was an error while processing your command :(");
 								return;
 							}
 							sendAnswer(ctx, "NSFW `activated`");
 						}
-						else if(ctx.getArgs()[1].equalsIgnoreCase("false") || ctx.getArgs()[1].equalsIgnoreCase("nein") || ctx.getArgs()[1].equalsIgnoreCase("no") || ctx.getArgs()[1].equalsIgnoreCase("off")){
+						else if(Utils.isDisable(ctx.getArgs()[1])){
 							if(Database.setNSFWEnabled(ctx.getGuild().getId(), false)){
 								sendError(ctx, "There was an error while processing your command :(");
 								return;
@@ -66,7 +69,7 @@ public class OptionsCommand extends ACommand{
 						}
 					}
 					else{
-						if(Database.setNSFWEnabled(ctx.getGuild().getId(), Database.getNSFWEnabled(ctx.getGuild().getId()))){
+						if(Database.setNSFWEnabled(ctx.getGuild().getId(), !Database.getNSFWEnabled(ctx.getGuild().getId()))){
 							sendError(ctx, "There was an error while processing your command :(");
 							return;
 						}
@@ -80,26 +83,30 @@ public class OptionsCommand extends ACommand{
 						sendAnswer(ctx, "NSFW set to: `" + state + "`");
 					}
 				}
-				else if(ctx.getArgs()[0].equalsIgnoreCase("welcomechannel")){
+				else if(ctx.getArgs()[0].equalsIgnoreCase("announcementchannel")){
 					List<TextChannel> channels = ctx.getMessage().getMentionedChannels();
 					if(channels.size() == 1){
-						if(Database.setWelcomeChannelId(ctx.getGuild().getId(), channels.get(0).getId())){
+						if(Database.setAnnouncementChannelId(ctx.getGuild().getId(), channels.get(0).getId())){
 							sendError(ctx, "There was an error while processing your command :(");
 							return;
 						}
-						sendAnswer(ctx, channels.get(0).getAsMention() + " set as welcome channel!");
+						sendAnswer(ctx, channels.get(0).getAsMention() + " set as announcement channel!");
 					}
 					else{
-						sendUsage(ctx, "options welcomechannel <#TextChannel>");
+						sendUsage(ctx, "options announcement <#TextChannel>");
 					}
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("welcomemessage")){
 					if(ctx.getArgs().length < 2){
-
+						String message = String.join(" ", Utils.subArray(ctx.getArgs(), 1));
+						if(Database.setWelcomeMessage(ctx.getGuild().getId(), message)){
+							sendError(ctx, "There was an error while processing your command :(");
+							return;
+						}
+						sendAnswer(ctx, "Welcome message set to: " + message);
 					}
-					else if(ctx.getArgs()[1].equalsIgnoreCase("?") || ctx.getArgs()[1].equalsIgnoreCase("help")){
-						sendUsage(ctx, "options welcomemessage <message> ([randomwelcomemessage] = random Discord welcome message, [username] = joined member)");
-						return;
+					else if(Utils.isHelp(ctx.getArgs()[1])){
+						sendUsage(ctx, "options welcomemessage <message>");
 					}
 					else if(ctx.getArgs()[1].equalsIgnoreCase("enable") || ctx.getArgs()[1].equalsIgnoreCase("true") || ctx.getArgs()[1].equalsIgnoreCase("on") || ctx.getArgs()[1].equalsIgnoreCase("an")){
 						if(Database.setWelcomeMessageEnabled(ctx.getGuild().getId(), true)){
@@ -107,22 +114,68 @@ public class OptionsCommand extends ACommand{
 							return;
 						}
 						sendAnswer(ctx, "Welcome messages enabled!");
-						return;
 					}
-					else if(ctx.getArgs()[1].equalsIgnoreCase("disable") || ctx.getArgs()[1].equalsIgnoreCase("false") || ctx.getArgs()[1].equalsIgnoreCase("off") || ctx.getArgs()[1].equalsIgnoreCase("aus")){
+					else if(Utils.isDisable(ctx.getArgs()[1])){
 						if(Database.setWelcomeMessageEnabled(ctx.getGuild().getId(), false)){
 							sendError(ctx, "There was an error while processing your command :(");
 							return;
 						}
 						sendAnswer(ctx, "Welcome messages disabled!");
-						return;
 					}
-					String message = String.join(" ", Utils.subArray(ctx.getArgs(), 1));
-					if(Database.setWelcomeMessage(ctx.getGuild().getId(), message)){
-						sendError(ctx, "There was an error while processing your command :(");
-						return;
+				}
+				else if(ctx.getArgs()[0].equalsIgnoreCase("leavemessage")){
+					if(ctx.getArgs().length < 2){
+						String message = String.join(" ", Utils.subArray(ctx.getArgs(), 1));
+						if(Database.setWelcomeMessage(ctx.getGuild().getId(), message)){
+							sendError(ctx, "There was an error while processing your command :(");
+							return;
+						}
+						sendAnswer(ctx, "Leave message set to: "  + message);
 					}
-					sendAnswer(ctx, "Welcome message set to: ");
+					else if(Utils.isHelp(ctx.getArgs()[1])){
+						sendUsage(ctx, "options leavemessage <message>");
+					}
+					else if(Utils.isEnable(ctx.getArgs()[1])){
+						if(Database.setWelcomeMessageEnabled(ctx.getGuild().getId(), true)){
+							sendError(ctx, "There was an error while processing your command :(");
+							return;
+						}
+						sendAnswer(ctx, "Leave messages enabled!");
+					}
+					else if(Utils.isDisable(ctx.getArgs()[1])){
+						if(Database.setWelcomeMessageEnabled(ctx.getGuild().getId(), false)){
+							sendError(ctx, "There was an error while processing your command :(");
+							return;
+						}
+						sendAnswer(ctx, "Leave messages disabled!");
+					}
+				}
+				else if(ctx.getArgs()[0].equalsIgnoreCase("boostmessage")){
+					if(ctx.getArgs().length < 2){
+						String message = String.join(" ", Utils.subArray(ctx.getArgs(), 1));
+						if(Database.setWelcomeMessage(ctx.getGuild().getId(), message)){
+							sendError(ctx, "There was an error while processing your command :(");
+							return;
+						}
+						sendAnswer(ctx, "Boost message set to: " + message);
+					}
+					else if(Utils.isHelp(ctx.getArgs()[1])){
+						sendUsage(ctx, "options boostmessage <message>");
+					}
+					else if(Utils.isEnable(ctx.getArgs()[1])){
+						if(Database.setWelcomeMessageEnabled(ctx.getGuild().getId(), true)){
+							sendError(ctx, "There was an error while processing your command :(");
+							return;
+						}
+						sendAnswer(ctx, "Boost messages enabled!");
+					}
+					else if(Utils.isDisable(ctx.getArgs()[1])){
+						if(Database.setWelcomeMessageEnabled(ctx.getGuild().getId(), false)){
+							sendError(ctx, "There was an error while processing your command :(");
+							return;
+						}
+						sendAnswer(ctx, "Boost messages disabled!");
+					}
 				}
 				else{
 					sendUsage(ctx);

@@ -15,14 +15,13 @@ import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEve
 public class PlayCommand extends ACommand{
 
 	private static final int VOLUME_STEP = 10;
-	public static String COMMAND = "play";
-	public static String USAGE = "play <playlist/song/video>";
-	public static String DESCRIPTION = "Plays what you want him to play";
-	protected static String[] ALIAS = {"p", "spiele"};
+	public static final String COMMAND = "play";
+	public static final String USAGE = "play <playlist/song/video>";
+	public static final String DESCRIPTION = "Plays what you want him to play";
+	protected static final String[] ALIAS = {"p", "spiele"};
 
-	public PlayCommand(KittyBot main){
-		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
-		this.main = main;
+	public PlayCommand(){
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 
 	@Override

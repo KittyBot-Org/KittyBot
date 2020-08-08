@@ -6,14 +6,13 @@ import de.anteiku.kittybot.commands.CommandContext;
 
 public class StopCommand extends ACommand{
 
-	public static String COMMAND = "stop";
-	public static String USAGE = "stop";
-	public static String DESCRIPTION = "Stops me from playing stuff";
-	protected static String[] ALIAS = {"s", "quit", "stopp", "stfu"};
+	public static final String COMMAND = "stop";
+	public static final String USAGE = "stop";
+	public static final String DESCRIPTION = "Stops me from playing stuff";
+	protected static final String[] ALIAS = {"s", "quit", "stopp", "stfu"};
 
-	public StopCommand(KittyBot main){
-		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
-		this.main = main;
+	public StopCommand(){
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 
 	@Override

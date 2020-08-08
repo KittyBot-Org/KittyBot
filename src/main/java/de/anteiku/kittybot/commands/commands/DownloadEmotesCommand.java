@@ -10,14 +10,13 @@ import java.util.List;
 
 public class DownloadEmotesCommand extends ACommand{
 
-	public static String COMMAND = "downloademotes";
-	public static String USAGE = "downloademotes <Emote, Emote, ...>";
-	public static String DESCRIPTION = "Prints a ssh command to download the given emotes";
-	protected static String[] ALIAS = {"dle", "dlemotes"};
+	public static final String COMMAND = "downloademotes";
+	public static final String USAGE = "downloademotes <Emote, Emote, ...>";
+	public static final String DESCRIPTION = "Prints a ssh command to download the given emotes";
+	protected static final String[] ALIAS = {"dle", "dlemotes"};
 
-	public DownloadEmotesCommand(KittyBot main){
-		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
-		this.main = main;
+	public DownloadEmotesCommand(){
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 
 	@Override

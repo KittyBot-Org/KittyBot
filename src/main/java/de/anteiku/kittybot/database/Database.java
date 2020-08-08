@@ -33,6 +33,7 @@ public class Database{
 		}
 	}
 
+
 	private static boolean isGuildRegistered(Guild guild){
 		var query = "SELECT * FROM guilds WHERE guild_id = ?";
 		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
@@ -66,6 +67,7 @@ public class Database{
 		}
 		return false;
 	}
+
 
 	private static boolean setProperty(String guildId, String key, int value){
 		var query = "UPDATE guilds SET " + key + "=? WHERE guild_id = ?";
@@ -136,6 +138,7 @@ public class Database{
 		return false;
 	}
 
+
 	public static boolean addCommandStatistics(String guildId, String commandId, String userId, String command, long processingTime){
 		var query = "INSERT INTO commands (message_id, guild_id, user_id, command, processing_time, time) VALUES (?, ?, ?, ?, ?, ?)";
 		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
@@ -172,6 +175,7 @@ public class Database{
 		return null;
 	}
 
+
 	public static boolean setCommandPrefix(String guildId, String prefix){
 		return setProperty(guildId, "command_prefix", prefix);
 	}
@@ -179,6 +183,7 @@ public class Database{
 	public static String getCommandPrefix(String guildId){
 		return getString(guildId, "command_prefix");
 	}
+
 
 	public static void setSelfAssignableRoles(String guildId, Map<String, String> newRoles){
 		Map<String, String> roles = getSelfAssignableRoles(guildId);
@@ -261,29 +266,66 @@ public class Database{
 		return result;
 	}
 
-	public static String getWelcomeChannelId(String guildId){
-		return getString(guildId, "welcome_channel_id");
+
+	public static String getAnnouncementChannelId(String guildId){
+		return getString(guildId, "announcement_channel_id");
 	}
 
-	public static boolean setWelcomeChannelId(String guildId, String channelId){
-		return setProperty(guildId, "welcome_channel_id", channelId);
+	public static boolean setAnnouncementChannelId(String guildId, String channelId){
+		return setProperty(guildId, "announcement_channel_id", channelId);
 	}
+
 
 	public static String getWelcomeMessage(String guildId){
-		return getString(guildId, "welcome_message");
+		return getString(guildId, "welcome_messages");
 	}
 
 	public static boolean setWelcomeMessage(String guildId, String message){
-		return setProperty(guildId, "welcome_message", message);
+		return setProperty(guildId, "welcome_messages", message);
 	}
 
 	public static boolean getWelcomeMessageEnabled(String guildId){
-		return getBoolean(guildId, "welcome_message_enabled");
+		return getBoolean(guildId, "welcome_messages_enabled");
 	}
 
 	public static boolean setWelcomeMessageEnabled(String guildId, boolean enabled){
-		return setProperty(guildId, "welcome_message_enabled", enabled);
+		return setProperty(guildId, "welcome_messages_enabled", enabled);
 	}
+
+
+	public static String getLeaveMessage(String guildId){
+		return getString(guildId, "leave_messages");
+	}
+
+	public static boolean setLeaveMessage(String guildId, String message){
+		return setProperty(guildId, "leave_messages", message);
+	}
+
+	public static boolean getLeaveMessageEnabled(String guildId){
+		return getBoolean(guildId, "leave_messages_enabled");
+	}
+
+	public static boolean setLeaveMessageEnabled(String guildId, boolean enabled){
+		return setProperty(guildId, "leave_messages_enabled", enabled);
+	}
+
+
+	public static String getBoostMessage(String guildId){
+		return getString(guildId, "boost_messages");
+	}
+
+	public static boolean setBoostMessage(String guildId, String message){
+		return setProperty(guildId, "boost_messages", message);
+	}
+
+	public static boolean getBoostMessageEnabled(String guildId){
+		return getBoolean(guildId, "boost_messages_enabled");
+	}
+
+	public static boolean setBoostMessageEnabled(String guildId, boolean enabled){
+		return setProperty(guildId, "boost_messages_enabled", enabled);
+	}
+
 
 	public static boolean getNSFWEnabled(String guildId){
 		return getBoolean(guildId, "nsfw_enabled");
@@ -292,6 +334,7 @@ public class Database{
 	public static boolean setNSFWEnabled(String guildId, boolean enabled){
 		return setProperty(guildId, "nsfw_enabled", enabled);
 	}
+
 
 	public static ReactiveMessage isReactiveMessage(String guildId, String messageId){
 		var query = "SELECT * FROM reactive_messages WHERE message_id = ? AND guild_id = ?";
@@ -339,6 +382,7 @@ public class Database{
 		return false;
 	}
 
+
 	public static long getUserVoiceState(String guildId, String userId){
 		var query = "SELECT joined_voice FROM user_statistics WHERE guild_id = ? and user_id = ?";
 		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
@@ -367,6 +411,7 @@ public class Database{
 			LOG.error("Error updating voice state for user " + userId + " in guild: " + guildId, e);
 		}
 	}
+
 
 	public static void addSession(String userId, String key){
 		var query = "INSERT INTO sessions (session_id, user_id) VALUES (?, ?)";

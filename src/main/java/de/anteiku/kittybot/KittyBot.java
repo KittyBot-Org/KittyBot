@@ -42,12 +42,11 @@ public class KittyBot{
 	public static AudioPlayerManager audioPlayerManager;
 	public static CommandManager commandManager;
 	public static Random rand = new Random();
-	public final OkHttpClient httpClient;
+	public static final OkHttpClient httpClient = new OkHttpClient();
 	public JDA jda;
 
 	public KittyBot(){
 		LOG.info("Starting KittyBot...");
-		httpClient = new OkHttpClient();
 
 		Config.load("config.yml");
 
@@ -101,39 +100,39 @@ public class KittyBot{
 			Database.init(jda);
 
 			commandManager = CommandManager.build(
-					new HelpCommand(this),
-					new CommandsCommand(this),
-					new EmoteStealCommand(this),
-					new DownloadEmotesCommand(this),
-					new RolesCommand(this),
+					new HelpCommand(),
+					new CommandsCommand(),
+					new EmoteStealCommand(),
+					new DownloadEmotesCommand(),
+					new RolesCommand(),
 
-					new PlayCommand(this),
-					new QueueCommand(this),
-					new StopCommand(this),
-					new ShuffleCommand(this),
-					new VolumeCommand(this),
-					new PauseCommand(this),
-					new SkipCommand(this),
+					new PlayCommand(),
+					new QueueCommand(),
+					new StopCommand(),
+					new ShuffleCommand(),
+					new VolumeCommand(),
+					new PauseCommand(),
+					new SkipCommand(),
 
-					new PatCommand(this),
-					new PokeCommand(this),
-					new HugCommand(this),
-					new CuddleCommand(this),
-					new KissCommand(this),
-					new TickleCommand(this),
-					new FeedCommand(this),
-					new SlapCommand(this),
-					new BakaCommand(this),
-					new SpankCommand(this),
+					new PatCommand(),
+					new PokeCommand(),
+					new HugCommand(),
+					new CuddleCommand(),
+					new KissCommand(),
+					new TickleCommand(),
+					new FeedCommand(),
+					new SlapCommand(),
+					new BakaCommand(),
+					new SpankCommand(),
 
-					new CatCommand(this),
-					new DogCommand(this),
-					new NekoCommand(this),
+					new CatCommand(),
+					new DogCommand(),
+					new NekoCommand(),
 
-					new OptionsCommand(this),
-					new EvalCommand(this),
-					new HastebinCommand(this),
-					new TestCommand(this)
+					new OptionsCommand(),
+					new EvalCommand(),
+					new HastebinCommand(),
+					new TestCommand()
 			);
 
 			new WebService(this, 6969);

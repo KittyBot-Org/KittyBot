@@ -7,14 +7,13 @@ import de.anteiku.kittybot.objects.Cache;
 
 public class VolumeCommand extends ACommand{
 
-	public static String COMMAND = "volume";
-	public static String USAGE = "volume <0-200>";
-	public static String DESCRIPTION = "Sets the current volume";
-	protected static String[] ALIAS = {"vol", "v", "lautstärke"};
+	public static final String COMMAND = "volume";
+	public static final String USAGE = "volume <0-200>";
+	public static final String DESCRIPTION = "Sets the current volume";
+	protected static final String[] ALIAS = {"vol", "v", "lautstärke"};
 
-	public VolumeCommand(KittyBot main){
-		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
-		this.main = main;
+	public VolumeCommand(){
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 
 	@Override

@@ -3,9 +3,12 @@ package de.anteiku.kittybot.database;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import de.anteiku.kittybot.objects.Config;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -40,13 +43,15 @@ public class SQL{
 
 	public static void createTable(String table){
 		try{
-			Scanner scanner = new Scanner(SQL.class.getClassLoader().getResourceAsStream("sql_tables/" + table + ".sql")).useDelimiter("\\A");
-			String sql = scanner.hasNext() ? scanner.next() : "";
+			String sql = IOUtils.toString(SQL.class.getClassLoader().getResourceAsStream("sql_tables/" + table + ".sql"), StandardCharsets.UTF_8.name());
 			LOG.info("Read sql table from resources: {}", table);
 			getConnection().createStatement().execute(sql);
 		}
-		catch(SQLException e){
+		catch(IOException e){
 			LOG.error("Error while reading sql table file: " + table, e);
+		}
+		catch(SQLException e){
+			LOG.error("Error while creating new table: " + table, e);
 		}
 	}
 

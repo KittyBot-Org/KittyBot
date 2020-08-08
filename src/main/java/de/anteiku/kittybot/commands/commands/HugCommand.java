@@ -6,13 +6,13 @@ import de.anteiku.kittybot.commands.CommandContext;
 
 public class HugCommand extends ACommand{
 
-	public static String COMMAND = "hug";
-	public static String USAGE = "hug <@user, ...>";
-	public static String DESCRIPTION = "Sends a hug to a user";
-	protected static String[] ALIAS = {"umarme"};
+	public static final String COMMAND = "hug";
+	public static final String USAGE = "hug <@user, ...>";
+	public static final String DESCRIPTION = "Sends a hug to a user";
+	protected static final String[] ALIAS = {"umarme"};
 
-	public HugCommand(KittyBot main){
-		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
+	public HugCommand(){
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 
 	@Override

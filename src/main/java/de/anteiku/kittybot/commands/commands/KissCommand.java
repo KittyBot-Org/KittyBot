@@ -6,13 +6,13 @@ import de.anteiku.kittybot.commands.CommandContext;
 
 public class KissCommand extends ACommand{
 
-	public static String COMMAND = "kiss";
-	public static String USAGE = "kiss <@user, ...>";
-	public static String DESCRIPTION = "Sends a kiss to a user";
-	protected static String[] ALIAS = {"küss"};
+	public static final String COMMAND = "kiss";
+	public static final String USAGE = "kiss <@user, ...>";
+	public static final String DESCRIPTION = "Sends a kiss to a user";
+	protected static final String[] ALIAS = {"küss"};
 
-	public KissCommand(KittyBot main){
-		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
+	public KissCommand(){
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 
 	@Override

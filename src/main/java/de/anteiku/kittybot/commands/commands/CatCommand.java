@@ -7,14 +7,13 @@ import de.anteiku.kittybot.objects.Emotes;
 
 public class CatCommand extends ACommand{
 
-	public static String COMMAND = "cat";
-	public static String USAGE = "cat";
-	public static String DESCRIPTION = "Sends a random cat";
-	protected static String[] ALIAS = {"kitty", "katze"};
+	public static final String COMMAND = "cat";
+	public static final String USAGE = "cat";
+	public static final String DESCRIPTION = "Sends a random cat";
+	protected static final String[] ALIAS = {"kitty", "katze"};
 
-	public CatCommand(KittyBot main){
-		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
-		this.main = main;
+	public CatCommand(){
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 
 	@Override

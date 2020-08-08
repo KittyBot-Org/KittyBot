@@ -1,0 +1,1 @@
+ed, violets are blue, ${user} joined this server with you

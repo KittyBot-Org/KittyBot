@@ -6,13 +6,13 @@ import de.anteiku.kittybot.commands.CommandContext;
 
 public class SlapCommand extends ACommand{
 
-	public static String COMMAND = "slap";
-	public static String USAGE = "slap <@user, ...>";
-	public static String DESCRIPTION = "Slaps a user";
-	protected static String[] ALIAS = {"schlag"};
+	public static final String COMMAND = "slap";
+	public static final String USAGE = "slap <@user, ...>";
+	public static final String DESCRIPTION = "Slaps a user";
+	protected static final String[] ALIAS = {"schlag"};
 
-	public SlapCommand(KittyBot main){
-		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
+	public SlapCommand(){
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 
 	@Override

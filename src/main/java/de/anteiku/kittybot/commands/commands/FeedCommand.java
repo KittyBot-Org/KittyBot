@@ -6,13 +6,13 @@ import de.anteiku.kittybot.commands.CommandContext;
 
 public class FeedCommand extends ACommand{
 
-	public static String COMMAND = "feed";
-	public static String USAGE = "feed <@user, ...>";
-	public static String DESCRIPTION = "Feeds a user";
-	protected static String[] ALIAS = {"füttern"};
+	public static final String COMMAND = "feed";
+	public static final String USAGE = "feed <@user, ...>";
+	public static final String DESCRIPTION = "Feeds a user";
+	protected static final String[] ALIAS = {"füttern"};
 
-	public FeedCommand(KittyBot main){
-		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
+	public FeedCommand(){
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 
 	@Override

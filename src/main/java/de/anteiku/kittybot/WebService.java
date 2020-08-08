@@ -224,15 +224,23 @@ public class WebService{
 			selfAssignableRoles.add(String.format("{\"role\": \"%s\", \"emote\": \"%s\"}", role.getKey(), role.getValue()));
 		}
 		ok(ctx, String.format("{\"prefix\": %s, " +
-						"\"welcome_message_enabled\": %b, " +
-						"\"welcome_message\": %s, " +
-						"\"welcome_channel_id\":%s, " +
+						"\"welcome_messages_enabled\": %b, " +
+						"\"welcome_messages\": %s, " +
+						"\"leave_messages_enabled\": %b, " +
+						"\"leave_messages\": %s, " +
+						"\"boost_messages_enabled\": %b, " +
+						"\"boost_messages\": %s, " +
+						"\"announcement_channel_id\":%s, " +
 						"\"nsfw_enabled\": %b, " +
 						"\"self_assignable_roles\": [%s]}",
 				JSONObject.quote(Database.getCommandPrefix(guildId)),
 				Database.getWelcomeMessageEnabled(guildId),
 				JSONObject.quote(Database.getWelcomeMessage(guildId)),
-				JSONObject.quote(Database.getWelcomeChannelId(guildId)),
+				Database.getLeaveMessageEnabled(guildId),
+				JSONObject.quote(Database.getLeaveMessage(guildId)),
+				Database.getBoostMessageEnabled(guildId),
+				JSONObject.quote(Database.getBoostMessage(guildId)),
+				JSONObject.quote(Database.getAnnouncementChannelId(guildId)),
 				Database.getNSFWEnabled(guildId),
 				String.join(", ", selfAssignableRoles)
 		));
@@ -254,8 +262,20 @@ public class WebService{
 		if(json.get("welcome_message") != null){
 			Database.setWelcomeMessage(guildId, json.get("welcome_message").getAsString());
 		}
-		if(json.get("welcome_channel_id") != null){
-			Database.setWelcomeChannelId(guildId, json.get("welcome_channel_id").getAsString());
+		if(json.get("leave_message_enabled") != null){
+			Database.setWelcomeMessageEnabled(guildId, json.get("leave_message_enabled").getAsBoolean());
+		}
+		if(json.get("leave_message") != null){
+			Database.setWelcomeMessage(guildId, json.get("leave_message").getAsString());
+		}
+		if(json.get("boost_message_enabled") != null){
+			Database.setWelcomeMessageEnabled(guildId, json.get("boost_message_enabled").getAsBoolean());
+		}
+		if(json.get("boost_message") != null){
+			Database.setWelcomeMessage(guildId, json.get("boost_message").getAsString());
+		}
+		if(json.get("announcement_channel_id") != null){
+			Database.setAnnouncementChannelId(guildId, json.get("announcement_channel_id").getAsString());
 		}
 		if(json.get("nsfw_enabled") != null){
 			Database.setNSFWEnabled(guildId, json.get("nsfw_enabled").getAsBoolean());

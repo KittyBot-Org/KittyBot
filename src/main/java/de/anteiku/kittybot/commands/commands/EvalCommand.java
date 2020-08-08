@@ -1,6 +1,5 @@
 package de.anteiku.kittybot.commands.commands;
 
-import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.commands.ACommand;
 import de.anteiku.kittybot.commands.CommandContext;
 import de.anteiku.kittybot.objects.Config;
@@ -12,15 +11,14 @@ import javax.script.ScriptException;
 
 public class EvalCommand extends ACommand{
 
-	public static String COMMAND = "eval";
-	public static String USAGE = "eval <code>";
-	public static String DESCRIPTION = "Evals some Java Code";
-	protected static String[] ALIAS = {};
+	public static final String COMMAND = "eval";
+	public static final String USAGE = "eval <code>";
+	public static final String DESCRIPTION = "Evals some Java Code";
+	protected static final String[] ALIAS = {};
 	private ScriptEngine engine;
 
-	public EvalCommand(KittyBot main){
-		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
-		this.main = main;
+	public EvalCommand(){
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
 		initEngine();
 	}
 
@@ -38,7 +36,6 @@ public class EvalCommand extends ACommand{
 	public void run(CommandContext ctx){
 		if(ctx.getUser().getId().equals(Config.ADMIN_ID)){
 			try{
-				engine.put("main", main);
 				engine.put("ctx", ctx);
 				engine.put("message", ctx.getMessage());
 				engine.put("channel", ctx.getChannel());

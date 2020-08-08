@@ -7,14 +7,13 @@ import de.anteiku.kittybot.objects.Cache;
 
 public class ShuffleCommand extends ACommand{
 
-	public static String COMMAND = "shuffle";
-	public static String USAGE = "shuffle";
-	public static String DESCRIPTION = "Shuffles the current queue";
-	protected static String[] ALIAS = {"mische"};
+	public static final String COMMAND = "shuffle";
+	public static final String USAGE = "shuffle";
+	public static final String DESCRIPTION = "Shuffles the current queue";
+	protected static final String[] ALIAS = {"mische"};
 
-	public ShuffleCommand(KittyBot main){
-		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
-		this.main = main;
+	public ShuffleCommand(){
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 
 	@Override

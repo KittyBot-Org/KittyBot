@@ -14,13 +14,13 @@ import java.awt.*;
 
 public class HelpCommand extends ACommand{
 
-	public static String COMMAND = "help";
-	public static String USAGE = "help";
-	public static String DESCRIPTION = "Shows some help stuff";
-	protected static String[] ALIAS = {"?"};
+	public static final String COMMAND = "help";
+	public static final String USAGE = "help";
+	public static final String DESCRIPTION = "Shows some help stuff";
+	protected static final String[] ALIAS = {"?"};
 
-	public HelpCommand(KittyBot main){
-		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
+	public HelpCommand(){
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 
 	@Override

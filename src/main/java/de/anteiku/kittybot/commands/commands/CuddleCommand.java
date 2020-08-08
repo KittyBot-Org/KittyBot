@@ -6,13 +6,13 @@ import de.anteiku.kittybot.commands.CommandContext;
 
 public class CuddleCommand extends ACommand{
 
-	public static String COMMAND = "cuddle";
-	public static String USAGE = "cuddle <@user, ...>";
-	public static String DESCRIPTION = "Cuddles a user";
-	protected static String[] ALIAS = {"knuddel"};
+	public static final String COMMAND = "cuddle";
+	public static final String USAGE = "cuddle <@user, ...>";
+	public static final String DESCRIPTION = "Cuddles a user";
+	protected static final String[] ALIAS = {"knuddel"};
 
-	public CuddleCommand(KittyBot main){
-		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
+	public CuddleCommand(){
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 
 	@Override

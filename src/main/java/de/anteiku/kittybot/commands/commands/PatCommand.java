@@ -6,13 +6,13 @@ import de.anteiku.kittybot.commands.CommandContext;
 
 public class PatCommand extends ACommand{
 
-	public static String COMMAND = "pat";
-	public static String USAGE = "pat <@user, ...>";
-	public static String DESCRIPTION = "Pats to a user";
-	protected static String[] ALIAS = {"tätschel"};
+	public static final String COMMAND = "pat";
+	public static final String USAGE = "pat <@user, ...>";
+	public static final String DESCRIPTION = "Pats to a user";
+	protected static final String[] ALIAS = {"tätschel"};
 
-	public PatCommand(KittyBot main){
-		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
+	public PatCommand(){
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 
 	@Override

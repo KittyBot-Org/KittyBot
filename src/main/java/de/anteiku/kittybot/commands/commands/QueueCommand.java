@@ -9,14 +9,13 @@ import de.anteiku.kittybot.objects.Cache;
 
 public class QueueCommand extends ACommand{
 
-	public static String COMMAND = "queue";
-	public static String USAGE = "queue <playlist/song/video>";
-	public static String DESCRIPTION = "Queues what you want him to play later";
-	protected static String[] ALIAS = {"q"};
+	public static final String COMMAND = "queue";
+	public static final String USAGE = "queue <playlist/song/video>";
+	public static final String DESCRIPTION = "Queues what you want him to play later";
+	protected static final String[] ALIAS = {"q"};
 
-	public QueueCommand(KittyBot main){
-		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
-		this.main = main;
+	public QueueCommand(){
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 
 	@Override

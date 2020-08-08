@@ -17,13 +17,13 @@ import java.util.concurrent.ExecutionException;
 
 public class HastebinCommand extends ACommand{
 
-	public static String COMMAND = "hastebin";
-	public static String USAGE = "hastebin <file>";
-	public static String DESCRIPTION = "creates a https://hastebin.anteiku.de from the file";
-	protected static String[] ALIAS = {};
+	public static final String COMMAND = "hastebin";
+	public static final String USAGE = "hastebin <file>";
+	public static final String DESCRIPTION = "creates a https://hastebin.anteiku.de from the file";
+	protected static final String[] ALIAS = {};
 
-	public HastebinCommand(KittyBot main){
-		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
+	public HastebinCommand(){
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 
 	@Override
@@ -36,11 +36,11 @@ public class HastebinCommand extends ACommand{
 						String text = IOUtils.toString(attachment.retrieveInputStream().get(), StandardCharsets.UTF_8.name());
 						RequestBody body = RequestBody.create(MediaType.parse("text/html; charset=utf-8"), text);
 						Request request = new Request.Builder().url("https://hastebin.anteiku.de/documents").method("POST", body).build();
-						if(main.httpClient.newCall(request).execute().body() == null){
+						if(KittyBot.httpClient.newCall(request).execute().body() == null){
 							sendError(ctx, "Error while trying to create hastebin");
 							return;
 						}
-						String result = main.httpClient.newCall(request).execute().body().string();
+						String result = KittyBot.httpClient.newCall(request).execute().body().string();
 						sendAnswer(ctx, "[here](https://hastebin.anteiku.de/" + JsonParser.parseString(result).getAsJsonObject().get("key").getAsString() + ") is a hastebin");
 					}
 					catch(IOException e){

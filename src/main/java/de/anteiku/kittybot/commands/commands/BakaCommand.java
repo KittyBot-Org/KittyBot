@@ -6,13 +6,13 @@ import de.anteiku.kittybot.commands.CommandContext;
 
 public class BakaCommand extends ACommand{
 
-	public static String COMMAND = "baka";
-	public static String USAGE = "baka <@user, ...>";
-	public static String DESCRIPTION = "Says baka to a user";
-	protected static String[] ALIAS = {"dummy", "dummi"};
+	public static final String COMMAND = "baka";
+	public static final String USAGE = "baka <@user, ...>";
+	public static final String DESCRIPTION = "Says baka to a user";
+	protected static final String[] ALIAS = {"dummy", "dummi"};
 
-	public BakaCommand(KittyBot main){
-		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
+	public BakaCommand(){
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 
 	@Override

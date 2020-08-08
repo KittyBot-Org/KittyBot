@@ -6,13 +6,13 @@ import de.anteiku.kittybot.commands.CommandContext;
 
 public class PokeCommand extends ACommand{
 
-	public static String COMMAND = "poke";
-	public static String USAGE = "poke <@user, ...>";
-	public static String DESCRIPTION = "Pokes a user";
-	protected static String[] ALIAS = {"stups"};
+	public static final String COMMAND = "poke";
+	public static final String USAGE = "poke <@user, ...>";
+	public static final String DESCRIPTION = "Pokes a user";
+	protected static final String[] ALIAS = {"stups"};
 
-	public PokeCommand(KittyBot main){
-		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
+	public PokeCommand(){
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 
 	@Override

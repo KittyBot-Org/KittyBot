@@ -7,14 +7,13 @@ import de.anteiku.kittybot.objects.Cache;
 
 public class PauseCommand extends ACommand{
 
-	public static String COMMAND = "pause";
-	public static String USAGE = "pause";
-	public static String DESCRIPTION = "Pauses the current track";
-	protected static String[] ALIAS = {};
+	public static final String COMMAND = "pause";
+	public static final String USAGE = "pause";
+	public static final String DESCRIPTION = "Pauses the current track";
+	protected static final String[] ALIAS = {};
 
-	public PauseCommand(KittyBot main){
-		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
-		this.main = main;
+	public PauseCommand(){
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 
 	@Override

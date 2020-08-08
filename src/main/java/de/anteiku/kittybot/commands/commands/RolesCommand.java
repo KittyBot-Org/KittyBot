@@ -22,13 +22,13 @@ import java.util.*;
 public class RolesCommand extends ACommand{
 
 	private static final String title = "Self-assignable roles:";
-	public static String COMMAND = "roles";
-	public static String USAGE = "roles <add|remove|list>";
-	public static String DESCRIPTION = "Used to manage your roles";
-	protected static String[] ALIAS = {"r", "rollen"};
+	public static final String COMMAND = "roles";
+	public static final String USAGE = "roles <add|remove|list>";
+	public static final String DESCRIPTION = "Used to manage your roles";
+	protected static final String[] ALIAS = {"r", "rollen"};
 
-	public RolesCommand(KittyBot main){
-		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
+	public RolesCommand(){
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 
 	@Override

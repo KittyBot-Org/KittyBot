@@ -15,15 +15,14 @@ import java.util.List;
 
 public class EmoteStealCommand extends ACommand{
 
-	public static String COMMAND = "steal";
-	public static String USAGE = "steal <Emote, Emote, ...> or <url> <name>";
-	public static String DESCRIPTION = "Steals some emotes";
-	protected static String[] ALIAS = {"grab", "klau"};
-	protected static int MAX_EMOTE_SIZE = 256000;
+	public static final String COMMAND = "steal";
+	public static final String USAGE = "steal <Emote, Emote, ...> or <url> <name>";
+	public static final String DESCRIPTION = "Steals some emotes";
+	protected static final String[] ALIAS = {"grab", "klau"};
+	protected static final int MAX_EMOTE_SIZE = 256000;
 
-	public EmoteStealCommand(KittyBot main){
-		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
-		this.main = main;
+	public EmoteStealCommand(){
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 
 	@Override

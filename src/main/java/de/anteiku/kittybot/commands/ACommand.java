@@ -28,14 +28,12 @@ public abstract class ACommand{
 
 	protected static final Logger LOG = LoggerFactory.getLogger(ACommand.class);
 
-	public KittyBot main;
-	public String command;
-	public String usage;
-	public String description;
-	public String[] alias;
+	public final String command;
+	public final String usage;
+	public final String description;
+	public final String[] alias;
 
-	protected ACommand(KittyBot main, String command, String usage, String description, String[] alias){
-		this.main = main;
+	protected ACommand(String command, String usage, String description, String[] alias){
 		this.command = command;
 		this.usage = usage;
 		this.description = description;
@@ -229,7 +227,7 @@ public abstract class ACommand{
 	protected String getNeko(String type){
 		try{
 			Request request = new Request.Builder().url("https://nekos.life/api/v2/img/" + type).build();
-			return JsonParser.parseString(main.httpClient.newCall(request).execute().body().string()).getAsJsonObject().get("url").getAsString();
+			return JsonParser.parseString(KittyBot.httpClient.newCall(request).execute().body().string()).getAsJsonObject().get("url").getAsString();
 		}
 		catch(IOException e){
 			LOG.error("Error while retrieving Neko", e);

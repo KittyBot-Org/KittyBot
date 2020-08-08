@@ -6,13 +6,13 @@ import de.anteiku.kittybot.commands.CommandContext;
 
 public class SpankCommand extends ACommand{
 
-	public static String COMMAND = "spank";
-	public static String USAGE = "spank <@user, ...>";
-	public static String DESCRIPTION = "Spanks a user";
-	protected static String[] ALIAS = {};
+	public static final String COMMAND = "spank";
+	public static final String USAGE = "spank <@user, ...>";
+	public static final String DESCRIPTION = "Spanks a user";
+	protected static final String[] ALIAS = {};
 
-	public SpankCommand(KittyBot main){
-		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
+	public SpankCommand(){
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 
 	@Override

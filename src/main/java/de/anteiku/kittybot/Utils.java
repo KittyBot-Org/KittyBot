@@ -1,13 +1,19 @@
 package de.anteiku.kittybot;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import de.anteiku.kittybot.database.SQL;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Role;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.*;
 import java.time.Duration;
 import java.util.*;
 
 public class Utils{
+
+	private static final Logger LOG = LoggerFactory.getLogger(Utils.class);
 
 	private static final String CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
@@ -17,6 +23,39 @@ public class Utils{
 			builder.append(CHARS.charAt((int) (Math.random() * CHARS.length())));
 		}
 		return builder.toString();
+	}
+
+	public static List<String> loadMessageFile(String fileName){
+		var inputStream = SQL.class.getClassLoader().getResourceAsStream("messages/" + fileName + ".txt");
+		if(inputStream == null){
+			LOG.error("Message file not found");
+			return null;
+		}
+		var reader = new BufferedReader(new InputStreamReader((inputStream)));
+		List<String> set = new ArrayList<>();
+		try{
+			String line;
+			while((line = reader.readLine()) != null){
+				set.add(line);
+			}
+			reader.close();
+		}
+		catch(IOException e){
+			LOG.error("Error reading message file", e);
+		}
+		return set;
+	}
+	
+	public static boolean isEnable(String string){
+		return string.equalsIgnoreCase("enable") || string.equalsIgnoreCase("true") || string.equalsIgnoreCase("on") || string.equalsIgnoreCase("an");
+	}
+	
+	public static boolean isDisable(String string){
+		return string.equalsIgnoreCase("disable") || string.equalsIgnoreCase("false") || string.equalsIgnoreCase("off") || string.equalsIgnoreCase("aus");
+	}
+
+	public static boolean isHelp(String string){
+		return string.equalsIgnoreCase("?") || string.equalsIgnoreCase("help") || string.equalsIgnoreCase("hilfe");
 	}
 
 	public static Set<String> toSet(List<Role> roles){

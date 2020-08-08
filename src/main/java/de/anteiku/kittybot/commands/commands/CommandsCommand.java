@@ -17,14 +17,14 @@ import java.util.Map;
 
 public class CommandsCommand extends ACommand{
 
-	public static String COMMAND = "commands";
-	public static String USAGE = "commands <page>";
-	public static String DESCRIPTION = "Lists all aviable commands";
-	public static double PAGE_COUNT = 5;
-	protected static String[] ALIAS = {"cmds"};
+	public static final String COMMAND = "commands";
+	public static final String USAGE = "commands <page>";
+	public static final String DESCRIPTION = "Lists all aviable commands";
+	public static final double PAGE_COUNT = 5;
+	protected static final String[] ALIAS = {"cmds"};
 
-	public CommandsCommand(KittyBot main){
-		super(main, COMMAND, USAGE, DESCRIPTION, ALIAS);
+	public CommandsCommand(){
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
 	}
 
 	public void nextPage(Message message){

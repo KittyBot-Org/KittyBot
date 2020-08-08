@@ -1,6 +1,7 @@
 package de.anteiku.kittybot.events;
 
 import de.anteiku.kittybot.KittyBot;
+import de.anteiku.kittybot.Utils;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.Cache;
 import net.dv8tion.jda.api.Permission;
@@ -12,18 +13,18 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateBoostTimeEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import java.util.List;
+import java.util.Set;
+
 public class OnGuildMemberEvent extends ListenerAdapter{
 
-	private static final String[] JOIN_MESSAGES = {"${user} just joined the server - glhf!", "${user} just joined. Everyone, look busy!", "${user} just joined. Can I get a heal?", "${user} joined your party.", "${user} joined. You must construct additional pylons.", "Ermagherd. ${user} is here.", "Welcome, ${user}. Stay awhile and listen.", "Welcome, ${user}. We were expecting you ( ͡° ͜ʖ ͡°)", "Welcome, ${user}. We hope you brought pizza.", "Welcome ${user}. Leave your weapons by the door.", "A wild ${user} appeared.", "Swoooosh. ${user} just landed.", "Brace yourselves. ${user} just joined the server.", "${user} just joined. Hide your bananas.", "${user} just arrived. Seems OP - please nerf.", "${user} just slid into the server.", "A ${user} has spawned in the server.", "Big ${user} showed up!", "Where’s ${user}? In the server!", "${user} hopped into the server. Kangaroo!!", "${user} just showed up. Hold my beer.", "Challenger approaching - ${user} has appeared!", "It's a bird! It's a plane! Nevermind, it's just ${user}.", "It's ${user}! Praise the sun! \\\\[T]/", "Never gonna give ${user} up. Never gonna let ${user} down.", "Ha! ${user} has joined! You activated my trap card!", "Cheers, love! ${user}'s here!", "Hey! Listen! ${user} has joined!", "We've been expecting you ${user}", "It's dangerous to go alone, take ${user}!", "${user} has joined the server! It's super effective!", "Cheers, love! ${user} is here!", "${user} is here, as the prophecy foretold.", "${user} has arrived. Party's over.", "Ready player ${user}", "${user} is here to kick butt and chew bubblegum. And ${user} is all out of gum.", "Hello. Is it ${user} you're looking for?", "${user} has joined. Stay a while and listen!", "Roses are red, violets are blue, ${user} joined this server with you"};
-
-	@Override
-	public void onGuildMemberRemove(GuildMemberRemoveEvent event){
-		//TODO
-	}
+	private static final List<String> JOIN_MESSAGES = Utils.loadMessageFile("join_messages");
+	private static final List<String> LEAVE_MESSAGES = Utils.loadMessageFile("leave_messages");
+	private static final List<String> BOOST_MESSAGES = Utils.loadMessageFile("boost_messages");
 
 	@Override
 	public void onGuildMemberJoin(GuildMemberJoinEvent event){
-		String id = Database.getWelcomeChannelId(event.getGuild().getId());
+		String id = Database.getAnnouncementChannelId(event.getGuild().getId());
 		if(!id.equals("-1") && Database.getWelcomeMessageEnabled(event.getGuild().getId())){
 			TextChannel channel = event.getGuild().getTextChannelById(id);
 			if(channel != null){
@@ -38,18 +39,54 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 							)
 					);
 				}
+			}
+		}
+	}
 
+	@Override
+	public void onGuildMemberRemove(GuildMemberRemoveEvent event){
+		String id = Database.getAnnouncementChannelId(event.getGuild().getId());
+		if(!id.equals("-1") && Database.getLeaveMessageEnabled(event.getGuild().getId())){
+			TextChannel channel = event.getGuild().getTextChannelById(id);
+			if(channel != null){
+				if(event.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE)){
+					channel.sendMessage(generateLeaveMessage(Database.getWelcomeMessage(event.getGuild().getId()), event.getUser())).queue();
+				}
+				else{
+					event.getGuild().retrieveOwner().queue(
+							member -> member.getUser().openPrivateChannel().queue(
+									success -> success.sendMessage("I lack the permission to send leave messages to " + channel.getAsMention() + ".\n" +
+											"You can disable them with `options leavemessage off` if you don't like them").queue()
+							)
+					);
+				}
 			}
 		}
 	}
 
 	@Override
 	public void onGuildMemberUpdateBoostTime(GuildMemberUpdateBoostTimeEvent event){
-		//TODO
+		String id = Database.getAnnouncementChannelId(event.getGuild().getId());
+		if(!id.equals("-1") && Database.getLeaveMessageEnabled(event.getGuild().getId())){
+			TextChannel channel = event.getGuild().getTextChannelById(id);
+			if(channel != null){
+				if(event.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE)){
+					channel.sendMessage(generateBoostMessage(Database.getBoostMessage(event.getGuild().getId()), event.getUser())).queue();
+				}
+				else{
+					event.getGuild().retrieveOwner().queue(
+							member -> member.getUser().openPrivateChannel().queue(
+									success -> success.sendMessage("I lack the permission to send boost messages to " + channel.getAsMention() + ".\n" +
+											"You can disable them with `options boostmessages off` if you don't like them").queue()
+							)
+					);
+				}
+			}
+		}
 	}
 
 	private String generateJoinMessage(String message, User user, Invite invite){
-		String random = JOIN_MESSAGES[KittyBot.rand.nextInt(JOIN_MESSAGES.length - 1)];
+		String random = JOIN_MESSAGES.get(KittyBot.rand.nextInt(JOIN_MESSAGES.size() - 1));
 		message = message.replace("${random_welcome_message}", random);
 		if(invite != null){
 			if(invite.getInviter() != null){
@@ -60,6 +97,26 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 			message = message.replace("${invite_uses}", String.valueOf(invite.getUses()));
 		}
 		message = message.replace("${user}", user.getAsMention());
+		message = message.replace("${user_tag}", user.getAsTag());
+		message = message.replace("${name}", user.getName());
+		return message;
+	}
+
+	private String generateLeaveMessage(String message, User user){
+		String random = LEAVE_MESSAGES.get(KittyBot.rand.nextInt(LEAVE_MESSAGES.size() - 1));
+		message = message.replace("${random_leave_message}", random);
+		message = message.replace("${user}", user.getAsMention());
+		message = message.replace("${user_tag}", user.getAsTag());
+		message = message.replace("${name}", user.getName());
+		return message;
+	}
+
+	private String generateBoostMessage(String message, User user){
+		String random = BOOST_MESSAGES.get(KittyBot.rand.nextInt(BOOST_MESSAGES.size() - 1));
+		message = message.replace("${random_boost_message}", random);
+		message = message.replace("${user}", user.getAsMention());
+		message = message.replace("${user_tag}", user.getAsTag());
+		message = message.replace("${name}", user.getName());
 		return message;
 	}
 
