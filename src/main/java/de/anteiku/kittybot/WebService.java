@@ -16,6 +16,7 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,10 +126,13 @@ public class WebService{
 		}
 		Collection<String> guilds = new ArrayList<>();
 		for(Guild guild : main.jda.getGuildCache()){
-			var member = guild.retrieveMember(user).complete();
-			if(member != null && member.hasPermission(Permission.ADMINISTRATOR)){
-				guilds.add(String.format("{\"id\": %s, \"name\": %s, \"icon\": %s}", JSONObject.quote(guild.getId()), JSONObject.quote(guild.getName()), JSONObject.quote(guild.getIconUrl())));
+			try{
+				var member = guild.retrieveMember(user).complete();
+				if(member != null && member.hasPermission(Permission.ADMINISTRATOR)){
+					guilds.add(String.format("{\"id\": %s, \"name\": %s, \"icon\": %s}", JSONObject.quote(guild.getId()), JSONObject.quote(guild.getName()), JSONObject.quote(guild.getIconUrl())));
+				}
 			}
+			catch(ErrorResponseException ignored){}
 		}
 		ok(ctx, String.format("{\"name\": %s, \"id\": %s, \"icon\": %s, \"guilds\": [%s]}", JSONObject.quote(user.getName()), JSONObject.quote(user.getId()), JSONObject.quote(user.getEffectiveAvatarUrl()), String.join(", ", guilds)));
 	}
