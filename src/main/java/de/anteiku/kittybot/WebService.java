@@ -125,7 +125,7 @@ public class WebService{
 		}
 		Collection<String> guilds = new ArrayList<>();
 		for(Guild guild : main.jda.getMutualGuilds(user)){
-			if(guild.getMember(user).hasPermission(Permission.ADMINISTRATOR)){
+			if(guild.retrieveMember(user).complete().hasPermission(Permission.ADMINISTRATOR)){
 				guilds.add(String.format("{\"id\": %s, \"name\": %s, \"icon\": %s}", JSONObject.quote(guild.getId()), JSONObject.quote(guild.getName()), JSONObject.quote(guild.getIconUrl())));
 			}
 		}
