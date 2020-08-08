@@ -1,1 +1,1 @@
- red, violets are blue, ${user} joined this server with you
+${user}(${user_tag}) sprinted away!

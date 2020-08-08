@@ -48,7 +48,19 @@ public class Database{
 
 	public static boolean registerGuild(Guild guild){
 		LOG.debug("Registering new guild: {}", guild.getId());
-		var query = "INSERT INTO guilds (guild_id, command_prefix, request_channel_id, requests_enabled, welcome_channel_id, welcome_message, welcome_message_enabled, nsfw_enabled, inactive_role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		var query = "INSERT INTO guilds (guild_id, " +
+				"command_prefix, " +
+				"request_channel_id, " +
+				"requests_enabled, " +
+				"announcement_channel_id, " +
+				"welcome_messages, " +
+				"welcome_messages_enabled, " +
+				"leave_messages, " +
+				"leave_messages_enabled, " +
+				"boost_messages, " +
+				"boost_messages_enabled, " +
+				"nsfw_enabled, " +
+				"inactive_role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, guild.getId());
 			stmt.setString(2, Config.DEFAULT_PREFIX);
@@ -57,8 +69,12 @@ public class Database{
 			stmt.setString(5, guild.getDefaultChannel() == null ? "-1" : guild.getDefaultChannel().getId());
 			stmt.setString(6, "Welcome ${user} to this server!");
 			stmt.setBoolean(7, true);
-			stmt.setBoolean(8, true);
-			stmt.setBoolean(9, false);
+			stmt.setString(8, "Good bye ${user}(${user_tag})!");
+			stmt.setBoolean(9, true);
+			stmt.setString(10, "${user} boosted this server!");
+			stmt.setBoolean(11, true);
+			stmt.setBoolean(12, true);
+			stmt.setBoolean(13, false);
 			SQL.execute(stmt);
 			return true;
 		}

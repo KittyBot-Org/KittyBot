@@ -1,1 +1,1 @@
-ed, violets are blue, ${user} joined this server with you
+${user} wasted some money!

@@ -5,6 +5,7 @@ import de.anteiku.kittybot.commands.ACommand;
 import de.anteiku.kittybot.commands.CommandContext;
 import de.anteiku.kittybot.commands.MusicPlayer;
 import de.anteiku.kittybot.database.Database;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.Message;
@@ -45,11 +46,13 @@ public class Cache{
 
 	public static void initGuildInviteCache(Guild guild){
 		LOG.info("Initializing invite cache for guild: " + guild.getName() + "(" + guild.getId() + ")");
-		guild.retrieveInvites().queue(invites -> {
-			for(Invite invite : invites){
-				addNewInvite(invite);
-			}
-		});
+		if(guild.getSelfMember().hasPermission(Permission.MANAGE_SERVER)){
+			guild.retrieveInvites().queue(invites -> {
+				for(Invite invite : invites){
+					addNewInvite(invite);
+				}
+			});
+		}
 	}
 
 	public static void addNewInvite(Invite invite){
