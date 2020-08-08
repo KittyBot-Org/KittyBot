@@ -77,7 +77,7 @@ public class KittyBot{
 			)
 					.disableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS)
 					.setMemberCachePolicy(MemberCachePolicy.ALL)
-					.setChunkingFilter(ChunkingFilter.NONE)
+					.setChunkingFilter(ChunkingFilter.ALL)
 					.setToken(Config.BOT_TOKEN)
 					.addEventListeners(
 							new OnGuildJoinEvent(),
