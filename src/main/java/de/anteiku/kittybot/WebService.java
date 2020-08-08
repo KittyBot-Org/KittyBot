@@ -124,8 +124,9 @@ public class WebService{
 			return;
 		}
 		Collection<String> guilds = new ArrayList<>();
-		for(Guild guild : main.jda.getMutualGuilds(user)){
-			if(guild.retrieveMember(user).complete().hasPermission(Permission.ADMINISTRATOR)){
+		for(Guild guild : main.jda.getGuildCache()){
+			var member = guild.retrieveMember(user).complete();
+			if(member != null && member.hasPermission(Permission.ADMINISTRATOR)){
 				guilds.add(String.format("{\"id\": %s, \"name\": %s, \"icon\": %s}", JSONObject.quote(guild.getId()), JSONObject.quote(guild.getName()), JSONObject.quote(guild.getIconUrl())));
 			}
 		}
