@@ -29,10 +29,12 @@ public class Cache{
 	private Cache(){}
 
 	public static Invite getUsedInvite(Guild guild){
-		for(Invite invite : guild.retrieveInvites().complete()){
-			var oldInvite = INVITES.get(guild.getId()).get(invite.getCode());
-			if(oldInvite != null && oldInvite.getUses() < invite.getUses()){
-				return invite;
+		if(guild.getSelfMember().hasPermission(Permission.MANAGE_SERVER)){
+			for(Invite invite : guild.retrieveInvites().complete()){
+				var oldInvite = INVITES.get(guild.getId()).get(invite.getCode());
+				if(oldInvite != null && oldInvite.getUses() < invite.getUses()){
+					return invite;
+				}
 			}
 		}
 		return null;

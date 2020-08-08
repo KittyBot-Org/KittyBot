@@ -46,7 +46,20 @@ public class KittyBot{
 	public JDA jda;
 
 	public KittyBot(){
-		LOG.info("Starting KittyBot...");
+		LOG.info("\n" +
+				"\n" +
+				"         _   ___ _   _        ______       _   \n" +
+				"        | | / (_) | | |       | ___ \\     | |  \n" +
+				"        | |/ / _| |_| |_ _   _| |_/ / ___ | |_ \n" +
+				"        |    \\| | __| __| | | | ___ \\/ _ \\| __|\n" +
+				"        | |\\  \\ | |_| |_| |_| | |_/ / (_) | |_ \n" +
+				"        \\_| \\_/_|\\__|\\__|\\__, \\____/ \\___/ \\__|\n" +
+				"                          __/ |                \n" +
+				"                         |___/                 \n" +
+				"\n" +
+				"               https://github.com/TopiSenpai/KittyBot" +
+				"\n");
+		LOG.info("Starting...");
 
 		Config.load("config.yml");
 
@@ -63,41 +76,6 @@ public class KittyBot{
 			audioPlayerManager.registerSourceManager(new TwitchStreamAudioSourceManager());
 			audioPlayerManager.registerSourceManager(new HttpAudioSourceManager());
 			AudioSourceManagers.registerRemoteSources(audioPlayerManager);
-
-			jda = JDABuilder.create(
-					GatewayIntent.GUILD_MEMBERS,
-					GatewayIntent.GUILD_VOICE_STATES,
-					GatewayIntent.GUILD_MESSAGES,
-					GatewayIntent.GUILD_MESSAGE_REACTIONS,
-					GatewayIntent.GUILD_EMOJIS,
-					GatewayIntent.GUILD_INVITES,
-
-					GatewayIntent.DIRECT_MESSAGES,
-					GatewayIntent.DIRECT_MESSAGE_REACTIONS
-			)
-					.disableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS)
-					.setMemberCachePolicy(MemberCachePolicy.ALL)
-					.setChunkingFilter(ChunkingFilter.ALL)
-					.setToken(Config.BOT_TOKEN)
-					.addEventListeners(
-							new OnGuildJoinEvent(),
-							new OnGuildMemberEvent(),
-							new OnEmoteEvent(),
-							new OnGuildMessageEvent(),
-							new OnGuildVoiceEvent(),
-							new OnGuildReadyEvent(),
-							new OnInviteEvent(),
-							lavalink
-					)
-					.setVoiceDispatchInterceptor(lavalink.getVoiceInterceptor())
-					.setActivity(Activity.playing("loading..."))
-					.setStatus(OnlineStatus.DO_NOT_DISTURB)
-					.setGatewayEncoding(GatewayEncoding.ETF)
-					.build().awaitReady();
-
-			RestAction.setDefaultFailure(null);
-
-			Database.init(jda);
 
 			commandManager = CommandManager.build(
 					new HelpCommand(),
@@ -134,6 +112,41 @@ public class KittyBot{
 					new HastebinCommand(),
 					new TestCommand()
 			);
+
+			jda = JDABuilder.create(
+					GatewayIntent.GUILD_MEMBERS,
+					GatewayIntent.GUILD_VOICE_STATES,
+					GatewayIntent.GUILD_MESSAGES,
+					GatewayIntent.GUILD_MESSAGE_REACTIONS,
+					GatewayIntent.GUILD_EMOJIS,
+					GatewayIntent.GUILD_INVITES,
+
+					GatewayIntent.DIRECT_MESSAGES,
+					GatewayIntent.DIRECT_MESSAGE_REACTIONS
+			)
+					.disableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS)
+					.setMemberCachePolicy(MemberCachePolicy.ALL)
+					.setChunkingFilter(ChunkingFilter.ALL)
+					.setToken(Config.BOT_TOKEN)
+					.addEventListeners(
+							new OnGuildJoinEvent(),
+							new OnGuildMemberEvent(),
+							new OnEmoteEvent(),
+							new OnGuildMessageEvent(),
+							new OnGuildVoiceEvent(),
+							new OnGuildReadyEvent(),
+							new OnInviteEvent(),
+							lavalink
+					)
+					.setVoiceDispatchInterceptor(lavalink.getVoiceInterceptor())
+					.setActivity(Activity.playing("loading..."))
+					.setStatus(OnlineStatus.DO_NOT_DISTURB)
+					.setGatewayEncoding(GatewayEncoding.ETF)
+					.build().awaitReady();
+
+			RestAction.setDefaultFailure(null);
+
+			Database.init(jda);
 
 			new WebService(this, 6969);
 
