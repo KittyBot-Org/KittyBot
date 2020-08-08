@@ -21,7 +21,7 @@ public class Config{
 	public static String ADMIN_ID;
 	public static String SUPPORT_GUILD;
 	public static String LOG_CHANNEL;
-	public static String INVITE_LINK;
+	public static String INVITE_URL;
 	public static String REDIRECT_URL;
 	public static String ORIGIN_URL;
 
@@ -46,7 +46,7 @@ public class Config{
 			ADMIN_ID = String.valueOf(config.get("admin_id"));
 			SUPPORT_GUILD = String.valueOf(config.get("support_guild"));
 			LOG_CHANNEL = String.valueOf(config.get("log_channel"));
-			INVITE_LINK = String.valueOf(config.get("invite_link"));
+			INVITE_URL = String.valueOf(config.get("invite_url"));
 			REDIRECT_URL = String.valueOf(config.get("redirect_url"));
 			ORIGIN_URL = String.valueOf(config.get("origin_url"));
 
