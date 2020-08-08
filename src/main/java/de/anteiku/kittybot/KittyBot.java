@@ -76,7 +76,7 @@ public class KittyBot{
 					GatewayIntent.DIRECT_MESSAGE_REACTIONS
 			)
 					.disableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS)
-					.setMemberCachePolicy(MemberCachePolicy.VOICE)
+					.setMemberCachePolicy(MemberCachePolicy.ALL)
 					.setChunkingFilter(ChunkingFilter.NONE)
 					.setToken(Config.BOT_TOKEN)
 					.addEventListeners(

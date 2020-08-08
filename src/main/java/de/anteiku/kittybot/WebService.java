@@ -125,14 +125,11 @@ public class WebService{
 			return;
 		}
 		Collection<String> guilds = new ArrayList<>();
-		for(Guild guild : main.jda.getGuildCache()){
-			try{
-				var member = guild.retrieveMember(user).complete();
-				if(member != null && member.hasPermission(Permission.ADMINISTRATOR)){
-					guilds.add(String.format("{\"id\": %s, \"name\": %s, \"icon\": %s}", JSONObject.quote(guild.getId()), JSONObject.quote(guild.getName()), JSONObject.quote(guild.getIconUrl())));
-				}
+		for(Guild guild : main.jda.getMutualGuilds(user)){
+			var u = guild.getMember(user);
+			if(u != null && u.hasPermission(Permission.ADMINISTRATOR)){
+				guilds.add(String.format("{\"id\": %s, \"name\": %s, \"icon\": %s}", JSONObject.quote(guild.getId()), JSONObject.quote(guild.getName()), JSONObject.quote(guild.getIconUrl())));
 			}
-			catch(ErrorResponseException ignored){}
 		}
 		ok(ctx, String.format("{\"name\": %s, \"id\": %s, \"icon\": %s, \"guilds\": [%s]}", JSONObject.quote(user.getName()), JSONObject.quote(user.getId()), JSONObject.quote(user.getEffectiveAvatarUrl()), String.join(", ", guilds)));
 	}
