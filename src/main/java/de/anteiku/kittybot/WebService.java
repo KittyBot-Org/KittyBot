@@ -283,7 +283,7 @@ public class WebService{
 			Database.setNSFWEnabled(guildId, json.get("nsfw_enabled").getAsBoolean());
 		}
 		if(json.get("self_assignable_roles") != null){
-			var roles = new HashMap<String, String>();
+			Map<String, String> roles = new HashMap<>();
 			json.get("self_assignable_roles").getAsJsonArray().forEach(jsonElement -> {
 				var obj = jsonElement.getAsJsonObject();
 				roles.put(obj.get("role_id").getAsString(), obj.get("emote_id").getAsString());
