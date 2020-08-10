@@ -201,21 +201,24 @@ public class Database{
 	}
 
 
-	public static void setSelfAssignableRoles(String guildId, Map<String, String> newRoles){
+	public static void setSelfAssignableRoles(String guildId, Map<String, String> newRoles){// role emote
 		Map<String, String> roles = getSelfAssignableRoles(guildId);
-		Map<String, String> addRoles = new HashMap<>();
-		Set<String> removeRoles = new HashSet<>();
-		for(Map.Entry<String, String> valuePair : roles.entrySet()){
-			if(newRoles.get(valuePair.getKey()) == null){
-				newRoles.remove(valuePair.getKey());
-				removeRoles.add(valuePair.getKey());
+		if(roles != null){
+			Map<String, String> addRoles = new HashMap<>();
+			Set<String> removeRoles = new HashSet<>();
+			for(Map.Entry<String, String> role : roles.entrySet()){
+				if(newRoles.get(role.getKey()) == null){
+					removeRoles.add(role.getKey());
+				}
 			}
+			for(Map.Entry<String, String> role : newRoles.entrySet()){
+				if(roles.get(role.getKey()) == null){
+					addRoles.put(role.getKey(), role.getValue());
+				}
+			}
+			removeSelfAssignableRoles(guildId, removeRoles);
+			addSelfAssignableRoles(guildId, addRoles);
 		}
-		for(Map.Entry<String, String> ele : roles.entrySet()){
-			addRoles.put(ele.getKey(), ele.getValue());
-		}
-		removeSelfAssignableRoles(guildId, removeRoles);
-		addSelfAssignableRoles(guildId, addRoles);
 	}
 
 	public static boolean addSelfAssignableRoles(String guildId, Map<String, String> roles){

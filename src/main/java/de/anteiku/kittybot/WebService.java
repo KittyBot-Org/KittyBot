@@ -286,7 +286,7 @@ public class WebService{
 			Map<String, String> roles = new HashMap<>();
 			json.get("self_assignable_roles").getAsJsonArray().forEach(jsonElement -> {
 				var obj = jsonElement.getAsJsonObject();
-				roles.put(obj.get("role_id").getAsString(), obj.get("emote_id").getAsString());
+				roles.put(obj.get("role").getAsString(), obj.get("emote").getAsString());
 			});
 			Database.setSelfAssignableRoles(guildId, roles);
 		}
