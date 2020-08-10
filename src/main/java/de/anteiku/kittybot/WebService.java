@@ -16,7 +16,6 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

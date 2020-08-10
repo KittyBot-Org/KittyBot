@@ -37,12 +37,12 @@ import java.util.Random;
 
 public class KittyBot{
 
+	public static final OkHttpClient httpClient = new OkHttpClient();
 	private static final Logger LOG = LoggerFactory.getLogger(KittyBot.class);
 	public static JdaLavalink lavalink;
 	public static AudioPlayerManager audioPlayerManager;
 	public static CommandManager commandManager;
 	public static Random rand = new Random();
-	public static final OkHttpClient httpClient = new OkHttpClient();
 	public JDA jda;
 
 	public KittyBot(){

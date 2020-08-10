@@ -1,6 +1,5 @@
 package de.anteiku.kittybot.commands.commands;
 
-import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.Utils;
 import de.anteiku.kittybot.commands.ACommand;
 import de.anteiku.kittybot.commands.CommandContext;
@@ -130,7 +129,7 @@ public class OptionsCommand extends ACommand{
 							sendError(ctx, "There was an error while processing your command :(");
 							return;
 						}
-						sendAnswer(ctx, "Leave message set to: "  + message);
+						sendAnswer(ctx, "Leave message set to: " + message);
 					}
 					else if(Utils.isHelp(ctx.getArgs()[1])){
 						sendUsage(ctx, "options leavemessage <message>");

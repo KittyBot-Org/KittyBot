@@ -1,6 +1,5 @@
 package de.anteiku.kittybot.commands.commands;
 
-import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.Utils;
 import de.anteiku.kittybot.commands.ACommand;
 import de.anteiku.kittybot.commands.CommandContext;
@@ -21,11 +20,11 @@ import java.util.*;
 
 public class RolesCommand extends ACommand{
 
-	private static final String title = "Self-assignable roles:";
 	public static final String COMMAND = "roles";
 	public static final String USAGE = "roles <add|remove|list>";
 	public static final String DESCRIPTION = "Used to manage your roles";
 	protected static final String[] ALIAS = {"r", "rollen"};
+	private static final String title = "Self-assignable roles:";
 
 	public RolesCommand(){
 		super(COMMAND, USAGE, DESCRIPTION, ALIAS);

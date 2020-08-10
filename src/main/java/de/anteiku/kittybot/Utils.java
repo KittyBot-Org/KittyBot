@@ -7,7 +7,9 @@ import net.dv8tion.jda.api.entities.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.time.Duration;
 import java.util.*;
 
@@ -45,11 +47,11 @@ public class Utils{
 		}
 		return set;
 	}
-	
+
 	public static boolean isEnable(String string){
 		return string.equalsIgnoreCase("enable") || string.equalsIgnoreCase("true") || string.equalsIgnoreCase("on") || string.equalsIgnoreCase("an");
 	}
-	
+
 	public static boolean isDisable(String string){
 		return string.equalsIgnoreCase("disable") || string.equalsIgnoreCase("false") || string.equalsIgnoreCase("off") || string.equalsIgnoreCase("aus");
 	}
