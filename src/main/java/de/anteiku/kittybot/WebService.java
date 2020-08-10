@@ -164,7 +164,15 @@ public class WebService{
 				error(ctx, 404, "guild not found");
 				return;
 			}
-			Member member = guild.retrieveMemberById(Database.getSession(ctx.header("Authorization"))).complete();
+			var userId = Database.getSession(ctx.header("Authorization"));
+			if(userId == null){
+				error(ctx, 404, "This user does not exist");
+				return;
+			}
+			if(userId == Config.ADMIN_ID){
+				return;
+			}
+			Member member = guild.retrieveMemberById(userId).complete();
 			if(member == null){
 				error(ctx, 404, "I could not find you int that guild");
 				return;
