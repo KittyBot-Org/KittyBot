@@ -79,6 +79,7 @@ public class KittyBot{
 
 			commandManager = CommandManager.build(
 					new HelpCommand(),
+					new InfoCommand(),
 					new CommandsCommand(),
 					new EmoteStealCommand(),
 					new DownloadEmotesCommand(),
