@@ -168,12 +168,12 @@ public class WebService{
 				error(ctx, 404, "This user does not exist");
 				return;
 			}
-			if(userId == Config.ADMIN_ID){
+			if(userId.equals(Config.ADMIN_ID)){
 				return;
 			}
 			Member member = guild.retrieveMemberById(userId).complete();
 			if(member == null){
-				error(ctx, 404, "I could not find you int that guild");
+				error(ctx, 404, "I could not find you in that guild");
 				return;
 			}
 			if(!member.hasPermission(Permission.ADMINISTRATOR)){
