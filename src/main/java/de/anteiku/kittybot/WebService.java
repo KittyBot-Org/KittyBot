@@ -233,8 +233,8 @@ public class WebService{
 			selfAssignableRoles.add(String.format("{\"role\": \"%s\", \"emote\": \"%s\"}", role.getKey(), role.getValue()));
 		}
 		ok(ctx, String.format("{\"prefix\": %s, " +
-						"\"welcome_messages_enabled\": %b, " +
-						"\"welcome_messages\": %s, " +
+						"\"join_messages_enabled\": %b, " +
+						"\"join_messages\": %s, " +
 						"\"leave_messages_enabled\": %b, " +
 						"\"leave_messages\": %s, " +
 						"\"boost_messages_enabled\": %b, " +
@@ -243,8 +243,8 @@ public class WebService{
 						"\"nsfw_enabled\": %b, " +
 						"\"self_assignable_roles\": [%s]}",
 				JSONObject.quote(Database.getCommandPrefix(guildId)),
-				Database.getWelcomeMessageEnabled(guildId),
-				JSONObject.quote(Database.getWelcomeMessage(guildId)),
+				Database.getJoinMessageEnabled(guildId),
+				JSONObject.quote(Database.getJoinMessage(guildId)),
 				Database.getLeaveMessageEnabled(guildId),
 				JSONObject.quote(Database.getLeaveMessage(guildId)),
 				Database.getBoostMessageEnabled(guildId),
@@ -265,23 +265,23 @@ public class WebService{
 		if(json.get("prefix") != null){
 			Database.setCommandPrefix(guildId, json.get("prefix").getAsString());
 		}
-		if(json.get("welcome_messages_enabled") != null){
-			Database.setWelcomeMessageEnabled(guildId, json.get("welcome_messages_enabled").getAsBoolean());
+		if(json.get("join_messages_enabled") != null){
+			Database.setJoinMessageEnabled(guildId, json.get("join_messages_enabled").getAsBoolean());
 		}
-		if(json.get("welcome_messages") != null){
-			Database.setWelcomeMessage(guildId, json.get("welcome_messages").getAsString());
+		if(json.get("join_messages") != null){
+			Database.setJoinMessage(guildId, json.get("join_messages").getAsString());
 		}
 		if(json.get("leave_messages_enabled") != null){
-			Database.setWelcomeMessageEnabled(guildId, json.get("leave_messages_enabled").getAsBoolean());
+			Database.setLeaveMessageEnabled(guildId, json.get("leave_messages_enabled").getAsBoolean());
 		}
 		if(json.get("leave_messages") != null){
-			Database.setWelcomeMessage(guildId, json.get("leave_messages").getAsString());
+			Database.setLeaveMessage(guildId, json.get("leave_messages").getAsString());
 		}
 		if(json.get("boost_messages_enabled") != null){
-			Database.setWelcomeMessageEnabled(guildId, json.get("boost_messages_enabled").getAsBoolean());
+			Database.setBoostMessageEnabled(guildId, json.get("boost_messages_enabled").getAsBoolean());
 		}
 		if(json.get("boost_messages") != null){
-			Database.setWelcomeMessage(guildId, json.get("boost_messages").getAsString());
+			Database.setBoostMessage(guildId, json.get("boost_messages").getAsString());
 		}
 		if(json.get("announcement_channel_id") != null){
 			Database.setAnnouncementChannelId(guildId, json.get("announcement_channel_id").getAsString());

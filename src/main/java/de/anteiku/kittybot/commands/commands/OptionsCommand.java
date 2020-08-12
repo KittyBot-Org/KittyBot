@@ -14,7 +14,7 @@ import java.util.List;
 public class OptionsCommand extends ACommand{
 
 	public static final String COMMAND = "options";
-	public static final String USAGE = "options <prefix|welcomechannel|welcomemessage|nsfw> <value>";
+	public static final String USAGE = "options <prefix|joinchannel|joinmessage|nsfw> <value>";
 	public static final String DESCRIPTION = "Used to set some guild specified options";
 	protected static final String[] ALIAS = {"opts", "opt"};
 
@@ -33,8 +33,8 @@ public class OptionsCommand extends ACommand{
 				embed.setDescription("These are the current guild options");
 				embed.addField("Command Prefix:", Cache.getCommandPrefix(guildId), false);
 				embed.addField("Announcement Channel:", "<#" + Database.getAnnouncementChannelId(guildId) + ">", false);
-				embed.addField("Welcome Messages Enabled:", String.valueOf(Database.getWelcomeMessageEnabled(guildId)), false);
-				embed.addField("Welcome Message:", Database.getWelcomeMessage(guildId), false);
+				embed.addField("Join Messages Enabled:", String.valueOf(Database.getJoinMessageEnabled(guildId)), false);
+				embed.addField("Join Message:", Database.getJoinMessage(guildId), false);
 				embed.addField("Leave Messages Enabled:", String.valueOf(Database.getLeaveMessageEnabled(guildId)), false);
 				embed.addField("Leave Message:", Database.getLeaveMessage(guildId), false);
 				embed.addField("Boost Messages Enabled:", String.valueOf(Database.getBoostMessageEnabled(guildId)), false);
@@ -95,37 +95,37 @@ public class OptionsCommand extends ACommand{
 						sendUsage(ctx, "options announcement <#TextChannel>");
 					}
 				}
-				else if(ctx.getArgs()[0].equalsIgnoreCase("welcomemessage")){
+				else if(ctx.getArgs()[0].equalsIgnoreCase("joinmessage")){
 					if(ctx.getArgs().length < 2){
 						String message = String.join(" ", Utils.subArray(ctx.getArgs(), 1));
-						if(Database.setWelcomeMessage(ctx.getGuild().getId(), message)){
+						if(Database.setJoinMessage(ctx.getGuild().getId(), message)){
 							sendError(ctx, "There was an error while processing your command :(");
 							return;
 						}
-						sendAnswer(ctx, "Welcome message set to: " + message);
+						sendAnswer(ctx, "Join message set to: " + message);
 					}
 					else if(Utils.isHelp(ctx.getArgs()[1])){
-						sendUsage(ctx, "options welcomemessage <message>");
+						sendUsage(ctx, "options joinmessage <message>");
 					}
 					else if(ctx.getArgs()[1].equalsIgnoreCase("enable") || ctx.getArgs()[1].equalsIgnoreCase("true") || ctx.getArgs()[1].equalsIgnoreCase("on") || ctx.getArgs()[1].equalsIgnoreCase("an")){
-						if(Database.setWelcomeMessageEnabled(ctx.getGuild().getId(), true)){
+						if(Database.setJoinMessageEnabled(ctx.getGuild().getId(), true)){
 							sendError(ctx, "There was an error while processing your command :(");
 							return;
 						}
-						sendAnswer(ctx, "Welcome messages enabled!");
+						sendAnswer(ctx, "Join messages enabled!");
 					}
 					else if(Utils.isDisable(ctx.getArgs()[1])){
-						if(Database.setWelcomeMessageEnabled(ctx.getGuild().getId(), false)){
+						if(Database.setJoinMessageEnabled(ctx.getGuild().getId(), false)){
 							sendError(ctx, "There was an error while processing your command :(");
 							return;
 						}
-						sendAnswer(ctx, "Welcome messages disabled!");
+						sendAnswer(ctx, "Join messages disabled!");
 					}
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("leavemessage")){
 					if(ctx.getArgs().length < 2){
 						String message = String.join(" ", Utils.subArray(ctx.getArgs(), 1));
-						if(Database.setWelcomeMessage(ctx.getGuild().getId(), message)){
+						if(Database.setJoinMessage(ctx.getGuild().getId(), message)){
 							sendError(ctx, "There was an error while processing your command :(");
 							return;
 						}
@@ -135,14 +135,14 @@ public class OptionsCommand extends ACommand{
 						sendUsage(ctx, "options leavemessage <message>");
 					}
 					else if(Utils.isEnable(ctx.getArgs()[1])){
-						if(Database.setWelcomeMessageEnabled(ctx.getGuild().getId(), true)){
+						if(Database.setJoinMessageEnabled(ctx.getGuild().getId(), true)){
 							sendError(ctx, "There was an error while processing your command :(");
 							return;
 						}
 						sendAnswer(ctx, "Leave messages enabled!");
 					}
 					else if(Utils.isDisable(ctx.getArgs()[1])){
-						if(Database.setWelcomeMessageEnabled(ctx.getGuild().getId(), false)){
+						if(Database.setJoinMessageEnabled(ctx.getGuild().getId(), false)){
 							sendError(ctx, "There was an error while processing your command :(");
 							return;
 						}
@@ -152,7 +152,7 @@ public class OptionsCommand extends ACommand{
 				else if(ctx.getArgs()[0].equalsIgnoreCase("boostmessage")){
 					if(ctx.getArgs().length < 2){
 						String message = String.join(" ", Utils.subArray(ctx.getArgs(), 1));
-						if(Database.setWelcomeMessage(ctx.getGuild().getId(), message)){
+						if(Database.setJoinMessage(ctx.getGuild().getId(), message)){
 							sendError(ctx, "There was an error while processing your command :(");
 							return;
 						}
@@ -162,14 +162,14 @@ public class OptionsCommand extends ACommand{
 						sendUsage(ctx, "options boostmessage <message>");
 					}
 					else if(Utils.isEnable(ctx.getArgs()[1])){
-						if(Database.setWelcomeMessageEnabled(ctx.getGuild().getId(), true)){
+						if(Database.setJoinMessageEnabled(ctx.getGuild().getId(), true)){
 							sendError(ctx, "There was an error while processing your command :(");
 							return;
 						}
 						sendAnswer(ctx, "Boost messages enabled!");
 					}
 					else if(Utils.isDisable(ctx.getArgs()[1])){
-						if(Database.setWelcomeMessageEnabled(ctx.getGuild().getId(), false)){
+						if(Database.setJoinMessageEnabled(ctx.getGuild().getId(), false)){
 							sendError(ctx, "There was an error while processing your command :(");
 							return;
 						}

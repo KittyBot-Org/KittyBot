@@ -53,8 +53,8 @@ public class Database{
 				"request_channel_id, " +
 				"requests_enabled, " +
 				"announcement_channel_id, " +
-				"welcome_messages, " +
-				"welcome_messages_enabled, " +
+				"join_messages, " +
+				"join_messages_enabled, " +
 				"leave_messages, " +
 				"leave_messages_enabled, " +
 				"boost_messages, " +
@@ -268,16 +268,16 @@ public class Database{
 		return setProperty(guildId, "announcement_channel_id", channelId);
 	}
 
-	public static String getWelcomeMessage(String guildId){
-		return getString(guildId, "welcome_messages");
+	public static String getJoinMessage(String guildId){
+		return getString(guildId, "join_messages");
 	}
 
-	public static boolean setWelcomeMessage(String guildId, String message){
-		return setProperty(guildId, "welcome_messages", message);
+	public static boolean setJoinMessage(String guildId, String message){
+		return setProperty(guildId, "join_messages", message);
 	}
 
-	public static boolean getWelcomeMessageEnabled(String guildId){
-		return getBoolean(guildId, "welcome_messages_enabled");
+	public static boolean getJoinMessageEnabled(String guildId){
+		return getBoolean(guildId, "join_messages_enabled");
 	}
 
 	private static boolean getBoolean(String guildId, String key){
@@ -295,8 +295,8 @@ public class Database{
 		return false;
 	}
 
-	public static boolean setWelcomeMessageEnabled(String guildId, boolean enabled){
-		return setProperty(guildId, "welcome_messages_enabled", enabled);
+	public static boolean setJoinMessageEnabled(String guildId, boolean enabled){
+		return setProperty(guildId, "join_messages_enabled", enabled);
 	}
 
 	private static boolean setProperty(String guildId, String key, boolean value){
