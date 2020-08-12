@@ -84,6 +84,8 @@ public class KittyBot{
 					new EmoteStealCommand(),
 					new DownloadEmotesCommand(),
 					new RolesCommand(),
+					new AssignCommand(),
+					new UnassignCommand(),
 
 					new PlayCommand(),
 					new QueueCommand(),

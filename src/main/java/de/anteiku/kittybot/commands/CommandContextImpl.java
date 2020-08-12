@@ -43,6 +43,10 @@ public class CommandContextImpl implements CommandContext{
 		return this.args;
 	}
 
+	public User getSelfUser(){
+		return this.event.getJDA().getSelfUser();
+	}
+
 	public User getUser(){
 		return this.event.getAuthor();
 	}
@@ -53,6 +57,10 @@ public class CommandContextImpl implements CommandContext{
 
 	public Bag<User> getMentionedUsersBag(){
 		return this.event.getMessage().getMentionedUsersBag();
+	}
+
+	public Member getSelfMember(){
+		return getGuild().getSelfMember();
 	}
 
 	public Member getMember(){

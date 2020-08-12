@@ -20,11 +20,15 @@ public interface CommandContext{
 
 	String[] getArgs();
 
+	User getSelfUser();
+
 	User getUser();
 
 	List<User> getMentionedUsers();
 
 	Bag<User> getMentionedUsersBag();
+
+	Member getSelfMember();
 
 	Member getMember();
 
