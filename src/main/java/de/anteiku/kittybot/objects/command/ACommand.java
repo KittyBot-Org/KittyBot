@@ -21,7 +21,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
-import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public abstract class ACommand{
@@ -183,11 +183,11 @@ public abstract class ACommand{
 
 	protected MessageAction usage(CommandContext ctx, String usage){
 		addStatus(ctx.getMessage(), Status.QUESTION);
-		return answer(ctx, new EmbedBuilder()
+		return ctx.getChannel().sendMessage(new EmbedBuilder()
 				.setColor(Color.ORANGE)
 				.addField("Command usage:", "`" + Database.getCommandPrefix(ctx.getGuild().getId()) + usage + "`", true)
 				.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
-				.setTimestamp(Instant.now())
+				.setTimestamp(Instant.now()).build()
 		);
 	}
 
@@ -196,13 +196,13 @@ public abstract class ACommand{
 	}
 
 	protected MessageAction reactionImage(CommandContext ctx, String type, String text){
-		List<User> users = ctx.getMessage().getMentionedUsers();
+		Set<User> users = ctx.getMentionedUsersBag().uniqueSet();
 		StringBuilder message = new StringBuilder();
 		if(users.isEmpty()){
 			return error(ctx, "Please mention a user");
 		}
 		else if(users.contains(ctx.getUser()) && users.size() == 1){
-			message.append("You can't ").append(type).append(" yourself so I ").append(type).append(" you ").append(ctx.getUser().getAsMention()).append("!");
+			message.append("You are not allowed to ").append(type).append(" yourself so I ").append(type).append(" you ").append(ctx.getUser().getAsMention()).append("!");
 		}
 		else{
 			message.append(ctx.getUser().getAsMention()).append(" ").append(text).append(" ");

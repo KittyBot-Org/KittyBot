@@ -24,15 +24,15 @@ public class CommandContextImpl implements CommandContext{
 	}
 
 	public Guild getGuild(){
-		return this.event.getGuild();
+		return getEvent().getGuild();
 	}
 
 	public TextChannel getChannel(){
-		return this.event.getChannel();
+		return getEvent().getChannel();
 	}
 
 	public Message getMessage(){
-		return this.event.getMessage();
+		return getEvent().getMessage();
 	}
 
 	public String getCommand(){
@@ -44,7 +44,7 @@ public class CommandContextImpl implements CommandContext{
 	}
 
 	public User getSelfUser(){
-		return this.event.getJDA().getSelfUser();
+		return getEvent().getJDA().getSelfUser();
 	}
 
 	public User getUser(){
@@ -52,11 +52,11 @@ public class CommandContextImpl implements CommandContext{
 	}
 
 	public List<User> getMentionedUsers(){
-		return this.event.getMessage().getMentionedUsers();
+		return getMessage().getMentionedUsers();
 	}
 
 	public Bag<User> getMentionedUsersBag(){
-		return this.event.getMessage().getMentionedUsersBag();
+		return getMessage().getMentionedUsersBag();
 	}
 
 	public Member getSelfMember(){
@@ -64,23 +64,23 @@ public class CommandContextImpl implements CommandContext{
 	}
 
 	public Member getMember(){
-		return this.event.getMember();
+		return getEvent().getMember();
 	}
 
 	public List<TextChannel> getMentionedChannels(){
-		return this.event.getMessage().getMentionedChannels();
+		return getMessage().getMentionedChannels();
 	}
 
 	public Bag<TextChannel> getMentionedChannelsBag(){
-		return this.event.getMessage().getMentionedChannelsBag();
+		return getMessage().getMentionedChannelsBag();
 	}
 
 	public List<Role> getMentionedRoles(){
-		return this.event.getMessage().getMentionedRoles();
+		return getMessage().getMentionedRoles();
 	}
 
 	public Bag<Role> getMentionedRolesBag(){
-		return this.event.getMessage().getMentionedRolesBag();
+		return getMessage().getMentionedRolesBag();
 	}
 
 	public GuildMessageReceivedEvent getEvent(){
