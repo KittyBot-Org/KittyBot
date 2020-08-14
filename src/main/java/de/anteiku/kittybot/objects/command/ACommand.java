@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class ACommand{
 
-	public static final Logger LOG = LoggerFactory.getLogger(ACommand.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(ACommand.class);
 
 	public final String command;
 	public final String usage;
