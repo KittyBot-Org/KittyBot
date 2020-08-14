@@ -12,6 +12,8 @@
 
 [CI Server](https://ci.anteiku.de/project/KittyBot_Bot?guest=1)
 
+[Issues](https://youtrack.anteiku.de/dashboard?id=59b76be4-5d54-4839-a972-4c62a5671315)
+
 [Docker Hub](https://hub.docker.com/repository/docker/topisenpai/kittybot)
 
 [Website Project](https://github.com/TopISenpai/KittyBot-Website)
