@@ -201,9 +201,10 @@ public abstract class ACommand{
 		User selfUser = ctx.getSelfUser();
 		long botId = selfUser.getIdLong();
 		if (content.startsWith("<@" + botId + ">") || content.startsWith("<@!" + botId + ">")){
-			if (users.getCount(selfUser) == 1)
-				users.remove(selfUser);
+			var occurrences = users.getCount(selfUser);
+			users.remove(selfUser, occurrences == 1 ? 1 : occurrences - 1);
 		}
+
 		StringBuilder message = new StringBuilder();
 		if(users.isEmpty()){
 			return error(ctx, "Please mention a user");
