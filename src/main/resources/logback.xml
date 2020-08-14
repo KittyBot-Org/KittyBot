@@ -19,10 +19,10 @@
         </encoder>
     </appender>
 
-    <logger name="spark.http.matching.MatcherFilter" level="info" />
+    <logger name="spark.http.matching.MatcherFilter" level="info"/>
 
     <root level="INFO">
-        <appender-ref ref="STDOUT" />
-        <appender-ref ref="Sentry" />
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="Sentry"/>
     </root>
 </configuration>

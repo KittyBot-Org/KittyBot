@@ -42,7 +42,7 @@ public class WebService{
 		scopes = new Scope[]{Scope.IDENTIFY};
 		DefaultSessionController sessionController = new DefaultSessionController();
 		DefaultStateController stateController = new DefaultStateController();
-		oAuthClient = new OAuth2ClientImpl(Long.parseLong(Config.BOT_ID), Config.BOT_SECRET, sessionController, stateController, main.httpClient);
+		oAuthClient = new OAuth2ClientImpl(Long.parseLong(Config.BOT_ID), Config.BOT_SECRET, sessionController, stateController, KittyBot.httpClient);
 		Javalin.create(config -> config.enableCorsForOrigin(Config.ORIGIN_URL)).routes(() -> {
 			get("/discord_login", this::discordLogin);
 			get("/health_check", ctx -> ctx.result("alive"));

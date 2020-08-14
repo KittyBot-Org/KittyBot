@@ -24,6 +24,7 @@ public class Config{
 	public static String INVITE_URL;
 	public static String REDIRECT_URL;
 	public static String ORIGIN_URL;
+	public static String HASTEBIN_URL;
 
 	public static String DB_HOST;
 	public static String DB_PORT;
@@ -49,6 +50,7 @@ public class Config{
 			INVITE_URL = String.valueOf(config.get("invite_url"));
 			REDIRECT_URL = String.valueOf(config.get("redirect_url"));
 			ORIGIN_URL = String.valueOf(config.get("origin_url"));
+			HASTEBIN_URL = String.valueOf(config.get("hastebin_url"));
 
 			DB_HOST = String.valueOf(config.get("db_host"));
 			DB_PORT = String.valueOf(config.get("db_port"));

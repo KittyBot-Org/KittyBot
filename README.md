@@ -1,4 +1,4 @@
-[![Website Banner](.github/banner.png)](https://kittybot.anteiku.de) 
+[![Website Banner](.github/banner.png)](https://kittybot.de) 
 
 [![Last Build Status](https://img.shields.io/teamcity/https/ci.anteiku.de/s/KittyBot_Bot_Master_Build.svg)](https://ci.anteiku.de/project/KittyBot_Bot?guest=1)
 [![Total Downloads](https://img.shields.io/github/downloads/TopiSenpai/kittybot/total.svg)](https://github.com/TopiSenpai/kittybot/releases) 
@@ -16,7 +16,7 @@
 
 [Website Project](https://github.com/TopISenpai/KittyBot-Website)
 
-[Website](https://kittybot.anteiku.de)
+[Website](https://kittybot.de)
 #### A Discord Bot to manage your roles
 ---
 
