@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEve
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import okhttp3.Request;
+import org.apache.commons.collections4.Bag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +22,6 @@ import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public abstract class ACommand{
@@ -196,7 +196,14 @@ public abstract class ACommand{
 	}
 
 	protected MessageAction reactionImage(CommandContext ctx, String type, String text){
-		Set<User> users = ctx.getMentionedUsersBag().uniqueSet();
+		Bag<User> users = ctx.getMentionedUsersBag();
+		String content = ctx.getMessage().getContentRaw();
+		User selfUser = ctx.getSelfUser();
+		long botId = selfUser.getIdLong();
+		if (content.startsWith("<@" + botId + ">") || content.startsWith("<@!" + botId + ">")){
+			if (users.getCount(selfUser) == 1)
+				users.remove(selfUser);
+		}
 		StringBuilder message = new StringBuilder();
 		if(users.isEmpty()){
 			return error(ctx, "Please mention a user");
