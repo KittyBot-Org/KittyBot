@@ -190,20 +190,6 @@ public class Database{
 		}
 	}
 
-	public static boolean isSelfAssignableRole(String guildId, String roleId){
-		var query = "SELECT * FROM self_assignable_roles WHERE guild_id = ? and role_id = ?";
-		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
-			stmt.setString(1, guildId);
-			stmt.setString(2, roleId);
-			ResultSet result = SQL.query(stmt);
-			return result != null && result.next();
-		}
-		catch(SQLException e){
-			LOG.error("Error while testing if role self-assignable", e);
-		}
-		return false;
-	}
-
 	public static Map<String, String> getSelfAssignableRoles(String guildId){
 		Map<String, String> map = new HashMap<>();
 		var query = "SELECT * FROM self_assignable_roles WHERE guild_id = ?";
@@ -258,6 +244,20 @@ public class Database{
 			}
 		}
 		return result;
+	}
+
+	public static boolean isSelfAssignableRole(String guildId, String roleId){
+		var query = "SELECT * FROM self_assignable_roles WHERE guild_id = ? and role_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
+			stmt.setString(1, guildId);
+			stmt.setString(2, roleId);
+			ResultSet result = SQL.query(stmt);
+			return result != null && result.next();
+		}
+		catch(SQLException e){
+			LOG.error("Error while testing if role self-assignable", e);
+		}
+		return false;
 	}
 
 	public static String getAnnouncementChannelId(String guildId){

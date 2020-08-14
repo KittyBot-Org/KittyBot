@@ -7,6 +7,7 @@ log_channel:
 invite_url:
 redirect_url:
 origin_url:
+hastebin_url:
 
 db_host:
 db_port:

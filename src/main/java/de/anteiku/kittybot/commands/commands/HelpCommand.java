@@ -24,10 +24,14 @@ public class HelpCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		answer(ctx, new EmbedBuilder().setColor(Color.orange).setThumbnail(ctx.getJDA().getSelfUser().getEffectiveAvatarUrl()).addField(Emotes.INVITE.get() + " Invite:", Emotes.BLANK.get() + " :small_blue_diamond: You want me on your server? Click [here](" + Config.INVITE_URL + ") to invite me!", false).addField(Emotes.CONSOLE.get() + " Commands:", Emotes.BLANK.get() + " :small_blue_diamond: You want to see **all my available commands**?\n" + Emotes.BLANK.get() + " " + Emotes.BLANK.get() + " Use ``.commands``", false).addField(":question: Help:", Emotes.BLANK.get() + " :small_blue_diamond: You want to **report bugs or suggest new features**?\n" + Emotes.BLANK.get() + " " + Emotes.BLANK.get() + " Message my owner on " + Emotes.TWITTER.get() + " [Twitter](https://twitter.com/TopiSenpai) or " + Emotes.DISCORD.get() + " ``/home/toπ#3141``!", false)
-				//.addField(":globe_with_meridians: Webinterface:", Emotes.BLANK.get() + " :small_blue_diamond: Click [here](http://anteiku.de/login) to login with discord and manage your guilds!.",false)
+		answer(ctx, new EmbedBuilder()
+				.setColor(Color.orange)
+				.setThumbnail(ctx.getJDA().getSelfUser().getEffectiveAvatarUrl())
+				.addField(Emotes.INVITE.get() + " Invite:", Emotes.BLANK.get() + " :small_blue_diamond: You want me on your server? Click [here](" + Config.INVITE_URL + ") to invite me!", false)
+				.addField(Emotes.CONSOLE.get() + " Commands:", Emotes.BLANK.get() + " :small_blue_diamond: You want to see **all my available commands**?\n" + Emotes.BLANK.get() + " " + Emotes.BLANK.get() + " Use ``.commands``", false)
+				.addField(":question: Help:", Emotes.BLANK.get() + " :small_blue_diamond: You want to **report bugs or suggest new features**?\n" + Emotes.BLANK.get() + " " + Emotes.BLANK.get() + " Message my owner on " + Emotes.TWITTER.get() + " [Twitter](https://twitter.com/TopiSenpai) or " + Emotes.DISCORD.get() + " ``/home/toπ#3141``!", false)
 		).queue(message -> {
-			Cache.addReactiveMessage(ctx, message, this, "-1");
+			Cache.addReactiveMessage(ctx, message, this, ctx.getUser().getId());
 			message.addReaction(Emotes.WASTEBASKET.get()).queue();
 		});
 

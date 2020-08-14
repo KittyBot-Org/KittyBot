@@ -2,6 +2,7 @@ package de.anteiku.kittybot.commands.commands;
 
 import de.anteiku.kittybot.commands.ACommand;
 import de.anteiku.kittybot.commands.CommandContext;
+import de.anteiku.kittybot.objects.Config;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.lang.management.ManagementFactory;
@@ -23,7 +24,7 @@ public class InfoCommand extends ACommand{
 		var runtime = Runtime.getRuntime();
 		var totalMemory = runtime.totalMemory() / 1000000;
 		sendAnswer(ctx, new EmbedBuilder()
-				.setAuthor("KittyBot information", "https://kittybot.anteiku.de", jda.getSelfUser().getEffectiveAvatarUrl())
+				.setAuthor("KittyBot information", Config.ORIGIN_URL, jda.getSelfUser().getEffectiveAvatarUrl())
 				.addField("Total Guilds:", String.valueOf(jda.getGuildCache().size()), true)
 				.addField("Total Users:", String.valueOf(jda.getUserCache().size()), true)
 				.addField("Shard Info:", jda.getShardInfo().getShardString(), true)
