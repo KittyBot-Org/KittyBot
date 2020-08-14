@@ -1,6 +1,5 @@
 package de.anteiku.kittybot.events;
 
-import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.Utils;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.Cache;
@@ -14,6 +13,7 @@ import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateBoostTime
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class OnGuildMemberEvent extends ListenerAdapter{
 
@@ -85,7 +85,7 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 	}
 
 	private String generateBoostMessage(String message, User user){
-		String random = BOOST_MESSAGES.get(KittyBot.rand.nextInt(BOOST_MESSAGES.size() - 1));
+		String random = BOOST_MESSAGES.get(ThreadLocalRandom.current().nextInt(BOOST_MESSAGES.size() - 1));
 		message = message.replace("${random_boost_message}", random);
 		message = message.replace("${user}", user.getAsMention());
 		message = message.replace("${user_tag}", user.getAsTag());
@@ -94,7 +94,7 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 	}
 
 	private String generateJoinMessage(String message, User user, Invite invite){
-		String random = JOIN_MESSAGES.get(KittyBot.rand.nextInt(JOIN_MESSAGES.size() - 1));
+		String random = JOIN_MESSAGES.get(ThreadLocalRandom.current().nextInt(JOIN_MESSAGES.size() - 1));
 		message = message.replace("${random_join_message}", random);
 		if(invite != null){
 			if(invite.getInviter() != null){
@@ -111,7 +111,7 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 	}
 
 	private String generateLeaveMessage(String message, User user){
-		String random = LEAVE_MESSAGES.get(KittyBot.rand.nextInt(LEAVE_MESSAGES.size() - 1));
+		String random = LEAVE_MESSAGES.get(ThreadLocalRandom.current().nextInt(LEAVE_MESSAGES.size() - 1));
 		message = message.replace("${random_leave_message}", random);
 		message = message.replace("${user}", user.getAsMention());
 		message = message.replace("${user_tag}", user.getAsTag());

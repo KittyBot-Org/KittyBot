@@ -126,7 +126,7 @@ public class Cache{
 	}
 
 	public static void destroyMusicPlayer(Guild guild, String controllerId){
-		KittyBot.lavalink.getLink(guild).destroy();
+		KittyBot.getLavalink().getLink(guild).destroy();
 		removeReactiveMessage(guild, controllerId);
 		MUSIC_PLAYERS.remove(guild.getId());
 	}

@@ -17,7 +17,7 @@ public class StopCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		KittyBot.lavalink.getLink(ctx.getGuild()).destroy();
+		KittyBot.getLavalink().getLink(ctx.getGuild()).destroy();
 		sendAnswer(ctx, "Successfully disconnected");
 	}
 

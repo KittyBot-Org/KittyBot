@@ -37,11 +37,11 @@ public class HastebinCommand extends ACommand{
 						String text = IOUtils.toString(attachment.retrieveInputStream().get(), StandardCharsets.UTF_8.name());
 						RequestBody body = RequestBody.create(MediaType.parse("text/html; charset=utf-8"), text);
 						Request request = new Request.Builder().url(Config.HASTEBIN_URL + "/documents").method("POST", body).build();
-						if(KittyBot.httpClient.newCall(request).execute().body() == null){
+						if(KittyBot.getHttpClient().newCall(request).execute().body() == null){
 							sendError(ctx, "Error while trying to create hastebin");
 							return;
 						}
-						String result = KittyBot.httpClient.newCall(request).execute().body().string();
+						String result = KittyBot.getHttpClient().newCall(request).execute().body().string();
 						sendAnswer(ctx, "[here](" + Config.HASTEBIN_URL + "/" + JsonParser.parseString(result).getAsJsonObject().get("key").getAsString() + ") is a hastebin");
 					}
 					catch(IOException e){

@@ -1,19 +1,18 @@
 package de.anteiku.kittybot.commands.info;
 
-import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.Cache;
 import de.anteiku.kittybot.objects.Emotes;
 import de.anteiku.kittybot.objects.ReactiveMessage;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.CommandContext;
+import de.anteiku.kittybot.objects.command.CommandManager;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 import java.awt.*;
 import java.time.Instant;
-import java.util.Map;
 
 public class CommandsCommand extends ACommand{
 
@@ -75,9 +74,9 @@ public class CommandsCommand extends ACommand{
 		eb.setDescription("For more specified information use `" + prefix + "<command> ?`");
 
 		int i = 0;
-		for(Map.Entry<String, ACommand> c : KittyBot.commandManager.commands.entrySet()){
+		for(var entry : CommandManager.getCommands().entrySet()){
 			if((i >= page * PAGE_COUNT) && (i < page * PAGE_COUNT + PAGE_COUNT)){
-				ACommand cmd = c.getValue();
+				ACommand cmd = entry.getValue();
 				eb.addField("**" + prefix + cmd.getCommand() + ":** ", " :small_blue_diamond:" + cmd.getDescription(), false);
 			}
 			i++;
@@ -88,7 +87,7 @@ public class CommandsCommand extends ACommand{
 	}
 
 	private int getMaxPages(){
-		return (int) Math.ceil((double) KittyBot.commandManager.commands.size() / PAGE_COUNT);
+		return (int) Math.ceil((double) CommandManager.getCommands().size() / PAGE_COUNT);
 	}
 
 	@Override

@@ -32,7 +32,7 @@ public class PlayCommand extends ACommand{
 		}
 		GuildVoiceState voiceState = ctx.getMember().getVoiceState();
 		if(voiceState != null && voiceState.inVoiceChannel()){
-			JdaLink link = KittyBot.lavalink.getLink(ctx.getGuild());
+			JdaLink link = KittyBot.getLavalink().getLink(ctx.getGuild());
 			link.connect(voiceState.getChannel());
 
 			LavalinkPlayer player = link.getPlayer();
