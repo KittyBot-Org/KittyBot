@@ -8,13 +8,6 @@ import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.vimeo.VimeoAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
-import de.anteiku.kittybot.commands.info.CommandsCommand;
-import de.anteiku.kittybot.commands.info.HelpCommand;
-import de.anteiku.kittybot.commands.info.InfoCommand;
-import de.anteiku.kittybot.commands.info.TestCommand;
-import de.anteiku.kittybot.commands.music.*;
-import de.anteiku.kittybot.commands.neko.*;
-import de.anteiku.kittybot.commands.utilities.*;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.database.SQL;
 import de.anteiku.kittybot.events.*;
@@ -34,22 +27,17 @@ import okhttp3.OkHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.security.auth.login.LoginException;
 import java.awt.*;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.Instant;
-import java.util.Random;
 
 public class KittyBot{
 
-	public static final OkHttpClient httpClient = new OkHttpClient();
 	private static final Logger LOG = LoggerFactory.getLogger(KittyBot.class);
-	public static JdaLavalink lavalink;
-	public static AudioPlayerManager audioPlayerManager;
-	public static CommandManager commandManager;
-	public static Random rand = new Random();
-	public JDA jda;
+	private static final OkHttpClient HTTP_CLIENT = new OkHttpClient();
+	private static final AudioPlayerManager AUDIO_PLAYER_MANAGER = new DefaultAudioPlayerManager();
+	private static JdaLavalink lavalink;
+	private static JDA jda;
 
 	public KittyBot(){
 		LOG.info("\n" +
@@ -75,52 +63,14 @@ public class KittyBot{
 				lavalink.addNode(new URI("ws://" + node.host + ":" + node.port), node.password);
 			}
 
-			audioPlayerManager = new DefaultAudioPlayerManager();
-			audioPlayerManager.registerSourceManager(new YoutubeAudioSourceManager());
-			audioPlayerManager.registerSourceManager(new BandcampAudioSourceManager());
-			audioPlayerManager.registerSourceManager(new VimeoAudioSourceManager());
-			audioPlayerManager.registerSourceManager(new TwitchStreamAudioSourceManager());
-			audioPlayerManager.registerSourceManager(new HttpAudioSourceManager());
-			AudioSourceManagers.registerRemoteSources(audioPlayerManager);
+			AUDIO_PLAYER_MANAGER.registerSourceManager(new YoutubeAudioSourceManager());
+			AUDIO_PLAYER_MANAGER.registerSourceManager(new BandcampAudioSourceManager());
+			AUDIO_PLAYER_MANAGER.registerSourceManager(new VimeoAudioSourceManager());
+			AUDIO_PLAYER_MANAGER.registerSourceManager(new TwitchStreamAudioSourceManager());
+			AUDIO_PLAYER_MANAGER.registerSourceManager(new HttpAudioSourceManager());
+			AudioSourceManagers.registerRemoteSources(AUDIO_PLAYER_MANAGER);
 
-			commandManager = CommandManager.build(
-					new HelpCommand(),
-					new InfoCommand(),
-					new CommandsCommand(),
-					new EmoteStealCommand(),
-					new DownloadEmotesCommand(),
-					new RolesCommand(),
-					new AssignCommand(),
-					new UnassignCommand(),
-
-					new PlayCommand(),
-					new QueueCommand(),
-					new StopCommand(),
-					new ShuffleCommand(),
-					new VolumeCommand(),
-					new PauseCommand(),
-					new SkipCommand(),
-
-					new PatCommand(),
-					new PokeCommand(),
-					new HugCommand(),
-					new CuddleCommand(),
-					new KissCommand(),
-					new TickleCommand(),
-					new FeedCommand(),
-					new SlapCommand(),
-					new BakaCommand(),
-					new SpankCommand(),
-
-					new CatCommand(),
-					new DogCommand(),
-					new NekoCommand(),
-
-					new OptionsCommand(),
-					new EvalCommand(),
-					new HastebinCommand(),
-					new TestCommand()
-			);
+			CommandManager.registerCommands();
 
 			jda = JDABuilder.create(
 					GatewayIntent.GUILD_MEMBERS,
@@ -157,13 +107,13 @@ public class KittyBot{
 
 			Database.init(jda);
 
-			new WebService(this, 6969);
+			new WebService(6969);
 
 			jda.getPresence().setStatus(OnlineStatus.ONLINE);
 			jda.getPresence().setActivity(Activity.watching("you \uD83D\uDC40"));
 			sendToPublicLogChannel(jda, Config.SUPPORT_GUILD, Config.LOG_CHANNEL, "me online now uwu");
 		}
-		catch(InterruptedException | URISyntaxException | LoginException e){
+		catch(Exception e){
 			LOG.error("Error while initializing JDA", e);
 			close();
 		}
@@ -200,4 +150,19 @@ public class KittyBot{
 		new KittyBot();
 	}
 
+	public static AudioPlayerManager getAudioPlayerManager(){
+		return AUDIO_PLAYER_MANAGER;
+	}
+
+	public static JdaLavalink getLavalink(){
+		return lavalink;
+	}
+
+	public static OkHttpClient getHttpClient(){
+		return HTTP_CLIENT;
+	}
+
+	public static JDA getJda(){
+		return jda;
+	}
 }

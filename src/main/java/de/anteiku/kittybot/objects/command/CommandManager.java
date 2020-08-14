@@ -2,43 +2,43 @@ package de.anteiku.kittybot.objects.command;
 
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.Cache;
+import io.github.classgraph.ClassGraph;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CommandManager{
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommandManager.class);
+	private static final ClassGraph CLASS_GRAPH = new ClassGraph().whitelistPackages("de.anteiku.kittybot.commands");
+	private static final Map<String, ACommand> COMMANDS = new ConcurrentHashMap<>();
 
-	public final Map<String, ACommand> commands;
-
-	public CommandManager(){
-		this.commands = new LinkedHashMap<>();
-	}
-
-	public static CommandManager build(ACommand... commands){
-		return new CommandManager().addCommands(commands);
-	}
-
-	public CommandManager addCommands(ACommand... commands){
-		for(ACommand command : commands){
-			this.commands.put(command.getCommand(), command);
+	public static void registerCommands(){
+		try (var result = CLASS_GRAPH.scan()){
+			for (var cls : result.getAllClasses()){
+				var cmd = (ACommand) cls.loadClass().getDeclaredConstructor().newInstance();
+				COMMANDS.put(cmd.getCommand(), cmd);
+				for (var alias : cmd.getAliases())
+					COMMANDS.put(alias, cmd);
+			}
 		}
-		return this;
+		catch (Exception e){
+			LOG.error("There was an error while registering commands!", e);
+		}
 	}
 
-	public boolean checkCommands(GuildMessageReceivedEvent event){
+	public static boolean checkCommands(GuildMessageReceivedEvent event){
 		long start = System.nanoTime();
 		String message = cutCommandPrefix(event.getGuild(), event.getMessage().getContentRaw());
 		if(message != null){
 			String command = getCommandString(message);
-			for(Map.Entry<String, ACommand> c : commands.entrySet()){
-				var cmd = c.getValue();
+			for(var entry : COMMANDS.entrySet()){
+				var cmd = entry.getValue();
 				if(cmd.checkCmd(command)){
 					//event.getChannel().sendTyping().queue(); answer is sending too fast and I don't want to block the thread lol
 					var ctx = new CommandContextImpl(event, command, getCommandArguments(message));
@@ -52,7 +52,7 @@ public class CommandManager{
 		return false;
 	}
 
-	private String cutCommandPrefix(Guild guild, String message){
+	private static String cutCommandPrefix(Guild guild, String message){
 		String prefix;
 		var botId = guild.getSelfMember().getId();
 		if(message.startsWith(prefix = Cache.getCommandPrefix(guild.getId())) || message.startsWith(
@@ -62,13 +62,16 @@ public class CommandManager{
 		return null;
 	}
 
-	private String getCommandString(String raw){
+	private static String getCommandString(String raw){
 		return raw.split("\\s+")[0];
 	}
 
-	private String[] getCommandArguments(String message){
+	private static String[] getCommandArguments(String message){
 		String[] args = message.split(" ");
 		return Arrays.copyOfRange(args, 1, args.length);
 	}
 
+	public static Map<String, ACommand> getCommands(){
+		return COMMANDS;
+	}
 }

@@ -54,7 +54,7 @@ public abstract class ACommand{
 		return false;
 	}
 
-	protected String[] getAlias(){
+	protected String[] getAliases(){
 		return alias;
 	}
 
@@ -227,7 +227,7 @@ public abstract class ACommand{
 	protected String getNeko(String type){
 		try{
 			Request request = new Request.Builder().url("https://nekos.life/api/v2/img/" + type).build();
-			return JsonParser.parseString(KittyBot.httpClient.newCall(request).execute().body().string()).getAsJsonObject().get("url").getAsString();
+			return JsonParser.parseString(KittyBot.getHttpClient().newCall(request).execute().body().string()).getAsJsonObject().get("url").getAsString();
 		}
 		catch(IOException e){
 			LOG.error("Error while retrieving Neko", e);

@@ -48,7 +48,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		if(!search.matches(URL_PATTERN)){
 			search = "ytsearch:" + search;
 		}
-		KittyBot.audioPlayerManager.loadItem(search, new AudioLoadResultHandler(){
+		KittyBot.getAudioPlayerManager().loadItem(search, new AudioLoadResultHandler(){
 
 			@Override
 			public void trackLoaded(AudioTrack track){
