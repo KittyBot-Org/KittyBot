@@ -16,6 +16,7 @@ import lavalink.client.player.event.PlayerEventListenerAdapter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
+import javax.sound.midi.Track;
 import java.awt.*;
 import java.time.Instant;
 import java.util.List;
@@ -64,15 +65,25 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 			@Override
 			public void playlistLoaded(AudioPlaylist playlist){
-				for(AudioTrack track : playlist.getTracks()){
+				List<AudioTrack> queuedTracks = new ArrayList<>();
+				if(playlist.isSearchResult()){
+					var track = playlist.getTracks().get(0);
 					track.setUserData(ctx.getUser().getId());
+					queuedTracks.add(track);
 					queue(track);
+				}
+				else{
+					for(AudioTrack track : playlist.getTracks()){
+						track.setUserData(ctx.getUser().getId());
+						queuedTracks.add(track);
+						queue(track);
+					}
 				}
 				if(messageId == null){
 					sendMusicController(command, ctx);
 				}
 				else{
-					sendQueuedTracks(command, ctx, playlist.getTracks());
+					sendQueuedTracks(command, ctx, queuedTracks);
 				}
 			}
 
@@ -254,6 +265,10 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				.setTimestamp(Instant.now())
 				.build()
 		).queue();
+	}
+
+	public String getMessageId(){
+		return messageId;
 	}
 
 }
