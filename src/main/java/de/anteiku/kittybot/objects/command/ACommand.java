@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEve
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import okhttp3.Request;
+import org.apache.commons.collections4.Bag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +22,6 @@ import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public abstract class ACommand{
@@ -54,7 +54,7 @@ public abstract class ACommand{
 		return false;
 	}
 
-	protected String[] getAlias(){
+	protected String[] getAliases(){
 		return alias;
 	}
 
@@ -183,11 +183,11 @@ public abstract class ACommand{
 
 	protected MessageAction usage(CommandContext ctx, String usage){
 		addStatus(ctx.getMessage(), Status.QUESTION);
-		return answer(ctx, new EmbedBuilder()
+		return ctx.getChannel().sendMessage(new EmbedBuilder()
 				.setColor(Color.ORANGE)
 				.addField("Command usage:", "`" + Database.getCommandPrefix(ctx.getGuild().getId()) + usage + "`", true)
 				.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
-				.setTimestamp(Instant.now())
+				.setTimestamp(Instant.now()).build()
 		);
 	}
 
@@ -196,13 +196,21 @@ public abstract class ACommand{
 	}
 
 	protected MessageAction reactionImage(CommandContext ctx, String type, String text){
-		List<User> users = ctx.getMessage().getMentionedUsers();
+		Bag<User> users = ctx.getMentionedUsersBag();
+		String content = ctx.getMessage().getContentRaw();
+		User selfUser = ctx.getSelfUser();
+		long botId = selfUser.getIdLong();
+		if (content.startsWith("<@" + botId + ">") || content.startsWith("<@!" + botId + ">")){
+			var occurrences = users.getCount(selfUser);
+			users.remove(selfUser, occurrences == 1 ? 1 : occurrences - 1);
+		}
+
 		StringBuilder message = new StringBuilder();
 		if(users.isEmpty()){
 			return error(ctx, "Please mention a user");
 		}
 		else if(users.contains(ctx.getUser()) && users.size() == 1){
-			message.append("You can't ").append(type).append(" yourself so I ").append(type).append(" you ").append(ctx.getUser().getAsMention()).append("!");
+			message.append("You are not allowed to ").append(type).append(" yourself so I ").append(type).append(" you ").append(ctx.getUser().getAsMention()).append("!");
 		}
 		else{
 			message.append(ctx.getUser().getAsMention()).append(" ").append(text).append(" ");
@@ -227,7 +235,7 @@ public abstract class ACommand{
 	protected String getNeko(String type){
 		try{
 			Request request = new Request.Builder().url("https://nekos.life/api/v2/img/" + type).build();
-			return JsonParser.parseString(KittyBot.httpClient.newCall(request).execute().body().string()).getAsJsonObject().get("url").getAsString();
+			return JsonParser.parseString(KittyBot.getHttpClient().newCall(request).execute().body().string()).getAsJsonObject().get("url").getAsString();
 		}
 		catch(IOException e){
 			LOG.error("Error while retrieving Neko", e);

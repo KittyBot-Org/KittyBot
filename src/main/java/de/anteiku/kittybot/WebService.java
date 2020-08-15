@@ -32,17 +32,15 @@ public class WebService{
 
 	private static final Logger LOG = LoggerFactory.getLogger(WebService.class);
 
-	private final KittyBot main;
 	private final Scope[] scopes;
 	private final OAuth2Client oAuthClient;
 
-	public WebService(KittyBot main, int port){
-		this.main = main;
+	public WebService(int port){
 
 		scopes = new Scope[]{Scope.IDENTIFY};
 		DefaultSessionController sessionController = new DefaultSessionController();
 		DefaultStateController stateController = new DefaultStateController();
-		oAuthClient = new OAuth2ClientImpl(Long.parseLong(Config.BOT_ID), Config.BOT_SECRET, sessionController, stateController, KittyBot.httpClient);
+		oAuthClient = new OAuth2ClientImpl(Long.parseLong(Config.BOT_ID), Config.BOT_SECRET, sessionController, stateController, KittyBot.getHttpClient());
 		Javalin.create(config -> config.enableCorsForOrigin(Config.ORIGIN_URL)).routes(() -> {
 			get("/discord_login", this::discordLogin);
 			get("/health_check", ctx -> ctx.result("alive"));
@@ -118,13 +116,13 @@ public class WebService{
 			error(ctx, 404, "Session not found");
 			return;
 		}
-		User user = main.jda.retrieveUserById(userId).complete();
+		User user = KittyBot.getJda().retrieveUserById(userId).complete();
 		if(user == null){
 			error(ctx, 404, "User not found");
 			return;
 		}
 		Collection<String> guilds = new ArrayList<>();
-		for(Guild guild : main.jda.getMutualGuilds(user)){
+		for(Guild guild : KittyBot.getJda().getMutualGuilds(user)){
 			var u = guild.getMember(user);
 			if(u != null && u.hasPermission(Permission.ADMINISTRATOR)){
 				guilds.add(String.format("{\"id\": %s, \"name\": %s, \"icon\": %s}", JSONObject.quote(guild.getId()), JSONObject.quote(guild.getName()), JSONObject.quote(guild.getIconUrl())));
@@ -149,7 +147,7 @@ public class WebService{
 			return;
 		}
 		Collection<String> guilds = new ArrayList<>();
-		for(Guild guild : main.jda.getGuildCache()){
+		for(Guild guild : KittyBot.getJda().getGuildCache()){
 			guilds.add(String.format("{\"id\": %s, \"name\": %s, \"icon\": %s, \"count\": %d}", JSONObject.quote(guild.getId()), JSONObject.quote(guild.getName()), JSONObject.quote(guild.getIconUrl()), guild.getMemberCount()));
 		}
 		ok(ctx, "{\"guilds\": [" + String.join(", ", guilds) + "]}");
@@ -158,7 +156,7 @@ public class WebService{
 	private void checkGuildPerms(Context ctx){
 		if(!ctx.method().equals("OPTIONS")){
 			String guildId = ctx.pathParam(":guildId");
-			Guild guild = main.jda.getGuildById(guildId);
+			Guild guild = KittyBot.getJda().getGuildById(guildId);
 			if(guild == null){
 				error(ctx, 404, "guild not found");
 				return;
@@ -183,7 +181,7 @@ public class WebService{
 	}
 
 	private void getRoles(Context ctx){
-		Guild guild = main.jda.getGuildById(ctx.pathParam(":guildId"));
+		Guild guild = KittyBot.getJda().getGuildById(ctx.pathParam(":guildId"));
 		if(guild == null){
 			error(ctx, 404, "guild not found");
 			return;
@@ -196,7 +194,7 @@ public class WebService{
 	}
 
 	private void getChannels(Context ctx){
-		Guild guild = main.jda.getGuildById(ctx.pathParam(":guildId"));
+		Guild guild = KittyBot.getJda().getGuildById(ctx.pathParam(":guildId"));
 		if(guild == null){
 			error(ctx, 404, "guild not found");
 			return;
@@ -209,7 +207,7 @@ public class WebService{
 	}
 
 	private void getEmotes(Context ctx){
-		Guild guild = main.jda.getGuildById(ctx.pathParam(":guildId"));
+		Guild guild = KittyBot.getJda().getGuildById(ctx.pathParam(":guildId"));
 		if(guild == null){
 			error(ctx, 404, "guild not found");
 			return;
@@ -224,7 +222,7 @@ public class WebService{
 	private void getGuildSettings(Context ctx){
 		String guildId = ctx.pathParam(":guildId");
 		Map<String, String> roles = Database.getSelfAssignableRoles(guildId);
-		if(roles == null || main.jda.getGuildById(guildId) == null){
+		if(roles == null || KittyBot.getJda().getGuildById(guildId) == null){
 			error(ctx, 404, "guild not found");
 			return;
 		}
@@ -257,7 +255,7 @@ public class WebService{
 
 	private void setGuildSettings(Context ctx){
 		String guildId = ctx.pathParam(":guildId");
-		if(main.jda.getGuildById(guildId) == null){
+		if(KittyBot.getJda().getGuildById(guildId) == null){
 			error(ctx, 404, "guild not found");
 			return;
 		}
