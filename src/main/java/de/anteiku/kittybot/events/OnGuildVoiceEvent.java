@@ -29,7 +29,7 @@ public class OnGuildVoiceEvent extends ListenerAdapter{
 			if (channel.getMembers().stream().anyMatch(member -> !member.getUser().isBot()))
 				return;
 			WAITER.waitForEvent(GuildVoiceJoinEvent.class,
-					ev -> ev.getChannelJoined().getId().equals(currentChannel),
+					ev -> ev.getChannelJoined().getId().equals(currentChannel) && !ev.getEntity().getUser().isBot(),
 					ev -> {}, 5, TimeUnit.MINUTES, () -> Cache.destroyMusicPlayer(guild, musicPlayer.getMessageId()));
 		}
 	}
