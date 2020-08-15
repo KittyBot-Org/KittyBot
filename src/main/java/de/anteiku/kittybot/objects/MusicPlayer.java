@@ -256,4 +256,9 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		).queue();
 	}
 
+	public String getMessageId()
+	{
+		return messageId;
+	}
+
 }

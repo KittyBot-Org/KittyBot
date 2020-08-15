@@ -1,7 +1,6 @@
 package de.anteiku.kittybot.events;
 
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
-import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.objects.Cache;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
@@ -31,7 +30,7 @@ public class OnGuildVoiceEvent extends ListenerAdapter{
 				return;
 			WAITER.waitForEvent(GuildVoiceJoinEvent.class,
 					ev -> ev.getChannelJoined().getId().equals(currentChannel),
-					ev -> {}, 5, TimeUnit.MINUTES, () -> KittyBot.getLavalink().getLink(guild).destroy());
+					ev -> {}, 5, TimeUnit.MINUTES, () -> Cache.destroyMusicPlayer(guild, musicPlayer.getMessageId()));
 		}
 	}
 }
