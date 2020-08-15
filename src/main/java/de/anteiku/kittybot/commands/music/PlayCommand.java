@@ -82,7 +82,6 @@ public class PlayCommand extends ACommand{
 				//ctx.getChannel().editMessageById(ctx.getMessageId(), PlayCommand.buildMusicControlMessage(musicPlayer).build()).queue();
 			}
 			else if(emoji.equals(Emotes.X.get())){
-				event.getChannel().deleteMessageById(event.getMessageId()).queue();// TODO deleting the message is bad :)
 				Cache.destroyMusicPlayer(event.getGuild(), event.getMessageId());
 			}
 			musicPlayer.updateMusicControlMessage(event.getChannel());

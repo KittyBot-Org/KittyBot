@@ -135,13 +135,14 @@ public class Cache{
 	// Reactive Messages Cache
 
 	public static void removeReactiveMessage(Guild guild, String messageId){
+		guild.getTextChannelById(REACTIVE_MESSAGES.get(messageId).channelId).deleteMessageById(messageId).queue();
 		REACTIVE_MESSAGES.remove(messageId);
 		Database.removeReactiveMessage(guild.getId(), messageId);
 	}
 
 	public static void addReactiveMessage(CommandContext ctx, Message message, ACommand cmd, String allowed){
-		REACTIVE_MESSAGES.put(message.getId(), new ReactiveMessage(ctx.getMessage().getId(), ctx.getUser().getId(), message.getId(), cmd.command, allowed));
-		Database.addReactiveMessage(ctx.getGuild().getId(), ctx.getUser().getId(), message.getId(), ctx.getMessage().getId(), cmd.command, allowed);
+		REACTIVE_MESSAGES.put(message.getId(), new ReactiveMessage(ctx.getChannel().getId(), ctx.getMessage().getId(), ctx.getUser().getId(), message.getId(), cmd.command, allowed));
+		Database.addReactiveMessage(ctx.getGuild().getId(), ctx.getUser().getId(), ctx.getChannel().getId(), message.getId(), ctx.getMessage().getId(), cmd.command, allowed);
 	}
 
 	public static ReactiveMessage getReactiveMessage(Guild guild, String messageId){
