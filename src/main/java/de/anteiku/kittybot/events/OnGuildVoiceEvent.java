@@ -26,7 +26,7 @@ public class OnGuildVoiceEvent extends ListenerAdapter{
 			var currentChannel = musicPlayer.getPlayer().getLink().getChannel();
 			if (!channel.getId().equals(currentChannel))
 				return;
-			if (channel.getMembers().size() != 1)
+			if (channel.getMembers().stream().anyMatch(member -> !member.getUser().isBot()))
 				return;
 			WAITER.waitForEvent(GuildVoiceJoinEvent.class,
 					ev -> ev.getChannelJoined().getId().equals(currentChannel),
