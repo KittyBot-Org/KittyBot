@@ -359,7 +359,7 @@ public class Database{
 			stmt.setString(2, guildId);
 			var result = SQL.query(stmt);
 			if(result != null && result.next()){
-				return new ReactiveMessage(result.getString("message_id"), result.getString("user_id"), result.getString("command_id"), result.getString("command"), result.getString("allowed"));
+				return new ReactiveMessage(result.getString("channel_id"), result.getString("message_id"), result.getString("user_id"), result.getString("command_id"), result.getString("command"), result.getString("allowed"));
 			}
 		}
 		catch(SQLException e){
@@ -368,15 +368,16 @@ public class Database{
 		return null;
 	}
 
-	public static boolean addReactiveMessage(String guildId, String userId, String messageId, String commandId, String command, String allowed){
-		var query = "INSERT INTO reactive_messages (message_id, command_id, user_id, guild_id, command, allowed) VALUES (?, ?, ?, ?, ?, ?)";
+	public static boolean addReactiveMessage(String guildId, String userId, String channelId, String messageId, String commandId, String command, String allowed){
+		var query = "INSERT INTO reactive_messages (channel_id, message_id, command_id, user_id, guild_id, command, allowed) VALUES (?, ?, ?, ?, ?, ?, ?)";
 		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
-			stmt.setString(1, messageId);
-			stmt.setString(2, commandId);
-			stmt.setString(3, userId);
-			stmt.setString(4, guildId);
-			stmt.setString(5, command);
-			stmt.setString(6, allowed);
+			stmt.setString(1, channelId);
+			stmt.setString(2, messageId);
+			stmt.setString(3, commandId);
+			stmt.setString(4, userId);
+			stmt.setString(5, guildId);
+			stmt.setString(6, command);
+			stmt.setString(7, allowed);
 			return SQL.execute(stmt);
 		}
 		catch(SQLException e){
