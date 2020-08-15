@@ -32,13 +32,16 @@ public class PlayCommand extends ACommand{
 		}
 		GuildVoiceState voiceState = ctx.getMember().getVoiceState();
 		if(voiceState != null && voiceState.inVoiceChannel()){
-			JdaLink link = KittyBot.getLavalink().getLink(ctx.getGuild());
-			link.connect(voiceState.getChannel());
+			var musicPlayer = Cache.getMusicPlayer(ctx.getGuild());
+			if(musicPlayer == null){
+				JdaLink link = KittyBot.getLavalink().getLink(ctx.getGuild());
+				link.connect(voiceState.getChannel());
 
-			LavalinkPlayer player = link.getPlayer();
-			MusicPlayer musicPlayer = new MusicPlayer(player);
-			player.addListener(musicPlayer);
-			Cache.addMusicPlayer(ctx.getGuild(), musicPlayer);
+				LavalinkPlayer player = link.getPlayer();
+				musicPlayer = new MusicPlayer(player);
+				player.addListener(musicPlayer);
+				Cache.addMusicPlayer(ctx.getGuild(), musicPlayer);
+			}
 			musicPlayer.loadItem(this, ctx, ctx.getArgs());
 		}
 		else{
