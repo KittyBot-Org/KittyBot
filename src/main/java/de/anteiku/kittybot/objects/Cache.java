@@ -86,12 +86,7 @@ public class Cache{
 	//Command Prefixes
 
 	public static String getCommandPrefix(String guildId){
-		String prefix = GUILD_PREFIXES.get(guildId);
-		if(prefix == null){
-			prefix = Database.getCommandPrefix(guildId);
-			GUILD_PREFIXES.put(guildId, prefix);
-		}
-		return prefix;
+		return GUILD_PREFIXES.computeIfAbsent(guildId, k -> Database.getCommandPrefix(guildId));
 	}
 
 	public static void setCommandPrefix(String guildId, String prefix){
