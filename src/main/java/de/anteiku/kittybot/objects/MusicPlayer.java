@@ -167,8 +167,9 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		return embed;
 	}
 
-	public String getRequesterId(){ // credit to @canelex_ for that name :)
-		return player.getPlayingTrack().getUserData(String.class);
+	public String getRequesterId(){
+		var playing = player.getPlayingTrack();
+		return playing == null ? null : playing.getUserData(String.class);
 	}
 
 	public boolean pause(){

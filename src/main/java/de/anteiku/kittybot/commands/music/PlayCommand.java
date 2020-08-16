@@ -53,7 +53,10 @@ public class PlayCommand extends ACommand{
 			if(musicPlayer == null){
 				return;
 			}
-			if(!musicPlayer.getRequesterId().equals(event.getUserId())){
+			var requester = musicPlayer.getRequesterId();
+			if (requester == null)
+				return;
+			if(!requester.equals(event.getUserId())){
 				event.getReaction().removeReaction(event.getUser()).queue();
 				return;
 			}
