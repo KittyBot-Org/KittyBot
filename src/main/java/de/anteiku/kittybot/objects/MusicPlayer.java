@@ -28,8 +28,7 @@ import static de.anteiku.kittybot.Utils.pluralize;
 
 public class MusicPlayer extends PlayerEventListenerAdapter{
 
-	// ^(http(s)??\:\/\/)?(www|m\.)?((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9\-_])+
-	public static final String URL_PATTERN = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
+	public static final String URL_PATTERN = "^(https?://)?(www|m.)?(\\.)?youtu(\\.be|be\\.com)/(watch\\?v=)?([a-zA-Z0-9-_]{11})";
 	private static final int VOLUME_MAX = 200;
 	private final LavalinkPlayer player;
 	private final Queue<AudioTrack> queue;
@@ -190,16 +189,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		return paused;
 	}
 
-	public boolean lastTrack(){
-		AudioTrack track = history.poll();
-		if(track != null){
-			player.playTrack(track.makeClone());
-			return true;
-		}
-		player.stopTrack();
-		return false;
-	}
-
 	public int changeVolume(int volumeStep){
 		var volume = player.getVolume();
 		if(volume > 0){
@@ -254,19 +243,27 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		}
 	}
 
+	public boolean previousTrack(){
+		AudioTrack track = history.poll();
+		if(track != null){
+			player.playTrack(track.makeClone());
+			return true;
+		}
+		player.stopTrack();
+		return false;
+	}
+
 	public boolean nextTrack(){
 		AudioTrack track = queue.poll();
 		history.push(track);
 		var channel = KittyBot.getJda().getTextChannelById(channelId);
 		if(track != null){
 			player.playTrack(track);
-			if (channel != null)
-				updateMusicControlMessage(channel);
+			updateMusicControlMessage(channel);
 			return true;
 		}
 		player.stopTrack();
-		if (channel != null)
-			updateMusicControlMessage(channel);
+		updateMusicControlMessage(channel);
 		return false;
 	}
 
@@ -281,6 +278,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	public void updateMusicControlMessage(TextChannel channel){
+		if (channel == null)
+			return;
 		channel.editMessageById(messageId, buildMusicControlMessage()
 				.setTimestamp(Instant.now())
 				.build()
