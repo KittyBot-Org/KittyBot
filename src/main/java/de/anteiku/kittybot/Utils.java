@@ -108,4 +108,8 @@ public class Utils{
 		return "[" + info.title + "]" + "(" + info.uri + ")";
 	}
 
+	public static <T> String pluralize(String text, Collection<T> collection){
+		return collection.size() > 1 ? text + "s" : text;
+	}
+
 }
