@@ -1,4 +1,5 @@
 CREATE TABLE IF NOT EXISTS reactive_messages(
+  channel_id varchar(18) NOT NULL,
   message_id varchar(18) NOT NULL,
   user_id    varchar(18) NOT NULL,
   guild_id   varchar(18) NOT NULL,

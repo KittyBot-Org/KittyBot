@@ -7,9 +7,6 @@ import de.anteiku.kittybot.objects.MusicPlayer;
 import de.anteiku.kittybot.objects.ReactiveMessage;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.CommandContext;
-import lavalink.client.io.jda.JdaLink;
-import lavalink.client.player.LavalinkPlayer;
-import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 public class PlayCommand extends ACommand{
@@ -30,15 +27,18 @@ public class PlayCommand extends ACommand{
 			sendError(ctx, "Please provide a link or search term");
 			return;
 		}
-		GuildVoiceState voiceState = ctx.getMember().getVoiceState();
+		var voiceState = ctx.getMember().getVoiceState();
 		if(voiceState != null && voiceState.inVoiceChannel()){
-			JdaLink link = KittyBot.getLavalink().getLink(ctx.getGuild());
-			link.connect(voiceState.getChannel());
+			var musicPlayer = Cache.getMusicPlayer(ctx.getGuild());
+			if(musicPlayer == null){
+				var link = KittyBot.getLavalink().getLink(ctx.getGuild());
+				link.connect(voiceState.getChannel());
 
-			LavalinkPlayer player = link.getPlayer();
-			MusicPlayer musicPlayer = new MusicPlayer(player);
-			player.addListener(musicPlayer);
-			Cache.addMusicPlayer(ctx.getGuild(), musicPlayer);
+				var player = link.getPlayer();
+				musicPlayer = new MusicPlayer(player);
+				player.addListener(musicPlayer);
+				Cache.addMusicPlayer(ctx.getGuild(), musicPlayer);
+			}
 			musicPlayer.loadItem(this, ctx, ctx.getArgs());
 		}
 		else{
@@ -57,7 +57,7 @@ public class PlayCommand extends ACommand{
 				event.getReaction().removeReaction(event.getUser()).queue();
 				return;
 			}
-			String emoji = event.getReactionEmote().getEmoji();
+			var emoji = event.getReactionEmote().getEmoji();
 			if(emoji.equals(Emotes.FORWARD.get())){
 				musicPlayer.nextTrack();
 			}
@@ -72,15 +72,12 @@ public class PlayCommand extends ACommand{
 			}
 			else if(emoji.equals(Emotes.VOLUME_DOWN.get())){
 				musicPlayer.changeVolume(-VOLUME_STEP);
-				//ctx.getChannel().editMessageById(ctx.getMessageId(), PlayCommand.buildMusicControlMessage(musicPlayer).build()).queue();
 			}
 			else if(emoji.equals(Emotes.VOLUME_UP.get())){
 				musicPlayer.changeVolume(VOLUME_STEP);
-				//ctx.getChannel().editMessageById(ctx.getMessageId(), PlayCommand.buildMusicControlMessage(musicPlayer).build()).queue();
 			}
 			else if(emoji.equals(Emotes.X.get())){
-				event.getChannel().deleteMessageById(event.getMessageId()).queue();// TODO deleting the message is bad :)
-				Cache.destroyMusicPlayer(event.getGuild(), event.getMessageId());
+				Cache.destroyMusicPlayer(event.getGuild());
 			}
 			musicPlayer.updateMusicControlMessage(event.getChannel());
 			event.getReaction().removeReaction(event.getUser()).queue();

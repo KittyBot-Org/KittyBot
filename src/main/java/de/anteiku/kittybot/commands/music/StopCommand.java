@@ -1,6 +1,6 @@
 package de.anteiku.kittybot.commands.music;
 
-import de.anteiku.kittybot.KittyBot;
+import de.anteiku.kittybot.objects.Cache;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.CommandContext;
 
@@ -17,7 +17,7 @@ public class StopCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		KittyBot.getLavalink().getLink(ctx.getGuild()).destroy();
+		Cache.destroyMusicPlayer(ctx.getGuild());
 		sendAnswer(ctx, "Successfully disconnected");
 	}
 

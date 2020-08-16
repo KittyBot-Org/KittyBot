@@ -57,11 +57,11 @@ public class Cache{
 	}
 
 	public static void addNewInvite(Invite invite){
-		var guildId = invite.getGuild().getId();
-		if(INVITES.get(guildId) == null){
-			INVITES.put(guildId, new HashMap<>());
+		if(invite.getGuild() != null){
+			var guildId = invite.getGuild().getId();
+			INVITES.computeIfAbsent(guildId, k -> new HashMap<>());
+			INVITES.get(guildId).put(invite.getCode(), new InviteData(invite));
 		}
-		INVITES.get(guildId).put(invite.getCode(), new InviteData(invite));
 	}
 
 
@@ -86,12 +86,7 @@ public class Cache{
 	//Command Prefixes
 
 	public static String getCommandPrefix(String guildId){
-		String prefix = GUILD_PREFIXES.get(guildId);
-		if(prefix == null){
-			prefix = Database.getCommandPrefix(guildId);
-			GUILD_PREFIXES.put(guildId, prefix);
-		}
-		return prefix;
+		return GUILD_PREFIXES.computeIfAbsent(guildId, k -> Database.getCommandPrefix(guildId));
 	}
 
 	public static void setCommandPrefix(String guildId, String prefix){
@@ -125,9 +120,10 @@ public class Cache{
 		return MUSIC_PLAYERS.get(guild.getId());
 	}
 
-	public static void destroyMusicPlayer(Guild guild, String controllerId){
+	public static void destroyMusicPlayer(Guild guild){
+		var musicPlayer = MUSIC_PLAYERS.get(guild.getId());
 		KittyBot.getLavalink().getLink(guild).destroy();
-		removeReactiveMessage(guild, controllerId);
+		removeReactiveMessage(guild, musicPlayer.getMessageId());
 		MUSIC_PLAYERS.remove(guild.getId());
 	}
 
@@ -135,13 +131,17 @@ public class Cache{
 	// Reactive Messages Cache
 
 	public static void removeReactiveMessage(Guild guild, String messageId){
+		var textChannel = guild.getTextChannelById(REACTIVE_MESSAGES.get(messageId).channelId);
+		if(textChannel != null){
+			textChannel.deleteMessageById(messageId).queue();
+		}
 		REACTIVE_MESSAGES.remove(messageId);
 		Database.removeReactiveMessage(guild.getId(), messageId);
 	}
 
 	public static void addReactiveMessage(CommandContext ctx, Message message, ACommand cmd, String allowed){
-		REACTIVE_MESSAGES.put(message.getId(), new ReactiveMessage(ctx.getMessage().getId(), ctx.getUser().getId(), message.getId(), cmd.command, allowed));
-		Database.addReactiveMessage(ctx.getGuild().getId(), ctx.getUser().getId(), message.getId(), ctx.getMessage().getId(), cmd.command, allowed);
+		REACTIVE_MESSAGES.put(message.getId(), new ReactiveMessage(ctx.getChannel().getId(), ctx.getMessage().getId(), ctx.getUser().getId(), message.getId(), cmd.command, allowed));
+		Database.addReactiveMessage(ctx.getGuild().getId(), ctx.getUser().getId(), ctx.getChannel().getId(), message.getId(), ctx.getMessage().getId(), cmd.command, allowed);
 	}
 
 	public static ReactiveMessage getReactiveMessage(Guild guild, String messageId){
