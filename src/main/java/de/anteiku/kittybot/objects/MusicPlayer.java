@@ -5,7 +5,6 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.Utils;
 import de.anteiku.kittybot.objects.command.ACommand;
@@ -24,6 +23,7 @@ import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import static de.anteiku.kittybot.Utils.formatDuration;
 import static de.anteiku.kittybot.Utils.pluralize;
 
 public class MusicPlayer extends PlayerEventListenerAdapter{
@@ -144,15 +144,16 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	private void sendQueuedTracks(ACommand command, CommandContext ctx, List<AudioTrack> tracks){
 		var message = new StringBuilder("Queued ").append(tracks.size()).append(" ").append(pluralize("track", tracks)).append(":\n");
 		for(AudioTrack track : tracks){
-			message.append(Utils.formatTrackTitle(track)).append(" ").append(Utils.formatDuration(track.getDuration())).append("\n");
+			message.append(Utils.formatTrackTitle(track)).append(" ").append(formatDuration(track.getDuration())).append("\n");
 		}
 		command.sendAnswer(ctx, message.toString());
 	}
 
 	public EmbedBuilder buildMusicControlMessage(){
 		var embed = new EmbedBuilder();
+		var track = player.getPlayingTrack();
 
-		if(player.getPlayingTrack() == null){
+		if(track == null){
 			embed.setAuthor("Nothing to play...")
 					.setColor(Color.RED)
 					.addField("Author", "", true)
@@ -160,14 +161,15 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 					.addField("Volume", player.getVolume() + "%", true);
 		}
 		else{
-			AudioTrackInfo info = player.getPlayingTrack().getInfo();
+			var info = track.getInfo();
+			var duration = formatDuration(info.length);
 			embed.setTitle(info.title, info.uri)
 					.setThumbnail("https://i.ytimg.com/vi/" + info.identifier + "/maxresdefault.jpg")
 					.addField("Author", info.author, true)
-					.addField("Length", Utils.formatDuration(info.length), true)
+					.addField("Length", duration, true)
 					.addField("Volume", player.getVolume() + "%", true);
 			if(player.isPaused()){
-				embed.setAuthor("Paused...");
+				embed.setAuthor("Paused at " + formatDuration(getPlayer().getTrackPosition()) + "/" + duration);
 				embed.setColor(Color.ORANGE);
 			}
 			else{
