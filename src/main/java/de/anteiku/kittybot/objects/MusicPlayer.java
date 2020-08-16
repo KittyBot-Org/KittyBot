@@ -60,6 +60,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 					sendMusicController(command, ctx);
 				}
 				else{
+					updateMusicControlMessage(ctx.getChannel());
 					sendQueuedTracks(command, ctx, Collections.singletonList(track));
 				}
 			}
@@ -84,6 +85,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 					sendMusicController(command, ctx);
 				}
 				else{
+					updateMusicControlMessage(ctx.getChannel());
 					sendQueuedTracks(command, ctx, queuedTracks);
 				}
 			}
