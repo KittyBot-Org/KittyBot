@@ -21,7 +21,7 @@ public class QueueCommand extends ACommand{
 	@Override
 	public void run(CommandContext ctx){
 		var voiceState = ctx.getMember().getVoiceState();
-		if(!voiceState.inVoiceChannel()){
+		if(voiceState != null && !voiceState.inVoiceChannel()){
 			sendError(ctx, "To use this command you need to be connected to a voice channel");
 			return;
 		}
@@ -36,7 +36,7 @@ public class QueueCommand extends ACommand{
 				sendAnswer(ctx, "There are currently no tracks queued");
 				return;
 			}
-			StringBuilder message = new StringBuilder("Currently ").append(queue.size()).append(" ").append(pluralize("track", queue)).append(" ").append(queue.size() > 1 ? "are" : "is").append(" queued:\n");
+			var message = new StringBuilder("Currently ").append(queue.size()).append(" ").append(pluralize("track", queue)).append(" ").append(queue.size() > 1 ? "are" : "is").append(" queued:\n");
 			for(AudioTrack track : queue){
 				message.append(formatTrackTitle(track)).append(" ").append(formatDuration(track.getDuration())).append("\n");
 			}
