@@ -246,7 +246,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	public boolean previousTrack(){
 		AudioTrack track = history.poll();
 		if(track != null){
-			player.playTrack(track.makeClone());
+			track.setPosition(0);
+			player.playTrack(track);
 			return true;
 		}
 		player.stopTrack();
