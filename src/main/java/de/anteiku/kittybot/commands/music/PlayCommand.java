@@ -7,9 +7,6 @@ import de.anteiku.kittybot.objects.MusicPlayer;
 import de.anteiku.kittybot.objects.ReactiveMessage;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.CommandContext;
-import lavalink.client.io.jda.JdaLink;
-import lavalink.client.player.LavalinkPlayer;
-import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 public class PlayCommand extends ACommand{
