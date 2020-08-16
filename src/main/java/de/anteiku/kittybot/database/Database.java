@@ -59,8 +59,10 @@ public class Database{
 				"leave_messages_enabled, " +
 				"boost_messages, " +
 				"boost_messages_enabled, " +
+				"log_channel_id, " +
+				"log_message_enabled, " +
 				"nsfw_enabled, " +
-				"inactive_role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				"inactive_role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, guild.getId());
 			stmt.setString(2, Config.DEFAULT_PREFIX);
@@ -73,8 +75,10 @@ public class Database{
 			stmt.setBoolean(9, true);
 			stmt.setString(10, "${user} boosted this server!");
 			stmt.setBoolean(11, true);
-			stmt.setBoolean(12, true);
+			stmt.setString(12, "-1");
 			stmt.setBoolean(13, false);
+			stmt.setBoolean(14, true);
+			stmt.setBoolean(15, false);
 			SQL.execute(stmt);
 			return true;
 		}
