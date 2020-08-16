@@ -21,12 +21,8 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Queue;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
-import static de.anteiku.kittybot.Utils.pluralize;
 
 import static de.anteiku.kittybot.Utils.pluralize;
 
@@ -35,7 +31,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	// ^(http(s)??\:\/\/)?(www|m\.)?((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9\-_])+
 	public static final String URL_PATTERN = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
 	private static final int VOLUME_MAX = 200;
-	private static final ScheduledExecutorService SCHEDULER = Executors.newSingleThreadScheduledExecutor();
 	private final LavalinkPlayer player;
 	private final Queue<AudioTrack> queue;
 	private final Deque<AudioTrack> history;
@@ -70,7 +65,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				else{
 					sendQueuedTracks(command, ctx, Collections.singletonList(track));
 				}
-				future.cancel(true);
+				future.cancel(false);
 			}
 
 			@Override
@@ -95,7 +90,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				else{
 					sendQueuedTracks(command, ctx, queuedTracks);
 				}
-				future.cancel(true);
+				future.cancel(false);
 			}
 
 			@Override
@@ -117,7 +112,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		else{
 			queue.offer(track);
 		}
-		future.cancel(true);
+		future.cancel(false);
 	}
 
 	public void sendMusicController(ACommand command, CommandContext ctx){
@@ -251,7 +246,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 			nextTrack();
 			return;
 		}
-		future = SCHEDULER.schedule(() -> {
+		future = KittyBot.getScheduler().schedule(() -> {
 			var guild = KittyBot.getJda().getGuildById(getPlayer().getLink().getGuildId());
 			if (guild != null)
 				Cache.destroyMusicPlayer(guild);

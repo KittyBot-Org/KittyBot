@@ -30,11 +30,14 @@ import org.slf4j.LoggerFactory;
 import java.awt.*;
 import java.net.URI;
 import java.time.Instant;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class KittyBot{
 
 	private static final Logger LOG = LoggerFactory.getLogger(KittyBot.class);
 	private static final OkHttpClient HTTP_CLIENT = new OkHttpClient();
+	private static final ScheduledExecutorService SCHEDULER = Executors.newSingleThreadScheduledExecutor();
 	private static final AudioPlayerManager AUDIO_PLAYER_MANAGER = new DefaultAudioPlayerManager();
 	private static JdaLavalink lavalink;
 	private static JDA jda;
@@ -164,5 +167,10 @@ public class KittyBot{
 
 	public static JDA getJda(){
 		return jda;
+	}
+
+	public static ScheduledExecutorService getScheduler()
+	{
+		return SCHEDULER;
 	}
 }
