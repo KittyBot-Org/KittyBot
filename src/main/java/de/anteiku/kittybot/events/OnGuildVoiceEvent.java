@@ -30,7 +30,7 @@ public class OnGuildVoiceEvent extends ListenerAdapter{
 				return;
 			WAITER.waitForEvent(GuildVoiceJoinEvent.class,
 					ev -> ev.getChannelJoined().getId().equals(currentChannel) && !ev.getEntity().getUser().isBot(),
-					ev -> {}, 5, TimeUnit.MINUTES, () -> Cache.destroyMusicPlayer(guild));
+					ev -> {}, 3, TimeUnit.MINUTES, () -> Cache.destroyMusicPlayer(guild));
 		}
 	}
 }
