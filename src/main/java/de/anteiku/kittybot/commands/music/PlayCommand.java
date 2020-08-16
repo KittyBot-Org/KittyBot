@@ -65,7 +65,7 @@ public class PlayCommand extends ACommand{
 				musicPlayer.nextTrack();
 			}
 			else if(emoji.equals(Emotes.BACK.get())){
-				musicPlayer.previousTrack();
+				musicPlayer.lastTrack();
 			}
 			else if(emoji.equals(Emotes.SHUFFLE.get())){
 				musicPlayer.shuffle();
