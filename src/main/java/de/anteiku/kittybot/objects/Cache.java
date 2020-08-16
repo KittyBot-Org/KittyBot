@@ -56,13 +56,13 @@ public class Cache{
 		}
 	}
 
-public static void addNewInvite(Invite invite){
-	if(invite.getGuild() != null){
-		var guildId = invite.getGuild().getId();
-		INVITES.computeIfAbsent(guildId, k -> new HashMap<>());
-		INVITES.get(guildId).put(invite.getCode(), new InviteData(invite));
+	public static void addNewInvite(Invite invite){
+		if(invite.getGuild() != null){
+			var guildId = invite.getGuild().getId();
+			INVITES.computeIfAbsent(guildId, k -> new HashMap<>());
+			INVITES.get(guildId).put(invite.getCode(), new InviteData(invite));
+		}
 	}
-}
 
 
 	//Self Assignable Roles
