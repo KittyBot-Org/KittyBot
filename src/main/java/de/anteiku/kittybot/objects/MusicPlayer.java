@@ -28,6 +28,8 @@ import java.util.concurrent.TimeUnit;
 
 import static de.anteiku.kittybot.Utils.pluralize;
 
+import static de.anteiku.kittybot.Utils.pluralize;
+
 public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	// ^(http(s)??\:\/\/)?(www|m\.)?((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9\-_])+
