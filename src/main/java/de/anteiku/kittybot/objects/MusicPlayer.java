@@ -65,7 +65,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				else{
 					sendQueuedTracks(command, ctx, Collections.singletonList(track));
 				}
-				future.cancel(false);
+				if (future != null)
+					future.cancel(false);
 			}
 
 			@Override
@@ -90,7 +91,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				else{
 					sendQueuedTracks(command, ctx, queuedTracks);
 				}
-				future.cancel(false);
+				if (future != null)
+					future.cancel(false);
 			}
 
 			@Override
@@ -112,7 +114,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		else{
 			queue.offer(track);
 		}
-		future.cancel(false);
+		if (future != null)
+			future.cancel(false);
 	}
 
 	public void sendMusicController(ACommand command, CommandContext ctx){
