@@ -28,8 +28,7 @@ import static de.anteiku.kittybot.Utils.pluralize;
 
 public class MusicPlayer extends PlayerEventListenerAdapter{
 
-	// ^(http(s)??\:\/\/)?(www|m\.)?((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9\-_])+
-	public static final String URL_PATTERN = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
+	public static final String URL_PATTERN = "^(https?://)?(www|m.)?(\\.)?youtu(\\.be|be\\.com)/(watch\\?v=)?([a-zA-Z0-9-_]{11})";
 	private static final int VOLUME_MAX = 200;
 	private final LavalinkPlayer player;
 	private final Queue<AudioTrack> queue;
@@ -57,6 +56,10 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 			@Override
 			public void trackLoaded(AudioTrack track){
+				if (queue.stream().anyMatch(tr -> tr.getIdentifier().equals(track.getIdentifier()))){
+					command.sendError(ctx, "Song is already queued");
+					return;
+				}
 				track.setUserData(ctx.getUser().getId());
 				queue(track);
 				if(messageId == null){
@@ -76,12 +79,19 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				List<AudioTrack> queuedTracks = new ArrayList<>();
 				if(playlist.isSearchResult()){
 					var track = playlist.getTracks().get(0);
+					if (queue.stream().anyMatch(tr -> tr.getIdentifier().equals(track.getIdentifier()))){
+						command.sendError(ctx, "Song is already queued");
+						return;
+					}
 					track.setUserData(ctx.getUser().getId());
 					queuedTracks.add(track);
 					queue(track);
 				}
 				else{
 					for(AudioTrack track : playlist.getTracks()){
+						if (queue.stream().anyMatch(tr -> tr.getIdentifier().equals(track.getIdentifier()))){
+							continue;
+						}
 						track.setUserData(ctx.getUser().getId());
 						queuedTracks.add(track);
 						queue(track);
@@ -190,16 +200,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		return paused;
 	}
 
-	public boolean lastTrack(){
-		AudioTrack track = history.poll();
-		if(track != null){
-			player.playTrack(track.makeClone());
-			return true;
-		}
-		player.stopTrack();
-		return false;
-	}
-
 	public int changeVolume(int volumeStep){
 		var volume = player.getVolume();
 		if(volume > 0){
@@ -248,25 +248,43 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	@Override
 	public void onTrackEnd(IPlayer player, AudioTrack track, AudioTrackEndReason endReason){
 		this.history.push(track);
+		queue.removeIf(tr -> tr.getIdentifier().equals(track.getIdentifier()));
 		var guild = KittyBot.getJda().getGuildById(getPlayer().getLink().getGuildId());
 		if (((endReason.mayStartNext && !nextTrack()) || queue.isEmpty()) && guild != null){
 			future = KittyBot.getScheduler().schedule(() -> Cache.destroyMusicPlayer(guild), 2, TimeUnit.MINUTES);
 		}
 	}
 
-	public boolean nextTrack(){
-		AudioTrack track = queue.poll();
-		history.push(track);
-		var channel = KittyBot.getJda().getTextChannelById(channelId);
+	public boolean previousTrack(){
+		var historyPeek = history.peek();
+		var track = historyPeek;
+		var queuePeek = queue.peek();
+		if (historyPeek != null && (queuePeek == null || historyPeek.getIdentifier().equals(queuePeek.getIdentifier())))
+			track = null;
 		if(track != null){
+			track.setPosition(0);
 			player.playTrack(track);
-			if (channel != null)
-				updateMusicControlMessage(channel);
 			return true;
 		}
 		player.stopTrack();
-		if (channel != null)
+		return false;
+	}
+
+	public boolean nextTrack(){
+		var peek = queue.peek();
+		var track = peek;
+		history.push(track);
+		var current = player.getPlayingTrack();
+		if (current != null && peek != null && current.getIdentifier().equals(peek.getIdentifier()))
+			track = null;
+		var channel = KittyBot.getJda().getTextChannelById(channelId);
+		if(track != null){
+			player.playTrack(track);
 			updateMusicControlMessage(channel);
+			return true;
+		}
+		player.stopTrack();
+		updateMusicControlMessage(channel);
 		return false;
 	}
 
@@ -281,6 +299,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	public void updateMusicControlMessage(TextChannel channel){
+		if (channel == null)
+			return;
 		channel.editMessageById(messageId, buildMusicControlMessage()
 				.setTimestamp(Instant.now())
 				.build()
