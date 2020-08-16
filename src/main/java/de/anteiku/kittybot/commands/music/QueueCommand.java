@@ -5,6 +5,7 @@ import de.anteiku.kittybot.Utils;
 import de.anteiku.kittybot.objects.Cache;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.CommandContext;
+import net.dv8tion.jda.api.entities.GuildVoiceState;
 
 public class QueueCommand extends ACommand{
 
@@ -20,7 +21,7 @@ public class QueueCommand extends ACommand{
 	@Override
 	public void run(CommandContext ctx){
 		var voiceState = ctx.getMember().getVoiceState();
-		if(!voiceState.inVoiceChannel()){
+		if(voiceState != null && !voiceState.inVoiceChannel()){
 			sendError(ctx, "To use this command you need to be connected to a voice channel");
 			return;
 		}
@@ -35,7 +36,7 @@ public class QueueCommand extends ACommand{
 				sendAnswer(ctx, "There are currently no tracks queued");
 				return;
 			}
-			StringBuilder message = new StringBuilder("Currently ").append(queue.size()).append(" tracks are queued:\n");
+			var message = new StringBuilder("Currently ").append(queue.size()).append(" tracks are queued:\n");
 			for(AudioTrack track : queue){
 				message.append(Utils.formatTrackTitle(track)).append(" ").append(Utils.formatDuration(track.getDuration())).append("\n");
 			}

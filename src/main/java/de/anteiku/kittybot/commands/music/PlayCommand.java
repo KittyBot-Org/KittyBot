@@ -30,14 +30,14 @@ public class PlayCommand extends ACommand{
 			sendError(ctx, "Please provide a link or search term");
 			return;
 		}
-		GuildVoiceState voiceState = ctx.getMember().getVoiceState();
+		var voiceState = ctx.getMember().getVoiceState();
 		if(voiceState != null && voiceState.inVoiceChannel()){
 			var musicPlayer = Cache.getMusicPlayer(ctx.getGuild());
 			if(musicPlayer == null){
-				JdaLink link = KittyBot.getLavalink().getLink(ctx.getGuild());
+				var link = KittyBot.getLavalink().getLink(ctx.getGuild());
 				link.connect(voiceState.getChannel());
 
-				LavalinkPlayer player = link.getPlayer();
+				var player = link.getPlayer();
 				musicPlayer = new MusicPlayer(player);
 				player.addListener(musicPlayer);
 				Cache.addMusicPlayer(ctx.getGuild(), musicPlayer);
@@ -60,7 +60,7 @@ public class PlayCommand extends ACommand{
 				event.getReaction().removeReaction(event.getUser()).queue();
 				return;
 			}
-			String emoji = event.getReactionEmote().getEmoji();
+			var emoji = event.getReactionEmote().getEmoji();
 			if(emoji.equals(Emotes.FORWARD.get())){
 				musicPlayer.nextTrack();
 			}
@@ -75,14 +75,12 @@ public class PlayCommand extends ACommand{
 			}
 			else if(emoji.equals(Emotes.VOLUME_DOWN.get())){
 				musicPlayer.changeVolume(-VOLUME_STEP);
-				//ctx.getChannel().editMessageById(ctx.getMessageId(), PlayCommand.buildMusicControlMessage(musicPlayer).build()).queue();
 			}
 			else if(emoji.equals(Emotes.VOLUME_UP.get())){
 				musicPlayer.changeVolume(VOLUME_STEP);
-				//ctx.getChannel().editMessageById(ctx.getMessageId(), PlayCommand.buildMusicControlMessage(musicPlayer).build()).queue();
 			}
 			else if(emoji.equals(Emotes.X.get())){
-				Cache.destroyMusicPlayer(event.getGuild(), event.getMessageId());
+				Cache.destroyMusicPlayer(event.getGuild());
 			}
 			musicPlayer.updateMusicControlMessage(event.getChannel());
 			event.getReaction().removeReaction(event.getUser()).queue();

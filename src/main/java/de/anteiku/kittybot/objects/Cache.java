@@ -56,13 +56,13 @@ public class Cache{
 		}
 	}
 
-	public static void addNewInvite(Invite invite){
+public static void addNewInvite(Invite invite){
+	if(invite.getGuild() != null){
 		var guildId = invite.getGuild().getId();
-		if(INVITES.get(guildId) == null){
-			INVITES.put(guildId, new HashMap<>());
-		}
+		INVITES.computeIfAbsent(guildId, k -> new HashMap<>());
 		INVITES.get(guildId).put(invite.getCode(), new InviteData(invite));
 	}
+}
 
 
 	//Self Assignable Roles
@@ -125,9 +125,10 @@ public class Cache{
 		return MUSIC_PLAYERS.get(guild.getId());
 	}
 
-	public static void destroyMusicPlayer(Guild guild, String controllerId){
+	public static void destroyMusicPlayer(Guild guild){
+		var musicPlayer = MUSIC_PLAYERS.get(guild.getId());
 		KittyBot.getLavalink().getLink(guild).destroy();
-		removeReactiveMessage(guild, controllerId);
+		removeReactiveMessage(guild, musicPlayer.getMessageId());
 		MUSIC_PLAYERS.remove(guild.getId());
 	}
 
@@ -135,7 +136,10 @@ public class Cache{
 	// Reactive Messages Cache
 
 	public static void removeReactiveMessage(Guild guild, String messageId){
-		guild.getTextChannelById(REACTIVE_MESSAGES.get(messageId).channelId).deleteMessageById(messageId).queue();
+		var textChannel = guild.getTextChannelById(REACTIVE_MESSAGES.get(messageId).channelId);
+		if(textChannel != null){
+			textChannel.deleteMessageById(messageId).queue();
+		}
 		REACTIVE_MESSAGES.remove(messageId);
 		Database.removeReactiveMessage(guild.getId(), messageId);
 	}
