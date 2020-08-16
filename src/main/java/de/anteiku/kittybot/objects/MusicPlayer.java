@@ -16,12 +16,13 @@ import lavalink.client.player.event.PlayerEventListenerAdapter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-import javax.sound.midi.Track;
 import java.awt.*;
 import java.time.Instant;
 import java.util.List;
 import java.util.Queue;
 import java.util.*;
+
+import static de.anteiku.kittybot.Utils.pluralize;
 
 public class MusicPlayer extends PlayerEventListenerAdapter{
 
@@ -131,7 +132,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	private void sendQueuedTracks(ACommand command, CommandContext ctx, List<AudioTrack> tracks){
-		var message = new StringBuilder("Queued ").append(tracks.size()).append(" tracks:\n");
+		var message = new StringBuilder("Queued ").append(tracks.size()).append(" ").append(pluralize("track", tracks)).append(":\n");
 		for(AudioTrack track : tracks){
 			message.append(Utils.formatTrackTitle(track)).append(" ").append(Utils.formatDuration(track.getDuration())).append("\n");
 		}
