@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class Paginator extends ListenerAdapter{
+public class Paginator extends ListenerAdapter{ // truth bomb: thanks jda-utilities for your shitty paginator
     private static final Map<Long, List<Long>> PAGINATOR_MESSAGES = new HashMap<>(); // K = channelId, V = List<MessageId>
     private static final Map<Long, Integer> TOTAL_PAGES = new HashMap<>();           // K = messageId, V = total pages
     private static final Map<Long, Long> INVOKERS = new HashMap<>();                 // K = messageId, V = invokerId
