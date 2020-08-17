@@ -3,6 +3,7 @@ package de.anteiku.kittybot.objects.paginator;
 import de.anteiku.kittybot.KittyBot;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -14,25 +15,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class Paginator extends ListenerAdapter{ // truth bomb: thanks jda-utilities for your shitty paginator
+public class CommandPaginator extends ListenerAdapter{ // truth bomb: thanks jda-utilities for your shitty paginator
     private static final Map<Long, List<Long>> PAGINATOR_MESSAGES = new HashMap<>(); // K = channelId, V = List<MessageId>
     private static final Map<Long, Integer> TOTAL_PAGES = new HashMap<>();           // K = messageId, V = total pages
     private static final Map<Long, Long> INVOKERS = new HashMap<>();                 // K = messageId, V = invokerId
     private static final Map<Long, Long> ORIGINALS = new HashMap<>();                // K = messageId, V = original messageId
     private static final Map<Long, Integer> CURRENT_PAGE = new HashMap<>();          // K = messageId, V = current page
-    private static final Map<Long, Map<Integer, String>> CONTENTS = new HashMap<>(); // K = messageId, V = Map<PageNumber, Content>
+    private static final Map<Long, Map<Integer, ArrayList<MessageEmbed.Field>>> CONTENTS = new HashMap<>(); // K = messageId, V = Map<PageNumber, Content>
     private static final Map<Long, Map<Integer, String>> AUTHORS = new HashMap<>();  // K = messageId, V = Map<PageNumber, Author>
 
     private static final String LEFT_EMOJI = "\u25C0";
     private static final String RIGHT_EMOJI = "\u25B6";
     private static final String WASTEBASKET = "\uD83D\uDDD1\uFE0F";
 
-    public static void createPaginator(final TextChannel channel, final Message message, final Map<Integer, String> contentPerPage, final Map<Integer, String> authorPerPage, final int totalPages){
+    public static void createPaginator(final TextChannel channel, final Message message, final Map<Integer, ArrayList<MessageEmbed.Field>> contentPerPage, final Map<Integer, String> authorPerPage, final int totalPages){
         final var embedBuilder = new EmbedBuilder();
         embedBuilder.setAuthor(authorPerPage.get(0));
-        embedBuilder.setDescription(contentPerPage.get(0));
-        if (totalPages != 1)
-            embedBuilder.setFooter("Page 1/" + totalPages);
+        embedBuilder.setFooter("Page 1/" + totalPages);
+        contentPerPage.get(0).forEach(embedBuilder::addField);
 
         channel.sendMessage(embedBuilder.build()).queue(paginatorMessage ->{
             paginatorMessage.addReaction(RIGHT_EMOJI).queue();
@@ -107,7 +107,7 @@ public class Paginator extends ListenerAdapter{ // truth bomb: thanks jda-utilit
                 }
                 final var previousPage = currentPage - 1;
                 newPageBuilder.setAuthor(authors.get(previousPage));
-                newPageBuilder.setDescription(contents.get(previousPage));
+                contents.get(previousPage).forEach(newPageBuilder::addField);
                 newPageBuilder.setFooter("Page " + (previousPage + 1) + "/" + total); // yes, we could just use currentPage here but it would just bring confusion
                 if (previousPage == 0)
                     channel.removeReactionById(messageId, LEFT_EMOJI).queue();
@@ -125,7 +125,7 @@ public class Paginator extends ListenerAdapter{ // truth bomb: thanks jda-utilit
                 }
                 final var nextPage = currentPage + 1;
                 newPageBuilder.setAuthor(authors.get(nextPage));
-                newPageBuilder.setDescription(contents.get(nextPage));
+                contents.get(nextPage).forEach(newPageBuilder::addField);
                 newPageBuilder.setFooter("Page " + (nextPage + 1) + "/" + total);
                 if (nextPage + 1 == total)
                     channel.removeReactionById(messageId, RIGHT_EMOJI).queue();

@@ -15,7 +15,7 @@ import de.anteiku.kittybot.events.*;
 import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.LavalinkNode;
 import de.anteiku.kittybot.objects.command.CommandManager;
-import de.anteiku.kittybot.objects.paginator.Paginator;
+import de.anteiku.kittybot.objects.paginator.CommandPaginator;
 import lavalink.client.io.Link;
 import lavalink.client.io.jda.JdaLavalink;
 import net.dv8tion.jda.api.*;
@@ -102,7 +102,7 @@ public class KittyBot{
 							new OnGuildReadyEvent(),
 							new OnInviteEvent(),
 							lavalink,
-							new Paginator()
+							new CommandPaginator()
 					)
 					.setVoiceDispatchInterceptor(lavalink.getVoiceInterceptor())
 					.setActivity(Activity.playing("loading..."))
