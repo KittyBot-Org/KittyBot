@@ -5,7 +5,7 @@ import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
 import de.anteiku.kittybot.objects.command.CommandManager;
-import de.anteiku.kittybot.objects.paginator.CommandPaginator;
+import de.anteiku.kittybot.objects.paginator.Paginator;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.util.ArrayList;
@@ -41,6 +41,6 @@ public class CommandsCommand extends ACommand{
 			contents.put(c, fields);
 			c++;
 		}
-		CommandPaginator.createPaginator(ctx.getChannel(), ctx.getMessage(), contents, authors, categories.length);
+		Paginator.createEmbedPaginator(ctx.getChannel(), ctx.getMessage(), authors, categories.length, contents);
 	}
 }
