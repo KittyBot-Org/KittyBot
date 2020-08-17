@@ -85,10 +85,10 @@ public class Paginator extends ListenerAdapter{
             return;
         final var newPageBuilder = new EmbedBuilder();
         final var currentPage = CURRENT_PAGE.get(messageId);
-        final var emoji = reactionEmote.getEmoji();
         final var total = TOTAL_PAGES.get(messageId);
         final var authors = AUTHORS.get(messageId);
         final var contents = CONTENTS.get(messageId);
+        final var emoji = reactionEmote.getEmoji();
 
         switch (emoji){
             case WASTEBASKET:
@@ -108,7 +108,7 @@ public class Paginator extends ListenerAdapter{
                 final var previousPage = currentPage - 1;
                 newPageBuilder.setAuthor(authors.get(previousPage));
                 newPageBuilder.setDescription(contents.get(previousPage));
-                newPageBuilder.setFooter("Page " + (previousPage + 1) + "/" + total);
+                newPageBuilder.setFooter("Page " + (previousPage + 1) + "/" + total); // yes, we could just use currentPage here but it would just bring confusion
                 if (previousPage == 0)
                     channel.removeReactionById(messageId, LEFT_EMOJI).queue();
                 CURRENT_PAGE.put(messageId, previousPage);
