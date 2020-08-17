@@ -35,8 +35,7 @@ public class Paginator extends ListenerAdapter{
             embedBuilder.setFooter("Page 1/" + totalPages);
 
         channel.sendMessage(embedBuilder.build()).queue(paginatorMessage ->{
-            if (totalPages != 1)
-                paginatorMessage.addReaction(RIGHT_EMOJI).queue();
+            paginatorMessage.addReaction(RIGHT_EMOJI).queue();
             paginatorMessage.addReaction(WASTEBASKET).queue();
 
             // CACHING
