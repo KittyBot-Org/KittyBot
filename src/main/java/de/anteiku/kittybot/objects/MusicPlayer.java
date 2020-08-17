@@ -133,7 +133,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 					message.addReaction(Emotes.VOLUME_DOWN.get()).queue();
 					message.addReaction(Emotes.VOLUME_UP.get()).queue();
 					message.addReaction(Emotes.BACK.get()).queue();
-					message.addReaction(Emotes.PLAY_PAUSE.get()).queue();
+					message.addReaction("PlayPause:744945002416963634").queue();
 					message.addReaction(Emotes.FORWARD.get()).queue();
 					message.addReaction(Emotes.SHUFFLE.get()).queue();
 					message.addReaction(Emotes.X.get()).queue();

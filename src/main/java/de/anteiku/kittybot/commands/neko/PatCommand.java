@@ -1,6 +1,7 @@
 package de.anteiku.kittybot.commands.neko;
 
 import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
 
 public class PatCommand extends ACommand{
@@ -9,9 +10,10 @@ public class PatCommand extends ACommand{
 	public static final String USAGE = "pat <@user, ...>";
 	public static final String DESCRIPTION = "Pats to a user";
 	protected static final String[] ALIAS = {"tätschel"};
+	protected static final Category CATEGORY = Category.NEKO;
 
 	public PatCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS, CATEGORY);
 	}
 
 	@Override

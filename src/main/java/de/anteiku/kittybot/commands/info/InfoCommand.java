@@ -2,6 +2,7 @@ package de.anteiku.kittybot.commands.info;
 
 import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -13,9 +14,10 @@ public class InfoCommand extends ACommand{
 	public static final String USAGE = "info";
 	public static final String DESCRIPTION = "Shows some bot info";
 	protected static final String[] ALIAS = {};
+	protected static final Category CATEGORY = Category.INFORMATIVE;
 
 	public InfoCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS, CATEGORY);
 	}
 
 	@Override
