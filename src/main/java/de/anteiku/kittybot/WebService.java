@@ -11,13 +11,12 @@ import de.anteiku.kittybot.objects.Config;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
@@ -77,7 +76,7 @@ public class WebService{
 			var session = oAuthClient.startSession(code, state, key, scopes).complete();
 			var user = oAuthClient.getUser(session).complete();
 			Database.addSession(user.getId(), key);
-			ok(ctx, "{\"key\": " + JSONObject.quote(key) + "}");
+			ok(ctx, DataObject.empty().put("key", key));
 		}
 		catch(InvalidStateException e){
 			error(ctx, 401, "State invalid/expired please try again");
@@ -113,14 +112,17 @@ public class WebService{
 			error(ctx, 404, "User not found");
 			return;
 		}
-		var guilds = new ArrayList<String>();
+		var data = DataArray.empty();
 		for(var guild : KittyBot.getJda().getMutualGuilds(user)){
 			var u = guild.getMember(user);
 			if(u != null && u.hasPermission(Permission.ADMINISTRATOR)){
-				guilds.add(String.format("{\"id\": \"%s\", \"name\": %s, \"icon\": %s}", guild.getId(), JSONObject.quote(guild.getName()), JSONObject.quote(guild.getIconUrl())));
+				data.add(DataObject.empty()
+						.put("id", guild.getId())
+						.put("name", guild.getName())
+						.put("icon", guild.getIconUrl()));
 			}
 		}
-		ok(ctx, String.format("{\"name\": %s, \"id\": \"%s\", \"icon\": %s, \"guilds\": [%s]}", JSONObject.quote(user.getName()), user.getId(), JSONObject.quote(user.getEffectiveAvatarUrl()), String.join(", ", guilds)));
+		ok(ctx, DataObject.empty().put("name", user.getName()).put("id", user.getId()).put("icon", user.getEffectiveAvatarUrl()).put("guilds", data));
 	}
 
 	private void getAllGuilds(Context ctx){
@@ -138,11 +140,20 @@ public class WebService{
 			error(ctx, 403, "Only admins have access to this!");
 			return;
 		}
-		var guilds = new ArrayList<String>();
+		var data = DataArray.empty();
 		for(var guild : KittyBot.getJda().getGuildCache()){
-			guilds.add(String.format("{\"id\": %s, \"name\": %s, \"icon\": %s, \"count\": %d}", JSONObject.quote(guild.getId()), JSONObject.quote(guild.getName()), JSONObject.quote(guild.getIconUrl()), guild.getMemberCount()));
+			var owner = guild.getOwner();
+			var obj = DataObject.empty()
+					.put("id", guild.getId())
+					.put("name", guild.getName())
+					.put("icon", guild.getIconUrl())
+					.put("count", guild.getMemberCount());
+			if(owner != null){
+				obj.put("owner", owner.getUser().getAsTag());
+			}
+			data.add(obj);
 		}
-		ok(ctx, "{\"guilds\": [" + String.join(", ", guilds) + "]}");
+		ok(ctx, DataObject.empty().put("guilds", data));
 	}
 
 	private void checkGuildPerms(Context ctx){
@@ -178,11 +189,11 @@ public class WebService{
 			error(ctx, 404, "guild not found");
 			return;
 		}
-		var roles = new ArrayList<String>();
+		var data = DataArray.empty();
 		for(var role : guild.getRoles()){
-			roles.add(String.format("{\"name\": %s, \"id\": \"%s\"}", JSONObject.quote(role.getName()), role.getId()));
+			data.add(DataObject.empty().put("name", role.getName()).put("id", role.getId()));
 		}
-		ok(ctx, String.format("{\"roles\": [%s]}", String.join(", ", roles)));
+		ok(ctx, DataObject.empty().put("roles", data));
 	}
 
 	private void getChannels(Context ctx){
@@ -191,11 +202,11 @@ public class WebService{
 			error(ctx, 404, "guild not found");
 			return;
 		}
-		var channels = new ArrayList<String>();
+		var data = DataArray.empty();
 		for(var channel : guild.getTextChannels()){
-			channels.add(String.format("{\"name\": %s, \"id\": \"%s\"}", JSONObject.quote(channel.getName()), channel.getId()));
+			data.add(DataObject.empty().put("name", channel.getName()).put("id", channel.getId()));
 		}
-		ok(ctx, String.format("{\"channels\": [%s]}", String.join(", ", channels)));
+		ok(ctx, DataObject.empty().put("channels", data));
 	}
 
 	private void getEmotes(Context ctx){
@@ -204,11 +215,11 @@ public class WebService{
 			error(ctx, 404, "guild not found");
 			return;
 		}
-		var emotes = new ArrayList<String>();
+		var data = DataArray.empty();
 		for(var emote : guild.getEmotes()){
-			emotes.add(String.format("{\"name\": %s, \"id\": \"%s\", \"url\": %s}", JSONObject.quote(emote.getName()), emote.getId(), JSONObject.quote(emote.getImageUrl())));
+			data.add(DataObject.empty().put("name", emote.getName()).put("id", emote.getId()).put("url", emote.getName()));
 		}
-		ok(ctx, String.format("{\"emotes\": [%s]}", String.join(", ", emotes)));
+		ok(ctx, DataObject.empty().put("emotes", data));
 	}
 
 	private void getGuildSettings(Context ctx){
@@ -218,31 +229,21 @@ public class WebService{
 			error(ctx, 404, "guild not found");
 			return;
 		}
-		var selfAssignableRoles = new ArrayList<String>();
+		var data = DataArray.empty();
 		for(var role : roles.entrySet()){
-			selfAssignableRoles.add(String.format("{\"role\": \"%s\", \"emote\": \"%s\"}", role.getKey(), role.getValue()));
+			data.add(DataObject.empty().put("role", role.getKey()).put("emote", role.getValue()));
 		}
-		ok(ctx, String.format("{\"prefix\": %s, " +
-						"\"join_messages_enabled\": %b, " +
-						"\"join_messages\": %s, " +
-						"\"leave_messages_enabled\": %b, " +
-						"\"leave_messages\": %s, " +
-						"\"boost_messages_enabled\": %b, " +
-						"\"boost_messages\": %s, " +
-						"\"announcement_channel_id\":%s, " +
-						"\"nsfw_enabled\": %b, " +
-						"\"self_assignable_roles\": [%s]}",
-				JSONObject.quote(Database.getCommandPrefix(guildId)),
-				Database.getJoinMessageEnabled(guildId),
-				JSONObject.quote(Database.getJoinMessage(guildId)),
-				Database.getLeaveMessageEnabled(guildId),
-				JSONObject.quote(Database.getLeaveMessage(guildId)),
-				Database.getBoostMessageEnabled(guildId),
-				JSONObject.quote(Database.getBoostMessage(guildId)),
-				JSONObject.quote(Database.getAnnouncementChannelId(guildId)),
-				Database.getNSFWEnabled(guildId),
-				String.join(", ", selfAssignableRoles)
-		));
+		ok(ctx, DataObject.empty()
+				.put("prefix", Database.getCommandPrefix(guildId))
+				.put("join_messages_enabled", Database.getJoinMessageEnabled(guildId))
+				.put("join_messages", Database.getJoinMessage(guildId))
+				.put("leave_messages_enabled", Database.getLeaveMessageEnabled(guildId))
+				.put("leave_messages", Database.getLeaveMessage(guildId))
+				.put("boost_messages_enabled", Database.getBoostMessageEnabled(guildId))
+				.put("boost_messages", Database.getBoostMessage(guildId))
+				.put("announcement_channel_id", Database.getAnnouncementChannelId(guildId))
+				.put("nsfw_enabled", Database.getNSFWEnabled(guildId))
+				.put("self_assignable_roles", data));
 	}
 
 	private void setGuildSettings(Context ctx){
@@ -292,21 +293,21 @@ public class WebService{
 	}
 
 	private void error(Context ctx, int code, String error){
-		result(ctx, code, "{\"error\": \"" + error + "\"}");
+		result(ctx, code, DataObject.empty().put("error", error));
 	}
 
 	private void ok(Context ctx){
-		result(ctx, 200, "{\"status\": \"ok\"}");
+		result(ctx, 200, DataObject.empty().put("status", 200));
 	}
 
-	private void ok(Context ctx, String result){
-		result(ctx, 200, result);
+	private void ok(Context ctx, DataObject data){
+		result(ctx, 200, data);
 	}
 
-	private void result(Context ctx, int code, String result){
+	private void result(Context ctx, int code, DataObject data){
 		ctx.header("Content-Type", "application/json");
 		ctx.status(code);
-		ctx.result(result);
+		ctx.result(data.toString());
 	}
 
 }
