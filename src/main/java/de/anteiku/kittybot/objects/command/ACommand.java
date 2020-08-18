@@ -32,12 +32,14 @@ public abstract class ACommand{
 	protected final String usage;
 	protected final String description;
 	protected final String[] alias;
+	protected final Category category;
 
-	protected ACommand(String command, String usage, String description, String[] alias){
+	protected ACommand(String command, String usage, String description, String[] alias, Category category){
 		this.command = command;
 		this.usage = usage;
 		this.description = description;
 		this.alias = alias;
+		this.category = category;
 	}
 
 	protected abstract void run(CommandContext ctx);
@@ -68,6 +70,11 @@ public abstract class ACommand{
 
 	protected String getUsage(){
 		return usage;
+	}
+
+	public Category getCategory()
+	{
+		return category;
 	}
 
 	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){

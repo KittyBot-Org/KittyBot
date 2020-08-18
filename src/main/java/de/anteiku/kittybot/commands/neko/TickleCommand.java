@@ -1,6 +1,7 @@
 package de.anteiku.kittybot.commands.neko;
 
 import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
 
 public class TickleCommand extends ACommand{
@@ -9,9 +10,10 @@ public class TickleCommand extends ACommand{
 	public static final String USAGE = "tickle <@user, ...>";
 	public static final String DESCRIPTION = "Tickles a user";
 	protected static final String[] ALIAS = {"kitzel"};
+	protected static final Category CATEGORY = Category.NEKO;
 
 	public TickleCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS, CATEGORY);
 	}
 
 	@Override

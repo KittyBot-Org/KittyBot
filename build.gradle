@@ -17,14 +17,14 @@ repositories {
 
 dependencies {
     // discord/jda related
-    implementation 'net.dv8tion:JDA:4.2.0_182'
+    implementation 'net.dv8tion:JDA:4.2.0_194'
     implementation 'com.github.FredBoat:Lavalink-Client:41e1025'
     implementation 'com.jagrosh:jda-utilities:3.0.4'
     implementation 'com.sedmelluq:lavaplayer:1.3.50'
 
     // database
     implementation 'com.zaxxer:HikariCP:3.4.5'
-    implementation 'org.postgresql:postgresql:42.2.14'
+    implementation 'org.postgresql:postgresql:42.2.15'
 
     // logging
     implementation 'ch.qos.logback:logback-classic:1.2.3'

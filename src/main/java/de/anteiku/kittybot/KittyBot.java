@@ -1,5 +1,6 @@
 package de.anteiku.kittybot;
 
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
@@ -14,6 +15,7 @@ import de.anteiku.kittybot.events.*;
 import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.LavalinkNode;
 import de.anteiku.kittybot.objects.command.CommandManager;
+import de.anteiku.kittybot.objects.paginator.Paginator;
 import lavalink.client.io.Link;
 import lavalink.client.io.jda.JdaLavalink;
 import net.dv8tion.jda.api.*;
@@ -30,12 +32,16 @@ import org.slf4j.LoggerFactory;
 import java.awt.*;
 import java.net.URI;
 import java.time.Instant;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class KittyBot{
 
 	private static final Logger LOG = LoggerFactory.getLogger(KittyBot.class);
 	private static final OkHttpClient HTTP_CLIENT = new OkHttpClient();
 	private static final AudioPlayerManager AUDIO_PLAYER_MANAGER = new DefaultAudioPlayerManager();
+	private static final ScheduledExecutorService SCHEDULER = Executors.newSingleThreadScheduledExecutor();
+	private static final EventWaiter WAITER = new EventWaiter();
 	private static JdaLavalink lavalink;
 	private static JDA jda;
 
@@ -95,7 +101,8 @@ public class KittyBot{
 							new OnGuildVoiceEvent(),
 							new OnGuildReadyEvent(),
 							new OnInviteEvent(),
-							lavalink
+							lavalink,
+							new Paginator()
 					)
 					.setVoiceDispatchInterceptor(lavalink.getVoiceInterceptor())
 					.setActivity(Activity.playing("loading..."))
@@ -164,5 +171,13 @@ public class KittyBot{
 
 	public static JDA getJda(){
 		return jda;
+	}
+
+	public static ScheduledExecutorService getScheduler(){
+		return SCHEDULER;
+	}
+
+	public static EventWaiter getWaiter(){
+		return WAITER;
 	}
 }

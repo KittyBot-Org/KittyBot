@@ -121,7 +121,9 @@ public class Cache{
 	}
 
 	public static void destroyMusicPlayer(Guild guild){
-		var musicPlayer = MUSIC_PLAYERS.get(guild.getId());
+		var musicPlayer = getMusicPlayer(guild);
+		if (musicPlayer == null)
+			return;
 		KittyBot.getLavalink().getLink(guild).destroy();
 		removeReactiveMessage(guild, musicPlayer.getMessageId());
 		MUSIC_PLAYERS.remove(guild.getId());

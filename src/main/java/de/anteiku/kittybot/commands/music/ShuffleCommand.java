@@ -2,6 +2,7 @@ package de.anteiku.kittybot.commands.music;
 
 import de.anteiku.kittybot.objects.Cache;
 import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
 
 public class ShuffleCommand extends ACommand{
@@ -10,9 +11,10 @@ public class ShuffleCommand extends ACommand{
 	public static final String USAGE = "shuffle";
 	public static final String DESCRIPTION = "Shuffles the current queue";
 	protected static final String[] ALIAS = {"mische"};
+	protected static final Category CATEGORY = Category.MUSIC;
 
 	public ShuffleCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS, CATEGORY);
 	}
 
 	@Override

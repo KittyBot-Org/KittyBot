@@ -1,6 +1,7 @@
 package de.anteiku.kittybot.commands.neko;
 
 import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
 
 public class SpankCommand extends ACommand{
@@ -9,9 +10,10 @@ public class SpankCommand extends ACommand{
 	public static final String USAGE = "spank <@user, ...>";
 	public static final String DESCRIPTION = "Spanks a user";
 	protected static final String[] ALIAS = {};
+	protected static final Category CATEGORY = Category.NEKO;
 
 	public SpankCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS, CATEGORY);
 	}
 
 	@Override

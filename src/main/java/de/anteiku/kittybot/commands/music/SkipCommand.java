@@ -2,6 +2,7 @@ package de.anteiku.kittybot.commands.music;
 
 import de.anteiku.kittybot.objects.Cache;
 import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
 
 public class SkipCommand extends ACommand{
@@ -10,9 +11,10 @@ public class SkipCommand extends ACommand{
 	public static final String USAGE = "skip";
 	public static final String DESCRIPTION = "Skips the current track";
 	protected static final String[] ALIAS = {"überspring"};
+	protected static final Category CATEGORY = Category.MUSIC;
 
 	public SkipCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS, CATEGORY);
 	}
 
 	@Override

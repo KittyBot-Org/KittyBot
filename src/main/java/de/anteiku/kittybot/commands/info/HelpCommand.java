@@ -5,6 +5,7 @@ import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.Emotes;
 import de.anteiku.kittybot.objects.ReactiveMessage;
 import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
@@ -17,9 +18,10 @@ public class HelpCommand extends ACommand{
 	public static final String USAGE = "help";
 	public static final String DESCRIPTION = "Shows some help stuff";
 	protected static final String[] ALIAS = {"?"};
+	protected static final Category CATEGORY = Category.INFORMATIVE;
 
 	public HelpCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS, CATEGORY);
 	}
 
 	@Override

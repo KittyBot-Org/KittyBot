@@ -40,7 +40,6 @@ public enum Emotes{
 
 	BACK("rewind"),
 	FORWARD("fast_forward"),
-	PLAY_PAUSE("black_right_pointing_triangle_with_double_vertical_bar"),
 	SHUFFLE("twisted_rightwards_arrows"),
 	VOLUME_DOWN("sound"),
 	VOLUME_UP("loud_sound");

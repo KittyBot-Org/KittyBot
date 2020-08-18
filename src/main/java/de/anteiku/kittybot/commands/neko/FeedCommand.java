@@ -1,6 +1,7 @@
 package de.anteiku.kittybot.commands.neko;
 
 import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
 
 public class FeedCommand extends ACommand{
@@ -9,9 +10,10 @@ public class FeedCommand extends ACommand{
 	public static final String USAGE = "feed <@user, ...>";
 	public static final String DESCRIPTION = "Feeds a user";
 	protected static final String[] ALIAS = {"füttern"};
+	protected static final Category CATEGORY = Category.NEKO;
 
 	public FeedCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS, CATEGORY);
 	}
 
 	@Override

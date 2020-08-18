@@ -2,6 +2,7 @@ package de.anteiku.kittybot.commands.utilities;
 
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
 
 public class AssignCommand extends ACommand{
@@ -10,9 +11,10 @@ public class AssignCommand extends ACommand{
 	public static final String USAGE = "assign <Role>";
 	public static final String DESCRIPTION = "Assigns yourself a role if it is self-assignable";
 	protected static final String[] ALIAS = {"iam"};
+	protected static final Category CATEGORY = Category.UTILITIES;
 
 	public AssignCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS, CATEGORY);
 	}
 
 	@Override

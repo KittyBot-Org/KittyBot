@@ -4,6 +4,7 @@ import com.google.gson.JsonParser;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.entities.Message;
 import okhttp3.MediaType;
@@ -22,9 +23,10 @@ public class HastebinCommand extends ACommand{
 	public static final String USAGE = "hastebin <file>";
 	public static final String DESCRIPTION = "creates a " + Config.HASTEBIN_URL + " from the file";
 	protected static final String[] ALIAS = {};
+	protected static final Category CATEGORY = Category.UTILITIES;
 
 	public HastebinCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
+		super(COMMAND, USAGE, DESCRIPTION, ALIAS, CATEGORY);
 	}
 
 	@Override
