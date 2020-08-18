@@ -231,23 +231,20 @@ public class Database{
 	}
 
 	public static boolean addSelfAssignableRoles(String guildId, Map<String, String> roles){
-		boolean result = true;
-		for(Map.Entry<String, String> role : roles.entrySet()){
-			var query = "INSERT INTO self_assignable_roles (role_id, guild_id, emote_id) VALUES (?, ?, ?)";
-			try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
-				stmt.setString(1, role.getKey());
-				stmt.setString(2, guildId);
-				stmt.setString(3, role.getValue());
-				boolean r = SQL.execute(stmt);
-				if(!r){
-					result = false;
-				}
+		var query = "INSERT INTO self_assignable_roles (role_id, guild_id, emote_id) VALUES (?, ?, ?)" + ", (?, ?, ?)".repeat(roles.size() - 1);
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
+			var i = 0;
+			for(var role : roles.entrySet()){
+				stmt.setString(++i, role.getKey());
+				stmt.setString(++i, guildId);
+				stmt.setString(++i, role.getValue());
 			}
-			catch(SQLException e){
-				LOG.error("Error inserting self-assignable role", e);
-			}
+			return SQL.execute(stmt);
 		}
-		return result;
+		catch(SQLException e){
+			LOG.error("Error inserting self-assignable role", e);
+		}
+		return false;
 	}
 
 	public static boolean isSelfAssignableRole(String guildId, String roleId){
