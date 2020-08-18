@@ -62,7 +62,7 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 
 			KittyBot.getWaiter().waitForEvent(GuildMessageReactionAddEvent.class,
 					ev -> ev.getMessageIdLong() == messageId && ev.getUserIdLong() == authorId,
-					ev -> {}, 1, TimeUnit.MINUTES, () -> {
+					ev -> {}, 3, TimeUnit.MINUTES, () -> {
 						message.delete().queue();
 						channel.deleteMessageById(messageId).queue();
 
