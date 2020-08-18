@@ -26,7 +26,7 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
     private static final Map<Long, Integer> CURRENT_PAGE = new HashMap<>();                                // K = messageId, V = current page
     private static final Map<Long, BiConsumer<Integer, EmbedBuilder>> CONTENT_CONSUMERS = new HashMap<>(); // K = messageId, V = BiConsumer<PageNumber, EmbedBuilder>
 
-    public static void createEmbedPaginator(final TextChannel channel, final Message message, final Map<Integer, String> authorPerPage, final int totalPages, final Map<Integer, ArrayList<MessageEmbed.Field>> fields){
+    public static void createCommandsPaginator(final TextChannel channel, final Message message, final Map<Integer, String> authorPerPage, final int totalPages, final Map<Integer, ArrayList<MessageEmbed.Field>> fields){
         createPaginator(channel, message, totalPages, (page, embedBuilder) ->{
             embedBuilder.setAuthor(authorPerPage.get(page));
             fields.get(page).forEach(embedBuilder::addField);

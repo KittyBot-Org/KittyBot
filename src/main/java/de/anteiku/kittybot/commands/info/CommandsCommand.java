@@ -41,6 +41,6 @@ public class CommandsCommand extends ACommand{
 			contents.put(c, fields);
 			c++;
 		}
-		Paginator.createEmbedPaginator(ctx.getChannel(), ctx.getMessage(), authors, categories.length, contents);
+		Paginator.createCommandsPaginator(ctx.getChannel(), ctx.getMessage(), authors, categories.length, contents);
 	}
 }
