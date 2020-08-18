@@ -72,8 +72,7 @@ public abstract class ACommand{
 		return usage;
 	}
 
-	public Category getCategory()
-	{
+	public Category getCategory(){
 		return category;
 	}
 
@@ -207,7 +206,7 @@ public abstract class ACommand{
 		String content = ctx.getMessage().getContentRaw();
 		User selfUser = ctx.getSelfUser();
 		long botId = selfUser.getIdLong();
-		if (content.startsWith("<@" + botId + ">") || content.startsWith("<@!" + botId + ">")){
+		if(content.startsWith("<@" + botId + ">") || content.startsWith("<@!" + botId + ">")){
 			var occurrences = users.getCount(selfUser);
 			users.remove(selfUser, occurrences == 1 ? 1 : occurrences - 1);
 		}

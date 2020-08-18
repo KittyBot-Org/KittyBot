@@ -282,7 +282,7 @@ public class WebService{
 		if(json.hasKey("self_assignable_roles")){
 			var roles = new HashMap<String, String>();
 			var dataArray = json.getArray("self_assignable_roles");
-			for (var i = 0; i < dataArray.length(); i++){
+			for(var i = 0; i < dataArray.length(); i++){
 				var obj = dataArray.getObject(i);
 				roles.put(obj.getString("role"), obj.getString("emote"));
 			}

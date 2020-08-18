@@ -62,12 +62,14 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 					sendMusicController(command, ctx);
 				}
 				else{
-					if (queue.isEmpty())
+					if(queue.isEmpty()){
 						updateMusicControlMessage(ctx.getChannel());
+					}
 					sendQueuedTracks(command, ctx, Collections.singletonList(track));
 				}
-				if (future != null)
+				if(future != null){
 					future.cancel(true);
+				}
 			}
 
 			@Override
@@ -90,12 +92,14 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 					sendMusicController(command, ctx);
 				}
 				else{
-					if (queue.isEmpty())
+					if(queue.isEmpty()){
 						updateMusicControlMessage(ctx.getChannel());
+					}
 					sendQueuedTracks(command, ctx, queuedTracks);
 				}
-				if (future != null)
+				if(future != null){
 					future.cancel(true);
+				}
 			}
 
 			@Override
@@ -149,37 +153,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		command.sendAnswer(ctx, message.toString());
 	}
 
-	public EmbedBuilder buildMusicControlMessage(){
-		var embed = new EmbedBuilder();
-		var track = player.getPlayingTrack();
-
-		if(track == null){
-			embed.setAuthor("Nothing to play...")
-					.setColor(Color.RED)
-					.addField("Author", "", true)
-					.addField("Length", "", true)
-					.addField("Volume", player.getVolume() + "%", true);
-		}
-		else{
-			var info = track.getInfo();
-			var duration = formatDuration(info.length);
-			embed.setTitle(info.title, info.uri)
-					.setThumbnail("https://i.ytimg.com/vi/" + info.identifier + "/maxresdefault.jpg")
-					.addField("Author", info.author, true)
-					.addField("Length", duration, true)
-					.addField("Volume", player.getVolume() + "%", true);
-			if(player.isPaused()){
-				embed.setAuthor("Paused at " + formatDuration(getPlayer().getTrackPosition()) + "/" + duration);
-				embed.setColor(Color.ORANGE);
-			}
-			else{
-				embed.setAuthor("Playing...");
-				embed.setColor(Color.GREEN);
-			}
-		}
-		return embed;
-	}
-
 	public String getRequesterId(){
 		var playing = player.getPlayingTrack();
 		return playing == null ? null : playing.getUserData(String.class);
@@ -222,10 +195,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		return false;
 	}
 
-	public LavalinkPlayer getPlayer(){
-		return player;
-	}
-
 	@Override
 	public void onPlayerPause(IPlayer player){
 
@@ -240,20 +209,13 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	public void onTrackEnd(IPlayer player, AudioTrack track, AudioTrackEndReason endReason){
 		this.history.push(track);
 		var guild = KittyBot.getJda().getGuildById(getPlayer().getLink().getGuildId());
-		if (((endReason.mayStartNext && !nextTrack()) || queue.isEmpty()) && guild != null){
+		if(((endReason.mayStartNext && !nextTrack()) || queue.isEmpty()) && guild != null){
 			future = KittyBot.getScheduler().schedule(() -> Cache.destroyMusicPlayer(guild), 2, TimeUnit.MINUTES);
 		}
 	}
 
-	public boolean previousTrack(){
-		AudioTrack track = history.poll();
-		if(track != null){
-			track.setPosition(0);
-			player.playTrack(track);
-			return true;
-		}
-		player.stopTrack();
-		return false;
+	public LavalinkPlayer getPlayer(){
+		return player;
 	}
 
 	public boolean nextTrack(){
@@ -270,6 +232,47 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		return false;
 	}
 
+	public void updateMusicControlMessage(TextChannel channel){
+		if(channel == null){
+			return;
+		}
+		channel.editMessageById(messageId, buildMusicControlMessage()
+				.setTimestamp(Instant.now())
+				.build()
+		).queue();
+	}
+
+	public EmbedBuilder buildMusicControlMessage(){
+		var embed = new EmbedBuilder();
+		var track = player.getPlayingTrack();
+
+		if(track == null){
+			embed.setAuthor("Nothing to play...")
+					.setColor(Color.RED)
+					.addField("Author", "", true)
+					.addField("Length", "", true)
+					.addField("Volume", player.getVolume() + "%", true);
+		}
+		else{
+			var info = track.getInfo();
+			var duration = formatDuration(info.length);
+			embed.setTitle(info.title, info.uri)
+					.setThumbnail("https://i.ytimg.com/vi/" + info.identifier + "/maxresdefault.jpg")
+					.addField("Author", info.author, true)
+					.addField("Length", duration, true)
+					.addField("Volume", player.getVolume() + "%", true);
+			if(player.isPaused()){
+				embed.setAuthor("Paused at " + formatDuration(getPlayer().getTrackPosition()) + "/" + duration);
+				embed.setColor(Color.ORANGE);
+			}
+			else{
+				embed.setAuthor("Playing...");
+				embed.setColor(Color.GREEN);
+			}
+		}
+		return embed;
+	}
+
 	@Override
 	public void onTrackException(IPlayer player, AudioTrack track, Exception exception){
 		System.out.println(exception.getMessage()); // TODO fix :)
@@ -280,16 +283,19 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		System.out.println("onTrackStuck");
 	}
 
-	public void updateMusicControlMessage(TextChannel channel){
-		if (channel == null)
-			return;
-		channel.editMessageById(messageId, buildMusicControlMessage()
-				.setTimestamp(Instant.now())
-				.build()
-		).queue();
+	public boolean previousTrack(){
+		AudioTrack track = history.poll();
+		if(track != null){
+			track.setPosition(0);
+			player.playTrack(track);
+			return true;
+		}
+		player.stopTrack();
+		return false;
 	}
 
 	public String getMessageId(){
 		return messageId;
 	}
+
 }

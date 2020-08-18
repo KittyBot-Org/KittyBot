@@ -32,7 +32,7 @@ public class CommandsCommand extends ACommand{
 		final var commands = CommandManager.getDistinctCommands().values();
 		final var categories = Category.values();
 		var c = 0;
-		for (final var category : categories){
+		for(final var category : categories){
 			authors.put(c, category.getFriendlyName());
 
 			final var fields = new ArrayList<MessageEmbed.Field>();
@@ -43,4 +43,5 @@ public class CommandsCommand extends ACommand{
 		}
 		Paginator.createCommandsPaginator(ctx.getChannel(), ctx.getMessage(), authors, categories.length, contents);
 	}
+
 }

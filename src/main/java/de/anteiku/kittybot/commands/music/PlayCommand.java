@@ -55,16 +55,16 @@ public class PlayCommand extends ACommand{
 			return;
 		}
 		var requester = musicPlayer.getRequesterId();
-		if (requester == null)
+		if(requester == null){
 			return;
+		}
 		if(!requester.equals(event.getUserId())){
 			event.getReaction().removeReaction(event.getUser()).queue();
 			return;
 		}
 		if(event.getReactionEmote().isEmoji()){
 			var emoji = event.getReactionEmote().getEmoji();
-			switch (emoji)
-			{
+			switch(emoji){
 				case Emojis.BACK:
 					musicPlayer.previousTrack();
 					break;
@@ -86,8 +86,9 @@ public class PlayCommand extends ACommand{
 				default:
 			}
 		}
-		else if (event.getReactionEmote().getId().equals("744945002416963634"))
+		else if(event.getReactionEmote().getId().equals("744945002416963634")){
 			musicPlayer.pause();
+		}
 		musicPlayer.updateMusicControlMessage(event.getChannel());
 		event.getReaction().removeReaction(event.getUser()).queue();
 	}

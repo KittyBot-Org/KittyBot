@@ -23,8 +23,9 @@ public class OnGuildJoinEvent extends ListenerAdapter{
 				entry.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(embed).queue(null,//this should work if the first message got sent,
 						failure -> {
 							var defaultChannel = event.getGuild().getDefaultChannel();
-							if (defaultChannel != null)
+							if(defaultChannel != null){
 								defaultChannel.sendMessage(embed).queue();
+							}
 						}
 				));
 				return;//just want to catch the last add loool

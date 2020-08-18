@@ -35,4 +35,5 @@ public class HelpCommand extends ACommand{
 			message.addReaction(Emojis.WASTEBASKET).queue();
 		});
 	}
+
 }

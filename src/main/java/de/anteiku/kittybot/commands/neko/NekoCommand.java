@@ -39,4 +39,5 @@ public class NekoCommand extends ACommand{
 			sendUsage(ctx);
 		}
 	}
+
 }

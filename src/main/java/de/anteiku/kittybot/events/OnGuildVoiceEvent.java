@@ -15,20 +15,24 @@ public class OnGuildVoiceEvent extends ListenerAdapter{
 
 	@Override
 	public void onGuildVoiceUpdate(@NotNull final GuildVoiceUpdateEvent event){
-		if (event instanceof GuildVoiceMoveEvent || event instanceof GuildVoiceLeaveEvent){
+		if(event instanceof GuildVoiceMoveEvent || event instanceof GuildVoiceLeaveEvent){
 			var guild = event.getEntity().getGuild();
 			var musicPlayer = Cache.getMusicPlayer(guild);
-			if (musicPlayer == null)
+			if(musicPlayer == null){
 				return;
+			}
 			var channel = event.getChannelLeft();
 			var currentChannel = musicPlayer.getPlayer().getLink().getChannel();
-			if (!channel.getId().equals(currentChannel))
+			if(!channel.getId().equals(currentChannel)){
 				return;
-			if (channel.getMembers().stream().anyMatch(member -> !member.getUser().isBot()))
+			}
+			if(channel.getMembers().stream().anyMatch(member -> !member.getUser().isBot())){
 				return;
+			}
 			KittyBot.getWaiter().waitForEvent(GuildVoiceJoinEvent.class,
 					ev -> ev.getChannelJoined().getId().equals(currentChannel) && !ev.getEntity().getUser().isBot(),
 					ev -> {}, 3, TimeUnit.MINUTES, () -> Cache.destroyMusicPlayer(guild));
 		}
 	}
+
 }
