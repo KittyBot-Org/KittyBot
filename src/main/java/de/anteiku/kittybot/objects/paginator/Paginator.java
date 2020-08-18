@@ -17,25 +17,26 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
 public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your shitty paginator
-    private static final Map<Long, List<Long>> PAGINATOR_MESSAGES = new HashMap<>();               // K = channelId, V = List<MessageId>
-    private static final Map<Long, Integer> TOTAL_PAGES = new HashMap<>();                         // K = messageId, V = total pages
-    private static final Map<Long, Long> INVOKERS = new HashMap<>();                               // K = messageId, V = invokerId
-    private static final Map<Long, Long> ORIGINALS = new HashMap<>();                              // K = messageId, V = original messageId
-    private static final Map<Long, Integer> CURRENT_PAGE = new HashMap<>();                        // K = messageId, V = current page
-    private static final Map<Long, Map<Integer, String>> AUTHORS = new HashMap<>();                // K = messageId, V = Map<PageNumber, Author>
-    private static final Map<Long, BiConsumer<Integer, EmbedBuilder>> CONSUMERS = new HashMap<>(); // K = messageId, V = BiConsumer<PageNumber, EmbedBuilder>
+    private static final Map<Long, List<Long>> PAGINATOR_MESSAGES = new HashMap<>();                       // K = channelId, V = List<MessageId>
+    private static final Map<Long, Integer> TOTAL_PAGES = new HashMap<>();                                 // K = messageId, V = total pages
+    private static final Map<Long, Long> INVOKERS = new HashMap<>();                                       // K = messageId, V = invokerId
+    private static final Map<Long, Long> ORIGINALS = new HashMap<>();                                      // K = messageId, V = original messageId
+    private static final Map<Long, Integer> CURRENT_PAGE = new HashMap<>();                                // K = messageId, V = current page
+    private static final Map<Long, BiConsumer<Integer, EmbedBuilder>> CONTENT_CONSUMERS = new HashMap<>(); // K = messageId, V = BiConsumer<PageNumber, EmbedBuilder>
 
     private static final String LEFT_EMOJI = "\u25C0";
     private static final String RIGHT_EMOJI = "\u25B6";
     private static final String WASTEBASKET = "\uD83D\uDDD1\uFE0F";
 
     public static void createEmbedPaginator(final TextChannel channel, final Message message, final Map<Integer, String> authorPerPage, final int totalPages, final Map<Integer, ArrayList<MessageEmbed.Field>> fields){
-        createPaginator(channel, message, authorPerPage, totalPages, (page, embedBuilder) -> fields.get(page).forEach(embedBuilder::addField));
+        createPaginator(channel, message, totalPages, (page, embedBuilder) ->{
+            embedBuilder.setAuthor(authorPerPage.get(page));
+            fields.get(page).forEach(embedBuilder::addField);
+        });
     }
 
-    public static void createPaginator(final TextChannel channel, final Message message, final Map<Integer, String> authorPerPage, final int totalPages, final BiConsumer<Integer, EmbedBuilder> consumer){
+    public static void createPaginator(final TextChannel channel, final Message message, final int totalPages, final BiConsumer<Integer, EmbedBuilder> consumer){
         final var embedBuilder = new EmbedBuilder();
-        embedBuilder.setAuthor(authorPerPage.get(0));
         embedBuilder.setFooter("Page 1/" + totalPages);
         consumer.accept(0, embedBuilder);
 
@@ -54,8 +55,7 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
             INVOKERS.put(messageId, authorId);
             ORIGINALS.put(messageId, message.getIdLong());
             CURRENT_PAGE.put(messageId, 0);
-            AUTHORS.put(messageId, authorPerPage);
-            CONSUMERS.put(messageId, consumer);
+            CONTENT_CONSUMERS.put(messageId, consumer);
 
             // TIMEOUT
 
@@ -91,7 +91,6 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
         final var newPageBuilder = new EmbedBuilder();
         final var currentPage = CURRENT_PAGE.get(messageId);
         final var total = TOTAL_PAGES.get(messageId);
-        final var authors = AUTHORS.get(messageId);
         final var emoji = reactionEmote.getEmoji();
 
         switch (emoji){
@@ -110,8 +109,7 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
                            .queue();
                 }
                 final var previousPage = currentPage - 1;
-                newPageBuilder.setAuthor(authors.get(previousPage));
-                CONSUMERS.get(messageId).accept(previousPage, newPageBuilder);
+                CONTENT_CONSUMERS.get(messageId).accept(previousPage, newPageBuilder);
                 newPageBuilder.setFooter("Page " + (previousPage + 1) + "/" + total); // yes, we could just use currentPage here but it would just bring confusion
                 if (previousPage == 0)
                     channel.removeReactionById(messageId, LEFT_EMOJI).queue();
@@ -128,8 +126,7 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
                            .queue();
                 }
                 final var nextPage = currentPage + 1;
-                newPageBuilder.setAuthor(authors.get(nextPage));
-                CONSUMERS.get(messageId).accept(nextPage, newPageBuilder);
+                CONTENT_CONSUMERS.get(messageId).accept(nextPage, newPageBuilder);
                 newPageBuilder.setFooter("Page " + (nextPage + 1) + "/" + total);
                 if (nextPage + 1 == total)
                     channel.removeReactionById(messageId, RIGHT_EMOJI).queue();
@@ -146,6 +143,6 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
         INVOKERS.remove(messageId);
         ORIGINALS.remove(messageId);
         CURRENT_PAGE.remove(messageId);
-        AUTHORS.remove(messageId);
+        CONTENT_CONSUMERS.remove(messageId);
     }
 }
