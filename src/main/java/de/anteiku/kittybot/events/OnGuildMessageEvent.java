@@ -23,7 +23,7 @@ public class OnGuildMessageEvent extends ListenerAdapter{
 		}
 		if(!CommandManager.checkCommands(event)){
 			if(event.getMessage().getMentionedUsers().size() == 1 && event.getMessage().getMentionedUsers().get(0).getId().equals(event.getJDA().getSelfUser().getId())){
-				event.getMessage().addReaction(Emojis.WASTEBASKET).queue();
+				event.getMessage().addReaction(Emojis.QUESTION).queue();
 				event.getChannel().sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setTitle("Do you need help?").setDescription("My current prefix for this guild is `" + Database.getCommandPrefix(event.getGuild().getId()) + "`\n" + "If you don't like my prefix you can ping me directly!\n" + "To have a look at all my commands use `" + Database.getCommandPrefix(event.getGuild().getId()) + "cmds`\n" + "To get help use`" + Database.getCommandPrefix(event.getGuild().getId()) + "help`").setThumbnail(event.getJDA().getSelfUser().getAvatarUrl()).setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl()).setTimestamp(Instant.now()).build()).queue();
 			}
 		}
