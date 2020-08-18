@@ -17,14 +17,17 @@ public class CommandManager{
 	private static final Logger LOG = LoggerFactory.getLogger(CommandManager.class);
 	private static final ClassGraph CLASS_GRAPH = new ClassGraph().whitelistPackages("de.anteiku.kittybot.commands");
 	private static final Map<String, ACommand> COMMANDS = new ConcurrentHashMap<>();
+	private static final Map<String, ACommand> DISTINCT_COMMANDS = new ConcurrentHashMap<>();
 
 	public static void registerCommands(){
 		try (var result = CLASS_GRAPH.scan()){
 			for (var cls : result.getAllClasses()){
-				var cmd = (ACommand) cls.loadClass().getDeclaredConstructor().newInstance();
-				COMMANDS.put(cmd.getCommand(), cmd);
-				for (var alias : cmd.getAliases())
-					COMMANDS.put(alias, cmd);
+				var instance = (ACommand) cls.loadClass().getDeclaredConstructor().newInstance();
+				var command = instance.getCommand();
+				COMMANDS.put(command, instance);
+				DISTINCT_COMMANDS.put(command, instance);
+				for (var alias : instance.getAliases())
+					COMMANDS.put(alias, instance);
 			}
 		}
 		catch (Exception e){
@@ -73,5 +76,9 @@ public class CommandManager{
 
 	public static Map<String, ACommand> getCommands(){
 		return COMMANDS;
+	}
+
+	public static Map<String, ACommand> getDistinctCommands(){
+		return DISTINCT_COMMANDS;
 	}
 }

@@ -29,14 +29,14 @@ public class CommandsCommand extends ACommand{
 		final var contents = new HashMap<Integer, ArrayList<MessageEmbed.Field>>();
 
 		final var prefix = Cache.getCommandPrefix(ctx.getGuild().getId());
-		final var commands = CommandManager.getCommands().values();
+		final var commands = CommandManager.getDistinctCommands().values();
 		final var categories = Category.values();
 		var c = 0;
 		for (final var category : categories){
 			authors.put(c, category.getFriendlyName());
 
 			final var fields = new ArrayList<MessageEmbed.Field>();
-			commands.stream().distinct().filter(command -> command.getCategory() == category).forEach(cmd ->
+			commands.stream().filter(command -> command.getCategory() == category).forEach(cmd ->
 					fields.add(new MessageEmbed.Field("**" + prefix + cmd.getCommand() + ":** ", " :small_blue_diamond:" + cmd.getDescription(), false)));
 			contents.put(c, fields);
 			c++;
