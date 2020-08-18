@@ -78,7 +78,7 @@ public class WebService{
 	private void login(Context ctx){
 		DataObject json = DataObject.fromJson(ctx.body());
 		String code = json.getString("code");
-		String state = json.getString("code");
+		String state = json.getString("state");
 		try{
 			String key = Database.generateUniqueKey();
 			Session session = oAuthClient.startSession(code, state, key, scopes).complete();
