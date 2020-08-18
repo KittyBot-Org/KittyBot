@@ -10,11 +10,11 @@ public class UnassignCommand extends ACommand{
 	public static final String COMMAND = "unassign";
 	public static final String USAGE = "unassign <Role>";
 	public static final String DESCRIPTION = "Unassigns yourself a role if it is self-assignable";
-	protected static final String[] ALIAS = {"iamn"};
+	protected static final String[] ALIASES = {"iamn"};
 	protected static final Category CATEGORY = Category.UTILITIES;
 
 	public UnassignCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS, CATEGORY);
+		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
 	@Override

@@ -24,12 +24,12 @@ public class RolesCommand extends ACommand{
 	public static final String COMMAND = "roles";
 	public static final String USAGE = "roles <add|remove|list>";
 	public static final String DESCRIPTION = "Used to manage your roles";
-	protected static final String[] ALIAS = {"r", "rollen"};
+	protected static final String[] ALIASES = {"r", "rollen"};
 	protected static final Category CATEGORY = Category.UTILITIES;
 	private static final String title = "Self-assignable roles:";
 
 	public RolesCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS, CATEGORY);
+		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
 	@Override

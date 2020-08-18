@@ -10,11 +10,11 @@ public class ShuffleCommand extends ACommand{
 	public static final String COMMAND = "shuffle";
 	public static final String USAGE = "shuffle";
 	public static final String DESCRIPTION = "Shuffles the current queue";
-	protected static final String[] ALIAS = {"mische"};
+	protected static final String[] ALIASES = {"mische"};
 	protected static final Category CATEGORY = Category.MUSIC;
 
 	public ShuffleCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS, CATEGORY);
+		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
 	@Override

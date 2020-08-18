@@ -9,11 +9,11 @@ public class BakaCommand extends ACommand{
 	public static final String COMMAND = "baka";
 	public static final String USAGE = "baka <@user, ...>";
 	public static final String DESCRIPTION = "Says baka to a user";
-	protected static final String[] ALIAS = {"dummy", "dummi"};
+	protected static final String[] ALIASES = {"dummy", "dummi"};
 	protected static final Category CATEGORY = Category.NEKO;
 
 	public BakaCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS, CATEGORY);
+		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
 	@Override

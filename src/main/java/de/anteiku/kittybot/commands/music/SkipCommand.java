@@ -10,11 +10,11 @@ public class SkipCommand extends ACommand{
 	public static final String COMMAND = "skip";
 	public static final String USAGE = "skip";
 	public static final String DESCRIPTION = "Skips the current track";
-	protected static final String[] ALIAS = {"überspring"};
+	protected static final String[] ALIASES = {"überspring"};
 	protected static final Category CATEGORY = Category.MUSIC;
 
 	public SkipCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS, CATEGORY);
+		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
 	@Override

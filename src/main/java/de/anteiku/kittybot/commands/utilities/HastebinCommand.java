@@ -22,11 +22,11 @@ public class HastebinCommand extends ACommand{
 	public static final String COMMAND = "hastebin";
 	public static final String USAGE = "hastebin <file>";
 	public static final String DESCRIPTION = "creates a " + Config.HASTEBIN_URL + " from the file";
-	protected static final String[] ALIAS = {};
+	protected static final String[] ALIASES = {};
 	protected static final Category CATEGORY = Category.UTILITIES;
 
 	public HastebinCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS, CATEGORY);
+		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
 	@Override

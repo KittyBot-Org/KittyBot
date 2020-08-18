@@ -15,12 +15,12 @@ public class EvalCommand extends ACommand{
 	public static final String COMMAND = "eval";
 	public static final String USAGE = "eval <code>";
 	public static final String DESCRIPTION = "Evals some Java Code";
-	protected static final String[] ALIAS = {};
+	protected static final String[] ALIASES = {};
 	protected static final Category CATEGORY = Category.UTILITIES;
 	private ScriptEngine engine;
 
 	public EvalCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS, CATEGORY);
+		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 		initEngine();
 	}
 

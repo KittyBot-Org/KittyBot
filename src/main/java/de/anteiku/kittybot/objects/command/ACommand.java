@@ -31,14 +31,14 @@ public abstract class ACommand{
 	public final String command;
 	protected final String usage;
 	protected final String description;
-	protected final String[] alias;
+	protected final String[] aliases;
 	protected final Category category;
 
-	protected ACommand(String command, String usage, String description, String[] alias, Category category){
+	protected ACommand(String command, String usage, String description, String[] aliases, Category category){
 		this.command = command;
 		this.usage = usage;
 		this.description = description;
-		this.alias = alias;
+		this.aliases = aliases;
 		this.category = category;
 	}
 
@@ -48,7 +48,7 @@ public abstract class ACommand{
 		if(cmd.equalsIgnoreCase(command)){
 			return true;
 		}
-		for(String a : alias){
+		for(String a : aliases){
 			if(a.equalsIgnoreCase(cmd)){
 				return true;
 			}
@@ -57,7 +57,7 @@ public abstract class ACommand{
 	}
 
 	protected String[] getAliases(){
-		return alias;
+		return aliases;
 	}
 
 	public String getCommand(){

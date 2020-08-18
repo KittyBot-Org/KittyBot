@@ -10,11 +10,11 @@ public class PauseCommand extends ACommand{
 	public static final String COMMAND = "pause";
 	public static final String USAGE = "pause";
 	public static final String DESCRIPTION = "Pauses the current track";
-	protected static final String[] ALIAS = {};
+	protected static final String[] ALIASES = {};
 	protected static final Category CATEGORY = Category.MUSIC;
 
 	public PauseCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS, CATEGORY);
+		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
 	@Override

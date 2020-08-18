@@ -13,11 +13,11 @@ public class DownloadEmotesCommand extends ACommand{
 	public static final String COMMAND = "downloademotes";
 	public static final String USAGE = "downloademotes <Emote, Emote, ...>";
 	public static final String DESCRIPTION = "Prints a ssh command to download the given emotes";
-	protected static final String[] ALIAS = {"dle", "dlemotes"};
+	protected static final String[] ALIASES = {"dle", "dlemotes"};
 	protected static final Category CATEGORY = Category.UTILITIES;
 
 	public DownloadEmotesCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS, CATEGORY);
+		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
 	@Override

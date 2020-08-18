@@ -9,11 +9,11 @@ public class PokeCommand extends ACommand{
 	public static final String COMMAND = "poke";
 	public static final String USAGE = "poke <@user, ...>";
 	public static final String DESCRIPTION = "Pokes a user";
-	protected static final String[] ALIAS = {"stups"};
+	protected static final String[] ALIASES = {"stups"};
 	protected static final Category CATEGORY = Category.NEKO;
 
 	public PokeCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS, CATEGORY);
+		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
 	@Override

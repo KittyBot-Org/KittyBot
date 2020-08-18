@@ -10,11 +10,11 @@ public class CatCommand extends ACommand{
 	public static final String COMMAND = "cat";
 	public static final String USAGE = "cat";
 	public static final String DESCRIPTION = "Sends a random cat";
-	protected static final String[] ALIAS = {"kitty", "katze"};
+	protected static final String[] ALIASES = {"kitty", "katze"};
 	protected static final Category CATEGORY = Category.NEKO;
 
 	public CatCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS, CATEGORY);
+		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
 	@Override

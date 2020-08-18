@@ -16,11 +16,11 @@ public class CommandsCommand extends ACommand{
 	public static final String COMMAND = "commands";
 	public static final String USAGE = "commands <page>";
 	public static final String DESCRIPTION = "Lists all available commands";
-	protected static final String[] ALIAS = {"cmds"};
+	protected static final String[] ALIASES = {"cmds"};
 	protected static final Category CATEGORY = Category.INFORMATIVE;
 
 	public CommandsCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS, CATEGORY);
+		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
 	@Override

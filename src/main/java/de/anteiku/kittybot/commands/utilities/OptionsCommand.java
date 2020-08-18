@@ -17,11 +17,11 @@ public class OptionsCommand extends ACommand{
 	public static final String COMMAND = "options";
 	public static final String USAGE = "options <prefix|joinchannel|joinmessage|nsfw> <value>";
 	public static final String DESCRIPTION = "Used to set some guild specified options";
-	protected static final String[] ALIAS = {"opts", "opt"};
+	protected static final String[] ALIASES = {"opts", "opt"};
 	protected static final Category CATEGORY = Category.UTILITIES;
 
 	public OptionsCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS, CATEGORY);
+		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
 	//TODO renaming sub-commands & displaying set values

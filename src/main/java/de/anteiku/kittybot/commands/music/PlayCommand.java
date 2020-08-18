@@ -15,12 +15,12 @@ public class PlayCommand extends ACommand{
 	public static final String COMMAND = "play";
 	public static final String USAGE = "play <playlist/song/video>";
 	public static final String DESCRIPTION = "Plays what you want Kitty to play";
-	protected static final String[] ALIAS = {"p", "spiele"};
+	protected static final String[] ALIASES = {"p", "spiele"};
 	protected static final Category CATEGORY = Category.MUSIC;
 	private static final int VOLUME_STEP = 10;
 
 	public PlayCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS, CATEGORY);
+		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
 	@Override
