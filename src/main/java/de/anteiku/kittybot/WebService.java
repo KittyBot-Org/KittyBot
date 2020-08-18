@@ -1,7 +1,5 @@
 package de.anteiku.kittybot;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.jagrosh.jdautilities.oauth2.OAuth2Client;
 import com.jagrosh.jdautilities.oauth2.Scope;
 import com.jagrosh.jdautilities.oauth2.entities.OAuth2User;
@@ -16,6 +14,7 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.utils.data.DataObject;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,9 +76,9 @@ public class WebService{
 	}
 
 	private void login(Context ctx){
-		JsonObject json = JsonParser.parseString(ctx.body()).getAsJsonObject();
-		String code = json.get("code").getAsString();
-		String state = json.get("state").getAsString();
+		DataObject json = DataObject.fromJson(ctx.body());
+		String code = json.getString("code");
+		String state = json.getString("code");
 		try{
 			String key = Database.generateUniqueKey();
 			Session session = oAuthClient.startSession(code, state, key, scopes).complete();
@@ -259,40 +258,41 @@ public class WebService{
 			error(ctx, 404, "guild not found");
 			return;
 		}
-		JsonObject json = JsonParser.parseString(ctx.body()).getAsJsonObject();
-		if(json.get("prefix") != null){
-			Database.setCommandPrefix(guildId, json.get("prefix").getAsString());
+		DataObject json = DataObject.fromJson(ctx.body());
+		if(json.hasKey("code")){
+			Database.setCommandPrefix(guildId, json.getString("prefix"));
 		}
-		if(json.get("join_messages_enabled") != null){
-			Database.setJoinMessageEnabled(guildId, json.get("join_messages_enabled").getAsBoolean());
+		if(json.hasKey("join_messages_enabled")){
+			Database.setJoinMessageEnabled(guildId, json.getBoolean("join_messages_enabled"));
 		}
-		if(json.get("join_messages") != null){
-			Database.setJoinMessage(guildId, json.get("join_messages").getAsString());
+		if(json.hasKey("join_messages")){
+			Database.setJoinMessage(guildId, json.getString("join_messages"));
 		}
-		if(json.get("leave_messages_enabled") != null){
-			Database.setLeaveMessageEnabled(guildId, json.get("leave_messages_enabled").getAsBoolean());
+		if(json.hasKey("leave_messages_enabled")){
+			Database.setLeaveMessageEnabled(guildId, json.getBoolean("leave_messages_enabled"));
 		}
-		if(json.get("leave_messages") != null){
-			Database.setLeaveMessage(guildId, json.get("leave_messages").getAsString());
+		if(json.hasKey("leave_messages")){
+			Database.setLeaveMessage(guildId, json.getString("leave_messages"));
 		}
-		if(json.get("boost_messages_enabled") != null){
-			Database.setBoostMessageEnabled(guildId, json.get("boost_messages_enabled").getAsBoolean());
+		if(json.hasKey("boost_messages_enabled")){
+			Database.setBoostMessageEnabled(guildId, json.getBoolean("boost_messages_enabled"));
 		}
-		if(json.get("boost_messages") != null){
-			Database.setBoostMessage(guildId, json.get("boost_messages").getAsString());
+		if(json.hasKey("boost_messages")){
+			Database.setBoostMessage(guildId, json.getString("boost_messages"));
 		}
-		if(json.get("announcement_channel_id") != null){
-			Database.setAnnouncementChannelId(guildId, json.get("announcement_channel_id").getAsString());
+		if(json.hasKey("announcement_channel_id")){
+			Database.setAnnouncementChannelId(guildId, json.getString("announcement_channel_id"));
 		}
-		if(json.get("nsfw_enabled") != null){
-			Database.setNSFWEnabled(guildId, json.get("nsfw_enabled").getAsBoolean());
+		if(json.hasKey("nsfw_enabled")){
+			Database.setNSFWEnabled(guildId, json.getBoolean("nsfw_enabled"));
 		}
-		if(json.get("self_assignable_roles") != null){
+		if(json.hasKey("self_assignable_roles")){
 			Map<String, String> roles = new HashMap<>();
-			json.get("self_assignable_roles").getAsJsonArray().forEach(jsonElement -> {
-				var obj = jsonElement.getAsJsonObject();
-				roles.put(obj.get("role").getAsString(), obj.get("emote").getAsString());
-			});
+			var dataArray = json.getArray("self_assignable_roles");
+			for (var i = 0; i < dataArray.length(); i++){
+				var obj = dataArray.getObject(i);
+				roles.put(obj.getString("role"), obj.getString("emote"));
+			}
 			Database.setSelfAssignableRoles(guildId, roles);
 		}
 		ok(ctx);
