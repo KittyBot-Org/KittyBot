@@ -24,7 +24,7 @@ dependencies {
 
     // database
     implementation 'com.zaxxer:HikariCP:2.5.1'
-    implementation 'org.postgresql:postgresql:42.2.14'
+    implementation 'org.postgresql:postgresql:42.2.15'
 
     // logging
     implementation 'ch.qos.logback:logback-classic:1.2.3'
