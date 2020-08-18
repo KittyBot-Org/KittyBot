@@ -48,21 +48,9 @@ public class Database{
 
 public static boolean registerGuild(Guild guild){
 	LOG.debug("Registering new guild: {}", guild.getId());
-	var query = "INSERT INTO guilds (guild_id, " +
-			"command_prefix, " +
-			"request_channel_id, " +
-			"requests_enabled, " +
-			"announcement_channel_id, " +
-			"join_messages, " +
-			"join_messages_enabled, " +
-			"leave_messages, " +
-			"leave_messages_enabled, " +
-			"boost_messages, " +
-			"boost_messages_enabled, " +
-			"log_channel_id, " +
-			"log_message_enabled, " +
-			"nsfw_enabled, " +
-			"inactive_role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	var query = "INSERT INTO guilds (guild_id, command_prefix, request_channel_id, requests_enabled, announcement_channel_id, join_messages, join_messages_enabled, " +
+			"leave_messages, leave_messages_enabled, boost_messages, boost_messages_enabled, log_channel_id, log_message_enabled, nsfw_enabled, inactive_role) " +
+			"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 		stmt.setString(1, guild.getId());
 		stmt.setString(2, Config.DEFAULT_PREFIX);
