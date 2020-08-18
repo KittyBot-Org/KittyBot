@@ -188,7 +188,7 @@ public class WebService{
 		}
 		Collection<String> roles = new ArrayList<>();
 		for(Role role : guild.getRoles()){
-			roles.add(String.format("{\"name\": \"%s\", \"id\": \"%s\"}", role.getName(), role.getId()));
+			roles.add(String.format("{\"name\": \"%s\", \"id\": \"%s\"}", JSONObject.quote(role.getName()), role.getId()));
 		}
 		ok(ctx, String.format("{\"roles\": [%s]}", String.join(", ", roles)));
 	}
@@ -201,7 +201,7 @@ public class WebService{
 		}
 		Collection<String> channels = new ArrayList<>();
 		for(TextChannel channel : guild.getTextChannels()){
-			channels.add(String.format("{\"name\": \"%s\", \"id\": \"%s\"}", channel.getName(), channel.getId()));
+			channels.add(String.format("{\"name\": \"%s\", \"id\": \"%s\"}", JSONObject.quote(channel.getName()), channel.getId()));
 		}
 		ok(ctx, String.format("{\"channels\": [%s]}", String.join(", ", channels)));
 	}
@@ -214,7 +214,7 @@ public class WebService{
 		}
 		Collection<String> emotes = new ArrayList<>();
 		for(Emote emote : guild.getEmotes()){
-			emotes.add(String.format("{\"name\": \"%s\", \"id\": \"%s\", \"url\": \"%s\"}", emote.getName(), emote.getId(), emote.getImageUrl()));
+			emotes.add(String.format("{\"name\": \"%s\", \"id\": \"%s\", \"url\": \"%s\"}", JSONObject.quote(emote.getName()), emote.getId(), JSONObject.quote(emote.getImageUrl())));
 		}
 		ok(ctx, String.format("{\"emotes\": [%s]}", String.join(", ", emotes)));
 	}
