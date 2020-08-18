@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEve
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,13 +31,14 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
         createPaginator(channel, message, totalPages, (page, embedBuilder) ->{
             embedBuilder.setAuthor(authorPerPage.get(page));
             fields.get(page).forEach(embedBuilder::addField);
+            embedBuilder.setTimestamp(Instant.now());
         });
     }
 
-    public static void createPaginator(final TextChannel channel, final Message message, final int totalPages, final BiConsumer<Integer, EmbedBuilder> consumer){
+    public static void createPaginator(final TextChannel channel, final Message message, final int totalPages, final BiConsumer<Integer, EmbedBuilder> contentConsumer){
         final var embedBuilder = new EmbedBuilder();
         embedBuilder.setFooter("Page 1/" + totalPages);
-        consumer.accept(0, embedBuilder);
+        contentConsumer.accept(0, embedBuilder);
 
         channel.sendMessage(embedBuilder.build()).queue(paginatorMessage ->{
             paginatorMessage.addReaction(ARROW_RIGHT).queue();
@@ -53,7 +55,7 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
             INVOKERS.put(messageId, authorId);
             ORIGINALS.put(messageId, message.getIdLong());
             CURRENT_PAGE.put(messageId, 0);
-            CONTENT_CONSUMERS.put(messageId, consumer);
+            CONTENT_CONSUMERS.put(messageId, contentConsumer);
 
             // TIMEOUT
 
