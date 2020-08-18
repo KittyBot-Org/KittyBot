@@ -3,6 +3,7 @@ package de.anteiku.kittybot.commands.music;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.anteiku.kittybot.objects.Cache;
 import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
 
 import static de.anteiku.kittybot.Utils.*;
@@ -11,11 +12,12 @@ public class QueueCommand extends ACommand{
 
 	public static final String COMMAND = "queue";
 	public static final String USAGE = "queue <playlist/song/video>";
-	public static final String DESCRIPTION = "Queues what you want him to play later";
-	protected static final String[] ALIAS = {"q"};
+	public static final String DESCRIPTION = "Queues what you want Kitty to play later";
+	protected static final String[] ALIASES = {"q"};
+	protected static final Category CATEGORY = Category.MUSIC;
 
 	public QueueCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
+		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
 	@Override

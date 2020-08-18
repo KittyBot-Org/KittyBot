@@ -3,9 +3,10 @@ package de.anteiku.kittybot.commands.utilities;
 import de.anteiku.kittybot.Utils;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.Cache;
-import de.anteiku.kittybot.objects.Emotes;
+import de.anteiku.kittybot.objects.Emojis;
 import de.anteiku.kittybot.objects.ReactiveMessage;
 import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -23,11 +24,12 @@ public class RolesCommand extends ACommand{
 	public static final String COMMAND = "roles";
 	public static final String USAGE = "roles <add|remove|list>";
 	public static final String DESCRIPTION = "Used to manage your roles";
-	protected static final String[] ALIAS = {"r", "rollen"};
+	protected static final String[] ALIASES = {"r", "rollen"};
+	protected static final Category CATEGORY = Category.UTILITIES;
 	private static final String title = "Self-assignable roles:";
 
 	public RolesCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
+		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
 	@Override
@@ -76,15 +78,15 @@ public class RolesCommand extends ACommand{
 			}
 			StringBuilder value = new StringBuilder();
 			for(Map.Entry<Role, Emote> k : roles.entrySet()){
-				value.append(k.getValue().getAsMention()).append(Emotes.BLANK.get()).append(Emotes.BLANK.get()).append(k.getKey().getAsMention()).append("\n");
+				value.append(k.getValue().getAsMention()).append(Emojis.BLANK).append(Emojis.BLANK).append(k.getKey().getAsMention()).append("\n");
 			}
-			answer(ctx, new EmbedBuilder().setTitle(title).setDescription("To get/remove a role click reaction emote. " + Emotes.KITTY_BLINK.get() + "\n\n").setColor(Color.MAGENTA).appendDescription("**Emote:**" + Emotes.BLANK.get() + "**Role:**\n" + value)).queue(message -> {
+			answer(ctx, new EmbedBuilder().setTitle(title).setDescription("To get/remove a role click reaction emote. " + Emojis.KITTY_BLINK + "\n\n").setColor(Color.MAGENTA).appendDescription("**Emote:**" + Emojis.BLANK + "**Role:**\n" + value)).queue(message -> {
 				Cache.addReactiveMessage(ctx, message, this, "-1");
 				for(Map.Entry<Role, Emote> role : roles.entrySet()){
 					message.addReaction(role.getValue()).queue();
 				}
-				message.addReaction(Emotes.WASTEBASKET.get()).queue();
-				message.addReaction(Emotes.WASTEBASKET.get()).queue();
+				message.addReaction(Emojis.WASTEBASKET).queue();
+				message.addReaction(Emojis.WASTEBASKET).queue();
 			});
 		}
 	}

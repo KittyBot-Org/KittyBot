@@ -4,6 +4,7 @@ import de.anteiku.kittybot.Utils;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.Cache;
 import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -16,10 +17,11 @@ public class OptionsCommand extends ACommand{
 	public static final String COMMAND = "options";
 	public static final String USAGE = "options <prefix|joinchannel|joinmessage|nsfw> <value>";
 	public static final String DESCRIPTION = "Used to set some guild specified options";
-	protected static final String[] ALIAS = {"opts", "opt"};
+	protected static final String[] ALIASES = {"opts", "opt"};
+	protected static final Category CATEGORY = Category.UTILITIES;
 
 	public OptionsCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
+		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
 	//TODO renaming sub-commands & displaying set values

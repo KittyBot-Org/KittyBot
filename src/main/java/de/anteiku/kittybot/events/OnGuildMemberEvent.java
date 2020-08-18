@@ -85,8 +85,10 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 	}
 
 	private String generateBoostMessage(String message, User user){
-		String random = BOOST_MESSAGES.get(ThreadLocalRandom.current().nextInt(BOOST_MESSAGES.size() - 1));
-		message = message.replace("${random_boost_message}", random);
+		if(BOOST_MESSAGES != null && BOOST_MESSAGES.size() > 1){
+			String random = BOOST_MESSAGES.get(ThreadLocalRandom.current().nextInt(BOOST_MESSAGES.size() - 1));
+			message = message.replace("${random_boost_message}", random);
+		}
 		message = message.replace("${user}", user.getAsMention());
 		message = message.replace("${user_tag}", user.getAsTag());
 		message = message.replace("${name}", user.getName());
@@ -94,8 +96,10 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 	}
 
 	private String generateJoinMessage(String message, User user, Invite invite){
-		String random = JOIN_MESSAGES.get(ThreadLocalRandom.current().nextInt(JOIN_MESSAGES.size() - 1));
-		message = message.replace("${random_join_message}", random);
+		if(JOIN_MESSAGES != null && JOIN_MESSAGES.size() > 1){
+			String random = JOIN_MESSAGES.get(ThreadLocalRandom.current().nextInt(JOIN_MESSAGES.size() - 1));
+			message = message.replace("${random_join_message}", random);
+		}
 		if(invite != null){
 			if(invite.getInviter() != null){
 				message = message.replace("${inviter}", invite.getInviter().getAsMention());
@@ -111,8 +115,10 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 	}
 
 	private String generateLeaveMessage(String message, User user){
-		String random = LEAVE_MESSAGES.get(ThreadLocalRandom.current().nextInt(LEAVE_MESSAGES.size() - 1));
-		message = message.replace("${random_leave_message}", random);
+		if(LEAVE_MESSAGES != null && LEAVE_MESSAGES.size() > 1){
+			String random = LEAVE_MESSAGES.get(ThreadLocalRandom.current().nextInt(LEAVE_MESSAGES.size() - 1));
+			message = message.replace("${random_leave_message}", random);
+		}
 		message = message.replace("${user}", user.getAsMention());
 		message = message.replace("${user_tag}", user.getAsTag());
 		message = message.replace("${name}", user.getName());

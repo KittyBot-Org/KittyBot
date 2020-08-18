@@ -2,6 +2,7 @@ package de.anteiku.kittybot.commands.utilities;
 
 import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.entities.ChannelType;
 
@@ -14,11 +15,12 @@ public class EvalCommand extends ACommand{
 	public static final String COMMAND = "eval";
 	public static final String USAGE = "eval <code>";
 	public static final String DESCRIPTION = "Evals some Java Code";
-	protected static final String[] ALIAS = {};
+	protected static final String[] ALIASES = {};
+	protected static final Category CATEGORY = Category.UTILITIES;
 	private ScriptEngine engine;
 
 	public EvalCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
+		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 		initEngine();
 	}
 

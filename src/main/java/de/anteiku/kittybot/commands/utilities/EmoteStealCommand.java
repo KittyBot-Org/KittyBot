@@ -1,6 +1,7 @@
 package de.anteiku.kittybot.commands.utilities;
 
 import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emote;
@@ -17,11 +18,12 @@ public class EmoteStealCommand extends ACommand{
 	public static final String COMMAND = "steal";
 	public static final String USAGE = "steal <Emote, Emote, ...> or <url> <name>";
 	public static final String DESCRIPTION = "Steals some emotes";
-	protected static final String[] ALIAS = {"grab", "klau"};
+	protected static final String[] ALIASES = {"grab", "klau"};
+	protected static final Category CATEGORY = Category.UTILITIES;
 	protected static final int MAX_EMOTE_SIZE = 256000;
 
 	public EmoteStealCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
+		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
 	@Override

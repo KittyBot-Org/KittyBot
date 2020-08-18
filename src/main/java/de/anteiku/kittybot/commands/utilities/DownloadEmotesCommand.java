@@ -1,6 +1,7 @@
 package de.anteiku.kittybot.commands.utilities;
 
 import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Message;
@@ -12,10 +13,11 @@ public class DownloadEmotesCommand extends ACommand{
 	public static final String COMMAND = "downloademotes";
 	public static final String USAGE = "downloademotes <Emote, Emote, ...>";
 	public static final String DESCRIPTION = "Prints a ssh command to download the given emotes";
-	protected static final String[] ALIAS = {"dle", "dlemotes"};
+	protected static final String[] ALIASES = {"dle", "dlemotes"};
+	protected static final Category CATEGORY = Category.UTILITIES;
 
 	public DownloadEmotesCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
+		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
 	@Override

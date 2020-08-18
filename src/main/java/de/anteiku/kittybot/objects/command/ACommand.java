@@ -1,10 +1,9 @@
 package de.anteiku.kittybot.objects.command;
 
-import com.google.gson.JsonParser;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.Cache;
-import de.anteiku.kittybot.objects.Emotes;
+import de.anteiku.kittybot.objects.Emojis;
 import de.anteiku.kittybot.objects.ReactiveMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -13,6 +12,7 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.api.utils.data.DataObject;
 import okhttp3.Request;
 import org.apache.commons.collections4.Bag;
 import org.slf4j.Logger;
@@ -31,13 +31,15 @@ public abstract class ACommand{
 	public final String command;
 	protected final String usage;
 	protected final String description;
-	protected final String[] alias;
+	protected final String[] aliases;
+	protected final Category category;
 
-	protected ACommand(String command, String usage, String description, String[] alias){
+	protected ACommand(String command, String usage, String description, String[] aliases, Category category){
 		this.command = command;
 		this.usage = usage;
 		this.description = description;
-		this.alias = alias;
+		this.aliases = aliases;
+		this.category = category;
 	}
 
 	protected abstract void run(CommandContext ctx);
@@ -46,7 +48,7 @@ public abstract class ACommand{
 		if(cmd.equalsIgnoreCase(command)){
 			return true;
 		}
-		for(String a : alias){
+		for(String a : aliases){
 			if(a.equalsIgnoreCase(cmd)){
 				return true;
 			}
@@ -55,7 +57,7 @@ public abstract class ACommand{
 	}
 
 	protected String[] getAliases(){
-		return alias;
+		return aliases;
 	}
 
 	public String getCommand(){
@@ -70,8 +72,12 @@ public abstract class ACommand{
 		return usage;
 	}
 
+	public Category getCategory(){
+		return category;
+	}
+
 	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
-		if(event.getReactionEmote().getName().equals(Emotes.WASTEBASKET.get()) && (event.getUserId().equals(reactiveMessage.userId) || event.getMember().hasPermission(Permission.MESSAGE_MANAGE))){
+		if(event.getReactionEmote().getName().equals(Emojis.WASTEBASKET) && (event.getUserId().equals(reactiveMessage.userId) || event.getMember().hasPermission(Permission.MESSAGE_MANAGE))){
 			event.getChannel().deleteMessageById(event.getMessageId()).queue();
 			event.getChannel().deleteMessageById(reactiveMessage.commandId).queue();
 			Cache.removeReactiveMessage(event.getGuild(), event.getMessageId());
@@ -150,21 +156,21 @@ public abstract class ACommand{
 	}
 
 	protected void addStatus(Message message, Status status){
-		Emotes emote;
+		String emote;
 		switch(status){
 			case OK:
-				emote = Emotes.CHECK;
+				emote = Emojis.CHECK;
 				break;
 			case ERROR:
-				emote = Emotes.X;
+				emote = Emojis.X;
 				break;
 			case QUESTION:
 			default:
-				emote = Emotes.QUESTION;
+				emote = Emojis.QUESTION;
 				break;
 		}
-		message.addReaction(emote.get()).queue(
-				success -> message.getTextChannel().removeReactionById(message.getId(), emote.get()).queueAfter(5, TimeUnit.SECONDS)
+		message.addReaction(emote).queue(
+				success -> message.getTextChannel().removeReactionById(message.getId(), emote).queueAfter(5, TimeUnit.SECONDS)
 		);
 	}
 
@@ -200,7 +206,7 @@ public abstract class ACommand{
 		String content = ctx.getMessage().getContentRaw();
 		User selfUser = ctx.getSelfUser();
 		long botId = selfUser.getIdLong();
-		if (content.startsWith("<@" + botId + ">") || content.startsWith("<@!" + botId + ">")){
+		if(content.startsWith("<@" + botId + ">") || content.startsWith("<@!" + botId + ">")){
 			var occurrences = users.getCount(selfUser);
 			users.remove(selfUser, occurrences == 1 ? 1 : occurrences - 1);
 		}
@@ -235,7 +241,7 @@ public abstract class ACommand{
 	protected String getNeko(String type){
 		try{
 			Request request = new Request.Builder().url("https://nekos.life/api/v2/img/" + type).build();
-			return JsonParser.parseString(KittyBot.getHttpClient().newCall(request).execute().body().string()).getAsJsonObject().get("url").getAsString();
+			return DataObject.fromJson(KittyBot.getHttpClient().newCall(request).execute().body().string()).getString("url");
 		}
 		catch(IOException e){
 			LOG.error("Error while retrieving Neko", e);

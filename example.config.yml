@@ -1,25 +1,25 @@
-bot_token:
-bot_id:
-bot_secret:
-admin_id:
-support_guild:
-log_channel:
-invite_url:
-redirect_url:
-origin_url:
-hastebin_url:
+bot_token: #your bot token
+bot_id: #your bot id
+bot_secret: #your bots secret
+admin_id: #your discord client id
+support_guild: #your support guild id
+log_channel: #your log cahnnel id
+invite_url: https://discordapp.com/api/oauth2/authorize?client_id=your_client_id&permissions=1345842374&scope=bot #just insert your bot client id
+redirect_url: #your backend redirect url aka your kittybot websites frontend
+origin_url: #your origin url from your website(allowes which wesbite is allowed to make requests to your backend
+hastebin_url: #just a hastebin url
 
-db_host:
-db_port:
-db_db:
-db_user:
-db_password:
+db_host: #the database host
+db_port: #the database port
+db_db: #the database database
+db_user: #the database user
+db_password: #the database password
 
-lavalink_nodes:
+lavalink_nodes: #you can add as much nodes as you wish here. naming of lavalink_1 doesn't matter
     lavalink_1:
-        host:
-        port:
-        password:
+        host: #lavalink node host
+        port: #lavalink port
+        password: #lavalink password
     lavalink_2:
         host:
         port:

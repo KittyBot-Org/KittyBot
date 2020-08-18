@@ -116,15 +116,18 @@ public class Cache{
 		MUSIC_PLAYERS.put(guild.getId(), player);
 	}
 
-	public static MusicPlayer getMusicPlayer(Guild guild){
-		return MUSIC_PLAYERS.get(guild.getId());
-	}
-
 	public static void destroyMusicPlayer(Guild guild){
-		var musicPlayer = MUSIC_PLAYERS.get(guild.getId());
+		var musicPlayer = getMusicPlayer(guild);
+		if(musicPlayer == null){
+			return;
+		}
 		KittyBot.getLavalink().getLink(guild).destroy();
 		removeReactiveMessage(guild, musicPlayer.getMessageId());
 		MUSIC_PLAYERS.remove(guild.getId());
+	}
+
+	public static MusicPlayer getMusicPlayer(Guild guild){
+		return MUSIC_PLAYERS.get(guild.getId());
 	}
 
 

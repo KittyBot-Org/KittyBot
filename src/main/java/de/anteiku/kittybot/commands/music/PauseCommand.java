@@ -2,6 +2,7 @@ package de.anteiku.kittybot.commands.music;
 
 import de.anteiku.kittybot.objects.Cache;
 import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
 
 public class PauseCommand extends ACommand{
@@ -9,10 +10,11 @@ public class PauseCommand extends ACommand{
 	public static final String COMMAND = "pause";
 	public static final String USAGE = "pause";
 	public static final String DESCRIPTION = "Pauses the current track";
-	protected static final String[] ALIAS = {};
+	protected static final String[] ALIASES = {};
+	protected static final Category CATEGORY = Category.MUSIC;
 
 	public PauseCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIAS);
+		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
 	@Override
