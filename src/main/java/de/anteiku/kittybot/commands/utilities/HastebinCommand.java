@@ -1,12 +1,12 @@
 package de.anteiku.kittybot.commands.utilities;
 
-import com.google.gson.JsonParser;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.utils.data.DataObject;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -45,7 +45,7 @@ public class HastebinCommand extends ACommand{
 							response.close();
 							return;
 						}
-						sendAnswer(ctx, "[here](" + Config.HASTEBIN_URL + "/" + JsonParser.parseString(response.string()).getAsJsonObject().get("key").getAsString() + ") is a hastebin");
+						sendAnswer(ctx, "[here](" + Config.HASTEBIN_URL + "/" + DataObject.fromJson(response.string()).getString("key") + ") is a hastebin");
 						response.close();
 					}
 					catch(IOException e){

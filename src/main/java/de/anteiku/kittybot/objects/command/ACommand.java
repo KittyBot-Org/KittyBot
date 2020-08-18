@@ -1,6 +1,5 @@
 package de.anteiku.kittybot.objects.command;
 
-import com.google.gson.JsonParser;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.Cache;
@@ -13,6 +12,7 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.api.utils.data.DataObject;
 import okhttp3.Request;
 import org.apache.commons.collections4.Bag;
 import org.slf4j.Logger;
@@ -242,7 +242,7 @@ public abstract class ACommand{
 	protected String getNeko(String type){
 		try{
 			Request request = new Request.Builder().url("https://nekos.life/api/v2/img/" + type).build();
-			return JsonParser.parseString(KittyBot.getHttpClient().newCall(request).execute().body().string()).getAsJsonObject().get("url").getAsString();
+			return DataObject.fromJson(KittyBot.getHttpClient().newCall(request).execute().body().string()).getString("url");
 		}
 		catch(IOException e){
 			LOG.error("Error while retrieving Neko", e);

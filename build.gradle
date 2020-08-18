@@ -33,7 +33,6 @@ dependencies {
     // other
     implementation 'io.javalin:javalin:3.9.1'
     implementation 'com.github.TopiSenpai:EmojiUtils:1.0'
-    implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'org.yaml:snakeyaml:1.26'
     implementation 'io.github.classgraph:classgraph:4.8.78'
 }
