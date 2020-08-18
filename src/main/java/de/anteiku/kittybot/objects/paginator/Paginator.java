@@ -91,6 +91,7 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
         final var newPageBuilder = new EmbedBuilder();
         final var currentPage = CURRENT_PAGE.get(messageId);
         final var total = TOTAL_PAGES.get(messageId);
+        final var contentConsumer = CONTENT_CONSUMERS.get(messageId);
         final var emoji = reactionEmote.getEmoji();
 
         switch (emoji){
@@ -109,7 +110,7 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
                            .queue();
                 }
                 final var previousPage = currentPage - 1;
-                CONTENT_CONSUMERS.get(messageId).accept(previousPage, newPageBuilder);
+                contentConsumer.accept(previousPage, newPageBuilder);
                 newPageBuilder.setFooter("Page " + (previousPage + 1) + "/" + total); // yes, we could just use currentPage here but it would just bring confusion
                 if (previousPage == 0)
                     channel.removeReactionById(messageId, ARROW_LEFT).queue();
@@ -126,7 +127,7 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
                            .queue();
                 }
                 final var nextPage = currentPage + 1;
-                CONTENT_CONSUMERS.get(messageId).accept(nextPage, newPageBuilder);
+                contentConsumer.accept(nextPage, newPageBuilder);
                 newPageBuilder.setFooter("Page " + (nextPage + 1) + "/" + total);
                 if (nextPage + 1 == total)
                     channel.removeReactionById(messageId, ARROW_RIGHT).queue();
