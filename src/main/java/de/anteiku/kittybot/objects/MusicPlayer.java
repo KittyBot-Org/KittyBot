@@ -130,13 +130,13 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 					messageId = message.getId();
 					channelId = message.getChannel().getId();
 					Cache.addReactiveMessage(ctx, message, command, "-1");
-					message.addReaction(Emotes.VOLUME_DOWN.get()).queue();
-					message.addReaction(Emotes.VOLUME_UP.get()).queue();
-					message.addReaction(Emotes.BACK.get()).queue();
+					message.addReaction(Emojis.VOLUME_DOWN).queue();
+					message.addReaction(Emojis.VOLUME_UP).queue();
+					message.addReaction(Emojis.BACK).queue();
 					message.addReaction("PlayPause:744945002416963634").queue();
-					message.addReaction(Emotes.FORWARD.get()).queue();
-					message.addReaction(Emotes.SHUFFLE.get()).queue();
-					message.addReaction(Emotes.X.get()).queue();
+					message.addReaction(Emojis.FORWARD).queue();
+					message.addReaction(Emojis.SHUFFLE).queue();
+					message.addReaction(Emojis.X).queue();
 				}
 		);
 	}

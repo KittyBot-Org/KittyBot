@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
+import static de.anteiku.kittybot.objects.Emojis.*;
+
 public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your shitty paginator
     private static final Map<Long, List<Long>> PAGINATOR_MESSAGES = new HashMap<>();                       // K = channelId, V = List<MessageId>
     private static final Map<Long, Integer> TOTAL_PAGES = new HashMap<>();                                 // K = messageId, V = total pages
@@ -23,10 +25,6 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
     private static final Map<Long, Long> ORIGINALS = new HashMap<>();                                      // K = messageId, V = original messageId
     private static final Map<Long, Integer> CURRENT_PAGE = new HashMap<>();                                // K = messageId, V = current page
     private static final Map<Long, BiConsumer<Integer, EmbedBuilder>> CONTENT_CONSUMERS = new HashMap<>(); // K = messageId, V = BiConsumer<PageNumber, EmbedBuilder>
-
-    private static final String LEFT_EMOJI = "\u25C0";
-    private static final String RIGHT_EMOJI = "\u25B6";
-    private static final String WASTEBASKET = "\uD83D\uDDD1\uFE0F";
 
     public static void createEmbedPaginator(final TextChannel channel, final Message message, final Map<Integer, String> authorPerPage, final int totalPages, final Map<Integer, ArrayList<MessageEmbed.Field>> fields){
         createPaginator(channel, message, totalPages, (page, embedBuilder) ->{
@@ -41,7 +39,7 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
         consumer.accept(0, embedBuilder);
 
         channel.sendMessage(embedBuilder.build()).queue(paginatorMessage ->{
-            paginatorMessage.addReaction(RIGHT_EMOJI).queue();
+            paginatorMessage.addReaction(ARROW_RIGHT).queue();
             paginatorMessage.addReaction(WASTEBASKET).queue();
 
             // CACHING
@@ -99,12 +97,12 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
                 channel.deleteMessageById(messageId).queue();
                 removePaginator(channelId, messageId);
                 return;
-            case LEFT_EMOJI:
+            case ARROW_LEFT:
                 if (currentPage == 0)
                     return;
                 if (currentPage + 1 == total){
                     channel.removeReactionById(messageId, WASTEBASKET)
-                           .flatMap(ignored -> channel.addReactionById(messageId, RIGHT_EMOJI))
+                           .flatMap(ignored -> channel.addReactionById(messageId, ARROW_RIGHT))
                            .flatMap(ignored -> channel.addReactionById(messageId, WASTEBASKET))
                            .queue();
                 }
@@ -112,16 +110,16 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
                 CONTENT_CONSUMERS.get(messageId).accept(previousPage, newPageBuilder);
                 newPageBuilder.setFooter("Page " + (previousPage + 1) + "/" + total); // yes, we could just use currentPage here but it would just bring confusion
                 if (previousPage == 0)
-                    channel.removeReactionById(messageId, LEFT_EMOJI).queue();
+                    channel.removeReactionById(messageId, ARROW_LEFT).queue();
                 CURRENT_PAGE.put(messageId, previousPage);
                 break;
-            case RIGHT_EMOJI:
+            case ARROW_RIGHT:
                 if (currentPage == total)
                     return;
                 if (currentPage == 0){
                     channel.clearReactionsById(messageId)
-                           .flatMap(ignored -> channel.addReactionById(messageId, LEFT_EMOJI))
-                           .flatMap(ignored -> channel.addReactionById(messageId, RIGHT_EMOJI))
+                           .flatMap(ignored -> channel.addReactionById(messageId, ARROW_LEFT))
+                           .flatMap(ignored -> channel.addReactionById(messageId, ARROW_RIGHT))
                            .flatMap(ignored -> channel.addReactionById(messageId, WASTEBASKET))
                            .queue();
                 }
@@ -129,7 +127,7 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
                 CONTENT_CONSUMERS.get(messageId).accept(nextPage, newPageBuilder);
                 newPageBuilder.setFooter("Page " + (nextPage + 1) + "/" + total);
                 if (nextPage + 1 == total)
-                    channel.removeReactionById(messageId, RIGHT_EMOJI).queue();
+                    channel.removeReactionById(messageId, ARROW_RIGHT).queue();
                 CURRENT_PAGE.put(messageId, nextPage);
                 break;
             default: return;

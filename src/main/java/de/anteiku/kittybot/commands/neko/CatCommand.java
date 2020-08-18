@@ -1,6 +1,6 @@
 package de.anteiku.kittybot.commands.neko;
 
-import de.anteiku.kittybot.objects.Emotes;
+import de.anteiku.kittybot.objects.Emojis;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
@@ -19,7 +19,7 @@ public class CatCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		image(ctx, getNeko("meow")).queue(message -> message.addReaction(Emotes.CAT.get()).queue());
+		image(ctx, getNeko("meow")).queue(message -> message.addReaction(Emojis.CAT).queue());
 	}
 
 }

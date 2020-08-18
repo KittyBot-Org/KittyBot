@@ -2,7 +2,7 @@ package de.anteiku.kittybot.commands.music;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.objects.Cache;
-import de.anteiku.kittybot.objects.Emotes;
+import de.anteiku.kittybot.objects.Emojis;
 import de.anteiku.kittybot.objects.MusicPlayer;
 import de.anteiku.kittybot.objects.ReactiveMessage;
 import de.anteiku.kittybot.objects.command.ACommand;
@@ -63,23 +63,27 @@ public class PlayCommand extends ACommand{
 		}
 		if(event.getReactionEmote().isEmoji()){
 			var emoji = event.getReactionEmote().getEmoji();
-			if(emoji.equals(Emotes.FORWARD.get())){
-				musicPlayer.nextTrack();
-			}
-			else if(emoji.equals(Emotes.BACK.get())){
-				musicPlayer.previousTrack();
-			}
-			else if(emoji.equals(Emotes.SHUFFLE.get())){
-				musicPlayer.shuffle();
-			}
-			else if(emoji.equals(Emotes.VOLUME_DOWN.get())){
-				musicPlayer.changeVolume(-VOLUME_STEP);
-			}
-			else if(emoji.equals(Emotes.VOLUME_UP.get())){
-				musicPlayer.changeVolume(VOLUME_STEP);
-			}
-			else if(emoji.equals(Emotes.X.get())){
-				Cache.destroyMusicPlayer(event.getGuild());
+			switch (emoji)
+			{
+				case Emojis.BACK:
+					musicPlayer.previousTrack();
+					break;
+				case Emojis.FORWARD:
+					musicPlayer.nextTrack();
+					break;
+				case Emojis.SHUFFLE:
+					musicPlayer.shuffle();
+					break;
+				case Emojis.VOLUME_DOWN:
+					musicPlayer.changeVolume(-VOLUME_STEP);
+					break;
+				case Emojis.VOLUME_UP:
+					musicPlayer.changeVolume(VOLUME_STEP);
+					break;
+				case Emojis.X:
+					Cache.destroyMusicPlayer(event.getGuild());
+					break;
+				default:
 			}
 		}
 		else if (event.getReactionEmote().getId().equals("744945002416963634"))
