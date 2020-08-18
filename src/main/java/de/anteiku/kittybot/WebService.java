@@ -32,12 +32,10 @@ public class WebService{
 
 	private static final Logger LOG = LoggerFactory.getLogger(WebService.class);
 
-	private final Scope[] scopes;
+	private final Scope[] scopes = new Scope[]{Scope.IDENTIFY};
 	private final OAuth2Client oAuthClient;
 
 	public WebService(int port){
-
-		scopes = new Scope[]{Scope.IDENTIFY};
 		DefaultSessionController sessionController = new DefaultSessionController();
 		DefaultStateController stateController = new DefaultStateController();
 		oAuthClient = new OAuth2ClientImpl(Long.parseLong(Config.BOT_ID), Config.BOT_SECRET, sessionController, stateController, KittyBot.getHttpClient());
@@ -67,7 +65,7 @@ public class WebService{
 	}
 
 	private void discordLogin(Context ctx){
-		String key = ctx.header("Authorization");
+		var key = ctx.header("Authorization");
 		if(key == null || !Database.sessionExists(key)){
 			ctx.redirect(oAuthClient.generateAuthorizationURL(Config.REDIRECT_URL, scopes));
 		}
@@ -77,13 +75,13 @@ public class WebService{
 	}
 
 	private void login(Context ctx){
-		JsonObject json = JsonParser.parseString(ctx.body()).getAsJsonObject();
-		String code = json.get("code").getAsString();
-		String state = json.get("state").getAsString();
+		var json = JsonParser.parseString(ctx.body()).getAsJsonObject();
+		var code = json.get("code").getAsString();
+		var state = json.get("state").getAsString();
 		try{
-			String key = Database.generateUniqueKey();
-			Session session = oAuthClient.startSession(code, state, key, scopes).complete();
-			OAuth2User user = oAuthClient.getUser(session).complete();
+			var key = Database.generateUniqueKey();
+			var session = oAuthClient.startSession(code, state, key, scopes).complete();
+			var user = oAuthClient.getUser(session).complete();
 			Database.addSession(user.getId(), key);
 			ok(ctx, "{\"key\": " + JSONObject.quote(key) + "}");
 		}
@@ -98,7 +96,7 @@ public class WebService{
 
 	private void checkDiscordLogin(Context ctx){
 		if(!ctx.method().equals("OPTIONS")){
-			String key = ctx.header("Authorization");
+			var key = ctx.header("Authorization");
 			if(key == null || !Database.sessionExists(key)){
 				error(ctx, 401, "Please login with discord to continue");
 			}
@@ -106,38 +104,38 @@ public class WebService{
 	}
 
 	private void getUserInfo(Context ctx){
-		String auth = ctx.header("Authorization");
+		var auth = ctx.header("Authorization");
 		if(auth == null){
 			error(ctx, 401, "Please login");
 			return;
 		}
-		String userId = Database.getSession(auth);
+		var userId = Database.getSession(auth);
 		if(userId == null){
 			error(ctx, 404, "Session not found");
 			return;
 		}
-		User user = KittyBot.getJda().retrieveUserById(userId).complete();
+		var user = KittyBot.getJda().retrieveUserById(userId).complete();
 		if(user == null){
 			error(ctx, 404, "User not found");
 			return;
 		}
-		Collection<String> guilds = new ArrayList<>();
+		var guilds = new ArrayList<String>();
 		for(Guild guild : KittyBot.getJda().getMutualGuilds(user)){
 			var u = guild.getMember(user);
 			if(u != null && u.hasPermission(Permission.ADMINISTRATOR)){
-				guilds.add(String.format("{\"id\": %s, \"name\": %s, \"icon\": %s}", JSONObject.quote(guild.getId()), JSONObject.quote(guild.getName()), JSONObject.quote(guild.getIconUrl())));
+				guilds.add(String.format("{\"id\": \"%s\", \"name\": %s, \"icon\": %s}", guild.getId(), JSONObject.quote(guild.getName()), JSONObject.quote(guild.getIconUrl())));
 			}
 		}
-		ok(ctx, String.format("{\"name\": %s, \"id\": %s, \"icon\": %s, \"guilds\": [%s]}", JSONObject.quote(user.getName()), JSONObject.quote(user.getId()), JSONObject.quote(user.getEffectiveAvatarUrl()), String.join(", ", guilds)));
+		ok(ctx, String.format("{\"name\": %s, \"id\": \"%s\", \"icon\": %s, \"guilds\": [%s]}", JSONObject.quote(user.getName()), user.getId(), JSONObject.quote(user.getEffectiveAvatarUrl()), String.join(", ", guilds)));
 	}
 
 	private void getAllGuilds(Context ctx){
-		String auth = ctx.header("Authorization");
+		var auth = ctx.header("Authorization");
 		if(auth == null){
 			error(ctx, 401, "Please login");
 			return;
 		}
-		String userId = Database.getSession(auth);
+		var userId = Database.getSession(auth);
 		if(userId == null){
 			error(ctx, 404, "Session not found");
 			return;
@@ -146,8 +144,8 @@ public class WebService{
 			error(ctx, 403, "Only admins have access to this!");
 			return;
 		}
-		Collection<String> guilds = new ArrayList<>();
-		for(Guild guild : KittyBot.getJda().getGuildCache()){
+		var guilds = new ArrayList<String>();
+		for(var guild : KittyBot.getJda().getGuildCache()){
 			guilds.add(String.format("{\"id\": %s, \"name\": %s, \"icon\": %s, \"count\": %d}", JSONObject.quote(guild.getId()), JSONObject.quote(guild.getName()), JSONObject.quote(guild.getIconUrl()), guild.getMemberCount()));
 		}
 		ok(ctx, "{\"guilds\": [" + String.join(", ", guilds) + "]}");
@@ -155,8 +153,8 @@ public class WebService{
 
 	private void checkGuildPerms(Context ctx){
 		if(!ctx.method().equals("OPTIONS")){
-			String guildId = ctx.pathParam(":guildId");
-			Guild guild = KittyBot.getJda().getGuildById(guildId);
+			var guildId = ctx.pathParam(":guildId");
+			var guild = KittyBot.getJda().getGuildById(guildId);
 			if(guild == null){
 				error(ctx, 404, "guild not found");
 				return;
@@ -169,7 +167,7 @@ public class WebService{
 			if(userId.equals(Config.ADMIN_ID)){
 				return;
 			}
-			Member member = guild.retrieveMemberById(userId).complete();
+			var member = guild.retrieveMemberById(userId).complete();
 			if(member == null){
 				error(ctx, 404, "I could not find you in that guild");
 				return;
@@ -181,53 +179,53 @@ public class WebService{
 	}
 
 	private void getRoles(Context ctx){
-		Guild guild = KittyBot.getJda().getGuildById(ctx.pathParam(":guildId"));
+		var guild = KittyBot.getJda().getGuildById(ctx.pathParam(":guildId"));
 		if(guild == null){
 			error(ctx, 404, "guild not found");
 			return;
 		}
-		Collection<String> roles = new ArrayList<>();
-		for(Role role : guild.getRoles()){
-			roles.add(String.format("{\"name\": \"%s\", \"id\": \"%s\"}", JSONObject.quote(role.getName()), role.getId()));
+		var roles = new ArrayList<String>();
+		for(var role : guild.getRoles()){
+			roles.add(String.format("{\"name\": %s, \"id\": \"%s\"}", JSONObject.quote(role.getName()), role.getId()));
 		}
 		ok(ctx, String.format("{\"roles\": [%s]}", String.join(", ", roles)));
 	}
 
 	private void getChannels(Context ctx){
-		Guild guild = KittyBot.getJda().getGuildById(ctx.pathParam(":guildId"));
+		var guild = KittyBot.getJda().getGuildById(ctx.pathParam(":guildId"));
 		if(guild == null){
 			error(ctx, 404, "guild not found");
 			return;
 		}
-		Collection<String> channels = new ArrayList<>();
-		for(TextChannel channel : guild.getTextChannels()){
-			channels.add(String.format("{\"name\": \"%s\", \"id\": \"%s\"}", JSONObject.quote(channel.getName()), channel.getId()));
+		var channels = new ArrayList<String>();
+		for(var channel : guild.getTextChannels()){
+			channels.add(String.format("{\"name\": %s, \"id\": \"%s\"}", JSONObject.quote(channel.getName()), channel.getId()));
 		}
 		ok(ctx, String.format("{\"channels\": [%s]}", String.join(", ", channels)));
 	}
 
 	private void getEmotes(Context ctx){
-		Guild guild = KittyBot.getJda().getGuildById(ctx.pathParam(":guildId"));
+		var guild = KittyBot.getJda().getGuildById(ctx.pathParam(":guildId"));
 		if(guild == null){
 			error(ctx, 404, "guild not found");
 			return;
 		}
-		Collection<String> emotes = new ArrayList<>();
-		for(Emote emote : guild.getEmotes()){
-			emotes.add(String.format("{\"name\": \"%s\", \"id\": \"%s\", \"url\": \"%s\"}", JSONObject.quote(emote.getName()), emote.getId(), JSONObject.quote(emote.getImageUrl())));
+		var emotes = new ArrayList<String>();
+		for(var emote : guild.getEmotes()){
+			emotes.add(String.format("{\"name\": %s, \"id\": \"%s\", \"url\": %s}", JSONObject.quote(emote.getName()), emote.getId(), JSONObject.quote(emote.getImageUrl())));
 		}
 		ok(ctx, String.format("{\"emotes\": [%s]}", String.join(", ", emotes)));
 	}
 
 	private void getGuildSettings(Context ctx){
-		String guildId = ctx.pathParam(":guildId");
-		Map<String, String> roles = Database.getSelfAssignableRoles(guildId);
+		var guildId = ctx.pathParam(":guildId");
+		var roles = Database.getSelfAssignableRoles(guildId);
 		if(roles == null || KittyBot.getJda().getGuildById(guildId) == null){
 			error(ctx, 404, "guild not found");
 			return;
 		}
-		Collection<String> selfAssignableRoles = new ArrayList<>();
-		for(Map.Entry<String, String> role : roles.entrySet()){
+		var selfAssignableRoles = new ArrayList<String>();
+		for(var role : roles.entrySet()){
 			selfAssignableRoles.add(String.format("{\"role\": \"%s\", \"emote\": \"%s\"}", role.getKey(), role.getValue()));
 		}
 		ok(ctx, String.format("{\"prefix\": %s, " +
@@ -254,12 +252,12 @@ public class WebService{
 	}
 
 	private void setGuildSettings(Context ctx){
-		String guildId = ctx.pathParam(":guildId");
+		var guildId = ctx.pathParam(":guildId");
 		if(KittyBot.getJda().getGuildById(guildId) == null){
 			error(ctx, 404, "guild not found");
 			return;
 		}
-		JsonObject json = JsonParser.parseString(ctx.body()).getAsJsonObject();
+		var json = JsonParser.parseString(ctx.body()).getAsJsonObject();
 		if(json.get("prefix") != null){
 			Database.setCommandPrefix(guildId, json.get("prefix").getAsString());
 		}
@@ -288,7 +286,7 @@ public class WebService{
 			Database.setNSFWEnabled(guildId, json.get("nsfw_enabled").getAsBoolean());
 		}
 		if(json.get("self_assignable_roles") != null){
-			Map<String, String> roles = new HashMap<>();
+			var roles = new HashMap<String, String>();
 			json.get("self_assignable_roles").getAsJsonArray().forEach(jsonElement -> {
 				var obj = jsonElement.getAsJsonObject();
 				roles.put(obj.get("role").getAsString(), obj.get("emote").getAsString());
