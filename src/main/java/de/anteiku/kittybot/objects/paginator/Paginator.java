@@ -1,7 +1,9 @@
 package de.anteiku.kittybot.objects.paginator;
 
 import de.anteiku.kittybot.KittyBot;
+import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -9,6 +11,7 @@ import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEve
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,8 +31,24 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 	private static final Map<Long, Integer> CURRENT_PAGE = new HashMap<>();                                // K = messageId, V = current page
 	private static final Map<Long, BiConsumer<Integer, EmbedBuilder>> CONTENT_CONSUMERS = new HashMap<>(); // K = messageId, V = BiConsumer<PageNumber, EmbedBuilder>
 
-	public static void createCommandsPaginator(final TextChannel channel, final Message message, final Map<Integer, String> authorPerPage, final int totalPages, final Map<Integer, ArrayList<MessageEmbed.Field>> fields){
-		createPaginator(channel, message, totalPages, (page, embedBuilder) -> {
+	public static void createCommandsPaginator(final CommandContext ctx, final Map<Integer, String> authorPerPage, final int totalPages, final Map<Integer, ArrayList<MessageEmbed.Field>> fields){
+		final var channel = ctx.getChannel();
+		final var selfMember = channel.getGuild().getSelfMember();
+		if (!channel.canTalk()){
+			if (selfMember.hasPermission(channel, Permission.MESSAGE_ADD_REACTION))
+				ctx.getMessage().addReaction(X).queue();
+			return;
+		}
+		if (!selfMember.hasPermission(channel, Permission.MESSAGE_HISTORY, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_MANAGE)){
+			channel.sendMessage(new EmbedBuilder()
+					.setColor(Color.RED)
+					.addField("Error:", "I'm missing required permissions for paginator to work. Ensure that i can read the message history, add reactions and manage messages.", true)
+					.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
+					.setTimestamp(Instant.now())
+					.build())
+			.queue(); // TODO improve checks
+		}
+		createPaginator(channel, ctx.getMessage(), totalPages, (page, embedBuilder) -> {
 			embedBuilder.setAuthor(authorPerPage.get(page));
 			fields.get(page).forEach(embedBuilder::addField);
 			embedBuilder.setTimestamp(Instant.now());
@@ -69,15 +88,6 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 						removePaginator(channelId, messageId);
 					});
 		});
-	}
-
-	private static void removePaginator(final long channelId, final long messageId){
-		PAGINATOR_MESSAGES.get(channelId).remove(messageId);
-		TOTAL_PAGES.remove(messageId);
-		INVOKERS.remove(messageId);
-		ORIGINALS.remove(messageId);
-		CURRENT_PAGE.remove(messageId);
-		CONTENT_CONSUMERS.remove(messageId);
 	}
 
 	@Override
@@ -155,6 +165,15 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 				return;
 		}
 		channel.editMessageById(messageId, newPageBuilder.build()).queue();
+	}
+
+	private static void removePaginator(final long channelId, final long messageId){
+		PAGINATOR_MESSAGES.get(channelId).remove(messageId);
+		TOTAL_PAGES.remove(messageId);
+		INVOKERS.remove(messageId);
+		ORIGINALS.remove(messageId);
+		CURRENT_PAGE.remove(messageId);
+		CONTENT_CONSUMERS.remove(messageId);
 	}
 
 }
