@@ -16,7 +16,7 @@
 
 [Docker Hub](https://hub.docker.com/repository/docker/topisenpai/kittybot)
 
-[Website Project](https://github.com/TopISenpai/KittyBot-Website)
+[Website Project](https://github.com/KittyBot-Org/KittyBot-Website)
 
 [Website](https://kittybot.de)
 #### A Discord Bot to manage your roles
