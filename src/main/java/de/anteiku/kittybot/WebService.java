@@ -8,6 +8,8 @@ import com.jagrosh.jdautilities.oauth2.session.DefaultSessionController;
 import com.jagrosh.jdautilities.oauth2.state.DefaultStateController;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.Config;
+import de.anteiku.kittybot.objects.command.Category;
+import de.anteiku.kittybot.objects.command.CommandManager;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import net.dv8tion.jda.api.Permission;
@@ -35,6 +37,7 @@ public class WebService{
 		Javalin.create(config -> config.enableCorsForOrigin(Config.ORIGIN_URL)).routes(() -> {
 			get("/discord_login", this::discordLogin);
 			get("/health_check", ctx -> ctx.result("alive"));
+			get("/commands/get", this::getCommands);
 			post("/login", this::login);
 			path("/user", () -> {
 				before("/*", this::checkDiscordLogin);
@@ -45,9 +48,9 @@ public class WebService{
 				get("/all", this::getAllGuilds);
 				path("/:guildId", () -> {
 					before("/*", this::checkGuildPerms);
-					path("/roles", () -> get("/get", this::getRoles));
-					path("/channels", () -> get("/get", this::getChannels));
-					path("/emotes", () -> get("/get", this::getEmotes));
+					get("/roles/get", this::getRoles);
+					get("/channels/get", this::getChannels);
+					get("/emotes/get", this::getEmotes);
 					path("/settings", () -> {
 						get("/get", this::getGuildSettings);
 						post("/set", this::setGuildSettings);
@@ -181,6 +184,23 @@ public class WebService{
 				error(ctx, 401, "You have no permission for this guild");
 			}
 		}
+	}
+
+	private void getCommands(Context ctx){
+		var commandSet = CommandManager.getDistinctCommands().entrySet();
+		var data = DataArray.empty();
+		for(var cat : Category.values()){
+			var commands = DataArray.empty();
+			for(var cmd : commandSet){
+				var command = cmd.getValue();
+				if(cat.equals(command.getCategory())){
+					commands.add(DataObject.empty().put("command", command.getCommand()).put("description", command.getDescription()));
+				}
+			}
+			data.add(DataObject.empty().put("name", cat.getFriendlyName()).put("emote_url", cat.getEmoteUrl()).put("commands", commands));
+		}
+
+		ok(ctx, DataObject.empty().put("prefix", Config.DEFAULT_PREFIX).put("categories", data));
 	}
 
 	private void getRoles(Context ctx){

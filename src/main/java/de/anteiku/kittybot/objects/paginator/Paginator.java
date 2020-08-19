@@ -1,6 +1,7 @@
 package de.anteiku.kittybot.objects.paginator;
 
 import de.anteiku.kittybot.KittyBot;
+import de.anteiku.kittybot.objects.TitleInfo;
 import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -31,26 +32,33 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 	private static final Map<Long, Integer> CURRENT_PAGE = new HashMap<>();                                // K = messageId, V = current page
 	private static final Map<Long, BiConsumer<Integer, EmbedBuilder>> CONTENT_CONSUMERS = new HashMap<>(); // K = messageId, V = BiConsumer<PageNumber, EmbedBuilder>
 
-	public static void createCommandsPaginator(final CommandContext ctx, final Map<Integer, String> authorPerPage, final int totalPages, final Map<Integer, ArrayList<MessageEmbed.Field>> fields){
+	public static void createCommandsPaginator(final CommandContext ctx, final Map<Integer, TitleInfo> titlePerPage, final int totalPages, final Map<Integer, ArrayList<MessageEmbed.Field>> fields){
 		final var channel = ctx.getChannel();
 		final var selfMember = channel.getGuild().getSelfMember();
-		if (!channel.canTalk()){
-			if (selfMember.hasPermission(channel, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_HISTORY))
+		if(!channel.canTalk()){
+			if(selfMember.hasPermission(channel, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_HISTORY)){
 				ctx.getMessage().addReaction(X).queue();
+			}
 			return;
 		}
-		if (!selfMember.hasPermission(channel, Permission.MESSAGE_HISTORY) || !selfMember.hasPermission(channel, Permission.MESSAGE_ADD_REACTION) || !selfMember.hasPermission(channel, Permission.MESSAGE_MANAGE)){
+		if(!selfMember.hasPermission(channel, Permission.MESSAGE_HISTORY) || !selfMember.hasPermission(channel, Permission.MESSAGE_ADD_REACTION) || !selfMember.hasPermission(channel, Permission.MESSAGE_MANAGE)){
 			channel.sendMessage(new EmbedBuilder()
 					.setColor(Color.RED)
 					.addField("Error:", "I'm missing required permissions for paginator to work. Ensure that i can read the message history, add reactions and manage messages.", true)
 					.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
 					.setTimestamp(Instant.now())
 					.build())
-			.queue(); // TODO improve checks
+					.queue(); // TODO improve checks
 			return;
 		}
 		createPaginator(channel, ctx.getMessage(), totalPages, (page, embedBuilder) -> {
-			embedBuilder.setAuthor(authorPerPage.get(page));
+			var titleInfo = titlePerPage.get(page);
+			if(titleInfo.getUrl() == null){
+				embedBuilder.setTitle(titlePerPage.get(page).getTitle());
+			}
+			else{
+				embedBuilder.setTitle(titlePerPage.get(page).getTitle(), titlePerPage.get(page).getUrl());
+			}
 			fields.get(page).forEach(embedBuilder::addField);
 			embedBuilder.setTimestamp(Instant.now());
 		});
@@ -92,28 +100,37 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 		});
 	}
 
+	private static void removePaginator(final long channelId, final long messageId){
+		PAGINATOR_MESSAGES.get(channelId).remove(messageId);
+		TOTAL_PAGES.remove(messageId);
+		INVOKERS.remove(messageId);
+		ORIGINALS.remove(messageId);
+		CURRENT_PAGE.remove(messageId);
+		CONTENT_CONSUMERS.remove(messageId);
+	}
+
 	@Override
 	public void onGuildMessageReactionAdd(@NotNull final GuildMessageReactionAddEvent event){
-        if(event.getUser().isBot()){
-            return;
-        }
+		if(event.getUser().isBot()){
+			return;
+		}
 
 		final var channel = event.getChannel();
 		final var channelId = channel.getIdLong();
 		final var messageId = event.getMessageIdLong();
 
 		final var paginators = PAGINATOR_MESSAGES.get(channelId);
-        if(paginators == null || !paginators.contains(messageId)){
-            return;
-        }
+		if(paginators == null || !paginators.contains(messageId)){
+			return;
+		}
 		event.getReaction().removeReaction(event.getUser()).queue();
-        if(event.getUserIdLong() != INVOKERS.get(messageId)){
-            return;
-        }
+		if(event.getUserIdLong() != INVOKERS.get(messageId)){
+			return;
+		}
 		final var reactionEmote = event.getReactionEmote();
-        if(!reactionEmote.isEmoji()){
-            return;
-        }
+		if(!reactionEmote.isEmoji()){
+			return;
+		}
 		final var newPageBuilder = new EmbedBuilder();
 		final var currentPage = CURRENT_PAGE.get(messageId);
 		final var total = TOTAL_PAGES.get(messageId);
@@ -127,9 +144,9 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 				removePaginator(channelId, messageId);
 				return;
 			case ARROW_LEFT:
-                if(currentPage == 0){
-                    return;
-                }
+				if(currentPage == 0){
+					return;
+				}
 				if(currentPage + 1 == total){
 					channel.removeReactionById(messageId, WASTEBASKET)
 							.flatMap(ignored -> channel.addReactionById(messageId, ARROW_RIGHT))
@@ -139,15 +156,15 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 				final var previousPage = currentPage - 1;
 				contentConsumer.accept(previousPage, newPageBuilder);
 				newPageBuilder.setFooter("Page " + (previousPage + 1) + "/" + total); // yes, we could just use currentPage here but it would just bring confusion
-                if(previousPage == 0){
-                    channel.removeReactionById(messageId, ARROW_LEFT).queue();
-                }
+				if(previousPage == 0){
+					channel.removeReactionById(messageId, ARROW_LEFT).queue();
+				}
 				CURRENT_PAGE.put(messageId, previousPage);
 				break;
 			case ARROW_RIGHT:
-                if(currentPage == total){
-                    return;
-                }
+				if(currentPage == total){
+					return;
+				}
 				if(currentPage == 0){
 					channel.clearReactionsById(messageId)
 							.flatMap(ignored -> channel.addReactionById(messageId, ARROW_LEFT))
@@ -158,24 +175,15 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 				final var nextPage = currentPage + 1;
 				contentConsumer.accept(nextPage, newPageBuilder);
 				newPageBuilder.setFooter("Page " + (nextPage + 1) + "/" + total);
-                if(nextPage + 1 == total){
-                    channel.removeReactionById(messageId, ARROW_RIGHT).queue();
-                }
+				if(nextPage + 1 == total){
+					channel.removeReactionById(messageId, ARROW_RIGHT).queue();
+				}
 				CURRENT_PAGE.put(messageId, nextPage);
 				break;
 			default:
 				return;
 		}
 		channel.editMessageById(messageId, newPageBuilder.build()).queue();
-	}
-
-	private static void removePaginator(final long channelId, final long messageId){
-		PAGINATOR_MESSAGES.get(channelId).remove(messageId);
-		TOTAL_PAGES.remove(messageId);
-		INVOKERS.remove(messageId);
-		ORIGINALS.remove(messageId);
-		CURRENT_PAGE.remove(messageId);
-		CONTENT_CONSUMERS.remove(messageId);
 	}
 
 }
