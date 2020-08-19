@@ -35,7 +35,7 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 		final var channel = ctx.getChannel();
 		final var selfMember = channel.getGuild().getSelfMember();
 		if (!channel.canTalk()){
-			if (selfMember.hasPermission(channel, Permission.MESSAGE_ADD_REACTION))
+			if (selfMember.hasPermission(channel, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_HISTORY))
 				ctx.getMessage().addReaction(X).queue();
 			return;
 		}
@@ -55,6 +55,7 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 			embedBuilder.setTimestamp(Instant.now());
 		});
 	}
+
 
 	public static void createPaginator(final TextChannel channel, final Message message, final int totalPages, final BiConsumer<Integer, EmbedBuilder> contentConsumer){
 		final var embedBuilder = new EmbedBuilder();
@@ -101,11 +102,11 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 		final var channelId = channel.getIdLong();
 		final var messageId = event.getMessageIdLong();
 
-		event.getReaction().removeReaction(event.getUser()).queue();
 		final var paginators = PAGINATOR_MESSAGES.get(channelId);
         if(paginators == null || !paginators.contains(messageId)){
             return;
         }
+		event.getReaction().removeReaction(event.getUser()).queue();
         if(event.getUserIdLong() != INVOKERS.get(messageId)){
             return;
         }
