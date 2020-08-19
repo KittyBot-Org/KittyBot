@@ -39,7 +39,7 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 				ctx.getMessage().addReaction(X).queue();
 			return;
 		}
-		if (!selfMember.hasPermission(channel, Permission.MESSAGE_HISTORY, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_MANAGE)){
+		if (!selfMember.hasPermission(channel, Permission.MESSAGE_HISTORY) || !selfMember.hasPermission(channel, Permission.MESSAGE_ADD_REACTION) || !selfMember.hasPermission(channel, Permission.MESSAGE_MANAGE)){
 			channel.sendMessage(new EmbedBuilder()
 					.setColor(Color.RED)
 					.addField("Error:", "I'm missing required permissions for paginator to work. Ensure that i can read the message history, add reactions and manage messages.", true)
