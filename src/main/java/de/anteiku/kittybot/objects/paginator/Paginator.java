@@ -47,6 +47,7 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 					.setTimestamp(Instant.now())
 					.build())
 			.queue(); // TODO improve checks
+			return;
 		}
 		createPaginator(channel, ctx.getMessage(), totalPages, (page, embedBuilder) -> {
 			embedBuilder.setAuthor(authorPerPage.get(page));
