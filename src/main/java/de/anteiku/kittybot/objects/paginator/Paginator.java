@@ -44,7 +44,7 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 		if(!selfMember.hasPermission(channel, Permission.MESSAGE_HISTORY) || !selfMember.hasPermission(channel, Permission.MESSAGE_ADD_REACTION) || !selfMember.hasPermission(channel, Permission.MESSAGE_MANAGE)){
 			channel.sendMessage(new EmbedBuilder()
 					.setColor(Color.RED)
-					.addField("Error:", "I'm missing required permissions for paginator to work. Ensure that i can read the message history, add reactions and manage messages.", true)
+					.addField("Error:", "I'm missing required permissions for paginator to work. Ensure that i can read the message history, add reactions and manage messages in this channel.", true)
 					.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
 					.setTimestamp(Instant.now())
 					.build())
@@ -53,12 +53,7 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 		}
 		createPaginator(channel, ctx.getMessage(), totalPages, (page, embedBuilder) -> {
 			var titleInfo = titlePerPage.get(page);
-			if(titleInfo.getUrl() == null){
-				embedBuilder.setTitle(titlePerPage.get(page).getTitle());
-			}
-			else{
-				embedBuilder.setTitle(titlePerPage.get(page).getTitle(), titlePerPage.get(page).getUrl());
-			}
+			embedBuilder.setTitle(titleInfo.getTitle(), titleInfo.getUrl());
 			fields.get(page).forEach(embedBuilder::addField);
 			embedBuilder.setTimestamp(Instant.now());
 		});
