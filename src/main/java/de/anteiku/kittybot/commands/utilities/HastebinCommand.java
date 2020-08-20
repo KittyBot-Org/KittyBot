@@ -7,10 +7,9 @@ import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.utils.data.DataObject;
-import okhttp3.MediaType;
-import okhttp3.Request;
-import okhttp3.RequestBody;
+import okhttp3.*;
 import org.apache.commons.io.IOUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -37,25 +36,29 @@ public class HastebinCommand extends ACommand{
 				if(!attachment.isImage() && !attachment.isVideo()){
 					try{
 						String text = IOUtils.toString(attachment.retrieveInputStream().get(), StandardCharsets.UTF_8.name());
-						RequestBody body = RequestBody.create(MediaType.parse("text/html; charset=utf-8"), text);
-						Request request = new Request.Builder().url(Config.HASTEBIN_URL + "/documents").method("POST", body).build();
-						var response = KittyBot.getHttpClient().newCall(request).execute().body();
-						if(response == null){
-							sendError(ctx, "Error while trying to create hastebin");
-							response.close();
-							return;
-						}
-						sendAnswer(ctx, "[here](" + Config.HASTEBIN_URL + "/" + DataObject.fromJson(response.string()).getString("key") + ") is a hastebin");
-						response.close();
+						Request request = new Request.Builder().url(Config.HASTEBIN_URL + "/documents").post(RequestBody.create(MediaType.parse("text/html; charset=utf-8"), text)).build();
+						KittyBot.getHttpClient().newCall(request).enqueue(new Callback(){
+							@Override
+							public void onFailure(@NotNull Call call, @NotNull IOException e){
+								LOG.error("Error while creating hastebin", e);
+								sendError(ctx, "Error while creating hastebin");
+							}
+
+							@Override
+							public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException{
+								try(var body = response.body()){
+									if(body == null){
+										sendError(ctx, "Error while creating hastebin");
+										return;
+									}
+									sendAnswer(ctx, "[here](" + Config.HASTEBIN_URL + "/" + DataObject.fromJson(body.string()).getString("key") + ") is a hastebin");
+								}
+							}
+						});
 					}
-					catch(IOException e){
+					catch(IOException | InterruptedException | ExecutionException e){
 						LOG.error("Error while creating hastebin", e);
-					}
-					catch(InterruptedException e){
-						LOG.error("File download got interrupted ", e);
-					}
-					catch(ExecutionException e){
-						LOG.error("Error while getting file from Discord", e);
+						sendError(ctx, "Error while creating hastebin");
 					}
 				}
 			}

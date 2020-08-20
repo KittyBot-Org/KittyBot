@@ -26,6 +26,7 @@ import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import okhttp3.OkHttpClient;
+import org.discordbots.api.client.DiscordBotListAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +45,7 @@ public class KittyBot{
 	private static final EventWaiter WAITER = new EventWaiter();
 	private static JdaLavalink lavalink;
 	private static JDA jda;
+	private static DiscordBotListAPI discordBotListAPI;
 
 	public KittyBot(){
 		LOG.info("\n" +
@@ -57,11 +59,11 @@ public class KittyBot{
 				"                          __/ |                \n" +
 				"                         |___/                 \n" +
 				"\n" +
-				"               https://github.com/TopiSenpai/KittyBot" +
+				"            https://github.com/TopiSenpai/KittyBot" +
 				"\n");
 		LOG.info("Starting...");
 
-		Config.load("config.yml");
+		Config.load("config.json");
 
 		try{
 			lavalink = new JdaLavalink(Config.BOT_ID, 1, this::getShardById);
@@ -100,6 +102,7 @@ public class KittyBot{
 							new OnGuildMessageEvent(),
 							new OnGuildVoiceEvent(),
 							new OnGuildReadyEvent(),
+							new OnReadyEvent(),
 							new OnInviteEvent(),
 							lavalink,
 							new Paginator()
@@ -112,13 +115,19 @@ public class KittyBot{
 
 			RestAction.setDefaultFailure(null);
 
+			if(Config.DISCORD_BOT_LIST_TOKEN != null){
+				discordBotListAPI = new DiscordBotListAPI.Builder().token(Config.DISCORD_BOT_LIST_TOKEN).botId(Config.BOT_ID).build();
+			}
+
 			Database.init(jda);
 
 			new WebService(6969);
 
 			jda.getPresence().setStatus(OnlineStatus.ONLINE);
 			jda.getPresence().setActivity(Activity.watching("you \uD83D\uDC40"));
-			sendToPublicLogChannel(jda, Config.SUPPORT_GUILD, Config.LOG_CHANNEL, "me online now uwu");
+			if(Config.LOG_CHANNEL_ID != null){
+				sendToPublicLogChannel(jda, Config.SUPPORT_GUILD_ID, Config.LOG_CHANNEL_ID, "me online now uwu");
+			}
 		}
 		catch(Exception e){
 			LOG.error("Error while initializing JDA", e);
@@ -171,6 +180,10 @@ public class KittyBot{
 
 	public static JDA getJda(){
 		return jda;
+	}
+
+	public static DiscordBotListAPI getDiscordBotListAPI(){
+		return discordBotListAPI;
 	}
 
 	public static ScheduledExecutorService getScheduler(){
