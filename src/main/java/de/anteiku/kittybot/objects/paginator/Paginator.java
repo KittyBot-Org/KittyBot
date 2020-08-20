@@ -5,12 +5,9 @@ import de.anteiku.kittybot.objects.TitleInfo;
 import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.time.Instant;
@@ -23,6 +20,9 @@ import java.util.function.BiConsumer;
 
 import static de.anteiku.kittybot.objects.Emojis.*;
 
+/**
+ * @author caneleex
+ */
 public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your shitty paginator
 
 	private static final Map<Long, List<Long>> PAGINATOR_MESSAGES = new HashMap<>();                       // K = channelId, V = List<MessageId>
@@ -33,11 +33,22 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 	private static final Map<Long, BiConsumer<Integer, EmbedBuilder>> CONTENT_CONSUMERS = new HashMap<>(); // K = messageId, V = BiConsumer<PageNumber, EmbedBuilder>
 
 	public static void createCommandsPaginator(final CommandContext ctx, final Map<Integer, TitleInfo> titlePerPage, final int totalPages, final Map<Integer, ArrayList<MessageEmbed.Field>> fields){
+		createPaginator(ctx, totalPages, (page, embedBuilder) -> {
+			var titleInfo = titlePerPage.get(page);
+			embedBuilder.setTitle(titleInfo.getTitle(), titleInfo.getUrl());
+			fields.get(page).forEach(embedBuilder::addField);
+			embedBuilder.setTimestamp(Instant.now());
+		});
+	}
+
+
+	public static void createPaginator(final CommandContext ctx, final int totalPages, final BiConsumer<Integer, EmbedBuilder> contentConsumer){
 		final var channel = ctx.getChannel();
+		final var message = ctx.getMessage();
 		final var selfMember = channel.getGuild().getSelfMember();
 		if(!channel.canTalk()){
 			if(selfMember.hasPermission(channel, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_HISTORY)){
-				ctx.getMessage().addReaction(X).queue();
+				message.addReaction(X).queue();
 			}
 			return;
 		}
@@ -48,19 +59,9 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 					.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
 					.setTimestamp(Instant.now())
 					.build())
-					.queue(); // TODO improve checks
+			.queue(); // TODO improve checks
 			return;
 		}
-		createPaginator(channel, ctx.getMessage(), totalPages, (page, embedBuilder) -> {
-			var titleInfo = titlePerPage.get(page);
-			embedBuilder.setTitle(titleInfo.getTitle(), titleInfo.getUrl());
-			fields.get(page).forEach(embedBuilder::addField);
-			embedBuilder.setTimestamp(Instant.now());
-		});
-	}
-
-
-	public static void createPaginator(final TextChannel channel, final Message message, final int totalPages, final BiConsumer<Integer, EmbedBuilder> contentConsumer){
 		final var embedBuilder = new EmbedBuilder();
 		embedBuilder.setFooter("Page 1/" + totalPages);
 		contentConsumer.accept(0, embedBuilder);
@@ -95,17 +96,8 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 		});
 	}
 
-	private static void removePaginator(final long channelId, final long messageId){
-		PAGINATOR_MESSAGES.get(channelId).remove(messageId);
-		TOTAL_PAGES.remove(messageId);
-		INVOKERS.remove(messageId);
-		ORIGINALS.remove(messageId);
-		CURRENT_PAGE.remove(messageId);
-		CONTENT_CONSUMERS.remove(messageId);
-	}
-
 	@Override
-	public void onGuildMessageReactionAdd(@NotNull final GuildMessageReactionAddEvent event){
+	public void onGuildMessageReactionAdd(final GuildMessageReactionAddEvent event){
 		if(event.getUser().isBot()){
 			return;
 		}
@@ -181,4 +173,12 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 		channel.editMessageById(messageId, newPageBuilder.build()).queue();
 	}
 
+	private static void removePaginator(final long channelId, final long messageId){
+		PAGINATOR_MESSAGES.get(channelId).remove(messageId);
+		TOTAL_PAGES.remove(messageId);
+		INVOKERS.remove(messageId);
+		ORIGINALS.remove(messageId);
+		CURRENT_PAGE.remove(messageId);
+		CONTENT_CONSUMERS.remove(messageId);
+	}
 }
