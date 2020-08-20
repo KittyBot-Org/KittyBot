@@ -1,4 +1,4 @@
-package de.anteiku.kittybot.commands.info;
+package de.anteiku.kittybot.commands.admin;
 
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.Category;
@@ -10,7 +10,7 @@ public class TestCommand extends ACommand{
 	public static final String USAGE = "test";
 	public static final String DESCRIPTION = "Only for testing weird stuff";
 	protected static final String[] ALIASES = {};
-	protected static final Category CATEGORY = Category.INFORMATIVE;
+	protected static final Category CATEGORY = Category.ADMIN;
 
 	public TestCommand(){
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);

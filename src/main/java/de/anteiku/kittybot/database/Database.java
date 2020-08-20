@@ -46,35 +46,35 @@ public class Database{
 		return false;
 	}
 
-public static boolean registerGuild(Guild guild){
-	LOG.debug("Registering new guild: {}", guild.getId());
-	var query = "INSERT INTO guilds (guild_id, command_prefix, request_channel_id, requests_enabled, announcement_channel_id, join_messages, join_messages_enabled, " +
-			"leave_messages, leave_messages_enabled, boost_messages, boost_messages_enabled, log_channel_id, log_message_enabled, nsfw_enabled, inactive_role) " +
-			"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
-		stmt.setString(1, guild.getId());
-		stmt.setString(2, Config.DEFAULT_PREFIX);
-		stmt.setString(3, "-1");
-		stmt.setBoolean(4, false);
-		stmt.setString(5, guild.getDefaultChannel() == null ? "-1" : guild.getDefaultChannel().getId());
-		stmt.setString(6, "Welcome ${user} to this server!");
-		stmt.setBoolean(7, true);
-		stmt.setString(8, "Good bye ${user}(${user_tag})!");
-		stmt.setBoolean(9, true);
-		stmt.setString(10, "${user} boosted this server!");
-		stmt.setBoolean(11, true);
-		stmt.setString(12, "-1");
-		stmt.setBoolean(13, false);
-		stmt.setBoolean(14, true);
-		stmt.setString(15, "-1");
-		SQL.execute(stmt);
-		return true;
+	public static boolean registerGuild(Guild guild){
+		LOG.debug("Registering new guild: {}", guild.getId());
+		var query = "INSERT INTO guilds (guild_id, command_prefix, request_channel_id, requests_enabled, announcement_channel_id, join_messages, join_messages_enabled, " +
+				"leave_messages, leave_messages_enabled, boost_messages, boost_messages_enabled, log_channel_id, log_message_enabled, nsfw_enabled, inactive_role) " +
+				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
+			stmt.setString(1, guild.getId());
+			stmt.setString(2, Config.DEFAULT_PREFIX);
+			stmt.setString(3, "-1");
+			stmt.setBoolean(4, false);
+			stmt.setString(5, guild.getDefaultChannel() == null ? "-1" : guild.getDefaultChannel().getId());
+			stmt.setString(6, "Welcome ${user} to this server!");
+			stmt.setBoolean(7, true);
+			stmt.setString(8, "Good bye ${user}(${user_tag})!");
+			stmt.setBoolean(9, true);
+			stmt.setString(10, "${user} boosted this server!");
+			stmt.setBoolean(11, true);
+			stmt.setString(12, "-1");
+			stmt.setBoolean(13, false);
+			stmt.setBoolean(14, true);
+			stmt.setString(15, "-1");
+			SQL.execute(stmt);
+			return true;
+		}
+		catch(SQLException e){
+			LOG.error("Error registering guild: " + guild.getId(), e);
+		}
+		return false;
 	}
-	catch(SQLException e){
-		LOG.error("Error registering guild: " + guild.getId(), e);
-	}
-	return false;
-}
 
 
 	private static boolean setProperty(String guildId, String key, int value){

@@ -1,6 +1,7 @@
 package de.anteiku.kittybot.commands.info;
 
 import de.anteiku.kittybot.objects.Cache;
+import de.anteiku.kittybot.objects.TitleInfo;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
@@ -25,7 +26,7 @@ public class CommandsCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		final var authors = new HashMap<Integer, String>();
+		final var titles = new HashMap<Integer, TitleInfo>();
 		final var contents = new HashMap<Integer, ArrayList<MessageEmbed.Field>>();
 
 		final var prefix = Cache.getCommandPrefix(ctx.getGuild().getId());
@@ -33,7 +34,7 @@ public class CommandsCommand extends ACommand{
 		final var categories = Category.values();
 		var c = 0;
 		for(final var category : categories){
-			authors.put(c, category.getFriendlyName());
+			titles.put(c, new TitleInfo(category.getEmote() + " " + category.getFriendlyName(), category.getUrl()));
 
 			final var fields = new ArrayList<MessageEmbed.Field>();
 			commands.stream().filter(command -> command.getCategory() == category).forEach(cmd ->
@@ -41,7 +42,7 @@ public class CommandsCommand extends ACommand{
 			contents.put(c, fields);
 			c++;
 		}
-		Paginator.createCommandsPaginator(ctx, authors, categories.length, contents);
+		Paginator.createCommandsPaginator(ctx, titles, categories.length, contents);
 	}
 
 }

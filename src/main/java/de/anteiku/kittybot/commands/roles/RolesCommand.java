@@ -1,4 +1,4 @@
-package de.anteiku.kittybot.commands.utilities;
+package de.anteiku.kittybot.commands.roles;
 
 import de.anteiku.kittybot.Utils;
 import de.anteiku.kittybot.database.Database;
@@ -25,7 +25,7 @@ public class RolesCommand extends ACommand{
 	public static final String USAGE = "roles <add|remove|list>";
 	public static final String DESCRIPTION = "Used to manage your roles";
 	protected static final String[] ALIASES = {"r", "rollen"};
-	protected static final Category CATEGORY = Category.UTILITIES;
+	protected static final Category CATEGORY = Category.ROLES;
 	private static final String title = "Self-assignable roles:";
 
 	public RolesCommand(){

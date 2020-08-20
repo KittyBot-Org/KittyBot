@@ -1,4 +1,4 @@
-package de.anteiku.kittybot.commands.utilities;
+package de.anteiku.kittybot.commands.admin;
 
 import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.command.ACommand;
@@ -16,7 +16,7 @@ public class EvalCommand extends ACommand{
 	public static final String USAGE = "eval <code>";
 	public static final String DESCRIPTION = "Evals some Java Code";
 	protected static final String[] ALIASES = {};
-	protected static final Category CATEGORY = Category.UTILITIES;
+	protected static final Category CATEGORY = Category.ADMIN;
 	private ScriptEngine engine;
 
 	public EvalCommand(){
