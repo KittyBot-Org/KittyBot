@@ -42,7 +42,7 @@ public class CommandsCommand extends ACommand{
 			contents.put(c, fields);
 			c++;
 		}
-		Paginator.createCommandsPaginator(ctx, titles, categories.length, contents);
+		Paginator.createCommandsPaginator(ctx, categories.length, titles, contents);
 	}
 
 }

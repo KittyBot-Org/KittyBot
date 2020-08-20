@@ -32,7 +32,7 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 	private static final Map<Long, Integer> CURRENT_PAGE = new HashMap<>();                                // K = messageId, V = current page
 	private static final Map<Long, BiConsumer<Integer, EmbedBuilder>> CONTENT_CONSUMERS = new HashMap<>(); // K = messageId, V = BiConsumer<PageNumber, EmbedBuilder>
 
-	public static void createCommandsPaginator(final CommandContext ctx, final Map<Integer, TitleInfo> titlePerPage, final int totalPages, final Map<Integer, ArrayList<MessageEmbed.Field>> fields){
+	public static void createCommandsPaginator(final CommandContext ctx, final int totalPages, final Map<Integer, TitleInfo> titlePerPage, final Map<Integer, ArrayList<MessageEmbed.Field>> fields){
 		createPaginator(ctx, totalPages, (page, embedBuilder) -> {
 			var titleInfo = titlePerPage.get(page);
 			embedBuilder.setTitle(titleInfo.getTitle(), titleInfo.getUrl());
