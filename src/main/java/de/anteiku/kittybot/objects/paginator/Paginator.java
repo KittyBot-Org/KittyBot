@@ -41,7 +41,6 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 		});
 	}
 
-
 	public static void createPaginator(final CommandContext ctx, final int totalPages, final BiConsumer<Integer, EmbedBuilder> contentConsumer){
 		final var channel = ctx.getChannel();
 		final var message = ctx.getMessage();
