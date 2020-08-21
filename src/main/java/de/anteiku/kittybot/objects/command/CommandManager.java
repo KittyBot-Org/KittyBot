@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CommandManager{
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommandManager.class);
-	private static final ClassGraph CLASS_GRAPH = new ClassGraph().whitelistPackages("de.anteiku.kittybot.commands");
+	private static final ClassGraph CLASS_GRAPH = new ClassGraph().acceptPackages("de.anteiku.kittybot.commands");
 	private static final Map<String, ACommand> COMMANDS = new ConcurrentHashMap<>();
 	private static final Map<String, ACommand> DISTINCT_COMMANDS = new ConcurrentHashMap<>();
 
