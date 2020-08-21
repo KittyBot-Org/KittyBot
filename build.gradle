@@ -29,13 +29,13 @@ dependencies {
     implementation 'org.postgresql:postgresql:42.2.15'
 
     // logging
-    implementation 'ch.qos.logback:logback-classic:1.3.0-alpha5'
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
     implementation 'io.sentry:sentry-logback:1.7.30'
 
     // other
     implementation 'org.discordbots:DBL-Java-Library:2.0.1'
     implementation 'io.javalin:javalin:3.9.1'
     implementation 'org.yaml:snakeyaml:1.26'
-    implementation 'io.github.classgraph:classgraph:4.8.87'
+    implementation 'io.github.classgraph:classgraph:4.8.78'
 }
 

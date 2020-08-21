@@ -1,1 +1,1 @@
-${user_tag} sprinted away!
+${user}(${user_tag}) sprinted away!
