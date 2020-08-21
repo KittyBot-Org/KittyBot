@@ -5,6 +5,10 @@ updates:
   target-branch: dev
   schedule:
     interval: daily
-  open-pull-requests-limit: 10
+    time: '14:00'
+    timezone: Europe/Berlin
+  pull-request-branch-name:
+    separator: "-"
+  open-pull-requests-limit: 99
   assignees:
   - caneleex
