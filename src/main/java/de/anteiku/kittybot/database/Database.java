@@ -59,7 +59,7 @@ public class Database{
 			stmt.setString(5, guild.getDefaultChannel() == null ? "-1" : guild.getDefaultChannel().getId());
 			stmt.setString(6, "Welcome ${user} to this server!");
 			stmt.setBoolean(7, true);
-			stmt.setString(8, "Good bye ${user}(${user_tag})!");
+			stmt.setString(8, "Good bye ${user_tag}!");
 			stmt.setBoolean(9, true);
 			stmt.setString(10, "${user} boosted this server!");
 			stmt.setBoolean(11, true);
