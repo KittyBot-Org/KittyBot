@@ -119,6 +119,7 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 			String random = LEAVE_MESSAGES.get(ThreadLocalRandom.current().nextInt(LEAVE_MESSAGES.size() - 1));
 			message = message.replace("${random_leave_message}", random);
 		}
+		message = message.replace("${user}", user.getAsMention());
 		message = message.replace("${user_tag}", user.getAsTag());
 		message = message.replace("${name}", user.getName());
 		return message;
