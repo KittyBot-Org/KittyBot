@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
     // discord/jda related
-    implementation 'net.dv8tion:JDA:4.2.0_195'
+    implementation 'net.dv8tion:JDA:4.2.0_196'
     implementation ("com.github.FredBoat:Lavalink-Client:c2aeb28") {
         exclude group: 'com.sedmelluq', module: 'lavaplayer'
     }
