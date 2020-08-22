@@ -51,7 +51,7 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 			}
 			return;
 		}
-		if(!selfMember.hasPermission(channel, Permission.MESSAGE_HISTORY) || !selfMember.hasPermission(channel, Permission.MESSAGE_ADD_REACTION) || !selfMember.hasPermission(channel, Permission.MESSAGE_MANAGE)) {
+		if(!selfMember.hasPermission(channel, Permission.MESSAGE_HISTORY) || !selfMember.hasPermission(channel, Permission.MESSAGE_ADD_REACTION) || !selfMember.hasPermission(channel, Permission.MESSAGE_MANAGE)){
 			channel.sendMessage(
 					new EmbedBuilder()
 							.setColor(Color.RED)
@@ -94,6 +94,15 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 						removePaginator(channelId, messageId);
 					});
 		});
+	}
+
+	private static void removePaginator(final long channelId, final long messageId){
+		PAGINATOR_MESSAGES.get(channelId).remove(messageId);
+		TOTAL_PAGES.remove(messageId);
+		INVOKERS.remove(messageId);
+		ORIGINALS.remove(messageId);
+		CURRENT_PAGE.remove(messageId);
+		CONTENT_CONSUMERS.remove(messageId);
 	}
 
 	@Override
@@ -171,15 +180,6 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 				return;
 		}
 		channel.editMessageById(messageId, newPageBuilder.build()).queue();
-	}
-
-	private static void removePaginator(final long channelId, final long messageId){
-		PAGINATOR_MESSAGES.get(channelId).remove(messageId);
-		TOTAL_PAGES.remove(messageId);
-		INVOKERS.remove(messageId);
-		ORIGINALS.remove(messageId);
-		CURRENT_PAGE.remove(messageId);
-		CONTENT_CONSUMERS.remove(messageId);
 	}
 
 }
