@@ -3,10 +3,10 @@ bot_id: #your bot id
 bot_secret: #your bots secret
 admin_id: #your discord client id
 support_guild: #your support guild id
-log_channel: #your log cahnnel id
+log_channel: #your log channel id
 invite_url: https://discordapp.com/api/oauth2/authorize?client_id=your_client_id&permissions=1345842374&scope=bot #just insert your bot client id
 redirect_url: #your backend redirect url aka your kittybot websites frontend
-origin_url: #your origin url from your website(allowes which wesbite is allowed to make requests to your backend
+origin_url: #your origin url from your website (allows which website is allowed to make requests to your backend)
 hastebin_url: #just a hastebin url
 
 db_host: #the database host
