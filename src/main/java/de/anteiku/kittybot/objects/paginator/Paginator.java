@@ -58,9 +58,11 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 					.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
 					.setTimestamp(Instant.now())
 					.build())
-			.queue(); // TODO improve checks
+					.queue(); // TODO improve checks
 			return;
 		}
+
+	public static void createPaginator(final TextChannel channel, final Message message, final int totalPages, final BiConsumer<Integer, EmbedBuilder> contentConsumer){
 		final var embedBuilder = new EmbedBuilder();
 		embedBuilder.setFooter("Page 1/" + totalPages);
 		contentConsumer.accept(0, embedBuilder);
@@ -93,6 +95,15 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 						removePaginator(channelId, messageId);
 					});
 		});
+	}
+
+	private static void removePaginator(final long channelId, final long messageId){
+		PAGINATOR_MESSAGES.get(channelId).remove(messageId);
+		TOTAL_PAGES.remove(messageId);
+		INVOKERS.remove(messageId);
+		ORIGINALS.remove(messageId);
+		CURRENT_PAGE.remove(messageId);
+		CONTENT_CONSUMERS.remove(messageId);
 	}
 
 	@Override
@@ -180,4 +191,5 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 		CURRENT_PAGE.remove(messageId);
 		CONTENT_CONSUMERS.remove(messageId);
 	}
+
 }
