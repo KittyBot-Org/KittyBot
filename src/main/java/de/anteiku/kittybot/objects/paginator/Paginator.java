@@ -51,18 +51,17 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 			}
 			return;
 		}
-		if(!selfMember.hasPermission(channel, Permission.MESSAGE_HISTORY) || !selfMember.hasPermission(channel, Permission.MESSAGE_ADD_REACTION) || !selfMember.hasPermission(channel, Permission.MESSAGE_MANAGE)){
-			channel.sendMessage(new EmbedBuilder()
-					.setColor(Color.RED)
-					.addField("Error:", "I'm missing required permissions for paginator to work. Ensure that i can read the message history, add reactions and manage messages in this channel.", true)
-					.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
-					.setTimestamp(Instant.now())
-					.build())
+		if(!selfMember.hasPermission(channel, Permission.MESSAGE_HISTORY) || !selfMember.hasPermission(channel, Permission.MESSAGE_ADD_REACTION) || !selfMember.hasPermission(channel, Permission.MESSAGE_MANAGE)) {
+			channel.sendMessage(
+					new EmbedBuilder()
+							.setColor(Color.RED)
+							.addField("Error:", "I'm missing required permissions for paginator to work. Ensure that i can read the message history, add reactions and manage messages in this channel.", true)
+							.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
+							.setTimestamp(Instant.now())
+							.build())
 					.queue(); // TODO improve checks
 			return;
 		}
-
-	public static void createPaginator(final TextChannel channel, final Message message, final int totalPages, final BiConsumer<Integer, EmbedBuilder> contentConsumer){
 		final var embedBuilder = new EmbedBuilder();
 		embedBuilder.setFooter("Page 1/" + totalPages);
 		contentConsumer.accept(0, embedBuilder);
@@ -95,15 +94,6 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 						removePaginator(channelId, messageId);
 					});
 		});
-	}
-
-	private static void removePaginator(final long channelId, final long messageId){
-		PAGINATOR_MESSAGES.get(channelId).remove(messageId);
-		TOTAL_PAGES.remove(messageId);
-		INVOKERS.remove(messageId);
-		ORIGINALS.remove(messageId);
-		CURRENT_PAGE.remove(messageId);
-		CONTENT_CONSUMERS.remove(messageId);
 	}
 
 	@Override
