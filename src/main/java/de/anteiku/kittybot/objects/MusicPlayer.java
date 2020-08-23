@@ -48,12 +48,14 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		return queue;
 	}
 
-	public void loadItem(ACommand command, CommandContext ctx, String... args){
-		String search = String.join(" ", args);
-		if(!search.matches(URL_PATTERN)){
-			search = "ytsearch:" + search;
-		}
-		KittyBot.getAudioPlayerManager().loadItem(search, new AudioLoadResultHandler(){
+	public Deque<AudioTrack> getHistory(){
+		return history;
+	}
+
+	public void loadItem(ACommand command, CommandContext ctx){
+		String argStr = String.join(" ", ctx.getArgs());
+		final String query = argStr.matches(URL_PATTERN) ? argStr : "ytsearch:" + argStr;
+		KittyBot.getAudioPlayerManager().loadItem(query, new AudioLoadResultHandler(){
 
 			@Override
 			public void trackLoaded(AudioTrack track){
@@ -71,7 +73,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				if(future != null){
 					future.cancel(true);
 				}
-				KittyBot.getLavalink().getLink(ctx.getGuild()).connect(ctx.getMember().getVoiceState().getChannel());
+				connectToChannel(ctx);
 			}
 
 			@Override
@@ -102,12 +104,12 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				if(future != null){
 					future.cancel(true);
 				}
-				KittyBot.getLavalink().getLink(ctx.getGuild()).connect(ctx.getMember().getVoiceState().getChannel());
+				connectToChannel(ctx);
 			}
 
 			@Override
 			public void noMatches(){
-				sendError(ctx, "No matches found");
+				sendError(ctx, "No track found for: "+ argStr);
 			}
 
 			@Override
@@ -115,6 +117,13 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				sendError(ctx, "Failed to load track");
 			}
 		});
+	}
+
+	public void connectToChannel(CommandContext ctx){
+		var voiceState = ctx.getMember().getVoiceState();
+		if(voiceState != null && voiceState.getChannel() != null){
+			KittyBot.getLavalink().getLink(ctx.getGuild()).connect(voiceState.getChannel());
+		}
 	}
 
 	public void queue(AudioTrack track){

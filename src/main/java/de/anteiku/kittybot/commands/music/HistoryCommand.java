@@ -5,18 +5,17 @@ import de.anteiku.kittybot.objects.Cache;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
+import de.anteiku.kittybot.utils.Utils;
 
-import static de.anteiku.kittybot.utils.Utils.*;
+public class HistoryCommand extends ACommand{
 
-public class QueueCommand extends ACommand{
-
-	public static final String COMMAND = "queue";
-	public static final String USAGE = "queue <playlist/song/video>";
-	public static final String DESCRIPTION = "Queues what you want Kitty to play later";
-	protected static final String[] ALIASES = {"q"};
+	public static final String COMMAND = "history";
+	public static final String USAGE = "history";
+	public static final String DESCRIPTION = "Shows the current track history";
+	protected static final String[] ALIASES = {"h"};
 	protected static final Category CATEGORY = Category.MUSIC;
 
-	public QueueCommand(){
+	public HistoryCommand(){
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
@@ -33,19 +32,17 @@ public class QueueCommand extends ACommand{
 			return;
 		}
 		if(ctx.getArgs().length == 0){
-			var queue = musicPlayer.getQueue();
+			var queue = musicPlayer.getHistory();
 			if(queue.isEmpty()){
-				sendAnswer(ctx, "There are currently no tracks queued");
+				sendAnswer(ctx, "There are currently no tracks in history");
 				return;
 			}
-			var message = new StringBuilder("Currently ").append(queue.size()).append(" ").append(pluralize("track", queue)).append(" ").append(queue.size() > 1 ? "are" : "is").append(" queued:\n");
+			var message = new StringBuilder("Currently ").append(queue.size()).append(" ").append(Utils.pluralize("track", queue)).append(" ").append(queue.size() > 1 ? "are" : "is").append(" in the history:\n");
 			for(AudioTrack track : queue){
-				message.append(formatTrackTitle(track)).append(" ").append(formatDuration(track.getDuration())).append("\n");
+				message.append(Utils.formatTrackTitle(track)).append(" ").append(Utils.formatDuration(track.getDuration())).append("\n");
 			}
 			sendAnswer(ctx, message.toString());
-			return;
 		}
-		musicPlayer.loadItem(this, ctx);
 	}
 
 }
