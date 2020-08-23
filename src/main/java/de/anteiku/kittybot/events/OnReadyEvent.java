@@ -18,7 +18,7 @@ public class OnReadyEvent extends ListenerAdapter{
 
 	@Override
 	public final void onReady(@NotNull ReadyEvent event){
-		if(Config.DISCORD_BOTS_TOKEN != null && !Config.DISCORD_BOTS_TOKEN.equals("")){
+		if(Config.isSet(Config.DISCORD_BOTS_TOKEN)){
 			var shardInfo = event.getJDA().getShardInfo();
 			Request request = new Request.Builder().url("https://discord.bots.gg/api/v1/bots/" + Config.BOT_ID + "/stats").header("authorization", Config.DISCORD_BOTS_TOKEN).post(
 					RequestBody.create(MediaType.parse("application/json; charset=utf-8"),
@@ -44,7 +44,7 @@ public class OnReadyEvent extends ListenerAdapter{
 				}
 			});
 		}
-		if(Config.DISCORD_BOT_LIST_TOKEN != null && !Config.DISCORD_BOT_LIST_TOKEN.equals("")){
+		if(Config.isSet(Config.DISCORD_BOT_LIST_TOKEN)){
 			var shardInfo = event.getJDA().getShardInfo();
 			KittyBot.getDiscordBotListAPI().setStats(shardInfo.getShardId(), shardInfo.getShardTotal(), event.getGuildTotalCount());
 			LOG.info("Published serverCount to https://top.gg/");

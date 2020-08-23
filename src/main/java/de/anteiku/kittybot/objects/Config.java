@@ -73,4 +73,8 @@ public class Config{
 		}
 	}
 
+	public static boolean isSet(String setting){
+		return setting != null && !setting.isEmpty();
+	}
+
 }

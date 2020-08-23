@@ -115,7 +115,7 @@ public class KittyBot{
 
 			RestAction.setDefaultFailure(null);
 
-			if(Config.DISCORD_BOT_LIST_TOKEN != null && !Config.DISCORD_BOT_LIST_TOKEN.equals("")){
+			if(Config.isSet(Config.DISCORD_BOT_LIST_TOKEN)){
 				discordBotListAPI = new DiscordBotListAPI.Builder().token(Config.DISCORD_BOT_LIST_TOKEN).botId(Config.BOT_ID).build();
 			}
 
@@ -125,7 +125,7 @@ public class KittyBot{
 
 			jda.getPresence().setStatus(OnlineStatus.ONLINE);
 			jda.getPresence().setActivity(Activity.watching("you \uD83D\uDC40"));
-			if(Config.LOG_CHANNEL_ID != null){
+			if(Config.isSet(Config.LOG_CHANNEL_ID)){
 				sendToPublicLogChannel(jda, Config.SUPPORT_GUILD_ID, Config.LOG_CHANNEL_ID, "me online now uwu");
 			}
 		}
