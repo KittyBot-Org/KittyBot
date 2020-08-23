@@ -2,5 +2,5 @@
 .gradle/
 .idea/
 build/
-config.yml
+config.json
 .idea
