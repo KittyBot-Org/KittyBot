@@ -1,0 +1,28 @@
+{
+    "bot_token": "your discord bot token",
+    "bot_id": "your discord bot id",
+    "bot_secret": "your discord bot secret",
+    "admin_id": "your own discord id",
+    "support_guild_id": "your support discord guild id",
+    "log_channel_id": "your support discord channel id",
+    "invite_url": "your support discord invite url",
+    "redirect_url": "your frontend redirect url",
+    "origin_url": "your frontend origin url",
+    "hastebin_url": "a hastebin url",
+    "discord_bots_token": "your https://discord.bots.gg token",
+    "discord_bot_list_token": "your https://top.gg token",
+    "db": {
+        "host": "your database host",
+        "port": "your database port",
+        "db": "your database database",
+        "user": "your database user",
+        "password": "your database password"
+    },
+    "lavalink_nodes": [
+        {
+            "host": "your lavalink host",
+            "port": "your lavalink port",
+            "password": "your lavalink password"
+        }
+    ]
+}

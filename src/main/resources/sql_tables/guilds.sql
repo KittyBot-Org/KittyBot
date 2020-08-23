@@ -13,6 +13,6 @@ CREATE TABLE IF NOT EXISTS guilds(
   log_channel_id          varchar(18) NOT NULL,
   log_message_enabled     boolean NOT NULL,
   nsfw_enabled            boolean NOT NULL,
-  inactive_role           varchar(18) NOT NULL,
+  inactive_role_id        varchar(18) NOT NULL,
 PRIMARY KEY(guild_id)
 );
