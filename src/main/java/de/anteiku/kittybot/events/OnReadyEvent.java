@@ -36,11 +36,11 @@ public class OnReadyEvent extends ListenerAdapter{
 				public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException{
 					if(response.code() == 200){
 						LOG.info("Published serverCount to https://discord.bots.gg/");
-						return;
 					}
-					try(var body = response.body()){
-						LOG.error("Error while publishing bot stats to https://discord.bots.gg/ code: '" + response.code() + "'" + (body == null ? "" : "body: '" + body.string() + "'"));
+					else{
+						LOG.error("Error while publishing bot stats to https://discord.bots.gg/ code: '" + response.code() + "'" + (response.body() == null ? "" : "body: '" + response.body().string() + "'"));
 					}
+					response.close();
 				}
 			});
 		}
