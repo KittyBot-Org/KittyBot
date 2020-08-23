@@ -6,7 +6,7 @@ import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
 
-import static de.anteiku.kittybot.Utils.*;
+import static de.anteiku.kittybot.utils.Utils.*;
 
 public class QueueCommand extends ACommand{
 

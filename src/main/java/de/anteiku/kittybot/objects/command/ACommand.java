@@ -84,7 +84,7 @@ public abstract class ACommand{
 		}
 	}
 
-	protected void queue(MessageAction messageAction, CommandContext ctx){
+	protected static void queue(MessageAction messageAction, CommandContext ctx){
 		if(messageAction != null){
 			messageAction.queue(success -> Cache.addCommandResponse(ctx.getMessage(), success), failure -> sendError(ctx, "There was an error processing your command!\nError: " + failure.getLocalizedMessage()));
 		}
@@ -110,11 +110,11 @@ public abstract class ACommand{
 		return error(ctx, "Sorry you don't have the permission to use this command :(");
 	}
 
-	public void sendError(CommandContext ctx, String error){
+	public static void sendError(CommandContext ctx, String error){
 		queue(error(ctx, error), ctx);
 	}
 
-	protected MessageAction error(CommandContext ctx, String error){
+	protected static MessageAction error(CommandContext ctx, String error){
 		addStatus(ctx.getMessage(), Status.ERROR);
 		return ctx.getChannel().sendMessage(new EmbedBuilder()
 				.setColor(Color.RED)
@@ -155,7 +155,7 @@ public abstract class ACommand{
 		return null;
 	}
 
-	protected void addStatus(Message message, Status status){
+	protected static void addStatus(Message message, Status status){
 		String emote;
 		switch(status){
 			case OK:

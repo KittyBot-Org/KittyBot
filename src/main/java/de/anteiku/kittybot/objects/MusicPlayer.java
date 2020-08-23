@@ -6,9 +6,9 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.Utils;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.CommandContext;
+import de.anteiku.kittybot.utils.Utils;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavalinkPlayer;
 import lavalink.client.player.event.PlayerEventListenerAdapter;
@@ -23,8 +23,9 @@ import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import static de.anteiku.kittybot.Utils.formatDuration;
-import static de.anteiku.kittybot.Utils.pluralize;
+import static de.anteiku.kittybot.objects.command.ACommand.sendError;
+import static de.anteiku.kittybot.utils.Utils.formatDuration;
+import static de.anteiku.kittybot.utils.Utils.pluralize;
 
 public class MusicPlayer extends PlayerEventListenerAdapter{
 
@@ -70,6 +71,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				if(future != null){
 					future.cancel(true);
 				}
+				KittyBot.getLavalink().getLink(ctx.getGuild()).connect(ctx.getMember().getVoiceState().getChannel());
 			}
 
 			@Override
@@ -100,16 +102,17 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				if(future != null){
 					future.cancel(true);
 				}
+				KittyBot.getLavalink().getLink(ctx.getGuild()).connect(ctx.getMember().getVoiceState().getChannel());
 			}
 
 			@Override
 			public void noMatches(){
-				command.sendError(ctx, "No matches found for ");
+				sendError(ctx, "No matches found");
 			}
 
 			@Override
 			public void loadFailed(FriendlyException exception){
-				command.sendError(ctx, "Failed to load track");
+				sendError(ctx, "Failed to load track");
 			}
 		});
 	}
