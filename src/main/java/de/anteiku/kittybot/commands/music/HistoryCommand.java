@@ -32,13 +32,13 @@ public class HistoryCommand extends ACommand{
 			return;
 		}
 		if(ctx.getArgs().length == 0){
-			var queue = musicPlayer.getHistory();
-			if(queue.isEmpty()){
+			var history = musicPlayer.getHistory();
+			if(history.isEmpty()){
 				sendAnswer(ctx, "There are currently no tracks in history");
 				return;
 			}
-			var message = new StringBuilder("Currently ").append(queue.size()).append(" ").append(Utils.pluralize("track", queue)).append(" ").append(queue.size() > 1 ? "are" : "is").append(" in the history:\n");
-			for(AudioTrack track : queue){
+			var message = new StringBuilder("Currently ").append(history.size()).append(" ").append(Utils.pluralize("track", history)).append(" ").append(history.size() > 1 ? "are" : "is").append(" in the history:\n");
+			for(AudioTrack track : history){
 				message.append(Utils.formatTrackTitle(track)).append(" ").append(Utils.formatDuration(track.getDuration())).append("\n");
 			}
 			sendAnswer(ctx, message.toString());
