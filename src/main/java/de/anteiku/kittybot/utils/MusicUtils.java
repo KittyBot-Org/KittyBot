@@ -58,17 +58,17 @@ public class MusicUtils {
                 if (position + toSeek >= duration){
                     if (!musicPlayer.nextTrack())
                         player.stopTrack();
+                    break;
                 }
-                else
-                    player.seekTo(position + toSeek);
+                player.seekTo(position + toSeek);
                 break;
             case "rewind":
                 if (position - toSeek <= 0){
                     if (!musicPlayer.previousTrack())
                         player.stopTrack();
+                    break;
                 }
-                else
-                    player.seekTo(position - toSeek);
+                player.seekTo(position - toSeek);
                 break;
             default:
         }
