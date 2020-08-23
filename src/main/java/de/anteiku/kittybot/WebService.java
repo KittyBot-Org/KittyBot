@@ -211,6 +211,9 @@ public class WebService{
 		}
 		var data = DataArray.empty();
 		for(var role : guild.getRoles()){
+			if(role.isPublicRole()){
+				continue;
+			}
 			data.add(DataObject.empty().put("name", role.getName()).put("id", role.getId()));
 		}
 		ok(ctx, DataObject.empty().put("roles", data));
