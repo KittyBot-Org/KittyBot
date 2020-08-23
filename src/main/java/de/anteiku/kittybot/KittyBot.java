@@ -96,7 +96,7 @@ public class KittyBot{
 					.setChunkingFilter(ChunkingFilter.ALL)
 					.setToken(Config.BOT_TOKEN)
 					.addEventListeners(
-							new OnGuildJoinEvent(),
+							new OnGuildEvent(),
 							new OnGuildMemberEvent(),
 							new OnEmoteEvent(),
 							new OnGuildMessageEvent(),
@@ -126,7 +126,7 @@ public class KittyBot{
 			jda.getPresence().setStatus(OnlineStatus.ONLINE);
 			jda.getPresence().setActivity(Activity.watching("you \uD83D\uDC40"));
 			if(Config.isSet(Config.LOG_CHANNEL_ID)){
-				sendToPublicLogChannel(jda, Config.SUPPORT_GUILD_ID, Config.LOG_CHANNEL_ID, "me online now uwu");
+				sendToPublicLogChannel("I'm now online uwu");
 			}
 		}
 		catch(Exception e){
@@ -139,20 +139,22 @@ public class KittyBot{
 		return jda;
 	}
 
-	public void sendToPublicLogChannel(JDA jda, String guildId, String channelId, String description){
-		var guild = jda.getGuildById(guildId);
+	public static void sendToPublicLogChannel(String description){
+		var guild = jda.getGuildById(Config.SUPPORT_GUILD_ID);
 		if(guild == null){
 			return;
 		}
-		guild.getTextChannelById(channelId).sendMessage(new EmbedBuilder()
-				.setTitle("Log")
-				.setDescription(description)
-				.setThumbnail(jda.getSelfUser().getAvatarUrl())
-				.setColor(new Color(76, 80, 193))
-				.setFooter(jda.getSelfUser().getName(), jda.getSelfUser().getAvatarUrl())
-				.setTimestamp(Instant.now())
-				.build()
-		).queue();
+		var channel = guild.getTextChannelById(Config.LOG_CHANNEL_ID);
+		if(channel != null){
+			channel.sendMessage(new EmbedBuilder()
+					.setTitle("Log")
+					.setDescription(description)
+					.setColor(new Color(76, 80, 193))
+					.setFooter(jda.getSelfUser().getName(), jda.getSelfUser().getAvatarUrl())
+					.setTimestamp(Instant.now())
+					.build()
+			).queue();
+		}
 	}
 
 	public void close(){
