@@ -115,7 +115,7 @@ public class KittyBot{
 
 			RestAction.setDefaultFailure(null);
 
-			if(Config.DISCORD_BOT_LIST_TOKEN != null){
+			if(Config.DISCORD_BOT_LIST_TOKEN != null && !Config.DISCORD_BOT_LIST_TOKEN.equals("")){
 				discordBotListAPI = new DiscordBotListAPI.Builder().token(Config.DISCORD_BOT_LIST_TOKEN).botId(Config.BOT_ID).build();
 			}
 
