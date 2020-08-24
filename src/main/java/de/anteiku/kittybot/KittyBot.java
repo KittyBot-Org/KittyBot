@@ -33,6 +33,8 @@ import org.slf4j.LoggerFactory;
 import java.awt.*;
 import java.net.URI;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -46,6 +48,7 @@ public class KittyBot{
 	private static JdaLavalink lavalink;
 	private static JDA jda;
 	private static DiscordBotListAPI discordBotListAPI;
+	public static final DateTimeFormatter TIME_IN_CENTRAL_EUROPE = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss z").withZone(ZoneId.of("Europe/Berlin"));
 
 	public KittyBot(){
 		LOG.info("\n" +
