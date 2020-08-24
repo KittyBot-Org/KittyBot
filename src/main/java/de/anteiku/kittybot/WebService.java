@@ -139,7 +139,7 @@ public class WebService{
 			error(ctx, 404, "Session not found");
 			return;
 		}
-		if(!userId.equals(Config.ADMIN_ID)){
+		if(!Config.ADMIN_IDS.contains(userId)){
 			error(ctx, 403, "Only admins have access to this!");
 			return;
 		}
@@ -172,7 +172,7 @@ public class WebService{
 				error(ctx, 404, "This user does not exist");
 				return;
 			}
-			if(userId.equals(Config.ADMIN_ID)){
+			if(Config.ADMIN_IDS.contains(userId)){
 				return;
 			}
 			var member = guild.retrieveMemberById(userId).complete();
