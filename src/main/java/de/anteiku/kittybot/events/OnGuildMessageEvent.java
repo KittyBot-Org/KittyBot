@@ -4,7 +4,7 @@ import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.Cache;
 import de.anteiku.kittybot.objects.Emojis;
 import de.anteiku.kittybot.objects.ReactiveMessage;
-import de.anteiku.kittybot.objects.command.CommandManager;
+import de.anteiku.kittybot.command.CommandManager;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;

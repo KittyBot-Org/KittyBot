@@ -2,9 +2,9 @@ package de.anteiku.kittybot.commands.music;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.anteiku.kittybot.objects.Cache;
-import de.anteiku.kittybot.objects.command.ACommand;
-import de.anteiku.kittybot.objects.command.Category;
-import de.anteiku.kittybot.objects.command.CommandContext;
+import de.anteiku.kittybot.command.ACommand;
+import de.anteiku.kittybot.command.Category;
+import de.anteiku.kittybot.command.CommandContext;
 
 import static de.anteiku.kittybot.Utils.*;
 

@@ -14,7 +14,7 @@ import de.anteiku.kittybot.database.SQL;
 import de.anteiku.kittybot.events.*;
 import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.LavalinkNode;
-import de.anteiku.kittybot.objects.command.CommandManager;
+import de.anteiku.kittybot.command.CommandManager;
 import de.anteiku.kittybot.objects.paginator.Paginator;
 import lavalink.client.io.Link;
 import lavalink.client.io.jda.JdaLavalink;

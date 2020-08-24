@@ -1,4 +1,4 @@
-package de.anteiku.kittybot.objects.command;
+package de.anteiku.kittybot.command;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
