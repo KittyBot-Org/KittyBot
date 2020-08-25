@@ -1,0 +1,14 @@
+version: 2
+updates:
+- package-ecosystem: gradle
+  directory: "/"
+  target-branch: dev
+  schedule:
+    interval: daily
+    time: '14:00'
+    timezone: Europe/Berlin
+  pull-request-branch-name:
+    separator: "-"
+  open-pull-requests-limit: 99
+  assignees:
+  - caneleex
