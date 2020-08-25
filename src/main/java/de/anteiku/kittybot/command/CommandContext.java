@@ -28,6 +28,8 @@ public interface CommandContext{
 
 	Bag<User> getMentionedUsersBag();
 
+	List<Member> getMentionedMembers();
+
 	Member getSelfMember();
 
 	Member getMember();

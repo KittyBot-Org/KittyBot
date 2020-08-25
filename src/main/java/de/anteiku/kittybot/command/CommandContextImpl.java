@@ -51,12 +51,45 @@ public class CommandContextImpl implements CommandContext{
 		return this.event.getAuthor();
 	}
 
+	private boolean isMentionCommand(){
+		var content = getMessage().getContentRaw();
+		var botId = getSelfUser().getId();
+		return content.startsWith("<@" + botId + ">") || content.startsWith("<@!" + botId + ">");
+	}
+
 	public List<User> getMentionedUsers(){
-		return getMessage().getMentionedUsers();
+		var users = getMessage().getMentionedUsers();
+		var selfUser = getSelfUser();
+
+		if(isMentionCommand()){
+			if(getMessage().getMentionedUsersBag().getCount(selfUser) == 1){
+				users.remove(selfUser);
+			}
+		}
+		return users;
+	}
+
+	public List<Member> getMentionedMembers(){
+		var members = getMessage().getMentionedMembers();
+		var selfMember = getSelfMember();
+
+		if(isMentionCommand()){
+			if(getMessage().getMentionedUsersBag().getCount(selfMember) == 1){
+				members.remove(selfMember);
+			}
+		}
+		return members;
 	}
 
 	public Bag<User> getMentionedUsersBag(){
-		return getMessage().getMentionedUsersBag();
+		var users = getMessage().getMentionedUsersBag();
+		var selfUser = getSelfUser();
+
+		if(isMentionCommand()){
+			var occurrences = users.getCount(selfUser);
+			users.remove(selfUser, occurrences == 1 ? 1 : occurrences - 1);
+		}
+		return users;
 	}
 
 	public Member getSelfMember(){

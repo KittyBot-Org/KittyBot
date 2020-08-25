@@ -203,13 +203,6 @@ public abstract class ACommand{
 
 	protected MessageAction reactionImage(CommandContext ctx, String type, String text){
 		Bag<User> users = ctx.getMentionedUsersBag();
-		String content = ctx.getMessage().getContentRaw();
-		User selfUser = ctx.getSelfUser();
-		long botId = selfUser.getIdLong();
-		if(content.startsWith("<@" + botId + ">") || content.startsWith("<@!" + botId + ">")){
-			var occurrences = users.getCount(selfUser);
-			users.remove(selfUser, occurrences == 1 ? 1 : occurrences - 1);
-		}
 
 		StringBuilder message = new StringBuilder();
 		if(users.isEmpty()){
