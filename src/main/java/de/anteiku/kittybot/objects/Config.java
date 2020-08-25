@@ -1,5 +1,6 @@
 package de.anteiku.kittybot.objects;
 
+import de.anteiku.kittybot.Utils;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,10 @@ public class Config{
 			ADMIN_IDS = new ArrayList<>();
 			var adminIds = json.getArray("admin_ids");
 			for(var i = 0; i < adminIds.length(); i++){
-				ADMIN_IDS.add(adminIds.getString(i));
+				var id = adminIds.getString(i);
+				if (!Utils.isValidSnowflake(id))
+					continue;
+				ADMIN_IDS.add(id);
 			}
 			SUPPORT_GUILD_ID = json.getString("support_guild_id");
 			LOG_CHANNEL_ID = json.getString("log_channel_id");

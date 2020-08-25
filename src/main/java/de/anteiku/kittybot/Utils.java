@@ -4,6 +4,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.anteiku.kittybot.database.SQL;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.utils.MiscUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,6 +111,16 @@ public class Utils{
 
 	public static <T> String pluralize(String text, Collection<T> collection){
 		return collection.size() > 1 ? text + "s" : text;
+	}
+
+	public static boolean isValidSnowflake(String input){
+		try{
+			MiscUtil.parseSnowflake(input);
+			return true;
+		}
+		catch (NumberFormatException ex){
+			return false;
+		}
 	}
 
 }
