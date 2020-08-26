@@ -46,7 +46,8 @@ public class OnGuildEvent extends ListenerAdapter{
 	@Override
 	public void onGuildLeave(GuildLeaveEvent event){
 		BotLists.update(event.getJDA(), event.getJDA().getGuilds().size());
-		KittyBot.sendToPublicLogChannel(String.format("Helluwu I got kicked from the guild: ``%s``\nCurrently I'm in %d guilds!", event.getGuild().getName(), event.getJDA().getGuilds().size()));
+		KittyBot.sendToPublicLogChannel(String.format("Helluwu I got kicked from the guild: ``%s``%nCurrently I'm in %d guilds!", event.getGuild().getName(), event.getJDA().getGuilds().size()));
+		Cache.getInviteCache().entrySet().removeIf(entry -> entry.getKey().equals(event.getGuild().getId()));
 	}
 
 }

@@ -1,9 +1,9 @@
 package de.anteiku.kittybot.objects;
 
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.command.ACommand;
 import de.anteiku.kittybot.command.CommandContext;
+import de.anteiku.kittybot.database.Database;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
@@ -32,8 +32,8 @@ public class Cache{
 			return null;
 		final var guildId = guild.getId();
 		final var value = INVITES.get(guildId);
-		if (value == null){
-			INVITES.computeIfAbsent(guildId, k -> new HashMap<>());
+		if (value == null){ // how?
+			initGuildInviteCache(guild);
 			return null;
 		}
 		for (final var invite : guild.retrieveInvites().complete()){
@@ -162,6 +162,10 @@ public class Cache{
 		reactiveMessage = Database.isReactiveMessage(guild.getId(), messageId);
 		REACTIVE_MESSAGES.put(messageId, reactiveMessage);
 		return reactiveMessage;
+	}
+
+	public static Map<String, Map<String, InviteData>> getInviteCache(){
+		return INVITES;
 	}
 
 }
