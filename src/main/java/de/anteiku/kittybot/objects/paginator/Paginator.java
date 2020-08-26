@@ -1,8 +1,8 @@
 package de.anteiku.kittybot.objects.paginator;
 
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.objects.TitleInfo;
 import de.anteiku.kittybot.command.CommandContext;
+import de.anteiku.kittybot.objects.TitleInfo;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageEmbed;

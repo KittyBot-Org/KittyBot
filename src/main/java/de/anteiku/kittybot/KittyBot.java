@@ -9,12 +9,12 @@ import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.vimeo.VimeoAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
+import de.anteiku.kittybot.command.CommandManager;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.database.SQL;
 import de.anteiku.kittybot.events.*;
 import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.LavalinkNode;
-import de.anteiku.kittybot.command.CommandManager;
 import de.anteiku.kittybot.objects.paginator.Paginator;
 import lavalink.client.io.Link;
 import lavalink.client.io.jda.JdaLavalink;
@@ -40,6 +40,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 public class KittyBot{
 
+	public static final DateTimeFormatter TIME_IN_CENTRAL_EUROPE = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss z").withZone(ZoneId.of("Europe/Berlin"));
 	private static final Logger LOG = LoggerFactory.getLogger(KittyBot.class);
 	private static final OkHttpClient HTTP_CLIENT = new OkHttpClient();
 	private static final AudioPlayerManager AUDIO_PLAYER_MANAGER = new DefaultAudioPlayerManager();
@@ -48,7 +49,6 @@ public class KittyBot{
 	private static JdaLavalink lavalink;
 	private static JDA jda;
 	private static DiscordBotListAPI discordBotListAPI;
-	public static final DateTimeFormatter TIME_IN_CENTRAL_EUROPE = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss z").withZone(ZoneId.of("Europe/Berlin"));
 
 	public KittyBot(){
 		LOG.info("\n" +

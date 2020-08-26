@@ -1,12 +1,10 @@
 package de.anteiku.kittybot.objects;
 
-import de.anteiku.kittybot.KittyBot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.Instant;
 import java.util.Properties;
 
 public class AppInfo{
@@ -33,7 +31,7 @@ public class AppInfo{
 		BUILD_NUMBER = prop.getProperty("buildNumber");
 	}
 
-	public static String getVersionBuild() {
+	public static String getVersionBuild(){
 		return VERSION + "_" + BUILD_NUMBER;
 	}
 

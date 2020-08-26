@@ -1,13 +1,13 @@
 package de.anteiku.kittybot.commands.roles;
 
 import de.anteiku.kittybot.Utils;
+import de.anteiku.kittybot.command.ACommand;
+import de.anteiku.kittybot.command.Category;
+import de.anteiku.kittybot.command.CommandContext;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.Cache;
 import de.anteiku.kittybot.objects.Emojis;
 import de.anteiku.kittybot.objects.ReactiveMessage;
-import de.anteiku.kittybot.command.ACommand;
-import de.anteiku.kittybot.command.Category;
-import de.anteiku.kittybot.command.CommandContext;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emote;

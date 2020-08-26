@@ -1,9 +1,9 @@
 package de.anteiku.kittybot.commands.music;
 
-import de.anteiku.kittybot.objects.Cache;
 import de.anteiku.kittybot.command.ACommand;
 import de.anteiku.kittybot.command.Category;
 import de.anteiku.kittybot.command.CommandContext;
+import de.anteiku.kittybot.objects.Cache;
 
 public class VolumeCommand extends ACommand{
 
