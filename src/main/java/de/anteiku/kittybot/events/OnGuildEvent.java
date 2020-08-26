@@ -40,14 +40,15 @@ public class OnGuildEvent extends ListenerAdapter{
 				return;//just want to catch the last add loool
 			}
 		}
-		KittyBot.sendToPublicLogChannel(String.format("Hellowo I joined the guild: ``%s`` with owner: ```%s`` and ``%d`` members!\nCurrently I'm in %d guilds!", event.getGuild().getName(), event.getGuild().getOwner().getUser().getAsTag(), event.getGuild().getMemberCount(), event.getJDA().getGuilds().size()));
+		var owner = event.getGuild().getOwner();
+		KittyBot.sendToPublicLogChannel(String.format("Hellowo I joined the guild: ``%s``%s``%d`` members!%nCurrently I'm in %d guilds!", event.getGuild().getName(), owner == null ? " " : " with owner: ``" + owner.getUser().getAsTag() + "`` and ", event.getGuild().getMemberCount(), event.getJDA().getGuilds().size()));
 	}
 
 	@Override
 	public void onGuildLeave(GuildLeaveEvent event){
 		BotLists.update(event.getJDA(), event.getJDA().getGuilds().size());
+		Cache.pruneGuildInviteCache(event.getGuild());
 		KittyBot.sendToPublicLogChannel(String.format("Helluwu I got kicked from the guild: ``%s``%nCurrently I'm in %d guilds!", event.getGuild().getName(), event.getJDA().getGuilds().size()));
-		Cache.getInviteCache().entrySet().removeIf(entry -> entry.getKey().equals(event.getGuild().getId()));
 	}
 
 }

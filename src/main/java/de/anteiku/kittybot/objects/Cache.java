@@ -63,6 +63,11 @@ public class Cache{
 		}
 	}
 
+	public static void pruneGuildInviteCache(Guild guild){
+		LOG.info("Pruning invite cache for guild: " + guild.getName() + "(" + guild.getId() + ")");
+		INVITES.remove(guild.getId());
+	}
+
 	public static void addNewInvite(Invite invite){
 		if(invite.getGuild() != null){
 			var guildId = invite.getGuild().getId();
@@ -162,10 +167,6 @@ public class Cache{
 		reactiveMessage = Database.isReactiveMessage(guild.getId(), messageId);
 		REACTIVE_MESSAGES.put(messageId, reactiveMessage);
 		return reactiveMessage;
-	}
-
-	public static Map<String, Map<String, InviteData>> getInviteCache(){
-		return INVITES;
 	}
 
 }
