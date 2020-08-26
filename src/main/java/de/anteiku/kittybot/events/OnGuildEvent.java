@@ -20,7 +20,7 @@ public class OnGuildEvent extends ListenerAdapter{
 
 	@Override
 	public void onGuildJoin(GuildJoinEvent event){
-		var guildCount = event.getJDA().getGuilds().size();
+		var guildCount = event.getJDA().getGuildCache().size();
 		var guild = event.getGuild();
 		BotLists.update(event.getJDA(), guildCount);
 		Database.registerGuild(guild);
@@ -48,7 +48,7 @@ public class OnGuildEvent extends ListenerAdapter{
 
 	@Override
 	public void onGuildLeave(GuildLeaveEvent event){
-		var guildCount = event.getJDA().getGuilds().size();
+		var guildCount = event.getJDA().getGuildCache().size();
 		var guild = event.getGuild();
 		BotLists.update(event.getJDA(), guildCount);
 		Cache.pruneGuildInviteCache(guild);
