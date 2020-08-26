@@ -156,7 +156,7 @@ public abstract class ACommand{
 	}
 
 	protected void addStatus(Message message, Status status){
-		var emote;
+		String emote;
 		switch(status){
 			case OK:
 				emote = Emojis.CHECK;
