@@ -15,7 +15,7 @@ public class BotLists{
 	private static final Logger LOG = LoggerFactory.getLogger(BotLists.class);
 
 
-	public static void update(JDA jda, long totalGuilds){
+	public static void update(JDA jda, int totalGuilds){
 		if(Config.isSet(Config.DISCORD_BOTS_TOKEN)){
 			var shardInfo = jda.getShardInfo();
 			Request request = new Request.Builder().url("https://discord.bots.gg/api/v1/bots/" + Config.BOT_ID + "/stats").header("authorization", Config.DISCORD_BOTS_TOKEN).post(
@@ -44,7 +44,7 @@ public class BotLists{
 		}
 		if(Config.isSet(Config.DISCORD_BOT_LIST_TOKEN)){
 			var shardInfo = jda.getShardInfo();
-			KittyBot.getDiscordBotListAPI().setStats(shardInfo.getShardId(), shardInfo.getShardTotal(), (int) totalGuilds);
+			KittyBot.getDiscordBotListAPI().setStats(shardInfo.getShardId(), shardInfo.getShardTotal(), totalGuilds);
 			LOG.info("Published serverCount to https://top.gg/");
 		}
 	}
