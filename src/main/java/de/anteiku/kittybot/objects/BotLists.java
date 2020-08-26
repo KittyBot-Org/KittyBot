@@ -14,7 +14,6 @@ public class BotLists{
 
 	private static final Logger LOG = LoggerFactory.getLogger(BotLists.class);
 
-
 	public static void update(JDA jda, int totalGuilds){
 		if(Config.isSet(Config.DISCORD_BOTS_TOKEN)){
 			var shardInfo = jda.getShardInfo();
