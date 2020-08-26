@@ -1,5 +1,6 @@
 package de.anteiku.kittybot.commands.utilities;
 
+import de.anteiku.kittybot.Utils;
 import de.anteiku.kittybot.command.ACommand;
 import de.anteiku.kittybot.command.Category;
 import de.anteiku.kittybot.command.CommandContext;
@@ -36,11 +37,10 @@ public class KickCommand extends ACommand{
 			sendError(ctx, "Please mention a user");
 			return;
 		}
-		var user = ctx.getUser();
 		for(var member : members){
-			member.kick("").reason("Kicked by command from '" + user.getAsTag() + "'(" + user.getId() + ")").queue();
+			member.kick("").reason("Command  ran by '" + ctx.getUser().getAsTag() + "'(" + ctx.getUser().getId() + ")").queue();
 		}
-		sendAnswer(ctx, "Kicked members");
+		sendAnswer(ctx, "Kicked " + Utils.pluralize("member", members));
 	}
 
 }
