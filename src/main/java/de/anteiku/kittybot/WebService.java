@@ -240,7 +240,7 @@ public class WebService{
 		}
 		var data = DataArray.empty();
 		for(var emote : guild.getEmotes()){
-			data.add(DataObject.empty().put("name", emote.getName()).put("id", emote.getId()).put("url", emote.getName()));
+			data.add(DataObject.empty().put("name", emote.getName()).put("id", emote.getId()).put("url", emote.getImageUrl()));
 		}
 		ok(ctx, DataObject.empty().put("emotes", data));
 	}

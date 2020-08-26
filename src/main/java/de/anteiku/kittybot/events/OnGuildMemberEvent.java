@@ -28,7 +28,7 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 			TextChannel channel = event.getGuild().getTextChannelById(id);
 			if(channel != null){
 				if(event.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE)){
-					channel.sendMessage(generateLeaveMessage(Database.getJoinMessage(event.getGuild().getId()), event.getUser())).queue();
+					channel.sendMessage(generateLeaveMessage(Database.getLeaveMessage(event.getGuild().getId()), event.getUser())).queue();
 				}
 				else{
 					event.getGuild().retrieveOwner().queue(
