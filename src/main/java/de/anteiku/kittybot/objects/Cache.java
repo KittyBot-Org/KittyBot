@@ -30,6 +30,7 @@ public class Cache{
 	public static Invite getUsedInvite(Guild guild){
 		if(guild.getSelfMember().hasPermission(Permission.MANAGE_SERVER)){
 			for(Invite invite : guild.retrieveInvites().complete()){
+				INVITES.computeIfAbsent(guildId, k -> new HashMap<>());
 				var oldInvite = INVITES.get(guild.getId()).get(invite.getCode());
 				if(oldInvite != null && oldInvite.getUses() < invite.getUses()){
 					return invite;
