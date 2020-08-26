@@ -1,9 +1,9 @@
 package de.anteiku.kittybot.commands.neko;
 
-import de.anteiku.kittybot.objects.Emojis;
 import de.anteiku.kittybot.command.ACommand;
 import de.anteiku.kittybot.command.Category;
 import de.anteiku.kittybot.command.CommandContext;
+import de.anteiku.kittybot.objects.Emojis;
 
 public class DogCommand extends ACommand{
 

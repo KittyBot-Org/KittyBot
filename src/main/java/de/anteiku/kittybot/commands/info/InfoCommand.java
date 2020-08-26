@@ -1,14 +1,13 @@
 package de.anteiku.kittybot.commands.info;
 
-import de.anteiku.kittybot.objects.AppInfo;
-import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.command.ACommand;
 import de.anteiku.kittybot.command.Category;
 import de.anteiku.kittybot.command.CommandContext;
+import de.anteiku.kittybot.objects.AppInfo;
+import de.anteiku.kittybot.objects.Config;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.lang.management.ManagementFactory;
-import java.time.Instant;
 
 public class InfoCommand extends ACommand{
 

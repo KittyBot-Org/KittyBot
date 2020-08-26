@@ -1,10 +1,10 @@
 package de.anteiku.kittybot.commands.utilities;
 
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.command.ACommand;
 import de.anteiku.kittybot.command.Category;
 import de.anteiku.kittybot.command.CommandContext;
+import de.anteiku.kittybot.objects.Config;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import okhttp3.*;
