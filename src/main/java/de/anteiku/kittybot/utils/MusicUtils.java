@@ -44,10 +44,6 @@ public class MusicUtils{
 			sendError(ctx, "Please provide a valid amount of seconds");
 			return;
 		}
-		if(toSeek == 0){
-			sendError(ctx, "Please provide an amount of seconds higher than 0 seconds");
-			return;
-		}
 		toSeek *= 1000;
 		final var duration = playing.getDuration();
 		final var position = player.getTrackPosition();
@@ -57,6 +53,7 @@ public class MusicUtils{
 				if(toSeek >= duration && !musicPlayer.nextTrack()){
 					player.stopTrack();
 				}
+				player.seekTo(toSeek);
 				break;
 			case "forward":
 				if(position + toSeek >= duration){
