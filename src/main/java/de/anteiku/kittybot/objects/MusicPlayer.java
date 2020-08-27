@@ -212,12 +212,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	@Override
-	public void onTrackStart(IPlayer player, AudioTrack track){
-		Cache.removeReactiveMessage(ctx.getGuild(), messageId);
-		sendMusicController(command, ctx);
-	}
-
-	@Override
 	public void onPlayerPause(IPlayer player){
 
 	}
@@ -230,6 +224,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	@Override
 	public void onTrackEnd(IPlayer player, AudioTrack track, AudioTrackEndReason endReason){
 		this.history.push(track);
+		messageId = null;
 		var guild = KittyBot.getJda().getGuildById(getPlayer().getLink().getGuildId());
 		if(guild == null){
 			return;
