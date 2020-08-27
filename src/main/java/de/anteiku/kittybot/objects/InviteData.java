@@ -12,7 +12,7 @@ public class InviteData{
 	public InviteData(Invite invite){
 		this.guildId = invite.getGuild().getId();
 		var inviter = invite.getInviter();
-		if(inviter != null){
+		if(inviter!=null){
 			this.user = inviter.getId();
 		}
 		else{

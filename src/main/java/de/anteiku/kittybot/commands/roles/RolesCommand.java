@@ -24,7 +24,7 @@ public class RolesCommand extends ACommand{
 	public static final String COMMAND = "roles";
 	public static final String USAGE = "roles <add|remove|list>";
 	public static final String DESCRIPTION = "Used to manage your roles";
-	protected static final String[] ALIASES = {"r", "rollen"};
+	protected static final String[] ALIASES = { "r", "rollen" };
 	protected static final Category CATEGORY = Category.ROLES;
 	private static final String title = "Self-assignable roles:";
 
@@ -32,8 +32,7 @@ public class RolesCommand extends ACommand{
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
-	@Override
-	public void run(CommandContext ctx){
+	@Override public void run(CommandContext ctx){
 		if(ctx.getArgs().length > 0){
 			if(ctx.getArgs()[0].equals("?") || ctx.getArgs()[0].equals("help")){
 				sendUsage(ctx);
@@ -51,7 +50,7 @@ public class RolesCommand extends ACommand{
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("list")){
 					Map<Role, Emote> map = getRoleEmoteMap(ctx.getGuild());
-					if(map.size() == 0){
+					if(map.size()==0){
 						sendAnswer(ctx, "There are no roles added!");
 					}
 					else{
@@ -72,7 +71,7 @@ public class RolesCommand extends ACommand{
 		}
 		else{
 			Map<Role, Emote> roles = getRoleEmoteMap(ctx.getGuild());
-			if(roles.size() == 0){
+			if(roles.size()==0){
 				sendError(ctx, "No self-assignable roles configured!\nIf you are an admin use `.roles add @role :emote: @role :emote:...` to add roles!");
 				return;
 			}
@@ -80,7 +79,10 @@ public class RolesCommand extends ACommand{
 			for(Map.Entry<Role, Emote> k : roles.entrySet()){
 				value.append(k.getValue().getAsMention()).append(Emojis.BLANK).append(Emojis.BLANK).append(k.getKey().getAsMention()).append("\n");
 			}
-			answer(ctx, new EmbedBuilder().setTitle(title).setDescription("To get/remove a role click reaction emote. " + Emojis.KITTY_BLINK + "\n\n").setColor(Color.MAGENTA).appendDescription("**Emote:**" + Emojis.BLANK + "**Role:**\n" + value)).queue(message -> {
+			answer(ctx, new EmbedBuilder().setTitle(title)
+					.setDescription("To get/remove a role click reaction emote. " + Emojis.KITTY_BLINK + "\n\n")
+					.setColor(Color.MAGENTA)
+					.appendDescription("**Emote:**" + Emojis.BLANK + "**Role:**\n" + value)).queue(message -> {
 				Cache.addReactiveMessage(ctx, message, this, "-1");
 				for(Map.Entry<Role, Emote> role : roles.entrySet()){
 					message.addReaction(role.getValue()).queue();
@@ -96,12 +98,12 @@ public class RolesCommand extends ACommand{
 		Map<Role, Emote> map = new LinkedHashMap<>();
 		for(Map.Entry<String, String> entry : roles.entrySet()){
 			Role role = guild.getRoleById(entry.getKey());
-			if(role == null){
+			if(role==null){
 				Database.removeSelfAssignableRoles(guild.getId(), new HashSet<>(Collections.singleton(entry.getKey())));
 				continue;
 			}
 			Emote emote = guild.getJDA().getEmoteById(entry.getValue());
-			if(emote == null){
+			if(emote==null){
 				Database.removeSelfAssignableRoles(guild.getId(), new HashSet<>(Collections.singleton(entry.getKey())));
 				continue;
 			}
@@ -110,8 +112,7 @@ public class RolesCommand extends ACommand{
 		return map;
 	}
 
-	@Override
-	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
+	@Override public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
 		super.reactionAdd(reactiveMessage, event);
 		Map<Role, Emote> roles = getRoleEmoteMap(event.getGuild());
 		for(Map.Entry<Role, Emote> r : roles.entrySet()){

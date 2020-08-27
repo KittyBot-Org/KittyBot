@@ -21,13 +21,11 @@ public class InfoCommand extends ACommand{
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
-	@Override
-	public void run(CommandContext ctx){
+	@Override public void run(CommandContext ctx){
 		var jda = ctx.getJDA();
 		var runtime = Runtime.getRuntime();
 		var totalMemory = runtime.totalMemory() / 1000000;
-		sendAnswer(ctx, new EmbedBuilder()
-				.setAuthor("KittyBot information", Config.ORIGIN_URL, jda.getSelfUser().getEffectiveAvatarUrl())
+		sendAnswer(ctx, new EmbedBuilder().setAuthor("KittyBot information", Config.ORIGIN_URL, jda.getSelfUser().getEffectiveAvatarUrl())
 				.addField("Version:", AppInfo.getVersionBuild(), true)
 				.addField("Total Guilds:", String.valueOf(jda.getGuildCache().size()), true)
 				.addField("Total Users:", String.valueOf(jda.getUserCache().size()), true)
@@ -35,8 +33,7 @@ public class InfoCommand extends ACommand{
 				.addField("Gateway Ping:", jda.getGatewayPing() + "ms", true)
 				.addField("Rest Ping:", jda.getRestPing().complete() + "ms", true)
 				.addField("Memory Usage:", (totalMemory - (runtime.freeMemory() / 1000000)) + "mb / " + totalMemory + "mb", true)
-				.addField("Thread count:", "" + ManagementFactory.getThreadMXBean().getThreadCount(), true)
-		);
+				.addField("Thread count:", "" + ManagementFactory.getThreadMXBean().getThreadCount(), true));
 	}
 
 }

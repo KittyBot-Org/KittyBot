@@ -28,26 +28,25 @@ public class HastebinCommand extends ACommand{
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
-	@Override
-	public void run(CommandContext ctx){
+	@Override public void run(CommandContext ctx){
 		List<Message.Attachment> attachments = ctx.getMessage().getAttachments();
 		if(!attachments.isEmpty()){
 			for(Message.Attachment attachment : attachments){
 				if(!attachment.isImage() && !attachment.isVideo()){
 					try{
 						String text = IOUtils.toString(attachment.retrieveInputStream().get(), StandardCharsets.UTF_8.name());
-						Request request = new Request.Builder().url(Config.HASTEBIN_URL + "/documents").post(RequestBody.create(MediaType.parse("text/html; charset=utf-8"), text)).build();
+						Request request = new Request.Builder().url(Config.HASTEBIN_URL + "/documents")
+								.post(RequestBody.create(MediaType.parse("text/html; charset=utf-8"), text))
+								.build();
 						KittyBot.getHttpClient().newCall(request).enqueue(new Callback(){
-							@Override
-							public void onFailure(@NotNull Call call, @NotNull IOException e){
+							@Override public void onFailure(@NotNull Call call, @NotNull IOException e){
 								LOG.error("Error while creating hastebin", e);
 								sendError(ctx, "Error while creating hastebin");
 							}
 
-							@Override
-							public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException{
+							@Override public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException{
 								try(var body = response.body()){
-									if(body == null){
+									if(body==null){
 										sendError(ctx, "Error while creating hastebin");
 										return;
 									}

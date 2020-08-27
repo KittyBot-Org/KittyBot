@@ -10,15 +10,14 @@ public class CatCommand extends ACommand{
 	public static final String COMMAND = "cat";
 	public static final String USAGE = "cat";
 	public static final String DESCRIPTION = "Sends a random cat";
-	protected static final String[] ALIASES = {"kitty", "katze"};
+	protected static final String[] ALIASES = { "kitty", "katze" };
 	protected static final Category CATEGORY = Category.NEKO;
 
 	public CatCommand(){
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
-	@Override
-	public void run(CommandContext ctx){
+	@Override public void run(CommandContext ctx){
 		image(ctx, getNeko("meow")).queue(message -> message.addReaction(Emojis.CAT).queue());
 	}
 

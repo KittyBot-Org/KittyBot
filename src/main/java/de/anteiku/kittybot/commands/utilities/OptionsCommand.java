@@ -17,7 +17,7 @@ public class OptionsCommand extends ACommand{
 	public static final String COMMAND = "options";
 	public static final String USAGE = "options <prefix|joinchannel|joinmessage|nsfw> <value>";
 	public static final String DESCRIPTION = "Used to set some guild specified options";
-	protected static final String[] ALIASES = {"opts", "opt"};
+	protected static final String[] ALIASES = { "opts", "opt" };
 	protected static final Category CATEGORY = Category.UTILITIES;
 
 	public OptionsCommand(){
@@ -25,10 +25,9 @@ public class OptionsCommand extends ACommand{
 	}
 
 	//TODO renaming sub-commands & displaying set values
-	@Override
-	public void run(CommandContext ctx){
+	@Override public void run(CommandContext ctx){
 		if(ctx.getMember().isOwner() || ctx.getMember().hasPermission(Permission.ADMINISTRATOR)){
-			if(ctx.getArgs().length == 0){
+			if(ctx.getArgs().length==0){
 				var guildId = ctx.getGuild().getId();
 				var embed = new EmbedBuilder();
 				embed.setTitle("Guild options:");
@@ -45,7 +44,7 @@ public class OptionsCommand extends ACommand{
 				sendAnswer(ctx, embed);
 			}
 			else{
-				if(ctx.getArgs()[0].equalsIgnoreCase("prefix") && ctx.getArgs().length == 2){
+				if(ctx.getArgs()[0].equalsIgnoreCase("prefix") && ctx.getArgs().length==2){
 					Cache.setCommandPrefix(ctx.getGuild().getId(), ctx.getArgs()[1]);
 					sendAnswer(ctx, "Prefix set to: `" + ctx.getArgs()[1] + "`");
 				}
@@ -86,7 +85,7 @@ public class OptionsCommand extends ACommand{
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("announcementchannel")){
 					List<TextChannel> channels = ctx.getMessage().getMentionedChannels();
-					if(channels.size() == 1){
+					if(channels.size()==1){
 						if(Database.setAnnouncementChannelId(ctx.getGuild().getId(), channels.get(0).getId())){
 							sendError(ctx, "There was an error while processing your command :(");
 							return;
@@ -109,7 +108,8 @@ public class OptionsCommand extends ACommand{
 					else if(Utils.isHelp(ctx.getArgs()[1])){
 						sendUsage(ctx, "options joinmessage <message>");
 					}
-					else if(ctx.getArgs()[1].equalsIgnoreCase("enable") || ctx.getArgs()[1].equalsIgnoreCase("true") || ctx.getArgs()[1].equalsIgnoreCase("on") || ctx.getArgs()[1].equalsIgnoreCase("an")){
+					else if(ctx.getArgs()[1].equalsIgnoreCase("enable") || ctx.getArgs()[1].equalsIgnoreCase("true") || ctx.getArgs()[1].equalsIgnoreCase("on") || ctx.getArgs()[1]
+							.equalsIgnoreCase("an")){
 						if(Database.setJoinMessageEnabled(ctx.getGuild().getId(), true)){
 							sendError(ctx, "There was an error while processing your command :(");
 							return;

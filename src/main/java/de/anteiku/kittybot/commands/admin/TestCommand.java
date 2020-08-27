@@ -16,8 +16,7 @@ public class TestCommand extends ACommand{
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
-	@Override
-	public void run(CommandContext ctx){
+	@Override public void run(CommandContext ctx){
 		sendAnswer(ctx, "Test command working!");
 	}
 

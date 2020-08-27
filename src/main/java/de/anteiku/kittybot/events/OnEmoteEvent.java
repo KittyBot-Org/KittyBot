@@ -6,8 +6,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 public class OnEmoteEvent extends ListenerAdapter{
 
 
-	@Override
-	public void onEmoteRemoved(EmoteRemovedEvent event){
+	@Override public void onEmoteRemoved(EmoteRemovedEvent event){
 		//TODO check if emote is mapped for a self-assignable role
 	}
 

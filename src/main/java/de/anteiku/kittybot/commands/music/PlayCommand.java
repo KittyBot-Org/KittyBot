@@ -15,7 +15,7 @@ public class PlayCommand extends ACommand{
 	public static final String COMMAND = "play";
 	public static final String USAGE = "play <playlist/song/video>";
 	public static final String DESCRIPTION = "Plays what you want Kitty to play";
-	protected static final String[] ALIASES = {"p", "spiele"};
+	protected static final String[] ALIASES = { "p", "spiele" };
 	protected static final Category CATEGORY = Category.MUSIC;
 	private static final int VOLUME_STEP = 10;
 
@@ -23,19 +23,18 @@ public class PlayCommand extends ACommand{
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
-	@Override
-	public void run(CommandContext ctx){
-		if(ctx.getArgs().length == 0){
+	@Override public void run(CommandContext ctx){
+		if(ctx.getArgs().length==0){
 			sendError(ctx, "Please provide a link or search term");
 			return;
 		}
 		var voiceState = ctx.getMember().getVoiceState();
-		if(voiceState == null || !voiceState.inVoiceChannel()){
+		if(voiceState==null || !voiceState.inVoiceChannel()){
 			sendError(ctx, "Please connect to a voice channel to play some stuff");
 			return;
 		}
 		var musicPlayer = Cache.getMusicPlayer(ctx.getGuild());
-		if(musicPlayer == null){
+		if(musicPlayer==null){
 			var link = KittyBot.getLavalink().getLink(ctx.getGuild());
 			var player = link.getPlayer();
 			musicPlayer = new MusicPlayer(player);
@@ -45,14 +44,13 @@ public class PlayCommand extends ACommand{
 		musicPlayer.loadItem(this, ctx);
 	}
 
-	@Override
-	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
+	@Override public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
 		var musicPlayer = Cache.getMusicPlayer(event.getGuild());
-		if(musicPlayer == null){
+		if(musicPlayer==null){
 			return;
 		}
 		var requester = musicPlayer.getRequesterId();
-		if(requester == null){
+		if(requester==null){
 			return;
 		}
 		if(!requester.equals(event.getUserId())){

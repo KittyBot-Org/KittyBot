@@ -48,15 +48,13 @@ public class Database{
 
 	public static boolean registerGuild(Guild guild){
 		LOG.debug("Registering new guild: {}", guild.getId());
-		var query = "INSERT INTO guilds (guild_id, command_prefix, request_channel_id, requests_enabled, announcement_channel_id, join_messages, join_messages_enabled, " +
-				"leave_messages, leave_messages_enabled, boost_messages, boost_messages_enabled, log_channel_id, log_message_enabled, nsfw_enabled, inactive_role_id) " +
-				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		var query = "INSERT INTO guilds (guild_id, command_prefix, request_channel_id, requests_enabled, announcement_channel_id, join_messages, join_messages_enabled, " + "leave_messages, leave_messages_enabled, boost_messages, boost_messages_enabled, log_channel_id, log_message_enabled, nsfw_enabled, inactive_role_id) " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, guild.getId());
 			stmt.setString(2, Config.DEFAULT_PREFIX);
 			stmt.setString(3, "-1");
 			stmt.setBoolean(4, false);
-			stmt.setString(5, guild.getDefaultChannel() == null ? "-1" : guild.getDefaultChannel().getId());
+			stmt.setString(5, guild.getDefaultChannel()==null ? "-1" : guild.getDefaultChannel().getId());
 			stmt.setString(6, "Welcome ${user} to this server!");
 			stmt.setBoolean(7, true);
 			stmt.setString(8, "Good bye ${user}(${user_tag})!");
@@ -115,7 +113,7 @@ public class Database{
 			stmt.setLong(1, from);
 			stmt.setLong(1, to);
 			var result = SQL.query(stmt);
-			while(result != null && result.next()){
+			while(result!=null && result.next()){
 				map.put(result.getLong("time"), result.getLong("processing_time"));
 			}
 			return map;
@@ -152,7 +150,7 @@ public class Database{
 		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, guildId);
 			var result = SQL.query(stmt);
-			if(result != null && result.next()){
+			if(result!=null && result.next()){
 				return result.getString(key);
 			}
 		}
@@ -164,16 +162,16 @@ public class Database{
 
 	public static void setSelfAssignableRoles(String guildId, Map<String, String> newRoles){
 		Map<String, String> roles = getSelfAssignableRoles(guildId);
-		if(roles != null){
+		if(roles!=null){
 			Map<String, String> addRoles = new HashMap<>();
 			Set<String> removeRoles = new HashSet<>();
 			for(Map.Entry<String, String> role : roles.entrySet()){
-				if(newRoles.get(role.getKey()) == null){
+				if(newRoles.get(role.getKey())==null){
 					removeRoles.add(role.getKey());
 				}
 			}
 			for(Map.Entry<String, String> role : newRoles.entrySet()){
-				if(roles.get(role.getKey()) == null){
+				if(roles.get(role.getKey())==null){
 					addRoles.put(role.getKey(), role.getValue());
 				}
 			}
@@ -241,7 +239,7 @@ public class Database{
 			stmt.setString(1, guildId);
 			stmt.setString(2, roleId);
 			ResultSet result = SQL.query(stmt);
-			return result != null && result.next();
+			return result!=null && result.next();
 		}
 		catch(SQLException e){
 			LOG.error("Error while testing if role self-assignable", e);
@@ -274,7 +272,7 @@ public class Database{
 		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, guildId);
 			var result = SQL.query(stmt);
-			if(result != null && result.next()){
+			if(result!=null && result.next()){
 				return result.getBoolean(key);
 			}
 		}
@@ -347,8 +345,9 @@ public class Database{
 			stmt.setString(1, messageId);
 			stmt.setString(2, guildId);
 			var result = SQL.query(stmt);
-			if(result != null && result.next()){
-				return new ReactiveMessage(result.getString("channel_id"), result.getString("message_id"), result.getString("user_id"), result.getString("command_id"), result.getString("command"), result.getString("allowed"));
+			if(result!=null && result.next()){
+				return new ReactiveMessage(result.getString("channel_id"), result.getString("message_id"), result.getString("user_id"), result.getString("command_id"), result
+						.getString("command"), result.getString("allowed"));
 			}
 		}
 		catch(SQLException e){
@@ -392,7 +391,7 @@ public class Database{
 		var query = "SELECT joined_voice FROM user_statistics WHERE guild_id = ? and user_id = ?";
 		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			var result = SQL.query(stmt);
-			if(result != null){
+			if(result!=null){
 				return result.getLong("joined_voice");
 			}
 		}
@@ -408,7 +407,7 @@ public class Database{
 			stmt.setLong(1, joined);
 			stmt.setString(2, guildId);
 			stmt.setString(3, userId);
-			if(SQL.update(stmt) == 0){
+			if(SQL.update(stmt)==0){
 				//addUserStatistics(guildId, userId);
 			}
 		}
@@ -466,7 +465,7 @@ public class Database{
 		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, key);
 			var result = SQL.query(stmt);
-			if(result != null && result.next()){
+			if(result!=null && result.next()){
 				return result.getString("user_id");
 			}
 		}

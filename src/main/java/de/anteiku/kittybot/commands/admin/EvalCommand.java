@@ -34,8 +34,7 @@ public class EvalCommand extends ACommand{
 		}
 	}
 
-	@Override
-	public void run(CommandContext ctx){
+	@Override public void run(CommandContext ctx){
 		if(Config.ADMIN_IDS.contains(ctx.getUser().getId())){
 			try{
 				engine.put("ctx", ctx);
@@ -49,7 +48,7 @@ public class EvalCommand extends ACommand{
 				}
 
 				Object out = engine.eval("(function() {" + "with (imports) {" + ctx.getMessage().getContentDisplay().substring(command.length() + 1) + "}" + "})();");
-				sendAnswer(ctx, out == null ? "Executed without error." : out.toString());
+				sendAnswer(ctx, out==null ? "Executed without error." : out.toString());
 			}
 			catch(Exception e){
 				sendError(ctx, e.getMessage());

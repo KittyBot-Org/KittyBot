@@ -20,7 +20,7 @@ dependencies {
     implementation 'net.dv8tion:JDA:4.2.0_198'
     implementation 'com.jagrosh:jda-utilities:3.0.4'
     implementation 'com.github.sedmelluq:lavaplayer:bec3995'
-    implementation ("com.github.FredBoat:Lavalink-Client:c2aeb28") {
+    implementation("com.github.FredBoat:Lavalink-Client:c2aeb28") {
         exclude group: 'com.sedmelluq', module: 'lavaplayer'
     }
 

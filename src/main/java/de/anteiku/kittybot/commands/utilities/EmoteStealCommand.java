@@ -18,7 +18,7 @@ public class EmoteStealCommand extends ACommand{
 	public static final String COMMAND = "steal";
 	public static final String USAGE = "steal <Emote, Emote, ...> or <url> <name>";
 	public static final String DESCRIPTION = "Steals some emotes";
-	protected static final String[] ALIASES = {"grab", "klau"};
+	protected static final String[] ALIASES = { "grab", "klau" };
 	protected static final Category CATEGORY = Category.UTILITIES;
 	protected static final int MAX_EMOTE_SIZE = 256000;
 
@@ -26,8 +26,7 @@ public class EmoteStealCommand extends ACommand{
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
-	@Override
-	public void run(CommandContext ctx){
+	@Override public void run(CommandContext ctx){
 		if(!ctx.getMember().hasPermission(Permission.MANAGE_EMOTES)){
 			sendError(ctx, "Sorry you don't have the permission to manage emotes :(");
 			return;
@@ -35,7 +34,7 @@ public class EmoteStealCommand extends ACommand{
 		if(!ctx.getMessage().getAttachments().isEmpty() && ctx.getArgs().length > 0){
 			var attachment = ctx.getMessage().getAttachments().get(0); //Users can't add multiple attachments in one message
 			var extension = attachment.getFileExtension();
-			if(extension != null && (extension.equalsIgnoreCase("png") || extension.equalsIgnoreCase("jpg") || extension.equalsIgnoreCase("gif") || extension.equalsIgnoreCase("webp"))){
+			if(extension!=null && (extension.equalsIgnoreCase("png") || extension.equalsIgnoreCase("jpg") || extension.equalsIgnoreCase("gif") || extension.equalsIgnoreCase("webp"))){
 				attachment.retrieveInputStream().thenAccept(inputStream -> createEmote(ctx, ctx.getArgs()[0], inputStream));
 			}
 			else{
@@ -66,9 +65,9 @@ public class EmoteStealCommand extends ACommand{
 				sendError(ctx, "The image provided is bigger than 256kb");
 				return;
 			}
-			ctx.getGuild().createEmote(name, Icon.from(inputStream)).queue(
-					success -> sendAnswer(ctx, "Emote stolen"),
-					failure -> sendError(ctx, "Error creating emote: " + failure.getMessage()));
+			ctx.getGuild()
+					.createEmote(name, Icon.from(inputStream))
+					.queue(success -> sendAnswer(ctx, "Emote stolen"), failure -> sendError(ctx, "Error creating emote: " + failure.getMessage()));
 		}
 		catch(IOException e){
 			LOG.error("Error with stream", e);

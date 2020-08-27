@@ -33,7 +33,7 @@ public class Cache{
 		}
 		final var guildId = guild.getId();
 		final var value = INVITES.get(guildId);
-		if(value == null){ // how?
+		if(value==null){ // how?
 			initGuildInviteCache(guild);
 			return null;
 		}
@@ -59,7 +59,7 @@ public class Cache{
 	}
 
 	public static void addNewInvite(Invite invite){
-		if(invite.getGuild() != null){
+		if(invite.getGuild()!=null){
 			var guildId = invite.getGuild().getId();
 			INVITES.computeIfAbsent(guildId, k -> new HashMap<>());
 			INVITES.get(guildId).put(invite.getCode(), new InviteData(invite));
@@ -67,7 +67,7 @@ public class Cache{
 	}
 
 	public static void deleteInvite(String guild, String code){
-		if(INVITES.get(guild) != null){
+		if(INVITES.get(guild)!=null){
 			INVITES.get(guild).remove(code);
 		}
 	}
@@ -82,7 +82,7 @@ public class Cache{
 
 	public static Map<String, String> getSelfAssignableRoles(String guildId){
 		var map = SELF_ASSIGNABLE_ROLES.get(guildId);
-		if(map != null){
+		if(map!=null){
 			return map;
 		}
 		map = Database.getSelfAssignableRoles(guildId);
@@ -116,7 +116,7 @@ public class Cache{
 
 	public static void deleteCommandResponse(TextChannel channel, String command){
 		var commandResponse = COMMAND_RESPONSES.get(command);
-		if(commandResponse != null){
+		if(commandResponse!=null){
 			channel.deleteMessageById(commandResponse).queue();
 			COMMAND_RESPONSES.remove(command);
 		}
@@ -131,7 +131,7 @@ public class Cache{
 
 	public static void destroyMusicPlayer(Guild guild){
 		var musicPlayer = getMusicPlayer(guild);
-		if(musicPlayer == null){
+		if(musicPlayer==null){
 			return;
 		}
 		KittyBot.getLavalink().getLink(guild).destroy();
@@ -148,7 +148,7 @@ public class Cache{
 
 	public static void removeReactiveMessage(Guild guild, String messageId){
 		var textChannel = guild.getTextChannelById(REACTIVE_MESSAGES.get(messageId).channelId);
-		if(textChannel != null){
+		if(textChannel!=null){
 			textChannel.deleteMessageById(messageId).queue();
 		}
 		REACTIVE_MESSAGES.remove(messageId);
@@ -156,13 +156,15 @@ public class Cache{
 	}
 
 	public static void addReactiveMessage(CommandContext ctx, Message message, ACommand cmd, String allowed){
-		REACTIVE_MESSAGES.put(message.getId(), new ReactiveMessage(ctx.getChannel().getId(), ctx.getMessage().getId(), ctx.getUser().getId(), message.getId(), cmd.command, allowed));
-		Database.addReactiveMessage(ctx.getGuild().getId(), ctx.getUser().getId(), ctx.getChannel().getId(), message.getId(), ctx.getMessage().getId(), cmd.command, allowed);
+		REACTIVE_MESSAGES.put(message.getId(), new ReactiveMessage(ctx.getChannel().getId(), ctx.getMessage().getId(), ctx.getUser()
+				.getId(), message.getId(), cmd.command, allowed));
+		Database.addReactiveMessage(ctx.getGuild().getId(), ctx.getUser().getId(), ctx.getChannel().getId(), message.getId(), ctx.getMessage()
+				.getId(), cmd.command, allowed);
 	}
 
 	public static ReactiveMessage getReactiveMessage(Guild guild, String messageId){
 		var reactiveMessage = REACTIVE_MESSAGES.get(messageId);
-		if(reactiveMessage != null){
+		if(reactiveMessage!=null){
 			return reactiveMessage;
 		}
 		reactiveMessage = Database.isReactiveMessage(guild.getId(), messageId);

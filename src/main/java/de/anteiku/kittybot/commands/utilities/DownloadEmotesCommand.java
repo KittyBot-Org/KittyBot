@@ -13,15 +13,14 @@ public class DownloadEmotesCommand extends ACommand{
 	public static final String COMMAND = "downloademotes";
 	public static final String USAGE = "downloademotes <Emote, Emote, ...>";
 	public static final String DESCRIPTION = "Prints a ssh command to download the given emotes";
-	protected static final String[] ALIASES = {"dle", "dlemotes"};
+	protected static final String[] ALIASES = { "dle", "dlemotes" };
 	protected static final Category CATEGORY = Category.UTILITIES;
 
 	public DownloadEmotesCommand(){
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
-	@Override
-	public void run(CommandContext ctx){
+	@Override public void run(CommandContext ctx){
 		List<Emote> emotes = ctx.getMessage().getEmotes();
 		if(!emotes.isEmpty()){
 			StringBuilder links = new StringBuilder();

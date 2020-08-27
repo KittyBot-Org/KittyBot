@@ -39,7 +39,7 @@ public class CommandManager{
 	public static boolean checkCommands(GuildMessageReceivedEvent event){
 		long start = System.nanoTime();
 		String message = cutCommandPrefix(event.getGuild(), event.getMessage().getContentRaw());
-		if(message != null){
+		if(message!=null){
 			String command = getCommandString(message);
 			for(var entry : COMMANDS.entrySet()){
 				var cmd = entry.getValue();
@@ -59,8 +59,7 @@ public class CommandManager{
 	private static String cutCommandPrefix(Guild guild, String message){
 		String prefix;
 		var botId = guild.getSelfMember().getId();
-		if(message.startsWith(prefix = Cache.getCommandPrefix(guild.getId())) || message.startsWith(
-				prefix = "<@!" + botId + ">") || message.startsWith(prefix = "<@" + botId + ">")){
+		if(message.startsWith(prefix = Cache.getCommandPrefix(guild.getId())) || message.startsWith(prefix = "<@!" + botId + ">") || message.startsWith(prefix = "<@" + botId + ">")){
 			return message.substring(prefix.length()).trim();
 		}
 		return null;

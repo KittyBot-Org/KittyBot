@@ -17,15 +17,14 @@ public class CommandsCommand extends ACommand{
 	public static final String COMMAND = "commands";
 	public static final String USAGE = "commands <page>";
 	public static final String DESCRIPTION = "Lists all available commands";
-	protected static final String[] ALIASES = {"cmds"};
+	protected static final String[] ALIASES = { "cmds" };
 	protected static final Category CATEGORY = Category.INFORMATIVE;
 
 	public CommandsCommand(){
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
-	@Override
-	public void run(CommandContext ctx){
+	@Override public void run(CommandContext ctx){
 		final var titles = new HashMap<Integer, TitleInfo>();
 		final var contents = new HashMap<Integer, ArrayList<MessageEmbed.Field>>();
 
@@ -37,8 +36,9 @@ public class CommandsCommand extends ACommand{
 			titles.put(c, new TitleInfo(category.getEmote() + " " + category.getFriendlyName(), category.getUrl()));
 
 			final var fields = new ArrayList<MessageEmbed.Field>();
-			commands.stream().filter(command -> command.getCategory() == category).forEach(cmd ->
-					fields.add(new MessageEmbed.Field("**" + prefix + cmd.getCommand() + ":** ", " :small_blue_diamond:" + cmd.getDescription(), false)));
+			commands.stream()
+					.filter(command -> command.getCategory()==category)
+					.forEach(cmd -> fields.add(new MessageEmbed.Field("**" + prefix + cmd.getCommand() + ":** ", " :small_blue_diamond:" + cmd.getDescription(), false)));
 			contents.put(c, fields);
 			c++;
 		}

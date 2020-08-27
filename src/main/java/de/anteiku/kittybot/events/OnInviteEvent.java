@@ -7,14 +7,12 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class OnInviteEvent extends ListenerAdapter{
 
-	@Override
-	public void onGuildInviteCreate(GuildInviteCreateEvent event){
+	@Override public void onGuildInviteCreate(GuildInviteCreateEvent event){
 		Cache.addNewInvite(event.getInvite());
 	}
 
 
-	@Override
-	public void onGuildInviteDelete(GuildInviteDeleteEvent event){
+	@Override public void onGuildInviteDelete(GuildInviteDeleteEvent event){
 		Cache.deleteInvite(event.getGuild().getId(), event.getCode());
 	}
 

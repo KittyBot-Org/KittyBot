@@ -10,22 +10,21 @@ public class VolumeCommand extends ACommand{
 	public static final String COMMAND = "volume";
 	public static final String USAGE = "volume <0-200>";
 	public static final String DESCRIPTION = "Sets the current volume";
-	protected static final String[] ALIASES = {"vol", "v", "lautstärke"};
+	protected static final String[] ALIASES = { "vol", "v", "lautstärke" };
 	protected static final Category CATEGORY = Category.MUSIC;
 
 	public VolumeCommand(){
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
-	@Override
-	public void run(CommandContext ctx){
+	@Override public void run(CommandContext ctx){
 		var voiceState = ctx.getMember().getVoiceState();
 		if(!voiceState.inVoiceChannel()){
 			sendError(ctx, "To use this command you need to be connected to a voice channel");
 			return;
 		}
 		var musicPlayer = Cache.getMusicPlayer(ctx.getGuild());
-		if(musicPlayer == null){
+		if(musicPlayer==null){
 			sendError(ctx, "No active music player found!");
 			return;
 		}

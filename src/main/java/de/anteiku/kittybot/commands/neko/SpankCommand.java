@@ -16,13 +16,12 @@ public class SpankCommand extends ACommand{
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
-	@Override
-	public void run(CommandContext ctx){
+	@Override public void run(CommandContext ctx){
 		if(!ctx.getChannel().isNSFW()){
 			sendError(ctx, "Sorry but this command can only be used in nsfw channels");
 			return;
 		}
-		if(ctx.getArgs().length == 0){
+		if(ctx.getArgs().length==0){
 			sendUsage(ctx);
 			return;
 		}
