@@ -31,6 +31,10 @@ public class MusicUtils{
 			sendError(ctx, "There is currently no song playing");
 			return;
 		}
+		if(!musicPlayer.getRequesterId().equals(ctx.getUser().getId())){
+			sendError(ctx, "You have to be the requester of the song to control it");
+			return;
+		}
 		final var args = ctx.getArgs();
 		if(args.length == 0){
 			sendError(ctx, "Please provide the amount of seconds");
