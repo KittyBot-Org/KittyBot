@@ -3,6 +3,7 @@ package de.anteiku.kittybot.database;
 import de.anteiku.kittybot.Utils;
 import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.ReactiveMessage;
+import de.anteiku.kittybot.objects.cache.SelfAssignableRoleCache;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import org.slf4j.Logger;
@@ -163,7 +164,7 @@ public class Database{
 	}
 
 	public static void setSelfAssignableRoles(String guildId, Map<String, String> newRoles){
-		Map<String, String> roles = getSelfAssignableRoles(guildId);
+		Map<String, String> roles = SelfAssignableRoleCache.getSelfAssignableRoles(guildId);
 		if(roles != null){
 			Map<String, String> addRoles = new HashMap<>();
 			Set<String> removeRoles = new HashSet<>();

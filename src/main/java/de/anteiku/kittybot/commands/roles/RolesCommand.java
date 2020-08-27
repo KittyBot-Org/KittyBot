@@ -5,6 +5,7 @@ import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.Emojis;
 import de.anteiku.kittybot.objects.ReactiveMessage;
 import de.anteiku.kittybot.objects.cache.ReactiveMessageCache;
+import de.anteiku.kittybot.objects.cache.SelfAssignableRoleCache;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
@@ -92,7 +93,7 @@ public class RolesCommand extends ACommand{
 	}
 
 	private Map<Role, Emote> getRoleEmoteMap(Guild guild){
-		Map<String, String> roles = Database.getSelfAssignableRoles(guild.getId());
+		Map<String, String> roles = SelfAssignableRoleCache.getSelfAssignableRoles(guild.getId());
 		Map<Role, Emote> map = new LinkedHashMap<>();
 		for(Map.Entry<String, String> entry : roles.entrySet()){
 			Role role = guild.getRoleById(entry.getKey());

@@ -21,7 +21,7 @@ public class SelfAssignableRoleCache {
 
     public static void setSelfAssignableRoles(String guildId, Map<String, String> selfAssignableRoles){
         SELF_ASSIGNABLE_ROLES.put(guildId, selfAssignableRoles);
-        //Database.setSelfAssignableRoles(guildId, selfAssignableRoles);
+        Database.setSelfAssignableRoles(guildId, selfAssignableRoles);
     }
 
     public static void pruneCache(Guild guild){
