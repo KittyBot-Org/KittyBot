@@ -1,6 +1,6 @@
 package de.anteiku.kittybot.objects.cache;
 
-import de.anteiku.kittybot.objects.InviteData;
+import de.anteiku.kittybot.objects.invites.InviteData;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
