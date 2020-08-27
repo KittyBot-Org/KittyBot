@@ -1,13 +1,14 @@
 package de.anteiku.kittybot.commands.music;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import de.anteiku.kittybot.command.ACommand;
-import de.anteiku.kittybot.command.Category;
-import de.anteiku.kittybot.command.CommandContext;
-import de.anteiku.kittybot.objects.Cache;
+import de.anteiku.kittybot.objects.cache.MusicPlayerCache;
+import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
+import de.anteiku.kittybot.objects.command.CommandContext;
 import de.anteiku.kittybot.utils.Utils;
 
-public class HistoryCommand extends ACommand{
+public class HistoryCommand extends ACommand
+{
 
 	public static final String COMMAND = "history";
 	public static final String USAGE = "history";
@@ -26,7 +27,7 @@ public class HistoryCommand extends ACommand{
 			sendError(ctx, "To use this command you need to be connected to a voice channel");
 			return;
 		}
-		var musicPlayer = Cache.getMusicPlayer(ctx.getGuild());
+		var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
 		if(musicPlayer == null){
 			sendError(ctx, "No active music player found!");
 			return;

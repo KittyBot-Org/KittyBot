@@ -45,7 +45,7 @@ public abstract class ACommand{
 
 	protected static void queue(MessageAction messageAction, CommandContext ctx){
 		if(messageAction != null){
-			messageAction.queue(success -> Cache.addCommandResponse(ctx.getMessage(), success), failure -> sendError(ctx, "There was an error processing your command!\nError: " + failure
+			messageAction.queue(success -> CommandResponseCache.addCommandResponse(ctx.getMessage(), success), failure -> sendError(ctx, "There was an error processing your command!\nError: " + failure
 					.getLocalizedMessage()));
 		}
 	}
@@ -104,12 +104,6 @@ public abstract class ACommand{
 			event.getChannel().deleteMessageById(event.getMessageId()).queue();
 			event.getChannel().deleteMessageById(reactiveMessage.commandId).queue();
 			ReactiveMessageCache.removeReactiveMessage(event.getGuild(), event.getMessageId());
-		}
-	}
-
-	protected void queue(MessageAction messageAction, CommandContext ctx){
-		if(messageAction != null){
-			messageAction.queue(success -> CommandResponseCache.addCommandResponse(ctx.getMessage(), success), failure -> sendError(ctx, "There was an error processing your command!\nError: " + failure.getLocalizedMessage()));
 		}
 	}
 
