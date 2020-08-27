@@ -218,7 +218,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	@Override
 	public void onTrackEnd(IPlayer player, AudioTrack track, AudioTrackEndReason endReason){
 		this.history.push(track);
-		messageId = null;
 		var guild = KittyBot.getJda().getGuildById(getPlayer().getLink().getGuildId());
 		if(guild == null){
 			return;
