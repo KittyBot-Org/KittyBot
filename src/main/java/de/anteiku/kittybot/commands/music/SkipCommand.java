@@ -24,8 +24,8 @@ public class SkipCommand extends ACommand{
 			sendError(ctx, "No active music player found!");
 			return;
 		}
-		musicPlayer.nextTrack();
 		sendAnswer(ctx, "Track skipped");
+		musicPlayer.nextTrack();
 	}
 
 }
