@@ -22,9 +22,7 @@ public class MessageCache
     public static MessageData getLastDeletedMessage(final String channelId)
     {
         final var latest = LAST_MESSAGE_DELETED_CACHE.get(channelId);
-        if (latest == null)
-            return null;
-        return MESSAGE_CACHE.get(latest);
+        return latest == null ? null : MESSAGE_CACHE.get(latest);
     }
 
     public static void setLastDeletedMessage(final String channelId, final String messageId)
@@ -58,9 +56,7 @@ public class MessageCache
     public static MessageData getLastEditedMessage(final String channelId)
     {
         final var latest = LAST_MESSAGE_EDITED_CACHE.get(channelId);
-        if (latest == null)
-            return null;
-        return LAST_MESSAGE_EDITED_DATA.get(latest);
+        return latest == null ? null : LAST_MESSAGE_EDITED_DATA.get(latest);
     }
 
     public static void uncacheEditedMessage(final String channelId, final String messageId)
