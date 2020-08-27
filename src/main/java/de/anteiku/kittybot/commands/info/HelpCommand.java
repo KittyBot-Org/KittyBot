@@ -1,11 +1,11 @@
 package de.anteiku.kittybot.commands.info;
 
-import de.anteiku.kittybot.command.ACommand;
-import de.anteiku.kittybot.command.Category;
-import de.anteiku.kittybot.command.CommandContext;
 import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.Emojis;
 import de.anteiku.kittybot.objects.cache.ReactiveMessageCache;
+import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
+import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;

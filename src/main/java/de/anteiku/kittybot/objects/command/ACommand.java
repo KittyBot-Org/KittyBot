@@ -1,4 +1,4 @@
-package de.anteiku.kittybot.command;
+package de.anteiku.kittybot.objects.command;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.database.Database;

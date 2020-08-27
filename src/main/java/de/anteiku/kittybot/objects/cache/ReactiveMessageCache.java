@@ -1,9 +1,9 @@
 package de.anteiku.kittybot.objects.cache;
 
-import de.anteiku.kittybot.command.ACommand;
-import de.anteiku.kittybot.command.CommandContext;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.ReactiveMessage;
+import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 
