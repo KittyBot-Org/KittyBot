@@ -18,7 +18,7 @@ public class EmoteStealCommand extends ACommand{
 	public static final String COMMAND = "steal";
 	public static final String USAGE = "steal <Emote, Emote, ...> or <url> <name>";
 	public static final String DESCRIPTION = "Steals some emotes";
-	protected static final String[] ALIASES = { "grab", "klau" };
+	protected static final String[] ALIASES = {"grab", "klau"};
 	protected static final Category CATEGORY = Category.UTILITIES;
 	protected static final int MAX_EMOTE_SIZE = 256000;
 
@@ -26,7 +26,8 @@ public class EmoteStealCommand extends ACommand{
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
-	@Override public void run(CommandContext ctx){
+	@Override
+	public void run(CommandContext ctx){
 		if(!ctx.getMember().hasPermission(Permission.MANAGE_EMOTES)){
 			sendError(ctx, "Sorry you don't have the permission to manage emotes :(");
 			return;

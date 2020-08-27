@@ -10,14 +10,15 @@ public class AssignCommand extends ACommand{
 	public static final String COMMAND = "assign";
 	public static final String USAGE = "assign <Role>";
 	public static final String DESCRIPTION = "Assigns yourself a role if it is self-assignable";
-	protected static final String[] ALIASES = { "iam" };
+	protected static final String[] ALIASES = {"iam"};
 	protected static final Category CATEGORY = Category.ROLES;
 
 	public AssignCommand(){
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
-	@Override public void run(CommandContext ctx){
+	@Override
+	public void run(CommandContext ctx){
 		if(ctx.getArgs().length == 0){
 			sendError(ctx, "Please specify a role");
 			return;

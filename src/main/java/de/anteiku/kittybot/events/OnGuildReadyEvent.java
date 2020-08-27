@@ -6,7 +6,8 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class OnGuildReadyEvent extends ListenerAdapter{
 
-	@Override public final void onGuildReady(GuildReadyEvent event){
+	@Override
+	public final void onGuildReady(GuildReadyEvent event){
 		Cache.initGuildInviteCache(event.getGuild());
 	}
 

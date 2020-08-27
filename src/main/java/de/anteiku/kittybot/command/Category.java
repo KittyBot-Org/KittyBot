@@ -3,7 +3,12 @@ package de.anteiku.kittybot.command;
 import de.anteiku.kittybot.objects.Config;
 
 public enum Category{
-	INFORMATIVE("745709333127626762", "Informative"), UTILITIES("745709332519321620", "Utilities"), ROLES("745709332519321620", "Roles"), MUSIC("745710566571638885", "Music"), NEKO("609028855289872386", "Neko"), ADMIN("745715466349314049", "Admin");
+	INFORMATIVE("745709333127626762", "Informative"),
+	UTILITIES("745709332519321620", "Utilities"),
+	ROLES("745709332519321620", "Roles"),
+	MUSIC("745710566571638885", "Music"),
+	NEKO("609028855289872386", "Neko"),
+	ADMIN("745715466349314049", "Admin");
 
 	private final String emoteId;
 	private final String friendlyName;

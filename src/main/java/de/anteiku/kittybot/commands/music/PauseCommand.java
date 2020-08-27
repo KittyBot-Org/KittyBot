@@ -17,7 +17,8 @@ public class PauseCommand extends ACommand{
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
-	@Override public void run(CommandContext ctx){
+	@Override
+	public void run(CommandContext ctx){
 		var musicPlayer = Cache.getMusicPlayer(ctx.getGuild());
 		if(musicPlayer == null){
 			sendError(ctx, "No active music player found!");

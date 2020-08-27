@@ -21,7 +21,8 @@ public class InfoCommand extends ACommand{
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
-	@Override public void run(CommandContext ctx){
+	@Override
+	public void run(CommandContext ctx){
 		var jda = ctx.getJDA();
 		var runtime = Runtime.getRuntime();
 		var totalMemory = runtime.totalMemory() / 1000000;

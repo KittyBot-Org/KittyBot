@@ -24,7 +24,7 @@ public class RolesCommand extends ACommand{
 	public static final String COMMAND = "roles";
 	public static final String USAGE = "roles <add|remove|list>";
 	public static final String DESCRIPTION = "Used to manage your roles";
-	protected static final String[] ALIASES = { "r", "rollen" };
+	protected static final String[] ALIASES = {"r", "rollen"};
 	protected static final Category CATEGORY = Category.ROLES;
 	private static final String title = "Self-assignable roles:";
 
@@ -32,7 +32,8 @@ public class RolesCommand extends ACommand{
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
-	@Override public void run(CommandContext ctx){
+	@Override
+	public void run(CommandContext ctx){
 		if(ctx.getArgs().length > 0){
 			if(ctx.getArgs()[0].equals("?") || ctx.getArgs()[0].equals("help")){
 				sendUsage(ctx);
@@ -112,7 +113,8 @@ public class RolesCommand extends ACommand{
 		return map;
 	}
 
-	@Override public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
+	@Override
+	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
 		super.reactionAdd(reactiveMessage, event);
 		Map<Role, Emote> roles = getRoleEmoteMap(event.getGuild());
 		for(Map.Entry<Role, Emote> r : roles.entrySet()){

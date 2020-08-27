@@ -18,7 +18,8 @@ import java.time.Instant;
 public class OnGuildEvent extends ListenerAdapter{
 
 
-	@Override public void onGuildJoin(GuildJoinEvent event){
+	@Override
+	public void onGuildJoin(GuildJoinEvent event){
 		var guildCount = (int) event.getJDA().getGuildCache().size();
 		var guild = event.getGuild();
 		BotLists.update(event.getJDA(), guildCount);
@@ -52,7 +53,8 @@ public class OnGuildEvent extends ListenerAdapter{
 				.getAsTag() + "`` and ", guild.getMemberCount(), guildCount));
 	}
 
-	@Override public void onGuildLeave(GuildLeaveEvent event){
+	@Override
+	public void onGuildLeave(GuildLeaveEvent event){
 		var guildCount = (int) event.getJDA().getGuildCache().size();
 		var guild = event.getGuild();
 		BotLists.update(event.getJDA(), guildCount);

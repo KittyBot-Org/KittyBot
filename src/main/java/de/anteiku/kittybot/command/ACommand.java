@@ -63,23 +63,6 @@ public abstract class ACommand{
 						.build());
 	}
 
-	protected static void addStatus(Message message, Status status){
-		String emote;
-		switch(status){
-			case OK:
-				emote = Emojis.CHECK;
-				break;
-			case ERROR:
-				emote = Emojis.X;
-				break;
-			case QUESTION:
-			default:
-				emote = Emojis.QUESTION;
-				break;
-		}
-		message.addReaction(emote).queue(success -> message.getTextChannel().removeReactionById(message.getId(), emote).queueAfter(5, TimeUnit.SECONDS));
-	}
-
 	protected abstract void run(CommandContext ctx);
 
 	protected boolean checkCmd(String cmd){
@@ -168,6 +151,23 @@ public abstract class ACommand{
 		return null;
 	}
 
+	protected static void addStatus(Message message, Status status){
+		String emote;
+		switch(status){
+			case OK:
+				emote = Emojis.CHECK;
+				break;
+			case ERROR:
+				emote = Emojis.X;
+				break;
+			case QUESTION:
+			default:
+				emote = Emojis.QUESTION;
+				break;
+		}
+		message.addReaction(emote).queue(success -> message.getTextChannel().removeReactionById(message.getId(), emote).queueAfter(5, TimeUnit.SECONDS));
+	}
+
 	protected MessageAction answer(CommandContext ctx, InputStream file, String fileName, EmbedBuilder embed){
 		// add attachment://[the file name with extension] in embed
 		return answer(ctx, embed).addFile(file, fileName);
@@ -254,7 +254,9 @@ public abstract class ACommand{
 	}
 
 	protected enum Status{
-		OK, ERROR, QUESTION
+		OK,
+		ERROR,
+		QUESTION
 	}
 
 }

@@ -108,6 +108,10 @@ public class KittyBot{
 		}
 	}
 
+	private JDA getShardById(int id){
+		return jda;
+	}
+
 	public static void sendToPublicLogChannel(String description){
 		var guild = jda.getGuildById(Config.SUPPORT_GUILD_ID);
 		if(guild == null){
@@ -122,6 +126,13 @@ public class KittyBot{
 					.setTimestamp(Instant.now())
 					.build()).queue();
 		}
+	}
+
+	public void close(){
+		lavalink.getLinks().forEach(Link::destroy);
+		jda.shutdown();
+		SQL.close();
+		System.exit(0);
 	}
 
 	public static void main(String[] args){
@@ -154,17 +165,6 @@ public class KittyBot{
 
 	public static EventWaiter getWaiter(){
 		return WAITER;
-	}
-
-	private JDA getShardById(int id){
-		return jda;
-	}
-
-	public void close(){
-		lavalink.getLinks().forEach(Link::destroy);
-		jda.shutdown();
-		SQL.close();
-		System.exit(0);
 	}
 
 }

@@ -15,7 +15,7 @@ public class PlayCommand extends ACommand{
 	public static final String COMMAND = "play";
 	public static final String USAGE = "play <playlist/song/video>";
 	public static final String DESCRIPTION = "Plays what you want Kitty to play";
-	protected static final String[] ALIASES = { "p", "spiele" };
+	protected static final String[] ALIASES = {"p", "spiele"};
 	protected static final Category CATEGORY = Category.MUSIC;
 	private static final int VOLUME_STEP = 10;
 
@@ -23,7 +23,8 @@ public class PlayCommand extends ACommand{
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
-	@Override public void run(CommandContext ctx){
+	@Override
+	public void run(CommandContext ctx){
 		if(ctx.getArgs().length == 0){
 			sendError(ctx, "Please provide a link or search term");
 			return;
@@ -44,7 +45,8 @@ public class PlayCommand extends ACommand{
 		musicPlayer.loadItem(this, ctx);
 	}
 
-	@Override public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
+	@Override
+	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
 		var musicPlayer = Cache.getMusicPlayer(event.getGuild());
 		if(musicPlayer == null){
 			return;

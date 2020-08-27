@@ -21,7 +21,8 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 	private static final List<String> LEAVE_MESSAGES = Utils.loadMessageFile("leave_messages");
 	private static final List<String> BOOST_MESSAGES = Utils.loadMessageFile("boost_messages");
 
-	@Override public void onGuildMemberRemove(GuildMemberRemoveEvent event){
+	@Override
+	public void onGuildMemberRemove(GuildMemberRemoveEvent event){
 		String id = Database.getAnnouncementChannelId(event.getGuild().getId());
 		if(!id.equals("-1") && Database.getLeaveMessageEnabled(event.getGuild().getId())){
 			TextChannel channel = event.getGuild().getTextChannelById(id);
@@ -41,7 +42,8 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 		}
 	}
 
-	@Override public void onGuildMemberJoin(GuildMemberJoinEvent event){
+	@Override
+	public void onGuildMemberJoin(GuildMemberJoinEvent event){
 		String id = Database.getAnnouncementChannelId(event.getGuild().getId());
 		if(!id.equals("-1") && Database.getJoinMessageEnabled(event.getGuild().getId())){
 			TextChannel channel = event.getGuild().getTextChannelById(id);
@@ -62,7 +64,8 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 		}
 	}
 
-	@Override public void onGuildMemberUpdateBoostTime(GuildMemberUpdateBoostTimeEvent event){
+	@Override
+	public void onGuildMemberUpdateBoostTime(GuildMemberUpdateBoostTimeEvent event){
 		String id = Database.getAnnouncementChannelId(event.getGuild().getId());
 		if(!id.equals("-1") && Database.getLeaveMessageEnabled(event.getGuild().getId())){
 			TextChannel channel = event.getGuild().getTextChannelById(id);

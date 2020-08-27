@@ -26,11 +26,13 @@ public class BotLists{
 							.toString()))
 					.build();
 			KittyBot.getHttpClient().newCall(request).enqueue(new Callback(){
-				@Override public void onFailure(@NotNull Call call, @NotNull IOException e){
+				@Override
+				public void onFailure(@NotNull Call call, @NotNull IOException e){
 					LOG.error("Error while publishing bot stats to https://discord.bots.gg/", e);
 				}
 
-				@Override public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException{
+				@Override
+				public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException{
 					if(response.code() == 200){
 						LOG.info("Published serverCount to https://discord.bots.gg/");
 					}

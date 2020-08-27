@@ -34,7 +34,8 @@ public class EvalCommand extends ACommand{
 		}
 	}
 
-	@Override public void run(CommandContext ctx){
+	@Override
+	public void run(CommandContext ctx){
 		if(Config.ADMIN_IDS.contains(ctx.getUser().getId())){
 			try{
 				engine.put("ctx", ctx);

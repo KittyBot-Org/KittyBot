@@ -13,7 +13,8 @@ import java.util.concurrent.TimeUnit;
 
 public class OnGuildVoiceEvent extends ListenerAdapter{
 
-	@Override public void onGuildVoiceUpdate(@NotNull final GuildVoiceUpdateEvent event){
+	@Override
+	public void onGuildVoiceUpdate(@NotNull final GuildVoiceUpdateEvent event){
 		if(event instanceof GuildVoiceMoveEvent || event instanceof GuildVoiceLeaveEvent){
 			var guild = event.getEntity().getGuild();
 			var musicPlayer = Cache.getMusicPlayer(guild);

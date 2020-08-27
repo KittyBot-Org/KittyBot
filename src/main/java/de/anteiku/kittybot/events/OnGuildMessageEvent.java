@@ -16,7 +16,8 @@ import java.time.Instant;
 
 public class OnGuildMessageEvent extends ListenerAdapter{
 
-	@Override public void onGuildMessageReceived(GuildMessageReceivedEvent event){
+	@Override
+	public void onGuildMessageReceived(GuildMessageReceivedEvent event){
 		if(event.getAuthor().isBot()){
 			return;
 		}
@@ -28,8 +29,8 @@ public class OnGuildMessageEvent extends ListenerAdapter{
 								.setTitle("Do you need help?")
 								.setDescription("My current prefix for this guild is `" + Database.getCommandPrefix(event.getGuild()
 										.getId()) + "`\n" + "If you don't like my prefix you can ping me directly!\n" + "To have a look at all my commands use `" + Database
-										                .getCommandPrefix(event.getGuild()
-												                .getId()) + "cmds`\n" + "To get help use `" + Database.getCommandPrefix(event.getGuild()
+										.getCommandPrefix(event.getGuild()
+												.getId()) + "cmds`\n" + "To get help use `" + Database.getCommandPrefix(event.getGuild()
 										.getId()) + "help`")
 								.setThumbnail(event.getJDA().getSelfUser().getAvatarUrl())
 								.setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
@@ -40,12 +41,14 @@ public class OnGuildMessageEvent extends ListenerAdapter{
 		}
 	}
 
-	@Override public void onGuildMessageDelete(GuildMessageDeleteEvent event){
+	@Override
+	public void onGuildMessageDelete(GuildMessageDeleteEvent event){
 		Cache.deleteCommandResponse(event.getChannel(), event.getMessageId());
 		Database.removeReactiveMessage(event.getGuild().getId(), event.getMessageId());
 	}
 
-	@Override public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event){
+	@Override
+	public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event){
 		if(event.getMember().getUser().isBot()){
 			return;
 		}

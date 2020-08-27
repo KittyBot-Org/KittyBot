@@ -27,7 +27,7 @@ public class WebService{
 
 	private static final Logger LOG = LoggerFactory.getLogger(WebService.class);
 
-	private final Scope[] scopes = new Scope[]{ Scope.IDENTIFY };
+	private final Scope[] scopes = new Scope[]{Scope.IDENTIFY};
 	private final OAuth2Client oAuthClient;
 
 	public WebService(int port){

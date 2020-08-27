@@ -28,7 +28,8 @@ public class HastebinCommand extends ACommand{
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
-	@Override public void run(CommandContext ctx){
+	@Override
+	public void run(CommandContext ctx){
 		List<Message.Attachment> attachments = ctx.getMessage().getAttachments();
 		if(!attachments.isEmpty()){
 			for(Message.Attachment attachment : attachments){
@@ -39,12 +40,14 @@ public class HastebinCommand extends ACommand{
 								.post(RequestBody.create(MediaType.parse("text/html; charset=utf-8"), text))
 								.build();
 						KittyBot.getHttpClient().newCall(request).enqueue(new Callback(){
-							@Override public void onFailure(@NotNull Call call, @NotNull IOException e){
+							@Override
+							public void onFailure(@NotNull Call call, @NotNull IOException e){
 								LOG.error("Error while creating hastebin", e);
 								sendError(ctx, "Error while creating hastebin");
 							}
 
-							@Override public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException{
+							@Override
+							public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException{
 								try(var body = response.body()){
 									if(body == null){
 										sendError(ctx, "Error while creating hastebin");

@@ -17,7 +17,7 @@ public class OptionsCommand extends ACommand{
 	public static final String COMMAND = "options";
 	public static final String USAGE = "options <prefix|joinchannel|joinmessage|nsfw> <value>";
 	public static final String DESCRIPTION = "Used to set some guild specified options";
-	protected static final String[] ALIASES = { "opts", "opt" };
+	protected static final String[] ALIASES = {"opts", "opt"};
 	protected static final Category CATEGORY = Category.UTILITIES;
 
 	public OptionsCommand(){
@@ -25,7 +25,8 @@ public class OptionsCommand extends ACommand{
 	}
 
 	//TODO renaming sub-commands & displaying set values
-	@Override public void run(CommandContext ctx){
+	@Override
+	public void run(CommandContext ctx){
 		if(ctx.getMember().isOwner() || ctx.getMember().hasPermission(Permission.ADMINISTRATOR)){
 			if(ctx.getArgs().length == 0){
 				var guildId = ctx.getGuild().getId();

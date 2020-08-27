@@ -12,14 +12,15 @@ public class HistoryCommand extends ACommand{
 	public static final String COMMAND = "history";
 	public static final String USAGE = "history";
 	public static final String DESCRIPTION = "Shows the current track history";
-	protected static final String[] ALIASES = { "h" };
+	protected static final String[] ALIASES = {"h"};
 	protected static final Category CATEGORY = Category.MUSIC;
 
 	public HistoryCommand(){
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
-	@Override public void run(CommandContext ctx){
+	@Override
+	public void run(CommandContext ctx){
 		var voiceState = ctx.getMember().getVoiceState();
 		if(voiceState != null && !voiceState.inVoiceChannel()){
 			sendError(ctx, "To use this command you need to be connected to a voice channel");

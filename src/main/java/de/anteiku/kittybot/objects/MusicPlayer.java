@@ -62,7 +62,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		final String query = URL_PATTERN.matcher(argStr).matches() ? argStr : "ytsearch:" + argStr;
 		KittyBot.getAudioPlayerManager().loadItem(query, new AudioLoadResultHandler(){
 
-			@Override public void trackLoaded(AudioTrack track){
+			@Override
+			public void trackLoaded(AudioTrack track){
 				track.setUserData(ctx.getUser().getId());
 				queue(track);
 				if(!queue.isEmpty()){
@@ -74,7 +75,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				connectToChannel(ctx);
 			}
 
-			@Override public void playlistLoaded(AudioPlaylist playlist){
+			@Override
+			public void playlistLoaded(AudioPlaylist playlist){
 				List<AudioTrack> queuedTracks = new ArrayList<>();
 				if(playlist.isSearchResult()){
 					var track = playlist.getTracks().get(0);
@@ -98,21 +100,16 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				connectToChannel(ctx);
 			}
 
-			@Override public void noMatches(){
+			@Override
+			public void noMatches(){
 				sendError(ctx, "No track found for: " + argStr);
 			}
 
-			@Override public void loadFailed(FriendlyException exception){
+			@Override
+			public void loadFailed(FriendlyException exception){
 				sendError(ctx, "Failed to load track");
 			}
 		});
-	}
-
-	public void connectToChannel(CommandContext ctx){
-		var voiceState = ctx.getMember().getVoiceState();
-		if(voiceState != null && voiceState.getChannel() != null){
-			KittyBot.getLavalink().getLink(ctx.getGuild()).connect(voiceState.getChannel());
-		}
 	}
 
 	public void queue(AudioTrack track){
@@ -124,32 +121,19 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		}
 	}
 
-	public void sendMusicController(ACommand command, CommandContext ctx){
-		var msg = ctx.getMessage();
-		msg.getChannel()
-				.sendMessage(buildMusicControlMessage().setFooter(msg.getMember().getEffectiveName(), msg.getAuthor().getEffectiveAvatarUrl())
-						.setTimestamp(Instant.now())
-						.build())
-				.queue(message -> {
-					messageId = message.getId();
-					channelId = message.getChannel().getId();
-					Cache.addReactiveMessage(ctx, message, command, "-1");
-					message.addReaction(Emojis.VOLUME_DOWN).queue();
-					message.addReaction(Emojis.VOLUME_UP).queue();
-					message.addReaction(Emojis.BACK).queue();
-					message.addReaction("PlayPause:744945002416963634").queue();
-					message.addReaction(Emojis.FORWARD).queue();
-					message.addReaction(Emojis.SHUFFLE).queue();
-					message.addReaction(Emojis.X).queue();
-				});
-	}
-
 	private void sendQueuedTracks(ACommand command, CommandContext ctx, List<AudioTrack> tracks){
 		var message = new StringBuilder("Queued ").append(tracks.size()).append(" ").append(pluralize("track", tracks)).append(":\n");
 		for(AudioTrack track : tracks){
 			message.append(Utils.formatTrackTitle(track)).append(" ").append(formatDuration(track.getDuration())).append("\n");
 		}
 		command.sendAnswer(ctx, message.toString());
+	}
+
+	public void connectToChannel(CommandContext ctx){
+		var voiceState = ctx.getMember().getVoiceState();
+		if(voiceState != null && voiceState.getChannel() != null){
+			KittyBot.getLavalink().getLink(ctx.getGuild()).connect(voiceState.getChannel());
+		}
 	}
 
 	public String getRequesterId(){
@@ -194,53 +178,42 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		return false;
 	}
 
-	@Override public void onTrackStart(IPlayer player, AudioTrack track){
+	@Override
+	public void onPlayerPause(IPlayer player){
+
+	}
+
+	@Override
+	public void onPlayerResume(IPlayer player){
+
+	}
+
+	@Override
+	public void onTrackStart(IPlayer player, AudioTrack track){
 		if(messageId != null){
 			Cache.removeReactiveMessage(ctx.getGuild(), messageId);
 		}
 		sendMusicController(command, ctx);
 	}
 
-	@Override public void onPlayerPause(IPlayer player){
-
-	}
-
-	@Override public void onPlayerResume(IPlayer player){
-
-	}
-
-	@Override public void onTrackEnd(IPlayer player, AudioTrack track, AudioTrackEndReason endReason){
-		this.history.push(track);
-		var guild = KittyBot.getJda().getGuildById(getPlayer().getLink().getGuildId());
-		if(guild == null){
-			return;
-		}
-		if((endReason.mayStartNext && !nextTrack()) || (queue.isEmpty() && player.getPlayingTrack() == null)){
-			future = KittyBot.getScheduler().schedule(() -> Cache.destroyMusicPlayer(guild), 2, TimeUnit.MINUTES);
-		}
-	}
-
-	public LavalinkPlayer getPlayer(){
-		return player;
-	}
-
-	public boolean nextTrack(){
-		AudioTrack track = queue.poll();
-		var channel = KittyBot.getJda().getTextChannelById(channelId);
-		if(track != null){
-			player.playTrack(track);
-			return true;
-		}
-		player.stopTrack();
-		updateMusicControlMessage(channel);
-		return false;
-	}
-
-	public void updateMusicControlMessage(TextChannel channel){
-		if(channel == null){
-			return;
-		}
-		channel.editMessageById(messageId, buildMusicControlMessage().setTimestamp(Instant.now()).build()).queue();
+	public void sendMusicController(ACommand command, CommandContext ctx){
+		var msg = ctx.getMessage();
+		msg.getChannel()
+				.sendMessage(buildMusicControlMessage().setFooter(msg.getMember().getEffectiveName(), msg.getAuthor().getEffectiveAvatarUrl())
+						.setTimestamp(Instant.now())
+						.build())
+				.queue(message -> {
+					messageId = message.getId();
+					channelId = message.getChannel().getId();
+					Cache.addReactiveMessage(ctx, message, command, "-1");
+					message.addReaction(Emojis.VOLUME_DOWN).queue();
+					message.addReaction(Emojis.VOLUME_UP).queue();
+					message.addReaction(Emojis.BACK).queue();
+					message.addReaction("PlayPause:744945002416963634").queue();
+					message.addReaction(Emojis.FORWARD).queue();
+					message.addReaction(Emojis.SHUFFLE).queue();
+					message.addReaction(Emojis.X).queue();
+				});
 	}
 
 	public EmbedBuilder buildMusicControlMessage(){
@@ -274,11 +247,48 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		return embed;
 	}
 
-	@Override public void onTrackException(IPlayer player, AudioTrack track, Exception exception){
+	public LavalinkPlayer getPlayer(){
+		return player;
+	}
+
+	@Override
+	public void onTrackEnd(IPlayer player, AudioTrack track, AudioTrackEndReason endReason){
+		this.history.push(track);
+		var guild = KittyBot.getJda().getGuildById(getPlayer().getLink().getGuildId());
+		if(guild == null){
+			return;
+		}
+		if((endReason.mayStartNext && !nextTrack()) || (queue.isEmpty() && player.getPlayingTrack() == null)){
+			future = KittyBot.getScheduler().schedule(() -> Cache.destroyMusicPlayer(guild), 2, TimeUnit.MINUTES);
+		}
+	}
+
+	public boolean nextTrack(){
+		AudioTrack track = queue.poll();
+		var channel = KittyBot.getJda().getTextChannelById(channelId);
+		if(track != null){
+			player.playTrack(track);
+			return true;
+		}
+		player.stopTrack();
+		updateMusicControlMessage(channel);
+		return false;
+	}
+
+	public void updateMusicControlMessage(TextChannel channel){
+		if(channel == null){
+			return;
+		}
+		channel.editMessageById(messageId, buildMusicControlMessage().setTimestamp(Instant.now()).build()).queue();
+	}
+
+	@Override
+	public void onTrackException(IPlayer player, AudioTrack track, Exception exception){
 		System.out.println(exception.getMessage()); // TODO fix :)
 	}
 
-	@Override public void onTrackStuck(IPlayer player, AudioTrack track, long thresholdMs){
+	@Override
+	public void onTrackStuck(IPlayer player, AudioTrack track, long thresholdMs){
 		System.out.println("onTrackStuck");
 	}
 

@@ -17,7 +17,8 @@ public class RewindCommand extends ACommand{
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
-	@Override public void run(CommandContext ctx){
+	@Override
+	public void run(CommandContext ctx){
 		MusicUtils.seekTrack(ctx);
 	}
 

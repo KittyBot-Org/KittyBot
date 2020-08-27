@@ -101,7 +101,8 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 		CONTENT_CONSUMERS.remove(messageId);
 	}
 
-	@Override public void onGuildMessageReactionAdd(final GuildMessageReactionAddEvent event){
+	@Override
+	public void onGuildMessageReactionAdd(final GuildMessageReactionAddEvent event){
 		if(event.getUser().isBot()){
 			return;
 		}

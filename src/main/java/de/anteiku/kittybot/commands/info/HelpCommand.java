@@ -15,14 +15,15 @@ public class HelpCommand extends ACommand{
 	public static final String COMMAND = "help";
 	public static final String USAGE = "help";
 	public static final String DESCRIPTION = "Shows some help stuff";
-	protected static final String[] ALIASES = { "?" };
+	protected static final String[] ALIASES = {"?"};
 	protected static final Category CATEGORY = Category.INFORMATIVE;
 
 	public HelpCommand(){
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
-	@Override public void run(CommandContext ctx){
+	@Override
+	public void run(CommandContext ctx){
 		answer(ctx, new EmbedBuilder().setColor(Color.orange)
 				.setThumbnail(ctx.getJDA().getSelfUser().getEffectiveAvatarUrl())
 				.addField(Emojis.INVITE + " Invite:", Emojis.BLANK + " :small_blue_diamond: You want me on your server? Click [here](" + Config.INVITE_URL + ") to invite me!", false)
