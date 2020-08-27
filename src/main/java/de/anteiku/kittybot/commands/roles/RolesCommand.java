@@ -50,7 +50,7 @@ public class RolesCommand extends ACommand{
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("list")){
 					Map<Role, Emote> map = getRoleEmoteMap(ctx.getGuild());
-					if(map.size()==0){
+					if(map.size() == 0){
 						sendAnswer(ctx, "There are no roles added!");
 					}
 					else{
@@ -71,7 +71,7 @@ public class RolesCommand extends ACommand{
 		}
 		else{
 			Map<Role, Emote> roles = getRoleEmoteMap(ctx.getGuild());
-			if(roles.size()==0){
+			if(roles.size() == 0){
 				sendError(ctx, "No self-assignable roles configured!\nIf you are an admin use `.roles add @role :emote: @role :emote:...` to add roles!");
 				return;
 			}
@@ -98,12 +98,12 @@ public class RolesCommand extends ACommand{
 		Map<Role, Emote> map = new LinkedHashMap<>();
 		for(Map.Entry<String, String> entry : roles.entrySet()){
 			Role role = guild.getRoleById(entry.getKey());
-			if(role==null){
+			if(role == null){
 				Database.removeSelfAssignableRoles(guild.getId(), new HashSet<>(Collections.singleton(entry.getKey())));
 				continue;
 			}
 			Emote emote = guild.getJDA().getEmoteById(entry.getValue());
-			if(emote==null){
+			if(emote == null){
 				Database.removeSelfAssignableRoles(guild.getId(), new HashSet<>(Collections.singleton(entry.getKey())));
 				continue;
 			}

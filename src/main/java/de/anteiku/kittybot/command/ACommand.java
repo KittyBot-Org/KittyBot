@@ -43,7 +43,7 @@ public abstract class ACommand{
 	}
 
 	protected static void queue(MessageAction messageAction, CommandContext ctx){
-		if(messageAction!=null){
+		if(messageAction != null){
 			messageAction.queue(success -> Cache.addCommandResponse(ctx.getMessage(), success), failure -> sendError(ctx, "There was an error processing your command!\nError: " + failure
 					.getLocalizedMessage()));
 		}
@@ -202,14 +202,14 @@ public abstract class ACommand{
 		long botId = selfUser.getIdLong();
 		if(content.startsWith("<@" + botId + ">") || content.startsWith("<@!" + botId + ">")){
 			var occurrences = users.getCount(selfUser);
-			users.remove(selfUser, occurrences==1 ? 1 : occurrences - 1);
+			users.remove(selfUser, occurrences == 1 ? 1 : occurrences - 1);
 		}
 
 		StringBuilder message = new StringBuilder();
 		if(users.isEmpty()){
 			return error(ctx, "Please mention a user");
 		}
-		else if(users.contains(ctx.getUser()) && users.size()==1){
+		else if(users.contains(ctx.getUser()) && users.size() == 1){
 			message.append("You are not allowed to ")
 					.append(type)
 					.append(" yourself so I ")
@@ -227,12 +227,12 @@ public abstract class ACommand{
 				}
 				message.append(user.getAsMention()).append(", ");
 			}
-			if(message.lastIndexOf(",")!=-1){
+			if(message.lastIndexOf(",") != -1){
 				message.deleteCharAt(message.lastIndexOf(","));
 			}
 		}
 		String url = getNeko(type);
-		if(url==null){
+		if(url == null){
 			return error(ctx, "Unknown error occurred while getting image for `" + type + "`");
 		}
 		return answer(ctx, new EmbedBuilder().setDescription(message).setImage(url));

@@ -21,7 +21,7 @@ public class OnGuildMessageEvent extends ListenerAdapter{
 			return;
 		}
 		if(!CommandManager.checkCommands(event)){
-			if(event.getMessage().getMentionedUsers().size()==1 && event.getMessage().getMentionedUsers().get(0).getId().equals(event.getJDA().getSelfUser().getId())){
+			if(event.getMessage().getMentionedUsers().size() == 1 && event.getMessage().getMentionedUsers().get(0).getId().equals(event.getJDA().getSelfUser().getId())){
 				event.getMessage().addReaction(Emojis.QUESTION).queue();
 				event.getChannel()
 						.sendMessage(new EmbedBuilder().setColor(Color.ORANGE)
@@ -51,7 +51,7 @@ public class OnGuildMessageEvent extends ListenerAdapter{
 		}
 
 		ReactiveMessage reactiveMessage = Cache.getReactiveMessage(event.getGuild(), event.getMessageId());
-		if(reactiveMessage!=null){
+		if(reactiveMessage != null){
 			if(reactiveMessage.allowed.equals("-1") || reactiveMessage.allowed.equals(event.getUserId())){
 				CommandManager.getCommands().get(reactiveMessage.command).reactionAdd(reactiveMessage, event);
 			}

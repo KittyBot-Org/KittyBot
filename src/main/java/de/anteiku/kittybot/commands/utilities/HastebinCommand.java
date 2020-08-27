@@ -46,7 +46,7 @@ public class HastebinCommand extends ACommand{
 
 							@Override public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException{
 								try(var body = response.body()){
-									if(body==null){
+									if(body == null){
 										sendError(ctx, "Error while creating hastebin");
 										return;
 									}

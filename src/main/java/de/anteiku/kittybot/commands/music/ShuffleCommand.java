@@ -19,7 +19,7 @@ public class ShuffleCommand extends ACommand{
 
 	@Override public void run(CommandContext ctx){
 		var musicPlayer = Cache.getMusicPlayer(ctx.getGuild());
-		if(musicPlayer==null){
+		if(musicPlayer == null){
 			sendError(ctx, "No active music player found!");
 			return;
 		}

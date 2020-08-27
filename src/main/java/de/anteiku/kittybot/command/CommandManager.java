@@ -39,7 +39,7 @@ public class CommandManager{
 	public static boolean checkCommands(GuildMessageReceivedEvent event){
 		long start = System.nanoTime();
 		String message = cutCommandPrefix(event.getGuild(), event.getMessage().getContentRaw());
-		if(message!=null){
+		if(message != null){
 			String command = getCommandString(message);
 			for(var entry : COMMANDS.entrySet()){
 				var cmd = entry.getValue();

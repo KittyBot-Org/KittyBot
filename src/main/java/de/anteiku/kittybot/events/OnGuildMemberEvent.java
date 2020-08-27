@@ -25,7 +25,7 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 		String id = Database.getAnnouncementChannelId(event.getGuild().getId());
 		if(!id.equals("-1") && Database.getLeaveMessageEnabled(event.getGuild().getId())){
 			TextChannel channel = event.getGuild().getTextChannelById(id);
-			if(channel!=null){
+			if(channel != null){
 				if(event.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE)){
 					channel.sendMessage(generateLeaveMessage(Database.getLeaveMessage(event.getGuild().getId()), event.getUser())).queue();
 				}
@@ -45,7 +45,7 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 		String id = Database.getAnnouncementChannelId(event.getGuild().getId());
 		if(!id.equals("-1") && Database.getJoinMessageEnabled(event.getGuild().getId())){
 			TextChannel channel = event.getGuild().getTextChannelById(id);
-			if(channel!=null){
+			if(channel != null){
 				if(event.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE)){
 					channel.sendMessage(generateJoinMessage(Database.getJoinMessage(event.getGuild().getId()), event.getUser(), Cache.getUsedInvite(event.getGuild())))
 							.queue();
@@ -66,7 +66,7 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 		String id = Database.getAnnouncementChannelId(event.getGuild().getId());
 		if(!id.equals("-1") && Database.getLeaveMessageEnabled(event.getGuild().getId())){
 			TextChannel channel = event.getGuild().getTextChannelById(id);
-			if(channel!=null){
+			if(channel != null){
 				if(event.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE)){
 					channel.sendMessage(generateBoostMessage(Database.getBoostMessage(event.getGuild().getId()), event.getUser())).queue();
 				}
@@ -83,7 +83,7 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 	}
 
 	private String generateBoostMessage(String message, User user){
-		if(BOOST_MESSAGES!=null && BOOST_MESSAGES.size() > 1){
+		if(BOOST_MESSAGES != null && BOOST_MESSAGES.size() > 1){
 			String random = BOOST_MESSAGES.get(ThreadLocalRandom.current().nextInt(BOOST_MESSAGES.size() - 1));
 			message = message.replace("${random_boost_message}", random);
 		}
@@ -94,12 +94,12 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 	}
 
 	private String generateJoinMessage(String message, User user, Invite invite){
-		if(JOIN_MESSAGES!=null && JOIN_MESSAGES.size() > 1){
+		if(JOIN_MESSAGES != null && JOIN_MESSAGES.size() > 1){
 			String random = JOIN_MESSAGES.get(ThreadLocalRandom.current().nextInt(JOIN_MESSAGES.size() - 1));
 			message = message.replace("${random_join_message}", random);
 		}
-		if(invite!=null){
-			if(invite.getInviter()!=null){
+		if(invite != null){
+			if(invite.getInviter() != null){
 				message = message.replace("${inviter}", invite.getInviter().getAsMention());
 			}
 			message = message.replace("${invite_link}", invite.getUrl());
@@ -113,7 +113,7 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 	}
 
 	private String generateLeaveMessage(String message, User user){
-		if(LEAVE_MESSAGES!=null && LEAVE_MESSAGES.size() > 1){
+		if(LEAVE_MESSAGES != null && LEAVE_MESSAGES.size() > 1){
 			String random = LEAVE_MESSAGES.get(ThreadLocalRandom.current().nextInt(LEAVE_MESSAGES.size() - 1));
 			message = message.replace("${random_leave_message}", random);
 		}

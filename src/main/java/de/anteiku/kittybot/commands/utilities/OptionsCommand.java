@@ -27,7 +27,7 @@ public class OptionsCommand extends ACommand{
 	//TODO renaming sub-commands & displaying set values
 	@Override public void run(CommandContext ctx){
 		if(ctx.getMember().isOwner() || ctx.getMember().hasPermission(Permission.ADMINISTRATOR)){
-			if(ctx.getArgs().length==0){
+			if(ctx.getArgs().length == 0){
 				var guildId = ctx.getGuild().getId();
 				var embed = new EmbedBuilder();
 				embed.setTitle("Guild options:");
@@ -44,7 +44,7 @@ public class OptionsCommand extends ACommand{
 				sendAnswer(ctx, embed);
 			}
 			else{
-				if(ctx.getArgs()[0].equalsIgnoreCase("prefix") && ctx.getArgs().length==2){
+				if(ctx.getArgs()[0].equalsIgnoreCase("prefix") && ctx.getArgs().length == 2){
 					Cache.setCommandPrefix(ctx.getGuild().getId(), ctx.getArgs()[1]);
 					sendAnswer(ctx, "Prefix set to: `" + ctx.getArgs()[1] + "`");
 				}
@@ -85,7 +85,7 @@ public class OptionsCommand extends ACommand{
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("announcementchannel")){
 					List<TextChannel> channels = ctx.getMessage().getMentionedChannels();
-					if(channels.size()==1){
+					if(channels.size() == 1){
 						if(Database.setAnnouncementChannelId(ctx.getGuild().getId(), channels.get(0).getId())){
 							sendError(ctx, "There was an error while processing your command :(");
 							return;

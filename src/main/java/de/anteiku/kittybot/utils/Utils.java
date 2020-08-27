@@ -21,7 +21,7 @@ public class Utils{
 
 	public static String generate(int length){
 		StringBuilder builder = new StringBuilder();
-		while(length--!=0){
+		while(length-- != 0){
 			builder.append(CHARS.charAt((int) (Math.random() * CHARS.length())));
 		}
 		return builder.toString();
@@ -29,7 +29,7 @@ public class Utils{
 
 	public static List<String> loadMessageFile(String fileName){
 		var inputStream = SQL.class.getClassLoader().getResourceAsStream("messages/" + fileName + ".txt");
-		if(inputStream==null){
+		if(inputStream == null){
 			LOG.error("Message file not found");
 			return null;
 		}
@@ -37,7 +37,7 @@ public class Utils{
 		List<String> set = new ArrayList<>();
 		try{
 			String line;
-			while((line = reader.readLine())!=null){
+			while((line = reader.readLine()) != null){
 				set.add(line);
 			}
 			reader.close();

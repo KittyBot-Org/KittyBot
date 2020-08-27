@@ -48,7 +48,7 @@ public class EvalCommand extends ACommand{
 				}
 
 				Object out = engine.eval("(function() {" + "with (imports) {" + ctx.getMessage().getContentDisplay().substring(command.length() + 1) + "}" + "})();");
-				sendAnswer(ctx, out==null ? "Executed without error." : out.toString());
+				sendAnswer(ctx, out == null ? "Executed without error." : out.toString());
 			}
 			catch(Exception e){
 				sendError(ctx, e.getMessage());

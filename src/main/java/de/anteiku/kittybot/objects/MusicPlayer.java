@@ -68,7 +68,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				if(!queue.isEmpty()){
 					sendQueuedTracks(command, ctx, Collections.singletonList(track));
 				}
-				if(future!=null){
+				if(future != null){
 					future.cancel(true);
 				}
 				connectToChannel(ctx);
@@ -92,7 +92,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				if(!queue.isEmpty()){
 					sendQueuedTracks(command, ctx, queuedTracks);
 				}
-				if(future!=null){
+				if(future != null){
 					future.cancel(true);
 				}
 				connectToChannel(ctx);
@@ -110,13 +110,13 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	public void connectToChannel(CommandContext ctx){
 		var voiceState = ctx.getMember().getVoiceState();
-		if(voiceState!=null && voiceState.getChannel()!=null){
+		if(voiceState != null && voiceState.getChannel() != null){
 			KittyBot.getLavalink().getLink(ctx.getGuild()).connect(voiceState.getChannel());
 		}
 	}
 
 	public void queue(AudioTrack track){
-		if(player.getPlayingTrack()==null){
+		if(player.getPlayingTrack() == null){
 			player.playTrack(track);
 		}
 		else{
@@ -154,7 +154,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	public String getRequesterId(){
 		var playing = player.getPlayingTrack();
-		return playing==null ? null : playing.getUserData(String.class);
+		return playing == null ? null : playing.getUserData(String.class);
 	}
 
 	public boolean pause(){
@@ -195,7 +195,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	@Override public void onTrackStart(IPlayer player, AudioTrack track){
-		if(messageId!=null){
+		if(messageId != null){
 			Cache.removeReactiveMessage(ctx.getGuild(), messageId);
 		}
 		sendMusicController(command, ctx);
@@ -212,10 +212,10 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	@Override public void onTrackEnd(IPlayer player, AudioTrack track, AudioTrackEndReason endReason){
 		this.history.push(track);
 		var guild = KittyBot.getJda().getGuildById(getPlayer().getLink().getGuildId());
-		if(guild==null){
+		if(guild == null){
 			return;
 		}
-		if((endReason.mayStartNext && !nextTrack()) || (queue.isEmpty() && player.getPlayingTrack()==null)){
+		if((endReason.mayStartNext && !nextTrack()) || (queue.isEmpty() && player.getPlayingTrack() == null)){
 			future = KittyBot.getScheduler().schedule(() -> Cache.destroyMusicPlayer(guild), 2, TimeUnit.MINUTES);
 		}
 	}
@@ -227,7 +227,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	public boolean nextTrack(){
 		AudioTrack track = queue.poll();
 		var channel = KittyBot.getJda().getTextChannelById(channelId);
-		if(track!=null){
+		if(track != null){
 			player.playTrack(track);
 			return true;
 		}
@@ -237,7 +237,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	public void updateMusicControlMessage(TextChannel channel){
-		if(channel==null){
+		if(channel == null){
 			return;
 		}
 		channel.editMessageById(messageId, buildMusicControlMessage().setTimestamp(Instant.now()).build()).queue();
@@ -247,7 +247,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		var embed = new EmbedBuilder();
 		var track = player.getPlayingTrack();
 
-		if(track==null){
+		if(track == null){
 			embed.setAuthor("Nothing to play...")
 					.setColor(Color.RED)
 					.addField("Author", "", true)
@@ -284,7 +284,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	public boolean previousTrack(){
 		AudioTrack track = history.poll();
-		if(track!=null){
+		if(track != null){
 			track.setPosition(0);
 			player.playTrack(track);
 			return true;

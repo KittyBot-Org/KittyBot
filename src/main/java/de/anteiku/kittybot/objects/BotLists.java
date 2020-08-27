@@ -31,11 +31,11 @@ public class BotLists{
 				}
 
 				@Override public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException{
-					if(response.code()==200){
+					if(response.code() == 200){
 						LOG.info("Published serverCount to https://discord.bots.gg/");
 					}
 					else{
-						LOG.error("Error while publishing bot stats to https://discord.bots.gg/ code: '" + response.code() + "'" + (response.body()==null ? "" : "body: '" + response
+						LOG.error("Error while publishing bot stats to https://discord.bots.gg/ code: '" + response.code() + "'" + (response.body() == null ? "" : "body: '" + response
 								.body()
 								.string() + "'"));
 					}

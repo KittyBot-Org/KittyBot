@@ -110,11 +110,11 @@ public class KittyBot{
 
 	public static void sendToPublicLogChannel(String description){
 		var guild = jda.getGuildById(Config.SUPPORT_GUILD_ID);
-		if(guild==null){
+		if(guild == null){
 			return;
 		}
 		var channel = guild.getTextChannelById(Config.LOG_CHANNEL_ID);
-		if(channel!=null){
+		if(channel != null){
 			channel.sendMessage(new EmbedBuilder().setTitle("Log")
 					.setDescription(description)
 					.setColor(new Color(76, 80, 193))

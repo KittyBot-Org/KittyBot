@@ -24,17 +24,17 @@ public class PlayCommand extends ACommand{
 	}
 
 	@Override public void run(CommandContext ctx){
-		if(ctx.getArgs().length==0){
+		if(ctx.getArgs().length == 0){
 			sendError(ctx, "Please provide a link or search term");
 			return;
 		}
 		var voiceState = ctx.getMember().getVoiceState();
-		if(voiceState==null || !voiceState.inVoiceChannel()){
+		if(voiceState == null || !voiceState.inVoiceChannel()){
 			sendError(ctx, "Please connect to a voice channel to play some stuff");
 			return;
 		}
 		var musicPlayer = Cache.getMusicPlayer(ctx.getGuild());
-		if(musicPlayer==null){
+		if(musicPlayer == null){
 			var link = KittyBot.getLavalink().getLink(ctx.getGuild());
 			var player = link.getPlayer();
 			musicPlayer = new MusicPlayer(player);
@@ -46,11 +46,11 @@ public class PlayCommand extends ACommand{
 
 	@Override public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
 		var musicPlayer = Cache.getMusicPlayer(event.getGuild());
-		if(musicPlayer==null){
+		if(musicPlayer == null){
 			return;
 		}
 		var requester = musicPlayer.getRequesterId();
-		if(requester==null){
+		if(requester == null){
 			return;
 		}
 		if(!requester.equals(event.getUserId())){

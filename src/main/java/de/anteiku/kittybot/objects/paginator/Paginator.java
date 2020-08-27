@@ -83,7 +83,7 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 			// TIMEOUT
 
 			KittyBot.getWaiter()
-					.waitForEvent(GuildMessageReactionAddEvent.class, ev -> ev.getMessageIdLong()==messageId && ev.getUserIdLong()==authorId, ev -> {}, 3, TimeUnit.MINUTES, () -> {
+					.waitForEvent(GuildMessageReactionAddEvent.class, ev -> ev.getMessageIdLong() == messageId && ev.getUserIdLong() == authorId, ev -> {}, 3, TimeUnit.MINUTES, () -> {
 						message.delete().queue();
 						channel.deleteMessageById(messageId).queue();
 
@@ -111,11 +111,11 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 		final var messageId = event.getMessageIdLong();
 
 		final var paginators = PAGINATOR_MESSAGES.get(channelId);
-		if(paginators==null || !paginators.contains(messageId)){
+		if(paginators == null || !paginators.contains(messageId)){
 			return;
 		}
 		event.getReaction().removeReaction(event.getUser()).queue();
-		if(event.getUserIdLong()!=INVOKERS.get(messageId)){
+		if(event.getUserIdLong() != INVOKERS.get(messageId)){
 			return;
 		}
 		final var reactionEmote = event.getReactionEmote();
@@ -135,10 +135,10 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 				removePaginator(channelId, messageId);
 				return;
 			case ARROW_LEFT:
-				if(currentPage==0){
+				if(currentPage == 0){
 					return;
 				}
-				if(currentPage + 1==total){
+				if(currentPage + 1 == total){
 					channel.removeReactionById(messageId, WASTEBASKET)
 							.flatMap(ignored -> channel.addReactionById(messageId, ARROW_RIGHT))
 							.flatMap(ignored -> channel.addReactionById(messageId, WASTEBASKET))
@@ -147,16 +147,16 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 				final var previousPage = currentPage - 1;
 				contentConsumer.accept(previousPage, newPageBuilder);
 				newPageBuilder.setFooter("Page " + (previousPage + 1) + "/" + total); // yes, we could just use currentPage here but it would just bring confusion
-				if(previousPage==0){
+				if(previousPage == 0){
 					channel.removeReactionById(messageId, ARROW_LEFT).queue();
 				}
 				CURRENT_PAGE.put(messageId, previousPage);
 				break;
 			case ARROW_RIGHT:
-				if(currentPage==total){
+				if(currentPage == total){
 					return;
 				}
-				if(currentPage==0){
+				if(currentPage == 0){
 					channel.clearReactionsById(messageId)
 							.flatMap(ignored -> channel.addReactionById(messageId, ARROW_LEFT))
 							.flatMap(ignored -> channel.addReactionById(messageId, ARROW_RIGHT))
@@ -166,7 +166,7 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 				final var nextPage = currentPage + 1;
 				contentConsumer.accept(nextPage, newPageBuilder);
 				newPageBuilder.setFooter("Page " + (nextPage + 1) + "/" + total);
-				if(nextPage + 1==total){
+				if(nextPage + 1 == total){
 					channel.removeReactionById(messageId, ARROW_RIGHT).queue();
 				}
 				CURRENT_PAGE.put(messageId, nextPage);

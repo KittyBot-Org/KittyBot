@@ -21,7 +21,7 @@ public class SpankCommand extends ACommand{
 			sendError(ctx, "Sorry but this command can only be used in nsfw channels");
 			return;
 		}
-		if(ctx.getArgs().length==0){
+		if(ctx.getArgs().length == 0){
 			sendUsage(ctx);
 			return;
 		}

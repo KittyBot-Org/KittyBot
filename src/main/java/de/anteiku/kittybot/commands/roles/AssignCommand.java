@@ -18,7 +18,7 @@ public class AssignCommand extends ACommand{
 	}
 
 	@Override public void run(CommandContext ctx){
-		if(ctx.getArgs().length==0){
+		if(ctx.getArgs().length == 0){
 			sendError(ctx, "Please specify a role");
 			return;
 		}

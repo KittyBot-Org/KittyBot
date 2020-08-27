@@ -9,7 +9,7 @@ public class MusicUtils{
 
 	public static void seekTrack(final CommandContext ctx){
 		final var voiceState = ctx.getMember().getVoiceState();
-		if(voiceState==null){
+		if(voiceState == null){
 			return;
 		}
 		if(!voiceState.inVoiceChannel()){
@@ -17,7 +17,7 @@ public class MusicUtils{
 			return;
 		}
 		final var musicPlayer = Cache.getMusicPlayer(ctx.getGuild());
-		if(musicPlayer==null){
+		if(musicPlayer == null){
 			sendError(ctx, "No active music player found!");
 			return;
 		}
@@ -27,7 +27,7 @@ public class MusicUtils{
 			return;
 		}
 		final var playing = player.getPlayingTrack();
-		if(playing==null){
+		if(playing == null){
 			sendError(ctx, "There is currently no song playing");
 			return;
 		}
@@ -36,7 +36,7 @@ public class MusicUtils{
 			return;
 		}
 		final var args = ctx.getArgs();
-		if(args.length==0){
+		if(args.length == 0){
 			sendError(ctx, "Please provide the amount of seconds");
 			return;
 		}

@@ -92,7 +92,7 @@ public class SQL{
 	public static boolean exists(PreparedStatement preparedStatement){
 		try{
 			var result = query(preparedStatement);
-			return result!=null && result.next();
+			return result != null && result.next();
 		}
 		catch(SQLException e){
 			LOG.error("Error exists prepared statement", e);
