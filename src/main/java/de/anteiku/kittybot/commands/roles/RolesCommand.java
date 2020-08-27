@@ -1,9 +1,9 @@
 package de.anteiku.kittybot.commands.roles;
 
-import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.Emojis;
 import de.anteiku.kittybot.objects.ReactiveMessage;
 import de.anteiku.kittybot.objects.cache.ReactiveMessageCache;
+import de.anteiku.kittybot.objects.cache.SelfAssignableRoleCache;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
@@ -42,11 +42,11 @@ public class RolesCommand extends ACommand{
 				List<Role> roles = ctx.getMessage().getMentionedRoles();
 				List<Emote> emotes = ctx.getMessage().getEmotes();
 				if(ctx.getArgs()[0].equalsIgnoreCase("add") && !roles.isEmpty() && !emotes.isEmpty()){
-					Database.addSelfAssignableRoles(ctx.getGuild().getId(), Utils.toMap(roles, emotes));
+					SelfAssignableRoleCache.addSelfAssignableRoles(ctx.getGuild().getId(), Utils.toMap(roles, emotes));
 					sendAnswer(ctx, "Roles added!");
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("remove") && !roles.isEmpty()){
-					Database.removeSelfAssignableRoles(ctx.getGuild().getId(), Utils.toSet(roles));
+					SelfAssignableRoleCache.removeSelfAssignableRoles(ctx.getGuild().getId(), Utils.toSet(roles));
 					sendAnswer(ctx, "Roles removed!");
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("list")){
@@ -95,17 +95,17 @@ public class RolesCommand extends ACommand{
 	}
 
 	private Map<Role, Emote> getRoleEmoteMap(Guild guild){
-		Map<String, String> roles = Database.getSelfAssignableRoles(guild.getId());
+		Map<String, String> roles = SelfAssignableRoleCache.getSelfAssignableRoles(guild.getId());
 		Map<Role, Emote> map = new LinkedHashMap<>();
 		for(Map.Entry<String, String> entry : roles.entrySet()){
 			Role role = guild.getRoleById(entry.getKey());
 			if(role == null){
-				Database.removeSelfAssignableRoles(guild.getId(), new HashSet<>(Collections.singleton(entry.getKey())));
+				SelfAssignableRoleCache.removeSelfAssignableRoles(guild.getId(), new HashSet<>(Collections.singleton(entry.getKey())));
 				continue;
 			}
 			Emote emote = guild.getJDA().getEmoteById(entry.getValue());
 			if(emote == null){
-				Database.removeSelfAssignableRoles(guild.getId(), new HashSet<>(Collections.singleton(entry.getKey())));
+				SelfAssignableRoleCache.removeSelfAssignableRoles(guild.getId(), new HashSet<>(Collections.singleton(entry.getKey())));
 				continue;
 			}
 			map.put(role, emote);

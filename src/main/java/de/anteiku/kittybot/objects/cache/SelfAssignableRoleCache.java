@@ -1,10 +1,15 @@
 package de.anteiku.kittybot.objects.cache;
 
 import de.anteiku.kittybot.database.Database;
+import de.anteiku.kittybot.database.SQL;
 import net.dv8tion.jda.api.entities.Guild;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class SelfAssignableRoleCache{
 
@@ -21,8 +26,28 @@ public class SelfAssignableRoleCache{
 	}
 
 	public static void setSelfAssignableRoles(String guildId, Map<String, String> selfAssignableRoles){
+		Database.setSelfAssignableRoles(guildId, selfAssignableRoles);
 		SELF_ASSIGNABLE_ROLES.put(guildId, selfAssignableRoles);
-		//Database.setSelfAssignableRoles(guildId, selfAssignableRoles);
+	}
+
+	public static void removeSelfAssignableRoles(String guildId, Set<String> roles){
+		Database.removeSelfAssignableRoles(guildId, roles);
+		var map = SELF_ASSIGNABLE_ROLES.get(guildId);
+		if(map != null){
+			roles.forEach(map::remove);
+		}
+	}
+
+	public static void addSelfAssignableRoles(String guildId, Map<String, String> roles){
+		Database.addSelfAssignableRoles(guildId, roles);
+		var map = SELF_ASSIGNABLE_ROLES.get(guildId);
+		if(map != null){
+			map.putAll(roles);
+		}
+	}
+
+	public static boolean isSelfAssignableRole(String guildId, String roleId){
+		return getSelfAssignableRoles(guildId).get(roleId) != null;
 	}
 
 	public static void pruneCache(Guild guild){
