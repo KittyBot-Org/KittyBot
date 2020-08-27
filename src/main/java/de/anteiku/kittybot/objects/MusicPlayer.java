@@ -37,6 +37,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	private String messageId;
 	private String channelId;
 	private ScheduledFuture<?> future;
+	private ACommand command;
+	private CommandContext ctx;
 
 	public MusicPlayer(LavalinkPlayer player){
 		this.player = player;
@@ -53,6 +55,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	public void loadItem(ACommand command, CommandContext ctx){
+		this.command = command;
+		this.ctx = ctx;
 		String argStr = String.join(" ", ctx.getArgs());
 		final String query = argStr.matches(URL_PATTERN) ? argStr : "ytsearch:" + argStr;
 		KittyBot.getAudioPlayerManager().loadItem(query, new AudioLoadResultHandler(){
@@ -208,6 +212,12 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	@Override
+	public void onTrackStart(IPlayer player, AudioTrack track){
+		Cache.removeReactiveMessage(ctx.getGuild(), messageId);
+		sendMusicController(command, ctx);
+	}
+
+	@Override
 	public void onPlayerPause(IPlayer player){
 
 	}
@@ -238,7 +248,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		var channel = KittyBot.getJda().getTextChannelById(channelId);
 		if(track != null){
 			player.playTrack(track);
-			updateMusicControlMessage(channel);
 			return true;
 		}
 		player.stopTrack();
