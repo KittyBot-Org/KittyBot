@@ -29,7 +29,7 @@ import static de.anteiku.kittybot.utils.Utils.pluralize;
 
 public class MusicPlayer extends PlayerEventListenerAdapter{
 
-	public static final String URL_PATTERN = "^(https?://)?(www|m.)?(\\.)?youtu(\\.be|be\\.com)/(watch\\?v=)?([a-zA-Z0-9-_]{11})(&list=[a-zA-Z0-9-_]+)?";
+	public static final String URL_PATTERN = "^(https?://)?(www|m.)?(\\.)?youtu(\\.be|be\\.com)/(playlist\\?list=[a-zA-Z0-9-_]+)?((watch\\?v=)?([a-zA-Z0-9-_]{11})(&list=[a-zA-Z0-9-_]+)?)?";
 	private static final int VOLUME_MAX = 200;
 	private final LavalinkPlayer player;
 	private final Queue<AudioTrack> queue;
