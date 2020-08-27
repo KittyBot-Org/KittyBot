@@ -62,7 +62,7 @@ public class KittyBot{
 				"                          __/ |                \n" +
 				"                         |___/                 \n" +
 				"\n" +
-				"            https://github.com/TopiSenpai/KittyBot" +
+				"            https://github.com/KittyBot-Org/KittyBot" +
 				"\n");
 		LOG.info("Starting...");
 
