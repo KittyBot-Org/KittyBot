@@ -8,7 +8,6 @@ import com.jagrosh.jdautilities.oauth2.session.DefaultSessionController;
 import com.jagrosh.jdautilities.oauth2.state.DefaultStateController;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.Config;
-import de.anteiku.kittybot.objects.cache.SelfAssignableRoleCache;
 import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandManager;
 import io.javalin.Javalin;
@@ -248,7 +247,7 @@ public class WebService{
 
 	private void getGuildSettings(Context ctx){
 		var guildId = ctx.pathParam(":guildId");
-		var roles = SelfAssignableRoleCache.getSelfAssignableRoles(guildId);
+		var roles = Database.getSelfAssignableRoles(guildId);
 		if(roles == null || KittyBot.getJda().getGuildById(guildId) == null){
 			error(ctx, 404, "guild not found");
 			return;
@@ -311,7 +310,7 @@ public class WebService{
 				var obj = dataArray.getObject(i);
 				roles.put(obj.getString("role"), obj.getString("emote"));
 			}
-			SelfAssignableRoleCache.setSelfAssignableRoles(guildId, roles);
+			Database.setSelfAssignableRoles(guildId, roles);
 		}
 		ok(ctx);
 	}
