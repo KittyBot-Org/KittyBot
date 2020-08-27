@@ -65,15 +65,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 			public void trackLoaded(AudioTrack track){
 				track.setUserData(ctx.getUser().getId());
 				queue(track);
-				if(messageId == null){
-					sendMusicController(command, ctx);
-				}
-				else{
-					if(queue.isEmpty()){
-						updateMusicControlMessage(ctx.getChannel());
-					}
+				if (!queue.isEmpty())
 					sendQueuedTracks(command, ctx, Collections.singletonList(track));
-				}
 				if(future != null){
 					future.cancel(true);
 				}
@@ -96,15 +89,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 						queue(track);
 					}
 				}
-				if(messageId == null){
-					sendMusicController(command, ctx);
-				}
-				else{
-					if(queue.isEmpty()){
-						updateMusicControlMessage(ctx.getChannel());
-					}
+				if (!queue.isEmpty())
 					sendQueuedTracks(command, ctx, queuedTracks);
-				}
 				if(future != null){
 					future.cancel(true);
 				}
@@ -209,6 +195,14 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public void onTrackStart(IPlayer player, AudioTrack track){
+		if (messageId != null){
+			Cache.removeReactiveMessage(ctx.getGuild(), messageId);
+		}
+		sendMusicController(command, ctx);
 	}
 
 	@Override
