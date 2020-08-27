@@ -17,7 +17,7 @@ public class EditSnipeCommand extends ACommand {
     protected static final String[] ALIASES = {"es", "esnipe"};
     protected static final Category CATEGORY = Category.UTILITIES;
 
-    public EditSnipeCommand(){
+    public EditSnipeCommand() {
         super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
     }
 

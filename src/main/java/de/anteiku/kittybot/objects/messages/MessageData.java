@@ -4,7 +4,7 @@ import net.dv8tion.jda.api.entities.Message;
 
 import java.time.Instant;
 
-public class MessageData{
+public class MessageData {
     private final String messageId;
     private final String authorId;
     private final Instant creation;

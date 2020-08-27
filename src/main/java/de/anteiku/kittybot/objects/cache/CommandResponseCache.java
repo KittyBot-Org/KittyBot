@@ -10,19 +10,19 @@ import java.util.Map;
 public class CommandResponseCache {
     private static final Map<String, String> COMMAND_RESPONSES = new HashMap<>();
 
-    public static void addCommandResponse(Message command, Message response){
+    public static void addCommandResponse(Message command, Message response) {
         COMMAND_RESPONSES.put(command.getId(), response.getId());
     }
 
-    public static void deleteCommandResponse(TextChannel channel, String command){
+    public static void deleteCommandResponse(TextChannel channel, String command) {
         var commandResponse = COMMAND_RESPONSES.get(command);
-        if(commandResponse != null){
+        if (commandResponse != null) {
             channel.deleteMessageById(commandResponse).queue();
             COMMAND_RESPONSES.remove(command);
         }
     }
 
-    public static void pruneCache(Guild guild){
+    public static void pruneCache(Guild guild) {
         COMMAND_RESPONSES.remove(guild.getId());
     }
 }

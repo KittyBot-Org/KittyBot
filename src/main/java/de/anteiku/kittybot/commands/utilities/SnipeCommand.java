@@ -17,7 +17,7 @@ public class SnipeCommand extends ACommand {
     protected static final String[] ALIASES = {"s", "dsnipe"};
     protected static final Category CATEGORY = Category.UTILITIES;
 
-    public SnipeCommand(){
+    public SnipeCommand() {
         super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
     }
 

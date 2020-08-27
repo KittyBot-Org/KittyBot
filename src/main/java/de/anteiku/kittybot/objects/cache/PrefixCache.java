@@ -9,16 +9,16 @@ import java.util.Map;
 public class PrefixCache {
     private static final Map<String, String> GUILD_PREFIXES = new HashMap<>();
 
-    public static String getCommandPrefix(String guildId){
+    public static String getCommandPrefix(String guildId) {
         return GUILD_PREFIXES.computeIfAbsent(guildId, k -> Database.getCommandPrefix(guildId));
     }
 
-    public static void setCommandPrefix(String guildId, String prefix){
+    public static void setCommandPrefix(String guildId, String prefix) {
         Database.setCommandPrefix(guildId, prefix);
         GUILD_PREFIXES.put(guildId, prefix);
     }
 
-    public static void pruneCache(Guild guild){
+    public static void pruneCache(Guild guild) {
         GUILD_PREFIXES.remove(guild.getId());
     }
 }

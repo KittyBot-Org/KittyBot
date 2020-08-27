@@ -10,13 +10,13 @@ import java.util.Map;
 public class MusicPlayerCache {
     private static final Map<String, MusicPlayer> MUSIC_PLAYERS = new HashMap<>();
 
-    public static void addMusicPlayer(Guild guild, MusicPlayer player){
+    public static void addMusicPlayer(Guild guild, MusicPlayer player) {
         MUSIC_PLAYERS.put(guild.getId(), player);
     }
 
-    public static void destroyMusicPlayer(Guild guild){
+    public static void destroyMusicPlayer(Guild guild) {
         var musicPlayer = getMusicPlayer(guild);
-        if(musicPlayer == null){
+        if (musicPlayer == null) {
             return;
         }
         KittyBot.getLavalink().getLink(guild).destroy();
@@ -24,11 +24,11 @@ public class MusicPlayerCache {
         MUSIC_PLAYERS.remove(guild.getId());
     }
 
-    public static MusicPlayer getMusicPlayer(Guild guild){
+    public static MusicPlayer getMusicPlayer(Guild guild) {
         return MUSIC_PLAYERS.get(guild.getId());
     }
 
-    public static void pruneCache(Guild guild){ // just a convenience method to match other pruneCache methods
+    public static void pruneCache(Guild guild) { // just a convenience method to match other pruneCache methods
         destroyMusicPlayer(guild);
     }
 }

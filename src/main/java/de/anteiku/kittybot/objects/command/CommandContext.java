@@ -6,38 +6,38 @@ import org.apache.commons.collections4.Bag;
 
 import java.util.List;
 
-public interface CommandContext{
+public interface CommandContext {
 
-	JDA getJDA();
+    JDA getJDA();
 
-	Guild getGuild();
+    Guild getGuild();
 
-	TextChannel getChannel();
+    TextChannel getChannel();
 
-	Message getMessage();
+    Message getMessage();
 
-	String getCommand();
+    String getCommand();
 
-	String[] getArgs();
+    String[] getArgs();
 
-	User getSelfUser();
+    User getSelfUser();
 
-	User getUser();
+    User getUser();
 
-	List<User> getMentionedUsers();
+    List<User> getMentionedUsers();
 
-	Bag<User> getMentionedUsersBag();
+    Bag<User> getMentionedUsersBag();
 
-	Member getSelfMember();
+    Member getSelfMember();
 
-	Member getMember();
+    Member getMember();
 
-	List<TextChannel> getMentionedChannels();
+    List<TextChannel> getMentionedChannels();
 
-	Bag<TextChannel> getMentionedChannelsBag();
+    Bag<TextChannel> getMentionedChannelsBag();
 
-	List<Role> getMentionedRoles();
+    List<Role> getMentionedRoles();
 
-	Bag<Role> getMentionedRolesBag();
+    Bag<Role> getMentionedRolesBag();
 
 }
