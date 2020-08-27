@@ -43,7 +43,6 @@ import java.util.concurrent.TimeUnit;
 
 public class KittyBot {
 
-    public static final DateTimeFormatter TIME_IN_CENTRAL_EUROPE = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss z").withZone(ZoneId.of("Europe/Berlin"));
     private static final Logger LOG = LoggerFactory.getLogger(KittyBot.class);
     private static final OkHttpClient HTTP_CLIENT = new OkHttpClient();
     private static final AudioPlayerManager AUDIO_PLAYER_MANAGER = new DefaultAudioPlayerManager();
