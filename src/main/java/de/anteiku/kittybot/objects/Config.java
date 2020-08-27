@@ -17,7 +17,7 @@ public class Config{
 	public static String BOT_TOKEN;
 	public static String BOT_SECRET;
 	public static String BOT_ID;
-	public static String ADMIN_ID;
+	public static List<String> ADMIN_IDS;
 	public static String SUPPORT_GUILD_ID;
 	public static String LOG_CHANNEL_ID;
 	public static String INVITE_URL;
@@ -44,7 +44,11 @@ public class Config{
 			BOT_TOKEN = json.getString("bot_token");
 			BOT_SECRET = json.getString("bot_secret");
 			BOT_ID = json.getString("bot_id");
-			ADMIN_ID = json.getString("admin_id");
+			ADMIN_IDS = new ArrayList<>();
+			var adminIds = json.getArray("admin_ids");
+			for(var i = 0; i < adminIds.length(); i++){
+				ADMIN_IDS.add(adminIds.getString(i));
+			}
 			SUPPORT_GUILD_ID = json.getString("support_guild_id");
 			LOG_CHANNEL_ID = json.getString("log_channel_id");
 			INVITE_URL = json.getString("invite_url");
@@ -71,6 +75,10 @@ public class Config{
 		catch(FileNotFoundException e){
 			LOG.error("Error while reading config file", e);
 		}
+	}
+
+	public static boolean isSet(String setting){
+		return setting != null && !setting.isEmpty();
 	}
 
 }

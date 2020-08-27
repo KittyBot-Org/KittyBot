@@ -6,10 +6,10 @@ import com.jagrosh.jdautilities.oauth2.entities.impl.OAuth2ClientImpl;
 import com.jagrosh.jdautilities.oauth2.exceptions.InvalidStateException;
 import com.jagrosh.jdautilities.oauth2.session.DefaultSessionController;
 import com.jagrosh.jdautilities.oauth2.state.DefaultStateController;
+import de.anteiku.kittybot.command.Category;
+import de.anteiku.kittybot.command.CommandManager;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.Config;
-import de.anteiku.kittybot.objects.command.Category;
-import de.anteiku.kittybot.objects.command.CommandManager;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import net.dv8tion.jda.api.Permission;
@@ -139,7 +139,7 @@ public class WebService{
 			error(ctx, 404, "Session not found");
 			return;
 		}
-		if(!userId.equals(Config.ADMIN_ID)){
+		if(!Config.ADMIN_IDS.contains(userId)){
 			error(ctx, 403, "Only admins have access to this!");
 			return;
 		}
@@ -172,7 +172,7 @@ public class WebService{
 				error(ctx, 404, "This user does not exist");
 				return;
 			}
-			if(userId.equals(Config.ADMIN_ID)){
+			if(Config.ADMIN_IDS.contains(userId)){
 				return;
 			}
 			var member = guild.retrieveMemberById(userId).complete();
@@ -211,6 +211,9 @@ public class WebService{
 		}
 		var data = DataArray.empty();
 		for(var role : guild.getRoles()){
+			if(role.isPublicRole()){
+				continue;
+			}
 			data.add(DataObject.empty().put("name", role.getName()).put("id", role.getId()));
 		}
 		ok(ctx, DataObject.empty().put("roles", data));
@@ -237,7 +240,7 @@ public class WebService{
 		}
 		var data = DataArray.empty();
 		for(var emote : guild.getEmotes()){
-			data.add(DataObject.empty().put("name", emote.getName()).put("id", emote.getId()).put("url", emote.getName()));
+			data.add(DataObject.empty().put("name", emote.getName()).put("id", emote.getId()).put("url", emote.getImageUrl()));
 		}
 		ok(ctx, DataObject.empty().put("emotes", data));
 	}

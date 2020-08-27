@@ -1,9 +1,9 @@
 package de.anteiku.kittybot.objects;
 
 import de.anteiku.kittybot.KittyBot;
+import de.anteiku.kittybot.command.ACommand;
+import de.anteiku.kittybot.command.CommandContext;
 import de.anteiku.kittybot.database.Database;
-import de.anteiku.kittybot.objects.command.ACommand;
-import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
@@ -28,21 +28,23 @@ public class Cache{
 	private Cache(){}
 
 	public static Invite getUsedInvite(Guild guild){
-		if(guild.getSelfMember().hasPermission(Permission.MANAGE_SERVER)){
-			for(Invite invite : guild.retrieveInvites().complete()){
-				var oldInvite = INVITES.get(guild.getId()).get(invite.getCode());
-				if(oldInvite != null && oldInvite.getUses() < invite.getUses()){
-					return invite;
-				}
+		if(!guild.getSelfMember().hasPermission(Permission.MANAGE_SERVER)){
+			return null;
+		}
+		final var guildId = guild.getId();
+		final var value = INVITES.get(guildId);
+		if(value == null){ // how?
+			initGuildInviteCache(guild);
+			return null;
+		}
+		for(final var invite : guild.retrieveInvites().complete()){
+			final var oldInvite = value.get(invite.getCode());
+			if(invite.getUses() > oldInvite.getUses()){
+				oldInvite.used();
+				return invite;
 			}
 		}
 		return null;
-	}
-
-	public static void deleteInvite(String guild, String code){
-		if(INVITES.get(guild) != null){
-			INVITES.get(guild).remove(code);
-		}
 	}
 
 	public static void initGuildInviteCache(Guild guild){
@@ -62,6 +64,17 @@ public class Cache{
 			INVITES.computeIfAbsent(guildId, k -> new HashMap<>());
 			INVITES.get(guildId).put(invite.getCode(), new InviteData(invite));
 		}
+	}
+
+	public static void deleteInvite(String guild, String code){
+		if(INVITES.get(guild) != null){
+			INVITES.get(guild).remove(code);
+		}
+	}
+
+	public static void pruneGuildInviteCache(Guild guild){
+		LOG.info("Pruning invite cache for guild: " + guild.getName() + "(" + guild.getId() + ")");
+		INVITES.remove(guild.getId());
 	}
 
 

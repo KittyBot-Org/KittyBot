@@ -1,8 +1,8 @@
 package de.anteiku.kittybot.commands.admin;
 
-import de.anteiku.kittybot.objects.command.ACommand;
-import de.anteiku.kittybot.objects.command.Category;
-import de.anteiku.kittybot.objects.command.CommandContext;
+import de.anteiku.kittybot.command.ACommand;
+import de.anteiku.kittybot.command.Category;
+import de.anteiku.kittybot.command.CommandContext;
 
 public class TestCommand extends ACommand{
 

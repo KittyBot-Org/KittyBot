@@ -1,8 +1,8 @@
 package de.anteiku.kittybot.commands.neko;
 
-import de.anteiku.kittybot.objects.command.ACommand;
-import de.anteiku.kittybot.objects.command.Category;
-import de.anteiku.kittybot.objects.command.CommandContext;
+import de.anteiku.kittybot.command.ACommand;
+import de.anteiku.kittybot.command.Category;
+import de.anteiku.kittybot.command.CommandContext;
 
 public class SlapCommand extends ACommand{
 

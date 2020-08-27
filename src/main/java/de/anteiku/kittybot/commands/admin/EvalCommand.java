@@ -1,9 +1,9 @@
 package de.anteiku.kittybot.commands.admin;
 
+import de.anteiku.kittybot.command.ACommand;
+import de.anteiku.kittybot.command.Category;
+import de.anteiku.kittybot.command.CommandContext;
 import de.anteiku.kittybot.objects.Config;
-import de.anteiku.kittybot.objects.command.ACommand;
-import de.anteiku.kittybot.objects.command.Category;
-import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.entities.ChannelType;
 
 import javax.script.ScriptEngine;
@@ -36,7 +36,7 @@ public class EvalCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		if(ctx.getUser().getId().equals(Config.ADMIN_ID)){
+		if(Config.ADMIN_IDS.contains(ctx.getUser().getId())){
 			try{
 				engine.put("ctx", ctx);
 				engine.put("message", ctx.getMessage());

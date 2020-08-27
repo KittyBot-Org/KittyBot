@@ -9,12 +9,12 @@ import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.vimeo.VimeoAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
+import de.anteiku.kittybot.command.CommandManager;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.database.SQL;
 import de.anteiku.kittybot.events.*;
 import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.LavalinkNode;
-import de.anteiku.kittybot.objects.command.CommandManager;
 import de.anteiku.kittybot.objects.paginator.Paginator;
 import lavalink.client.io.Link;
 import lavalink.client.io.jda.JdaLavalink;
@@ -33,11 +33,14 @@ import org.slf4j.LoggerFactory;
 import java.awt.*;
 import java.net.URI;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 public class KittyBot{
 
+	public static final DateTimeFormatter TIME_IN_CENTRAL_EUROPE = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss z").withZone(ZoneId.of("Europe/Berlin"));
 	private static final Logger LOG = LoggerFactory.getLogger(KittyBot.class);
 	private static final OkHttpClient HTTP_CLIENT = new OkHttpClient();
 	private static final AudioPlayerManager AUDIO_PLAYER_MANAGER = new DefaultAudioPlayerManager();
@@ -96,7 +99,7 @@ public class KittyBot{
 					.setChunkingFilter(ChunkingFilter.ALL)
 					.setToken(Config.BOT_TOKEN)
 					.addEventListeners(
-							new OnGuildJoinEvent(),
+							new OnGuildEvent(),
 							new OnGuildMemberEvent(),
 							new OnEmoteEvent(),
 							new OnGuildMessageEvent(),
@@ -115,7 +118,7 @@ public class KittyBot{
 
 			RestAction.setDefaultFailure(null);
 
-			if(Config.DISCORD_BOT_LIST_TOKEN != null){
+			if(Config.isSet(Config.DISCORD_BOT_LIST_TOKEN)){
 				discordBotListAPI = new DiscordBotListAPI.Builder().token(Config.DISCORD_BOT_LIST_TOKEN).botId(Config.BOT_ID).build();
 			}
 
@@ -125,8 +128,8 @@ public class KittyBot{
 
 			jda.getPresence().setStatus(OnlineStatus.ONLINE);
 			jda.getPresence().setActivity(Activity.watching("you \uD83D\uDC40"));
-			if(Config.LOG_CHANNEL_ID != null){
-				sendToPublicLogChannel(jda, Config.SUPPORT_GUILD_ID, Config.LOG_CHANNEL_ID, "me online now uwu");
+			if(Config.isSet(Config.LOG_CHANNEL_ID)){
+				sendToPublicLogChannel("I'm now online uwu");
 			}
 		}
 		catch(Exception e){
@@ -139,20 +142,22 @@ public class KittyBot{
 		return jda;
 	}
 
-	public void sendToPublicLogChannel(JDA jda, String guildId, String channelId, String description){
-		var guild = jda.getGuildById(guildId);
+	public static void sendToPublicLogChannel(String description){
+		var guild = jda.getGuildById(Config.SUPPORT_GUILD_ID);
 		if(guild == null){
 			return;
 		}
-		guild.getTextChannelById(channelId).sendMessage(new EmbedBuilder()
-				.setTitle("Log")
-				.setDescription(description)
-				.setThumbnail(jda.getSelfUser().getAvatarUrl())
-				.setColor(new Color(76, 80, 193))
-				.setFooter(jda.getSelfUser().getName(), jda.getSelfUser().getAvatarUrl())
-				.setTimestamp(Instant.now())
-				.build()
-		).queue();
+		var channel = guild.getTextChannelById(Config.LOG_CHANNEL_ID);
+		if(channel != null){
+			channel.sendMessage(new EmbedBuilder()
+					.setTitle("Log")
+					.setDescription(description)
+					.setColor(new Color(76, 80, 193))
+					.setFooter(jda.getSelfUser().getName(), jda.getSelfUser().getAvatarUrl())
+					.setTimestamp(Instant.now())
+					.build()
+			).queue();
+		}
 	}
 
 	public void close(){
