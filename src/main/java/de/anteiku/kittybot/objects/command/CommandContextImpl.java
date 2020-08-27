@@ -7,84 +7,84 @@ import org.apache.commons.collections4.Bag;
 
 import java.util.List;
 
-public class CommandContextImpl implements CommandContext {
+public class CommandContextImpl implements CommandContext{
 
-    private final GuildMessageReceivedEvent event;
-    private final String command;
-    private final String[] args;
+	private final GuildMessageReceivedEvent event;
+	private final String command;
+	private final String[] args;
 
-    public CommandContextImpl(GuildMessageReceivedEvent event, String command, String[] args) {
-        this.event = event;
-        this.command = command;
-        this.args = args;
-    }
+	public CommandContextImpl(GuildMessageReceivedEvent event, String command, String[] args){
+		this.event = event;
+		this.command = command;
+		this.args = args;
+	}
 
-    public JDA getJDA() {
-        return event.getJDA();
-    }
+	public JDA getJDA(){
+		return event.getJDA();
+	}
 
-    public Guild getGuild() {
-        return getEvent().getGuild();
-    }
+	public Guild getGuild(){
+		return getEvent().getGuild();
+	}
 
-    public TextChannel getChannel() {
-        return getEvent().getChannel();
-    }
+	public TextChannel getChannel(){
+		return getEvent().getChannel();
+	}
 
-    public Message getMessage() {
-        return getEvent().getMessage();
-    }
+	public Message getMessage(){
+		return getEvent().getMessage();
+	}
 
-    public String getCommand() {
-        return this.command;
-    }
+	public String getCommand(){
+		return this.command;
+	}
 
-    public String[] getArgs() {
-        return this.args;
-    }
+	public String[] getArgs(){
+		return this.args;
+	}
 
-    public User getSelfUser() {
-        return getEvent().getJDA().getSelfUser();
-    }
+	public User getSelfUser(){
+		return getEvent().getJDA().getSelfUser();
+	}
 
-    public User getUser() {
-        return this.event.getAuthor();
-    }
+	public User getUser(){
+		return this.event.getAuthor();
+	}
 
-    public List<User> getMentionedUsers() {
-        return getMessage().getMentionedUsers();
-    }
+	public List<User> getMentionedUsers(){
+		return getMessage().getMentionedUsers();
+	}
 
-    public Bag<User> getMentionedUsersBag() {
-        return getMessage().getMentionedUsersBag();
-    }
+	public Bag<User> getMentionedUsersBag(){
+		return getMessage().getMentionedUsersBag();
+	}
 
-    public Member getSelfMember() {
-        return getGuild().getSelfMember();
-    }
+	public Member getSelfMember(){
+		return getGuild().getSelfMember();
+	}
 
-    public Member getMember() {
-        return getEvent().getMember();
-    }
+	public Member getMember(){
+		return getEvent().getMember();
+	}
 
-    public List<TextChannel> getMentionedChannels() {
-        return getMessage().getMentionedChannels();
-    }
+	public List<TextChannel> getMentionedChannels(){
+		return getMessage().getMentionedChannels();
+	}
 
-    public Bag<TextChannel> getMentionedChannelsBag() {
-        return getMessage().getMentionedChannelsBag();
-    }
+	public Bag<TextChannel> getMentionedChannelsBag(){
+		return getMessage().getMentionedChannelsBag();
+	}
 
-    public List<Role> getMentionedRoles() {
-        return getMessage().getMentionedRoles();
-    }
+	public List<Role> getMentionedRoles(){
+		return getMessage().getMentionedRoles();
+	}
 
-    public Bag<Role> getMentionedRolesBag() {
-        return getMessage().getMentionedRolesBag();
-    }
+	public Bag<Role> getMentionedRolesBag(){
+		return getMessage().getMentionedRolesBag();
+	}
 
-    public GuildMessageReceivedEvent getEvent() {
-        return this.event;
-    }
+	public GuildMessageReceivedEvent getEvent(){
+		return this.event;
+	}
 
 }

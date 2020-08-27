@@ -39,145 +39,146 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class KittyBot {
+public class KittyBot{
 
-    private static final Logger LOG = LoggerFactory.getLogger(KittyBot.class);
-    private static final OkHttpClient HTTP_CLIENT = new OkHttpClient();
-    private static final AudioPlayerManager AUDIO_PLAYER_MANAGER = new DefaultAudioPlayerManager();
-    private static final ScheduledExecutorService SCHEDULER = Executors.newSingleThreadScheduledExecutor();
-    private static final EventWaiter WAITER = new EventWaiter();
-    private static JdaLavalink lavalink;
-    private static JDA jda;
-    private static DiscordBotListAPI discordBotListAPI;
+	private static final Logger LOG = LoggerFactory.getLogger(KittyBot.class);
+	private static final OkHttpClient HTTP_CLIENT = new OkHttpClient();
+	private static final AudioPlayerManager AUDIO_PLAYER_MANAGER = new DefaultAudioPlayerManager();
+	private static final ScheduledExecutorService SCHEDULER = Executors.newSingleThreadScheduledExecutor();
+	private static final EventWaiter WAITER = new EventWaiter();
+	private static JdaLavalink lavalink;
+	private static JDA jda;
+	private static DiscordBotListAPI discordBotListAPI;
 
-    public KittyBot() {
-        LOG.info("\n" +
-                "\n" +
-                "         _   ___ _   _        ______       _   \n" +
-                "        | | / (_) | | |       | ___ \\     | |  \n" +
-                "        | |/ / _| |_| |_ _   _| |_/ / ___ | |_ \n" +
-                "        |    \\| | __| __| | | | ___ \\/ _ \\| __|\n" +
-                "        | |\\  \\ | |_| |_| |_| | |_/ / (_) | |_ \n" +
-                "        \\_| \\_/_|\\__|\\__|\\__, \\____/ \\___/ \\__|\n" +
-                "                          __/ |                \n" +
-                "                         |___/                 \n" +
-                "\n" +
-                "            https://github.com/KittyBot-Org/KittyBot" +
-                "\n");
-        LOG.info("Starting...");
+	public KittyBot(){
+		LOG.info("\n" +
+				"\n" +
+				"         _   ___ _   _        ______       _   \n" +
+				"        | | / (_) | | |       | ___ \\     | |  \n" +
+				"        | |/ / _| |_| |_ _   _| |_/ / ___ | |_ \n" +
+				"        |    \\| | __| __| | | | ___ \\/ _ \\| __|\n" +
+				"        | |\\  \\ | |_| |_| |_| | |_/ / (_) | |_ \n" +
+				"        \\_| \\_/_|\\__|\\__|\\__, \\____/ \\___/ \\__|\n" +
+				"                          __/ |                \n" +
+				"                         |___/                 \n" +
+				"\n" +
+				"            https://github.com/KittyBot-Org/KittyBot" +
+				"\n");
+		LOG.info("Starting...");
 
-        Config.load("config.json");
+		Config.load("config.json");
 
-        try {
-            lavalink = new JdaLavalink(Config.BOT_ID, 1, this::getShardById);
-            for (LavalinkNode node : Config.LAVALINK_NODES) {
-                lavalink.addNode(new URI("ws://" + node.host + ":" + node.port), node.password);
-            }
+		try{
+			lavalink = new JdaLavalink(Config.BOT_ID, 1, this::getShardById);
+			for(LavalinkNode node : Config.LAVALINK_NODES){
+				lavalink.addNode(new URI("ws://" + node.host + ":" + node.port), node.password);
+			}
 
-            AUDIO_PLAYER_MANAGER.registerSourceManager(new YoutubeAudioSourceManager());
-            AUDIO_PLAYER_MANAGER.registerSourceManager(new BandcampAudioSourceManager());
-            AUDIO_PLAYER_MANAGER.registerSourceManager(new VimeoAudioSourceManager());
-            AUDIO_PLAYER_MANAGER.registerSourceManager(new TwitchStreamAudioSourceManager());
-            AUDIO_PLAYER_MANAGER.registerSourceManager(new HttpAudioSourceManager());
-            AudioSourceManagers.registerRemoteSources(AUDIO_PLAYER_MANAGER);
+			AUDIO_PLAYER_MANAGER.registerSourceManager(new YoutubeAudioSourceManager());
+			AUDIO_PLAYER_MANAGER.registerSourceManager(new BandcampAudioSourceManager());
+			AUDIO_PLAYER_MANAGER.registerSourceManager(new VimeoAudioSourceManager());
+			AUDIO_PLAYER_MANAGER.registerSourceManager(new TwitchStreamAudioSourceManager());
+			AUDIO_PLAYER_MANAGER.registerSourceManager(new HttpAudioSourceManager());
+			AudioSourceManagers.registerRemoteSources(AUDIO_PLAYER_MANAGER);
 
-            CommandManager.registerCommands();
+			CommandManager.registerCommands();
 
-            jda = JDABuilder.create(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_VOICE_STATES, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS, GatewayIntent.GUILD_EMOJIS, GatewayIntent.GUILD_INVITES,
+			jda = JDABuilder.create(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_VOICE_STATES, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS, GatewayIntent.GUILD_EMOJIS, GatewayIntent.GUILD_INVITES,
 
-                    GatewayIntent.DIRECT_MESSAGES, GatewayIntent.DIRECT_MESSAGE_REACTIONS)
-                    .disableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS)
-                    .setMemberCachePolicy(MemberCachePolicy.ALL)
-                    .setChunkingFilter(ChunkingFilter.ALL)
-                    .setToken(Config.BOT_TOKEN)
-                    .addEventListeners(new OnGuildEvent(), new OnGuildMemberEvent(), new OnEmoteEvent(), new OnGuildMessageEvent(), new OnGuildVoiceEvent(), new OnGuildReadyEvent(), new OnReadyEvent(), new OnInviteEvent(), lavalink, new Paginator())
-                    .setVoiceDispatchInterceptor(lavalink.getVoiceInterceptor())
-                    .setActivity(Activity.playing("loading..."))
-                    .setStatus(OnlineStatus.DO_NOT_DISTURB)
-                    .setGatewayEncoding(GatewayEncoding.ETF)
-                    .build()
-                    .awaitReady();
+					GatewayIntent.DIRECT_MESSAGES, GatewayIntent.DIRECT_MESSAGE_REACTIONS)
+					.disableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS)
+					.setMemberCachePolicy(MemberCachePolicy.ALL)
+					.setChunkingFilter(ChunkingFilter.ALL)
+					.setToken(Config.BOT_TOKEN)
+					.addEventListeners(new OnGuildEvent(), new OnGuildMemberEvent(), new OnEmoteEvent(), new OnGuildMessageEvent(), new OnGuildVoiceEvent(), new OnGuildReadyEvent(), new OnReadyEvent(), new OnInviteEvent(), lavalink, new Paginator())
+					.setVoiceDispatchInterceptor(lavalink.getVoiceInterceptor())
+					.setActivity(Activity.playing("loading..."))
+					.setStatus(OnlineStatus.DO_NOT_DISTURB)
+					.setGatewayEncoding(GatewayEncoding.ETF)
+					.build()
+					.awaitReady();
 
-            RestAction.setDefaultFailure(null);
+			RestAction.setDefaultFailure(null);
 
-            if (Config.isSet(Config.DISCORD_BOT_LIST_TOKEN)) {
-                discordBotListAPI = new DiscordBotListAPI.Builder().token(Config.DISCORD_BOT_LIST_TOKEN).botId(Config.BOT_ID).build();
-            }
+			if(Config.isSet(Config.DISCORD_BOT_LIST_TOKEN)){
+				discordBotListAPI = new DiscordBotListAPI.Builder().token(Config.DISCORD_BOT_LIST_TOKEN).botId(Config.BOT_ID).build();
+			}
 
-            SCHEDULER.scheduleAtFixedRate(() -> MessageCache.getCache().entrySet().removeIf(entry -> entry.getValue().getCreation().isBefore(OffsetDateTime.now().minusMinutes(10).toInstant())), 1, 1, TimeUnit.HOURS);
+			SCHEDULER.scheduleAtFixedRate(() -> MessageCache.getCache().entrySet().removeIf(entry -> entry.getValue().getCreation().isBefore(OffsetDateTime.now().minusMinutes(10).toInstant())), 1, 1, TimeUnit.HOURS);
 
-            Database.init(jda);
+			Database.init(jda);
 
-            new WebService(6969);
+			new WebService(6969);
 
-            jda.getPresence().setStatus(OnlineStatus.ONLINE);
-            jda.getPresence().setActivity(Activity.watching("you \uD83D\uDC40"));
-            if (Config.isSet(Config.LOG_CHANNEL_ID)) {
-                sendToPublicLogChannel("I'm now online uwu");
-            }
-        } catch (Exception e) {
-            LOG.error("Error while initializing JDA", e);
-            close();
-        }
-    }
+			jda.getPresence().setStatus(OnlineStatus.ONLINE);
+			jda.getPresence().setActivity(Activity.watching("you \uD83D\uDC40"));
+			if(Config.isSet(Config.LOG_CHANNEL_ID)){
+				sendToPublicLogChannel("I'm now online uwu");
+			}
+		}
+		catch(Exception e){
+			LOG.error("Error while initializing JDA", e);
+			close();
+		}
+	}
 
-    public static void sendToPublicLogChannel(String description) {
-        var guild = jda.getGuildById(Config.SUPPORT_GUILD_ID);
-        if (guild == null) {
-            return;
-        }
-        var channel = guild.getTextChannelById(Config.LOG_CHANNEL_ID);
-        if (channel != null) {
-            channel.sendMessage(new EmbedBuilder().setTitle("Log")
-                    .setDescription(description)
-                    .setColor(new Color(76, 80, 193))
-                    .setFooter(jda.getSelfUser().getName(), jda.getSelfUser().getAvatarUrl())
-                    .setTimestamp(Instant.now())
-                    .build()).queue();
-        }
-    }
+	private JDA getShardById(int id){
+		return jda;
+	}
 
-    public static void main(String[] args) {
-        new KittyBot();
-    }
+	public static void sendToPublicLogChannel(String description){
+		var guild = jda.getGuildById(Config.SUPPORT_GUILD_ID);
+		if(guild == null){
+			return;
+		}
+		var channel = guild.getTextChannelById(Config.LOG_CHANNEL_ID);
+		if(channel != null){
+			channel.sendMessage(new EmbedBuilder().setTitle("Log")
+					.setDescription(description)
+					.setColor(new Color(76, 80, 193))
+					.setFooter(jda.getSelfUser().getName(), jda.getSelfUser().getAvatarUrl())
+					.setTimestamp(Instant.now())
+					.build()).queue();
+		}
+	}
 
-    public static AudioPlayerManager getAudioPlayerManager() {
-        return AUDIO_PLAYER_MANAGER;
-    }
+	public void close(){
+		lavalink.getLinks().forEach(Link::destroy);
+		jda.shutdown();
+		SQL.close();
+		System.exit(0);
+	}
 
-    public static JdaLavalink getLavalink() {
-        return lavalink;
-    }
+	public static void main(String[] args){
+		new KittyBot();
+	}
 
-    public static OkHttpClient getHttpClient() {
-        return HTTP_CLIENT;
-    }
+	public static AudioPlayerManager getAudioPlayerManager(){
+		return AUDIO_PLAYER_MANAGER;
+	}
 
-    public static JDA getJda() {
-        return jda;
-    }
+	public static JdaLavalink getLavalink(){
+		return lavalink;
+	}
 
-    public static DiscordBotListAPI getDiscordBotListAPI() {
-        return discordBotListAPI;
-    }
+	public static OkHttpClient getHttpClient(){
+		return HTTP_CLIENT;
+	}
 
-    public static ScheduledExecutorService getScheduler() {
-        return SCHEDULER;
-    }
+	public static JDA getJda(){
+		return jda;
+	}
 
-    public static EventWaiter getWaiter() {
-        return WAITER;
-    }
+	public static DiscordBotListAPI getDiscordBotListAPI(){
+		return discordBotListAPI;
+	}
 
-    private JDA getShardById(int id) {
-        return jda;
-    }
+	public static ScheduledExecutorService getScheduler(){
+		return SCHEDULER;
+	}
 
-    public void close() {
-        lavalink.getLinks().forEach(Link::destroy);
-        jda.shutdown();
-        SQL.close();
-        System.exit(0);
-    }
+	public static EventWaiter getWaiter(){
+		return WAITER;
+	}
 
 }

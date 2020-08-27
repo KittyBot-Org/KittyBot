@@ -5,21 +5,21 @@ import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
 import de.anteiku.kittybot.utils.MusicUtils;
 
-public class SeekCommand extends ACommand {
+public class SeekCommand extends ACommand{
 
-    public static final String COMMAND = "seek";
-    public static final String USAGE = "seek <seconds>";
-    public static final String DESCRIPTION = "Seeks the current song to given amount of seconds";
-    protected static final String[] ALIASES = {"goto"};
-    protected static final Category CATEGORY = Category.MUSIC;
+	public static final String COMMAND = "seek";
+	public static final String USAGE = "seek <seconds>";
+	public static final String DESCRIPTION = "Seeks the current song to given amount of seconds";
+	protected static final String[] ALIASES = {"goto"};
+	protected static final Category CATEGORY = Category.MUSIC;
 
-    public SeekCommand() {
-        super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
-    }
+	public SeekCommand(){
+		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
+	}
 
-    @Override
-    public void run(CommandContext ctx) {
-        MusicUtils.seekTrack(ctx);
-    }
+	@Override
+	public void run(CommandContext ctx){
+		MusicUtils.seekTrack(ctx);
+	}
 
 }
