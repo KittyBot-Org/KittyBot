@@ -42,6 +42,27 @@ public abstract class ACommand{
 		this.category = category;
 	}
 
+	protected static void queue(MessageAction messageAction, CommandContext ctx){
+		if(messageAction != null){
+			messageAction.queue(success -> Cache.addCommandResponse(ctx.getMessage(), success), failure -> sendError(ctx, "There was an error processing your command!\nError: " + failure.getLocalizedMessage()));
+		}
+	}
+
+	public static void sendError(CommandContext ctx, String error){
+		queue(error(ctx, error), ctx);
+	}
+
+	protected static MessageAction error(CommandContext ctx, String error){
+		addStatus(ctx.getMessage(), Status.ERROR);
+		return ctx.getChannel().sendMessage(new EmbedBuilder()
+				.setColor(Color.RED)
+				.addField("Error:", error, true)
+				.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
+				.setTimestamp(Instant.now())
+				.build()
+		);
+	}
+
 	protected abstract void run(CommandContext ctx);
 
 	protected boolean checkCmd(String cmd){
@@ -84,12 +105,6 @@ public abstract class ACommand{
 		}
 	}
 
-	protected static void queue(MessageAction messageAction, CommandContext ctx){
-		if(messageAction != null){
-			messageAction.queue(success -> Cache.addCommandResponse(ctx.getMessage(), success), failure -> sendError(ctx, "There was an error processing your command!\nError: " + failure.getLocalizedMessage()));
-		}
-	}
-
 	protected void sendPrivateMessage(CommandContext ctx, EmbedBuilder eb){
 		privateMessage(ctx, eb).queue(null,
 				failure -> sendError(ctx, "There was an error processing your command!\nError: " + failure.getLocalizedMessage())
@@ -108,21 +123,6 @@ public abstract class ACommand{
 
 	protected MessageAction noPermission(CommandContext ctx){
 		return error(ctx, "Sorry you don't have the permission to use this command :(");
-	}
-
-	public static void sendError(CommandContext ctx, String error){
-		queue(error(ctx, error), ctx);
-	}
-
-	protected static MessageAction error(CommandContext ctx, String error){
-		addStatus(ctx.getMessage(), Status.ERROR);
-		return ctx.getChannel().sendMessage(new EmbedBuilder()
-				.setColor(Color.RED)
-				.addField("Error:", error, true)
-				.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
-				.setTimestamp(Instant.now())
-				.build()
-		);
 	}
 
 	public void sendAnswer(CommandContext ctx, String answer){

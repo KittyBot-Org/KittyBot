@@ -109,7 +109,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 			@Override
 			public void noMatches(){
-				sendError(ctx, "No track found for: "+ argStr);
+				sendError(ctx, "No track found for: " + argStr);
 			}
 
 			@Override
@@ -221,8 +221,9 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	public void onTrackEnd(IPlayer player, AudioTrack track, AudioTrackEndReason endReason){
 		this.history.push(track);
 		var guild = KittyBot.getJda().getGuildById(getPlayer().getLink().getGuildId());
-		if (guild == null)
+		if(guild == null){
 			return;
+		}
 		if((endReason.mayStartNext && !nextTrack()) || (queue.isEmpty() && player.getPlayingTrack() == null)){
 			future = KittyBot.getScheduler().schedule(() -> Cache.destroyMusicPlayer(guild), 2, TimeUnit.MINUTES);
 		}

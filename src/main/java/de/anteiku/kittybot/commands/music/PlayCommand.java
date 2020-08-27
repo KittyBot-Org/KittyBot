@@ -30,7 +30,7 @@ public class PlayCommand extends ACommand{
 			return;
 		}
 		var voiceState = ctx.getMember().getVoiceState();
-		if (voiceState == null || !voiceState.inVoiceChannel()){
+		if(voiceState == null || !voiceState.inVoiceChannel()){
 			sendError(ctx, "Please connect to a voice channel to play some stuff");
 			return;
 		}

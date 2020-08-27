@@ -5,8 +5,7 @@ import de.anteiku.kittybot.command.Category;
 import de.anteiku.kittybot.command.CommandContext;
 import de.anteiku.kittybot.utils.MusicUtils;
 
-public class ForwardCommand extends ACommand
-{
+public class ForwardCommand extends ACommand{
 
 	public static final String COMMAND = "forward";
 	public static final String USAGE = "forward <seconds>";
