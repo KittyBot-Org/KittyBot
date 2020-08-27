@@ -4,8 +4,8 @@ import de.anteiku.kittybot.command.ACommand;
 import de.anteiku.kittybot.command.Category;
 import de.anteiku.kittybot.command.CommandContext;
 import de.anteiku.kittybot.command.CommandManager;
-import de.anteiku.kittybot.objects.Cache;
 import de.anteiku.kittybot.objects.TitleInfo;
+import de.anteiku.kittybot.objects.cache.PrefixCache;
 import de.anteiku.kittybot.objects.paginator.Paginator;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
@@ -29,7 +29,7 @@ public class CommandsCommand extends ACommand{
 		final var titles = new HashMap<Integer, TitleInfo>();
 		final var contents = new HashMap<Integer, ArrayList<MessageEmbed.Field>>();
 
-		final var prefix = Cache.getCommandPrefix(ctx.getGuild().getId());
+		final var prefix = PrefixCache.getCommandPrefix(ctx.getGuild().getId());
 		final var commands = CommandManager.getDistinctCommands().values();
 		final var categories = Category.values();
 		var c = 0;

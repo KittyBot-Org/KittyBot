@@ -3,8 +3,8 @@ package de.anteiku.kittybot.commands.neko;
 import de.anteiku.kittybot.command.ACommand;
 import de.anteiku.kittybot.command.Category;
 import de.anteiku.kittybot.command.CommandContext;
-import de.anteiku.kittybot.objects.Cache;
 import de.anteiku.kittybot.objects.Emojis;
+import de.anteiku.kittybot.objects.cache.ReactiveMessageCache;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +31,7 @@ public class NekoCommand extends ACommand{
 		}
 		if(ctx.getArgs().length > 0 && nekos.contains(ctx.getArgs()[0])){
 			image(ctx, getNeko(ctx.getArgs()[0])).queue(message -> {
-				Cache.addReactiveMessage(ctx, message, this, "-1");
+				ReactiveMessageCache.addReactiveMessage(ctx, message, this, "-1");
 				message.addReaction(Emojis.WASTEBASKET).queue();
 			});
 		}

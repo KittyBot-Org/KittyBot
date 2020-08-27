@@ -4,7 +4,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.anteiku.kittybot.command.ACommand;
 import de.anteiku.kittybot.command.Category;
 import de.anteiku.kittybot.command.CommandContext;
-import de.anteiku.kittybot.objects.Cache;
+import de.anteiku.kittybot.objects.cache.MusicPlayerCache;
 
 import static de.anteiku.kittybot.Utils.*;
 
@@ -27,7 +27,7 @@ public class QueueCommand extends ACommand{
 			sendError(ctx, "To use this command you need to be connected to a voice channel");
 			return;
 		}
-		var musicPlayer = Cache.getMusicPlayer(ctx.getGuild());
+		var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
 		if(musicPlayer == null){
 			sendError(ctx, "No active music player found!");
 			return;

@@ -9,6 +9,8 @@ import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.Utils;
 import de.anteiku.kittybot.command.ACommand;
 import de.anteiku.kittybot.command.CommandContext;
+import de.anteiku.kittybot.objects.cache.MusicPlayerCache;
+import de.anteiku.kittybot.objects.cache.ReactiveMessageCache;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavalinkPlayer;
 import lavalink.client.player.event.PlayerEventListenerAdapter;
@@ -133,7 +135,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				message -> {
 					messageId = message.getId();
 					channelId = message.getChannel().getId();
-					Cache.addReactiveMessage(ctx, message, command, "-1");
+					ReactiveMessageCache.addReactiveMessage(ctx, message, command, "-1");
 					message.addReaction(Emojis.VOLUME_DOWN).queue();
 					message.addReaction(Emojis.VOLUME_UP).queue();
 					message.addReaction(Emojis.BACK).queue();
@@ -210,7 +212,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		this.history.push(track);
 		var guild = KittyBot.getJda().getGuildById(getPlayer().getLink().getGuildId());
 		if(((endReason.mayStartNext && !nextTrack()) || queue.isEmpty()) && guild != null){
-			future = KittyBot.getScheduler().schedule(() -> Cache.destroyMusicPlayer(guild), 2, TimeUnit.MINUTES);
+			future = KittyBot.getScheduler().schedule(() -> MusicPlayerCache.destroyMusicPlayer(guild), 2, TimeUnit.MINUTES);
 		}
 	}
 

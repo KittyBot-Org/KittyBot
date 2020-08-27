@@ -4,10 +4,10 @@ import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.command.ACommand;
 import de.anteiku.kittybot.command.Category;
 import de.anteiku.kittybot.command.CommandContext;
-import de.anteiku.kittybot.objects.Cache;
 import de.anteiku.kittybot.objects.Emojis;
 import de.anteiku.kittybot.objects.MusicPlayer;
 import de.anteiku.kittybot.objects.ReactiveMessage;
+import de.anteiku.kittybot.objects.cache.MusicPlayerCache;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 public class PlayCommand extends ACommand{
@@ -31,7 +31,7 @@ public class PlayCommand extends ACommand{
 		}
 		var voiceState = ctx.getMember().getVoiceState();
 		if(voiceState != null && voiceState.inVoiceChannel()){
-			var musicPlayer = Cache.getMusicPlayer(ctx.getGuild());
+			var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
 			if(musicPlayer == null){
 				var link = KittyBot.getLavalink().getLink(ctx.getGuild());
 				link.connect(voiceState.getChannel());
@@ -39,7 +39,7 @@ public class PlayCommand extends ACommand{
 				var player = link.getPlayer();
 				musicPlayer = new MusicPlayer(player);
 				player.addListener(musicPlayer);
-				Cache.addMusicPlayer(ctx.getGuild(), musicPlayer);
+				MusicPlayerCache.addMusicPlayer(ctx.getGuild(), musicPlayer);
 			}
 			musicPlayer.loadItem(this, ctx, ctx.getArgs());
 		}
@@ -50,7 +50,7 @@ public class PlayCommand extends ACommand{
 
 	@Override
 	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
-		var musicPlayer = Cache.getMusicPlayer(event.getGuild());
+		var musicPlayer = MusicPlayerCache.getMusicPlayer(event.getGuild());
 		if(musicPlayer == null){
 			return;
 		}
@@ -81,7 +81,7 @@ public class PlayCommand extends ACommand{
 					musicPlayer.changeVolume(VOLUME_STEP);
 					break;
 				case Emojis.X:
-					Cache.destroyMusicPlayer(event.getGuild());
+					MusicPlayerCache.destroyMusicPlayer(event.getGuild());
 					break;
 				default:
 			}

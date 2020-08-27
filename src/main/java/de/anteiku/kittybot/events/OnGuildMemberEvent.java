@@ -2,7 +2,7 @@ package de.anteiku.kittybot.events;
 
 import de.anteiku.kittybot.Utils;
 import de.anteiku.kittybot.database.Database;
-import de.anteiku.kittybot.objects.Cache;
+import de.anteiku.kittybot.objects.cache.InviteCache;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -49,7 +49,7 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 			TextChannel channel = event.getGuild().getTextChannelById(id);
 			if(channel != null){
 				if(event.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE)){
-					channel.sendMessage(generateJoinMessage(Database.getJoinMessage(event.getGuild().getId()), event.getUser(), Cache.getUsedInvite(event.getGuild()))).queue();
+					channel.sendMessage(generateJoinMessage(Database.getJoinMessage(event.getGuild().getId()), event.getUser(), InviteCache.getUsedInvite(event.getGuild()))).queue();
 				}
 				else{
 					event.getGuild().retrieveOwner().queue(

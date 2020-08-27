@@ -5,9 +5,9 @@ import de.anteiku.kittybot.command.ACommand;
 import de.anteiku.kittybot.command.Category;
 import de.anteiku.kittybot.command.CommandContext;
 import de.anteiku.kittybot.database.Database;
-import de.anteiku.kittybot.objects.Cache;
 import de.anteiku.kittybot.objects.Emojis;
 import de.anteiku.kittybot.objects.ReactiveMessage;
+import de.anteiku.kittybot.objects.cache.ReactiveMessageCache;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emote;
@@ -81,7 +81,7 @@ public class RolesCommand extends ACommand{
 				value.append(k.getValue().getAsMention()).append(Emojis.BLANK).append(Emojis.BLANK).append(k.getKey().getAsMention()).append("\n");
 			}
 			answer(ctx, new EmbedBuilder().setTitle(title).setDescription("To get/remove a role click reaction emote. " + Emojis.KITTY_BLINK + "\n\n").setColor(Color.MAGENTA).appendDescription("**Emote:**" + Emojis.BLANK + "**Role:**\n" + value)).queue(message -> {
-				Cache.addReactiveMessage(ctx, message, this, "-1");
+				ReactiveMessageCache.addReactiveMessage(ctx, message, this, "-1");
 				for(Map.Entry<Role, Emote> role : roles.entrySet()){
 					message.addReaction(role.getValue()).queue();
 				}

@@ -2,9 +2,10 @@ package de.anteiku.kittybot.command;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.database.Database;
-import de.anteiku.kittybot.objects.Cache;
 import de.anteiku.kittybot.objects.Emojis;
 import de.anteiku.kittybot.objects.ReactiveMessage;
+import de.anteiku.kittybot.objects.cache.CommandResponseCache;
+import de.anteiku.kittybot.objects.cache.ReactiveMessageCache;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
@@ -80,13 +81,13 @@ public abstract class ACommand{
 		if(event.getReactionEmote().getName().equals(Emojis.WASTEBASKET) && (event.getUserId().equals(reactiveMessage.userId) || event.getMember().hasPermission(Permission.MESSAGE_MANAGE))){
 			event.getChannel().deleteMessageById(event.getMessageId()).queue();
 			event.getChannel().deleteMessageById(reactiveMessage.commandId).queue();
-			Cache.removeReactiveMessage(event.getGuild(), event.getMessageId());
+			ReactiveMessageCache.removeReactiveMessage(event.getGuild(), event.getMessageId());
 		}
 	}
 
 	protected void queue(MessageAction messageAction, CommandContext ctx){
 		if(messageAction != null){
-			messageAction.queue(success -> Cache.addCommandResponse(ctx.getMessage(), success), failure -> sendError(ctx, "There was an error processing your command!\nError: " + failure.getLocalizedMessage()));
+			messageAction.queue(success -> CommandResponseCache.addCommandResponse(ctx.getMessage(), success), failure -> sendError(ctx, "There was an error processing your command!\nError: " + failure.getLocalizedMessage()));
 		}
 	}
 
