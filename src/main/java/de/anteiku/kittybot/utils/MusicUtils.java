@@ -1,9 +1,9 @@
 package de.anteiku.kittybot.utils;
 
+import de.anteiku.kittybot.command.CommandContext;
 import de.anteiku.kittybot.objects.Cache;
-import de.anteiku.kittybot.objects.command.CommandContext;
 
-import static de.anteiku.kittybot.objects.command.ACommand.sendError;
+import static de.anteiku.kittybot.command.ACommand.sendError;
 
 public class MusicUtils {
     public static void seekTrack(final CommandContext ctx){

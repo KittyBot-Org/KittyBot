@@ -6,8 +6,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.objects.command.ACommand;
-import de.anteiku.kittybot.objects.command.CommandContext;
+import de.anteiku.kittybot.command.ACommand;
+import de.anteiku.kittybot.command.CommandContext;
 import de.anteiku.kittybot.utils.Utils;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavalinkPlayer;
@@ -23,7 +23,7 @@ import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import static de.anteiku.kittybot.objects.command.ACommand.sendError;
+import static de.anteiku.kittybot.command.ACommand.sendError;
 import static de.anteiku.kittybot.utils.Utils.formatDuration;
 import static de.anteiku.kittybot.utils.Utils.pluralize;
 
