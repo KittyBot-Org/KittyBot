@@ -1,8 +1,8 @@
 package de.anteiku.kittybot.events;
 
-import de.anteiku.kittybot.Utils;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.Cache;
+import de.anteiku.kittybot.utils.Utils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.TextChannel;

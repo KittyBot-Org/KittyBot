@@ -30,22 +30,19 @@ public class PlayCommand extends ACommand{
 			return;
 		}
 		var voiceState = ctx.getMember().getVoiceState();
-		if(voiceState != null && voiceState.inVoiceChannel()){
-			var musicPlayer = Cache.getMusicPlayer(ctx.getGuild());
-			if(musicPlayer == null){
-				var link = KittyBot.getLavalink().getLink(ctx.getGuild());
-				link.connect(voiceState.getChannel());
-
-				var player = link.getPlayer();
-				musicPlayer = new MusicPlayer(player);
-				player.addListener(musicPlayer);
-				Cache.addMusicPlayer(ctx.getGuild(), musicPlayer);
-			}
-			musicPlayer.loadItem(this, ctx, ctx.getArgs());
-		}
-		else{
+		if(voiceState == null || !voiceState.inVoiceChannel()){
 			sendError(ctx, "Please connect to a voice channel to play some stuff");
+			return;
 		}
+		var musicPlayer = Cache.getMusicPlayer(ctx.getGuild());
+		if(musicPlayer == null){
+			var link = KittyBot.getLavalink().getLink(ctx.getGuild());
+			var player = link.getPlayer();
+			musicPlayer = new MusicPlayer(player);
+			player.addListener(musicPlayer);
+			Cache.addMusicPlayer(ctx.getGuild(), musicPlayer);
+		}
+		musicPlayer.loadItem(this, ctx);
 	}
 
 	@Override

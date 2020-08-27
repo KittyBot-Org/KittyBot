@@ -1,11 +1,11 @@
 package de.anteiku.kittybot.commands.utilities;
 
-import de.anteiku.kittybot.Utils;
 import de.anteiku.kittybot.command.ACommand;
 import de.anteiku.kittybot.command.Category;
 import de.anteiku.kittybot.command.CommandContext;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.Cache;
+import de.anteiku.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;

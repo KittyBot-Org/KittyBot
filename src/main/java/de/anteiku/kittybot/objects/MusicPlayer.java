@@ -6,9 +6,9 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.Utils;
 import de.anteiku.kittybot.command.ACommand;
 import de.anteiku.kittybot.command.CommandContext;
+import de.anteiku.kittybot.utils.Utils;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavalinkPlayer;
 import lavalink.client.player.event.PlayerEventListenerAdapter;
@@ -23,8 +23,9 @@ import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import static de.anteiku.kittybot.Utils.formatDuration;
-import static de.anteiku.kittybot.Utils.pluralize;
+import static de.anteiku.kittybot.command.ACommand.sendError;
+import static de.anteiku.kittybot.utils.Utils.formatDuration;
+import static de.anteiku.kittybot.utils.Utils.pluralize;
 
 public class MusicPlayer extends PlayerEventListenerAdapter{
 
@@ -47,12 +48,14 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		return queue;
 	}
 
-	public void loadItem(ACommand command, CommandContext ctx, String... args){
-		String search = String.join(" ", args);
-		if(!search.matches(URL_PATTERN)){
-			search = "ytsearch:" + search;
-		}
-		KittyBot.getAudioPlayerManager().loadItem(search, new AudioLoadResultHandler(){
+	public Deque<AudioTrack> getHistory(){
+		return history;
+	}
+
+	public void loadItem(ACommand command, CommandContext ctx){
+		String argStr = String.join(" ", ctx.getArgs());
+		final String query = argStr.matches(URL_PATTERN) ? argStr : "ytsearch:" + argStr;
+		KittyBot.getAudioPlayerManager().loadItem(query, new AudioLoadResultHandler(){
 
 			@Override
 			public void trackLoaded(AudioTrack track){
@@ -70,6 +73,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				if(future != null){
 					future.cancel(true);
 				}
+				connectToChannel(ctx);
 			}
 
 			@Override
@@ -100,18 +104,26 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				if(future != null){
 					future.cancel(true);
 				}
+				connectToChannel(ctx);
 			}
 
 			@Override
 			public void noMatches(){
-				command.sendError(ctx, "No matches found for ");
+				sendError(ctx, "No track found for: " + argStr);
 			}
 
 			@Override
 			public void loadFailed(FriendlyException exception){
-				command.sendError(ctx, "Failed to load track");
+				sendError(ctx, "Failed to load track");
 			}
 		});
+	}
+
+	public void connectToChannel(CommandContext ctx){
+		var voiceState = ctx.getMember().getVoiceState();
+		if(voiceState != null && voiceState.getChannel() != null){
+			KittyBot.getLavalink().getLink(ctx.getGuild()).connect(voiceState.getChannel());
+		}
 	}
 
 	public void queue(AudioTrack track){
@@ -209,7 +221,10 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	public void onTrackEnd(IPlayer player, AudioTrack track, AudioTrackEndReason endReason){
 		this.history.push(track);
 		var guild = KittyBot.getJda().getGuildById(getPlayer().getLink().getGuildId());
-		if(((endReason.mayStartNext && !nextTrack()) || queue.isEmpty()) && guild != null){
+		if(guild == null){
+			return;
+		}
+		if((endReason.mayStartNext && !nextTrack()) || (queue.isEmpty() && player.getPlayingTrack() == null)){
 			future = KittyBot.getScheduler().schedule(() -> Cache.destroyMusicPlayer(guild), 2, TimeUnit.MINUTES);
 		}
 	}

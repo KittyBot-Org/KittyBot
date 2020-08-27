@@ -1,8 +1,8 @@
 package de.anteiku.kittybot.database;
 
-import de.anteiku.kittybot.Utils;
 import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.ReactiveMessage;
+import de.anteiku.kittybot.utils.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import org.slf4j.Logger;
