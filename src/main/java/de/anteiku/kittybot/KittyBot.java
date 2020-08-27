@@ -54,19 +54,7 @@ public class KittyBot{
 	private static DiscordBotListAPI discordBotListAPI;
 
 	public KittyBot(){
-		LOG.info("\n" +
-				"\n" +
-				"         _   ___ _   _        ______       _   \n" +
-				"        | | / (_) | | |       | ___ \\     | |  \n" +
-				"        | |/ / _| |_| |_ _   _| |_/ / ___ | |_ \n" +
-				"        |    \\| | __| __| | | | ___ \\/ _ \\| __|\n" +
-				"        | |\\  \\ | |_| |_| |_| | |_/ / (_) | |_ \n" +
-				"        \\_| \\_/_|\\__|\\__|\\__, \\____/ \\___/ \\__|\n" +
-				"                          __/ |                \n" +
-				"                         |___/                 \n" +
-				"\n" +
-				"            https://github.com/KittyBot-Org/KittyBot" +
-				"\n");
+		LOG.info("\n" + "\n" + "         _   ___ _   _        ______       _   \n" + "        | | / (_) | | |       | ___ \\     | |  \n" + "        | |/ / _| |_| |_ _   _| |_/ / ___ | |_ \n" + "        |    \\| | __| __| | | | ___ \\/ _ \\| __|\n" + "        | |\\  \\ | |_| |_| |_| | |_/ / (_) | |_ \n" + "        \\_| \\_/_|\\__|\\__|\\__, \\____/ \\___/ \\__|\n" + "                          __/ |                \n" + "                         |___/                 \n" + "\n" + "            https://github.com/KittyBot-Org/KittyBot" + "\n");
 		LOG.info("Starting...");
 
 		Config.load("config.json");
@@ -86,38 +74,20 @@ public class KittyBot{
 
 			CommandManager.registerCommands();
 
-			jda = JDABuilder.create(
-					GatewayIntent.GUILD_MEMBERS,
-					GatewayIntent.GUILD_VOICE_STATES,
-					GatewayIntent.GUILD_MESSAGES,
-					GatewayIntent.GUILD_MESSAGE_REACTIONS,
-					GatewayIntent.GUILD_EMOJIS,
-					GatewayIntent.GUILD_INVITES,
+			jda = JDABuilder.create(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_VOICE_STATES, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS, GatewayIntent.GUILD_EMOJIS, GatewayIntent.GUILD_INVITES,
 
-					GatewayIntent.DIRECT_MESSAGES,
-					GatewayIntent.DIRECT_MESSAGE_REACTIONS
-			)
+					GatewayIntent.DIRECT_MESSAGES, GatewayIntent.DIRECT_MESSAGE_REACTIONS)
 					.disableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS)
 					.setMemberCachePolicy(MemberCachePolicy.ALL)
 					.setChunkingFilter(ChunkingFilter.ALL)
 					.setToken(Config.BOT_TOKEN)
-					.addEventListeners(
-							new OnGuildEvent(),
-							new OnGuildMemberEvent(),
-							new OnEmoteEvent(),
-							new OnGuildMessageEvent(),
-							new OnGuildVoiceEvent(),
-							new OnGuildReadyEvent(),
-							new OnReadyEvent(),
-							new OnInviteEvent(),
-							lavalink,
-							new Paginator()
-					)
+					.addEventListeners(new OnGuildEvent(), new OnGuildMemberEvent(), new OnEmoteEvent(), new OnGuildMessageEvent(), new OnGuildVoiceEvent(), new OnGuildReadyEvent(), new OnReadyEvent(), new OnInviteEvent(), lavalink, new Paginator())
 					.setVoiceDispatchInterceptor(lavalink.getVoiceInterceptor())
 					.setActivity(Activity.playing("loading..."))
 					.setStatus(OnlineStatus.DO_NOT_DISTURB)
 					.setGatewayEncoding(GatewayEncoding.ETF)
-					.build().awaitReady();
+					.build()
+					.awaitReady();
 
 			RestAction.setDefaultFailure(null);
 
@@ -154,14 +124,12 @@ public class KittyBot{
 		}
 		var channel = guild.getTextChannelById(Config.LOG_CHANNEL_ID);
 		if(channel != null){
-			channel.sendMessage(new EmbedBuilder()
-					.setTitle("Log")
+			channel.sendMessage(new EmbedBuilder().setTitle("Log")
 					.setDescription(description)
 					.setColor(new Color(76, 80, 193))
 					.setFooter(jda.getSelfUser().getName(), jda.getSelfUser().getAvatarUrl())
 					.setTimestamp(Instant.now())
-					.build()
-			).queue();
+					.build()).queue();
 		}
 	}
 

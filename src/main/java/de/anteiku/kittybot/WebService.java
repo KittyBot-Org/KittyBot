@@ -119,10 +119,7 @@ public class WebService{
 		for(var guild : KittyBot.getJda().getMutualGuilds(user)){
 			var u = guild.getMember(user);
 			if(u != null && u.hasPermission(Permission.ADMINISTRATOR)){
-				data.add(DataObject.empty()
-						.put("id", guild.getId())
-						.put("name", guild.getName())
-						.put("icon", guild.getIconUrl()));
+				data.add(DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl()));
 			}
 		}
 		ok(ctx, DataObject.empty().put("name", user.getName()).put("id", user.getId()).put("icon", user.getEffectiveAvatarUrl()).put("guilds", data));
@@ -146,11 +143,7 @@ public class WebService{
 		var data = DataArray.empty();
 		for(var guild : KittyBot.getJda().getGuildCache()){
 			var owner = guild.getOwner();
-			var obj = DataObject.empty()
-					.put("id", guild.getId())
-					.put("name", guild.getName())
-					.put("icon", guild.getIconUrl())
-					.put("count", guild.getMemberCount());
+			var obj = DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl()).put("count", guild.getMemberCount());
 			if(owner != null){
 				obj.put("owner", owner.getUser().getAsTag());
 			}

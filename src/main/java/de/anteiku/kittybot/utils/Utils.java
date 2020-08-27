@@ -1,4 +1,4 @@
-package de.anteiku.kittybot;
+package de.anteiku.kittybot.utils;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.anteiku.kittybot.database.SQL;

@@ -30,7 +30,7 @@ public class VolumeCommand extends ACommand{
 			return;
 		}
 		if(!musicPlayer.getPlayer().getLink().getChannel().equals(voiceState.getChannel().getId())){
-			sendError(ctx, "To use this command you need to be connected to the same voice channel than me");
+			sendError(ctx, "To use this command you need to be connected to the same voice channel as me");
 			return;
 		}
 		if(musicPlayer.getQueue().isEmpty()){

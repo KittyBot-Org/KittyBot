@@ -1,7 +1,8 @@
 package de.anteiku.kittybot.commands.utilities;
 
-import de.anteiku.kittybot.Utils;
 import de.anteiku.kittybot.database.Database;
+import de.anteiku.kittybot.objects.Cache;
+import de.anteiku.kittybot.utils.Utils;
 import de.anteiku.kittybot.objects.cache.PrefixCache;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.Category;
@@ -109,7 +110,8 @@ public class OptionsCommand extends ACommand{
 					else if(Utils.isHelp(ctx.getArgs()[1])){
 						sendUsage(ctx, "options joinmessage <message>");
 					}
-					else if(ctx.getArgs()[1].equalsIgnoreCase("enable") || ctx.getArgs()[1].equalsIgnoreCase("true") || ctx.getArgs()[1].equalsIgnoreCase("on") || ctx.getArgs()[1].equalsIgnoreCase("an")){
+					else if(ctx.getArgs()[1].equalsIgnoreCase("enable") || ctx.getArgs()[1].equalsIgnoreCase("true") || ctx.getArgs()[1].equalsIgnoreCase("on") || ctx.getArgs()[1]
+							.equalsIgnoreCase("an")){
 						if(Database.setJoinMessageEnabled(ctx.getGuild().getId(), true)){
 							sendError(ctx, "There was an error while processing your command :(");
 							return;

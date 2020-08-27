@@ -24,8 +24,7 @@ public class HelpCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		answer(ctx, new EmbedBuilder()
-				.setColor(Color.orange)
+		answer(ctx, new EmbedBuilder().setColor(Color.orange)
 				.setThumbnail(ctx.getJDA().getSelfUser().getEffectiveAvatarUrl())
 				.addField(Emojis.INVITE + " Invite:", Emojis.BLANK + " :small_blue_diamond: You want me on your server? Click [here](" + Config.INVITE_URL + ") to invite me!", false)
 				.addField(Emojis.CONSOLE + " Commands:", Emojis.BLANK + " :small_blue_diamond: You want to see **all my available commands**?\n" + Emojis.BLANK + " " + Emojis.BLANK + " Use ``.commands``", false)

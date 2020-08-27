@@ -36,7 +36,9 @@ public class HastebinCommand extends ACommand{
 				if(!attachment.isImage() && !attachment.isVideo()){
 					try{
 						String text = IOUtils.toString(attachment.retrieveInputStream().get(), StandardCharsets.UTF_8.name());
-						Request request = new Request.Builder().url(Config.HASTEBIN_URL + "/documents").post(RequestBody.create(MediaType.parse("text/html; charset=utf-8"), text)).build();
+						Request request = new Request.Builder().url(Config.HASTEBIN_URL + "/documents")
+								.post(RequestBody.create(MediaType.parse("text/html; charset=utf-8"), text))
+								.build();
 						KittyBot.getHttpClient().newCall(request).enqueue(new Callback(){
 							@Override
 							public void onFailure(@NotNull Call call, @NotNull IOException e){
