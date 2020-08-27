@@ -1,7 +1,7 @@
 package de.anteiku.kittybot.commands.info;
 
-import de.anteiku.kittybot.objects.Cache;
 import de.anteiku.kittybot.objects.TitleInfo;
+import de.anteiku.kittybot.objects.cache.PrefixCache;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
@@ -29,7 +29,7 @@ public class CommandsCommand extends ACommand{
 		final var titles = new HashMap<Integer, TitleInfo>();
 		final var contents = new HashMap<Integer, ArrayList<MessageEmbed.Field>>();
 
-		final var prefix = Cache.getCommandPrefix(ctx.getGuild().getId());
+		final var prefix = PrefixCache.getCommandPrefix(ctx.getGuild().getId());
 		final var commands = CommandManager.getDistinctCommands().values();
 		final var categories = Category.values();
 		var c = 0;
@@ -37,8 +37,9 @@ public class CommandsCommand extends ACommand{
 			titles.put(c, new TitleInfo(category.getEmote() + " " + category.getFriendlyName(), category.getUrl()));
 
 			final var fields = new ArrayList<MessageEmbed.Field>();
-			commands.stream().filter(command -> command.getCategory() == category).forEach(cmd ->
-					fields.add(new MessageEmbed.Field("**" + prefix + cmd.getCommand() + ":** ", " :small_blue_diamond:" + cmd.getDescription(), false)));
+			commands.stream()
+					.filter(command -> command.getCategory() == category)
+					.forEach(cmd -> fields.add(new MessageEmbed.Field("**" + prefix + cmd.getCommand() + ":** ", " :small_blue_diamond:" + cmd.getDescription(), false)));
 			contents.put(c, fields);
 			c++;
 		}

@@ -8,6 +8,8 @@ import com.jagrosh.jdautilities.oauth2.session.DefaultSessionController;
 import com.jagrosh.jdautilities.oauth2.state.DefaultStateController;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.Config;
+import de.anteiku.kittybot.objects.cache.PrefixCache;
+import de.anteiku.kittybot.objects.cache.SelfAssignableRoleCache;
 import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandManager;
 import io.javalin.Javalin;
@@ -119,10 +121,7 @@ public class WebService{
 		for(var guild : KittyBot.getJda().getMutualGuilds(user)){
 			var u = guild.getMember(user);
 			if(u != null && u.hasPermission(Permission.ADMINISTRATOR)){
-				data.add(DataObject.empty()
-						.put("id", guild.getId())
-						.put("name", guild.getName())
-						.put("icon", guild.getIconUrl()));
+				data.add(DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl()));
 			}
 		}
 		ok(ctx, DataObject.empty().put("name", user.getName()).put("id", user.getId()).put("icon", user.getEffectiveAvatarUrl()).put("guilds", data));
@@ -139,18 +138,14 @@ public class WebService{
 			error(ctx, 404, "Session not found");
 			return;
 		}
-		if(!userId.equals(Config.ADMIN_ID)){
+		if(!Config.ADMIN_IDS.contains(userId)){
 			error(ctx, 403, "Only admins have access to this!");
 			return;
 		}
 		var data = DataArray.empty();
 		for(var guild : KittyBot.getJda().getGuildCache()){
 			var owner = guild.getOwner();
-			var obj = DataObject.empty()
-					.put("id", guild.getId())
-					.put("name", guild.getName())
-					.put("icon", guild.getIconUrl())
-					.put("count", guild.getMemberCount());
+			var obj = DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl()).put("count", guild.getMemberCount());
 			if(owner != null){
 				obj.put("owner", owner.getUser().getAsTag());
 			}
@@ -172,7 +167,7 @@ public class WebService{
 				error(ctx, 404, "This user does not exist");
 				return;
 			}
-			if(userId.equals(Config.ADMIN_ID)){
+			if(Config.ADMIN_IDS.contains(userId)){
 				return;
 			}
 			var member = guild.retrieveMemberById(userId).complete();
@@ -211,6 +206,9 @@ public class WebService{
 		}
 		var data = DataArray.empty();
 		for(var role : guild.getRoles()){
+			if(role.isPublicRole()){
+				continue;
+			}
 			data.add(DataObject.empty().put("name", role.getName()).put("id", role.getId()));
 		}
 		ok(ctx, DataObject.empty().put("roles", data));
@@ -244,7 +242,7 @@ public class WebService{
 
 	private void getGuildSettings(Context ctx){
 		var guildId = ctx.pathParam(":guildId");
-		var roles = Database.getSelfAssignableRoles(guildId);
+		var roles = SelfAssignableRoleCache.getSelfAssignableRoles(guildId);
 		if(roles == null || KittyBot.getJda().getGuildById(guildId) == null){
 			error(ctx, 404, "guild not found");
 			return;
@@ -254,7 +252,7 @@ public class WebService{
 			data.add(DataObject.empty().put("role", role.getKey()).put("emote", role.getValue()));
 		}
 		ok(ctx, DataObject.empty()
-				.put("prefix", Database.getCommandPrefix(guildId))
+				.put("prefix", PrefixCache.getCommandPrefix(guildId))
 				.put("join_messages_enabled", Database.getJoinMessageEnabled(guildId))
 				.put("join_messages", Database.getJoinMessage(guildId))
 				.put("leave_messages_enabled", Database.getLeaveMessageEnabled(guildId))
@@ -307,7 +305,7 @@ public class WebService{
 				var obj = dataArray.getObject(i);
 				roles.put(obj.getString("role"), obj.getString("emote"));
 			}
-			Database.setSelfAssignableRoles(guildId, roles);
+			SelfAssignableRoleCache.setSelfAssignableRoles(guildId, roles);
 		}
 		ok(ctx);
 	}

@@ -1,7 +1,7 @@
 package de.anteiku.kittybot.objects.command;
 
 import de.anteiku.kittybot.database.Database;
-import de.anteiku.kittybot.objects.Cache;
+import de.anteiku.kittybot.objects.cache.PrefixCache;
 import io.github.classgraph.ClassGraph;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -59,7 +59,7 @@ public class CommandManager{
 	private static String cutCommandPrefix(Guild guild, String message){
 		String prefix;
 		var botId = guild.getSelfMember().getId();
-		if(message.startsWith(prefix = Cache.getCommandPrefix(guild.getId())) || message.startsWith(
+		if(message.startsWith(prefix = PrefixCache.getCommandPrefix(guild.getId())) || message.startsWith(
 				prefix = "<@!" + botId + ">") || message.startsWith(prefix = "<@" + botId + ">")){
 			return message.substring(prefix.length()).trim();
 		}

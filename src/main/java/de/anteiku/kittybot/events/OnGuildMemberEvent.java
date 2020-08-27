@@ -1,8 +1,8 @@
 package de.anteiku.kittybot.events;
 
-import de.anteiku.kittybot.Utils;
 import de.anteiku.kittybot.database.Database;
-import de.anteiku.kittybot.objects.Cache;
+import de.anteiku.kittybot.objects.cache.InviteCache;
+import de.anteiku.kittybot.utils.Utils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -31,12 +31,12 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 					channel.sendMessage(generateLeaveMessage(Database.getLeaveMessage(event.getGuild().getId()), event.getUser())).queue();
 				}
 				else{
-					event.getGuild().retrieveOwner().queue(
-							member -> member.getUser().openPrivateChannel().queue(
-									success -> success.sendMessage("I lack the permission to send leave messages to " + channel.getAsMention() + ".\n" +
-											"You can disable them with `options leavemessage off` if you don't like them").queue()
-							)
-					);
+					event.getGuild()
+							.retrieveOwner()
+							.queue(member -> member.getUser()
+									.openPrivateChannel()
+									.queue(success -> success.sendMessage("I lack the permission to send leave messages to " + channel.getAsMention() + ".\n" + "You can disable them with `options leavemessage off` if you don't like them")
+											.queue()));
 				}
 			}
 		}
@@ -49,15 +49,16 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 			TextChannel channel = event.getGuild().getTextChannelById(id);
 			if(channel != null){
 				if(event.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE)){
-					channel.sendMessage(generateJoinMessage(Database.getJoinMessage(event.getGuild().getId()), event.getUser(), Cache.getUsedInvite(event.getGuild()))).queue();
+					channel.sendMessage(generateJoinMessage(Database.getJoinMessage(event.getGuild().getId()), event.getUser(), InviteCache.getUsedInvite(event.getGuild())))
+							.queue();
 				}
 				else{
-					event.getGuild().retrieveOwner().queue(
-							member -> member.getUser().openPrivateChannel().queue(
-									success -> success.sendMessage("I lack the permission to send join messages to " + channel.getAsMention() + ".\n" +
-											"You can disable them with `options joinmessage off` if you don't like them").queue()
-							)
-					);
+					event.getGuild()
+							.retrieveOwner()
+							.queue(member -> member.getUser()
+									.openPrivateChannel()
+									.queue(success -> success.sendMessage("I lack the permission to send join messages to " + channel.getAsMention() + ".\n" + "You can disable them with `options joinmessage off` if you don't like them")
+											.queue()));
 				}
 			}
 		}
@@ -73,12 +74,12 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 					channel.sendMessage(generateBoostMessage(Database.getBoostMessage(event.getGuild().getId()), event.getUser())).queue();
 				}
 				else{
-					event.getGuild().retrieveOwner().queue(
-							member -> member.getUser().openPrivateChannel().queue(
-									success -> success.sendMessage("I lack the permission to send boost messages to " + channel.getAsMention() + ".\n" +
-											"You can disable them with `options boostmessages off` if you don't like them").queue()
-							)
-					);
+					event.getGuild()
+							.retrieveOwner()
+							.queue(member -> member.getUser()
+									.openPrivateChannel()
+									.queue(success -> success.sendMessage("I lack the permission to send boost messages to " + channel.getAsMention() + ".\n" + "You can disable them with `options boostmessages off` if you don't like them")
+											.queue()));
 				}
 			}
 		}

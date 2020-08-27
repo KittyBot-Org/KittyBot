@@ -6,9 +6,11 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.Utils;
+import de.anteiku.kittybot.objects.cache.MusicPlayerCache;
+import de.anteiku.kittybot.objects.cache.ReactiveMessageCache;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.CommandContext;
+import de.anteiku.kittybot.utils.Utils;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavalinkPlayer;
 import lavalink.client.player.event.PlayerEventListenerAdapter;
@@ -22,13 +24,15 @@ import java.util.Queue;
 import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
-import static de.anteiku.kittybot.Utils.formatDuration;
-import static de.anteiku.kittybot.Utils.pluralize;
+import static de.anteiku.kittybot.objects.command.ACommand.sendError;
+import static de.anteiku.kittybot.utils.Utils.formatDuration;
+import static de.anteiku.kittybot.utils.Utils.pluralize;
 
 public class MusicPlayer extends PlayerEventListenerAdapter{
 
-	public static final String URL_PATTERN = "^(https?://)?(www|m.)?(\\.)?youtu(\\.be|be\\.com)/(watch\\?v=)?([a-zA-Z0-9-_]{11})";
+	public static final Pattern URL_PATTERN = Pattern.compile("^(https?://)?(www|m.)?(\\.)?youtu(\\.be|be\\.com)/(playlist\\?list=[a-zA-Z0-9-_]+)?((watch\\?v=)?([a-zA-Z0-9-_]{11})(&list=[a-zA-Z0-9-_]+)?)?");
 	private static final int VOLUME_MAX = 200;
 	private final LavalinkPlayer player;
 	private final Queue<AudioTrack> queue;
@@ -36,6 +40,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	private String messageId;
 	private String channelId;
 	private ScheduledFuture<?> future;
+	private ACommand command;
+	private CommandContext ctx;
 
 	public MusicPlayer(LavalinkPlayer player){
 		this.player = player;
@@ -47,29 +53,28 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		return queue;
 	}
 
-	public void loadItem(ACommand command, CommandContext ctx, String... args){
-		String search = String.join(" ", args);
-		if(!search.matches(URL_PATTERN)){
-			search = "ytsearch:" + search;
-		}
-		KittyBot.getAudioPlayerManager().loadItem(search, new AudioLoadResultHandler(){
+	public Deque<AudioTrack> getHistory(){
+		return history;
+	}
+
+	public void loadItem(ACommand command, CommandContext ctx){
+		this.command = command;
+		this.ctx = ctx;
+		String argStr = String.join(" ", ctx.getArgs());
+		final String query = URL_PATTERN.matcher(argStr).matches() ? argStr : "ytsearch:" + argStr;
+		KittyBot.getAudioPlayerManager().loadItem(query, new AudioLoadResultHandler(){
 
 			@Override
 			public void trackLoaded(AudioTrack track){
 				track.setUserData(ctx.getUser().getId());
 				queue(track);
-				if(messageId == null){
-					sendMusicController(command, ctx);
-				}
-				else{
-					if(queue.isEmpty()){
-						updateMusicControlMessage(ctx.getChannel());
-					}
+				if(!queue.isEmpty()){
 					sendQueuedTracks(command, ctx, Collections.singletonList(track));
 				}
 				if(future != null){
 					future.cancel(true);
 				}
+				connectToChannel(ctx);
 			}
 
 			@Override
@@ -88,28 +93,23 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 						queue(track);
 					}
 				}
-				if(messageId == null){
-					sendMusicController(command, ctx);
-				}
-				else{
-					if(queue.isEmpty()){
-						updateMusicControlMessage(ctx.getChannel());
-					}
+				if(!queue.isEmpty()){
 					sendQueuedTracks(command, ctx, queuedTracks);
 				}
 				if(future != null){
 					future.cancel(true);
 				}
+				connectToChannel(ctx);
 			}
 
 			@Override
 			public void noMatches(){
-				command.sendError(ctx, "No matches found for ");
+				sendError(ctx, "No track found for: " + argStr);
 			}
 
 			@Override
 			public void loadFailed(FriendlyException exception){
-				command.sendError(ctx, "Failed to load track");
+				sendError(ctx, "Failed to load track");
 			}
 		});
 	}
@@ -123,34 +123,19 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		}
 	}
 
-	public void sendMusicController(ACommand command, CommandContext ctx){
-		var msg = ctx.getMessage();
-		msg.getChannel().sendMessage(buildMusicControlMessage()
-				.setFooter(msg.getMember().getEffectiveName(), msg.getAuthor().getEffectiveAvatarUrl())
-				.setTimestamp(Instant.now())
-				.build()
-		).queue(
-				message -> {
-					messageId = message.getId();
-					channelId = message.getChannel().getId();
-					Cache.addReactiveMessage(ctx, message, command, "-1");
-					message.addReaction(Emojis.VOLUME_DOWN).queue();
-					message.addReaction(Emojis.VOLUME_UP).queue();
-					message.addReaction(Emojis.BACK).queue();
-					message.addReaction("PlayPause:744945002416963634").queue();
-					message.addReaction(Emojis.FORWARD).queue();
-					message.addReaction(Emojis.SHUFFLE).queue();
-					message.addReaction(Emojis.X).queue();
-				}
-		);
-	}
-
 	private void sendQueuedTracks(ACommand command, CommandContext ctx, List<AudioTrack> tracks){
 		var message = new StringBuilder("Queued ").append(tracks.size()).append(" ").append(pluralize("track", tracks)).append(":\n");
 		for(AudioTrack track : tracks){
 			message.append(Utils.formatTrackTitle(track)).append(" ").append(formatDuration(track.getDuration())).append("\n");
 		}
 		command.sendAnswer(ctx, message.toString());
+	}
+
+	public void connectToChannel(CommandContext ctx){
+		var voiceState = ctx.getMember().getVoiceState();
+		if(voiceState != null && voiceState.getChannel() != null){
+			KittyBot.getLavalink().getLink(ctx.getGuild()).connect(voiceState.getChannel());
+		}
 	}
 
 	public String getRequesterId(){
@@ -206,40 +191,31 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	@Override
-	public void onTrackEnd(IPlayer player, AudioTrack track, AudioTrackEndReason endReason){
-		this.history.push(track);
-		var guild = KittyBot.getJda().getGuildById(getPlayer().getLink().getGuildId());
-		if(((endReason.mayStartNext && !nextTrack()) || queue.isEmpty()) && guild != null){
-			future = KittyBot.getScheduler().schedule(() -> Cache.destroyMusicPlayer(guild), 2, TimeUnit.MINUTES);
+	public void onTrackStart(IPlayer player, AudioTrack track){
+		if(messageId != null){
+			ReactiveMessageCache.removeReactiveMessage(ctx.getGuild(), messageId);
 		}
+		sendMusicController(command, ctx);
 	}
 
-	public LavalinkPlayer getPlayer(){
-		return player;
-	}
-
-	public boolean nextTrack(){
-		AudioTrack track = queue.poll();
-		history.push(track);
-		var channel = KittyBot.getJda().getTextChannelById(channelId);
-		if(track != null){
-			player.playTrack(track);
-			updateMusicControlMessage(channel);
-			return true;
-		}
-		player.stopTrack();
-		updateMusicControlMessage(channel);
-		return false;
-	}
-
-	public void updateMusicControlMessage(TextChannel channel){
-		if(channel == null){
-			return;
-		}
-		channel.editMessageById(messageId, buildMusicControlMessage()
-				.setTimestamp(Instant.now())
-				.build()
-		).queue();
+	public void sendMusicController(ACommand command, CommandContext ctx){
+		var msg = ctx.getMessage();
+		msg.getChannel()
+				.sendMessage(buildMusicControlMessage().setFooter(msg.getMember().getEffectiveName(), msg.getAuthor().getEffectiveAvatarUrl())
+						.setTimestamp(Instant.now())
+						.build())
+				.queue(message -> {
+					messageId = message.getId();
+					channelId = message.getChannel().getId();
+					ReactiveMessageCache.addReactiveMessage(ctx, message, command, "-1");
+					message.addReaction(Emojis.VOLUME_DOWN).queue();
+					message.addReaction(Emojis.VOLUME_UP).queue();
+					message.addReaction(Emojis.BACK).queue();
+					message.addReaction("PlayPause:744945002416963634").queue();
+					message.addReaction(Emojis.FORWARD).queue();
+					message.addReaction(Emojis.SHUFFLE).queue();
+					message.addReaction(Emojis.X).queue();
+				});
 	}
 
 	public EmbedBuilder buildMusicControlMessage(){
@@ -271,6 +247,41 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 			}
 		}
 		return embed;
+	}
+
+	public LavalinkPlayer getPlayer(){
+		return player;
+	}
+
+	@Override
+	public void onTrackEnd(IPlayer player, AudioTrack track, AudioTrackEndReason endReason){
+		this.history.push(track);
+		var guild = KittyBot.getJda().getGuildById(getPlayer().getLink().getGuildId());
+		if(guild == null){
+			return;
+		}
+		if((endReason.mayStartNext && !nextTrack()) || (queue.isEmpty() && player.getPlayingTrack() == null)){
+			future = KittyBot.getScheduler().schedule(() -> MusicPlayerCache.destroyMusicPlayer(guild), 2, TimeUnit.MINUTES);
+		}
+	}
+
+	public boolean nextTrack(){
+		AudioTrack track = queue.poll();
+		var channel = KittyBot.getJda().getTextChannelById(channelId);
+		if(track != null){
+			player.playTrack(track);
+			return true;
+		}
+		player.stopTrack();
+		updateMusicControlMessage(channel);
+		return false;
+	}
+
+	public void updateMusicControlMessage(TextChannel channel){
+		if(channel == null){
+			return;
+		}
+		channel.editMessageById(messageId, buildMusicControlMessage().setTimestamp(Instant.now()).build()).queue();
 	}
 
 	@Override

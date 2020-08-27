@@ -36,7 +36,7 @@ public class EvalCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		if(ctx.getUser().getId().equals(Config.ADMIN_ID)){
+		if(Config.ADMIN_IDS.contains(ctx.getUser().getId())){
 			try{
 				engine.put("ctx", ctx);
 				engine.put("message", ctx.getMessage());
