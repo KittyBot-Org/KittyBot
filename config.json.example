@@ -2,7 +2,6 @@
     "bot_token": "your discord bot token",
     "bot_id": "your discord bot id",
     "bot_secret": "your discord bot secret",
-    "admin_id": "your own discord id",
     "support_guild_id": "your support discord guild id",
     "log_channel_id": "your support discord channel id",
     "invite_url": "your support discord invite url",
@@ -25,4 +24,5 @@
             "password": "your lavalink password"
         }
     ]
+    "admin_ids": ["multiple", "user", "ids"]
 }
