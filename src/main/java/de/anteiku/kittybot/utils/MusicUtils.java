@@ -49,7 +49,8 @@ public class MusicUtils {
         toSeek *= 1000;
         final var duration = playing.getDuration();
         final var position = player.getTrackPosition();
-        switch (ctx.getCommand()){ // TODO aliases?
+        switch (ctx.getCommand()){
+            case "goto": // TODO this is a temp solution to also check aliases
             case "seek":
                 if (toSeek >= duration && !musicPlayer.nextTrack())
                     player.stopTrack();
