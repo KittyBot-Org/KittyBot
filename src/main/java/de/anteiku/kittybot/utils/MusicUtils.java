@@ -1,9 +1,9 @@
 package de.anteiku.kittybot.utils;
 
-import de.anteiku.kittybot.command.CommandContext;
-import de.anteiku.kittybot.objects.Cache;
+import de.anteiku.kittybot.objects.cache.MusicPlayerCache;
+import de.anteiku.kittybot.objects.command.CommandContext;
 
-import static de.anteiku.kittybot.command.ACommand.sendError;
+import static de.anteiku.kittybot.objects.command.ACommand.sendError;
 
 public class MusicUtils{
 
@@ -16,7 +16,7 @@ public class MusicUtils{
 			sendError(ctx, "To use this command you need to be connected to a voice channel");
 			return;
 		}
-		final var musicPlayer = Cache.getMusicPlayer(ctx.getGuild());
+		final var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
 		if(musicPlayer == null){
 			sendError(ctx, "No active music player found!");
 			return;

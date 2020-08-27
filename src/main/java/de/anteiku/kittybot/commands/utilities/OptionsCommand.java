@@ -1,10 +1,10 @@
 package de.anteiku.kittybot.commands.utilities;
 
-import de.anteiku.kittybot.command.ACommand;
-import de.anteiku.kittybot.command.Category;
-import de.anteiku.kittybot.command.CommandContext;
 import de.anteiku.kittybot.database.Database;
-import de.anteiku.kittybot.objects.Cache;
+import de.anteiku.kittybot.objects.cache.PrefixCache;
+import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
+import de.anteiku.kittybot.objects.command.CommandContext;
 import de.anteiku.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -33,7 +33,7 @@ public class OptionsCommand extends ACommand{
 				var embed = new EmbedBuilder();
 				embed.setTitle("Guild options:");
 				embed.setDescription("These are the current guild options");
-				embed.addField("Command Prefix:", Cache.getCommandPrefix(guildId), false);
+				embed.addField("Command Prefix:", PrefixCache.getCommandPrefix(guildId), false);
 				embed.addField("Announcement Channel:", "<#" + Database.getAnnouncementChannelId(guildId) + ">", false);
 				embed.addField("Join Messages Enabled:", String.valueOf(Database.getJoinMessageEnabled(guildId)), false);
 				embed.addField("Join Message:", Database.getJoinMessage(guildId), false);
@@ -46,7 +46,7 @@ public class OptionsCommand extends ACommand{
 			}
 			else{
 				if(ctx.getArgs()[0].equalsIgnoreCase("prefix") && ctx.getArgs().length == 2){
-					Cache.setCommandPrefix(ctx.getGuild().getId(), ctx.getArgs()[1]);
+					PrefixCache.setCommandPrefix(ctx.getGuild().getId(), ctx.getArgs()[1]);
 					sendAnswer(ctx, "Prefix set to: `" + ctx.getArgs()[1] + "`");
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("nsfw")){

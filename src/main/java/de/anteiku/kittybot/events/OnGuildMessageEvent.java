@@ -1,15 +1,20 @@
 package de.anteiku.kittybot.events;
 
-import de.anteiku.kittybot.command.CommandManager;
 import de.anteiku.kittybot.database.Database;
-import de.anteiku.kittybot.objects.Cache;
 import de.anteiku.kittybot.objects.Emojis;
 import de.anteiku.kittybot.objects.ReactiveMessage;
+import de.anteiku.kittybot.objects.cache.CommandResponseCache;
+import de.anteiku.kittybot.objects.cache.MessageCache;
+import de.anteiku.kittybot.objects.cache.ReactiveMessageCache;
+import de.anteiku.kittybot.objects.command.CommandManager;
+import de.anteiku.kittybot.objects.messages.MessageData;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.time.Instant;
@@ -18,6 +23,10 @@ public class OnGuildMessageEvent extends ListenerAdapter{
 
 	@Override
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event){
+		var content = event.getMessage().getContentRaw();
+		if(!content.isEmpty()){
+			MessageCache.cacheMessage(event.getMessageId(), new MessageData(event.getMessage()));
+		}
 		if(event.getAuthor().isBot()){
 			return;
 		}
@@ -42,9 +51,17 @@ public class OnGuildMessageEvent extends ListenerAdapter{
 	}
 
 	@Override
+	public void onGuildMessageUpdate(@NotNull final GuildMessageUpdateEvent event){
+		final var messageId = event.getMessageId();
+		MessageCache.cacheMessage(messageId, new MessageData(event.getMessage()));
+		MessageCache.setLastEditedMessage(event.getChannel().getId(), messageId);
+	}
+
+	@Override
 	public void onGuildMessageDelete(GuildMessageDeleteEvent event){
-		Cache.deleteCommandResponse(event.getChannel(), event.getMessageId());
+		CommandResponseCache.deleteCommandResponse(event.getChannel(), event.getMessageId());
 		Database.removeReactiveMessage(event.getGuild().getId(), event.getMessageId());
+		MessageCache.setLastDeletedMessage(event.getChannel().getId(), event.getMessageId());
 	}
 
 	@Override
@@ -53,7 +70,7 @@ public class OnGuildMessageEvent extends ListenerAdapter{
 			return;
 		}
 
-		ReactiveMessage reactiveMessage = Cache.getReactiveMessage(event.getGuild(), event.getMessageId());
+		ReactiveMessage reactiveMessage = ReactiveMessageCache.getReactiveMessage(event.getGuild(), event.getMessageId());
 		if(reactiveMessage != null){
 			if(reactiveMessage.allowed.equals("-1") || reactiveMessage.allowed.equals(event.getUserId())){
 				CommandManager.getCommands().get(reactiveMessage.command).reactionAdd(reactiveMessage, event);

@@ -6,10 +6,12 @@ import com.jagrosh.jdautilities.oauth2.entities.impl.OAuth2ClientImpl;
 import com.jagrosh.jdautilities.oauth2.exceptions.InvalidStateException;
 import com.jagrosh.jdautilities.oauth2.session.DefaultSessionController;
 import com.jagrosh.jdautilities.oauth2.state.DefaultStateController;
-import de.anteiku.kittybot.command.Category;
-import de.anteiku.kittybot.command.CommandManager;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.Config;
+import de.anteiku.kittybot.objects.cache.PrefixCache;
+import de.anteiku.kittybot.objects.cache.SelfAssignableRoleCache;
+import de.anteiku.kittybot.objects.command.Category;
+import de.anteiku.kittybot.objects.command.CommandManager;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import net.dv8tion.jda.api.Permission;
@@ -240,7 +242,7 @@ public class WebService{
 
 	private void getGuildSettings(Context ctx){
 		var guildId = ctx.pathParam(":guildId");
-		var roles = Database.getSelfAssignableRoles(guildId);
+		var roles = SelfAssignableRoleCache.getSelfAssignableRoles(guildId);
 		if(roles == null || KittyBot.getJda().getGuildById(guildId) == null){
 			error(ctx, 404, "guild not found");
 			return;
@@ -250,7 +252,7 @@ public class WebService{
 			data.add(DataObject.empty().put("role", role.getKey()).put("emote", role.getValue()));
 		}
 		ok(ctx, DataObject.empty()
-				.put("prefix", Database.getCommandPrefix(guildId))
+				.put("prefix", PrefixCache.getCommandPrefix(guildId))
 				.put("join_messages_enabled", Database.getJoinMessageEnabled(guildId))
 				.put("join_messages", Database.getJoinMessage(guildId))
 				.put("leave_messages_enabled", Database.getLeaveMessageEnabled(guildId))
@@ -303,7 +305,7 @@ public class WebService{
 				var obj = dataArray.getObject(i);
 				roles.put(obj.getString("role"), obj.getString("emote"));
 			}
-			Database.setSelfAssignableRoles(guildId, roles);
+			SelfAssignableRoleCache.setSelfAssignableRoles(guildId, roles);
 		}
 		ok(ctx);
 	}

@@ -1,9 +1,9 @@
 package de.anteiku.kittybot.commands.music;
 
-import de.anteiku.kittybot.command.ACommand;
-import de.anteiku.kittybot.command.Category;
-import de.anteiku.kittybot.command.CommandContext;
-import de.anteiku.kittybot.objects.Cache;
+import de.anteiku.kittybot.objects.cache.MusicPlayerCache;
+import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
+import de.anteiku.kittybot.objects.command.CommandContext;
 
 public class PauseCommand extends ACommand{
 
@@ -19,7 +19,7 @@ public class PauseCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		var musicPlayer = Cache.getMusicPlayer(ctx.getGuild());
+		var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
 		if(musicPlayer == null){
 			sendError(ctx, "No active music player found!");
 			return;

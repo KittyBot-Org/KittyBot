@@ -2,6 +2,7 @@ package de.anteiku.kittybot.database;
 
 import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.ReactiveMessage;
+import de.anteiku.kittybot.objects.cache.SelfAssignableRoleCache;
 import de.anteiku.kittybot.utils.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
@@ -16,7 +17,8 @@ public class Database{
 
 	private static final Logger LOG = LoggerFactory.getLogger(Database.class);
 
-	private Database(){}
+	private Database(){
+	}
 
 	public static void init(JDA jda){
 		SQL.createTable("guilds");
@@ -161,7 +163,7 @@ public class Database{
 	}
 
 	public static void setSelfAssignableRoles(String guildId, Map<String, String> newRoles){
-		Map<String, String> roles = getSelfAssignableRoles(guildId);
+		Map<String, String> roles = SelfAssignableRoleCache.getSelfAssignableRoles(guildId);
 		if(roles != null){
 			Map<String, String> addRoles = new HashMap<>();
 			Set<String> removeRoles = new HashSet<>();
@@ -175,8 +177,12 @@ public class Database{
 					addRoles.put(role.getKey(), role.getValue());
 				}
 			}
-			removeSelfAssignableRoles(guildId, removeRoles);
-			addSelfAssignableRoles(guildId, addRoles);
+			if(removeRoles.size() > 0){
+				removeSelfAssignableRoles(guildId, removeRoles);
+			}
+			if(addRoles.size() > 0){
+				addSelfAssignableRoles(guildId, addRoles);
+			}
 		}
 	}
 
@@ -229,20 +235,6 @@ public class Database{
 		}
 		catch(SQLException e){
 			LOG.error("Error inserting self-assignable role", e);
-		}
-		return false;
-	}
-
-	public static boolean isSelfAssignableRole(String guildId, String roleId){
-		var query = "SELECT * FROM self_assignable_roles WHERE guild_id = ? and role_id = ?";
-		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
-			stmt.setString(1, guildId);
-			stmt.setString(2, roleId);
-			ResultSet result = SQL.query(stmt);
-			return result != null && result.next();
-		}
-		catch(SQLException e){
-			LOG.error("Error while testing if role self-assignable", e);
 		}
 		return false;
 	}

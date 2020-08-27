@@ -1,7 +1,7 @@
 package de.anteiku.kittybot.events;
 
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.objects.Cache;
+import de.anteiku.kittybot.objects.cache.MusicPlayerCache;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
@@ -17,7 +17,7 @@ public class OnGuildVoiceEvent extends ListenerAdapter{
 	public void onGuildVoiceUpdate(@NotNull final GuildVoiceUpdateEvent event){
 		if(event instanceof GuildVoiceMoveEvent || event instanceof GuildVoiceLeaveEvent){
 			var guild = event.getEntity().getGuild();
-			var musicPlayer = Cache.getMusicPlayer(guild);
+			var musicPlayer = MusicPlayerCache.getMusicPlayer(guild);
 			if(musicPlayer == null){
 				return;
 			}
@@ -29,10 +29,10 @@ public class OnGuildVoiceEvent extends ListenerAdapter{
 			if(channel.getMembers().stream().anyMatch(member -> !member.getUser().isBot())){
 				return;
 			}
-			KittyBot.getWaiter()
-					.waitForEvent(GuildVoiceJoinEvent.class, ev -> ev.getChannelJoined().getId().equals(currentChannel) && !ev.getEntity()
-							.getUser()
-							.isBot(), ev -> {}, 3, TimeUnit.MINUTES, () -> Cache.destroyMusicPlayer(guild));
+			KittyBot.getWaiter().waitForEvent(GuildVoiceJoinEvent.class,
+					ev -> ev.getChannelJoined().getId().equals(currentChannel) && !ev.getEntity().getUser().isBot(),
+					ev -> {
+					}, 3, TimeUnit.MINUTES, () -> MusicPlayerCache.destroyMusicPlayer(guild));
 		}
 	}
 

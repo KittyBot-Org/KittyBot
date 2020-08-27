@@ -1,8 +1,8 @@
 package de.anteiku.kittybot.objects.paginator;
 
 import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.command.CommandContext;
 import de.anteiku.kittybot.objects.TitleInfo;
+import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -83,7 +83,8 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 			// TIMEOUT
 
 			KittyBot.getWaiter()
-					.waitForEvent(GuildMessageReactionAddEvent.class, ev -> ev.getMessageIdLong() == messageId && ev.getUserIdLong() == authorId, ev -> {}, 3, TimeUnit.MINUTES, () -> {
+					.waitForEvent(GuildMessageReactionAddEvent.class, ev -> ev.getMessageIdLong() == messageId && ev.getUserIdLong() == authorId, ev -> {
+					}, 3, TimeUnit.MINUTES, () -> {
 						message.delete().queue();
 						channel.deleteMessageById(messageId).queue();
 

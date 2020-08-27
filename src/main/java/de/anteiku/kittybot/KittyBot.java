@@ -9,12 +9,13 @@ import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.vimeo.VimeoAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
-import de.anteiku.kittybot.command.CommandManager;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.database.SQL;
 import de.anteiku.kittybot.events.*;
 import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.LavalinkNode;
+import de.anteiku.kittybot.objects.cache.MessageCache;
+import de.anteiku.kittybot.objects.command.CommandManager;
 import de.anteiku.kittybot.objects.paginator.Paginator;
 import lavalink.client.io.Link;
 import lavalink.client.io.jda.JdaLavalink;
@@ -33,10 +34,10 @@ import org.slf4j.LoggerFactory;
 import java.awt.*;
 import java.net.URI;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+import java.time.OffsetDateTime;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class KittyBot{
 
@@ -102,6 +103,8 @@ public class KittyBot{
 			if(Config.isSet(Config.DISCORD_BOT_LIST_TOKEN)){
 				discordBotListAPI = new DiscordBotListAPI.Builder().token(Config.DISCORD_BOT_LIST_TOKEN).botId(Config.BOT_ID).build();
 			}
+
+			SCHEDULER.scheduleAtFixedRate(() -> MessageCache.getCache().entrySet().removeIf(entry -> entry.getValue().getCreation().isBefore(OffsetDateTime.now().minusMinutes(10).toInstant())), 1, 1, TimeUnit.HOURS);
 
 			Database.init(jda);
 
