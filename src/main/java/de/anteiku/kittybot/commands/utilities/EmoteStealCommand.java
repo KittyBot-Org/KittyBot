@@ -1,8 +1,8 @@
 package de.anteiku.kittybot.commands.utilities;
 
-import de.anteiku.kittybot.command.ACommand;
-import de.anteiku.kittybot.command.Category;
-import de.anteiku.kittybot.command.CommandContext;
+import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
+import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Icon;
@@ -66,9 +66,9 @@ public class EmoteStealCommand extends ACommand{
 				sendError(ctx, "The image provided is bigger than 256kb");
 				return;
 			}
-			ctx.getGuild().createEmote(name, Icon.from(inputStream)).queue(
-					success -> sendAnswer(ctx, "Emote stolen"),
-					failure -> sendError(ctx, "Error creating emote: " + failure.getMessage()));
+			ctx.getGuild()
+					.createEmote(name, Icon.from(inputStream))
+					.queue(success -> sendAnswer(ctx, "Emote stolen"), failure -> sendError(ctx, "Error creating emote: " + failure.getMessage()));
 		}
 		catch(IOException e){
 			LOG.error("Error with stream", e);

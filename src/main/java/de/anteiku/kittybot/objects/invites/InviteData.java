@@ -1,4 +1,4 @@
-package de.anteiku.kittybot.objects;
+package de.anteiku.kittybot.objects.invites;
 
 import net.dv8tion.jda.api.entities.Invite;
 

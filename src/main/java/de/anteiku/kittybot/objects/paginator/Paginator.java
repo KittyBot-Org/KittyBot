@@ -2,7 +2,7 @@ package de.anteiku.kittybot.objects.paginator;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.objects.TitleInfo;
-import de.anteiku.kittybot.command.CommandContext;
+import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -52,14 +52,11 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 			return;
 		}
 		if(!selfMember.hasPermission(channel, Permission.MESSAGE_HISTORY) || !selfMember.hasPermission(channel, Permission.MESSAGE_ADD_REACTION) || !selfMember.hasPermission(channel, Permission.MESSAGE_MANAGE)){
-			channel.sendMessage(
-					new EmbedBuilder()
-							.setColor(Color.RED)
-							.addField("Error:", "I'm missing required permissions for paginator to work. Ensure that i can read the message history, add reactions and manage messages in this channel.", true)
-							.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
-							.setTimestamp(Instant.now())
-							.build())
-					.queue(); // TODO improve checks
+			channel.sendMessage(new EmbedBuilder().setColor(Color.RED)
+					.addField("Error:", "I'm missing required permissions for paginator to work. Ensure that i can read the message history, add reactions and manage messages in this channel.", true)
+					.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
+					.setTimestamp(Instant.now())
+					.build()).queue(); // TODO improve checks
 			return;
 		}
 		final var embedBuilder = new EmbedBuilder();
@@ -85,9 +82,9 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 
 			// TIMEOUT
 
-			KittyBot.getWaiter().waitForEvent(GuildMessageReactionAddEvent.class,
-					ev -> ev.getMessageIdLong() == messageId && ev.getUserIdLong() == authorId,
-					ev -> {}, 3, TimeUnit.MINUTES, () -> {
+			KittyBot.getWaiter()
+					.waitForEvent(GuildMessageReactionAddEvent.class, ev -> ev.getMessageIdLong() == messageId && ev.getUserIdLong() == authorId, ev -> {
+					}, 3, TimeUnit.MINUTES, () -> {
 						message.delete().queue();
 						channel.deleteMessageById(messageId).queue();
 

@@ -2,9 +2,9 @@ package de.anteiku.kittybot.commands.utilities;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.objects.Config;
-import de.anteiku.kittybot.command.ACommand;
-import de.anteiku.kittybot.command.Category;
-import de.anteiku.kittybot.command.CommandContext;
+import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
+import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import okhttp3.*;
@@ -36,7 +36,9 @@ public class HastebinCommand extends ACommand{
 				if(!attachment.isImage() && !attachment.isVideo()){
 					try{
 						String text = IOUtils.toString(attachment.retrieveInputStream().get(), StandardCharsets.UTF_8.name());
-						Request request = new Request.Builder().url(Config.HASTEBIN_URL + "/documents").post(RequestBody.create(MediaType.parse("text/html; charset=utf-8"), text)).build();
+						Request request = new Request.Builder().url(Config.HASTEBIN_URL + "/documents")
+								.post(RequestBody.create(MediaType.parse("text/html; charset=utf-8"), text))
+								.build();
 						KittyBot.getHttpClient().newCall(request).enqueue(new Callback(){
 							@Override
 							public void onFailure(@NotNull Call call, @NotNull IOException e){

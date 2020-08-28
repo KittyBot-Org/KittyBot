@@ -8,8 +8,10 @@ import com.jagrosh.jdautilities.oauth2.session.DefaultSessionController;
 import com.jagrosh.jdautilities.oauth2.state.DefaultStateController;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.Config;
-import de.anteiku.kittybot.command.Category;
-import de.anteiku.kittybot.command.CommandManager;
+import de.anteiku.kittybot.objects.cache.PrefixCache;
+import de.anteiku.kittybot.objects.cache.SelfAssignableRoleCache;
+import de.anteiku.kittybot.objects.command.Category;
+import de.anteiku.kittybot.objects.command.CommandManager;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import net.dv8tion.jda.api.Permission;
@@ -119,10 +121,7 @@ public class WebService{
 		for(var guild : KittyBot.getJda().getMutualGuilds(user)){
 			var u = guild.getMember(user);
 			if(u != null && u.hasPermission(Permission.ADMINISTRATOR)){
-				data.add(DataObject.empty()
-						.put("id", guild.getId())
-						.put("name", guild.getName())
-						.put("icon", guild.getIconUrl()));
+				data.add(DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl()));
 			}
 		}
 		ok(ctx, DataObject.empty().put("name", user.getName()).put("id", user.getId()).put("icon", user.getEffectiveAvatarUrl()).put("guilds", data));
@@ -146,11 +145,7 @@ public class WebService{
 		var data = DataArray.empty();
 		for(var guild : KittyBot.getJda().getGuildCache()){
 			var owner = guild.getOwner();
-			var obj = DataObject.empty()
-					.put("id", guild.getId())
-					.put("name", guild.getName())
-					.put("icon", guild.getIconUrl())
-					.put("count", guild.getMemberCount());
+			var obj = DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl()).put("count", guild.getMemberCount());
 			if(owner != null){
 				obj.put("owner", owner.getUser().getAsTag());
 			}
@@ -240,14 +235,14 @@ public class WebService{
 		}
 		var data = DataArray.empty();
 		for(var emote : guild.getEmotes()){
-			data.add(DataObject.empty().put("name", emote.getName()).put("id", emote.getId()).put("url", emote.getName()));
+			data.add(DataObject.empty().put("name", emote.getName()).put("id", emote.getId()).put("url", emote.getImageUrl()));
 		}
 		ok(ctx, DataObject.empty().put("emotes", data));
 	}
 
 	private void getGuildSettings(Context ctx){
 		var guildId = ctx.pathParam(":guildId");
-		var roles = Database.getSelfAssignableRoles(guildId);
+		var roles = SelfAssignableRoleCache.getSelfAssignableRoles(guildId);
 		if(roles == null || KittyBot.getJda().getGuildById(guildId) == null){
 			error(ctx, 404, "guild not found");
 			return;
@@ -257,7 +252,7 @@ public class WebService{
 			data.add(DataObject.empty().put("role", role.getKey()).put("emote", role.getValue()));
 		}
 		ok(ctx, DataObject.empty()
-				.put("prefix", Database.getCommandPrefix(guildId))
+				.put("prefix", PrefixCache.getCommandPrefix(guildId))
 				.put("join_messages_enabled", Database.getJoinMessageEnabled(guildId))
 				.put("join_messages", Database.getJoinMessage(guildId))
 				.put("leave_messages_enabled", Database.getLeaveMessageEnabled(guildId))
@@ -310,7 +305,7 @@ public class WebService{
 				var obj = dataArray.getObject(i);
 				roles.put(obj.getString("role"), obj.getString("emote"));
 			}
-			Database.setSelfAssignableRoles(guildId, roles);
+			SelfAssignableRoleCache.setSelfAssignableRoles(guildId, roles);
 		}
 		ok(ctx);
 	}

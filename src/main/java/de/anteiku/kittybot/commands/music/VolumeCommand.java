@@ -1,9 +1,9 @@
 package de.anteiku.kittybot.commands.music;
 
-import de.anteiku.kittybot.objects.Cache;
-import de.anteiku.kittybot.command.ACommand;
-import de.anteiku.kittybot.command.Category;
-import de.anteiku.kittybot.command.CommandContext;
+import de.anteiku.kittybot.objects.cache.MusicPlayerCache;
+import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
+import de.anteiku.kittybot.objects.command.CommandContext;
 
 public class VolumeCommand extends ACommand{
 
@@ -24,13 +24,13 @@ public class VolumeCommand extends ACommand{
 			sendError(ctx, "To use this command you need to be connected to a voice channel");
 			return;
 		}
-		var musicPlayer = Cache.getMusicPlayer(ctx.getGuild());
+		var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
 		if(musicPlayer == null){
 			sendError(ctx, "No active music player found!");
 			return;
 		}
 		if(!musicPlayer.getPlayer().getLink().getChannel().equals(voiceState.getChannel().getId())){
-			sendError(ctx, "To use this command you need to be connected to the same voice channel than me");
+			sendError(ctx, "To use this command you need to be connected to the same voice channel as me");
 			return;
 		}
 		if(musicPlayer.getQueue().isEmpty()){

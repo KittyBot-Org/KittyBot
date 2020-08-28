@@ -1,8 +1,9 @@
 package de.anteiku.kittybot.database;
 
-import de.anteiku.kittybot.Utils;
 import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.ReactiveMessage;
+import de.anteiku.kittybot.objects.cache.SelfAssignableRoleCache;
+import de.anteiku.kittybot.utils.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import org.slf4j.Logger;
@@ -16,7 +17,8 @@ public class Database{
 
 	private static final Logger LOG = LoggerFactory.getLogger(Database.class);
 
-	private Database(){}
+	private Database(){
+	}
 
 	public static void init(JDA jda){
 		SQL.createTable("guilds");
@@ -48,9 +50,7 @@ public class Database{
 
 	public static boolean registerGuild(Guild guild){
 		LOG.debug("Registering new guild: {}", guild.getId());
-		var query = "INSERT INTO guilds (guild_id, command_prefix, request_channel_id, requests_enabled, announcement_channel_id, join_messages, join_messages_enabled, " +
-				"leave_messages, leave_messages_enabled, boost_messages, boost_messages_enabled, log_channel_id, log_message_enabled, nsfw_enabled, inactive_role_id) " +
-				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		var query = "INSERT INTO guilds (guild_id, command_prefix, request_channel_id, requests_enabled, announcement_channel_id, join_messages, join_messages_enabled, " + "leave_messages, leave_messages_enabled, boost_messages, boost_messages_enabled, log_channel_id, log_message_enabled, nsfw_enabled, inactive_role_id) " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, guild.getId());
 			stmt.setString(2, Config.DEFAULT_PREFIX);
@@ -163,7 +163,7 @@ public class Database{
 	}
 
 	public static void setSelfAssignableRoles(String guildId, Map<String, String> newRoles){
-		Map<String, String> roles = getSelfAssignableRoles(guildId);
+		Map<String, String> roles = SelfAssignableRoleCache.getSelfAssignableRoles(guildId);
 		if(roles != null){
 			Map<String, String> addRoles = new HashMap<>();
 			Set<String> removeRoles = new HashSet<>();
@@ -177,8 +177,12 @@ public class Database{
 					addRoles.put(role.getKey(), role.getValue());
 				}
 			}
-			removeSelfAssignableRoles(guildId, removeRoles);
-			addSelfAssignableRoles(guildId, addRoles);
+			if(removeRoles.size() > 0){
+				removeSelfAssignableRoles(guildId, removeRoles);
+			}
+			if(addRoles.size() > 0){
+				addSelfAssignableRoles(guildId, addRoles);
+			}
 		}
 	}
 
@@ -231,20 +235,6 @@ public class Database{
 		}
 		catch(SQLException e){
 			LOG.error("Error inserting self-assignable role", e);
-		}
-		return false;
-	}
-
-	public static boolean isSelfAssignableRole(String guildId, String roleId){
-		var query = "SELECT * FROM self_assignable_roles WHERE guild_id = ? and role_id = ?";
-		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
-			stmt.setString(1, guildId);
-			stmt.setString(2, roleId);
-			ResultSet result = SQL.query(stmt);
-			return result != null && result.next();
-		}
-		catch(SQLException e){
-			LOG.error("Error while testing if role self-assignable", e);
 		}
 		return false;
 	}
@@ -348,7 +338,8 @@ public class Database{
 			stmt.setString(2, guildId);
 			var result = SQL.query(stmt);
 			if(result != null && result.next()){
-				return new ReactiveMessage(result.getString("channel_id"), result.getString("message_id"), result.getString("user_id"), result.getString("command_id"), result.getString("command"), result.getString("allowed"));
+				return new ReactiveMessage(result.getString("channel_id"), result.getString("message_id"), result.getString("user_id"), result.getString("command_id"), result
+						.getString("command"), result.getString("allowed"));
 			}
 		}
 		catch(SQLException e){
