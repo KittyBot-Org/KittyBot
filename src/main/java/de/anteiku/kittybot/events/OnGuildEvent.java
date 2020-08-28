@@ -24,6 +24,11 @@ public class OnGuildEvent extends ListenerAdapter{
 		BotLists.update(event.getJDA(), guildCount);
 		Database.registerGuild(guild);
 		InviteCache.initCaching(guild);
+		var owner = guild.getOwner();
+		KittyBot.sendToPublicLogChannel(String.format("Hellowo I joined the guild: ``%s``%s``%d`` members!%nCurrently I'm in %d guilds!", guild.getName(), owner == null ? " " : " with owner: ``" + owner
+				.getUser()
+				.getAsTag() + "`` and ", guild.getMemberCount(), guildCount));
+		
 		for(AuditLogEntry entry : guild.retrieveAuditLogs().cache(false)){
 			if(entry.getType() == ActionType.BOT_ADD && entry.getTargetId().equals(event.getJDA().getSelfUser().getId())){
 				MessageEmbed embed = new EmbedBuilder().setTitle("Hellowo and thank your for adding me to your Discord Server!")
@@ -46,10 +51,6 @@ public class OnGuildEvent extends ListenerAdapter{
 				return;//just want to catch the last add loool
 			}
 		}
-		var owner = guild.getOwner();
-		KittyBot.sendToPublicLogChannel(String.format("Hellowo I joined the guild: ``%s``%s``%d`` members!%nCurrently I'm in %d guilds!", guild.getName(), owner == null ? " " : " with owner: ``" + owner
-				.getUser()
-				.getAsTag() + "`` and ", guild.getMemberCount(), guildCount));
 	}
 
 	@Override
