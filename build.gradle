@@ -4,12 +4,16 @@ plugins {
     id 'java'
     id 'application'
     id 'com.github.johnrengelman.shadow' version '6.0.0'
+    id 'com.gorylenko.gradle-git-properties'
+    id 'org.ajoberstar.grgit'
 }
 
 group 'de.anteiku'
-version '2.6'
-
 mainClassName = 'de.anteiku.kittybot.KittyBot'
+version = "${versionFromTag()}".toString()
+ext {
+    moduleName = 'Lavalink-Server'
+}
 compileJava.options.encoding = 'UTF-8'
 
 repositories {
