@@ -59,6 +59,7 @@ public class OnGuildEvent extends ListenerAdapter{
 		ReactiveMessageCache.pruneCache(guild);
 		CommandResponseCache.pruneCache(guild);
 		SelfAssignableRoleCache.pruneCache(guild);
+		MessageCache.pruneCache(guild);
 		KittyBot.sendToPublicLogChannel(String.format("Helluwu I got kicked from the guild: ``%s``%nCurrently I'm in %d guilds!", guild.getName(), guildCount));
 	}
 
