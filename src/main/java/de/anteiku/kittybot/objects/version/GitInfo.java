@@ -2,8 +2,8 @@ package de.anteiku.kittybot.objects.version;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
@@ -12,6 +12,7 @@ import java.util.Properties;
 
 public class GitInfo{
 
+	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 	private static final Logger LOG = LoggerFactory.getLogger(GitInfo.class);
 	private static final String branch;
 	private static final String commitId;
@@ -21,8 +22,6 @@ public class GitInfo{
 	private static final String commitMessageFull;
 	private static final String commitMessageShort;
 	private static final String commitTime;
-	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-
 	static{
 		Properties prop = new Properties();
 		try{
@@ -43,10 +42,10 @@ public class GitInfo{
 		commitMessageShort = String.valueOf(prop.getOrDefault("git.commit.message.short", ""));
 
 		final String time = String.valueOf(prop.get("git.commit.time"));
-		if(time == null || time.equals("null")) {
+		if(time == null || time.equals("null")){
 			commitTime = "Unofficial";
 		}
-		else {
+		else{
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ");
 			commitTime = DATE_FORMAT.format(new Date(Instant.from(dtf.parse(time)).toEpochMilli()));
 		}
@@ -87,6 +86,6 @@ public class GitInfo{
 	public static String getCommitTime(){
 		return commitTime;
 	}
-	
+
 }
 

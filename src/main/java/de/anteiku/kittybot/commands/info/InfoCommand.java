@@ -1,10 +1,10 @@
 package de.anteiku.kittybot.commands.info;
 
-import de.anteiku.kittybot.objects.version.AppInfo;
 import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
+import de.anteiku.kittybot.objects.version.AppInfo;
 import de.anteiku.kittybot.objects.version.GitInfo;
 import net.dv8tion.jda.api.EmbedBuilder;
 

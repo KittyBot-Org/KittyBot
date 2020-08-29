@@ -29,16 +29,12 @@ public class CommandContext{
 		return event.getJDA();
 	}
 
-	public Guild getGuild(){
-		return getEvent().getGuild();
-	}
-
 	public TextChannel getChannel(){
 		return getEvent().getChannel();
 	}
 
-	public Message getMessage(){
-		return getEvent().getMessage();
+	public GuildMessageReceivedEvent getEvent(){
+		return this.event;
 	}
 
 	public String getCommand(){
@@ -49,18 +45,8 @@ public class CommandContext{
 		return this.args;
 	}
 
-	public User getSelfUser(){
-		return getEvent().getJDA().getSelfUser();
-	}
-
 	public User getUser(){
 		return this.event.getAuthor();
-	}
-
-	private boolean isMentionCommand(){
-		var content = getMessage().getContentRaw();
-		var botId = getSelfUser().getId();
-		return content.startsWith("<@" + botId + ">") || content.startsWith("<@!" + botId + ">");
 	}
 
 	public List<User> getMentionedUsers(){
@@ -75,6 +61,20 @@ public class CommandContext{
 		return users;
 	}
 
+	public Message getMessage(){
+		return getEvent().getMessage();
+	}
+
+	public User getSelfUser(){
+		return getEvent().getJDA().getSelfUser();
+	}
+
+	private boolean isMentionCommand(){
+		var content = getMessage().getContentRaw();
+		var botId = getSelfUser().getId();
+		return content.startsWith("<@" + botId + ">") || content.startsWith("<@!" + botId + ">");
+	}
+
 	public List<Member> getMentionedMembers(){
 		var members = getMessage().getMentionedMembers();
 		var selfMember = getSelfMember();
@@ -87,6 +87,14 @@ public class CommandContext{
 		return members;
 	}
 
+	public Member getSelfMember(){
+		return getGuild().getSelfMember();
+	}
+
+	public Guild getGuild(){
+		return getEvent().getGuild();
+	}
+
 	public Bag<User> getMentionedUsersBag(){
 		var users = getMessage().getMentionedUsersBag();
 		var selfUser = getSelfUser();
@@ -96,10 +104,6 @@ public class CommandContext{
 			users.remove(selfUser, occurrences == 1 ? 1 : occurrences - 1);
 		}
 		return users;
-	}
-
-	public Member getSelfMember(){
-		return getGuild().getSelfMember();
 	}
 
 	public Member getMember(){
@@ -120,10 +124,6 @@ public class CommandContext{
 
 	public Bag<Role> getMentionedRolesBag(){
 		return getMessage().getMentionedRolesBag();
-	}
-
-	public GuildMessageReceivedEvent getEvent(){
-		return this.event;
 	}
 
 }

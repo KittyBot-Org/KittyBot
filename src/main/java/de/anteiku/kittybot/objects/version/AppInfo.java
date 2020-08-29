@@ -2,6 +2,7 @@ package de.anteiku.kittybot.objects.version;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;

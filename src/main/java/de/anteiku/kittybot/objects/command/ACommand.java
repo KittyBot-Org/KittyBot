@@ -15,7 +15,6 @@ import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import okhttp3.Request;
-import org.apache.commons.collections4.Bag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

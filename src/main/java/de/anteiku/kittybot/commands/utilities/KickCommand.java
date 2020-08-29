@@ -1,18 +1,10 @@
 package de.anteiku.kittybot.commands.utilities;
 
-import de.anteiku.kittybot.Utils;
-import de.anteiku.kittybot.command.ACommand;
-import de.anteiku.kittybot.command.Category;
-import de.anteiku.kittybot.command.CommandContext;
+import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
+import de.anteiku.kittybot.objects.command.CommandContext;
+import de.anteiku.kittybot.utils.Utils;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Emote;
-import net.dv8tion.jda.api.entities.Icon;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
 
 public class KickCommand extends ACommand{
 
@@ -38,7 +30,7 @@ public class KickCommand extends ACommand{
 			return;
 		}
 		for(var member : members){
-			member.kick("").reason("Command  ran by '" + ctx.getUser().getAsTag() + "'(" + ctx.getUser().getId() + ")").queue();
+			member.kick("").reason("Command ran by '" + ctx.getUser().getAsTag() + "'(" + ctx.getUser().getId() + ")").queue();
 		}
 		sendAnswer(ctx, "Kicked " + Utils.pluralize("member", members));
 	}

@@ -186,23 +186,6 @@ public class Database{
 		}
 	}
 
-	public static Map<String, String> getSelfAssignableRoles(String guildId){
-		Map<String, String> map = new HashMap<>();
-		var query = "SELECT * FROM self_assignable_roles WHERE guild_id = ?";
-		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
-			stmt.setString(1, guildId);
-			ResultSet result = SQL.query(stmt);
-			while(result.next()){
-				map.put(result.getString("role_id"), result.getString("emote_id"));
-			}
-			return map;
-		}
-		catch(SQLException e){
-			LOG.error("Error while getting self-assignable roles from guild " + guildId, e);
-		}
-		return null;
-	}
-
 	public static boolean removeSelfAssignableRoles(String guildId, Set<String> roles){
 		boolean result = true;
 		for(String role : roles){
@@ -237,6 +220,23 @@ public class Database{
 			LOG.error("Error inserting self-assignable role", e);
 		}
 		return false;
+	}
+
+	public static Map<String, String> getSelfAssignableRoles(String guildId){
+		Map<String, String> map = new HashMap<>();
+		var query = "SELECT * FROM self_assignable_roles WHERE guild_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
+			stmt.setString(1, guildId);
+			ResultSet result = SQL.query(stmt);
+			while(result.next()){
+				map.put(result.getString("role_id"), result.getString("emote_id"));
+			}
+			return map;
+		}
+		catch(SQLException e){
+			LOG.error("Error while getting self-assignable roles from guild " + guildId, e);
+		}
+		return null;
 	}
 
 	public static String getAnnouncementChannelId(String guildId){

@@ -1,10 +1,9 @@
 package de.anteiku.kittybot.commands.utilities;
 
-import de.anteiku.kittybot.Utils;
-import de.anteiku.kittybot.command.ACommand;
-import de.anteiku.kittybot.command.Category;
-import de.anteiku.kittybot.command.CommandContext;
-import net.dv8tion.jda.api.MessageBuilder;
+import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.Category;
+import de.anteiku.kittybot.objects.command.CommandContext;
+import de.anteiku.kittybot.utils.Utils;
 import net.dv8tion.jda.api.Permission;
 
 public class BanCommand extends ACommand{
