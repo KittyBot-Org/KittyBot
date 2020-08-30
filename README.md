@@ -7,6 +7,7 @@
 [![Docker Latest Version](https://img.shields.io/docker/v/topisenpai/kittybot)](https://hub.docker.com/repository/docker/topisenpai/kittybot) 
 [![KittyBot Support Guild](https://img.shields.io/discord/608506410803658753)](https://discord.gg/sD3ABd5)
 [![KittyBot License](https://img.shields.io/github/license/TopISenpai/KittyBot)](LICENSE)
+[![CodeFactor](https://www.codefactor.io/repository/github/kittybot-org/kittybot/badge)](https://www.codefactor.io/repository/github/kittybot-org/kittybot)
 
 [![KittyBot Support Guild](https://discordapp.com/api/guilds/608506410803658753/embed.png?style=banner2)](https://discord.gg/sD3ABd5)
 
