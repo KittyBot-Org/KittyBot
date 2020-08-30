@@ -10,7 +10,7 @@ public class BanCommand extends ACommand{
 
 	public static final String COMMAND = "ban";
 	public static final String USAGE = "ban <@user, @user, ...> <message del days> <reason>";
-	public static final String DESCRIPTION = "Bans some members";
+	public static final String DESCRIPTION = "Bans members";
 	protected static final String[] ALIASES = {};
 	protected static final Category CATEGORY = Category.UTILITIES;
 
@@ -26,13 +26,26 @@ public class BanCommand extends ACommand{
 		}
 		var members = ctx.getMentionedMembers();
 		if(members.isEmpty()){
-			sendError(ctx, "Please mention at least one user");
+			sendError(ctx, "Please mention at least one member");
 			return;
 		}
-		for(var member : members){
-			member.ban(0, "").reason("Command ran by '" + ctx.getUser().getAsTag() + "'(" + ctx.getUser().getId() + ")").queue();
+		var selfMember = ctx.getSelfMember();
+		if(!selfMember.hasPermission(Permission.BAN_MEMBERS)){
+			sendError(ctx, "I have no permission to ban members");
+			return;
 		}
-		sendAnswer(ctx, "Banned " + Utils.pluralize("member", members));
+		var user  = ctx.getUser();
+		var failed = 0;
+		var success = 0;
+		for(var member : members){
+			if(!selfMember.canInteract(member)){
+				failed++;
+				continue;
+			}
+			member.ban(0, "").reason("Command ran by '" + user.getAsTag() + "'(" + user.getId() + ")").queue();
+			success++;
+		}
+		sendAnswer(ctx, "Successfully banned " + success + Utils.pluralize(" member", success) + " and failed " + failed + Utils.pluralize(" member", failed));
 	}
 
 }
