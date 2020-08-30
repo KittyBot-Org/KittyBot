@@ -35,7 +35,6 @@ public class Database{
 		}
 	}
 
-
 	private static boolean isGuildRegistered(Guild guild){
 		var query = "SELECT * FROM guilds WHERE guild_id = ?";
 		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
@@ -76,7 +75,6 @@ public class Database{
 		return false;
 	}
 
-
 	private static boolean setProperty(String guildId, String key, int value){
 		var query = "UPDATE guilds SET " + key + "=? WHERE guild_id = ?";
 		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
@@ -88,6 +86,47 @@ public class Database{
 			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
 		}
 		return false;
+	}
+
+	private static boolean setProperty(String guildId, String key, String value){
+		var query = "UPDATE guilds SET " + key + "=? WHERE guild_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
+			stmt.setString(1, value);
+			stmt.setString(2, guildId);
+			return SQL.execute(stmt);
+		}
+		catch(SQLException e){
+			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
+		}
+		return false;
+	}
+
+	private static boolean setProperty(String guildId, String key, boolean value){
+		var query = "UPDATE guilds SET " + key + "=? WHERE guild_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
+			stmt.setBoolean(1, value);
+			stmt.setString(2, guildId);
+			return SQL.execute(stmt);
+		}
+		catch(SQLException e){
+			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
+		}
+		return false;
+	}
+
+	private static String getString(String guildId, String key){
+		var query = "SELECT * FROM guilds WHERE guild_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
+			stmt.setString(1, guildId);
+			var result = SQL.query(stmt);
+			if(result != null && result.next()){
+				return result.getString(key);
+			}
+		}
+		catch(SQLException e){
+			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
+		}
+		return null;
 	}
 
 	public static boolean addCommandStatistics(String guildId, String commandId, String userId, String command, long processingTime){
@@ -130,36 +169,8 @@ public class Database{
 		return setProperty(guildId, "command_prefix", prefix);
 	}
 
-	private static boolean setProperty(String guildId, String key, String value){
-		var query = "UPDATE guilds SET " + key + "=? WHERE guild_id = ?";
-		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
-			stmt.setString(1, value);
-			stmt.setString(2, guildId);
-			return SQL.execute(stmt);
-		}
-		catch(SQLException e){
-			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
-		}
-		return false;
-	}
-
 	public static String getCommandPrefix(String guildId){
 		return getString(guildId, "command_prefix");
-	}
-
-	private static String getString(String guildId, String key){
-		var query = "SELECT * FROM guilds WHERE guild_id = ?";
-		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
-			stmt.setString(1, guildId);
-			var result = SQL.query(stmt);
-			if(result != null && result.next()){
-				return result.getString(key);
-			}
-		}
-		catch(SQLException e){
-			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
-		}
-		return null;
 	}
 
 	public static void setSelfAssignableRoles(String guildId, Map<String, String> newRoles){
@@ -276,19 +287,6 @@ public class Database{
 
 	public static boolean setJoinMessageEnabled(String guildId, boolean enabled){
 		return setProperty(guildId, "join_messages_enabled", enabled);
-	}
-
-	private static boolean setProperty(String guildId, String key, boolean value){
-		var query = "UPDATE guilds SET " + key + "=? WHERE guild_id = ?";
-		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
-			stmt.setBoolean(1, value);
-			stmt.setString(2, guildId);
-			return SQL.execute(stmt);
-		}
-		catch(SQLException e){
-			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
-		}
-		return false;
 	}
 
 	public static String getLeaveMessage(String guildId){
