@@ -82,6 +82,6 @@ public class GitInfo{
 	public static String getCommitTime(){
 		return COMMIT_TIME;
 	}
-	
+
 }
 

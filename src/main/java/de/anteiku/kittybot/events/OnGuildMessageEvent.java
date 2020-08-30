@@ -42,7 +42,7 @@ public class OnGuildMessageEvent extends ListenerAdapter{
 												.getId()) + "cmds`\n" + "To get help use `" + Database.getCommandPrefix(event.getGuild()
 										.getId()) + "help`")
 								.setThumbnail(event.getJDA().getSelfUser().getAvatarUrl())
-								.setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
+								.setFooter(event.getMember() == null ? event.getAuthor().getName() : event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
 								.setTimestamp(Instant.now())
 								.build())
 						.queue();

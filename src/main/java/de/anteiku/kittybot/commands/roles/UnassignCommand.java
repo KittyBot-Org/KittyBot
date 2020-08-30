@@ -1,6 +1,5 @@
 package de.anteiku.kittybot.commands.roles;
 
-import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.cache.SelfAssignableRoleCache;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.Category;

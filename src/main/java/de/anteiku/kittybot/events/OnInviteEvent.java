@@ -12,7 +12,6 @@ public class OnInviteEvent extends ListenerAdapter{
 		InviteCache.cacheInvite(event.getInvite());
 	}
 
-
 	@Override
 	public void onGuildInviteDelete(GuildInviteDeleteEvent event){
 		InviteCache.uncacheInvite(event.getGuild().getId(), event.getCode());

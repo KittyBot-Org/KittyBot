@@ -16,6 +16,8 @@ import lavalink.client.player.LavalinkPlayer;
 import lavalink.client.player.event.PlayerEventListenerAdapter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.time.Instant;
@@ -33,6 +35,7 @@ import static de.anteiku.kittybot.utils.Utils.pluralize;
 public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	public static final Pattern URL_PATTERN = Pattern.compile("^(https?://)?(www|m.)?(\\.)?youtu(\\.be|be\\.com)/(playlist\\?list=[a-zA-Z0-9-_]+)?((watch\\?v=)?([a-zA-Z0-9-_]{11})(&list=[a-zA-Z0-9-_]+)?)?");
+	private static final Logger LOG = LoggerFactory.getLogger(MusicPlayer.class);
 	private static final int VOLUME_MAX = 200;
 	private final LavalinkPlayer player;
 	private final Queue<AudioTrack> queue;
@@ -201,7 +204,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	public void sendMusicController(ACommand command, CommandContext ctx){
 		var msg = ctx.getMessage();
 		msg.getChannel()
-				.sendMessage(buildMusicControlMessage().setFooter(msg.getMember().getEffectiveName(), msg.getAuthor().getEffectiveAvatarUrl())
+				.sendMessage(buildMusicControlMessage().setFooter(msg.getMember() == null ? msg.getAuthor().getName() : msg.getMember().getEffectiveName(), msg.getAuthor().getEffectiveAvatarUrl())
 						.setTimestamp(Instant.now())
 						.build())
 				.queue(message -> {
@@ -285,13 +288,13 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	@Override
-	public void onTrackException(IPlayer player, AudioTrack track, Exception exception){
-		System.out.println(exception.getMessage()); // TODO fix :)
+	public void onTrackException(IPlayer player, AudioTrack track, Exception e){
+		LOG.error("Track exception", e);
 	}
 
 	@Override
 	public void onTrackStuck(IPlayer player, AudioTrack track, long thresholdMs){
-		System.out.println("onTrackStuck");
+		LOG.error("Track is stuck in guild {}", this.player.getLink().getGuildId());
 	}
 
 	public boolean previousTrack(){

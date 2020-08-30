@@ -1,15 +1,11 @@
 package de.anteiku.kittybot.utils;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import de.anteiku.kittybot.database.SQL;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.time.Duration;
 import java.util.*;
 
@@ -25,27 +21,6 @@ public class Utils{
 			builder.append(CHARS.charAt((int) (Math.random() * CHARS.length())));
 		}
 		return builder.toString();
-	}
-
-	public static List<String> loadMessageFile(String fileName){
-		var inputStream = SQL.class.getClassLoader().getResourceAsStream("messages/" + fileName + ".txt");
-		if(inputStream == null){
-			LOG.error("Message file not found");
-			return null;
-		}
-		var reader = new BufferedReader(new InputStreamReader((inputStream)));
-		List<String> set = new ArrayList<>();
-		try{
-			String line;
-			while((line = reader.readLine()) != null){
-				set.add(line);
-			}
-			reader.close();
-		}
-		catch(IOException e){
-			LOG.error("Error reading message file", e);
-		}
-		return set;
 	}
 
 	public static boolean isEnable(String string){

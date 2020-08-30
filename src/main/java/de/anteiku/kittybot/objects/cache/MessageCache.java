@@ -67,4 +67,5 @@ public class MessageCache{
 	public static void pruneCache(Guild guild){
 		MESSAGE_CACHE.entrySet().removeIf(entry -> entry.getValue().getGuildId().equals(guild.getId()));
 	}
+
 }

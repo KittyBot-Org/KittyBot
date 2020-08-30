@@ -23,7 +23,7 @@ public class OnGuildVoiceEvent extends ListenerAdapter{
 			}
 			var channel = event.getChannelLeft();
 			var currentChannel = musicPlayer.getPlayer().getLink().getChannel();
-			if(!channel.getId().equals(currentChannel)){
+			if(channel == null || !channel.getId().equals(currentChannel)){
 				return;
 			}
 			if(channel.getMembers().stream().anyMatch(member -> !member.getUser().isBot())){
