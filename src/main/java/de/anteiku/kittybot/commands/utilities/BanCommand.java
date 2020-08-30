@@ -25,8 +25,8 @@ public class BanCommand extends ACommand{
 			return;
 		}
 		var members = ctx.getMentionedMembers();
-		if(members.size() == 0){
-			sendError(ctx, "Please mention a user");
+		if(members.isEmpty()){
+			sendError(ctx, "Please mention at least one user");
 			return;
 		}
 		for(var member : members){

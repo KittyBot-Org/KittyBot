@@ -51,7 +51,7 @@ public class RolesCommand extends ACommand{
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("list")){
 					Map<Role, Emote> map = getRoleEmoteMap(ctx.getGuild());
-					if(map.size() == 0){
+					if(map.isEmpty()){
 						sendAnswer(ctx, "There are no roles added!");
 					}
 					else{
@@ -72,7 +72,7 @@ public class RolesCommand extends ACommand{
 		}
 		else{
 			Map<Role, Emote> roles = getRoleEmoteMap(ctx.getGuild());
-			if(roles.size() == 0){
+			if(roles.isEmpty()){
 				sendError(ctx, "No self-assignable roles configured!\nIf you are an admin use `.roles add @role :emote: @role :emote:...` to add roles!");
 				return;
 			}
