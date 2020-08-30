@@ -5,6 +5,7 @@ import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.BotLists;
 import de.anteiku.kittybot.objects.cache.*;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.audit.ActionType;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
@@ -22,13 +23,22 @@ public class OnGuildEvent extends ListenerAdapter{
 		BotLists.update(event.getJDA(), guildCount);
 		Database.registerGuild(guild);
 		InviteCache.initCaching(guild);
-		guild.retrieveAuditLogs().type(ActionType.BOT_ADD).limit(1).cache(false).queue(entries ->{
+		var owner = guild.getOwner();
+		KittyBot.sendToPublicLogChannel(String.format("Hellowo I joined the guild: ``%s``%s``%d`` members!%nCurrently I'm in %d guilds!", guild.getName(), owner == null ? " " : " with owner: ``" + owner
+				.getUser()
+				.getAsTag() + "`` and ", guild.getMemberCount(), guildCount));
+		if(!event.getGuild().getSelfMember().hasPermission(Permission.VIEW_AUDIT_LOGS)){
+			return;
+		}
+		guild.retrieveAuditLogs().type(ActionType.BOT_ADD).limit(1).cache(false).queue(entries -> {
 			var entry = entries.get(0);
-			if (!entry.getTargetId().equals(event.getJDA().getSelfUser().getId()))
+			if (!entry.getTargetId().equals(event.getJDA().getSelfUser().getId())){
 				return;
+            }
 			var user = entry.getUser();
-			if (user == null)
+			if (user == null){
 				return;
+            }
 			var embed = new EmbedBuilder().setTitle("Hellowo and thank your for adding me to your Discord Server!")
 					.setDescription("To get started you maybe want to set up some self assignable roles. This can be done with `.roles add @role :emote:`. You will need a emote for each role and they should be from your server!\n\n" + "If you want to know my other commands just type ``.commands``.\n" + "To change my prefix use ``.options prefix <your wished prefix>``.\n" + "In case you forgot any command just type ``.cmds`` to get a full list off all my commands!\n\n" + "To report bugs/suggest features either join my [Support Server](https://discord.gg/sD3ABd5), add me on Discord ``Toπ#3141`` or message me on [Twitter](https://twitter.com/TopiSenpai)")
 					.setColor(new Color(76, 80, 193))
@@ -42,10 +52,6 @@ public class OnGuildEvent extends ListenerAdapter{
 				.onErrorFlatMap(ignored -> defaultChannel != null && defaultChannel.canTalk(), ignored -> defaultChannel.sendMessage(embed))
 				.queue();
 		});
-		var owner = guild.getOwner();
-		KittyBot.sendToPublicLogChannel(String.format("Hellowo I joined the guild: ``%s``%s``%d`` members!%nCurrently I'm in %d guilds!", guild.getName(), owner == null ? " " : " with owner: ``" + owner
-				.getUser()
-				.getAsTag() + "`` and ", guild.getMemberCount(), guildCount));
 	}
 
 	@Override
