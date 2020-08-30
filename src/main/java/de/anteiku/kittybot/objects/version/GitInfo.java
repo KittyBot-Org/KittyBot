@@ -9,7 +9,6 @@ import java.util.Properties;
 
 public class GitInfo{
 
-	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 	private static final Logger LOG = LoggerFactory.getLogger(GitInfo.class);
 	private static final String BRANCH;
 	private static final String COMMIT_ID;
