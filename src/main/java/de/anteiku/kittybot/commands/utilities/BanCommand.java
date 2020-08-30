@@ -30,7 +30,7 @@ public class BanCommand extends ACommand{
 			return;
 		}
 		for(var member : members){
-			member.ban(0, "").reason("Command  ran by '" + ctx.getUser().getAsTag() + "'(" + ctx.getUser().getId() + ")").queue();
+			member.ban(0, "").reason("Command ran by '" + ctx.getUser().getAsTag() + "'(" + ctx.getUser().getId() + ")").queue();
 		}
 		sendAnswer(ctx, "Banned " + Utils.pluralize("member", members));
 	}
