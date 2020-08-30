@@ -1,27 +1,25 @@
 package de.anteiku.kittybot.objects.version;
 
+import de.anteiku.kittybot.utils.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.Properties;
 
 public class GitInfo{
 
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 	private static final Logger LOG = LoggerFactory.getLogger(GitInfo.class);
-	private static final String branch;
-	private static final String commitId;
-	private static final String commitIdAbbrev;
-	private static final String commitUserName;
-	private static final String commitUserEmail;
-	private static final String commitMessageFull;
-	private static final String commitMessageShort;
-	private static final String commitTime;
+	private static final String BRANCH;
+	private static final String COMMIT_ID;
+	private static final String COMMIT_ID_ABBREV;
+	private static final String COMMIT_USERNAME;
+	private static final String COMMIT_EMAIL;
+	private static final String COMMIT_MESSAGE;
+	private static final String COMMIT_MESSAGE_SHORT;
+	private static final String COMMIT_TIME;
+
 	static{
 		Properties prop = new Properties();
 		try{
@@ -33,58 +31,57 @@ public class GitInfo{
 		catch(IOException e){
 			LOG.info("Failed to load git repo information due to suspicious IOException", e);
 		}
-		branch = String.valueOf(prop.getOrDefault("git.branch", ""));
-		commitId = String.valueOf(prop.getOrDefault("git.commit.id", ""));
-		commitIdAbbrev = String.valueOf(prop.getOrDefault("git.commit.id.abbrev", ""));
-		commitUserName = String.valueOf(prop.getOrDefault("git.commit.user.name", ""));
-		commitUserEmail = String.valueOf(prop.getOrDefault("git.commit.user.email", ""));
-		commitMessageFull = String.valueOf(prop.getOrDefault("git.commit.message.full", ""));
-		commitMessageShort = String.valueOf(prop.getOrDefault("git.commit.message.short", ""));
+		BRANCH = String.valueOf(prop.getOrDefault("git.branch", ""));
+		COMMIT_ID = String.valueOf(prop.getOrDefault("git.commit.id", ""));
+		COMMIT_ID_ABBREV = String.valueOf(prop.getOrDefault("git.commit.id.abbrev", ""));
+		COMMIT_USERNAME = String.valueOf(prop.getOrDefault("git.commit.user.name", ""));
+		COMMIT_EMAIL = String.valueOf(prop.getOrDefault("git.commit.user.email", ""));
+		COMMIT_MESSAGE = String.valueOf(prop.getOrDefault("git.commit.message.full", ""));
+		COMMIT_MESSAGE_SHORT = String.valueOf(prop.getOrDefault("git.commit.message.short", ""));
 
 		final String time = String.valueOf(prop.get("git.commit.time"));
 		if(time == null || time.equals("null")){
-			commitTime = "Unofficial";
+			COMMIT_TIME = "Unofficial";
 		}
 		else{
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ");
-			commitTime = DATE_FORMAT.format(new Date(Instant.from(dtf.parse(time)).toEpochMilli()));
+			COMMIT_TIME = TimeUtils.parseTime(time);
 		}
 	}
 
 	public static String getBranch(){
-		return branch;
+		return BRANCH;
 	}
 
 	public static String getShortCommitId(){
-		return commitId.substring(0, 7);
+		return COMMIT_ID.substring(0, 7);
 	}
 
 	public static String getCommitId(){
-		return commitId;
+		return COMMIT_ID;
 	}
 
 	public static String getCommitIdAbbrev(){
-		return commitIdAbbrev;
+		return COMMIT_ID_ABBREV;
 	}
 
 	public static String getCommitUserName(){
-		return commitUserName;
+		return COMMIT_USERNAME;
 	}
 
 	public static String getCommitUserEmail(){
-		return commitUserEmail;
+		return COMMIT_EMAIL;
 	}
 
 	public static String getCommitMessageFull(){
-		return commitMessageFull;
+		return COMMIT_MESSAGE;
 	}
 
 	public static String getCommitMessageShort(){
-		return commitMessageShort;
+		return COMMIT_MESSAGE_SHORT;
 	}
 
 	public static String getCommitTime(){
-		return commitTime;
+		return COMMIT_TIME;
 	}
 
 }

@@ -1,10 +1,10 @@
 package de.anteiku.kittybot.objects.version;
 
+import de.anteiku.kittybot.utils.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.Properties;
 
 public class AppInfo{
@@ -30,9 +30,11 @@ public class AppInfo{
 		BUILD_NUMBER = prop.getProperty("buildNumber");
 		var buildTime = prop.getProperty("buildTime");
 		if(buildTime.equals("@env.BUILD_TIME@")){
-			buildTime = "0";
+			BUILD_TIME = "Unknown";
 		}
-		BUILD_TIME = GitInfo.DATE_FORMAT.format(new Date(Long.parseLong(buildTime)));
+		else{
+			BUILD_TIME = TimeUtils.parseTimeMillis(buildTime);
+		}
 	}
 
 	public static String getVersion(){

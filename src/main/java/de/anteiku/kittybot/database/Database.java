@@ -35,7 +35,6 @@ public class Database{
 		}
 	}
 
-
 	private static boolean isGuildRegistered(Guild guild){
 		var query = "SELECT * FROM guilds WHERE guild_id = ?";
 		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
@@ -75,7 +74,6 @@ public class Database{
 		}
 		return false;
 	}
-
 
 	private static boolean setProperty(String guildId, String key, int value){
 		var query = "UPDATE guilds SET " + key + "=? WHERE guild_id = ?";

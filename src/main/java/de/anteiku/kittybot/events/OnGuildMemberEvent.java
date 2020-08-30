@@ -2,7 +2,7 @@ package de.anteiku.kittybot.events;
 
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.cache.InviteCache;
-import de.anteiku.kittybot.utils.Utils;
+import de.anteiku.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -17,9 +17,9 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class OnGuildMemberEvent extends ListenerAdapter{
 
-	private static final List<String> JOIN_MESSAGES = Utils.loadMessageFile("join_messages");
-	private static final List<String> LEAVE_MESSAGES = Utils.loadMessageFile("leave_messages");
-	private static final List<String> BOOST_MESSAGES = Utils.loadMessageFile("boost_messages");
+	private static final List<String> JOIN_MESSAGES = MessageUtils.loadMessageFile("join");
+	private static final List<String> LEAVE_MESSAGES = MessageUtils.loadMessageFile("leave");
+	private static final List<String> BOOST_MESSAGES = MessageUtils.loadMessageFile("boost");
 
 	@Override
 	public void onGuildMemberRemove(GuildMemberRemoveEvent event){

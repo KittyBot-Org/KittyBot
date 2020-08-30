@@ -83,13 +83,13 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 			// TIMEOUT
 
 			KittyBot.getWaiter()
-					.waitForEvent(GuildMessageReactionAddEvent.class, ev -> ev.getMessageIdLong() == messageId && ev.getUserIdLong() == authorId, ev -> {
-					}, 3, TimeUnit.MINUTES, () -> {
-						message.delete().queue();
-						channel.deleteMessageById(messageId).queue();
+					.waitForEvent(GuildMessageReactionAddEvent.class, ev -> ev.getMessageIdLong() == messageId && ev.getUserIdLong() == authorId, ev -> {}, 3, TimeUnit.MINUTES,
+							() -> {
+								message.delete().queue();
+								channel.deleteMessageById(messageId).queue();
 
-						removePaginator(channelId, messageId);
-					});
+								removePaginator(channelId, messageId);
+							});
 		});
 	}
 

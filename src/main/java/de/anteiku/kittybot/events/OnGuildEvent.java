@@ -5,6 +5,7 @@ import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.BotLists;
 import de.anteiku.kittybot.objects.cache.*;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.audit.ActionType;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
@@ -22,6 +23,13 @@ public class OnGuildEvent extends ListenerAdapter{
 		BotLists.update(event.getJDA(), guildCount);
 		Database.registerGuild(guild);
 		InviteCache.initCaching(guild);
+		var owner = guild.getOwner();
+		KittyBot.sendToPublicLogChannel(String.format("Hellowo I joined the guild: ``%s``%s``%d`` members!%nCurrently I'm in %d guilds!", guild.getName(), owner == null ? " " : " with owner: ``" + owner
+				.getUser()
+				.getAsTag() + "`` and ", guild.getMemberCount(), guildCount));
+		if(!event.getGuild().getSelfMember().hasPermission(Permission.VIEW_AUDIT_LOGS)){
+			return;
+		}
 		guild.retrieveAuditLogs().type(ActionType.BOT_ADD).limit(1).cache(false).queue(entries -> {
 			var entry = entries.get(0);
 			if(!entry.getTargetId().equals(event.getJDA().getSelfUser().getId())){
@@ -44,10 +52,6 @@ public class OnGuildEvent extends ListenerAdapter{
 					.onErrorFlatMap(ignored -> defaultChannel != null && defaultChannel.canTalk(), ignored -> defaultChannel.sendMessage(embed))
 					.queue();
 		});
-		var owner = guild.getOwner();
-		KittyBot.sendToPublicLogChannel(String.format("Hellowo I joined the guild: ``%s``%s``%d`` members!%nCurrently I'm in %d guilds!", guild.getName(), owner == null ? " " : " with owner: ``" + owner
-				.getUser()
-				.getAsTag() + "`` and ", guild.getMemberCount(), guildCount));
 	}
 
 	@Override
@@ -61,6 +65,7 @@ public class OnGuildEvent extends ListenerAdapter{
 		ReactiveMessageCache.pruneCache(guild);
 		CommandResponseCache.pruneCache(guild);
 		SelfAssignableRoleCache.pruneCache(guild);
+		MessageCache.pruneCache(guild);
 		KittyBot.sendToPublicLogChannel(String.format("Helluwu I got kicked from the guild: ``%s``%nCurrently I'm in %d guilds!", guild.getName(), guildCount));
 	}
 

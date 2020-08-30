@@ -1,7 +1,9 @@
 package de.anteiku.kittybot.objects.cache;
 
 import de.anteiku.kittybot.objects.messages.MessageData;
+import net.dv8tion.jda.api.entities.Guild;
 
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,8 +60,12 @@ public class MessageCache{
 		LAST_MESSAGE_EDITED_DATA.remove(messageId);
 	}
 
-	public static Map<String, MessageData> getCache(){
-		return MESSAGE_CACHE;
+	public static void pruneCache(){
+		MESSAGE_CACHE.entrySet().removeIf(entry -> entry.getValue().getCreation().isBefore(OffsetDateTime.now().minusMinutes(10).toInstant()));
+	}
+
+	public static void pruneCache(Guild guild){
+		MESSAGE_CACHE.entrySet().removeIf(entry -> entry.getValue().getGuildId().equals(guild.getId()));
 	}
 
 }
