@@ -2,14 +2,12 @@ package de.anteiku.kittybot.objects.paginator;
 
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.objects.TitleInfo;
-import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-import java.awt.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,8 +30,8 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 	private static final Map<Long, Integer> CURRENT_PAGE = new HashMap<>();                                // K = messageId, V = current page
 	private static final Map<Long, BiConsumer<Integer, EmbedBuilder>> CONTENT_CONSUMERS = new HashMap<>(); // K = messageId, V = BiConsumer<PageNumber, EmbedBuilder>
 
-	public static void createCommandsPaginator(final CommandContext ctx, final int totalPages, final Map<Integer, TitleInfo> titlePerPage, final Map<Integer, ArrayList<MessageEmbed.Field>> fields){
-		createPaginator(ctx, totalPages, (page, embedBuilder) -> {
+	public static void createCommandsPaginator(final Message message, final int totalPages, final Map<Integer, TitleInfo> titlePerPage, final Map<Integer, ArrayList<MessageEmbed.Field>> fields){
+		createPaginator(message, totalPages, (page, embedBuilder) -> {
 			var titleInfo = titlePerPage.get(page);
 			embedBuilder.setTitle(titleInfo.getTitle(), titleInfo.getUrl());
 			fields.get(page).forEach(embedBuilder::addField);
@@ -41,24 +39,8 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 		});
 	}
 
-	public static void createPaginator(final CommandContext ctx, final int totalPages, final BiConsumer<Integer, EmbedBuilder> contentConsumer){
-		final var channel = ctx.getChannel();
-		final var message = ctx.getMessage();
-		final var selfMember = channel.getGuild().getSelfMember();
-		if(!channel.canTalk()){
-			if(selfMember.hasPermission(channel, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_HISTORY)){
-				message.addReaction(X).queue();
-			}
-			return;
-		}
-		if(!selfMember.hasPermission(channel, Permission.MESSAGE_HISTORY) || !selfMember.hasPermission(channel, Permission.MESSAGE_ADD_REACTION) || !selfMember.hasPermission(channel, Permission.MESSAGE_MANAGE)){
-			channel.sendMessage(new EmbedBuilder().setColor(Color.RED)
-					.addField("Error:", "I'm missing required permissions for paginator to work. Ensure that i can read the message history, add reactions and manage messages in this channel.", true)
-					.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
-					.setTimestamp(Instant.now())
-					.build()).queue(); // TODO improve checks
-			return;
-		}
+	public static void createPaginator(final Message message, final int totalPages, final BiConsumer<Integer, EmbedBuilder> contentConsumer){
+		final var channel = message.getTextChannel();
 		final var embedBuilder = new EmbedBuilder();
 		embedBuilder.setFooter("Page 1/" + totalPages);
 		contentConsumer.accept(0, embedBuilder);
