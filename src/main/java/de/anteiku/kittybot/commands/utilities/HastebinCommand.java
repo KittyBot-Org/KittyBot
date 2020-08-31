@@ -5,6 +5,7 @@ import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
+import de.anteiku.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import okhttp3.*;
@@ -20,7 +21,7 @@ public class HastebinCommand extends ACommand{
 
 	public static final String COMMAND = "hastebin";
 	public static final String USAGE = "hastebin <file>";
-	public static final String DESCRIPTION = "creates a " + Config.HASTEBIN_URL + " from the file";
+	public static final String DESCRIPTION = "creates a " + MessageUtils.maskLink("hastebin", Config.HASTEBIN_URL) + " from the file";
 	protected static final String[] ALIASES = {};
 	protected static final Category CATEGORY = Category.UTILITIES;
 
