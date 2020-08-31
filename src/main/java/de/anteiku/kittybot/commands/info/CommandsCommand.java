@@ -1,5 +1,6 @@
 package de.anteiku.kittybot.commands.info;
 
+import de.anteiku.kittybot.objects.Emojis;
 import de.anteiku.kittybot.objects.TitleInfo;
 import de.anteiku.kittybot.objects.cache.PrefixCache;
 import de.anteiku.kittybot.objects.command.ACommand;
@@ -62,7 +63,7 @@ public class CommandsCommand extends ACommand{
 			final var fields = new ArrayList<MessageEmbed.Field>();
 			commands.stream()
 					.filter(command -> command.getCategory() == category)
-					.forEach(cmd -> fields.add(new MessageEmbed.Field("**" + prefix + cmd.getCommand() + ":** ", " :small_blue_diamond:" + cmd.getDescription(), false)));
+					.forEach(cmd -> fields.add(new MessageEmbed.Field("**" + prefix + cmd.getCommand() + ":** ", Emojis.BLANK + "•" + cmd.getDescription(), true)));
 			contents.put(c, fields);
 			c++;
 		}
