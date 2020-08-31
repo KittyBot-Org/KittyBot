@@ -1,3 +1,3 @@
 watching you 👀
-watching ${total_guilds} 👀
-watching ${total_users} 👀
+watching ${total_guilds} guilds 👀
+watching ${total_users} users 👀
