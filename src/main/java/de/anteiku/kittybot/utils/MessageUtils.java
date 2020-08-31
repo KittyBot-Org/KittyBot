@@ -1,12 +1,12 @@
 package de.anteiku.kittybot.utils;
 
-import de.anteiku.kittybot.database.SQL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,12 +15,12 @@ public class MessageUtils{
 	private static final Logger LOG = LoggerFactory.getLogger(MessageUtils.class);
 
 	public static List<String> loadMessageFile(String fileName){
-		var inputStream = SQL.class.getClassLoader().getResourceAsStream("messages/" + fileName + "_messages.txt");
+		var inputStream = MessageUtils.class.getClassLoader().getResourceAsStream("messages/" + fileName + "_messages.txt");
 		if(inputStream == null){
 			LOG.error("Message file not found");
 			return null;
 		}
-		var reader = new BufferedReader(new InputStreamReader((inputStream)));
+		var reader = new BufferedReader(new InputStreamReader((inputStream), StandardCharsets.UTF_8));
 		List<String> set = new ArrayList<>();
 		try{
 			String line;

@@ -130,8 +130,6 @@ public class KittyBot{
 
 			new WebService(6969);
 
-			jda.getPresence().setStatus(OnlineStatus.ONLINE);
-
 			SCHEDULER.scheduleAtFixedRate(MessageCache::pruneCache, 1, 1, TimeUnit.HOURS);
 
 			SCHEDULER.scheduleAtFixedRate(StatusManager::newRandomStatus, 0, 5, TimeUnit.MINUTES);
