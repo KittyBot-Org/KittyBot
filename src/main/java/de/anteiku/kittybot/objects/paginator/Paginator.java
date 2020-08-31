@@ -137,7 +137,8 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 				CURRENT_PAGE.put(messageId, previousPage);
 				break;
 			case ARROW_RIGHT:
-				if(currentPage == total){
+				final var nextPage = currentPage + 1;
+				if(nextPage == total){
 					return;
 				}
 				if(currentPage == 0){
@@ -147,7 +148,6 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 							.flatMap(ignored -> channel.addReactionById(messageId, WASTEBASKET))
 							.queue();
 				}
-				final var nextPage = currentPage + 1;
 				contentConsumer.accept(nextPage, newPageBuilder);
 				newPageBuilder.setFooter("Page " + (nextPage + 1) + "/" + total);
 				if(nextPage + 1 == total){
