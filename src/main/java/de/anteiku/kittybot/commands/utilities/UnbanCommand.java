@@ -33,7 +33,7 @@ public class UnbanCommand extends ACommand{
 			sendError(ctx, "I have no permission to unban users");
 			return;
 		}
-		var user  = ctx.getUser();
+		var user = ctx.getUser();
 		for(var u : users){
 			ctx.getGuild().unban(u.getId()).reason("Command ran by '" + user.getAsTag() + "'(" + user.getId() + ")").queue();
 		}

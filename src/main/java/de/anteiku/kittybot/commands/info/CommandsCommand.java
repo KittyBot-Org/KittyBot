@@ -1,6 +1,5 @@
 package de.anteiku.kittybot.commands.info;
 
-import de.anteiku.kittybot.objects.Emojis;
 import de.anteiku.kittybot.objects.TitleInfo;
 import de.anteiku.kittybot.objects.cache.PrefixCache;
 import de.anteiku.kittybot.objects.command.ACommand;

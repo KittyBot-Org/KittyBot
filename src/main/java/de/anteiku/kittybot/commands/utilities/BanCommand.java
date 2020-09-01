@@ -3,6 +3,7 @@ package de.anteiku.kittybot.commands.utilities;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
+import de.anteiku.kittybot.utils.MessageUtils;
 import de.anteiku.kittybot.utils.Utils;
 import net.dv8tion.jda.api.Permission;
 
@@ -34,15 +35,25 @@ public class BanCommand extends ACommand{
 			sendError(ctx, "I have no permission to ban members");
 			return;
 		}
-		var user  = ctx.getUser();
+		int delDays;
+		try{
+			System.out.println(ctx.getArgs()[members.size()]);
+			delDays = Integer.parseInt(ctx.getArgs()[members.size()]);
+		}
+		catch(NumberFormatException e){
+			sendError(ctx, "Please provide a valid number for message deletion days");
+			return;
+		}
+		var user = ctx.getUser();
 		var failed = 0;
 		var success = 0;
 		for(var member : members){
+			sendAnswer(ctx, "Reason: " + MessageUtils.rebuildMessage(ctx.getMessage(), members.get(members.size() - 1).getId() + ">", String.valueOf(delDays)));
 			if(!selfMember.canInteract(member)){
 				failed++;
 				continue;
 			}
-			member.ban(0, "").reason("Command ran by '" + user.getAsTag() + "'(" + user.getId() + ")").queue();
+			//member.ban(delDays, MessageUtils.rebuildMessage(ctx.getMessage(), members.get(members.size() - 1).getId() + ">")).reason("Command ran by '" + user.getAsTag() + "'(" + user.getId() + ")").queue();
 			success++;
 		}
 		sendAnswer(ctx, "Successfully banned " + success + Utils.pluralize(" member", success) + " and failed " + failed + Utils.pluralize(" member", failed));

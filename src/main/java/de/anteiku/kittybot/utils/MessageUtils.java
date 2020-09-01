@@ -1,5 +1,6 @@
 package de.anteiku.kittybot.utils;
 
+import net.dv8tion.jda.api.entities.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +38,17 @@ public class MessageUtils{
 
 	public static String maskLink(String title, String url){
 		return "[" + title + "](" + url + ")";
+	}
+
+	public static String rebuildMessage(Message message, String when, String when2){
+		var content = message.getContentRaw();
+		var last = content.lastIndexOf(when);
+		if(last == -1){
+			return "";
+		}
+		content = content.substring(last + when.length());
+		var first = content.indexOf(when2);
+		return content.substring(first + when2.length());
 	}
 
 }

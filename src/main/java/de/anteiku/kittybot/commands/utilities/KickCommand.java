@@ -34,7 +34,7 @@ public class KickCommand extends ACommand{
 			sendError(ctx, "I have no permission to kick members");
 			return;
 		}
-		var user  = ctx.getUser();
+		var user = ctx.getUser();
 		var failed = 0;
 		var success = 0;
 		for(var member : members){
