@@ -40,7 +40,7 @@ dependencies {
 
     // other
     implementation 'org.discordbots:DBL-Java-Library:2.0.1'
-    implementation 'io.javalin:javalin:3.9.1'
+    implementation 'io.javalin:javalin:3.10.0'
     implementation 'org.yaml:snakeyaml:1.26'
     implementation 'io.github.classgraph:classgraph:4.8.78'
 }
