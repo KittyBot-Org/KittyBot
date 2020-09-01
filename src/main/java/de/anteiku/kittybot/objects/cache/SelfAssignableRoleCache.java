@@ -10,6 +10,11 @@ import java.util.Set;
 public class SelfAssignableRoleCache{
 
 	private static final Map<String, Map<String, String>> SELF_ASSIGNABLE_ROLES = new HashMap<>();
+	private static final Map<String, Map<String, String>> SELF_ASSIGNABLE_ROLE_GROUPS = new HashMap<>();
+
+	public static void addSelfAssignableRoleGroups(String guildId, Set<String> groups){
+		Database.addSelfAssignableRoleGroups(guildId, groups);
+	}
 
 	public static void setSelfAssignableRoles(String guildId, Map<String, String> selfAssignableRoles){
 		Database.setSelfAssignableRoles(guildId, selfAssignableRoles);

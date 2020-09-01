@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.*;
 
 public class Database{
@@ -221,12 +222,12 @@ public class Database{
 	}
 
 	public static Map<String, String> getSelfAssignableRoles(String guildId){
-		Map<String, String> map = new HashMap<>();
+		var map = new HashMap<String, String>();
 		var query = "SELECT * FROM self_assignable_roles WHERE guild_id = ?";
 		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, guildId);
 			ResultSet result = SQL.query(stmt);
-			while(result.next()){
+			while(result != null && result.next()){
 				map.put(result.getString("role_id"), result.getString("emote_id"));
 			}
 			return map;
@@ -235,6 +236,58 @@ public class Database{
 			LOG.error("Error while getting self-assignable roles from guild " + guildId, e);
 		}
 		return null;
+	}
+
+	public static boolean removeSelfAssignableRoleGroups(String guildId, Set<String> groups){
+		boolean result = true;
+		for(var group : groups){
+			var query = "DELETE FROM self_assignable_role_groups WHERE group_id = ? and guild_id = ?";
+			try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
+				stmt.setString(1, group);
+				stmt.setString(2, guildId);
+				boolean r = SQL.execute(stmt);
+				if(!r){
+					result = false;
+				}
+			}
+			catch(SQLException e){
+				LOG.error("Error removing self-assignable role group: " + group + " guild " + guildId, e);
+			}
+		}
+		return result;
+	}
+
+	public static Map<String, String> getSelfAssignableRoleGroups(String guildId){
+		var map = new HashMap<String, String>();
+		var query = "SELECT * FROM self_assignable_role_groups WHERE guild_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
+			stmt.setString(1, guildId);
+			ResultSet result = SQL.query(stmt);
+			while(result != null && result.next()){
+				map.put(result.getString("group_id"), result.getString("group_name"));
+			}
+			return map;
+		}
+		catch(SQLException e){
+			LOG.error("Error while getting self-assignable role groups from guild " + guildId, e);
+		}
+		return null;
+	}
+
+	public static boolean addSelfAssignableRoleGroups(String guildId, Set<String> groups){
+		var query = "INSERT INTO self_assignable_role_groups (guild_id, group_name) VALUES (?, ?)" + ", (?, ?)".repeat(groups.size() - 1);
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
+			var i = 0;
+			for(var group : groups){
+				stmt.setString(++i, guildId);
+				stmt.setString(++i, group);
+			}
+			return SQL.execute(stmt);
+		}
+		catch(SQLException e){
+			LOG.error("Error inserting self-assignable role group", e);
+		}
+		return false;
 	}
 
 	public static String getAnnouncementChannelId(String guildId){
