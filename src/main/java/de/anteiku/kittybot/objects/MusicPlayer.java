@@ -263,7 +263,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		if(guild == null){
 			return;
 		}
-		if((endReason.mayStartNext && !nextTrack()) || (queue.isEmpty() && player.getPlayingTrack() == null)){
+		if((endReason.mayStartNext && !nextTrack()) || queue.isEmpty()){
 			future = KittyBot.getScheduler().schedule(() -> MusicPlayerCache.destroyMusicPlayer(guild), 2, TimeUnit.MINUTES);
 		}
 	}
