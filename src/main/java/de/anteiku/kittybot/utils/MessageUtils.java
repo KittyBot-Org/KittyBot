@@ -39,4 +39,20 @@ public class MessageUtils{
 		return "[" + title + "](" + url + ")";
 	}
 
+	public static String getUserMention(String userId){
+		return "<@" + userId + ">";
+	}
+
+	public static String getRoleMention(String userId){
+		return "<@&" + userId + ">";
+	}
+
+	public static String getChannelMention(String channelId){
+		return "<#" + channelId + ">";
+	}
+
+	public static String getEmoteMention(String emoteId){
+		return "<:i:" + emoteId + ">";
+	}
+
 }

@@ -1,58 +1,67 @@
 package de.anteiku.kittybot.objects.cache;
 
 import de.anteiku.kittybot.database.Database;
+import de.anteiku.kittybot.objects.SelfAssignableRole;
+import de.anteiku.kittybot.objects.SelfAssignableRoleGroup;
 import net.dv8tion.jda.api.entities.Guild;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SelfAssignableRoleCache{
 
-	private static final Map<String, Map<String, String>> SELF_ASSIGNABLE_ROLES = new HashMap<>();
-	private static final Map<String, Map<String, String>> SELF_ASSIGNABLE_ROLE_GROUPS = new HashMap<>();
+	private static final List<SelfAssignableRole> SELF_ASSIGNABLE_ROLES = new ArrayList<>();
+	private static final List<SelfAssignableRoleGroup> SELF_ASSIGNABLE_ROLE_GROUPS = new ArrayList<>();
 
 	public static void addSelfAssignableRoleGroups(String guildId, Set<String> groups){
 		Database.addSelfAssignableRoleGroups(guildId, groups);
 	}
 
-	public static void setSelfAssignableRoles(String guildId, Map<String, String> selfAssignableRoles){
+	public static void setSelfAssignableRoles(String guildId, List<SelfAssignableRole> selfAssignableRoles){
 		Database.setSelfAssignableRoles(guildId, selfAssignableRoles);
-		SELF_ASSIGNABLE_ROLES.put(guildId, selfAssignableRoles);
+		SELF_ASSIGNABLE_ROLES.addAll(selfAssignableRoles);
 	}
 
-	public static void removeSelfAssignableRoles(String guildId, Set<String> roles){
+	public static void removeSelfAssignableRoles(String guildId, List<SelfAssignableRole> roles){
 		Database.removeSelfAssignableRoles(guildId, roles);
-		var map = SELF_ASSIGNABLE_ROLES.get(guildId);
-		if(map != null){
-			roles.forEach(map::remove);
-		}
+		SELF_ASSIGNABLE_ROLES.removeAll(roles);
 	}
 
-	public static void addSelfAssignableRoles(String guildId, Map<String, String> roles){
+	public static void removeSelfAssignableRolesById(String guildId, List<String> roles){
+		Database.removeSelfAssignableRolesById(guildId, roles);
+		SELF_ASSIGNABLE_ROLES.removeIf(selfAssignableRole -> roles.contains(selfAssignableRole.getRoleId()));
+	}
+
+	public static void addSelfAssignableRoles(String guildId, List<SelfAssignableRole> roles){
 		Database.addSelfAssignableRoles(guildId, roles);
-		var map = SELF_ASSIGNABLE_ROLES.get(guildId);
-		if(map != null){
-			map.putAll(roles);
-		}
+		SELF_ASSIGNABLE_ROLES.addAll(roles);
 	}
 
 	public static boolean isSelfAssignableRole(String guildId, String roleId){
-		return getSelfAssignableRoles(guildId).get(roleId) != null;
+		var roles = getSelfAssignableRoles(guildId);
+		if(roles == null){
+			return false;
+		}
+		return roles.stream().anyMatch(selfAssignableRole -> selfAssignableRole.getRoleId().equals(roleId));
 	}
 
-	public static Map<String, String> getSelfAssignableRoles(String guildId){
-		var map = SELF_ASSIGNABLE_ROLES.get(guildId);
-		if(map != null){
-			return map;
+	public static List<SelfAssignableRole> getSelfAssignableRoles(String guildId){
+		var roles = SELF_ASSIGNABLE_ROLES.stream().filter(selfAssignableRole -> selfAssignableRole.getGuildId().equals(guildId)).collect(Collectors.toList());
+		if(!roles.isEmpty()){
+			return roles;
 		}
-		map = Database.getSelfAssignableRoles(guildId);
-		SELF_ASSIGNABLE_ROLES.put(guildId, map);
-		return map;
+		roles = Database.getSelfAssignableRoles(guildId);
+		if(roles == null){
+			return null;
+		}
+		SELF_ASSIGNABLE_ROLES.addAll(roles);
+		return roles;
 	}
 
 	public static void pruneCache(Guild guild){
-		SELF_ASSIGNABLE_ROLES.remove(guild.getId());
+		SELF_ASSIGNABLE_ROLES.removeIf(selfAssignableRole -> selfAssignableRole.getGuildId().equals(guild.getId()));
 	}
 
 }

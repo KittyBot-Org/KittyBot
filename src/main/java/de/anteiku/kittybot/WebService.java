@@ -8,6 +8,7 @@ import com.jagrosh.jdautilities.oauth2.session.DefaultSessionController;
 import com.jagrosh.jdautilities.oauth2.state.DefaultStateController;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.Config;
+import de.anteiku.kittybot.objects.SelfAssignableRole;
 import de.anteiku.kittybot.objects.cache.PrefixCache;
 import de.anteiku.kittybot.objects.cache.SelfAssignableRoleCache;
 import de.anteiku.kittybot.objects.command.Category;
@@ -21,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
@@ -248,8 +249,8 @@ public class WebService{
 			return;
 		}
 		var data = DataArray.empty();
-		for(var role : roles.entrySet()){
-			data.add(DataObject.empty().put("role", role.getKey()).put("emote", role.getValue()));
+		for(var role : roles){
+			data.add(DataObject.empty().put("role", role.getRoleId()).put("emote", role.getEmoteId()));
 		}
 		ok(ctx, DataObject.empty()
 				.put("prefix", PrefixCache.getCommandPrefix(guildId))
@@ -299,11 +300,11 @@ public class WebService{
 			Database.setNSFWEnabled(guildId, json.getBoolean("nsfw_enabled"));
 		}
 		if(json.hasKey("self_assignable_roles")){
-			var roles = new HashMap<String, String>();
+			var roles = new ArrayList<SelfAssignableRole>();
 			var dataArray = json.getArray("self_assignable_roles");
 			for(var i = 0; i < dataArray.length(); i++){
 				var obj = dataArray.getObject(i);
-				roles.put(obj.getString("role"), obj.getString("emote"));
+				roles.add(new SelfAssignableRole(guildId, obj.getString("role"), obj.getString("emote")));
 			}
 			SelfAssignableRoleCache.setSelfAssignableRoles(guildId, roles);
 		}

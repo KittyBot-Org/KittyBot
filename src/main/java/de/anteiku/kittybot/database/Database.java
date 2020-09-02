@@ -2,6 +2,7 @@ package de.anteiku.kittybot.database;
 
 import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.ReactiveMessage;
+import de.anteiku.kittybot.objects.SelfAssignableRole;
 import de.anteiku.kittybot.objects.cache.SelfAssignableRoleCache;
 import de.anteiku.kittybot.utils.Utils;
 import net.dv8tion.jda.api.JDA;
@@ -13,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Database{
 
@@ -161,19 +163,19 @@ public class Database{
 		return null;
 	}
 
-	public static void setSelfAssignableRoles(String guildId, Map<String, String> newRoles){
-		Map<String, String> roles = SelfAssignableRoleCache.getSelfAssignableRoles(guildId);
+	public static void setSelfAssignableRoles(String guildId, List<SelfAssignableRole> newRoles){
+		var roles = SelfAssignableRoleCache.getSelfAssignableRoles(guildId);
 		if(roles != null){
-			Map<String, String> addRoles = new HashMap<>();
-			Set<String> removeRoles = new HashSet<>();
-			for(Map.Entry<String, String> role : roles.entrySet()){
-				if(newRoles.get(role.getKey()) == null){
-					removeRoles.add(role.getKey());
+			var addRoles = new ArrayList<SelfAssignableRole>();
+			var removeRoles = new ArrayList<SelfAssignableRole>();
+			for(var role : roles){
+				if(!newRoles.contains(role)){
+					removeRoles.add(role);
 				}
 			}
-			for(Map.Entry<String, String> role : newRoles.entrySet()){
-				if(roles.get(role.getKey()) == null){
-					addRoles.put(role.getKey(), role.getValue());
+			for(var role : newRoles){
+				if(!roles.contains(role)){
+					addRoles.add(role);
 				}
 			}
 			if(removeRoles.size() > 0){
@@ -185,9 +187,30 @@ public class Database{
 		}
 	}
 
-	public static boolean removeSelfAssignableRoles(String guildId, Set<String> roles){
+	public static boolean removeSelfAssignableRoles(String guildId, List<SelfAssignableRole> roles){
+		return removeSelfAssignableRolesById(guildId, roles.stream().map(SelfAssignableRole::getRoleId).collect(Collectors.toList()));
+	}
+
+	public static boolean addSelfAssignableRoles(String guildId, List<SelfAssignableRole> roles){
+		var query = "INSERT INTO self_assignable_roles (role_id, guild_id, emote_id) VALUES (?, ?, ?)" + ", (?, ?, ?)".repeat(roles.size() - 1);
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
+			var i = 0;
+			for(var role : roles){
+				stmt.setString(++i, role.getRoleId());
+				stmt.setString(++i, guildId);
+				stmt.setString(++i, role.getEmoteId());
+			}
+			return SQL.execute(stmt);
+		}
+		catch(SQLException e){
+			LOG.error("Error inserting self-assignable role", e);
+		}
+		return false;
+	}
+
+	public static boolean removeSelfAssignableRolesById(String guildId, List<String> roles){
 		boolean result = true;
-		for(String role : roles){
+		for(var role : roles){
 			var query = "DELETE FROM self_assignable_roles WHERE role_id = ? and guild_id = ?";
 			try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 				stmt.setString(1, role);
@@ -204,33 +227,16 @@ public class Database{
 		return result;
 	}
 
-	public static boolean addSelfAssignableRoles(String guildId, Map<String, String> roles){
-		var query = "INSERT INTO self_assignable_roles (role_id, guild_id, emote_id) VALUES (?, ?, ?)" + ", (?, ?, ?)".repeat(roles.size() - 1);
-		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
-			var i = 0;
-			for(var role : roles.entrySet()){
-				stmt.setString(++i, role.getKey());
-				stmt.setString(++i, guildId);
-				stmt.setString(++i, role.getValue());
-			}
-			return SQL.execute(stmt);
-		}
-		catch(SQLException e){
-			LOG.error("Error inserting self-assignable role", e);
-		}
-		return false;
-	}
-
-	public static Map<String, String> getSelfAssignableRoles(String guildId){
-		var map = new HashMap<String, String>();
+	public static List<SelfAssignableRole> getSelfAssignableRoles(String guildId){
+		var roles = new ArrayList<SelfAssignableRole>();
 		var query = "SELECT * FROM self_assignable_roles WHERE guild_id = ?";
 		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, guildId);
 			ResultSet result = SQL.query(stmt);
 			while(result != null && result.next()){
-				map.put(result.getString("role_id"), result.getString("emote_id"));
+				roles.add(new SelfAssignableRole(guildId, result.getString("role_id"), result.getString("emote_id")));
 			}
-			return map;
+			return roles;
 		}
 		catch(SQLException e){
 			LOG.error("Error while getting self-assignable roles from guild " + guildId, e);
@@ -238,7 +244,7 @@ public class Database{
 		return null;
 	}
 
-	public static boolean removeSelfAssignableRoleGroups(String guildId, Set<String> groups){
+	public static boolean removeSelfAssignableRoleGroups(String guildId, List<String> groups){
 		boolean result = true;
 		for(var group : groups){
 			var query = "DELETE FROM self_assignable_role_groups WHERE group_id = ? and guild_id = ?";
@@ -518,12 +524,12 @@ public class Database{
 		return null;
 	}
 
-	public boolean addSelfAssignableRole(String guildId, String role, String emote){
-		return addSelfAssignableRoles(guildId, new HashMap<>(Collections.singletonMap(role, emote)));
+	public boolean addSelfAssignableRole(String guildId, SelfAssignableRole role){
+		return addSelfAssignableRoles(guildId, Collections.singletonList(role));
 	}
 
-	public void removeSelfAssignableRole(String guildId, String role){
-		removeSelfAssignableRoles(guildId, new HashSet<>(Collections.singleton(role)));
+	public void removeSelfAssignableRole(String guildId, SelfAssignableRole role){
+		removeSelfAssignableRoles(guildId, Collections.singletonList(role));
 	}
 
 }

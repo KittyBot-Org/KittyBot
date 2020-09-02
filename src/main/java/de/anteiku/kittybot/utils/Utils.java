@@ -1,6 +1,7 @@
 package de.anteiku.kittybot.utils;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import de.anteiku.kittybot.objects.SelfAssignableRole;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Role;
 import org.slf4j.Logger;
@@ -43,17 +44,17 @@ public class Utils{
 		return set;
 	}
 
-	public static Map<String, String> toMap(List<Role> roles, List<Emote> emotes){
-		Map<String, String> map = new HashMap<>();
+	public static List<SelfAssignableRole> toList(String guildId, List<Role> roles, List<Emote> emotes){
+		var list = new ArrayList<SelfAssignableRole>();
 		int i = 0;
 		for(Role role : roles){
 			if(emotes.size() <= i){
 				break;
 			}
-			map.put(role.getId(), emotes.get(i).getId());
+			list.add(new SelfAssignableRole(guildId, role.getId(), emotes.get(i).getId()));
 			i++;
 		}
-		return map;
+		return list;
 	}
 
 	public static String[] subArray(String[] array, int start){
