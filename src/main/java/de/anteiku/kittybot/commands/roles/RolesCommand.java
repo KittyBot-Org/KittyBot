@@ -2,6 +2,7 @@ package de.anteiku.kittybot.commands.roles;
 
 import de.anteiku.kittybot.objects.Emojis;
 import de.anteiku.kittybot.objects.ReactiveMessage;
+import de.anteiku.kittybot.objects.SelfAssignableRoleGroup;
 import de.anteiku.kittybot.objects.cache.ReactiveMessageCache;
 import de.anteiku.kittybot.objects.cache.SelfAssignableRoleCache;
 import de.anteiku.kittybot.objects.command.ACommand;
@@ -16,6 +17,7 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -45,22 +47,32 @@ public class RolesCommand extends ACommand{
 				sendUsage(ctx);
 				return;
 			}
-			else if(ctx.getArgs()[0].equals("group")){
-				if(ctx.getArgs()[1].equalsIgnoreCase("add")){
-
+			else if(ctx.getArgs()[0].equals("group") || ctx.getArgs()[0].equals("groups")){
+				if(ctx.getArgs().length == 0){
+					sendUsage(ctx);
 				}
-				else if(ctx.getArgs()[1].equalsIgnoreCase("remove")){
-
-				}
-				else if(ctx.getArgs()[1].equalsIgnoreCase("list")){
-
+				else if(ctx.getArgs().length >= 1){
+					if(ctx.getArgs()[1].equalsIgnoreCase("add")){
+						SelfAssignableRoleCache.addSelfAssignableRoleGroups(ctx.getGuild().getId(), Arrays.stream(ctx.getArgs()).skip(2).collect(Collectors.toList()));
+						sendAnswer(ctx, "Groups added!");
+					}
+					else if(ctx.getArgs()[1].equalsIgnoreCase("remove")){
+						SelfAssignableRoleCache.removeSelfAssignableRoleGroupsByName(ctx.getGuild().getId(), Arrays.stream(ctx.getArgs()).skip(2).collect(Collectors.toList()));
+						sendAnswer(ctx, "Groups removed!");
+					}
+					else if(ctx.getArgs()[1].equalsIgnoreCase("list")){
+						var list = SelfAssignableRoleCache.getSelfAssignableRoleGroups(ctx.getGuild().getId());
+						if(list == null){
+							sendError(ctx, "Error while getting role groups");
+							return;
+						}
+						sendAnswer(ctx, "Role Groups: " + list.stream().map(SelfAssignableRoleGroup::getGroupName).collect(Collectors.joining(", ")));
+					}
 				}
 				else{
-
+					sendUsage(ctx);
 				}
-			}
-			else if(ctx.getArgs()[0].equals("groups")){
-
+				return;
 			}
 			var roles = ctx.getMessage().getMentionedRoles();
 			var emotes = ctx.getMessage().getEmotes();

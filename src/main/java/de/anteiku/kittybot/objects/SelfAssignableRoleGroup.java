@@ -12,15 +12,15 @@ public class SelfAssignableRoleGroup{
 		this.groupName = groupName;
 	}
 
-	private String getGuildId(){
+	public String getGuildId(){
 		return guildId;
 	}
 
-	private String getGroupId(){
+	public String getGroupId(){
 		return groupId;
 	}
 
-	private String getGroupName(){
+	public String getGroupName(){
 		return groupName;
 	}
 

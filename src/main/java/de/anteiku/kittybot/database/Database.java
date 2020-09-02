@@ -3,6 +3,7 @@ package de.anteiku.kittybot.database;
 import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.ReactiveMessage;
 import de.anteiku.kittybot.objects.SelfAssignableRole;
+import de.anteiku.kittybot.objects.SelfAssignableRoleGroup;
 import de.anteiku.kittybot.objects.cache.SelfAssignableRoleCache;
 import de.anteiku.kittybot.utils.Utils;
 import net.dv8tion.jda.api.JDA;
@@ -10,7 +11,6 @@ import net.dv8tion.jda.api.entities.Guild;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
@@ -232,7 +232,7 @@ public class Database{
 		var query = "SELECT * FROM self_assignable_roles WHERE guild_id = ?";
 		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, guildId);
-			ResultSet result = SQL.query(stmt);
+			var result = SQL.query(stmt);
 			while(result != null && result.next()){
 				roles.add(new SelfAssignableRole(guildId, result.getString("role_id"), result.getString("emote_id")));
 			}
@@ -263,16 +263,35 @@ public class Database{
 		return result;
 	}
 
-	public static Map<String, String> getSelfAssignableRoleGroups(String guildId){
-		var map = new HashMap<String, String>();
+	public static boolean removeSelfAssignableRoleGroups(String guildId, List<String> groups){
+		boolean result = true;
+		for(var group : groups){
+			var query = "DELETE FROM self_assignable_role_groups WHERE group_id = ? and guild_id = ?";
+			try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
+				stmt.setString(1, group);
+				stmt.setString(2, guildId);
+				boolean r = SQL.execute(stmt);
+				if(!r){
+					result = false;
+				}
+			}
+			catch(SQLException e){
+				LOG.error("Error removing self-assignable role group: " + group + " guild " + guildId, e);
+			}
+		}
+		return result;
+	}
+
+	public static List<SelfAssignableRoleGroup> getSelfAssignableRoleGroups(String guildId){
+		var groups = new ArrayList<SelfAssignableRoleGroup>();
 		var query = "SELECT * FROM self_assignable_role_groups WHERE guild_id = ?";
 		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, guildId);
-			ResultSet result = SQL.query(stmt);
+			var result = SQL.query(stmt);
 			while(result != null && result.next()){
-				map.put(result.getString("group_id"), result.getString("group_name"));
+				groups.add(new SelfAssignableRoleGroup(guildId, result.getString("group_id"), result.getString("group_name")));
 			}
-			return map;
+			return groups;
 		}
 		catch(SQLException e){
 			LOG.error("Error while getting self-assignable role groups from guild " + guildId, e);
