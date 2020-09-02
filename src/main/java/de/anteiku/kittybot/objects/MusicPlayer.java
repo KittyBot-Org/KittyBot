@@ -236,7 +236,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 			var info = track.getInfo();
 			var duration = formatDuration(info.length);
 			embed.setTitle(info.title, info.uri)
-					.setThumbnail("https://i.ytimg.com/vi/" + info.identifier + "/maxresdefault.jpg")
+					.setThumbnail("https://i.ytimg.com/vi/" + info.identifier + "/hqdefault.jpg")
 					.addField("Author", info.author, true)
 					.addField("Length", duration, true)
 					.addField("Volume", player.getVolume() + "%", true);
