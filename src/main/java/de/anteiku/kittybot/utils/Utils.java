@@ -84,7 +84,7 @@ public class Utils{
 	}
 
 	public static <T> String pluralize(String text, Collection<T> collection){
-		return collection.size() > 1 ? text + "s" : text;
+		return collection.size() != 1 ? text + "s" : text;
 	}
 
 }
