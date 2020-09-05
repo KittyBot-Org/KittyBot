@@ -27,8 +27,9 @@ public class InviteCache{
 		}
 		for(final var invite : guild.retrieveInvites().complete()){
 			final var oldInvite = value.get(invite.getCode());
-			if (oldInvite == null)
+			if(oldInvite == null){
 				continue;
+			}
 			if(invite.getUses() > oldInvite.getUses()){
 				oldInvite.used();
 				return invite;
