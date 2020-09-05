@@ -37,7 +37,7 @@ import static de.anteiku.kittybot.utils.Utils.pluralize;
 public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	public static final Pattern YOUTUBE_URL_PATTERN = Pattern.compile("^(https?://)?((www|m)\\.)?youtu(\\.be|be\\.com)/(playlist\\?list=([a-zA-Z0-9-_]+))?((watch\\?v=)?([a-zA-Z0-9-_]{11})(&list=([a-zA-Z0-9-_]+))?)?");
-	public static final Pattern SPOTIFY_URL_PATTERN = Pattern.compile("^(https?://)?(www\\.)?open\\.spotify\\.com/(track|album|playlist)/([a-zA-Z0-9-_]+)");
+	public static final Pattern SPOTIFY_URL_PATTERN = Pattern.compile("^(https?://)?(www\\.)?open\\.spotify\\.com/(track|album|playlist)/([a-zA-Z0-9-_]+)(\\?si=[a-zA-Z0-9-_]+)?");
 	private static final Logger LOG = LoggerFactory.getLogger(MusicPlayer.class);
 	private static final int VOLUME_MAX = 200;
 	private final LavalinkPlayer player;
@@ -77,57 +77,12 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 			@Override
 			public void trackLoaded(AudioTrack track){
-				if(!lengthCheck(track.getDuration())){
-					sendError(ctx, "The maximum length of a track is 20 minutes");
-					return;
-				}
-				track.setUserData(ctx.getUser().getId());
-				queue(track);
-				if(!queue.isEmpty()){
-					sendQueuedTracks(ctx, Collections.singletonList(track));
-				}
-				if(future != null){
-					future.cancel(true);
-				}
-				connectToChannel(ctx);
+				MusicPlayer.this.trackLoaded(track);
 			}
 
 			@Override
 			public void playlistLoaded(AudioPlaylist playlist){
-				List<AudioTrack> queuedTracks = new ArrayList<>();
-				if(playlist.isSearchResult()){
-					var track = playlist.getTracks().get(0);
-					if(!lengthCheck(track.getDuration())){
-						sendError(ctx, "The maximum length of a track is 20 minutes");
-						return;
-					}
-					track.setUserData(ctx.getUser().getId());
-					queuedTracks.add(track);
-					queue(track);
-				}
-				else{
-					for(AudioTrack track : playlist.getTracks()){
-						if(!lengthCheck(track.getDuration())){
-							if(playlist.getTracks().size() == 1){
-								sendError(ctx, "The maximum length of a track is 20 minutes");
-								return;
-							}
-							else{
-								continue;
-							}
-						}
-						track.setUserData(ctx.getUser().getId());
-						queuedTracks.add(track);
-						queue(track);
-					}
-				}
-				if(!queue.isEmpty()){
-					sendQueuedTracks(ctx, queuedTracks);
-				}
-				if(future != null){
-					future.cancel(true);
-				}
-				connectToChannel(ctx);
+				MusicPlayer.this.playlistLoaded(playlist);
 			}
 
 			@Override
@@ -344,6 +299,59 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	public ScheduledFuture<?> getFuture(){
 		return future;
+	}
+
+	public void trackLoaded(AudioTrack track){
+		if(!lengthCheck(track.getDuration())){
+			sendError(ctx, "The maximum length of a track is 20 minutes");
+			return;
+		}
+		track.setUserData(ctx.getUser().getId());
+		queue(track);
+		if(!queue.isEmpty()){
+			sendQueuedTracks(ctx, Collections.singletonList(track));
+		}
+		if(future != null){
+			future.cancel(true);
+		}
+		connectToChannel(ctx);
+	}
+
+	public void playlistLoaded(AudioPlaylist playlist){
+		var queuedTracks = new ArrayList<AudioTrack>();
+		if(playlist.isSearchResult()){
+			var track = playlist.getTracks().get(0);
+			if(!lengthCheck(track.getDuration())){
+				sendError(ctx, "The maximum length of a track is 20 minutes");
+				return;
+			}
+			track.setUserData(ctx.getUser().getId());
+			queuedTracks.add(track);
+			queue(track);
+		}
+		else{
+			for(AudioTrack track : playlist.getTracks()){
+				if(!lengthCheck(track.getDuration())){
+					if(playlist.getTracks().size() == 1){
+						sendError(ctx, "The maximum length of a track is 20 minutes");
+						return;
+					}
+					else{
+						continue;
+					}
+				}
+				track.setUserData(ctx.getUser().getId());
+				queuedTracks.add(track);
+				queue(track);
+			}
+		}
+		if(!queue.isEmpty()){
+			sendQueuedTracks(ctx, queuedTracks);
+		}
+		if(future != null){
+			future.cancel(true);
+		}
+		connectToChannel(ctx);
 	}
 
 }

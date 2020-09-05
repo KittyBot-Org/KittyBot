@@ -30,12 +30,19 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 	private static final Map<Long, Integer> CURRENT_PAGE = new HashMap<>();                                // K = messageId, V = current page
 	private static final Map<Long, BiConsumer<Integer, EmbedBuilder>> CONTENT_CONSUMERS = new HashMap<>(); // K = messageId, V = BiConsumer<PageNumber, EmbedBuilder>
 
-	public static void createCommandsPaginator(final Message message, final int totalPages, final Map<Integer, TitleInfo> titlePerPage, final Map<Integer, ArrayList<MessageEmbed.Field>> fields){
-		createPaginator(message, totalPages, (page, embedBuilder) -> {
+	public static void createCommandsPaginator(final Message message, final Map<Integer, TitleInfo> titlePerPage, final Map<Integer, ArrayList<MessageEmbed.Field>> fieldsPerPage){
+		createPaginator(message, titlePerPage.size(), (page, embedBuilder) ->{
 			var titleInfo = titlePerPage.get(page);
 			embedBuilder.setTitle(titleInfo.getTitle(), titleInfo.getUrl());
-			fields.get(page).forEach(embedBuilder::addField);
+			fieldsPerPage.get(page).forEach(embedBuilder::addField);
 			embedBuilder.setTimestamp(Instant.now());
+		});
+	}
+
+	public static void createQueuePaginator(final Message message, final Map<Integer, String> descriptionPerPage){
+		createPaginator(message, descriptionPerPage.size(), (page, embedBuilder) ->{
+			var description = descriptionPerPage.get(page);
+			embedBuilder.setDescription(description);
 		});
 	}
 

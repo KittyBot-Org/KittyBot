@@ -39,4 +39,27 @@ public class MessageUtils{
 		return "[" + title + "](" + url + ")";
 	}
 
+	public static List<String> splitMessage(String content){ // https://github.com/JDA-Applications/JDA-Utilities/blob/master/command/src/main/java/com/jagrosh/jdautilities/command/CommandEvent.java#L986-#L1009
+		var msgs = new ArrayList<String>();
+		while (content.length() > 2000){
+			var idk = 2000 - (content.length() % 2000);
+			var index = content.lastIndexOf("\n", 2000);
+			if (index < idk){
+				index = content.lastIndexOf(" ", 2000);
+			}
+			if (index < idk){
+				index = 2000;
+			}
+			String temp = content.substring(0, index).trim();
+			if (!temp.equals("")){
+				msgs.add(temp);
+			}
+			content = content.substring(index).trim();
+		}
+		if (!content.equals("")){
+			msgs.add(content);
+		}
+		return msgs;
+	}
+
 }

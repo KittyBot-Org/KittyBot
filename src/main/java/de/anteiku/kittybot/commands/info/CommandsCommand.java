@@ -66,7 +66,7 @@ public class CommandsCommand extends ACommand{
 			contents.put(c, fields);
 			c++;
 		}
-		Paginator.createCommandsPaginator(message, categories.length, titles, contents);
+		Paginator.createCommandsPaginator(message, titles, contents);
 	}
 
 }
