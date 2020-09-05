@@ -244,7 +244,7 @@ public class Database{
 		return null;
 	}
 
-	public static boolean removeSelfAssignableRoleGroups(String guildId, List<String> groups){
+	public static boolean removeSelfAssignableRoleGroupsById(String guildId, List<String> groups){
 		boolean result = true;
 		for(var group : groups){
 			var query = "DELETE FROM self_assignable_role_groups WHERE group_id = ? and guild_id = ?";
@@ -263,23 +263,8 @@ public class Database{
 		return result;
 	}
 
-	public static boolean removeSelfAssignableRoleGroups(String guildId, List<String> groups){
-		boolean result = true;
-		for(var group : groups){
-			var query = "DELETE FROM self_assignable_role_groups WHERE group_id = ? and guild_id = ?";
-			try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
-				stmt.setString(1, group);
-				stmt.setString(2, guildId);
-				boolean r = SQL.execute(stmt);
-				if(!r){
-					result = false;
-				}
-			}
-			catch(SQLException e){
-				LOG.error("Error removing self-assignable role group: " + group + " guild " + guildId, e);
-			}
-		}
-		return result;
+	public static boolean removeSelfAssignableRoleGroups(String guildId, List<SelfAssignableRoleGroup> groups){
+		return removeSelfAssignableRoleGroupsByName(guildId, groups.stream().map(SelfAssignableRoleGroup::getGroupId).collect(Collectors.toList()));
 	}
 
 	public static List<SelfAssignableRoleGroup> getSelfAssignableRoleGroups(String guildId){
