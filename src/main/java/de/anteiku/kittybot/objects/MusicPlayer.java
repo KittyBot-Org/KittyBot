@@ -270,7 +270,9 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				embed.setColor(Color.GREEN);
 			}
 
-			embed.setFooter("Requested by " + (ctx.getMember() == null ? ctx.getUser().getName() : ctx.getMember().getEffectiveName()), ctx.getUser().getEffectiveAvatarUrl());
+			var member = ctx.getGuild().getMemberById(getRequesterId());
+			var user = ctx.getJDA().getUserById(getRequesterId());
+			embed.setFooter("Requested by " + (member == null ? user.getName() : member.getEffectiveName()), user.getEffectiveAvatarUrl());
 		}
 		return embed;
 	}
