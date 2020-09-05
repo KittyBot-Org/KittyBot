@@ -28,7 +28,7 @@ public class HelpCommand extends ACommand{
 		answer(ctx, new EmbedBuilder().setColor(Color.orange)
 				.setThumbnail(ctx.getJDA().getSelfUser().getEffectiveAvatarUrl())
 				.addField(Emojis.INVITE + " Invite:", Emojis.BLANK + " :small_blue_diamond: You want me on your server? Click " + MessageUtils.maskLink("here", Config.INVITE_URL) + " to invite me!", false)
-				.addField(":settings: Settings:", Emojis.BLANK + " :small_blue_diamond: You can manage all your settings in our " + MessageUtils.maskLink("dashboard", Config.ORIGIN_URL) + "!", false)
+				.addField(":gear: Settings:", Emojis.BLANK + " :small_blue_diamond: You can manage all your settings in our " + MessageUtils.maskLink("dashboard", Config.ORIGIN_URL) + "!", false)
 				.addField(Emojis.CONSOLE + " Commands:", Emojis.BLANK + " :small_blue_diamond: You want to see **all my available commands**?\n" + Emojis.BLANK + " " + Emojis.BLANK + " Use ``.commands``", false)
 				.addField(":question: Help:", Emojis.BLANK + " :small_blue_diamond: You want to **report bugs or suggest new features**?\n" + Emojis.BLANK + " " + Emojis.BLANK + " Message my owner on " + Emojis.TWITTER + MessageUtils.maskLink("Twitter", "https://twitter.com/TopiSenpai") + " or " + Emojis.DISCORD + " " + MessageUtils.maskLink("/home/toπ#3141", "https://discord.com/users/170939974227591168") + "!", false)
 		).queue(message -> {
