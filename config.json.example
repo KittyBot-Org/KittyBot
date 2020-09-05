@@ -28,5 +28,7 @@
         "multiple",
         "user",
         "ids"
-    ]
+    ],
+    "spotify_client_id": "your spotify api client id",
+    "spotify_client_secret": "your spotify api client secret"
 }
