@@ -264,7 +264,7 @@ public class Database{
 	}
 
 	public static boolean removeSelfAssignableRoleGroups(String guildId, List<SelfAssignableRoleGroup> groups){
-		return removeSelfAssignableRoleGroupsByName(guildId, groups.stream().map(SelfAssignableRoleGroup::getGroupId).collect(Collectors.toList()));
+		return removeSelfAssignableRoleGroupsById(guildId, groups.stream().map(SelfAssignableRoleGroup::getGroupId).collect(Collectors.toList()));
 	}
 
 	public static List<SelfAssignableRoleGroup> getSelfAssignableRoleGroups(String guildId){
