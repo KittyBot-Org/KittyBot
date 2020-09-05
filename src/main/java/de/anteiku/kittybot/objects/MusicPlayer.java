@@ -225,7 +225,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	public void sendMusicController(ACommand command, CommandContext ctx){
 		var msg = ctx.getMessage();
 		msg.getChannel()
-				.sendMessage(buildMusicControlMessage().setFooter(msg.getMember() == null ? msg.getAuthor().getName() : msg.getMember().getEffectiveName(), msg.getAuthor().getEffectiveAvatarUrl())
+				.sendMessage(buildMusicControlMessage()
 						.setTimestamp(Instant.now())
 						.build())
 				.queue(message -> {
@@ -269,6 +269,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				embed.setAuthor("Playing...");
 				embed.setColor(Color.GREEN);
 			}
+
+			embed.setFooter("Requested by " + (ctx.getMember() == null ? ctx.getUser().getName() : ctx.getMember().getEffectiveName()), ctx.getUser().getEffectiveAvatarUrl());
 		}
 		return embed;
 	}
