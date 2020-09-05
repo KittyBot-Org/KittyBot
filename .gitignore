@@ -4,3 +4,4 @@
 build/
 config.json
 .idea
+VERSION.txt

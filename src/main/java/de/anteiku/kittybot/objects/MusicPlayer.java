@@ -16,6 +16,8 @@ import lavalink.client.player.LavalinkPlayer;
 import lavalink.client.player.event.PlayerEventListenerAdapter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.time.Instant;
@@ -32,7 +34,8 @@ import static de.anteiku.kittybot.utils.Utils.pluralize;
 
 public class MusicPlayer extends PlayerEventListenerAdapter{
 
-	public static final Pattern URL_PATTERN = Pattern.compile("^(https?://)?(www|m.)?(\\.)?youtu(\\.be|be\\.com)/(playlist\\?list=[a-zA-Z0-9-_]+)?((watch\\?v=)?([a-zA-Z0-9-_]{11})(&list=[a-zA-Z0-9-_]+)?)?");
+	public static final Pattern URL_PATTERN = Pattern.compile("^(https?://)?((www|m)\\.)?youtu(\\.be|be\\.com)/(playlist\\?list=([a-zA-Z0-9-_]+))?((watch\\?v=)?([a-zA-Z0-9-_]{11})(&list=([a-zA-Z0-9-_]+))?)?");
+	private static final Logger LOG = LoggerFactory.getLogger(MusicPlayer.class);
 	private static final int VOLUME_MAX = 200;
 	private final LavalinkPlayer player;
 	private final Queue<AudioTrack> queue;
@@ -66,6 +69,10 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 			@Override
 			public void trackLoaded(AudioTrack track){
+				if(!lengthCheck(track)){
+					sendError(ctx, "The maximum length of a track is 20 minutes");
+					return;
+				}
 				track.setUserData(ctx.getUser().getId());
 				queue(track);
 				if(!queue.isEmpty()){
@@ -82,12 +89,25 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				List<AudioTrack> queuedTracks = new ArrayList<>();
 				if(playlist.isSearchResult()){
 					var track = playlist.getTracks().get(0);
+					if(!lengthCheck(track)){
+						sendError(ctx, "The maximum length of a track is 20 minutes");
+						return;
+					}
 					track.setUserData(ctx.getUser().getId());
 					queuedTracks.add(track);
 					queue(track);
 				}
 				else{
 					for(AudioTrack track : playlist.getTracks()){
+						if(!lengthCheck(track)){
+							if(playlist.getTracks().size() == 1){
+								sendError(ctx, "The maximum length of a track is 20 minutes");
+								return;
+							}
+							else{
+								continue;
+							}
+						}
 						track.setUserData(ctx.getUser().getId());
 						queuedTracks.add(track);
 						queue(track);
@@ -112,6 +132,10 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				sendError(ctx, "Failed to load track");
 			}
 		});
+	}
+
+	public boolean lengthCheck(AudioTrack track){
+		return TimeUnit.MILLISECONDS.toMinutes(track.getDuration()) <= 20;
 	}
 
 	public void queue(AudioTrack track){
@@ -201,7 +225,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	public void sendMusicController(ACommand command, CommandContext ctx){
 		var msg = ctx.getMessage();
 		msg.getChannel()
-				.sendMessage(buildMusicControlMessage().setFooter(msg.getMember().getEffectiveName(), msg.getAuthor().getEffectiveAvatarUrl())
+				.sendMessage(buildMusicControlMessage().setFooter(msg.getMember() == null ? msg.getAuthor().getName() : msg.getMember().getEffectiveName(), msg.getAuthor().getEffectiveAvatarUrl())
 						.setTimestamp(Instant.now())
 						.build())
 				.queue(message -> {
@@ -233,7 +257,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 			var info = track.getInfo();
 			var duration = formatDuration(info.length);
 			embed.setTitle(info.title, info.uri)
-					.setThumbnail("https://i.ytimg.com/vi/" + info.identifier + "/maxresdefault.jpg")
+					.setThumbnail("https://i.ytimg.com/vi/" + info.identifier + "/hqdefault.jpg")
 					.addField("Author", info.author, true)
 					.addField("Length", duration, true)
 					.addField("Volume", player.getVolume() + "%", true);
@@ -285,13 +309,13 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	@Override
-	public void onTrackException(IPlayer player, AudioTrack track, Exception exception){
-		System.out.println(exception.getMessage()); // TODO fix :)
+	public void onTrackException(IPlayer player, AudioTrack track, Exception e){
+		LOG.error("Track exception", e);
 	}
 
 	@Override
 	public void onTrackStuck(IPlayer player, AudioTrack track, long thresholdMs){
-		System.out.println("onTrackStuck");
+		LOG.error("Track is stuck in guild {}", this.player.getLink().getGuildId());
 	}
 
 	public boolean previousTrack(){

@@ -11,6 +11,7 @@ public class MessageData{
 	private final Instant creation;
 	private final String content;
 	private final String channelId;
+	private final String guildId;
 
 	public MessageData(final Message message){
 		this.messageId = message.getId();
@@ -18,6 +19,7 @@ public class MessageData{
 		this.creation = message.getTimeCreated().toInstant();
 		this.content = message.getContentRaw();
 		this.channelId = message.getTextChannel().getId();
+		this.guildId = message.getGuild().getId();
 	}
 
 	public String getId(){
@@ -38,6 +40,10 @@ public class MessageData{
 
 	public String getChannelId(){
 		return channelId;
+	}
+
+	public String getGuildId(){
+		return guildId;
 	}
 
 }

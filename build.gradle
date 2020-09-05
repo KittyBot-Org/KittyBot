@@ -23,16 +23,16 @@ repositories {
 
 dependencies {
     // discord/jda related
-    implementation 'net.dv8tion:JDA:4.2.0_198'
+    implementation 'net.dv8tion:JDA:4.2.0_203'
     implementation 'com.jagrosh:jda-utilities:3.0.4'
     implementation 'com.github.sedmelluq:lavaplayer:bec3995'
-    implementation("com.github.FredBoat:Lavalink-Client:c2aeb28") {
+    implementation("com.github.KittyBot-Org:Lavalink-Client:66e1097") {
         exclude group: 'com.sedmelluq', module: 'lavaplayer'
     }
 
     // database
     implementation 'com.zaxxer:HikariCP:3.4.5'
-    implementation 'org.postgresql:postgresql:42.2.15'
+    implementation 'org.postgresql:postgresql:42.2.16'
 
     // logging
     implementation 'ch.qos.logback:logback-classic:1.2.3'
@@ -40,7 +40,7 @@ dependencies {
 
     // other
     implementation 'org.discordbots:DBL-Java-Library:2.0.1'
-    implementation 'io.javalin:javalin:3.9.1'
+    implementation 'io.javalin:javalin:3.10.0'
     implementation 'org.yaml:snakeyaml:1.26'
     implementation 'io.github.classgraph:classgraph:4.8.78'
 }

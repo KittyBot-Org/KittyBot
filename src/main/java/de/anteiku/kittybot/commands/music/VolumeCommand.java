@@ -20,7 +20,7 @@ public class VolumeCommand extends ACommand{
 	@Override
 	public void run(CommandContext ctx){
 		var voiceState = ctx.getMember().getVoiceState();
-		if(!voiceState.inVoiceChannel()){
+		if(voiceState == null || !voiceState.inVoiceChannel()){
 			sendError(ctx, "To use this command you need to be connected to a voice channel");
 			return;
 		}
@@ -29,7 +29,8 @@ public class VolumeCommand extends ACommand{
 			sendError(ctx, "No active music player found!");
 			return;
 		}
-		if(!musicPlayer.getPlayer().getLink().getChannel().equals(voiceState.getChannel().getId())){
+		var channel = musicPlayer.getPlayer().getLink().getChannel();
+		if(channel == null || voiceState.getChannel() == null || !channel.equals(voiceState.getChannel().getId())){
 			sendError(ctx, "To use this command you need to be connected to the same voice channel as me");
 			return;
 		}

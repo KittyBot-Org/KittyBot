@@ -7,10 +7,16 @@ import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
 import de.anteiku.kittybot.objects.command.CommandManager;
 import de.anteiku.kittybot.objects.paginator.Paginator;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
+import java.awt.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static de.anteiku.kittybot.objects.Emojis.X;
 
 public class CommandsCommand extends ACommand{
 
@@ -26,6 +32,23 @@ public class CommandsCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
+		final var channel = ctx.getChannel();
+		final var message = ctx.getMessage();
+		final var selfMember = channel.getGuild().getSelfMember();
+		if(!channel.canTalk()){
+			if(selfMember.hasPermission(channel, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_HISTORY)){
+				message.addReaction(X).queue();
+			}
+			return;
+		}
+		if(!selfMember.hasPermission(channel, Permission.MESSAGE_HISTORY) || !selfMember.hasPermission(channel, Permission.MESSAGE_ADD_REACTION) || !selfMember.hasPermission(channel, Permission.MESSAGE_MANAGE)){
+			channel.sendMessage(new EmbedBuilder().setColor(Color.RED)
+					.addField("Error:", "I'm missing required permissions for paginator to work. Ensure that i can read the message history, add reactions and manage messages in this channel.", true)
+					.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
+					.setTimestamp(Instant.now())
+					.build()).queue(); // TODO improve checks
+			return;
+		}
 		final var titles = new HashMap<Integer, TitleInfo>();
 		final var contents = new HashMap<Integer, ArrayList<MessageEmbed.Field>>();
 
@@ -43,7 +66,7 @@ public class CommandsCommand extends ACommand{
 			contents.put(c, fields);
 			c++;
 		}
-		Paginator.createCommandsPaginator(ctx, categories.length, titles, contents);
+		Paginator.createCommandsPaginator(message, categories.length, titles, contents);
 	}
 
 }
