@@ -123,7 +123,7 @@ public abstract class ACommand{
 		return error(ctx, "Sorry you don't have the permission to use this command :(");
 	}
 
-	public void sendAnswer(CommandContext ctx, String answer){
+	public static void sendAnswer(CommandContext ctx, String answer){
 		queue(answer(ctx, answer), ctx);
 	}
 
@@ -131,7 +131,7 @@ public abstract class ACommand{
 		queue(answer(ctx, embed), ctx);
 	}
 
-	protected MessageAction answer(CommandContext ctx, String answer){
+	protected static MessageAction answer(CommandContext ctx, String answer){
 		return answer(ctx, new EmbedBuilder().setDescription(answer));
 	}
 
@@ -140,7 +140,7 @@ public abstract class ACommand{
 		return answer(ctx, embed).addFile(file, fileName);
 	}
 
-	protected MessageAction answer(CommandContext ctx, EmbedBuilder answer){
+	protected static MessageAction answer(CommandContext ctx, EmbedBuilder answer){
 		addStatus(ctx.getMessage(), Status.OK);
 		if(ctx.getGuild().getSelfMember().hasPermission(ctx.getChannel(), Permission.MESSAGE_WRITE)){
 			return ctx.getChannel()

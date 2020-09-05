@@ -10,6 +10,7 @@ import de.anteiku.kittybot.objects.cache.MusicPlayerCache;
 import de.anteiku.kittybot.objects.cache.ReactiveMessageCache;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.CommandContext;
+import de.anteiku.kittybot.objects.spotify.SpotifyLoader;
 import de.anteiku.kittybot.utils.Utils;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavalinkPlayer;
@@ -28,6 +29,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import static de.anteiku.kittybot.objects.command.ACommand.sendAnswer;
 import static de.anteiku.kittybot.objects.command.ACommand.sendError;
 import static de.anteiku.kittybot.utils.Utils.formatDuration;
 import static de.anteiku.kittybot.utils.Utils.pluralize;
@@ -35,7 +37,7 @@ import static de.anteiku.kittybot.utils.Utils.pluralize;
 public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	public static final Pattern YOUTUBE_URL_PATTERN = Pattern.compile("^(https?://)?((www|m)\\.)?youtu(\\.be|be\\.com)/(playlist\\?list=([a-zA-Z0-9-_]+))?((watch\\?v=)?([a-zA-Z0-9-_]{11})(&list=([a-zA-Z0-9-_]+))?)?");
-	public static final Pattern SPOTIFY_URL_PATTERN = Pattern.compile("^(https?://|www\\.)?open\\.spotify\\.com/(track|album|playlist)/([a-zA-Z0-9-_]+)");
+	public static final Pattern SPOTIFY_URL_PATTERN = Pattern.compile("^(https?://)?(www\\.)?open\\.spotify\\.com/(track|album|playlist)/([a-zA-Z0-9-_]+)");
 	private static final Logger LOG = LoggerFactory.getLogger(MusicPlayer.class);
 	private static final int VOLUME_MAX = 200;
 	private final LavalinkPlayer player;
@@ -65,19 +67,24 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		this.command = command;
 		this.ctx = ctx;
 		String argStr = String.join(" ", ctx.getArgs());
+		var matcher = SPOTIFY_URL_PATTERN.matcher(argStr);
+		if (matcher.matches()){
+			SpotifyLoader.load(ctx, matcher);
+			return;
+		}
 		final String query = YOUTUBE_URL_PATTERN.matcher(argStr).matches() ? argStr : "ytsearch:" + argStr;
 		KittyBot.getAudioPlayerManager().loadItem(query, new AudioLoadResultHandler(){
 
 			@Override
 			public void trackLoaded(AudioTrack track){
-				if(!lengthCheck(track)){
+				if(!lengthCheck(track.getDuration())){
 					sendError(ctx, "The maximum length of a track is 20 minutes");
 					return;
 				}
 				track.setUserData(ctx.getUser().getId());
 				queue(track);
 				if(!queue.isEmpty()){
-					sendQueuedTracks(command, ctx, Collections.singletonList(track));
+					sendQueuedTracks(ctx, Collections.singletonList(track));
 				}
 				if(future != null){
 					future.cancel(true);
@@ -90,7 +97,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				List<AudioTrack> queuedTracks = new ArrayList<>();
 				if(playlist.isSearchResult()){
 					var track = playlist.getTracks().get(0);
-					if(!lengthCheck(track)){
+					if(!lengthCheck(track.getDuration())){
 						sendError(ctx, "The maximum length of a track is 20 minutes");
 						return;
 					}
@@ -100,7 +107,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				}
 				else{
 					for(AudioTrack track : playlist.getTracks()){
-						if(!lengthCheck(track)){
+						if(!lengthCheck(track.getDuration())){
 							if(playlist.getTracks().size() == 1){
 								sendError(ctx, "The maximum length of a track is 20 minutes");
 								return;
@@ -115,7 +122,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 					}
 				}
 				if(!queue.isEmpty()){
-					sendQueuedTracks(command, ctx, queuedTracks);
+					sendQueuedTracks(ctx, queuedTracks);
 				}
 				if(future != null){
 					future.cancel(true);
@@ -135,8 +142,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		});
 	}
 
-	public boolean lengthCheck(AudioTrack track){
-		return TimeUnit.MILLISECONDS.toMinutes(track.getDuration()) <= 20;
+	public boolean lengthCheck(long duration){
+		return TimeUnit.MILLISECONDS.toMinutes(duration) <= 20;
 	}
 
 	public void queue(AudioTrack track){
@@ -148,12 +155,12 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		}
 	}
 
-	private void sendQueuedTracks(ACommand command, CommandContext ctx, List<AudioTrack> tracks){
+	public void sendQueuedTracks(CommandContext ctx, List<AudioTrack> tracks){
 		var message = new StringBuilder("Queued ").append(tracks.size()).append(" ").append(pluralize("track", tracks)).append(":\n");
 		for(AudioTrack track : tracks){
 			message.append(Utils.formatTrackTitle(track)).append(" ").append(formatDuration(track.getDuration())).append("\n");
 		}
-		command.sendAnswer(ctx, message.toString());
+		sendAnswer(ctx, message.toString());
 	}
 
 	public void connectToChannel(CommandContext ctx){
@@ -217,6 +224,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	@Override
 	public void onTrackStart(IPlayer player, AudioTrack track){
+		System.out.println(track.getInfo().title);
 		if(messageId != null){
 			ReactiveMessageCache.removeReactiveMessage(ctx.getGuild(), messageId);
 		}
@@ -332,6 +340,10 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	public String getMessageId(){
 		return messageId;
+	}
+
+	public ScheduledFuture<?> getFuture(){
+		return future;
 	}
 
 }

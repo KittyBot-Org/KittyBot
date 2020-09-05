@@ -39,4 +39,8 @@ public class SpotifyAPI {
             }
         }
     }
+
+    public static SpotifyApi getAPI(){
+        return SPOTIFY_API;
+    }
 }
