@@ -179,7 +179,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	@Override
 	public void onTrackStart(IPlayer player, AudioTrack track){
-		System.out.println(track.getInfo().title);
 		if(messageId != null){
 			ReactiveMessageCache.removeReactiveMessage(ctx.getGuild(), messageId);
 		}
