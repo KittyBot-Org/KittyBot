@@ -34,7 +34,8 @@ import static de.anteiku.kittybot.utils.Utils.pluralize;
 
 public class MusicPlayer extends PlayerEventListenerAdapter{
 
-	public static final Pattern URL_PATTERN = Pattern.compile("^(https?://)?((www|m)\\.)?youtu(\\.be|be\\.com)/(playlist\\?list=([a-zA-Z0-9-_]+))?((watch\\?v=)?([a-zA-Z0-9-_]{11})(&list=([a-zA-Z0-9-_]+))?)?");
+	public static final Pattern YOUTUBE_URL_PATTERN = Pattern.compile("^(https?://)?((www|m)\\.)?youtu(\\.be|be\\.com)/(playlist\\?list=([a-zA-Z0-9-_]+))?((watch\\?v=)?([a-zA-Z0-9-_]{11})(&list=([a-zA-Z0-9-_]+))?)?");
+	public static final Pattern SPOTIFY_URL_PATTERN = Pattern.compile("^(https?://|www\\.)?open\\.spotify\\.com/(track|album|playlist)/([a-zA-Z0-9-_]+)");
 	private static final Logger LOG = LoggerFactory.getLogger(MusicPlayer.class);
 	private static final int VOLUME_MAX = 200;
 	private final LavalinkPlayer player;
@@ -64,7 +65,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		this.command = command;
 		this.ctx = ctx;
 		String argStr = String.join(" ", ctx.getArgs());
-		final String query = URL_PATTERN.matcher(argStr).matches() ? argStr : "ytsearch:" + argStr;
+		final String query = YOUTUBE_URL_PATTERN.matcher(argStr).matches() ? argStr : "ytsearch:" + argStr;
 		KittyBot.getAudioPlayerManager().loadItem(query, new AudioLoadResultHandler(){
 
 			@Override

@@ -26,6 +26,7 @@ dependencies {
     implementation 'net.dv8tion:JDA:4.2.0_203'
     implementation 'com.jagrosh:jda-utilities:3.0.4'
     implementation 'com.github.sedmelluq:lavaplayer:bec3995'
+    implementation 'se.michaelthelin.spotify:spotify-web-api-java:6.3.0'
     implementation("com.github.KittyBot-Org:Lavalink-Client:66e1097") {
         exclude group: 'com.sedmelluq', module: 'lavaplayer'
     }

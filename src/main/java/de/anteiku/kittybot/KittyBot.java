@@ -9,6 +9,7 @@ import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.vimeo.VimeoAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
+import com.wrapper.spotify.SpotifyApi;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.database.SQL;
 import de.anteiku.kittybot.events.*;
@@ -18,6 +19,7 @@ import de.anteiku.kittybot.objects.StatusManager;
 import de.anteiku.kittybot.objects.cache.MessageCache;
 import de.anteiku.kittybot.objects.command.CommandManager;
 import de.anteiku.kittybot.objects.paginator.Paginator;
+import de.anteiku.kittybot.objects.spotify.SpotifyAPI;
 import lavalink.client.io.Link;
 import lavalink.client.io.jda.JdaLavalink;
 import net.dv8tion.jda.api.*;
@@ -46,6 +48,7 @@ public class KittyBot{
 	private static final AudioPlayerManager AUDIO_PLAYER_MANAGER = new DefaultAudioPlayerManager();
 	private static final ScheduledExecutorService SCHEDULER = Executors.newSingleThreadScheduledExecutor();
 	private static final EventWaiter WAITER = new EventWaiter();
+	private static final SpotifyApi SPOTIFY_API = new SpotifyApi.Builder().setClientId(Config.SPOTIFY_CLIENT_ID).setClientSecret(Config.SPOTIFY_CLIENT_SECRET).build();
 	private static JdaLavalink lavalink;
 	private static JDA jda;
 	private static DiscordBotListAPI discordBotListAPI;
@@ -80,6 +83,8 @@ public class KittyBot{
 			AUDIO_PLAYER_MANAGER.registerSourceManager(new TwitchStreamAudioSourceManager());
 			AUDIO_PLAYER_MANAGER.registerSourceManager(new HttpAudioSourceManager());
 			AudioSourceManagers.registerRemoteSources(AUDIO_PLAYER_MANAGER);
+
+			SpotifyAPI.initialize();
 
 			CommandManager.registerCommands();
 
