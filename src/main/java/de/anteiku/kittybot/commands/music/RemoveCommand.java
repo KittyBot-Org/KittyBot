@@ -51,7 +51,11 @@ public class RemoveCommand extends ACommand{
 			sendError(ctx, "Please provide a valid number");
 			return;
 		}
-		if (position > queue.size() || position == 0){
+		if (position == 0){
+			sendError(ctx, "PLease enter a position bigger than 0");
+			return;
+		}
+		if (position > queue.size()){
 			sendError(ctx, "The position you entered is bigger than the queue size");
 			return;
 		}
