@@ -2,6 +2,7 @@ package de.anteiku.kittybot.utils;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.anteiku.kittybot.objects.MusicPlayer;
+import de.anteiku.kittybot.objects.cache.PrefixCache;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.entities.Emote;
@@ -98,14 +99,15 @@ public class Utils{
 			sendError(ctx, "There are currently no tracks queued");
 			return;
 		}
-		var message = new StringBuilder("Currently **").append(queue.size())
-				.append("** ")
-				.append(pluralize("track", queue))
-				.append(" ")
-				.append(queue.size() > 1 ? "are" : "is")
-				.append(" queued:\n\n");
-		queue.forEach(track -> message.append(formatTrackTitle(track)).append(" ").append(formatDuration(track.getDuration())).append("\n"));
-		buildResponse(ctx, message);
+		var message = new StringBuilder();
+		var casted = (List<AudioTrack>) queue;
+		for (var i = 0; i < casted.size(); i++) {
+			var track = casted.get(i);
+			message.append(i + 1).append(") ").append(track.getInfo().title).append(" ").append(Utils.formatDuration(track.getDuration())).append("\n");
+		}
+		var prefix = PrefixCache.getCommandPrefix(ctx.getGuild().getId());
+		message.append("\nTo add more songs to the queue, use ").append(prefix).append("play").append(" or ").append(prefix).append("queue");
+		buildResponse(ctx, message, 1000, "```nim\n", "```");
 	}
 
 	public static void processHistory(CommandContext ctx, MusicPlayer player){
