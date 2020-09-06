@@ -7,10 +7,10 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.objects.cache.MusicPlayerCache;
+import de.anteiku.kittybot.objects.cache.PrefixCache;
 import de.anteiku.kittybot.objects.cache.ReactiveMessageCache;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.CommandContext;
-import de.anteiku.kittybot.utils.Utils;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavalinkPlayer;
 import lavalink.client.player.event.PlayerEventListenerAdapter;
@@ -150,10 +150,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	private void sendQueuedTracks(ACommand command, CommandContext ctx, List<AudioTrack> tracks){
-		var message = new StringBuilder("Queued ").append(tracks.size()).append(" ").append(pluralize("track", tracks)).append(":\n");
-		for(AudioTrack track : tracks){
-			message.append(Utils.formatTrackTitle(track)).append(" ").append(formatDuration(track.getDuration())).append("\n");
-		}
+		var message = new StringBuilder("Queued **").append(tracks.size()).append("** ").append(pluralize("track", tracks)).append(".");
+		message.append("\n\nTo see the current queue, type `").append(PrefixCache.getCommandPrefix(ctx.getGuild().getId())).append("queue`.");
 		command.sendAnswer(ctx, message.toString());
 	}
 

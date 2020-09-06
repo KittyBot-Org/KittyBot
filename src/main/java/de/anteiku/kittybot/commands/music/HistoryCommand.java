@@ -37,8 +37,8 @@ public class HistoryCommand extends ACommand{
 				sendAnswer(ctx, "There are currently no tracks in history");
 				return;
 			}
-			var message = new StringBuilder("Currently ").append(history.size())
-					.append(" ")
+			var message = new StringBuilder("Currently **").append(history.size())
+					.append("** ")
 					.append(Utils.pluralize("track", history))
 					.append(" ")
 					.append(history.size() > 1 ? "are" : "is")
