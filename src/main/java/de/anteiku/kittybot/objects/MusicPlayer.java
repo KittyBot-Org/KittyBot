@@ -129,7 +129,9 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 			@Override
 			public void loadFailed(FriendlyException exception){
-				sendError(ctx, "Failed to load track");
+				sendError(ctx, exception.getMessage().contains("Track information is unavailable")
+						? "Playing **age restricted videos doesn't work** as YouTube changed the response. We're waiting for a fix from the audio library we're using."
+						: "Failed to load track");
 			}
 		});
 	}

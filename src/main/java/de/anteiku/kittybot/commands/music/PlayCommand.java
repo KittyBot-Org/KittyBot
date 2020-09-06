@@ -41,7 +41,6 @@ public class PlayCommand extends ACommand{
 			musicPlayer = new MusicPlayer(player);
 			player.addListener(musicPlayer);
 			MusicPlayerCache.addMusicPlayer(ctx.getGuild(), musicPlayer);
-			ctx.getChannel().sendMessage(":warning: Notice: Playing **age restricted videos doesn't work** as YouTube changed the response. We're waiting for a fix from the audio library we're using.").queue();
 		}
 		musicPlayer.loadItem(this, ctx);
 	}
