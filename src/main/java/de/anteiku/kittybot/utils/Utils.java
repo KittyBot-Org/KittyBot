@@ -89,7 +89,7 @@ public class Utils{
 	}
 
 	public static void processQueue(ACommand command, CommandContext ctx, MusicPlayer player){
-		if (ctx.getArgs().length != 0){
+		if (ctx.getArgs().length > 0){
 			player.loadItem(command, ctx);
 			return;
 		}
