@@ -1,6 +1,5 @@
 package de.anteiku.kittybot.commands.music;
 
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.anteiku.kittybot.objects.cache.MusicPlayerCache;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.Category;
@@ -31,23 +30,7 @@ public class HistoryCommand extends ACommand{
 			sendError(ctx, "No active music player found!");
 			return;
 		}
-		if(ctx.getArgs().length == 0){
-			var history = musicPlayer.getHistory();
-			if(history.isEmpty()){
-				sendAnswer(ctx, "There are currently no tracks in history");
-				return;
-			}
-			var message = new StringBuilder("Currently **").append(history.size())
-					.append("** ")
-					.append(Utils.pluralize("track", history))
-					.append(" ")
-					.append(history.size() > 1 ? "are" : "is")
-					.append(" in the history:\n");
-			for(AudioTrack track : history){
-				message.append(Utils.formatTrackTitle(track)).append(" ").append(Utils.formatDuration(track.getDuration())).append("\n");
-			}
-			sendAnswer(ctx, message.toString());
-		}
+		Utils.processHistory(ctx, musicPlayer);
 	}
 
 }

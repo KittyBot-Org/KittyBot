@@ -1,5 +1,7 @@
 package de.anteiku.kittybot.utils;
 
+import de.anteiku.kittybot.objects.command.CommandContext;
+import de.anteiku.kittybot.objects.paginator.Paginator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,7 +10,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import static de.anteiku.kittybot.objects.command.ACommand.sendAnswer;
 
 public class MessageUtils{
 
@@ -39,7 +44,7 @@ public class MessageUtils{
 		return "[" + title + "](" + url + ")";
 	}
 
-	public static List<String> splitMessage(String content){ // https://github.com/JDA-Applications/JDA-Utilities/blob/master/command/src/main/java/com/jagrosh/jdautilities/command/CommandEvent.java#L986-#L1009
+	private static List<String> splitMessage(String content){ // https://github.com/JDA-Applications/JDA-Utilities/blob/master/command/src/main/java/com/jagrosh/jdautilities/command/CommandEvent.java#L986-#L1009
 		var msgs = new ArrayList<String>();
 		while (content.length() > 2000){
 			var idk = 2000 - (content.length() % 2000);
@@ -60,5 +65,21 @@ public class MessageUtils{
 			msgs.add(content);
 		}
 		return msgs;
+	}
+
+	public static void buildResponse(CommandContext ctx, StringBuilder message) {
+		var built = message.toString();
+		if (built.length() <= 2000){
+			sendAnswer(ctx, message.toString());
+			return;
+		}
+		var descriptions = new HashMap<Integer, String>();
+		var page = 0;
+		var split = splitMessage(built);
+		for (var s : split) {
+			descriptions.put(page, s);
+			page++;
+		}
+		Paginator.createDescriptionPaginator(ctx.getMessage(), descriptions);
 	}
 }

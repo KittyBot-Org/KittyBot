@@ -65,7 +65,7 @@ public class SpotifyLoader {
 
             @Override
             public void loadFailed(FriendlyException exception){
-                sendError(ctx, "Failed to load track");
+                player.loadFailed(exception);
             }
         })).exceptionally(throwable ->{
             sendError(ctx, throwable.getMessage().contains("invalid id") ? "Track not found" : "There was an error while loading the track");
@@ -134,7 +134,9 @@ public class SpotifyLoader {
             public void noMatches() {}
 
             @Override
-            public void loadFailed(FriendlyException exception) {}
+            public void loadFailed(FriendlyException exception) {
+                player.loadFailed(exception);
+            }
         }));
         if(!player.getQueue().isEmpty()){
             player.sendQueuedTracks(ctx, queuedTracks);

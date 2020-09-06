@@ -1,18 +1,19 @@
 package de.anteiku.kittybot.utils;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import de.anteiku.kittybot.objects.MusicPlayer;
+import de.anteiku.kittybot.objects.command.ACommand;
+import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Role;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.*;
 
+import static de.anteiku.kittybot.objects.command.ACommand.sendError;
+import static de.anteiku.kittybot.utils.MessageUtils.buildResponse;
+
 public class Utils{
-
-	private static final Logger LOG = LoggerFactory.getLogger(Utils.class);
-
 	private static final String CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 	public static String generate(int length){
@@ -85,6 +86,46 @@ public class Utils{
 
 	public static <T> String pluralize(String text, Collection<T> collection){
 		return collection.size() != 1 ? text + "s" : text;
+	}
+
+	public static void processQueue(ACommand command, CommandContext ctx, MusicPlayer player){
+		var queue = player.getQueue();
+		if (ctx.getArgs().length != 0){
+			player.loadItem(command, ctx);
+			return;
+		}
+		if(queue.isEmpty()){
+			sendError(ctx, "There are currently no tracks queued");
+			return;
+		}
+		var message = new StringBuilder("Currently **").append(queue.size())
+				.append("** ")
+				.append(pluralize("track", queue))
+				.append(" ")
+				.append(queue.size() > 1 ? "are" : "is")
+				.append(" queued:\n\n");
+		queue.forEach(track -> message.append(formatTrackTitle(track)).append(" ").append(formatDuration(track.getDuration())).append("\n"));
+		buildResponse(ctx, message);
+	}
+
+	public static void processHistory(CommandContext ctx, MusicPlayer player){
+		var history = player.getHistory();
+		if(history.isEmpty()){
+			sendError(ctx, "There are currently no tracks in history");
+			return;
+		}
+		var message = new StringBuilder("Currently **").append(history.size())
+				.append("** ")
+				.append(Utils.pluralize("track", history))
+				.append(" ")
+				.append(history.size() > 1 ? "are" : "is")
+				.append(" in the history:\n\n");
+		var historyIterator = history.descendingIterator();
+		while (historyIterator.hasNext()){
+			var track = historyIterator.next();
+			message.append(Utils.formatTrackTitle(track)).append(" ").append(Utils.formatDuration(track.getDuration())).append("\n");
+		}
+		buildResponse(ctx, message);
 	}
 
 }

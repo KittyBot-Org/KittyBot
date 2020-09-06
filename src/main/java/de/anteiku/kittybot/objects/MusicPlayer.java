@@ -12,6 +12,7 @@ import de.anteiku.kittybot.objects.cache.ReactiveMessageCache;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.CommandContext;
 import de.anteiku.kittybot.objects.spotify.SpotifyLoader;
+import de.anteiku.kittybot.utils.Utils;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavalinkPlayer;
 import lavalink.client.player.event.PlayerEventListenerAdapter;
@@ -92,9 +93,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 			@Override
 			public void loadFailed(FriendlyException exception){
-				sendError(ctx, exception.getMessage().contains("Track information is unavailable")
-						? "Playing **age restricted videos doesn't work** as YouTube changed the response. We're waiting for a fix from the audio library we're using."
-						: "Failed to load track");
+				MusicPlayer.this.loadFailed(exception);
 			}
 		});
 	}
@@ -112,8 +111,12 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		}
 	}
 
-	private void sendQueuedTracks(CommandContext ctx, List<AudioTrack> tracks){
-		var message = new StringBuilder("Queued **").append(tracks.size()).append("** ").append(pluralize("track", tracks)).append(".");
+	public void sendQueuedTracks(CommandContext ctx, List<AudioTrack> tracks){
+		var message = new StringBuilder("Queued **").append(tracks.size()).append("** ").append(pluralize("track", tracks));
+		if (tracks.size() == 1){
+			var track = tracks.get(0);
+			message.append(":\n").append(Utils.formatTrackTitle(track)).append(" ").append(formatDuration(track.getDuration()));
+		}
 		message.append("\n\nTo see the current queue, type `").append(PrefixCache.getCommandPrefix(ctx.getGuild().getId())).append("queue`.");
 		sendAnswer(ctx, message.toString());
 	}
@@ -355,6 +358,12 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 			future.cancel(true);
 		}
 		connectToChannel(ctx);
+	}
+
+	public void loadFailed(FriendlyException exception){
+		sendError(ctx, exception.getMessage().contains("Track information is unavailable")
+				? "Playing **age restricted videos doesn't work** as YouTube changed the response. We're waiting for a fix from the audio library we're using."
+				: "Failed to load track");
 	}
 
 }

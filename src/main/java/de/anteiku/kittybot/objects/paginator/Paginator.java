@@ -39,7 +39,7 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 		});
 	}
 
-	public static void createQueuePaginator(final Message message, final Map<Integer, String> descriptionPerPage){
+	public static void createDescriptionPaginator(final Message message, final Map<Integer, String> descriptionPerPage){
 		createPaginator(message, descriptionPerPage.size(), (page, embedBuilder) ->{
 			var description = descriptionPerPage.get(page);
 			embedBuilder.setDescription(description);
