@@ -89,11 +89,11 @@ public class Utils{
 	}
 
 	public static void processQueue(ACommand command, CommandContext ctx, MusicPlayer player){
-		var queue = player.getQueue();
 		if (ctx.getArgs().length != 0){
 			player.loadItem(command, ctx);
 			return;
 		}
+		var queue = player.getQueue();
 		if(queue.isEmpty()){
 			sendError(ctx, "There are currently no tracks queued");
 			return;
