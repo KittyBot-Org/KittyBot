@@ -2,6 +2,7 @@ package de.anteiku.kittybot.utils;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.anteiku.kittybot.objects.MusicPlayer;
+import de.anteiku.kittybot.objects.cache.PrefixCache;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.entities.Emote;
@@ -81,7 +82,7 @@ public class Utils{
 
 	public static String formatTrackTitle(AudioTrack track){
 		var info = track.getInfo();
-		return "[" + info.title + "]" + "(" + info.uri + ")";
+		return "[`" + info.title + "`]" + "(" + info.uri + ")";
 	}
 
 	public static <T> String pluralize(String text, Collection<T> collection){
@@ -89,7 +90,16 @@ public class Utils{
 	}
 
 	public static void processQueue(ACommand command, CommandContext ctx, MusicPlayer player){
+		if(player == null){
+			sendError(ctx, "No active music player found!");
+			return;
+		}
 		if (ctx.getArgs().length > 0){
+			var voiceState = ctx.getMember().getVoiceState();
+			if(voiceState != null && !voiceState.inVoiceChannel()){
+				sendError(ctx, "To use this command you need to be connected to a voice channel");
+				return;
+			}
 			player.loadItem(command, ctx);
 			return;
 		}
@@ -104,11 +114,22 @@ public class Utils{
 				.append(" ")
 				.append(queue.size() > 1 ? "are" : "is")
 				.append(" queued:\n\n");
-		queue.forEach(track -> message.append(formatTrackTitle(track)).append(" ").append(formatDuration(track.getDuration())).append("\n"));
-		buildResponse(ctx, message);
+		var trackList = ((List<AudioTrack>) queue);
+		for (int i = 0; i < trackList.size(); i++) {
+			var track = trackList.get(i);
+			message.append(i + 1).append(") ").append(formatTrackTitle(track)).append(" ").append(formatDuration(track.getDuration())).append("\n");
+		}
+		var prefix = PrefixCache.getCommandPrefix(ctx.getGuild().getId());
+		message.append("\nTo add more songs to the queue, use `").append(prefix).append("play`").append(" or `").append(prefix).append("queue`.");
+		message.append("\nPro tip: To remove songs from the queue, you can use `").append(prefix).append("remove <position>").append("`."); // TODO maybe add a "tip" about being able to skip to a track with given position
+		buildResponse(ctx, message, 1000);
 	}
 
 	public static void processHistory(CommandContext ctx, MusicPlayer player){
+		if(player == null){
+			sendError(ctx, "No active music player found!");
+			return;
+		}
 		var history = player.getHistory();
 		if(history.isEmpty()){
 			sendError(ctx, "There are currently no tracks in history");
@@ -123,9 +144,10 @@ public class Utils{
 		var historyIterator = history.descendingIterator();
 		while (historyIterator.hasNext()){
 			var track = historyIterator.next();
-			message.append(Utils.formatTrackTitle(track)).append(" ").append(Utils.formatDuration(track.getDuration())).append("\n");
+			message.append(formatTrackTitle(track)).append(" ").append(formatDuration(track.getDuration())).append("\n");
 		}
-		buildResponse(ctx, message);
+		message.append("\nNote: The history is sorted from the last track to the most recent one.");
+		buildResponse(ctx, message, 1000);
 	}
 
 }

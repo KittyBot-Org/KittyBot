@@ -52,7 +52,7 @@ public class PlayCommand extends ACommand{
 			return;
 		}
 		var requester = musicPlayer.getRequesterId();
-		if(requester == null){
+		if(requester == null){ // TODO add check for dj role
 			return;
 		}
 		if(!requester.equals(event.getUserId())){

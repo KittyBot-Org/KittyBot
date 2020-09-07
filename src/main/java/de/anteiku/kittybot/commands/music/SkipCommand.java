@@ -25,7 +25,7 @@ public class SkipCommand extends ACommand{
 			return;
 		}
 		sendAnswer(ctx, "Track skipped");
-		musicPlayer.nextTrack();
+		musicPlayer.nextTrack(); // TODO add check for dj role
 	}
 
 }

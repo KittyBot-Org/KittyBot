@@ -20,17 +20,7 @@ public class QueueCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		var voiceState = ctx.getMember().getVoiceState();
-		if(voiceState != null && !voiceState.inVoiceChannel()){
-			sendError(ctx, "To use this command you need to be connected to a voice channel");
-			return;
-		}
-		var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
-		if(musicPlayer == null){
-			sendError(ctx, "No active music player found!");
-			return;
-		}
-		Utils.processQueue(this, ctx, musicPlayer);
+		Utils.processQueue(this, ctx, MusicPlayerCache.getMusicPlayer(ctx.getGuild()));
 	}
 
 }

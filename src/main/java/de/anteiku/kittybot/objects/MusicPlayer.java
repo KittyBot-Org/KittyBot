@@ -12,12 +12,12 @@ import de.anteiku.kittybot.objects.cache.ReactiveMessageCache;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.CommandContext;
 import de.anteiku.kittybot.objects.spotify.SpotifyLoader;
-import de.anteiku.kittybot.utils.Utils;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavalinkPlayer;
 import lavalink.client.player.event.PlayerEventListenerAdapter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,8 +32,7 @@ import java.util.regex.Pattern;
 
 import static de.anteiku.kittybot.objects.command.ACommand.sendAnswer;
 import static de.anteiku.kittybot.objects.command.ACommand.sendError;
-import static de.anteiku.kittybot.utils.Utils.formatDuration;
-import static de.anteiku.kittybot.utils.Utils.pluralize;
+import static de.anteiku.kittybot.utils.Utils.*;
 
 public class MusicPlayer extends PlayerEventListenerAdapter{
 
@@ -115,7 +114,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		var message = new StringBuilder("Queued **").append(tracks.size()).append("** ").append(pluralize("track", tracks));
 		if (tracks.size() == 1){
 			var track = tracks.get(0);
-			message.append(":\n").append(Utils.formatTrackTitle(track)).append(" ").append(formatDuration(track.getDuration()));
+			message.append(":\n").append(formatTrackTitle(track)).append(" ").append(formatDuration(track.getDuration()));
 		}
 		message.append("\n\nTo see the current queue, type `").append(PrefixCache.getCommandPrefix(ctx.getGuild().getId())).append("queue`.");
 		sendAnswer(ctx, message.toString());
@@ -126,6 +125,12 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		if(voiceState != null && voiceState.getChannel() != null){
 			KittyBot.getLavalink().getLink(ctx.getGuild()).connect(voiceState.getChannel());
 		}
+	}
+
+	public boolean canInteract(AudioTrack track, User user){
+		var isRequester = user.getId().equals(track.getUserData(String.class));
+		return isRequester;
+		// TODO add check for dj role
 	}
 
 	public String getRequesterId(){

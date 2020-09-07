@@ -44,16 +44,16 @@ public class MessageUtils{
 		return "[" + title + "](" + url + ")";
 	}
 
-	private static List<String> splitMessage(String content){ // https://github.com/JDA-Applications/JDA-Utilities/blob/master/command/src/main/java/com/jagrosh/jdautilities/command/CommandEvent.java#L986-#L1009
+	private static List<String> splitMessage(String content, int limit){ // https://github.com/JDA-Applications/JDA-Utilities/blob/master/command/src/main/java/com/jagrosh/jdautilities/command/CommandEvent.java#L986-#L1009
 		var msgs = new ArrayList<String>();
-		while (content.length() > 2000){
-			var idk = 2000 - (content.length() % 2000);
-			var index = content.lastIndexOf("\n", 2000);
+		while (content.length() > limit){
+			var idk = limit - (content.length() % limit);
+			var index = content.lastIndexOf("\n", limit);
 			if (index < idk){
-				index = content.lastIndexOf(" ", 2000);
+				index = content.lastIndexOf(" ", limit);
 			}
 			if (index < idk){
-				index = 2000;
+				index = limit;
 			}
 			String temp = content.substring(0, index).trim();
 			if (!temp.equals("")){
@@ -67,15 +67,19 @@ public class MessageUtils{
 		return msgs;
 	}
 
-	public static void buildResponse(CommandContext ctx, StringBuilder message) {
+	public static void buildResponse(CommandContext ctx, StringBuilder message){
+		buildResponse(ctx, message, 2000);
+	}
+
+	public static void buildResponse(CommandContext ctx, StringBuilder message, int limit){
 		var built = message.toString();
-		if (built.length() <= 2000){
+		if (built.length() <= limit){
 			sendAnswer(ctx, message.toString());
 			return;
 		}
 		var descriptions = new HashMap<Integer, String>();
 		var page = 0;
-		var split = splitMessage(built);
+		var split = splitMessage(built, limit);
 		for (var s : split) {
 			descriptions.put(page, s);
 			page++;
