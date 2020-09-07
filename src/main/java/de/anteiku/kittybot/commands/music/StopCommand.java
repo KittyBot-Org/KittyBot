@@ -19,7 +19,7 @@ public class StopCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		if (MusicPlayerCache.getMusicPlayer(ctx.getGuild()) == null){
+		if(MusicPlayerCache.getMusicPlayer(ctx.getGuild()) == null){
 			sendError(ctx, "No active music player found!");
 			return;
 		}

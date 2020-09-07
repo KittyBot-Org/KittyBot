@@ -44,42 +44,43 @@ public class MessageUtils{
 		return "[" + title + "](" + url + ")";
 	}
 
-	private static List<String> splitMessage(String content){ // https://github.com/JDA-Applications/JDA-Utilities/blob/master/command/src/main/java/com/jagrosh/jdautilities/command/CommandEvent.java#L986-#L1009
-		var msgs = new ArrayList<String>();
-		while (content.length() > 1000){
-			var idk = 1000 - (content.length() % 1000);
-			var index = content.lastIndexOf("\n", 1000);
-			if (index < idk){
-				index = content.lastIndexOf(" ", 1000);
-			}
-			if (index < idk){
-				index = 1000;
-			}
-			String temp = content.substring(0, index).trim();
-			if (!temp.equals("")){
-				msgs.add(temp);
-			}
-			content = content.substring(index).trim();
-		}
-		if (!content.equals("")){
-			msgs.add(content);
-		}
-		return msgs;
-	}
-
 	public static void buildResponse(CommandContext ctx, StringBuilder message){
 		var built = message.toString();
-		if (built.length() <= 1000){
+		if(built.length() <= 1000){
 			sendAnswer(ctx, message.toString());
 			return;
 		}
 		var descriptions = new HashMap<Integer, String>();
 		var page = 0;
 		var split = splitMessage(built);
-		for (var s : split) {
+		for(var s : split){
 			descriptions.put(page, s);
 			page++;
 		}
 		Paginator.createDescriptionPaginator(ctx.getMessage(), descriptions);
 	}
+
+	private static List<String> splitMessage(String content){ // https://github.com/JDA-Applications/JDA-Utilities/blob/master/command/src/main/java/com/jagrosh/jdautilities/command/CommandEvent.java#L986-#L1009
+		var msgs = new ArrayList<String>();
+		while(content.length() > 1000){
+			var idk = 1000 - (content.length() % 1000);
+			var index = content.lastIndexOf("\n", 1000);
+			if(index < idk){
+				index = content.lastIndexOf(" ", 1000);
+			}
+			if(index < idk){
+				index = 1000;
+			}
+			String temp = content.substring(0, index).trim();
+			if(!temp.equals("")){
+				msgs.add(temp);
+			}
+			content = content.substring(index).trim();
+		}
+		if(!content.equals("")){
+			msgs.add(content);
+		}
+		return msgs;
+	}
+
 }

@@ -2,7 +2,7 @@ package de.anteiku.kittybot.utils;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.anteiku.kittybot.objects.MusicPlayer;
-import de.anteiku.kittybot.objects.cache.PrefixCache;
+import de.anteiku.kittybot.objects.cache.GuildSettingsCache;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.entities.Emote;
@@ -16,6 +16,7 @@ import static de.anteiku.kittybot.objects.command.ACommand.sendError;
 import static de.anteiku.kittybot.utils.MessageUtils.buildResponse;
 
 public class Utils{
+
 	private static final String CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 	public static String generate(int length){
@@ -24,6 +25,34 @@ public class Utils{
 			builder.append(CHARS.charAt(ThreadLocalRandom.current().nextInt() * CHARS.length()));
 		}
 		return builder.toString();
+	}
+
+	public static String getUserMention(String userId){
+		if(userId.equals("-1")){
+			return "unset";
+		}
+		return "<@" + userId + ">";
+	}
+
+	public static String getRoleMention(String roleId){
+		if(roleId.equals("-1")){
+			return "unset";
+		}
+		return "<@&" + roleId + ">";
+	}
+
+	public static String getChannelMention(String channelId){
+		if(channelId.equals("-1")){
+			return "unset";
+		}
+		return "<#" + channelId + ">";
+	}
+
+	public static String getEmoteMention(String emoteId){
+		if(emoteId.equals("-1")){
+			return "unset";
+		}
+		return "<:i:" + emoteId + ">";
 	}
 
 	public static boolean isEnable(String string){
@@ -75,27 +104,12 @@ public class Utils{
 		return strings;
 	}
 
-	public static String formatDuration(long length){
-		Duration duration = Duration.ofMillis(length);
-		var seconds = duration.toSecondsPart();
-		return String.format("%d:%s", duration.toMinutes(), seconds > 9 ? seconds : "0" + seconds);
-	}
-
-	public static String formatTrackTitle(AudioTrack track){
-		var info = track.getInfo();
-		return "[`" + info.title + "`]" + "(" + info.uri + ")";
-	}
-
-	public static <T> String pluralize(String text, Collection<T> collection){
-		return collection.size() != 1 ? text + "s" : text;
-	}
-
 	public static void processQueue(ACommand command, CommandContext ctx, MusicPlayer player){
 		if(player == null){
 			sendError(ctx, "No active music player found!");
 			return;
 		}
-		if (ctx.getArgs().length > 0){
+		if(ctx.getArgs().length > 0){
 			var voiceState = ctx.getMember().getVoiceState();
 			if(voiceState != null && !voiceState.inVoiceChannel()){
 				sendError(ctx, "To use this command you need to be connected to a voice channel");
@@ -117,14 +131,29 @@ public class Utils{
 				.append(queue.size() > 1 ? "are" : "is")
 				.append(" queued:\n\n");
 		var trackList = ((List<AudioTrack>) queue);
-		for (int i = 0; i < trackList.size(); i++) {
+		for(int i = 0; i < trackList.size(); i++){
 			var track = trackList.get(i);
 			message.append(i + 1).append(") ").append(formatTrackTitle(track)).append(" ").append(formatDuration(track.getDuration())).append("\n");
 		}
-		var prefix = PrefixCache.getCommandPrefix(ctx.getGuild().getId());
+		var prefix = GuildSettingsCache.getCommandPrefix(ctx.getGuild().getId());
 		message.append("\nTo add more songs to the queue, use `").append(prefix).append("play`").append(" or `").append(prefix).append("queue`.");
 		message.append("\nPro tip: To remove songs from the queue, you can use `").append(prefix).append("remove <position>").append("`."); // TODO maybe add a "tip" about being able to skip to a track with given position
 		buildResponse(ctx, message);
+	}
+
+	public static <T> String pluralize(String text, Collection<T> collection){
+		return collection.size() != 1 ? text + "s" : text;
+	}
+
+	public static String formatTrackTitle(AudioTrack track){
+		var info = track.getInfo();
+		return "[`" + info.title + "`]" + "(" + info.uri + ")";
+	}
+
+	public static String formatDuration(long length){
+		Duration duration = Duration.ofMillis(length);
+		var seconds = duration.toSecondsPart();
+		return String.format("%d:%s", duration.toMinutes(), seconds > 9 ? seconds : "0" + seconds);
 	}
 
 	public static void processHistory(CommandContext ctx, MusicPlayer player){
@@ -145,7 +174,7 @@ public class Utils{
 				.append(history.size() > 1 ? "are" : "is")
 				.append(" in the history:\n\n");
 		var historyIterator = history.descendingIterator();
-		while (historyIterator.hasNext()){
+		while(historyIterator.hasNext()){
 			var track = historyIterator.next();
 			message.append(formatTrackTitle(track)).append(" ").append(formatDuration(track.getDuration())).append("\n");
 		}

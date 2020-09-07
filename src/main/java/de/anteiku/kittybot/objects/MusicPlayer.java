@@ -6,8 +6,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import de.anteiku.kittybot.KittyBot;
+import de.anteiku.kittybot.objects.cache.GuildSettingsCache;
 import de.anteiku.kittybot.objects.cache.MusicPlayerCache;
-import de.anteiku.kittybot.objects.cache.PrefixCache;
 import de.anteiku.kittybot.objects.cache.ReactiveMessageCache;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.CommandContext;
@@ -68,7 +68,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		this.ctx = ctx;
 		String argStr = String.join(" ", ctx.getArgs());
 		var matcher = SPOTIFY_URL_PATTERN.matcher(argStr);
-		if (matcher.matches()){
+		if(matcher.matches()){
 			SpotifyLoader.load(ctx, matcher);
 			return;
 		}
@@ -97,6 +97,65 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		});
 	}
 
+	public void trackLoaded(AudioTrack track){
+		if(!lengthCheck(track.getDuration())){
+			sendError(ctx, "The maximum length of a track is 20 minutes");
+			return;
+		}
+		track.setUserData(ctx.getUser().getId());
+		queue(track);
+		if(!queue.isEmpty()){
+			sendQueuedTracks(ctx, Collections.singletonList(track));
+		}
+		if(future != null){
+			future.cancel(true);
+		}
+		connectToChannel(ctx);
+	}
+
+	public void playlistLoaded(AudioPlaylist playlist){
+		var queuedTracks = new ArrayList<AudioTrack>();
+		if(playlist.isSearchResult()){
+			var track = playlist.getTracks().get(0);
+			if(!lengthCheck(track.getDuration())){
+				sendError(ctx, "The maximum length of a track is 20 minutes");
+				return;
+			}
+			track.setUserData(ctx.getUser().getId());
+			queuedTracks.add(track);
+			queue(track);
+		}
+		else{
+			for(AudioTrack track : playlist.getTracks()){
+				if(!lengthCheck(track.getDuration())){
+					if(playlist.getTracks().size() == 1){
+						sendError(ctx, "The maximum length of a track is 20 minutes");
+						return;
+					}
+					else{
+						continue;
+					}
+				}
+				track.setUserData(ctx.getUser().getId());
+				queuedTracks.add(track);
+				queue(track);
+			}
+		}
+		if(!queue.isEmpty()){
+			sendQueuedTracks(ctx, queuedTracks);
+		}
+		if(future != null){
+			future.cancel(true);
+		}
+		connectToChannel(ctx);
+	}
+
+	public void loadFailed(FriendlyException exception){
+		sendError(ctx, exception.getMessage().contains("Track information is unavailable")
+				? "Playing **age restricted videos doesn't work** as YouTube changed the response. We're waiting for a fix from the audio library we're using."
+				: "Failed to load track");
+	}
+
 	public boolean lengthCheck(long duration){
 		return TimeUnit.MILLISECONDS.toMinutes(duration) <= 20;
 	}
@@ -112,11 +171,11 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	public void sendQueuedTracks(CommandContext ctx, List<AudioTrack> tracks){
 		var message = new StringBuilder("Queued **").append(tracks.size()).append("** ").append(pluralize("track", tracks));
-		if (tracks.size() == 1){
+		if(tracks.size() == 1){
 			var track = tracks.get(0);
 			message.append(":\n").append(formatTrackTitle(track)).append(" ").append(formatDuration(track.getDuration()));
 		}
-		message.append("\n\nTo see the current queue, type `").append(PrefixCache.getCommandPrefix(ctx.getGuild().getId())).append("queue`.");
+		message.append("\n\nTo see the current queue, type `").append(GuildSettingsCache.getCommandPrefix(ctx.getGuild().getId())).append("queue`.");
 		sendAnswer(ctx, message.toString());
 	}
 
@@ -131,11 +190,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		var isRequester = user.getId().equals(track.getUserData(String.class));
 		return isRequester;
 		// TODO add check for dj role
-	}
-
-	public String getRequesterId(){
-		var playing = player.getPlayingTrack();
-		return playing == null ? null : playing.getUserData(String.class);
 	}
 
 	public boolean pause(){
@@ -252,6 +306,11 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		return player;
 	}
 
+	public String getRequesterId(){
+		var playing = player.getPlayingTrack();
+		return playing == null ? null : playing.getUserData(String.class);
+	}
+
 	@Override
 	public void onTrackEnd(IPlayer player, AudioTrack track, AudioTrackEndReason endReason){
 		this.history.push(track);
@@ -311,65 +370,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	public ScheduledFuture<?> getFuture(){
 		return future;
-	}
-
-	public void trackLoaded(AudioTrack track){
-		if(!lengthCheck(track.getDuration())){
-			sendError(ctx, "The maximum length of a track is 20 minutes");
-			return;
-		}
-		track.setUserData(ctx.getUser().getId());
-		queue(track);
-		if(!queue.isEmpty()){
-			sendQueuedTracks(ctx, Collections.singletonList(track));
-		}
-		if(future != null){
-			future.cancel(true);
-		}
-		connectToChannel(ctx);
-	}
-
-	public void playlistLoaded(AudioPlaylist playlist){
-		var queuedTracks = new ArrayList<AudioTrack>();
-		if(playlist.isSearchResult()){
-			var track = playlist.getTracks().get(0);
-			if(!lengthCheck(track.getDuration())){
-				sendError(ctx, "The maximum length of a track is 20 minutes");
-				return;
-			}
-			track.setUserData(ctx.getUser().getId());
-			queuedTracks.add(track);
-			queue(track);
-		}
-		else{
-			for(AudioTrack track : playlist.getTracks()){
-				if(!lengthCheck(track.getDuration())){
-					if(playlist.getTracks().size() == 1){
-						sendError(ctx, "The maximum length of a track is 20 minutes");
-						return;
-					}
-					else{
-						continue;
-					}
-				}
-				track.setUserData(ctx.getUser().getId());
-				queuedTracks.add(track);
-				queue(track);
-			}
-		}
-		if(!queue.isEmpty()){
-			sendQueuedTracks(ctx, queuedTracks);
-		}
-		if(future != null){
-			future.cancel(true);
-		}
-		connectToChannel(ctx);
-	}
-
-	public void loadFailed(FriendlyException exception){
-		sendError(ctx, exception.getMessage().contains("Track information is unavailable")
-				? "Playing **age restricted videos doesn't work** as YouTube changed the response. We're waiting for a fix from the audio library we're using."
-				: "Failed to load track");
 	}
 
 }

@@ -1,6 +1,7 @@
 package de.anteiku.kittybot.database;
 
 import de.anteiku.kittybot.objects.Config;
+import de.anteiku.kittybot.objects.GuildSettings;
 import de.anteiku.kittybot.objects.ReactiveMessage;
 import de.anteiku.kittybot.objects.cache.SelfAssignableRoleCache;
 import de.anteiku.kittybot.utils.Utils;
@@ -49,7 +50,7 @@ public class Database{
 
 	public static boolean registerGuild(Guild guild){
 		LOG.debug("Registering new guild: {}", guild.getId());
-		var query = "INSERT INTO guilds (guild_id, command_prefix, request_channel_id, requests_enabled, announcement_channel_id, join_messages, join_messages_enabled, " + "leave_messages, leave_messages_enabled, boost_messages, boost_messages_enabled, log_channel_id, log_message_enabled, nsfw_enabled, inactive_role_id) " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		var query = "INSERT INTO guilds (guild_id, command_prefix, request_channel_id, requests_enabled, announcement_channel_id, join_messages, join_messages_enabled, " + "leave_messages, leave_messages_enabled, boost_messages, boost_messages_enabled, log_channel_id, log_messages_enabled, nsfw_enabled, dj_role_id, inactive_role_id) " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			stmt.setString(1, guild.getId());
 			stmt.setString(2, Config.DEFAULT_PREFIX);
@@ -66,6 +67,7 @@ public class Database{
 			stmt.setBoolean(13, false);
 			stmt.setBoolean(14, true);
 			stmt.setString(15, "-1");
+			stmt.setString(16, "-1");
 			SQL.execute(stmt);
 			return true;
 		}
@@ -86,6 +88,25 @@ public class Database{
 			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
 		}
 		return false;
+	}
+
+	public static GuildSettings getGuildSettings(String guildId){
+		var query = "SELECT * FROM guilds WHERE guild_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
+			stmt.setString(1, guildId);
+			var result = SQL.query(stmt);
+			if(result != null && result.next()){
+				return new GuildSettings(guildId, result.getString("command_prefix"), result.getString("request_channel_id"), result.getBoolean("requests_enabled"),
+						result.getString("announcement_channel_id"), result.getString("join_messages"), result.getBoolean("join_messages_enabled"),
+						result.getString("leave_messages"), result.getBoolean("leave_messages_enabled"), result.getString("boost_messages"),
+						result.getBoolean("boost_messages_enabled"), result.getString("log_channel_id"), result.getBoolean("log_messages_enabled"),
+						result.getBoolean("nsfw_enabled"), result.getString("dj_role_id"), result.getString("inactive_role_id"));
+			}
+		}
+		catch(SQLException e){
+			LOG.error("Error getting guild settings for guild: " + guildId, e);
+		}
+		return null;
 	}
 
 	public static boolean addCommandStatistics(String guildId, String commandId, String userId, String command, long processingTime){
@@ -139,6 +160,47 @@ public class Database{
 			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
 		}
 		return false;
+	}
+
+	public static boolean setDJRoleId(String guildId, String roleId){
+		return setProperty(guildId, "dj_role_id", roleId);
+	}
+
+	public static boolean setInactiveRoleId(String guildId, String roleId){
+		return setProperty(guildId, "dj_role_id", roleId);
+	}
+
+	public static boolean setRequestChannelId(String guildId, String roleId){
+		return setProperty(guildId, "request_channel_id", roleId);
+	}
+
+	public static boolean setRequestsEnabled(String guildId, boolean enabled){
+		return setProperty(guildId, "request_enabled", enabled);
+	}
+
+	private static boolean setProperty(String guildId, String key, boolean value){
+		var query = "UPDATE guilds SET " + key + "=? WHERE guild_id = ?";
+		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
+			stmt.setBoolean(1, value);
+			stmt.setString(2, guildId);
+			return SQL.execute(stmt);
+		}
+		catch(SQLException e){
+			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
+		}
+		return false;
+	}
+
+	public static boolean setLogChannelId(String guildId, String enabled){
+		return setProperty(guildId, "log_channel_id", enabled);
+	}
+
+	public static boolean setLogChannelEnabled(String guildId, boolean enabled){
+		return setProperty(guildId, "log_channel_id", enabled);
+	}
+
+	public static boolean setLogMessagesEnabled(String guildId, boolean enabled){
+		return setProperty(guildId, "log_messages_enabled", enabled);
 	}
 
 	public static String getCommandPrefix(String guildId){
@@ -274,19 +336,6 @@ public class Database{
 
 	public static boolean setJoinMessageEnabled(String guildId, boolean enabled){
 		return setProperty(guildId, "join_messages_enabled", enabled);
-	}
-
-	private static boolean setProperty(String guildId, String key, boolean value){
-		var query = "UPDATE guilds SET " + key + "=? WHERE guild_id = ?";
-		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
-			stmt.setBoolean(1, value);
-			stmt.setString(2, guildId);
-			return SQL.execute(stmt);
-		}
-		catch(SQLException e){
-			LOG.error("Error while getting key " + key + " from guild " + guildId, e);
-		}
-		return false;
 	}
 
 	public static String getLeaveMessage(String guildId){

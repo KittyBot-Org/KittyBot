@@ -64,6 +64,14 @@ public abstract class ACommand{
 						.build());
 	}
 
+	public static void sendAnswer(CommandContext ctx, String answer){
+		queue(answer(ctx, answer), ctx);
+	}
+
+	protected static MessageAction answer(CommandContext ctx, String answer){
+		return answer(ctx, new EmbedBuilder().setDescription(answer));
+	}
+
 	protected abstract void run(CommandContext ctx);
 
 	protected boolean checkCmd(String cmd){
@@ -123,16 +131,8 @@ public abstract class ACommand{
 		return error(ctx, "Sorry you don't have the permission to use this command :(");
 	}
 
-	public static void sendAnswer(CommandContext ctx, String answer){
-		queue(answer(ctx, answer), ctx);
-	}
-
 	protected void sendAnswer(CommandContext ctx, EmbedBuilder embed){
 		queue(answer(ctx, embed), ctx);
-	}
-
-	protected static MessageAction answer(CommandContext ctx, String answer){
-		return answer(ctx, new EmbedBuilder().setDescription(answer));
 	}
 
 	protected MessageAction answer(CommandContext ctx, byte[] file, String fileName, EmbedBuilder embed){

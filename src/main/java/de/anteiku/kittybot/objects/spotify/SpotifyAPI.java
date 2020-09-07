@@ -9,38 +9,40 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
-public class SpotifyAPI {
-    private static final SpotifyApi SPOTIFY_API = new SpotifyApi.Builder().setClientId(Config.SPOTIFY_CLIENT_ID).setClientSecret(Config.SPOTIFY_CLIENT_SECRET).build();
-    private static final ClientCredentialsRequest CLIENT_CREDENTIALS_REQUEST = SPOTIFY_API.clientCredentials().build();
+public class SpotifyAPI{
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SpotifyAPI.class);
+	private static final SpotifyApi SPOTIFY_API = new SpotifyApi.Builder().setClientId(Config.SPOTIFY_CLIENT_ID).setClientSecret(Config.SPOTIFY_CLIENT_SECRET).build();
+	private static final ClientCredentialsRequest CLIENT_CREDENTIALS_REQUEST = SPOTIFY_API.clientCredentials().build();
 
-    private static int hits;
+	private static final Logger LOGGER = LoggerFactory.getLogger(SpotifyAPI.class);
 
-    public static void initialize(){
-        KittyBot.getScheduler().scheduleAtFixedRate(SpotifyAPI::refreshAccessToken, 0, 1, TimeUnit.HOURS);
-    }
+	private static int hits;
 
-    private static void refreshAccessToken(){
-        try{
-            SPOTIFY_API.setAccessToken(CLIENT_CREDENTIALS_REQUEST.execute().getAccessToken());
-            hits = 0;
-        }
-        catch (Exception ex){
-            var scheduler = KittyBot.getScheduler();
-            hits++;
-            if (hits < 10){
-                LOGGER.warn("Updating the access token failed. Retrying in 10 seconds", ex);
-                scheduler.schedule(SpotifyAPI::refreshAccessToken, 10, TimeUnit.SECONDS);
-            }
-            else{
-                LOGGER.error("Updating the access token failed. Retrying in 20 seconds", ex);
-                scheduler.schedule(SpotifyAPI::refreshAccessToken, 20, TimeUnit.SECONDS);
-            }
-        }
-    }
+	public static void initialize(){
+		KittyBot.getScheduler().scheduleAtFixedRate(SpotifyAPI::refreshAccessToken, 0, 1, TimeUnit.HOURS);
+	}
 
-    public static SpotifyApi getAPI(){
-        return SPOTIFY_API;
-    }
+	private static void refreshAccessToken(){
+		try{
+			SPOTIFY_API.setAccessToken(CLIENT_CREDENTIALS_REQUEST.execute().getAccessToken());
+			hits = 0;
+		}
+		catch(Exception ex){
+			var scheduler = KittyBot.getScheduler();
+			hits++;
+			if(hits < 10){
+				LOGGER.warn("Updating the access token failed. Retrying in 10 seconds", ex);
+				scheduler.schedule(SpotifyAPI::refreshAccessToken, 10, TimeUnit.SECONDS);
+			}
+			else{
+				LOGGER.error("Updating the access token failed. Retrying in 20 seconds", ex);
+				scheduler.schedule(SpotifyAPI::refreshAccessToken, 20, TimeUnit.SECONDS);
+			}
+		}
+	}
+
+	public static SpotifyApi getAPI(){
+		return SPOTIFY_API;
+	}
+
 }

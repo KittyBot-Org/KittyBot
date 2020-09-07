@@ -31,18 +31,11 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 	private static final Map<Long, BiConsumer<Integer, EmbedBuilder>> CONTENT_CONSUMERS = new HashMap<>(); // K = messageId, V = BiConsumer<PageNumber, EmbedBuilder>
 
 	public static void createCommandsPaginator(final Message message, final Map<Integer, TitleInfo> titlePerPage, final Map<Integer, ArrayList<MessageEmbed.Field>> fieldsPerPage){
-		createPaginator(message, titlePerPage.size(), (page, embedBuilder) ->{
+		createPaginator(message, titlePerPage.size(), (page, embedBuilder) -> {
 			var titleInfo = titlePerPage.get(page);
 			embedBuilder.setTitle(titleInfo.getTitle(), titleInfo.getUrl());
 			fieldsPerPage.get(page).forEach(embedBuilder::addField);
 			embedBuilder.setTimestamp(Instant.now());
-		});
-	}
-
-	public static void createDescriptionPaginator(final Message message, final Map<Integer, String> descriptionPerPage){
-		createPaginator(message, descriptionPerPage.size(), (page, embedBuilder) ->{
-			var description = descriptionPerPage.get(page);
-			embedBuilder.setDescription(description);
 		});
 	}
 
@@ -89,6 +82,13 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 		ORIGINALS.remove(messageId);
 		CURRENT_PAGE.remove(messageId);
 		CONTENT_CONSUMERS.remove(messageId);
+	}
+
+	public static void createDescriptionPaginator(final Message message, final Map<Integer, String> descriptionPerPage){
+		createPaginator(message, descriptionPerPage.size(), (page, embedBuilder) -> {
+			var description = descriptionPerPage.get(page);
+			embedBuilder.setDescription(description);
+		});
 	}
 
 	@Override

@@ -2,13 +2,10 @@ package de.anteiku.kittybot;
 
 import com.jagrosh.jdautilities.oauth2.OAuth2Client;
 import com.jagrosh.jdautilities.oauth2.Scope;
-import com.jagrosh.jdautilities.oauth2.entities.impl.OAuth2ClientImpl;
 import com.jagrosh.jdautilities.oauth2.exceptions.InvalidStateException;
-import com.jagrosh.jdautilities.oauth2.session.DefaultSessionController;
-import com.jagrosh.jdautilities.oauth2.state.DefaultStateController;
 import de.anteiku.kittybot.database.Database;
 import de.anteiku.kittybot.objects.Config;
-import de.anteiku.kittybot.objects.cache.PrefixCache;
+import de.anteiku.kittybot.objects.cache.GuildSettingsCache;
 import de.anteiku.kittybot.objects.cache.SelfAssignableRoleCache;
 import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandManager;
@@ -33,9 +30,12 @@ public class WebService{
 	private final OAuth2Client oAuthClient;
 
 	public WebService(int port){
-		DefaultSessionController sessionController = new DefaultSessionController();
-		DefaultStateController stateController = new DefaultStateController();
-		oAuthClient = new OAuth2ClientImpl(Long.parseLong(Config.BOT_ID), Config.BOT_SECRET, sessionController, stateController, KittyBot.getHttpClient());
+		oAuthClient = new OAuth2Client.Builder()
+				.setClientId(Long.parseLong(Config.BOT_ID))
+				.setClientSecret(Config.BOT_SECRET)
+				.setOkHttpClient(KittyBot.getHttpClient())
+				.build();
+
 		Javalin.create(config -> config.enableCorsForOrigin(Config.ORIGIN_URL)).routes(() -> {
 			get("/discord_login", this::discordLogin);
 			get("/health_check", ctx -> ctx.result("alive"));
@@ -251,16 +251,17 @@ public class WebService{
 		for(var role : roles.entrySet()){
 			data.add(DataObject.empty().put("role", role.getKey()).put("emote", role.getValue()));
 		}
+		var settings = GuildSettingsCache.getGuildSettings(guildId);
 		ok(ctx, DataObject.empty()
-				.put("prefix", PrefixCache.getCommandPrefix(guildId))
-				.put("join_messages_enabled", Database.getJoinMessageEnabled(guildId))
-				.put("join_messages", Database.getJoinMessage(guildId))
-				.put("leave_messages_enabled", Database.getLeaveMessageEnabled(guildId))
-				.put("leave_messages", Database.getLeaveMessage(guildId))
-				.put("boost_messages_enabled", Database.getBoostMessageEnabled(guildId))
-				.put("boost_messages", Database.getBoostMessage(guildId))
-				.put("announcement_channel_id", Database.getAnnouncementChannelId(guildId))
-				.put("nsfw_enabled", Database.getNSFWEnabled(guildId))
+				.put("prefix", settings.getCommandPrefix())
+				.put("join_messages_enabled", settings.areJoinMessagesEnabled())
+				.put("join_messages", settings.getJoinMessage())
+				.put("leave_messages_enabled", settings.areLeaveMessagesEnabled())
+				.put("leave_messages", settings.getLeaveMessage())
+				.put("boost_messages_enabled", settings.areBoostMessagesEnabled())
+				.put("boost_messages", settings.getBoostMessage())
+				.put("announcement_channel_id", settings.getAnnouncementChannelId())
+				.put("nsfw_enabled", settings.isNSFWEnabled())
 				.put("self_assignable_roles", data));
 	}
 
@@ -272,31 +273,31 @@ public class WebService{
 		}
 		var json = DataObject.fromJson(ctx.body());
 		if(json.hasKey("prefix")){
-			Database.setCommandPrefix(guildId, json.getString("prefix"));
+			GuildSettingsCache.setCommandPrefix(guildId, json.getString("prefix"));
 		}
 		if(json.hasKey("join_messages_enabled")){
-			Database.setJoinMessageEnabled(guildId, json.getBoolean("join_messages_enabled"));
+			GuildSettingsCache.setJoinMessagesEnabled(guildId, json.getBoolean("join_messages_enabled"));
 		}
 		if(json.hasKey("join_messages")){
-			Database.setJoinMessage(guildId, json.getString("join_messages"));
+			GuildSettingsCache.setJoinMessage(guildId, json.getString("join_messages"));
 		}
 		if(json.hasKey("leave_messages_enabled")){
-			Database.setLeaveMessageEnabled(guildId, json.getBoolean("leave_messages_enabled"));
+			GuildSettingsCache.setLeaveMessagesEnabled(guildId, json.getBoolean("leave_messages_enabled"));
 		}
 		if(json.hasKey("leave_messages")){
-			Database.setLeaveMessage(guildId, json.getString("leave_messages"));
+			GuildSettingsCache.setLeaveMessage(guildId, json.getString("leave_messages"));
 		}
 		if(json.hasKey("boost_messages_enabled")){
-			Database.setBoostMessageEnabled(guildId, json.getBoolean("boost_messages_enabled"));
+			GuildSettingsCache.setBoostMessagesEnabled(guildId, json.getBoolean("boost_messages_enabled"));
 		}
 		if(json.hasKey("boost_messages")){
-			Database.setBoostMessage(guildId, json.getString("boost_messages"));
+			GuildSettingsCache.setBoostMessage(guildId, json.getString("boost_messages"));
 		}
 		if(json.hasKey("announcement_channel_id")){
-			Database.setAnnouncementChannelId(guildId, json.getString("announcement_channel_id"));
+			GuildSettingsCache.setAnnouncementChannelId(guildId, json.getString("announcement_channel_id"));
 		}
 		if(json.hasKey("nsfw_enabled")){
-			Database.setNSFWEnabled(guildId, json.getBoolean("nsfw_enabled"));
+			GuildSettingsCache.setNSFWEnabled(guildId, json.getBoolean("nsfw_enabled"));
 		}
 		if(json.hasKey("self_assignable_roles")){
 			var roles = new HashMap<String, String>();

@@ -1,7 +1,7 @@
 package de.anteiku.kittybot.commands.info;
 
 import de.anteiku.kittybot.objects.TitleInfo;
-import de.anteiku.kittybot.objects.cache.PrefixCache;
+import de.anteiku.kittybot.objects.cache.GuildSettingsCache;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
@@ -52,7 +52,7 @@ public class CommandsCommand extends ACommand{
 		final var titles = new HashMap<Integer, TitleInfo>();
 		final var contents = new HashMap<Integer, ArrayList<MessageEmbed.Field>>();
 
-		final var prefix = PrefixCache.getCommandPrefix(ctx.getGuild().getId());
+		final var prefix = GuildSettingsCache.getCommandPrefix(ctx.getGuild().getId());
 		final var commands = CommandManager.getDistinctCommands().values();
 		final var categories = Category.values();
 		var c = 0;
