@@ -108,7 +108,8 @@ public class Utils{
 			sendError(ctx, "There are currently no tracks queued");
 			return;
 		}
-		var message = new StringBuilder("Currently **").append(queue.size())
+		var message = new StringBuilder("Currently **")
+				.append(queue.size())
 				.append("** ")
 				.append(pluralize("track", queue))
 				.append(" ")
@@ -122,7 +123,7 @@ public class Utils{
 		var prefix = PrefixCache.getCommandPrefix(ctx.getGuild().getId());
 		message.append("\nTo add more songs to the queue, use `").append(prefix).append("play`").append(" or `").append(prefix).append("queue`.");
 		message.append("\nPro tip: To remove songs from the queue, you can use `").append(prefix).append("remove <position>").append("`."); // TODO maybe add a "tip" about being able to skip to a track with given position
-		buildResponse(ctx, message, 1000);
+		buildResponse(ctx, message);
 	}
 
 	public static void processHistory(CommandContext ctx, MusicPlayer player){
@@ -135,7 +136,8 @@ public class Utils{
 			sendError(ctx, "There are currently no tracks in history");
 			return;
 		}
-		var message = new StringBuilder("Currently **").append(history.size())
+		var message = new StringBuilder("Currently **")
+				.append(history.size())
 				.append("** ")
 				.append(Utils.pluralize("track", history))
 				.append(" ")
@@ -147,7 +149,7 @@ public class Utils{
 			message.append(formatTrackTitle(track)).append(" ").append(formatDuration(track.getDuration())).append("\n");
 		}
 		message.append("\nNote: The history is sorted from the last track to the most recent one.");
-		buildResponse(ctx, message, 1000);
+		buildResponse(ctx, message);
 	}
 
 }
