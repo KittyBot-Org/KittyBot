@@ -67,8 +67,7 @@ public class RemoveCommand extends ACommand{
             sendError(ctx, "You have to be the requester of the track in order to remove it from the queue");
             return;
         }
-        sendAnswer(ctx, "Track " + Utils.formatTrackTitle(track)
-                + " with position **" + (position + 1) + "** has been removed from the queue.");
+        sendAnswer(ctx, "Track " + Utils.formatTrackTitle(track) + " with position **" + (position + 1) + "** has been removed from the queue.");
         casted.remove(position);
     }
 
