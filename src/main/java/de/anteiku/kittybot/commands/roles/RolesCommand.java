@@ -5,6 +5,7 @@ import de.anteiku.kittybot.objects.ReactiveMessage;
 import de.anteiku.kittybot.objects.SelfAssignableRoleGroup;
 import de.anteiku.kittybot.objects.cache.ReactiveMessageCache;
 import de.anteiku.kittybot.objects.cache.SelfAssignableRoleCache;
+import de.anteiku.kittybot.objects.cache.SelfAssignableRoleGroupCache;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.Category;
 import de.anteiku.kittybot.objects.command.CommandContext;
@@ -53,15 +54,15 @@ public class RolesCommand extends ACommand{
 				}
 				else if(ctx.getArgs().length >= 1){
 					if(ctx.getArgs()[1].equalsIgnoreCase("add")){
-						SelfAssignableRoleCache.addSelfAssignableRoleGroups(ctx.getGuild().getId(), Arrays.stream(ctx.getArgs()).skip(2).collect(Collectors.toList()));
+						SelfAssignableRoleGroupCache.addSelfAssignableRoleGroups(ctx.getGuild().getId(), ctx.getArgs()[2], Boolean.parseBoolean(ctx.getArgs()[3]));
 						sendAnswer(ctx, "Groups added!");
 					}
 					else if(ctx.getArgs()[1].equalsIgnoreCase("remove")){
-						SelfAssignableRoleCache.removeSelfAssignableRoleGroupsByName(ctx.getGuild().getId(), Arrays.stream(ctx.getArgs()).skip(2).collect(Collectors.toList()));
+						SelfAssignableRoleGroupCache.removeSelfAssignableRoleGroupByName(ctx.getGuild().getId(), ctx.getArgs()[2]);
 						sendAnswer(ctx, "Groups removed!");
 					}
 					else if(ctx.getArgs()[1].equalsIgnoreCase("list")){
-						var list = SelfAssignableRoleCache.getSelfAssignableRoleGroups(ctx.getGuild().getId());
+						var list = SelfAssignableRoleGroupCache.getSelfAssignableRoleGroups(ctx.getGuild().getId());
 						if(list == null){
 							sendError(ctx, "Error while getting role groups");
 							return;

@@ -192,11 +192,12 @@ public class Database{
 	}
 
 	public static boolean addSelfAssignableRoles(String guildId, List<SelfAssignableRole> roles){
-		var query = "INSERT INTO self_assignable_roles (role_id, guild_id, emote_id) VALUES (?, ?, ?)" + ", (?, ?, ?)".repeat(roles.size() - 1);
+		var query = "INSERT INTO self_assignable_roles (role_id, group_id, guild_id, emote_id) VALUES (?, ?, ?, ?)" + ", (?, ?, ?, ?)".repeat(roles.size() - 1);
 		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
 			var i = 0;
 			for(var role : roles){
 				stmt.setString(++i, role.getRoleId());
+				stmt.setString(++i, role.getGroupId());
 				stmt.setString(++i, guildId);
 				stmt.setString(++i, role.getEmoteId());
 			}
@@ -234,7 +235,7 @@ public class Database{
 			stmt.setString(1, guildId);
 			var result = SQL.query(stmt);
 			while(result != null && result.next()){
-				roles.add(new SelfAssignableRole(guildId, result.getString("role_id"), result.getString("emote_id")));
+				roles.add(new SelfAssignableRole(guildId, result.getString("role_id"), result.getString("group_id"), result.getString("emote_id")));
 			}
 			return roles;
 		}
@@ -257,7 +258,26 @@ public class Database{
 				}
 			}
 			catch(SQLException e){
-				LOG.error("Error removing self-assignable role group: " + group + " guild " + guildId, e);
+				LOG.error("Error removing self-assignable role groups: " + group + " guild " + guildId, e);
+			}
+		}
+		return result;
+	}
+
+	public static boolean removeSelfAssignableRoleGroupsByName(String guildId, List<String> groups){
+		boolean result = true;
+		for(var group : groups){
+			var query = "DELETE FROM self_assignable_role_groups WHERE LOWER(group_name) = LOWER(?) and guild_id = ?";
+			try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query)){
+				stmt.setString(1, group);
+				stmt.setString(2, guildId);
+				boolean r = SQL.execute(stmt);
+				if(!r){
+					result = false;
+				}
+			}
+			catch(SQLException e){
+				LOG.error("Error removing self-assignable role groups: " + group + " guild " + guildId, e);
 			}
 		}
 		return result;
@@ -274,7 +294,7 @@ public class Database{
 			stmt.setString(1, guildId);
 			var result = SQL.query(stmt);
 			while(result != null && result.next()){
-				groups.add(new SelfAssignableRoleGroup(guildId, result.getString("group_id"), result.getString("group_name")));
+				groups.add(new SelfAssignableRoleGroup(guildId, result.getString("group_id"), result.getString("group_name"), result.getBoolean("only_one")));
 			}
 			return groups;
 		}
@@ -284,20 +304,28 @@ public class Database{
 		return null;
 	}
 
-	public static boolean addSelfAssignableRoleGroups(String guildId, Set<String> groups){
-		var query = "INSERT INTO self_assignable_role_groups (guild_id, group_name) VALUES (?, ?)" + ", (?, ?)".repeat(groups.size() - 1);
+	public static List<SelfAssignableRoleGroup> addSelfAssignableRoleGroups(String guildId, Set<String> groupNames, boolean onlyOne){
+		var groups = new ArrayList<SelfAssignableRoleGroup>();
+		var query = "INSERT INTO self_assignable_role_groups (guild_id, group_name, only_one) VALUES (?, ?, ?)" + ", (?, ?, ?)".repeat(groupNames.size() - 1);
 		try(var con = SQL.getConnection(); var stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
 			var i = 0;
-			for(var group : groups){
+			for(var group : groupNames){
 				stmt.setString(++i, guildId);
 				stmt.setString(++i, group);
+				stmt.setBoolean(++i, onlyOne);
 			}
-			return SQL.execute(stmt);
+			SQL.execute(stmt);
+			var result = stmt.getGeneratedKeys();
+			while(result != null && result.next()){
+				LOG.info("Result: guildId: {}, groupId: {}, groupName: {}, onlyOne: {}, ", guildId, result.getString("group_id"), result.getString("group_name"), result.getBoolean("only_one"));
+				groups.add(new SelfAssignableRoleGroup(guildId, result.getString("group_id"), result.getString("group_name"), result.getBoolean("only_one")));
+			}
+			return groups;
 		}
 		catch(SQLException e){
 			LOG.error("Error inserting self-assignable role group", e);
 		}
-		return false;
+		return null;
 	}
 
 	public static String getAnnouncementChannelId(String guildId){

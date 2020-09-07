@@ -13,6 +13,7 @@ public class SelfAssignableRoleGroupCache{
 
 	private static final List<SelfAssignableRoleGroup> SELF_ASSIGNABLE_ROLE_GROUPS = new ArrayList<>();
 
+
 	public static void addSelfAssignableRoleGroups(String guildId, String group, boolean only){
 
 	}
@@ -30,8 +31,20 @@ public class SelfAssignableRoleGroupCache{
 		return groups;
 	}
 
+
+
 	public static void removeSelfAssignableRoleGroups(String guildId, List<SelfAssignableRoleGroup> groups){
 		removeSelfAssignableRoleGroupsById(guildId, groups.stream().map(SelfAssignableRoleGroup::getGroupId).collect(Collectors.toList()));
+	}
+
+	public static void removeSelfAssignableRoleGroupByName(String guildId, String group){
+		Database.removeSelfAssignableRoleGroupById(guildId, group);
+		SELF_ASSIGNABLE_ROLE_GROUPS.removeIf(group -> group.contains(group.getGroupName()));
+	}
+
+	public static void removeSelfAssignableRoleGroupsByName(String guildId, List<String> groups){
+		Database.removeSelfAssignableRoleGroupsByName(guildId, groups);
+		SELF_ASSIGNABLE_ROLE_GROUPS.removeIf(group -> groups.contains(group.getGroupName()));
 	}
 
 	public static void removeSelfAssignableRoleGroupsById(String guildId, List<String> groups){

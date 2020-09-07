@@ -15,32 +15,6 @@ public class SelfAssignableRoleCache{
 	private static final List<SelfAssignableRole> SELF_ASSIGNABLE_ROLES = new ArrayList<>();
 	private static final List<SelfAssignableRoleGroup> SELF_ASSIGNABLE_ROLE_GROUPS = new ArrayList<>();
 
-	public static void addSelfAssignableRoleGroups(String guildId, List<String> groups){
-
-	}
-
-	public static List<SelfAssignableRoleGroup> getSelfAssignableRoleGroups(String guildId){
-		var groups = SELF_ASSIGNABLE_ROLE_GROUPS.stream().filter(group -> group.getGuildId().equals(guildId)).collect(Collectors.toList());
-		if(!groups.isEmpty()){
-			return groups;
-		}
-		groups = Database.getSelfAssignableRoleGroups(guildId);
-		if(groups == null){
-			return null;
-		}
-		SELF_ASSIGNABLE_ROLE_GROUPS.addAll(groups);
-		return groups;
-	}
-
-	public static void removeSelfAssignableRoleGroups(String guildId, List<SelfAssignableRoleGroup> groups){
-
-	}
-
-	public static void removeSelfAssignableRoleGroupsByName(String guildId, List<String> groups){
-		Database.removeSelfAssignableRoleGroupsByName(guildId, groups);
-		SELF_ASSIGNABLE_ROLE_GROUPS.removeIf(group -> groups.contains(group.getGroupName()));
-	}
-
 	public static void setSelfAssignableRoles(String guildId, List<SelfAssignableRole> selfAssignableRoles){
 		Database.setSelfAssignableRoles(guildId, selfAssignableRoles);
 		SELF_ASSIGNABLE_ROLES.addAll(selfAssignableRoles);
