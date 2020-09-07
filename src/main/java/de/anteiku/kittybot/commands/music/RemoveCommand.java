@@ -63,7 +63,7 @@ public class RemoveCommand extends ACommand{
         position--;
         var casted = ((List<?>) queue);
         var track = ((AudioTrack) casted.get(position));
-        if (!track.getUserData(String.class).equals(ctx.getUser().getId())){
+        if (!track.getUserData(String.class).equals(ctx.getUser().getId())){ // TODO add check for dj role
             sendError(ctx, "You have to be the requester of the track in order to remove it from the queue");
             return;
         }
