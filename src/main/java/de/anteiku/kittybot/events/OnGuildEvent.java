@@ -44,7 +44,7 @@ public class OnGuildEvent extends ListenerAdapter{
 							+ "If you want to know my other commands just type ``.commands``.\n"
 							+ "To change my prefix use ``.options prefix <your wished prefix>``.\n" + "In case you forgot any command just type ``.cmds`` to get a full list off all my commands!\n"
 							+ "You can also setup all this stuff via the webinterface at https://kittybot.de\n\n"
-							+ "To report bugs/suggest features either join my [Support Server](https://discord.gg/sD3ABd5), add me on Discord ``/home/toπ#3141`` or message me on [Twitter](https://twitter.com/TopiSenpai)")
+							+ "To report bugs/suggest features either join my [Support Server](https://discord.gg/sD3ABd5), add me on Discord ``toπ#3141`` or message me on [Twitter](https://twitter.com/TopiSenpai)")
 					.setColor(new Color(76, 80, 193))
 					.setThumbnail(event.getJDA().getSelfUser().getEffectiveAvatarUrl())
 					.setFooter(guild.getName(), guild.getIconUrl())
