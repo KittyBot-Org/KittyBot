@@ -29,12 +29,12 @@ public class SkipCommand extends ACommand{
 			sendError(ctx, "There is currently no song playing");
 			return;
 		}
-		if(!musicPlayer.getRequesterId().equals(ctx.getUser().getId())){
+		if(!musicPlayer.getRequesterId().equals(ctx.getUser().getId())){ // TODO add check for dj role
 			sendError(ctx, "You have to be the requester of the song to control it");
 			return;
 		}
 		sendAnswer(ctx, "Track skipped");
-		musicPlayer.nextTrack(); // TODO add check for dj role
+		musicPlayer.nextTrack();
 	}
 
 }

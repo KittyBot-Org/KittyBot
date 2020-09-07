@@ -59,11 +59,12 @@ public class SkipToCommand extends ACommand{
             sendError(ctx, "The position you entered is bigger than the queue size");
             return;
         }
+        // TODO add check for dj role
         position--;
         var casted = ((List<?>) queue);
         var track = ((AudioTrack) casted.get(position));
         musicPlayer.getPlayer().playTrack(track);
-        casted.remove(position); // TODO add check for dj role
+        casted.remove(position);
     }
 
 }

@@ -23,6 +23,7 @@ public class StopCommand extends ACommand{
 			sendError(ctx, "No active music player found!");
 			return;
 		}
+		// TODO add check for dj role
 		MusicPlayerCache.destroyMusicPlayer(ctx.getGuild());
 		sendAnswer(ctx, "Successfully disconnected");
 	}

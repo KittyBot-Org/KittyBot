@@ -30,7 +30,7 @@ public class PauseCommand extends ACommand{
 			sendError(ctx, "There is currently no song playing");
 			return;
 		}
-		if(!musicPlayer.getRequesterId().equals(ctx.getUser().getId())){
+		if(!musicPlayer.getRequesterId().equals(ctx.getUser().getId())){ // TODO add check for dj role
 			sendError(ctx, "You have to be the requester of the song to control it");
 			return;
 		}
