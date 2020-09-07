@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.Role;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static de.anteiku.kittybot.objects.command.ACommand.sendError;
 import static de.anteiku.kittybot.utils.MessageUtils.buildResponse;
@@ -20,7 +21,7 @@ public class Utils{
 	public static String generate(int length){
 		StringBuilder builder = new StringBuilder();
 		while(length-- != 0){
-			builder.append(CHARS.charAt((int) (Math.random() * CHARS.length())));
+			builder.append(CHARS.charAt(ThreadLocalRandom.current().nextInt() * CHARS.length()));
 		}
 		return builder.toString();
 	}
