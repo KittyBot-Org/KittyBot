@@ -24,6 +24,15 @@ public class SkipCommand extends ACommand{
 			sendError(ctx, "No active music player found!");
 			return;
 		}
+		final var playing = musicPlayer.getPlayer().getPlayingTrack();
+		if(playing == null){
+			sendError(ctx, "There is currently no song playing");
+			return;
+		}
+		if(!musicPlayer.getRequesterId().equals(ctx.getUser().getId())){
+			sendError(ctx, "You have to be the requester of the song to control it");
+			return;
+		}
 		sendAnswer(ctx, "Track skipped");
 		musicPlayer.nextTrack(); // TODO add check for dj role
 	}

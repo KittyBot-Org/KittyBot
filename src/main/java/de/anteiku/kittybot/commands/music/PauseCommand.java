@@ -24,12 +24,18 @@ public class PauseCommand extends ACommand{
 			sendError(ctx, "No active music player found!");
 			return;
 		}
-		if(musicPlayer.getPlayer().getPlayingTrack() == null){
-			sendError(ctx, "There are currently no tracks queued");
+		var player = musicPlayer.getPlayer();
+		var playing = player.getPlayingTrack();
+		if(playing == null){
+			sendError(ctx, "There is currently no song playing");
 			return;
 		}
-		var paused = !musicPlayer.getPlayer().isPaused();
-		musicPlayer.getPlayer().setPaused(paused);
+		if(!musicPlayer.getRequesterId().equals(ctx.getUser().getId())){
+			sendError(ctx, "You have to be the requester of the song to control it");
+			return;
+		}
+		var paused = !player.isPaused();
+		player.setPaused(paused);
 		sendAnswer(ctx, "Track " + (paused ? "paused" : "resumed"));
 	}
 
