@@ -321,7 +321,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		if(guild == null){
 			return;
 		}
-		if((endReason.mayStartNext && !nextTrack()) || queue.isEmpty()){
+		if(endReason.mayStartNext && !nextTrack()){
 			future = KittyBot.getScheduler().schedule(() -> {
 				if(player.getPlayingTrack() == null){
 					MusicPlayerCache.destroyMusicPlayer(guild);
