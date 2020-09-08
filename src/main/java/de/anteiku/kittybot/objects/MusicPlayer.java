@@ -189,12 +189,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	public boolean canInteract(AudioTrack track, User user){
 		var isRequester = user.getId().equals(track.getUserData(String.class));
-		if (isRequester) {
-			return true;
-		}
-		else{
-			return isDJ(ctx.getGuild().getMember(user));
-		}
+		return isRequester || isDJ(ctx.getGuild().getMember(user));
 	}
 
 	public boolean isDJ(Member member){
