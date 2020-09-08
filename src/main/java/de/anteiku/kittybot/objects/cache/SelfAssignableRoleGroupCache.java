@@ -6,6 +6,7 @@ import de.anteiku.kittybot.objects.SelfAssignableRoleGroup;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,25 +32,28 @@ public class SelfAssignableRoleGroupCache{
 		return groups;
 	}
 
-
+	public static SelfAssignableRoleGroup getSelfAssignableRoleGroupByName(String guildId, String groupName){
+		//TODO
+		return null;
+	}
 
 	public static void removeSelfAssignableRoleGroups(String guildId, List<SelfAssignableRoleGroup> groups){
-		removeSelfAssignableRoleGroupsById(guildId, groups.stream().map(SelfAssignableRoleGroup::getGroupId).collect(Collectors.toList()));
+		removeSelfAssignableRoleGroupsById(guildId, groups.stream().map(SelfAssignableRoleGroup::getId).collect(Collectors.toList()));
 	}
 
 	public static void removeSelfAssignableRoleGroupByName(String guildId, String group){
-		Database.removeSelfAssignableRoleGroupById(guildId, group);
-		SELF_ASSIGNABLE_ROLE_GROUPS.removeIf(group -> group.contains(group.getGroupName()));
+		Database.removeSelfAssignableRoleGroupsByName(guildId, Collections.singletonList(group));
+		SELF_ASSIGNABLE_ROLE_GROUPS.removeIf(g -> g.getName().equals(group));
 	}
 
 	public static void removeSelfAssignableRoleGroupsByName(String guildId, List<String> groups){
 		Database.removeSelfAssignableRoleGroupsByName(guildId, groups);
-		SELF_ASSIGNABLE_ROLE_GROUPS.removeIf(group -> groups.contains(group.getGroupName()));
+		SELF_ASSIGNABLE_ROLE_GROUPS.removeIf(group -> groups.contains(group.getName()));
 	}
 
 	public static void removeSelfAssignableRoleGroupsById(String guildId, List<String> groups){
 		Database.removeSelfAssignableRoleGroupsById(guildId, groups);
-		SELF_ASSIGNABLE_ROLE_GROUPS.removeIf(group -> groups.contains(group.getGroupName()));
+		SELF_ASSIGNABLE_ROLE_GROUPS.removeIf(group -> groups.contains(group.getName()));
 	}
 
 }

@@ -18,11 +18,11 @@ public class SelfAssignableRoleGroup{
 		return guildId;
 	}
 
-	public String getGroupId(){
+	public String getId(){
 		return groupId;
 	}
 
-	public String getGroupName(){
+	public String getName(){
 		return groupName;
 	}
 

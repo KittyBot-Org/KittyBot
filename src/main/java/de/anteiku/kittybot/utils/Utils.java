@@ -4,22 +4,18 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.anteiku.kittybot.objects.SelfAssignableRole;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Role;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Utils{
-
-	private static final Logger LOG = LoggerFactory.getLogger(Utils.class);
-
 	private static final String CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 	public static String generate(int length){
 		StringBuilder builder = new StringBuilder();
 		while(length-- != 0){
-			builder.append(CHARS.charAt((int) (Math.random() * CHARS.length())));
+			builder.append(CHARS.charAt(ThreadLocalRandom.current().nextInt() * CHARS.length()));
 		}
 		return builder.toString();
 	}
@@ -44,14 +40,14 @@ public class Utils{
 		return set;
 	}
 
-	public static List<SelfAssignableRole> toList(String guildId, List<Role> roles, List<Emote> emotes){
+	public static List<SelfAssignableRole> toList(String guildId, String groupId, List<Role> roles, List<Emote> emotes){
 		var list = new ArrayList<SelfAssignableRole>();
 		int i = 0;
 		for(Role role : roles){
 			if(emotes.size() <= i){
 				break;
 			}
-			list.add(new SelfAssignableRole(guildId, role.getId(), emotes.get(i).getId()));
+			list.add(new SelfAssignableRole(guildId, groupId, role.getId(), emotes.get(i).getId()));
 			i++;
 		}
 		return list;
@@ -85,7 +81,11 @@ public class Utils{
 	}
 
 	public static <T> String pluralize(String text, Collection<T> collection){
-		return collection.size() > 1 ? text + "s" : text;
+		return pluralize(text, collection.size());
+	}
+
+	public static String pluralize(String text, int count){
+		return count != 1 ? text + "s" : text;
 	}
 
 }

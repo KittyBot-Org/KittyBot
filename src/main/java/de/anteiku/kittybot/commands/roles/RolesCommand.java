@@ -67,7 +67,7 @@ public class RolesCommand extends ACommand{
 							sendError(ctx, "Error while getting role groups");
 							return;
 						}
-						sendAnswer(ctx, "Role Groups: " + list.stream().map(SelfAssignableRoleGroup::getGroupName).collect(Collectors.joining(", ")));
+						sendAnswer(ctx, "Role Groups: " + list.stream().map(SelfAssignableRoleGroup::getName).collect(Collectors.joining(", ")));
 					}
 				}
 				else{
@@ -78,7 +78,8 @@ public class RolesCommand extends ACommand{
 			var roles = ctx.getMessage().getMentionedRoles();
 			var emotes = ctx.getMessage().getEmotes();
 			if(ctx.getArgs()[0].equalsIgnoreCase("add") && !roles.isEmpty() && !emotes.isEmpty()){
-				SelfAssignableRoleCache.addSelfAssignableRoles(ctx.getGuild().getId(), Utils.toList(ctx.getGuild().getId(), roles, emotes));
+				var group = SelfAssignableRoleGroupCache.getSelfAssignableRoleGroupByName(ctx.getGuild().getId(), ctx.getArgs()[1]);
+				SelfAssignableRoleCache.addSelfAssignableRoles(ctx.getGuild().getId(), Utils.toList(ctx.getGuild().getId(), group.getId(), roles, emotes));
 				sendAnswer(ctx, "Roles added!");
 			}
 			else if(ctx.getArgs()[0].equalsIgnoreCase("remove") && !roles.isEmpty()){
@@ -100,7 +101,7 @@ public class RolesCommand extends ACommand{
 		}
 		else{
 			var roles = getRoleEmoteMap(ctx.getGuild());
-			if(roles.size() == 0){
+			if(roles.isEmpty()){
 				sendError(ctx, "No self-assignable roles configured!\nIf you are an admin use `.roles add @role :emote: @role :emote:...` to add roles!");
 				return;
 			}

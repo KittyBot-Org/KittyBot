@@ -304,7 +304,7 @@ public class WebService{
 			var dataArray = json.getArray("self_assignable_roles");
 			for(var i = 0; i < dataArray.length(); i++){
 				var obj = dataArray.getObject(i);
-				roles.add(new SelfAssignableRole(guildId, obj.getString("role"), obj.getString("emote")));
+				roles.add(new SelfAssignableRole(guildId, obj.getString("group"), obj.getString("role"), obj.getString("emote")));
 			}
 			SelfAssignableRoleCache.setSelfAssignableRoles(guildId, roles);
 		}

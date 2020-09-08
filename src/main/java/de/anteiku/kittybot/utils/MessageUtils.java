@@ -1,5 +1,6 @@
 package de.anteiku.kittybot.utils;
 
+import net.dv8tion.jda.api.entities.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -62,7 +62,7 @@ public class CommandsCommand extends ACommand{
 			final var fields = new ArrayList<MessageEmbed.Field>();
 			commands.stream()
 					.filter(command -> command.getCategory() == category)
-					.forEach(cmd -> fields.add(new MessageEmbed.Field("**" + prefix + cmd.getCommand() + ":** ", " :small_blue_diamond:" + cmd.getDescription(), false)));
+					.forEach(cmd -> fields.add(new MessageEmbed.Field("**" + prefix + cmd.getCommand() + ":** ", "• " + cmd.getDescription(), true)));
 			contents.put(c, fields);
 			c++;
 		}

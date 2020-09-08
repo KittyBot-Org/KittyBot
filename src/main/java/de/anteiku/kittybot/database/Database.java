@@ -61,7 +61,7 @@ public class Database{
 			stmt.setString(5, guild.getDefaultChannel() == null ? "-1" : guild.getDefaultChannel().getId());
 			stmt.setString(6, "Welcome ${user} to this server!");
 			stmt.setBoolean(7, true);
-			stmt.setString(8, "Good bye ${user}(${user_tag})!");
+			stmt.setString(8, "Goodbye ${user}(${user_tag})!");
 			stmt.setBoolean(9, true);
 			stmt.setString(10, "${user} boosted this server!");
 			stmt.setBoolean(11, true);
@@ -178,10 +178,10 @@ public class Database{
 					addRoles.add(role);
 				}
 			}
-			if(removeRoles.size() > 0){
+			if(!removeRoles.isEmpty()){
 				removeSelfAssignableRoles(guildId, removeRoles);
 			}
-			if(addRoles.size() > 0){
+			if(!addRoles.isEmpty()){
 				addSelfAssignableRoles(guildId, addRoles);
 			}
 		}
@@ -284,7 +284,7 @@ public class Database{
 	}
 
 	public static boolean removeSelfAssignableRoleGroups(String guildId, List<SelfAssignableRoleGroup> groups){
-		return removeSelfAssignableRoleGroupsById(guildId, groups.stream().map(SelfAssignableRoleGroup::getGroupId).collect(Collectors.toList()));
+		return removeSelfAssignableRoleGroupsById(guildId, groups.stream().map(SelfAssignableRoleGroup::getId).collect(Collectors.toList()));
 	}
 
 	public static List<SelfAssignableRoleGroup> getSelfAssignableRoleGroups(String guildId){
