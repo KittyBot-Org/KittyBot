@@ -175,10 +175,10 @@ public class Database{
 					addRoles.put(role.getKey(), role.getValue());
 				}
 			}
-			if(removeRoles.size() > 0){
+			if(!removeRoles.isEmpty()){
 				removeSelfAssignableRoles(guildId, removeRoles);
 			}
-			if(addRoles.size() > 0){
+			if(!addRoles.isEmpty()){
 				addSelfAssignableRoles(guildId, addRoles);
 			}
 		}

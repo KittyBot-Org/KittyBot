@@ -2,42 +2,128 @@ package de.anteiku.kittybot.objects.command;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.apache.commons.collections4.Bag;
 
+import java.util.Arrays;
 import java.util.List;
 
-public interface CommandContext{
+public class CommandContext{
 
-	JDA getJDA();
+	private final GuildMessageReceivedEvent event;
+	private final String command;
+	private final String[] args;
 
-	Guild getGuild();
+	public CommandContext(GuildMessageReceivedEvent event, String command, String message){
+		this.event = event;
+		this.command = command;
+		this.args = getCommandArguments(message);
+	}
 
-	TextChannel getChannel();
+	private String[] getCommandArguments(String message){
+		String[] args = message.split(" ");
+		return Arrays.copyOfRange(args, 1, args.length);
+	}
 
-	Message getMessage();
+	public JDA getJDA(){
+		return event.getJDA();
+	}
 
-	String getCommand();
+	public TextChannel getChannel(){
+		return getEvent().getChannel();
+	}
 
-	String[] getArgs();
+	public GuildMessageReceivedEvent getEvent(){
+		return this.event;
+	}
 
-	User getSelfUser();
+	public String getCommand(){
+		return this.command;
+	}
 
-	User getUser();
+	public String[] getArgs(){
+		return this.args;
+	}
 
-	List<User> getMentionedUsers();
+	public User getUser(){
+		return this.event.getAuthor();
+	}
 
-	Bag<User> getMentionedUsersBag();
+	public List<User> getMentionedUsers(){
+		var users = getMessage().getMentionedUsers();
+		var selfUser = getSelfUser();
 
-	Member getSelfMember();
+		if(isMentionCommand()){
+			if(getMessage().getMentionedUsersBag().getCount(selfUser) == 1){
+				users.remove(selfUser);
+			}
+		}
+		return users;
+	}
 
-	Member getMember();
+	public Message getMessage(){
+		return getEvent().getMessage();
+	}
 
-	List<TextChannel> getMentionedChannels();
+	public User getSelfUser(){
+		return getEvent().getJDA().getSelfUser();
+	}
 
-	Bag<TextChannel> getMentionedChannelsBag();
+	private boolean isMentionCommand(){
+		var content = getMessage().getContentRaw();
+		var botId = getSelfUser().getId();
+		return content.startsWith("<@" + botId + ">") || content.startsWith("<@!" + botId + ">");
+	}
 
-	List<Role> getMentionedRoles();
+	public List<Member> getMentionedMembers(){
+		var members = getMessage().getMentionedMembers();
+		var selfMember = getSelfMember();
 
-	Bag<Role> getMentionedRolesBag();
+		if(isMentionCommand()){
+			if(getMessage().getMentionedUsersBag().getCount(selfMember) == 1){
+				members.remove(selfMember);
+			}
+		}
+		return members;
+	}
+
+	public Member getSelfMember(){
+		return getGuild().getSelfMember();
+	}
+
+	public Guild getGuild(){
+		return getEvent().getGuild();
+	}
+
+	public Bag<User> getMentionedUsersBag(){
+		var users = getMessage().getMentionedUsersBag();
+		var selfUser = getSelfUser();
+
+		if(isMentionCommand()){
+			var occurrences = users.getCount(selfUser);
+			users.remove(selfUser, occurrences == 1 ? 1 : occurrences - 1);
+		}
+		return users;
+	}
+
+	public Member getMember(){
+		return getEvent().getMember();
+	}
+
+	public List<TextChannel> getMentionedChannels(){
+		return getMessage().getMentionedChannels();
+	}
+
+	public Bag<TextChannel> getMentionedChannelsBag(){
+		return getMessage().getMentionedChannelsBag();
+	}
+
+	public List<Role> getMentionedRoles(){
+		return getMessage().getMentionedRoles();
+	}
+
+	public Bag<Role> getMentionedRolesBag(){
+		return getMessage().getMentionedRolesBag();
+	}
 
 }
