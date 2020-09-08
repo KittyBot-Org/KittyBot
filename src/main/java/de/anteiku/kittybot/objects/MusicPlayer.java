@@ -7,10 +7,10 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.objects.cache.MusicPlayerCache;
+import de.anteiku.kittybot.objects.cache.PrefixCache;
 import de.anteiku.kittybot.objects.cache.ReactiveMessageCache;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.CommandContext;
-import de.anteiku.kittybot.utils.Utils;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavalinkPlayer;
 import lavalink.client.player.event.PlayerEventListenerAdapter;
@@ -34,7 +34,7 @@ import static de.anteiku.kittybot.utils.Utils.pluralize;
 
 public class MusicPlayer extends PlayerEventListenerAdapter{
 
-	public static final Pattern URL_PATTERN = Pattern.compile("^(https?://)?(www|m.)?(\\.)?youtu(\\.be|be\\.com)/(playlist\\?list=[a-zA-Z0-9-_]+)?((watch\\?v=)?([a-zA-Z0-9-_]{11})(&list=[a-zA-Z0-9-_]+)?)?");
+	public static final Pattern URL_PATTERN = Pattern.compile("^(https?://)?((www|m)\\.)?youtu(\\.be|be\\.com)/(playlist\\?list=([a-zA-Z0-9-_]+))?((watch\\?v=)?([a-zA-Z0-9-_]{11})(&list=([a-zA-Z0-9-_]+))?)?");
 	private static final Logger LOG = LoggerFactory.getLogger(MusicPlayer.class);
 	private static final int VOLUME_MAX = 200;
 	private final LavalinkPlayer player;
@@ -69,6 +69,10 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 			@Override
 			public void trackLoaded(AudioTrack track){
+				if(!lengthCheck(track)){
+					sendError(ctx, "The maximum length of a track is 20 minutes");
+					return;
+				}
 				track.setUserData(ctx.getUser().getId());
 				queue(track);
 				if(!queue.isEmpty()){
@@ -85,12 +89,25 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				List<AudioTrack> queuedTracks = new ArrayList<>();
 				if(playlist.isSearchResult()){
 					var track = playlist.getTracks().get(0);
+					if(!lengthCheck(track)){
+						sendError(ctx, "The maximum length of a track is 20 minutes");
+						return;
+					}
 					track.setUserData(ctx.getUser().getId());
 					queuedTracks.add(track);
 					queue(track);
 				}
 				else{
 					for(AudioTrack track : playlist.getTracks()){
+						if(!lengthCheck(track)){
+							if(playlist.getTracks().size() == 1){
+								sendError(ctx, "The maximum length of a track is 20 minutes");
+								return;
+							}
+							else{
+								continue;
+							}
+						}
 						track.setUserData(ctx.getUser().getId());
 						queuedTracks.add(track);
 						queue(track);
@@ -112,9 +129,15 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 			@Override
 			public void loadFailed(FriendlyException exception){
-				sendError(ctx, "Failed to load track");
+				sendError(ctx, exception.getMessage().contains("Track information is unavailable")
+						? "Playing **age restricted videos doesn't work** as YouTube changed the response. We're waiting for a fix from the audio library we're using."
+						: "Failed to load track");
 			}
 		});
+	}
+
+	public boolean lengthCheck(AudioTrack track){
+		return TimeUnit.MILLISECONDS.toMinutes(track.getDuration()) <= 20;
 	}
 
 	public void queue(AudioTrack track){
@@ -127,10 +150,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	private void sendQueuedTracks(ACommand command, CommandContext ctx, List<AudioTrack> tracks){
-		var message = new StringBuilder("Queued ").append(tracks.size()).append(" ").append(pluralize("track", tracks)).append(":\n");
-		for(AudioTrack track : tracks){
-			message.append(Utils.formatTrackTitle(track)).append(" ").append(formatDuration(track.getDuration())).append("\n");
-		}
+		var message = new StringBuilder("Queued **").append(tracks.size()).append("** ").append(pluralize("track", tracks)).append(".");
+		message.append("\n\nTo see the current queue, type `").append(PrefixCache.getCommandPrefix(ctx.getGuild().getId())).append("queue`.");
 		command.sendAnswer(ctx, message.toString());
 	}
 
@@ -204,7 +225,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	public void sendMusicController(ACommand command, CommandContext ctx){
 		var msg = ctx.getMessage();
 		msg.getChannel()
-				.sendMessage(buildMusicControlMessage().setFooter(msg.getMember() == null ? msg.getAuthor().getName() : msg.getMember().getEffectiveName(), msg.getAuthor().getEffectiveAvatarUrl())
+				.sendMessage(buildMusicControlMessage()
 						.setTimestamp(Instant.now())
 						.build())
 				.queue(message -> {
@@ -236,7 +257,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 			var info = track.getInfo();
 			var duration = formatDuration(info.length);
 			embed.setTitle(info.title, info.uri)
-					.setThumbnail("https://i.ytimg.com/vi/" + info.identifier + "/maxresdefault.jpg")
+					.setThumbnail("https://i.ytimg.com/vi/" + info.identifier + "/hqdefault.jpg")
 					.addField("Author", info.author, true)
 					.addField("Length", duration, true)
 					.addField("Volume", player.getVolume() + "%", true);
@@ -248,6 +269,10 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				embed.setAuthor("Playing...");
 				embed.setColor(Color.GREEN);
 			}
+
+			var member = ctx.getGuild().getMemberById(getRequesterId());
+			var user = ctx.getJDA().getUserById(getRequesterId());
+			embed.setFooter("Requested by " + (member == null ? user.getName() : member.getEffectiveName()), user.getEffectiveAvatarUrl());
 		}
 		return embed;
 	}

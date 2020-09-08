@@ -10,7 +10,7 @@ public class StopCommand extends ACommand{
 	public static final String COMMAND = "stop";
 	public static final String USAGE = "stop";
 	public static final String DESCRIPTION = "Stops me from playing stuff";
-	protected static final String[] ALIASES = {"s", "quit", "stopp", "stfu"};
+	protected static final String[] ALIASES = {"quit", "stopp", "stfu"};
 	protected static final Category CATEGORY = Category.MUSIC;
 
 	public StopCommand(){
@@ -19,6 +19,10 @@ public class StopCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
+		if (MusicPlayerCache.getMusicPlayer(ctx.getGuild()) == null){
+			sendError(ctx, "No active music player found!");
+			return;
+		}
 		MusicPlayerCache.destroyMusicPlayer(ctx.getGuild());
 		sendAnswer(ctx, "Successfully disconnected");
 	}

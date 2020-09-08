@@ -38,8 +38,8 @@ public class QueueCommand extends ACommand{
 				sendAnswer(ctx, "There are currently no tracks queued");
 				return;
 			}
-			var message = new StringBuilder("Currently ").append(queue.size())
-					.append(" ")
+			var message = new StringBuilder("Currently **").append(queue.size())
+					.append("** ")
 					.append(pluralize("track", queue))
 					.append(" ")
 					.append(queue.size() > 1 ? "are" : "is")
