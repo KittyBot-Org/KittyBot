@@ -24,7 +24,7 @@ public class StopCommand extends ACommand{
 			sendError(ctx, "No active music player found!");
 			return;
 		}
-		if (!musicPlayer.isDJ(ctx.getMember())){
+		if(!musicPlayer.isDJ(ctx.getMember())){
 			sendError(ctx, "You have to be the DJ to stop the music");
 			return;
 		}

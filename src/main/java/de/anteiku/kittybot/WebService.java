@@ -66,10 +66,9 @@ public class WebService{
 		var key = ctx.header("Authorization");
 		if(key == null || !Database.sessionExists(key)){
 			ctx.redirect(oAuthClient.generateAuthorizationURL(Config.REDIRECT_URL, scopes));
+			return;
 		}
-		else{
-			ctx.redirect(Config.REDIRECT_URL);
-		}
+		ctx.redirect(Config.REDIRECT_URL);
 	}
 
 	private void login(Context ctx){
@@ -93,11 +92,12 @@ public class WebService{
 	}
 
 	private void checkDiscordLogin(Context ctx){
-		if(!ctx.method().equals("OPTIONS")){
-			var key = ctx.header("Authorization");
-			if(key == null || !Database.sessionExists(key)){
-				error(ctx, 401, "Please login with discord to continue");
-			}
+		if(ctx.method().equals("OPTIONS")){
+			return;
+		}
+		var key = ctx.header("Authorization");
+		if(key == null || !Database.sessionExists(key)){
+			error(ctx, 401, "Please login with discord to continue");
 		}
 	}
 
@@ -155,29 +155,30 @@ public class WebService{
 	}
 
 	private void checkGuildPerms(Context ctx){
-		if(!ctx.method().equals("OPTIONS")){
-			var guildId = ctx.pathParam(":guildId");
-			var guild = KittyBot.getJda().getGuildById(guildId);
-			if(guild == null){
-				error(ctx, 404, "guild not found");
-				return;
-			}
-			var userId = Database.getSession(ctx.header("Authorization"));
-			if(userId == null){
-				error(ctx, 404, "This user does not exist");
-				return;
-			}
-			if(Config.ADMIN_IDS.contains(userId)){
-				return;
-			}
-			var member = guild.retrieveMemberById(userId).complete();
-			if(member == null){
-				error(ctx, 404, "I could not find you in that guild");
-				return;
-			}
-			if(!member.hasPermission(Permission.ADMINISTRATOR)){
-				error(ctx, 401, "You have no permission for this guild");
-			}
+		if(ctx.method().equals("OPTIONS")){
+			return;
+		}
+		var guildId = ctx.pathParam(":guildId");
+		var guild = KittyBot.getJda().getGuildById(guildId);
+		if(guild == null){
+			error(ctx, 404, "guild not found");
+			return;
+		}
+		var userId = Database.getSession(ctx.header("Authorization"));
+		if(userId == null){
+			error(ctx, 404, "This user does not exist");
+			return;
+		}
+		if(Config.ADMIN_IDS.contains(userId)){
+			return;
+		}
+		var member = guild.retrieveMemberById(userId).complete();
+		if(member == null){
+			error(ctx, 404, "I could not find you in that guild");
+			return;
+		}
+		if(!member.hasPermission(Permission.ADMINISTRATOR)){
+			error(ctx, 401, "You have no permission for this guild");
 		}
 	}
 
