@@ -22,7 +22,7 @@ public class Utils{
 	public static String generate(int length){
 		StringBuilder builder = new StringBuilder();
 		while(length-- != 0){
-			builder.append(CHARS.charAt(ThreadLocalRandom.current().nextInt() * CHARS.length()));
+			builder.append(CHARS.charAt(ThreadLocalRandom.current().nextInt(CHARS.length())));
 		}
 		return builder.toString();
 	}
