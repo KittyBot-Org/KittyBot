@@ -256,13 +256,14 @@ public class WebService{
 		ok(ctx, DataObject.empty()
 				.put("prefix", settings.getCommandPrefix())
 				.put("join_messages_enabled", settings.areJoinMessagesEnabled())
-				.put("join_messages", settings.getJoinMessage())
+				.put("join_message", settings.getJoinMessage())
 				.put("leave_messages_enabled", settings.areLeaveMessagesEnabled())
-				.put("leave_messages", settings.getLeaveMessage())
+				.put("leave_message", settings.getLeaveMessage())
 				.put("boost_messages_enabled", settings.areBoostMessagesEnabled())
-				.put("boost_messages", settings.getBoostMessage())
+				.put("boost_message", settings.getBoostMessage())
 				.put("announcement_channel_id", settings.getAnnouncementChannelId())
 				.put("nsfw_enabled", settings.isNSFWEnabled())
+				.put("dj_role_id", settings.getDJRoleId())
 				.put("self_assignable_roles", data));
 	}
 
@@ -299,6 +300,9 @@ public class WebService{
 		}
 		if(json.hasKey("nsfw_enabled")){
 			GuildSettingsCache.setNSFWEnabled(guildId, json.getBoolean("nsfw_enabled"));
+		}
+		if(json.hasKey("dj_role_id")){
+			GuildSettingsCache.setDJRoleId(guildId, json.getString("dj_role_id"));
 		}
 		if(json.hasKey("self_assignable_roles")){
 			var roles = new HashMap<String, String>();
