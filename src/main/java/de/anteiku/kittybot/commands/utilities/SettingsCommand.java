@@ -12,8 +12,8 @@ import net.dv8tion.jda.api.Permission;
 public class SettingsCommand extends ACommand{
 
 	public static final String COMMAND = "settings";
-	public static final String USAGE = "settings <prefix/joinchannel/joinmessage/nsfw/djrole> <value>";
-	public static final String DESCRIPTION = "Used to set some guild specified settings";
+	public static final String USAGE = "settings <prefix/announcementchannel/joinmessage/leavemessage/boostmessage/nsfw/djrole> <value>";
+	public static final String DESCRIPTION = "Used to set guild specified settings";
 	protected static final String[] ALIASES = {"sett", "options"};
 	protected static final Category CATEGORY = Category.UTILITIES;
 
@@ -21,7 +21,6 @@ public class SettingsCommand extends ACommand{
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
-	//TODO renaming sub-commands & displaying set values
 	@Override
 	public void run(CommandContext ctx){
 		if(ctx.getMember().isOwner() || ctx.getMember().hasPermission(Permission.ADMINISTRATOR)){

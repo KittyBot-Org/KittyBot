@@ -15,7 +15,6 @@ import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import okhttp3.Request;
-import org.apache.commons.collections4.Bag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +77,7 @@ public abstract class ACommand{
 		if(cmd.equalsIgnoreCase(command)){
 			return true;
 		}
-		for(String a : aliases){
+		for(var a : aliases){
 			if(a.equalsIgnoreCase(cmd)){
 				return true;
 			}
@@ -197,16 +196,9 @@ public abstract class ACommand{
 	}
 
 	protected MessageAction reactionImage(CommandContext ctx, String type, String text){
-		Bag<User> users = ctx.getMentionedUsersBag();
-		String content = ctx.getMessage().getContentRaw();
-		User selfUser = ctx.getSelfUser();
-		long botId = selfUser.getIdLong();
-		if(content.startsWith("<@" + botId + ">") || content.startsWith("<@!" + botId + ">")){
-			var occurrences = users.getCount(selfUser);
-			users.remove(selfUser, occurrences == 1 ? 1 : occurrences - 1);
-		}
+		var users = ctx.getMentionedUsers();
 
-		StringBuilder message = new StringBuilder();
+		var message = new StringBuilder();
 		if(users.isEmpty()){
 			return error(ctx, "Please mention a user");
 		}
@@ -232,7 +224,7 @@ public abstract class ACommand{
 				message.deleteCharAt(message.lastIndexOf(","));
 			}
 		}
-		String url = getNeko(type);
+		var url = getNeko(type);
 		if(url == null){
 			return error(ctx, "Unknown error occurred while getting image for `" + type + "`");
 		}
@@ -241,7 +233,7 @@ public abstract class ACommand{
 
 	protected String getNeko(String type){
 		try{
-			Request request = new Request.Builder().url("https://nekos.life/api/v2/img/" + type).build();
+			var request = new Request.Builder().url("https://nekos.life/api/v2/img/" + type).build();
 			return DataObject.fromJson(KittyBot.getHttpClient().newCall(request).execute().body().string()).getString("url");
 		}
 		catch(IOException e){

@@ -141,10 +141,6 @@ public class Utils{
 		buildResponse(ctx, message);
 	}
 
-	public static <T> String pluralize(String text, Collection<T> collection){
-		return collection.size() != 1 ? text + "s" : text;
-	}
-
 	public static String formatTrackTitle(AudioTrack track){
 		var info = track.getInfo();
 		return "[`" + info.title + "`]" + "(" + info.uri + ")";
@@ -180,6 +176,14 @@ public class Utils{
 		}
 		message.append("\nNote: The history is sorted from the last track to the most recent one.");
 		buildResponse(ctx, message);
+	}
+
+	public static <T> String pluralize(String text, Collection<T> collection){
+		return pluralize(text, collection.size());
+	}
+
+	public static String pluralize(String text, int count){
+		return count != 1 ? text + "s" : text;
 	}
 
 }
