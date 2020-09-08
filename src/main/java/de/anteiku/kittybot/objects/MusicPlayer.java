@@ -339,8 +339,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	public boolean nextTrack(){
 		AudioTrack track = queue.poll();
 		var channel = KittyBot.getJda().getTextChannelById(channelId);
+		player.setPaused(false);
 		if(track != null){
-			player.setPaused(false);
 			player.playTrack(track);
 			return true;
 		}
