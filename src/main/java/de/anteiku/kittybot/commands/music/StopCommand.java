@@ -19,11 +19,15 @@ public class StopCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
+		var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
 		if(MusicPlayerCache.getMusicPlayer(ctx.getGuild()) == null){
 			sendError(ctx, "No active music player found!");
 			return;
 		}
-		// TODO add check for dj role
+		if (!musicPlayer.isDJ(ctx.getMember())){
+			sendError(ctx, "You have to be the DJ to stop the music");
+			return;
+		}
 		MusicPlayerCache.destroyMusicPlayer(ctx.getGuild());
 		sendAnswer(ctx, "Successfully disconnected");
 	}

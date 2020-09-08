@@ -16,6 +16,7 @@ import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavalinkPlayer;
 import lavalink.client.player.event.PlayerEventListenerAdapter;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.slf4j.Logger;
@@ -187,9 +188,18 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	public boolean canInteract(AudioTrack track, User user){
+		var guild = ctx.getGuild();
 		var isRequester = user.getId().equals(track.getUserData(String.class));
-		return isRequester;
-		// TODO add check for dj role
+		if (isRequester) {
+			return true;
+		}
+		else{
+			return guild.getMember(user).getRoles().stream().anyMatch(role -> role.getId().equals(GuildSettingsCache.getDJRole(guild.getId())));
+		}
+	}
+
+	public boolean isDJ(Member member){
+		return member.getRoles().stream().anyMatch(role -> role.getId().equals(GuildSettingsCache.getDJRole(member.getGuild().getId())));
 	}
 
 	public boolean pause(){
