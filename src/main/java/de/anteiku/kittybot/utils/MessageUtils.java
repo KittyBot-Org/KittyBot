@@ -40,15 +40,4 @@ public class MessageUtils{
 		return "[" + title + "](" + url + ")";
 	}
 
-	public static String rebuildMessage(Message message, String when, String when2){
-		var content = message.getContentRaw();
-		var last = content.lastIndexOf(when);
-		if(last == -1){
-			return "";
-		}
-		content = content.substring(last + when.length());
-		var first = content.indexOf(when2);
-		return content.substring(first + when2.length());
-	}
-
 }
