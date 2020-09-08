@@ -30,6 +30,7 @@ public class SettingsCommand extends ACommand{
 						.setTitle("Guild settings:")
 						.addField("Command Prefix:", settings.getCommandPrefix(), false)
 						.addField("Announcement Channel:", settings.getAnnouncementChannel(), false)
+						.addField("DJ Role:", settings.getDJRole(), false)
 
 						//.addField("Join Messages Enabled:", String.valueOf(settings.areJoinMessagesEnabled()), true)
 						.addField("Join Messages: " + (settings.areJoinMessagesEnabled() ? Emojis.X : Emojis.CHECK), settings.getJoinMessage(), false)
@@ -40,8 +41,7 @@ public class SettingsCommand extends ACommand{
 						//.addField("Boost Messages Enabled:", String.valueOf(settings.areBoostMessagesEnabled()), true)
 						.addField("Boost Messages: " + (settings.areBoostMessagesEnabled() ? Emojis.X : Emojis.CHECK), settings.getBoostMessage(), false)
 
-						.addField("NSFW Enabled: " + (settings.isNSFWEnabled() ? Emojis.X : Emojis.CHECK), "", false)
-						.addField("DJ Role:", settings.getDJRole(), false));
+						.addField("NSFW Enabled: " + (settings.isNSFWEnabled() ? Emojis.X : Emojis.CHECK), "", false));
 			}
 			else{
 				if(ctx.getArgs()[0].equalsIgnoreCase("prefix") && ctx.getArgs().length == 2){
