@@ -15,7 +15,7 @@ import java.util.List;
 public class OptionsCommand extends ACommand{
 
 	public static final String COMMAND = "options";
-	public static final String USAGE = "options <prefix|joinchannel|joinmessage|nsfw> <value>";
+	public static final String USAGE = "options <prefix/announcementchannel/joinmessage/leavemessage/boostmessage/nsfw> <value>";
 	public static final String DESCRIPTION = "Used to set some guild specified options";
 	protected static final String[] ALIASES = {"opts", "opt"};
 	protected static final Category CATEGORY = Category.UTILITIES;
@@ -24,25 +24,29 @@ public class OptionsCommand extends ACommand{
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
-	//TODO renaming sub-commands & displaying set values
 	@Override
 	public void run(CommandContext ctx){
 		if(ctx.getMember().isOwner() || ctx.getMember().hasPermission(Permission.ADMINISTRATOR)){
 			if(ctx.getArgs().length == 0){
 				var guildId = ctx.getGuild().getId();
-				var embed = new EmbedBuilder();
-				embed.setTitle("Guild options:");
-				embed.setDescription("These are the current guild options");
-				embed.addField("Command Prefix:", PrefixCache.getCommandPrefix(guildId), false);
-				embed.addField("Announcement Channel:", "<#" + Database.getAnnouncementChannelId(guildId) + ">", false);
-				embed.addField("Join Messages Enabled:", String.valueOf(Database.getJoinMessageEnabled(guildId)), false);
-				embed.addField("Join Message:", Database.getJoinMessage(guildId), false);
-				embed.addField("Leave Messages Enabled:", String.valueOf(Database.getLeaveMessageEnabled(guildId)), false);
-				embed.addField("Leave Message:", Database.getLeaveMessage(guildId), false);
-				embed.addField("Boost Messages Enabled:", String.valueOf(Database.getBoostMessageEnabled(guildId)), false);
-				embed.addField("Boost Message:", Database.getBoostMessage(guildId), false);
-				embed.addField("NSFW Enabled:", String.valueOf(Database.getNSFWEnabled(guildId)), false);
-				sendAnswer(ctx, embed);
+				sendAnswer(ctx, new EmbedBuilder()
+						.setTitle("Current guild options:")
+						.addField("Prefix:", PrefixCache.getCommandPrefix(guildId), false)
+						.addField("Announcement Channel:", "<#" + Database.getAnnouncementChannelId(guildId) + ">", false)
+
+						.addField("Join Messages Enabled:", String.valueOf(Database.getJoinMessageEnabled(guildId)), true)
+						.addField("Join Message:", Database.getJoinMessage(guildId), true)
+						.addBlankField(true)
+
+						.addField("Leave Messages Enabled:", String.valueOf(Database.getLeaveMessageEnabled(guildId)), true)
+						.addField("Leave Message:", Database.getLeaveMessage(guildId), true)
+						.addBlankField(true)
+
+						.addField("Boost Messages Enabled:", String.valueOf(Database.getBoostMessageEnabled(guildId)), true)
+						.addField("Boost Message:", Database.getBoostMessage(guildId), true)
+						.addBlankField(true)
+
+						.addField("NSFW Enabled:", String.valueOf(Database.getNSFWEnabled(guildId)), false));
 			}
 			else{
 				if(ctx.getArgs()[0].equalsIgnoreCase("prefix") && ctx.getArgs().length == 2){

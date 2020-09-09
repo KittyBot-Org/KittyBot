@@ -3,22 +3,18 @@ package de.anteiku.kittybot.utils;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Role;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Utils{
-
-	private static final Logger LOG = LoggerFactory.getLogger(Utils.class);
-
 	private static final String CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 	public static String generate(int length){
 		StringBuilder builder = new StringBuilder();
 		while(length-- != 0){
-			builder.append(CHARS.charAt((int) (Math.random() * CHARS.length())));
+			builder.append(CHARS.charAt(ThreadLocalRandom.current().nextInt() * CHARS.length()));
 		}
 		return builder.toString();
 	}
@@ -84,7 +80,11 @@ public class Utils{
 	}
 
 	public static <T> String pluralize(String text, Collection<T> collection){
-		return collection.size() != 1 ? text + "s" : text;
+		return pluralize(text, collection.size());
+	}
+
+	public static String pluralize(String text, int count){
+		return count != 1 ? text + "s" : text;
 	}
 
 }

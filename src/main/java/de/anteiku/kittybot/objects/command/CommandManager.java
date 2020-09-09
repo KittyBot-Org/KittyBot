@@ -8,7 +8,6 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -45,7 +44,7 @@ public class CommandManager{
 				var cmd = entry.getValue();
 				if(cmd.checkCmd(command)){
 					//event.getChannel().sendTyping().queue(); answer is sending too fast and I don't want to block the thread lol
-					var ctx = new CommandContextImpl(event, command, getCommandArguments(message));
+					var ctx = new CommandContext(event, command, message);
 					LOG.info("Command: {}, args: {}, by: {}, from: {}", command, ctx.getArgs(), event.getAuthor().getName(), event.getGuild().getName());
 					cmd.run(ctx);
 					Database.addCommandStatistics(event.getGuild().getId(), event.getMessageId(), event.getAuthor().getId(), command, System.nanoTime() - start);
@@ -68,11 +67,6 @@ public class CommandManager{
 
 	private static String getCommandString(String raw){
 		return raw.split("\\s+")[0];
-	}
-
-	private static String[] getCommandArguments(String message){
-		String[] args = message.split(" ");
-		return Arrays.copyOfRange(args, 1, args.length);
 	}
 
 	public static Map<String, ACommand> getCommands(){
