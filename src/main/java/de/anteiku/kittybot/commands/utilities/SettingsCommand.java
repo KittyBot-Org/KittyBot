@@ -12,8 +12,8 @@ import net.dv8tion.jda.api.Permission;
 public class SettingsCommand extends ACommand{
 
 	public static final String COMMAND = "settings";
-	public static final String USAGE = "settings <prefix/joinchannel/joinmessage/nsfw/djrole> <value>";
-	public static final String DESCRIPTION = "Used to set some guild specified settings";
+	public static final String USAGE = "settings <prefix/announcementchannel/joinmessage/leavemessage/boostmessage/nsfw/djrole> <value>";
+	public static final String DESCRIPTION = "Used to set guild specified settings";
 	protected static final String[] ALIASES = {"sett", "options"};
 	protected static final Category CATEGORY = Category.UTILITIES;
 
@@ -21,7 +21,6 @@ public class SettingsCommand extends ACommand{
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
-	//TODO renaming sub-commands & displaying set values
 	@Override
 	public void run(CommandContext ctx){
 		if(ctx.getMember().isOwner() || ctx.getMember().hasPermission(Permission.ADMINISTRATOR)){
@@ -31,6 +30,7 @@ public class SettingsCommand extends ACommand{
 						.setTitle("Guild settings:")
 						.addField("Command Prefix:", settings.getCommandPrefix(), false)
 						.addField("Announcement Channel:", settings.getAnnouncementChannel(), false)
+						.addField("DJ Role:", settings.getDJRole(), false)
 
 						//.addField("Join Messages Enabled:", String.valueOf(settings.areJoinMessagesEnabled()), true)
 						.addField("Join Messages: " + (settings.areJoinMessagesEnabled() ? Emojis.X : Emojis.CHECK), settings.getJoinMessage(), false)
@@ -41,8 +41,7 @@ public class SettingsCommand extends ACommand{
 						//.addField("Boost Messages Enabled:", String.valueOf(settings.areBoostMessagesEnabled()), true)
 						.addField("Boost Messages: " + (settings.areBoostMessagesEnabled() ? Emojis.X : Emojis.CHECK), settings.getBoostMessage(), false)
 
-						.addField("NSFW Enabled: " + (settings.isNSFWEnabled() ? Emojis.X : Emojis.CHECK), "", false)
-						.addField("DJ Role:", settings.getDJRole(), false));
+						.addField("NSFW Enabled: " + (settings.isNSFWEnabled() ? Emojis.X : Emojis.CHECK), "", false));
 			}
 			else{
 				if(ctx.getArgs()[0].equalsIgnoreCase("prefix") && ctx.getArgs().length == 2){
