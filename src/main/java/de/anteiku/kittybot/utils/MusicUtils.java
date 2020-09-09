@@ -79,7 +79,6 @@ public class MusicUtils{
 				break;
 			default:
 		}
-		musicPlayer.updateMusicControlMessage(ctx.getChannel());
 	}
 
 }

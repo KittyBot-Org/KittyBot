@@ -51,12 +51,14 @@ public class PlayCommand extends ACommand{
 		if(musicPlayer == null){
 			return;
 		}
-		var requester = musicPlayer.getRequesterId();
-		if(requester == null && !musicPlayer.isDJ(event.getMember())){
-			return;
+		event.getReaction().removeReaction(event.getUser()).queue();
+		var playing = musicPlayer.getPlayer().getPlayingTrack();
+		if (playing == null){
+			if (!musicPlayer.isDJ(event.getMember())){
+				return;
+			}
 		}
-		if(!requester.equals(event.getUserId())){
-			event.getReaction().removeReaction(event.getUser()).queue();
+		else if (!musicPlayer.canInteract(playing, event.getUser())){
 			return;
 		}
 		if(event.getReactionEmote().isEmoji()){
@@ -86,8 +88,6 @@ public class PlayCommand extends ACommand{
 		else if(event.getReactionEmote().getId().equals("744945002416963634")){
 			musicPlayer.pause();
 		}
-		musicPlayer.updateMusicControlMessage(event.getChannel());
-		event.getReaction().removeReaction(event.getUser()).queue();
 	}
 
 }

@@ -34,8 +34,7 @@ public class PauseCommand extends ACommand{
 			sendError(ctx, "You have to be the requester of the song or DJ to control it");
 			return;
 		}
-		var paused = !player.isPaused();
-		player.setPaused(paused);
+		var paused = musicPlayer.pause();
 		sendAnswer(ctx, "Track " + (paused ? "paused" : "resumed"));
 	}
 

@@ -17,7 +17,6 @@ import lavalink.client.player.LavalinkPlayer;
 import lavalink.client.player.event.PlayerEventListenerAdapter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +26,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Queue;
 import java.util.*;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -46,7 +44,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	private final Deque<AudioTrack> history;
 	private String messageId;
 	private String channelId;
-	private ScheduledFuture<?> future;
 	private ACommand command;
 	private CommandContext ctx;
 
@@ -108,9 +105,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		if(!queue.isEmpty()){
 			sendQueuedTracks(ctx, Collections.singletonList(track));
 		}
-		if(future != null){
-			future.cancel(true);
-		}
 		connectToChannel(ctx);
 	}
 
@@ -144,9 +138,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		}
 		if(!queue.isEmpty()){
 			sendQueuedTracks(ctx, queuedTracks);
-		}
-		if(future != null){
-			future.cancel(true);
 		}
 		connectToChannel(ctx);
 	}
@@ -192,12 +183,13 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	public boolean isDJ(Member member){
-		return member.getRoles().stream().anyMatch(role -> role.getId().equals(GuildSettingsCache.getDJRole(member.getGuild().getId())));
+		return member.getRoles().stream().anyMatch(role -> role.getId().equals(GuildSettingsCache.getDJRoleId(member.getGuild().getId())));
 	}
 
 	public boolean pause(){
 		var paused = !player.isPaused();
 		player.setPaused(paused);
+		updateMusicControlMessage();
 		return paused;
 	}
 
@@ -220,6 +212,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 			}
 		}
 		player.setVolume(volume);
+		updateMusicControlMessage();
 		return volume;
 	}
 
@@ -322,7 +315,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 			return;
 		}
 		if(endReason.mayStartNext && !nextTrack()){
-			future = KittyBot.getScheduler().schedule(() -> {
+			KittyBot.getScheduler().schedule(() -> {
 				if(player.getPlayingTrack() == null){
 					MusicPlayerCache.destroyMusicPlayer(guild);
 				}
@@ -332,18 +325,19 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	public boolean nextTrack(){
 		AudioTrack track = queue.poll();
-		var channel = KittyBot.getJda().getTextChannelById(channelId);
 		player.setPaused(false);
 		if(track != null){
 			player.playTrack(track);
+			updateMusicControlMessage();
 			return true;
 		}
 		player.stopTrack();
-		updateMusicControlMessage(channel);
+		updateMusicControlMessage();
 		return false;
 	}
 
-	public void updateMusicControlMessage(TextChannel channel){
+	public void updateMusicControlMessage(){
+		var channel = KittyBot.getJda().getTextChannelById(channelId);
 		if(channel == null){
 			return;
 		}
@@ -365,18 +359,16 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		if(track != null){
 			track.setPosition(0);
 			player.playTrack(track);
+			updateMusicControlMessage();
 			return true;
 		}
 		player.stopTrack();
+		updateMusicControlMessage();
 		return false;
 	}
 
 	public String getMessageId(){
 		return messageId;
-	}
-
-	public ScheduledFuture<?> getFuture(){
-		return future;
 	}
 
 }

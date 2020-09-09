@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.RestAction;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -144,22 +145,24 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 				CURRENT_PAGE.put(messageId, previousPage);
 				break;
 			case ARROW_RIGHT:
-				final var nextPage = currentPage + 1;
+				final var nextPage = currentPage + 1; // TODO fix next pages? idk
 				if(nextPage == total){
 					return;
 				}
 				if(currentPage == 0){
+					var actions = new ArrayList<RestAction<Void>>();
+					if (nextPage + 1 != total){
+						actions.add(channel.addReactionById(messageId, ARROW_RIGHT));
+					}
+					actions.add(channel.addReactionById(messageId, WASTEBASKET));
+
 					channel.clearReactionsById(messageId)
 							.flatMap(ignored -> channel.addReactionById(messageId, ARROW_LEFT))
-							.flatMap(ignored -> channel.addReactionById(messageId, ARROW_RIGHT))
-							.flatMap(ignored -> channel.addReactionById(messageId, WASTEBASKET))
+							.flatMap(ignored -> RestAction.allOf(actions))
 							.queue();
 				}
 				contentConsumer.accept(nextPage, newPageBuilder);
 				newPageBuilder.setFooter("Page " + (nextPage + 1) + "/" + total);
-				if(nextPage + 1 == total){
-					channel.removeReactionById(messageId, ARROW_RIGHT).queue();
-				}
 				CURRENT_PAGE.put(messageId, nextPage);
 				break;
 			default:

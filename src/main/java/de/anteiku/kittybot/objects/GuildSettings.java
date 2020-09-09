@@ -21,7 +21,9 @@ public class GuildSettings{
 	private String djRoleId;
 	private String inactiveRoleId;
 
-	public GuildSettings(String guildId, String commandPrefix, String requestChannelId, boolean requestsEnabled, String announcementChannelId, String joinMessages, boolean joinMessagesEnabled, String leaveMessages, boolean leaveMessagesEnabled, String boostMessages, boolean boostMessagesEnabled, String logChannelId, boolean logMessageEnabled, boolean nsfwEnabled, String djRoleId, String inactiveRoleId){
+	public GuildSettings(String guildId, String commandPrefix, String requestChannelId, boolean requestsEnabled, String announcementChannelId, String joinMessages, boolean joinMessagesEnabled,
+						 String leaveMessages, boolean leaveMessagesEnabled, String boostMessages, boolean boostMessagesEnabled, String logChannelId, boolean logMessageEnabled, boolean nsfwEnabled,
+						 String djRoleId, String inactiveRoleId){
 		this.guildId = guildId;
 		this.commandPrefix = commandPrefix;
 		this.requestChannelId = requestChannelId;

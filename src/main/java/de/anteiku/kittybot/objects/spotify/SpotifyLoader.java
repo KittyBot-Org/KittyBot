@@ -90,7 +90,6 @@ public class SpotifyLoader{
 	}
 
 	private static void loadTracks(String id, CommandContext ctx, MusicPlayer player, ArrayList<String> toLoad){
-		var future = player.getFuture();
 		var audioManager = KittyBot.getAudioPlayerManager();
 		var queuedTracks = new ArrayList<AudioTrack>();
 		toLoad.forEach(query -> audioManager.loadItemOrdered(id, query, new AudioLoadResultHandler(){
@@ -141,9 +140,6 @@ public class SpotifyLoader{
 		}));
 		if(!player.getQueue().isEmpty()){
 			player.sendQueuedTracks(ctx, queuedTracks);
-		}
-		if(future != null){
-			future.cancel(true);
 		}
 		player.connectToChannel(ctx);
 	}

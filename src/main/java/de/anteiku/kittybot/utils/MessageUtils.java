@@ -66,9 +66,6 @@ public class MessageUtils{
 			var idk = 1000 - (content.length() % 1000);
 			var index = content.lastIndexOf("\n", 1000);
 			if(index < idk){
-				index = content.lastIndexOf(" ", 1000);
-			}
-			if(index < idk){
 				index = 1000;
 			}
 			String temp = content.substring(0, index).trim();
