@@ -1,36 +1,41 @@
 package de.anteiku.kittybot.objects.cache;
 
-import de.anteiku.kittybot.KittyBot;
-import de.anteiku.kittybot.objects.MusicPlayer;
+import de.anteiku.kittybot.objects.audio.MusicPlayer;
+import de.anteiku.kittybot.utils.audio.LinkUtils;
 import net.dv8tion.jda.api.entities.Guild;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class MusicPlayerCache{
+public class MusicPlayerCache
+{
+    private static final Map<Long, MusicPlayer> MUSIC_PLAYER_CACHE = new ConcurrentHashMap<>();
 
-	private static final Map<String, MusicPlayer> MUSIC_PLAYERS = new HashMap<>();
+    private MusicPlayerCache()
+    {
+        super();
+    }
 
-	public static void addMusicPlayer(Guild guild, MusicPlayer player){
-		MUSIC_PLAYERS.put(guild.getId(), player);
-	}
+    public static MusicPlayer createMusicPlayer(final Guild guild)
+    {
+        final var lavalinkPlayer = LinkUtils.getLavalinkPlayer(guild);
+        final var musicPlayer = new MusicPlayer(lavalinkPlayer);
+        lavalinkPlayer.addListener(musicPlayer);
+        MUSIC_PLAYER_CACHE.put(guild.getIdLong(), musicPlayer);
+        return musicPlayer;
+    }
 
-	public static void pruneCache(Guild guild){ // just a convenience method to match other pruneCache methods
-		destroyMusicPlayer(guild);
-	}
+    public static MusicPlayer getMusicPlayer(final Guild guild, final boolean createIfAbsent)
+    {
+        var musicPlayer = MUSIC_PLAYER_CACHE.get(guild.getIdLong());
+        if (musicPlayer == null && createIfAbsent)
+            musicPlayer = createMusicPlayer(guild);
+        return musicPlayer;
+    }
 
-	public static void destroyMusicPlayer(Guild guild){
-		var musicPlayer = getMusicPlayer(guild);
-		if(musicPlayer == null){
-			return;
-		}
-		KittyBot.getLavalink().getLink(guild).destroy();
-		ReactiveMessageCache.removeReactiveMessage(guild, musicPlayer.getMessageId());
-		MUSIC_PLAYERS.remove(guild.getId());
-	}
-
-	public static MusicPlayer getMusicPlayer(Guild guild){
-		return MUSIC_PLAYERS.get(guild.getId());
-	}
-
+    public static void destroyMusicPlayer(final Guild guild)
+    {
+        LinkUtils.getLink(guild).destroy();
+        MUSIC_PLAYER_CACHE.remove(guild.getIdLong());
+    }
 }

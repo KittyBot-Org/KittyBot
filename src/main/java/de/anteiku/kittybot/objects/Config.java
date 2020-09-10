@@ -1,84 +1,190 @@
 package de.anteiku.kittybot.objects;
 
+import de.anteiku.kittybot.objects.audio.LavalinkNode;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Config{
+public class Config
+{
+    private static String token;
+    private static String secret;
+    private static String botId;
+    private static long supportGuildId;
+    private static long logChannelId;
+    private static String inviteUrl;
+    private static String redirectUrl;
+    private static String originUrl;
+    private static String hastebinUrl;
 
-	private static final Logger LOG = LoggerFactory.getLogger(Config.class);
+    private static String discordBotsToken;
+    private static String dblToken;
 
-	public static String BOT_TOKEN;
-	public static String BOT_SECRET;
-	public static String BOT_ID;
-	public static List<String> ADMIN_IDS;
-	public static String SUPPORT_GUILD_ID;
-	public static String LOG_CHANNEL_ID;
-	public static String INVITE_URL;
-	public static String REDIRECT_URL;
-	public static String ORIGIN_URL;
-	public static String HASTEBIN_URL;
-	public static String DISCORD_BOTS_TOKEN;
-	public static String DISCORD_BOT_LIST_TOKEN;
+    private static String dbHost;
+    private static int dbPort;
+    private static String dbDatabase;
+    private static String dbUser;
+    private static String dbPassword;
 
-	public static String DB_HOST;
-	public static String DB_PORT;
-	public static String DB_DB;
-	public static String DB_USER;
-	public static String DB_PASSWORD;
+    private static final List<Long> ADMIN_IDS = new ArrayList<>();
 
-	public static List<LavalinkNode> LAVALINK_NODES;
+    private static final List<LavalinkNode> LAVALINK_NODES = new ArrayList<>();
 
-	public static String DEFAULT_PREFIX = ".";
+    private static final String DEFAULT_PREFIX = ".";
 
-	public static void load(String filePath){
-		try{
-			var json = DataObject.fromJson(new FileInputStream(new File(filePath)));
+    private static final Logger LOGGER = LoggerFactory.getLogger(Config.class);
 
-			BOT_TOKEN = json.getString("bot_token");
-			BOT_SECRET = json.getString("bot_secret");
-			BOT_ID = json.getString("bot_id");
-			ADMIN_IDS = new ArrayList<>();
-			var adminIds = json.getArray("admin_ids");
-			for(var i = 0; i < adminIds.length(); i++){
-				ADMIN_IDS.add(adminIds.getString(i));
-			}
-			SUPPORT_GUILD_ID = json.getString("support_guild_id");
-			LOG_CHANNEL_ID = json.getString("log_channel_id");
-			INVITE_URL = json.getString("invite_url");
-			REDIRECT_URL = json.getString("redirect_url");
-			ORIGIN_URL = json.getString("origin_url");
-			HASTEBIN_URL = json.getString("hastebin_url");
-			DISCORD_BOTS_TOKEN = json.getString("discord_bots_token");
-			DISCORD_BOT_LIST_TOKEN = json.getString("discord_bot_list_token");
+    private Config()
+    {
+        super();
+    }
 
-			var db = json.getObject("db");
-			DB_HOST = db.getString("host");
-			DB_PORT = db.getString("port");
-			DB_DB = db.getString("db");
-			DB_USER = db.getString("user");
-			DB_PASSWORD = db.getString("password");
+    public static boolean loadConfig()
+    {
+        final var configFile = new File("config.json");
+        if (!configFile.exists())
+            return false;
+        LOGGER.info("Trying to load config");
+        try
+        {
+            final var json = DataObject.fromJson(new FileInputStream(configFile));
+            token = json.getString("bot_token");
+            secret = json.getString("bot_secret");
+            botId = json.getString("bot_id");
+            supportGuildId = json.getLong("support_guild_id");
+            logChannelId = json.getLong("log_channel_id");
+            inviteUrl = json.getString("invite_url");
+            redirectUrl = json.getString("redirect_url");
+            originUrl = json.getString("origin_url");
+            hastebinUrl = json.getString("hastebin_url");
 
-			LAVALINK_NODES = new ArrayList<>();
-			var lavalinkNodes = json.getArray("lavalink_nodes");
-			for(var i = 0; i < lavalinkNodes.length(); i++){
-				var node = lavalinkNodes.getObject(i);
-				LAVALINK_NODES.add(new LavalinkNode(node.getString("host"), node.getString("port"), node.getString("password")));
-			}
-		}
-		catch(FileNotFoundException e){
-			LOG.error("Error while reading config file", e);
-		}
-	}
+            discordBotsToken = json.getString("discord_bots_token");
+            dblToken = json.getString("discord_bot_list_token");
 
-	public static boolean isSet(String setting){
-		return setting != null && !setting.isEmpty();
-	}
+            final var database = json.getObject("db");
+            dbHost = database.getString("host");
+            dbPort = database.getInt("port");
+            dbDatabase = database.getString("db");
+            dbUser = database.getString("user");
+            dbPassword = database.getString("password");
 
+            final var adminIds = json.getArray("admin_ids");
+            for (int i = 0; i < adminIds.length(); i++)
+            {
+                ADMIN_IDS.add(adminIds.getLong(i));
+            }
+
+            final var lavalinkNodes = json.getArray("lavalink_nodes");
+            for (var i = 0; i < lavalinkNodes.length(); i++) {
+                final var node = lavalinkNodes.getObject(i);
+                LAVALINK_NODES.add(new LavalinkNode(node.getString("host"), node.getInt("port"), node.getString("password")));
+            }
+        }
+        catch (final Exception ex)
+        {
+            return false;
+        }
+        LOGGER.info("Config has been successfully loaded");
+        return true;
+    }
+
+    public static String getToken()
+    {
+        return token;
+    }
+
+    public static String getSecret()
+    {
+        return secret;
+    }
+
+    public static String getBotId()
+    {
+        return botId;
+    }
+
+    public static long getSupportGuildId()
+    {
+        return supportGuildId;
+    }
+
+    public static long getLogChannelId()
+    {
+        return logChannelId;
+    }
+
+    public static String getInviteUrl()
+    {
+        return inviteUrl;
+    }
+
+    public static String getRedirectUrl()
+    {
+        return redirectUrl;
+    }
+
+    public static String getOriginUrl()
+    {
+        return originUrl;
+    }
+
+    public static String getHastebinUrl()
+    {
+        return hastebinUrl;
+    }
+
+    public static String getDiscordBotsToken()
+    {
+        return discordBotsToken;
+    }
+
+    public static String getDblToken()
+    {
+        return dblToken;
+    }
+
+    public static String getDbHost()
+    {
+        return dbHost;
+    }
+
+    public static int getDbPort()
+    {
+        return dbPort;
+    }
+
+    public static String getDatabase()
+    {
+        return dbDatabase;
+    }
+
+    public static String getDbUser()
+    {
+        return dbUser;
+    }
+
+    public static String getDbPassword()
+    {
+        return dbPassword;
+    }
+
+    public static List<Long> getAdminIds()
+    {
+        return ADMIN_IDS;
+    }
+
+    public static List<LavalinkNode> getLavalinkNodes()
+    {
+        return LAVALINK_NODES;
+    }
+
+    public static String getDefaultPrefix()
+    {
+        return DEFAULT_PREFIX;
+    }
 }
