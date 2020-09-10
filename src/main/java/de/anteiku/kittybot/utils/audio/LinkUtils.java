@@ -1,6 +1,8 @@
 package de.anteiku.kittybot.utils.audio;
 
 import de.anteiku.kittybot.objects.Config;
+import de.anteiku.kittybot.utils.SentryHelper;
+import io.sentry.event.Event;
 import lavalink.client.io.jda.JdaLavalink;
 import lavalink.client.io.jda.JdaLink;
 import lavalink.client.player.LavalinkPlayer;
@@ -10,14 +12,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URI;
+import java.util.ArrayList;
 
 import static de.anteiku.kittybot.utils.TextUtils.pluralize;
 
 public class LinkUtils
 {
-    private static JdaLavalink lavalink;
+    private static final JdaLavalink LAVALINK = new JdaLavalink(Config.getBotId(), 0, null);
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LinkUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger("LinkLoader");
 
     private LinkUtils()
     {
@@ -26,32 +29,42 @@ public class LinkUtils
 
     public static boolean loadNodes()
     {
-        lavalink = new JdaLavalink(Config.getBotId(), 0, null);
         final var nodes = Config.getLavalinkNodes();
         if (nodes.isEmpty())
         {
             LOGGER.error("There are no nodes available");
             return false;
         }
-        LOGGER.info("Trying to load {} {}", nodes.size(), pluralize(nodes, "node"));
-        for (final var node : nodes)
+        final var nodeCount = nodes.size();
+        final var failedNodes = new ArrayList<Integer>();
+        final var totalNodes = "total of " +  nodeCount + " "  + pluralize(nodes, "node");
+        LOGGER.info("Attempting to load a {}", totalNodes);
+        for (var i = 0; i < nodeCount; i++)
         {
+            final var node = nodes.get(i);
             final var host = node.getHost();
             final var port = node.getPort();
             final var password = node.getPassword();
             try
             {
-                lavalink.addNode(new URI("ws://" + host + ":" + port), password);
+                LOGGER.info("Attempting to load node {}", i + 1);
+                LAVALINK.addNode("Lavalink node " + (i + 1), new URI("ws://" + host + ":" + port), password);
+                LOGGER.info("Node {} has been successfully loaded", i + 1);
             }
             catch (final Exception ex)
             {
-                LOGGER.error("Couldn't load lavalink node with host {}, port {} and password {}", host, port, password, ex);
-                return false;
+                failedNodes.add(i);
+                SentryHelper.captureException("Couldn't load node " + (i + 1), ex, "LinkLoader", Event.Level.WARNING);
+                LOGGER.warn("Couldn't load node {}", i + 1, ex);
             }
         }
-        final var loadedNodes = lavalink.getNodes();
-        LOGGER.info("Successfully loaded {} {}", loadedNodes.size(), pluralize(loadedNodes, "node"));
-        return true;
+        if (failedNodes.size() != nodeCount)
+        {
+            LOGGER.info("A {} has been successfully loaded", totalNodes);
+            return true;
+        }
+        else
+            return false;
     }
 
     public static JdaLink getLink(final Guild guild)
@@ -61,7 +74,7 @@ public class LinkUtils
 
     public static JdaLink getLink(final Guild guild, final boolean createIfAbsent)
     {
-        return createIfAbsent ? lavalink.getLink(guild) : lavalink.getExistingLink(guild);
+        return createIfAbsent ? LAVALINK.getLink(guild) : LAVALINK.getExistingLink(guild);
     }
 
     public static LavalinkPlayer getLavalinkPlayer(final Guild guild)
@@ -71,11 +84,11 @@ public class LinkUtils
 
     public static VoiceDispatchInterceptor getVoiceDispatchInterceptor()
     {
-        return lavalink.getVoiceInterceptor();
+        return LAVALINK.getVoiceInterceptor();
     }
 
     public static JdaLavalink getLavalink()
     {
-        return lavalink;
+        return LAVALINK;
     }
 }

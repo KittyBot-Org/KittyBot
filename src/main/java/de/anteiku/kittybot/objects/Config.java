@@ -1,6 +1,7 @@
 package de.anteiku.kittybot.objects;
 
 import de.anteiku.kittybot.objects.audio.LavalinkNode;
+import de.anteiku.kittybot.utils.SentryHelper;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +50,7 @@ public class Config
         final var configFile = new File("config.json");
         if (!configFile.exists())
             return false;
-        LOGGER.info("Trying to load config");
+        LOGGER.info("Attempting to load the config");
         try
         {
             final var json = DataObject.fromJson(new FileInputStream(configFile));
@@ -75,9 +76,7 @@ public class Config
 
             final var adminIds = json.getArray("admin_ids");
             for (int i = 0; i < adminIds.length(); i++)
-            {
                 ADMIN_IDS.add(adminIds.getLong(i));
-            }
 
             final var lavalinkNodes = json.getArray("lavalink_nodes");
             for (var i = 0; i < lavalinkNodes.length(); i++) {
@@ -87,6 +86,8 @@ public class Config
         }
         catch (final Exception ex)
         {
+            SentryHelper.captureException("Config couldn't be loaded", ex, Config.class);
+            LOGGER.error("Config couldn't be loaded", ex);
             return false;
         }
         LOGGER.info("Config has been successfully loaded");
