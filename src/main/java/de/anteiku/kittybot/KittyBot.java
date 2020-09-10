@@ -46,7 +46,7 @@ public class KittyBot
                 LOGGER.info("Destroyed {} {}", links.size(), TextUtils.pluralize(links, "link"));
                 links.forEach(link -> link.destroy(false));
             }
-        }, "KittyBot Shutdown Hooks Thread"));
+        }, "KittyBot Shutdown Hook Thread"));
 
         try
         {
