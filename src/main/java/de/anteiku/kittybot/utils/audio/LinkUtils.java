@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URI;
-import java.util.ArrayList;
 
 import static de.anteiku.kittybot.utils.TextUtils.pluralize;
 
@@ -35,8 +34,8 @@ public class LinkUtils
             LOGGER.error("There are no nodes available");
             return false;
         }
+        var failedNodes = 0;
         final var nodeCount = nodes.size();
-        final var failedNodes = new ArrayList<Integer>();
         final var totalNodes = "total of " +  nodeCount + " "  + pluralize(nodes, "node");
         LOGGER.info("Attempting to load a {}", totalNodes);
         for (var i = 0; i < nodeCount; i++)
@@ -53,18 +52,17 @@ public class LinkUtils
             }
             catch (final Exception ex)
             {
-                failedNodes.add(i);
+                failedNodes++;
                 SentryHelper.captureException("Couldn't load node " + (i + 1), ex, "LinkLoader", Event.Level.WARNING);
                 LOGGER.warn("Couldn't load node {}", i + 1, ex);
             }
         }
-        if (failedNodes.size() != nodeCount)
+        if (failedNodes != nodeCount)
         {
             LOGGER.info("A {} has been successfully loaded", totalNodes);
             return true;
         }
-        else
-            return false;
+        return false;
     }
 
     public static JdaLink getLink(final Guild guild)

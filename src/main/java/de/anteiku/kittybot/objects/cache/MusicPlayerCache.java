@@ -16,7 +16,7 @@ public class MusicPlayerCache
         super();
     }
 
-    public static MusicPlayer createMusicPlayer(final Guild guild)
+    private static MusicPlayer createMusicPlayer(final Guild guild)
     {
         final var lavalinkPlayer = LinkUtils.getLavalinkPlayer(guild);
         final var musicPlayer = new MusicPlayer(lavalinkPlayer);

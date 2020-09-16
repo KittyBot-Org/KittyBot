@@ -2,6 +2,7 @@ package de.anteiku.kittybot;
 
 import de.anteiku.kittybot.events.MiscEvents;
 import de.anteiku.kittybot.objects.Config;
+import de.anteiku.kittybot.objects.DatabaseManager;
 import de.anteiku.kittybot.utils.SentryHelper;
 import de.anteiku.kittybot.utils.TextUtils;
 import de.anteiku.kittybot.utils.audio.LinkUtils;
@@ -9,13 +10,13 @@ import net.dv8tion.jda.api.GatewayEncoding;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.EnumSet;
 
 import static net.dv8tion.jda.api.requests.GatewayIntent.*;
+import static net.dv8tion.jda.api.utils.cache.CacheFlag.*;
 
 public class KittyBot
 {
@@ -30,11 +31,13 @@ public class KittyBot
             LOGGER.error("The config couldn't be loaded. Exiting");
             System.exit(1);
         }
-        if (!LinkUtils.loadNodes())
+        if (!DatabaseManager.testConnection())
         {
-            LOGGER.error("All nodes couldn't be loaded. Exiting");
+            LOGGER.error("The database couldn't be loaded. Exiting");
             System.exit(1);
         }
+        if (!LinkUtils.loadNodes())
+            LOGGER.warn("All lavalink nodes couldn't be loaded");
 
         final var lavalink = LinkUtils.getLavalink();
         Runtime.getRuntime().addShutdownHook(new Thread(null, () ->
@@ -62,7 +65,7 @@ public class KittyBot
                     .addEventListeners(
                             new MiscEvents(),
                             lavalink)
-                    .disableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS) // JDA already disables these by default but we explicitly disable it to get rid of warnings on startup
+                    .disableCache(MEMBER_OVERRIDES, ACTIVITY, CLIENT_STATUS) // JDA already disables these by default but we explicitly disable them to get rid of warnings on startup
                     .setStatus(OnlineStatus.DO_NOT_DISTURB)
                     .setActivity(Activity.watching("myself load"))
                     .setGatewayEncoding(GatewayEncoding.ETF)

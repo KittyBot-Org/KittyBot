@@ -31,7 +31,6 @@ dependencies {
     }
 
     // database
-    implementation 'com.zaxxer:HikariCP:3.4.5'
     implementation 'org.postgresql:postgresql:42.2.16'
 
     // logging
@@ -39,9 +38,7 @@ dependencies {
     implementation 'io.sentry:sentry-logback:1.7.30'
 
     // other
-    implementation 'org.discordbots:DBL-Java-Library:2.0.1'
     implementation 'io.javalin:javalin:3.10.0'
-    implementation 'org.yaml:snakeyaml:1.26'
     implementation 'io.github.classgraph:classgraph:4.8.78'
 }
 
