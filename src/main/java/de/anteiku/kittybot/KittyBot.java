@@ -1,6 +1,7 @@
 package de.anteiku.kittybot;
 
 import de.anteiku.kittybot.events.MiscEvents;
+import de.anteiku.kittybot.handlers.CommandHandler;
 import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.DatabaseManager;
 import de.anteiku.kittybot.utils.SentryHelper;
@@ -29,6 +30,11 @@ public class KittyBot
         if (!Config.loadConfig())
         {
             LOGGER.error("The config couldn't be loaded. Exiting");
+            System.exit(1);
+        }
+        if (!CommandHandler.registerCommands())
+        {
+            LOGGER.error("Commands couldn't be loaded. Exiting");
             System.exit(1);
         }
         if (!DatabaseManager.testConnection())

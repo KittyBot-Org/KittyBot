@@ -125,6 +125,7 @@ public class DatabaseManager
 
     private static long getPropertyAsLong(final String property, final long guildId)
     {
+        //noinspection ConstantConditions
         return Long.parseLong(executeGetQuery(property, guildId, false));
     }
 
