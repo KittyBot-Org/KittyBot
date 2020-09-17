@@ -8,7 +8,6 @@ import java.util.concurrent.ScheduledExecutorService;
 public class ConcurrentUtils
 {
     private static final ThreadFactoryBuilder THREAD_FACTORY_BUILDER = new ThreadFactoryBuilder();
-    private static final ScheduledExecutorService SCHEDULER = createScheduledThread("KittyBot Scheduler");
 
     private ConcurrentUtils()
     {
@@ -23,10 +22,5 @@ public class ConcurrentUtils
     public static ScheduledExecutorService createScheduledThread(final String name, final Class<?> clazz)
     {
         return Executors.newSingleThreadScheduledExecutor(THREAD_FACTORY_BUILDER.withName(name).withClass(clazz).build());
-    }
-
-    public static ScheduledExecutorService getScheduler()
-    {
-        return SCHEDULER;
     }
 }

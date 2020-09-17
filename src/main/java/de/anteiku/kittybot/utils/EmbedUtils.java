@@ -7,19 +7,25 @@ import java.awt.*;
 
 public class EmbedUtils
 {
+    private EmbedUtils()
+    {
+        super();
+    }
+
     public static MessageEmbed getSuccessEmbed(final String text)
     {
-        return getEmbed(text, Color.GREEN);
+        return getEmbed(text, Color.GREEN, "");
     }
 
-    public static MessageEmbed getErrorEmbed(final String text)
+    public static MessageEmbed getErrorEmbed(final String cause)
     {
-        return getEmbed(text, Color.RED);
+        return getEmbed(cause, Color.RED, "Error");
     }
 
-    public static MessageEmbed getEmbed(final String text, final Color color)
+    private static MessageEmbed getEmbed(final String text, final Color color, final String author)
     {
         final var eb = new EmbedBuilder();
+        eb.setAuthor(author);
         eb.setDescription(text);
         eb.setColor(color);
         return eb.build();

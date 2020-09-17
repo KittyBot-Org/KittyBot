@@ -39,7 +39,7 @@ dependencies {
 
     // other
     implementation 'io.javalin:javalin:3.10.0'
-    implementation 'io.github.classgraph:classgraph:4.8.78'
+    implementation 'io.github.classgraph:classgraph:4.8.90'
 }
 
 processResources {

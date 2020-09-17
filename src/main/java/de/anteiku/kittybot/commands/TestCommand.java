@@ -14,6 +14,6 @@ public class TestCommand extends Command
     @Override
     public void execute(final CommandContext ctx)
     {
-
+        ctx.reply("lmao");
     }
 }
