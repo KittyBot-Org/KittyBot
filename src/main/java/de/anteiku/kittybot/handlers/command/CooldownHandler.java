@@ -27,12 +27,12 @@ public class CooldownHandler
         if (cooldown == 0)
             return;
         COOLDOWN_MAP.computeIfAbsent(guildId, k -> new ArrayList<>()).add(command);
-        COOLDOWN_SCHEDULER.schedule(() -> COOLDOWN_MAP.get(guildId).remove(command), command.getCooldown(), TimeUnit.SECONDS);
+        COOLDOWN_SCHEDULER.schedule(() -> COOLDOWN_MAP.get(guildId).remove(command), cooldown, TimeUnit.SECONDS);
     }
 
     public static boolean isOnCooldown(final long guildId, final Command command)
     {
-        final var entry = COOLDOWN_MAP.get(guildId);
-        return entry != null && entry.contains(command);
+        final var commands = COOLDOWN_MAP.get(guildId);
+        return commands != null && commands.contains(command);
     }
 }
