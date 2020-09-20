@@ -13,7 +13,7 @@ public class MiscEvents extends ListenerAdapter
     @Override
     public void onGuildLeave(@NotNull final GuildLeaveEvent event)
     {
-        final var link = LinkUtils.getExistingLink(event.getGuild());
+        final var link = LinkUtils.getLink(event.getGuild(), false);
         if (link != null)
             link.destroy();
     }

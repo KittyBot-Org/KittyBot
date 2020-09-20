@@ -6,6 +6,11 @@ import net.dv8tion.jda.api.entities.Guild;
 
 public class PlayerUtils
 {
+    private PlayerUtils()
+    {
+        super();
+    }
+
     public static MusicPlayer getMusicPlayer(final Guild guild)
     {
         return MusicPlayerCache.getMusicPlayer(guild, false);

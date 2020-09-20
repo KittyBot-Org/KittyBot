@@ -67,12 +67,12 @@ public class LinkUtils
 
     public static JdaLink getLink(final Guild guild)
     {
-        return LAVALINK.getLink(guild);
+        return getLink(guild, true);
     }
 
-    public static JdaLink getExistingLink(final Guild guild)
+    public static JdaLink getLink(final Guild guild, final boolean createIfAbsent)
     {
-        return LAVALINK.getExistingLink(guild);
+        return createIfAbsent ? LAVALINK.getLink(guild) : LAVALINK.getExistingLink(guild);
     }
 
     public static LavalinkPlayer getLavalinkPlayer(final Guild guild)
