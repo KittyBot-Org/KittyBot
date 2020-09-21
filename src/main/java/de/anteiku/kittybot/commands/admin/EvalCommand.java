@@ -49,7 +49,7 @@ public class EvalCommand extends ACommand{
 					engine.put("member", ctx.getMember());
 				}
 
-				Object out = engine.eval("(function() {" + "with (imports) {" + ctx.getMessage().getContentDisplay().substring(command.length() + 1) + "}" + "})();");
+				Object out = engine.eval("(function() {" + "with (imports) { return " + String.join(" ", ctx.getArgs()) + "}" + "})();");
 				sendAnswer(ctx, out == null ? "Executed without error." : out.toString());
 			}
 			catch(Exception e){
