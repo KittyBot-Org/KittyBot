@@ -37,6 +37,10 @@ dependencies {
     // logging
     implementation 'ch.qos.logback:logback-classic:1.2.3'
     implementation 'io.sentry:sentry-logback:1.7.30'
+    
+    // script engine
+    implementation 'org.graalvm.js:js:20.2.0'
+    implementation 'org.graalvm.js:js-scriptengine:20.2.0'
 
     // other
     implementation 'org.discordbots:DBL-Java-Library:2.0.1'
