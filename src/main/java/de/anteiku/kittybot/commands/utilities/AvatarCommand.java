@@ -29,7 +29,7 @@ public class AvatarCommand extends ACommand{
 		for(var arg : ctx.getArgs()){
 			try{
 				var user = ctx.getJDA().getUserById(MiscUtil.parseSnowflake(arg));
-				if(!users.contains(user)){
+				if(user != null && !users.contains(user)){
 					users.add(user);
 				}
 			}
@@ -38,6 +38,7 @@ public class AvatarCommand extends ACommand{
 		}
 		if(users.isEmpty()){
 			sendError(ctx, "Please mention a user or provide a valid id");
+                        return;
 		}
 		var stringBuilder = new StringBuilder();
 		for(var user : users){
