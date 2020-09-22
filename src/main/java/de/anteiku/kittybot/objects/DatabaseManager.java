@@ -14,10 +14,7 @@ public class DatabaseManager
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseManager.class);
 
-    private DatabaseManager()
-    {
-        super();
-    }
+    private DatabaseManager(){}
 
     public static Connection getConnection()
     {
@@ -131,14 +128,14 @@ public class DatabaseManager
 
     // getters
 
-    public static long retrieveLogChannel(final long guildId)
-    {
-        return getPropertyAsLong("log_channel_id", guildId);
-    }
-
     public static String retrievePrefix(final long guildId)
     {
         return getPropertyAsString("prefix", guildId);
+    }
+
+    public static long retrieveLogChannel(final long guildId)
+    {
+        return getPropertyAsLong("log_channel_id", guildId);
     }
 
     // setters
@@ -146,5 +143,10 @@ public class DatabaseManager
     public static void setPrefix(final long guildId, final String prefix)
     {
         executeSetQuery("prefix", guildId, prefix);
+    }
+
+    public static void setPrefix(final long guildId, final long channelId)
+    {
+        executeSetQuery("log_channel_id", guildId, channelId);
     }
 }

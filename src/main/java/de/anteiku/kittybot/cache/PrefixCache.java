@@ -1,4 +1,4 @@
-package de.anteiku.kittybot.objects.cache;
+package de.anteiku.kittybot.cache;
 
 import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.DatabaseManager;
@@ -11,10 +11,7 @@ public class PrefixCache
 {
     private static final Map<Long, String> PREFIX_CACHE = new HashMap<>();
 
-    private PrefixCache()
-    {
-        super();
-    }
+    private PrefixCache(){}
 
     public static String getPrefix(final long guildId)
     {

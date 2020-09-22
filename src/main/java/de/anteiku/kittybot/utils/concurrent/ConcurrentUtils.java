@@ -9,10 +9,7 @@ public class ConcurrentUtils
 {
     private static final ThreadFactoryBuilder THREAD_FACTORY_BUILDER = new ThreadFactoryBuilder();
 
-    private ConcurrentUtils()
-    {
-        super();
-    }
+    private ConcurrentUtils(){}
 
     public static ScheduledExecutorService createScheduledThread(final String name)
     {

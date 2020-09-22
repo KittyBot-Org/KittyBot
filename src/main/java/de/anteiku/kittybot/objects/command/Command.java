@@ -18,9 +18,19 @@ public abstract class Command
         this(invoke, new String[]{}, description, usage, category);
     }
 
+    public Command(final String invoke, final String description, final String usage, final Category category, final int cooldown)
+    {
+        this(invoke, new String[]{}, description, usage, category, cooldown);
+    }
+
     public Command(final String invoke, final String[] aliases, final String description, final String usage, final Category category)
     {
         this(invoke, aliases, description, usage, category, Permission.UNKNOWN, 0, 0);
+    }
+
+    public Command(final String invoke, final String[] aliases, final String description, final String usage, final Category category, final int cooldown)
+    {
+        this(invoke, aliases, description, usage, category, Permission.UNKNOWN, 0, cooldown);
     }
 
     public Command(final String invoke, final String[] aliases, final String description, final String usage, final Category category, final Permission requiredPermission, final int maxArgs, final int cooldown)

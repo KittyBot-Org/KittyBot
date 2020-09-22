@@ -5,10 +5,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 public class MessageUtils
 {
-    private MessageUtils()
-    {
-        super();
-    }
+    private MessageUtils(){}
 
     public static void sendMessage(final String text, final TextChannel channel)
     {

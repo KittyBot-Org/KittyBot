@@ -15,7 +15,7 @@ public class Config
 {
     private static String token;
     private static String secret;
-    private static String botId;
+    private static long botId;
     private static long supportGuildId;
     private static long logChannelId;
     private static String inviteUrl;
@@ -40,10 +40,7 @@ public class Config
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Config.class);
 
-    private Config()
-    {
-        super();
-    }
+    private Config(){}
 
     public static boolean loadConfig()
     {
@@ -56,7 +53,7 @@ public class Config
             final var json = DataObject.fromJson(new FileInputStream(configFile));
             token = json.getString("bot_token");
             secret = json.getString("bot_secret");
-            botId = json.getString("bot_id");
+            botId = json.getLong("bot_id");
             supportGuildId = json.getLong("support_guild_id");
             logChannelId = json.getLong("log_channel_id");
             inviteUrl = json.getString("invite_url");
@@ -104,7 +101,7 @@ public class Config
         return secret;
     }
 
-    public static String getBotId()
+    public static long getBotId()
     {
         return botId;
     }

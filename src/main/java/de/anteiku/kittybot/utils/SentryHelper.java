@@ -7,10 +7,7 @@ import io.sentry.event.interfaces.ExceptionInterface;
 
 public class SentryHelper
 {
-    private SentryHelper()
-    {
-        super();
-    }
+    private SentryHelper(){}
 
     public static void captureException(final String message, final Throwable throwable, final Class<?> clazz)
     {

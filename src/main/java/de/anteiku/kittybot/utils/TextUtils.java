@@ -4,10 +4,7 @@ import java.util.Collection;
 
 public class TextUtils
 {
-    private TextUtils()
-    {
-        super();
-    }
+    private TextUtils(){}
 
     public static String pluralize(final Collection<?> collection, final String text)
     {

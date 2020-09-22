@@ -7,10 +7,7 @@ import java.awt.*;
 
 public class EmbedUtils
 {
-    private EmbedUtils()
-    {
-        super();
-    }
+    private EmbedUtils(){}
 
     public static MessageEmbed getSuccessEmbed(final String text)
     {

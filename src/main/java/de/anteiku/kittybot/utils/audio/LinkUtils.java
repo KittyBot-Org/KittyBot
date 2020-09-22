@@ -21,10 +21,7 @@ public class LinkUtils
 
     private static final Logger LOGGER = LoggerFactory.getLogger("LinkLoader");
 
-    private LinkUtils()
-    {
-        super();
-    }
+    private LinkUtils(){}
 
     public static boolean loadNodes()
     {

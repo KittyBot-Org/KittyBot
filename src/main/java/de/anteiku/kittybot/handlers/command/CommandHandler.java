@@ -22,10 +22,7 @@ public class CommandHandler
 
     private static final Logger LOGGER = LoggerFactory.getLogger("CommandLoader");
 
-    private CommandHandler()
-    {
-        super();
-    }
+    private CommandHandler(){}
 
     public static void handle(final Message msg, final String prefix)
     {
@@ -48,8 +45,8 @@ public class CommandHandler
             sendError("You don't have permissions to execute this command.", channel);
             return;
         }
-        final var guildId = msg.getGuild().getIdLong();
-        if (CooldownHandler.isOnCooldown(guildId, cmd))
+        final var userId = msg.getAuthor().getIdLong();
+        if (CooldownHandler.isOnCooldown(userId, cmd))
         {
             sendError("This command is on cooldown", channel);
             return;
@@ -59,7 +56,7 @@ public class CommandHandler
         final var tmp = content.split("\\s+", maxArgs > 0 ? maxArgs + 1 : 0);
         final var args = Arrays.copyOfRange(tmp, 1, tmp.length);
         cmd.execute(new CommandContext(msg, args));
-        CooldownHandler.cooldown(guildId, cmd);
+        CooldownHandler.cooldown(userId, cmd);
     }
 
     public static boolean registerCommands()

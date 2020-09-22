@@ -1,4 +1,4 @@
-package de.anteiku.kittybot.objects.cache;
+package de.anteiku.kittybot.cache;
 
 import de.anteiku.kittybot.objects.audio.MusicPlayer;
 import de.anteiku.kittybot.utils.audio.LinkUtils;
@@ -11,10 +11,7 @@ public class MusicPlayerCache
 {
     private static final Map<Long, MusicPlayer> MUSIC_PLAYER_CACHE = new ConcurrentHashMap<>();
 
-    private MusicPlayerCache()
-    {
-        super();
-    }
+    private MusicPlayerCache(){}
 
     private static MusicPlayer createMusicPlayer(final Guild guild)
     {
