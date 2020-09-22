@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Utils{
+
 	private static final String CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 	public static String generate(int length){
