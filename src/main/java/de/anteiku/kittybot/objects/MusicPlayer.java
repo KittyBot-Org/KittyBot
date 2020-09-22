@@ -162,11 +162,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		}
 	}
 
-	public String getRequesterId(){
-		var playing = player.getPlayingTrack();
-		return playing == null ? null : playing.getUserData(String.class);
-	}
-
 	public boolean pause(){
 		var paused = !player.isPaused();
 		player.setPaused(paused);
@@ -279,6 +274,11 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	public LavalinkPlayer getPlayer(){
 		return player;
+	}
+
+	public String getRequesterId(){
+		var playing = player.getPlayingTrack();
+		return playing == null ? null : playing.getUserData(String.class);
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.apache.commons.collections4.Bag;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class CommandContext{
 	}
 
 	public List<User> getMentionedUsers(){
-		var users = getMessage().getMentionedUsers();
+		var users = new ArrayList<>(getMessage().getMentionedUsers());
 		var selfUser = getSelfUser();
 
 		if(isMentionCommand()){
@@ -76,7 +77,7 @@ public class CommandContext{
 	}
 
 	public List<Member> getMentionedMembers(){
-		var members = getMessage().getMentionedMembers();
+		var members = new ArrayList<>(getMessage().getMentionedMembers());
 		var selfMember = getSelfMember();
 
 		if(isMentionCommand()){
