@@ -24,18 +24,22 @@ public class EditSnipeCommand extends ACommand{
 
 	@Override
 	public void run(final CommandContext ctx){
+		if (!ctx.getChannel().canTalk()){
+			return;
+		}
 		final var lastEditedMessage = MessageCache.getLastEditedMessage(ctx.getMessage().getTextChannel().getId());
 		if(lastEditedMessage == null){
 			sendError(ctx, "There's no edited message to snipe");
 			return;
 		}
 		final var eb = new EmbedBuilder();
-		eb.setTimestamp(lastEditedMessage.getCreation());
 		eb.setDescription(lastEditedMessage.getContent());
+		eb.setTimestamp(lastEditedMessage.getTimeEdited());
 		eb.setColor(Color.GREEN);
-		ctx.getJDA().retrieveUserById(lastEditedMessage.getAuthorId()).queue(user -> eb.setAuthor(user.getName(), null, user.getEffectiveAvatarUrl()));
+		eb.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl());
+		ctx.getJDA().retrieveUserById(lastEditedMessage.getAuthorId()).queue(user -> eb.setAuthor(user.getName(), lastEditedMessage.getJumpUrl(), user.getEffectiveAvatarUrl()));
 
-		sendAnswer(ctx, eb);
+		ctx.getChannel().sendMessage(eb.build()).queue();
 		KittyBot.getScheduler().schedule(() -> MessageCache.uncacheEditedMessage(lastEditedMessage.getChannelId(), lastEditedMessage.getId()), 2, TimeUnit.MINUTES);
 	}
 

@@ -10,12 +10,13 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Utils{
+
 	private static final String CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 	public static String generate(int length){
 		StringBuilder builder = new StringBuilder();
 		while(length-- != 0){
-			builder.append(CHARS.charAt(ThreadLocalRandom.current().nextInt() * CHARS.length()));
+			builder.append(CHARS.charAt((int) (ThreadLocalRandom.current().nextDouble() * CHARS.length())));
 		}
 		return builder.toString();
 	}

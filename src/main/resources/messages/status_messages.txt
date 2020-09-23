@@ -1,3 +1,4 @@
 watching you 👀
 watching ${total_guilds} guilds 👀
 watching ${total_users} users 👀
+mention me for help!

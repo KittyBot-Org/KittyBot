@@ -25,7 +25,8 @@ public class EvalCommand extends ACommand{
 	}
 
 	private void initEngine(){
-		engine = new ScriptEngineManager().getEngineByName("nashorn");
+		System.setProperty("polyglot.js.nashorn-compat", "true"); // enables Nashorn compatibility mode
+		engine = new ScriptEngineManager().getEngineByName("graal.js");
 		try{
 			engine.eval("var imports = new JavaImporter(" + "java.io," + "java.lang," + "java.util," + "Packages.net.dv8tion.jda.api," + "Packages.net.dv8tion.jda.api.entities," + "Packages.net.dv8tion.jda.api.entities.impl," + "Packages.net.dv8tion.jda.api.managers," + "Packages.net.dv8tion.jda.api.managers.impl," + "Packages.net.dv8tion.jda.api.utils);");
 		}
@@ -48,7 +49,7 @@ public class EvalCommand extends ACommand{
 					engine.put("member", ctx.getMember());
 				}
 
-				Object out = engine.eval("(function() {" + "with (imports) {" + ctx.getMessage().getContentDisplay().substring(command.length() + 1) + "}" + "})();");
+				Object out = engine.eval("(function() {" + "with (imports) { return " + String.join(" ", ctx.getArgs()) + "}" + "})();");
 				sendAnswer(ctx, out == null ? "Executed without error." : out.toString());
 			}
 			catch(Exception e){
