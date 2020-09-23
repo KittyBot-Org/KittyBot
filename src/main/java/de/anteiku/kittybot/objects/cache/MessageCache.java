@@ -32,7 +32,7 @@ public class MessageCache{
 	public static void cacheMessage(final String messageId, final MessageData message){
 		final var data = MESSAGE_CACHE.get(messageId);
 		if(data != null){
-			LAST_MESSAGE_EDITED_DATA.put(messageId, data);
+			LAST_MESSAGE_EDITED_DATA.put(messageId, data.setTimeEdited(message.getTimeEdited()));
 		}
 		MESSAGE_CACHE.put(messageId, message);
 	}

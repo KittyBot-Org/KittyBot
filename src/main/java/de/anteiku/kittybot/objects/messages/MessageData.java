@@ -13,7 +13,7 @@ public class MessageData{
 	private final String guildId;
 	private final String jumpUrl;
 	private final OffsetDateTime timeCreated;
-	private final OffsetDateTime timeEdited;
+	private OffsetDateTime timeEdited;
 
 	public MessageData(final Message message){
 		this.messageId = message.getId();
@@ -56,6 +56,11 @@ public class MessageData{
 
 	public OffsetDateTime getTimeEdited(){
 		return timeEdited;
+	}
+
+	public MessageData setTimeEdited(final OffsetDateTime timeEdited){
+		this.timeEdited = timeEdited;
+		return this;
 	}
 
 }
