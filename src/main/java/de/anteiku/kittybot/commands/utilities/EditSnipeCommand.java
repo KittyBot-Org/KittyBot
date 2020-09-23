@@ -30,10 +30,10 @@ public class EditSnipeCommand extends ACommand{
 			return;
 		}
 		final var eb = new EmbedBuilder();
-		eb.setTimestamp(lastEditedMessage.getCreation());
+		eb.setTimestamp(lastEditedMessage.getTimeEdited());
 		eb.setDescription(lastEditedMessage.getContent());
 		eb.setColor(Color.GREEN);
-		ctx.getJDA().retrieveUserById(lastEditedMessage.getAuthorId()).queue(user -> eb.setAuthor(user.getName(), null, user.getEffectiveAvatarUrl()));
+		ctx.getJDA().retrieveUserById(lastEditedMessage.getAuthorId()).queue(user -> eb.setAuthor(user.getName(), lastEditedMessage.getJumpUrl(), user.getEffectiveAvatarUrl()));
 
 		sendAnswer(ctx, eb);
 		KittyBot.getScheduler().schedule(() -> MessageCache.uncacheEditedMessage(lastEditedMessage.getChannelId(), lastEditedMessage.getId()), 2, TimeUnit.MINUTES);

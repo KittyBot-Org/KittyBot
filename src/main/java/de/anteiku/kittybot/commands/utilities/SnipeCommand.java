@@ -30,7 +30,7 @@ public class SnipeCommand extends ACommand{
 			return;
 		}
 		final var eb = new EmbedBuilder();
-		eb.setTimestamp(lastDeletedMessage.getCreation());
+		eb.setTimestamp(lastDeletedMessage.getTimeCreated());
 		eb.setDescription(lastDeletedMessage.getContent());
 		eb.setColor(Color.GREEN);
 		ctx.getJDA().retrieveUserById(lastDeletedMessage.getAuthorId()).queue(user -> eb.setAuthor(user.getName(), null, user.getEffectiveAvatarUrl()));

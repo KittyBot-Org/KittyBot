@@ -61,11 +61,23 @@ public class MessageCache{
 	}
 
 	public static void pruneCache(){
-		MESSAGE_CACHE.entrySet().removeIf(entry -> entry.getValue().getCreation().isBefore(OffsetDateTime.now().minusMinutes(10).toInstant()));
+		MESSAGE_CACHE.entrySet().removeIf(entry -> entry.getValue().getTimeCreated().isBefore(OffsetDateTime.now().minusMinutes(10)));
 	}
 
 	public static void pruneCache(Guild guild){
-		MESSAGE_CACHE.entrySet().removeIf(entry -> entry.getValue().getGuildId().equals(guild.getId()));
+		final var entries = MESSAGE_CACHE.entrySet();
+		for (var entry : entries){
+			final var dataGuildId = entry.getValue().getGuildId();
+			final var guildId = guild.getId();
+			if (!dataGuildId.equals(guildId)){
+				continue;
+			}
+			final var messageId = entry.getKey();
+			MESSAGE_CACHE.remove(messageId);
+			LAST_MESSAGE_DELETED_CACHE.entrySet().removeIf(record -> record.getValue().equals(messageId));
+			LAST_MESSAGE_EDITED_CACHE.entrySet().removeIf(record -> record.getValue().equals(messageId));
+			LAST_MESSAGE_EDITED_DATA.entrySet().removeIf(record -> record.getValue().getGuildId().equals(guildId));
+		}
 	}
 
 }

@@ -62,6 +62,7 @@ public class OnGuildMessageEvent extends ListenerAdapter{
 		CommandResponseCache.deleteCommandResponse(event.getChannel(), event.getMessageId());
 		Database.removeReactiveMessage(event.getGuild().getId(), event.getMessageId());
 		MessageCache.setLastDeletedMessage(event.getChannel().getId(), event.getMessageId());
+		MessageCache.uncacheEditedMessage(event.getChannel().getId(), event.getMessageId());
 	}
 
 	@Override
