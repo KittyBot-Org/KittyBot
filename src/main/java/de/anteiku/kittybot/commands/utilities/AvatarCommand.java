@@ -38,7 +38,7 @@ public class AvatarCommand extends ACommand{
 		}
 		if(users.isEmpty()){
 			sendError(ctx, "Please mention a user or provide a valid id");
-                        return;
+      return;
 		}
 		var stringBuilder = new StringBuilder();
 		for(var user : users){

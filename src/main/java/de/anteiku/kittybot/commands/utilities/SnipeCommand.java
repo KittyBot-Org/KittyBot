@@ -24,18 +24,22 @@ public class SnipeCommand extends ACommand{
 
 	@Override
 	public void run(final CommandContext ctx){
+		if (!ctx.getChannel().canTalk()){
+			return;
+		}
 		final var lastDeletedMessage = MessageCache.getLastDeletedMessage(ctx.getMessage().getTextChannel().getId());
 		if(lastDeletedMessage == null){
 			sendError(ctx, "There's no deleted message to snipe");
 			return;
 		}
 		final var eb = new EmbedBuilder();
-		eb.setTimestamp(lastDeletedMessage.getCreation());
 		eb.setDescription(lastDeletedMessage.getContent());
+		eb.setTimestamp(lastDeletedMessage.getTimeCreated());
 		eb.setColor(Color.GREEN);
+		eb.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl());
 		ctx.getJDA().retrieveUserById(lastDeletedMessage.getAuthorId()).queue(user -> eb.setAuthor(user.getName(), null, user.getEffectiveAvatarUrl()));
 
-		sendAnswer(ctx, eb);
+		ctx.getChannel().sendMessage(eb.build()).queue();
 		KittyBot.getScheduler().schedule(() -> MessageCache.uncacheMessage(lastDeletedMessage.getChannelId(), lastDeletedMessage.getId()), 2, TimeUnit.MINUTES);
 	}
 
