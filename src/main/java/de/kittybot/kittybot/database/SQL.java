@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import static de.kittybot.kittybot.database.jooq.Tables.GUILDS;
@@ -39,15 +40,11 @@ public class SQL{
 		dataSource = new HikariDataSource(config);
 	}
 
-	public static void close(){
-		dataSource.close();
-	}
-
 	public static void createTable(String table){
-		try{
-			String sql = IOUtils.toString(SQL.class.getClassLoader().getResourceAsStream("sql_tables/" + table + ".sql"), StandardCharsets.UTF_8.name());
+		try(var con = getCon()){
+			var sql = IOUtils.toString(SQL.class.getClassLoader().getResourceAsStream("sql_tables/" + table + ".sql"), StandardCharsets.UTF_8.name());
 			LOG.info("Read sql table from resources: {}", table);
-			dataSource.getConnection().createStatement().execute(sql);
+			con.createStatement().execute(sql);
 		}
 		catch(IOException e){
 			LOG.error("Error while reading sql table file: " + table, e);
@@ -58,8 +55,7 @@ public class SQL{
 	}
 
 	public static <T> T getProperty(String guildId, Field<T> field){
-		try{
-			var ctx = getCtx();
+		try(var con = getCon(); var ctx = getCtx(con)){
 			var res = ctx.select(field).from(GUILDS).where(GUILDS.GUILD_ID.eq(guildId)).fetchOne();
 			if(res != null){
 				return res.getValue(field);
@@ -71,15 +67,16 @@ public class SQL{
 		return null;
 	}
 
-	public static DSLContext getCtx() throws SQLException{
-		try(var con = dataSource.getConnection()){
-			return DSL.using(con, SQLDialect.POSTGRES);
-		}
+	public static Connection getCon() throws SQLException{
+		return dataSource.getConnection();
+	}
+
+	public static DSLContext getCtx(Connection con){
+		return DSL.using(con, SQLDialect.POSTGRES);
 	}
 
 	public static <T> void setProperty(String guildId, Field<T> field, T value){
-		try{
-			var ctx = getCtx();
+		try(var con = getCon(); var ctx = getCtx(con)){
 			ctx.update(GUILDS).set(field, value).where(GUILDS.GUILD_ID.eq(guildId)).executeAsync();
 		}
 		catch(SQLException e){

@@ -53,20 +53,8 @@ public class Utils{
 		return map;
 	}
 
-	public static String[] subArray(String[] array, int start){
-		return subArray(array, start, array.length);
-	}
-
-	public static String[] subArray(String[] array, int start, int end){
-		String[] strings = new String[end - start];
-		int a = 0;
-		for(int i = 0; i < array.length; i++){
-			if(i >= start && i <= end){
-				strings[a] = array[i];
-				a++;
-			}
-		}
-		return strings;
+	public static <T> T[] subArray(T[] array, int from){
+		return Arrays.copyOfRange(array, 1, array.length -1);
 	}
 
 	public static String formatDuration(long length){
