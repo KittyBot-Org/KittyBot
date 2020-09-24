@@ -6,8 +6,6 @@ import de.kittybot.kittybot.objects.cache.SelfAssignableRoleCache;
 import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
-import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

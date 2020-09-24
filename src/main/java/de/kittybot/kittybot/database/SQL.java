@@ -54,6 +54,10 @@ public class SQL{
 		}
 	}
 
+	public static Connection getCon() throws SQLException{
+		return dataSource.getConnection();
+	}
+
 	public static <T> T getProperty(String guildId, Field<T> field){
 		try(var con = getCon(); var ctx = getCtx(con)){
 			var res = ctx.select(field).from(GUILDS).where(GUILDS.GUILD_ID.eq(guildId)).fetchOne();
@@ -65,10 +69,6 @@ public class SQL{
 			LOG.error("Error while getting key " + field.getName() + " from guild " + guildId, e);
 		}
 		return null;
-	}
-
-	public static Connection getCon() throws SQLException{
-		return dataSource.getConnection();
 	}
 
 	public static DSLContext getCtx(Connection con){
