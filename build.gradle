@@ -26,7 +26,7 @@ group 'de.anteiku'
 mainClassName = 'de.kittybot.kittybot.KittyBot'
 version = "${versionFromTag()}".toString()
 ext {
-    moduleName = 'Lavalink-Server'
+    moduleName = 'KittyBot'
 }
 compileJava.options.encoding = 'UTF-8'
 
