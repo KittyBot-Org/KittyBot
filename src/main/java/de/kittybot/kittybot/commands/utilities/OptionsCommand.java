@@ -9,6 +9,8 @@ import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 
+import java.util.Arrays;
+
 public class OptionsCommand extends ACommand{
 
 	public static final String COMMAND = "options";
@@ -46,6 +48,7 @@ public class OptionsCommand extends ACommand{
 						.addField("NSFW Enabled:", String.valueOf(Database.getNSFWEnabled(guildId)), false));
 			}
 			else{
+				var joined = String.join(" ", Arrays.copyOfRange(ctx.getArgs(), 1, ctx.getArgs().length));
 				if(ctx.getArgs()[0].equalsIgnoreCase("prefix") && ctx.getArgs().length == 2){
 					PrefixCache.setCommandPrefix(ctx.getGuild().getId(), ctx.getArgs()[1]);
 					sendAnswer(ctx, "Prefix set to: `" + ctx.getArgs()[1] + "`");
@@ -82,9 +85,8 @@ public class OptionsCommand extends ACommand{
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("joinmessage")){
 					if(ctx.getArgs().length < 2){
-						var message = String.join(" ", Utils.subArray(ctx.getArgs(), 1));
-						Database.setJoinMessage(ctx.getGuild().getId(), message);
-						sendAnswer(ctx, "Join message set to: " + message);
+						Database.setJoinMessage(ctx.getGuild().getId(), joined);
+						sendAnswer(ctx, "Join message set to: " + joined);
 					}
 					else if(Utils.isHelp(ctx.getArgs()[1])){
 						sendUsage(ctx, "options joinmessage <message>");
@@ -100,9 +102,8 @@ public class OptionsCommand extends ACommand{
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("leavemessage")){
 					if(ctx.getArgs().length < 2){
-						var message = String.join(" ", Utils.subArray(ctx.getArgs(), 1));
-						Database.setJoinMessage(ctx.getGuild().getId(), message);
-						sendAnswer(ctx, "Leave message set to: " + message);
+						Database.setJoinMessage(ctx.getGuild().getId(), joined);
+						sendAnswer(ctx, "Leave message set to: " + joined);
 					}
 					else if(Utils.isHelp(ctx.getArgs()[1])){
 						sendUsage(ctx, "options leavemessage <message>");
@@ -118,9 +119,8 @@ public class OptionsCommand extends ACommand{
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("boostmessage")){
 					if(ctx.getArgs().length < 2){
-						var message = String.join(" ", Utils.subArray(ctx.getArgs(), 1));
-						Database.setJoinMessage(ctx.getGuild().getId(), message);
-						sendAnswer(ctx, "Boost message set to: " + message);
+						Database.setJoinMessage(ctx.getGuild().getId(), joined);
+						sendAnswer(ctx, "Boost message set to: " + joined);
 					}
 					else if(Utils.isHelp(ctx.getArgs()[1])){
 						sendUsage(ctx, "options boostmessage <message>");

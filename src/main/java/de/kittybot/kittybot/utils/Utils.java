@@ -53,10 +53,6 @@ public class Utils{
 		return map;
 	}
 
-	public static <T> T[] subArray(T[] array, int from){
-		return Arrays.copyOfRange(array, 1, array.length - 1);
-	}
-
 	public static String formatDuration(long length){
 		Duration duration = Duration.ofMillis(length);
 		var seconds = duration.toSecondsPart();
