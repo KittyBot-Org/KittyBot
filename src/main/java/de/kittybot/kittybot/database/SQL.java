@@ -54,6 +54,11 @@ public class SQL{
 		}
 	}
 
+	public static void close(){
+		dataSource.close();
+	}
+
+
 	public static Connection getCon() throws SQLException{
 		return dataSource.getConnection();
 	}
