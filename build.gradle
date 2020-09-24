@@ -1,15 +1,30 @@
 import org.apache.tools.ant.filters.ReplaceTokens
+import org.jooq.codegen.GenerationTool
+
+buildscript {
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.jooq:jooq:3.13.4'
+        classpath 'org.jooq:jooq-meta:3.13.4'
+        classpath 'org.jooq:jooq-codegen:3.13.4'
+        classpath 'org.postgresql:postgresql:42.2.16'
+    }
+}
 
 plugins {
     id 'java'
     id 'application'
     id 'com.github.johnrengelman.shadow' version '6.0.0'
-    id 'com.gorylenko.gradle-git-properties'version '2.2.3'
+    id 'com.gorylenko.gradle-git-properties' version '2.2.3'
     id 'org.ajoberstar.grgit' version '4.1.0'
 }
 
 group 'de.anteiku'
-mainClassName = 'de.anteiku.kittybot.KittyBot'
+mainClassName = 'de.kittybot.kittybot.KittyBot'
 version = "${versionFromTag()}".toString()
 ext {
     moduleName = 'Lavalink-Server'
@@ -25,17 +40,22 @@ dependencies {
     // discord/jda related
     implementation 'net.dv8tion:JDA:4.2.0_204'
     implementation 'com.jagrosh:jda-utilities:3.0.4'
-    implementation 'com.github.KittyBot-Org:lavaplayer:43e9a8be51'
-    implementation 'com.github.KittyBot-Org:Lavalink-Client:4572ceae0d'
+    implementation 'com.github.sedmelluq:lavaplayer:bec3995'
+    implementation("com.github.KittyBot-Org:Lavalink-Client:66e1097") {
+        exclude group: 'com.sedmelluq', module: 'lavaplayer'
+    }
 
     // database
     implementation 'com.zaxxer:HikariCP:3.4.5'
     implementation 'org.postgresql:postgresql:42.2.16'
+    implementation 'org.jooq:jooq:3.13.4'
+    implementation 'org.jooq:jooq-meta:3.13.4'
+    implementation 'org.jooq:jooq-codegen:3.13.4'
 
     // logging
     implementation 'ch.qos.logback:logback-classic:1.2.3'
     implementation 'io.sentry:sentry-logback:1.7.30'
-    
+
     // script engine
     implementation 'org.graalvm.js:js:20.2.0'
     implementation 'org.graalvm.js:js-scriptengine:20.2.0'
@@ -94,3 +114,54 @@ void versionTxt() {
 }
 
 versionTxt()
+
+
+import org.jooq.meta.jaxb.Database
+import org.jooq.meta.jaxb.Generator
+import org.jooq.meta.jaxb.Jdbc
+import org.jooq.meta.jaxb.Target
+
+def db = [
+        url        : "jdbc:postgresql://${System.getenv('KITTYBOT_DB_HOST')}:${System.getenv('KITTYBOT_DB_PORT')}/${System.getenv('KITTYBOT_DB_DATABASE')}", //'jdbc:postgresql://anteiku.de:5432/kittybot',
+        user       : System.getenv('KITTYBOT_DB_USER'),
+        password   : System.getenv('KITTYBOT_DB_PASSWORD'),
+        schema     : System.getenv('KITTYBOT_DB_SCHEMA'),
+        driver     : 'org.postgresql.Driver',
+        jooqDbImpl : 'org.jooq.meta.postgres.PostgresDatabase',
+        packageName: 'de.kittybot.kittybot.database.jooq'
+]
+
+def genpath = new File("${projectDir}/src/main/java")
+
+sourceSets.main.java.srcDirs += genpath.toString()
+
+task generateCode() {
+    if (!genpath.exists()) {
+        genpath.mkdirs()
+    }
+
+    GenerationTool.generate(new org.jooq.meta.jaxb.Configuration()
+            .withJdbc(new Jdbc()
+                    .withDriver(db.driver)
+                    .withUrl(db.url)
+                    .withUser(db.user)
+                    .withPassword(db.password)
+            )
+            .withGenerator(new Generator()
+                    .withDatabase(new Database()
+                            .withName(db.jooqDbImpl)
+                            .withIncludes(".*")
+                            .withExcludes("")
+                            .withInputSchema(db.schema)
+                    )
+                    .withTarget(new Target()
+                            .withPackageName(db.packageName)
+                            .withDirectory(genpath.toString())
+                    )
+            )
+    )
+}
+
+task deleteGeneratedCode(type: Delete) {
+    delete genpath
+}
