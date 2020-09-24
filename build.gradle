@@ -83,6 +83,7 @@ jooq {
                     target {
                         packageName = 'de.kittybot.kittybot.database.jooq'
                         directory = "${projectDir}/src/main/java"
+                        clean = false
                     }
                     strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
                 }
