@@ -33,7 +33,7 @@ public class ReactiveMessageCache{
 		if(reactiveMessage != null){
 			return reactiveMessage;
 		}
-		reactiveMessage = Database.isReactiveMessage(guild.getId(), messageId);
+		reactiveMessage = Database.getReactiveMessage(guild.getId(), messageId);
 		REACTIVE_MESSAGES.put(messageId, reactiveMessage);
 		return reactiveMessage;
 	}

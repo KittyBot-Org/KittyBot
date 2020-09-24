@@ -8,9 +8,6 @@ import de.kittybot.kittybot.objects.command.CommandContext;
 import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.TextChannel;
-
-import java.util.List;
 
 public class OptionsCommand extends ACommand{
 
@@ -56,17 +53,11 @@ public class OptionsCommand extends ACommand{
 				else if(ctx.getArgs()[0].equalsIgnoreCase("nsfw")){
 					if(ctx.getArgs().length >= 2){
 						if(Utils.isEnable(ctx.getArgs()[1])){
-							if(Database.setNSFWEnabled(ctx.getGuild().getId(), true)){
-								sendError(ctx, "There was an error while processing your command :(");
-								return;
-							}
+							Database.setNSFWEnabled(ctx.getGuild().getId(), true);
 							sendAnswer(ctx, "NSFW `activated`");
 						}
 						else if(Utils.isDisable(ctx.getArgs()[1])){
-							if(Database.setNSFWEnabled(ctx.getGuild().getId(), false)){
-								sendError(ctx, "There was an error while processing your command :(");
-								return;
-							}
+							Database.setNSFWEnabled(ctx.getGuild().getId(), false);
 							sendAnswer(ctx, "NSFW `deactivated`");
 						}
 						else{
@@ -74,27 +65,15 @@ public class OptionsCommand extends ACommand{
 						}
 					}
 					else{
-						if(Database.setNSFWEnabled(ctx.getGuild().getId(), !Database.getNSFWEnabled(ctx.getGuild().getId()))){
-							sendError(ctx, "There was an error while processing your command :(");
-							return;
-						}
-						String state;
-						if(Database.getNSFWEnabled(ctx.getGuild().getId())){
-							state = "activated";
-						}
-						else{
-							state = "deactivated";
-						}
-						sendAnswer(ctx, "NSFW set to: `" + state + "`");
+						var state = Database.getNSFWEnabled(ctx.getGuild().getId());
+						Database.setNSFWEnabled(ctx.getGuild().getId(), !state);
+						sendAnswer(ctx, "NSFW set to: `" + (state ? "deactivated" : "activated") + "`");
 					}
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("announcementchannel")){
-					List<TextChannel> channels = ctx.getMessage().getMentionedChannels();
+					var channels = ctx.getMessage().getMentionedChannels();
 					if(channels.size() == 1){
-						if(Database.setAnnouncementChannelId(ctx.getGuild().getId(), channels.get(0).getId())){
-							sendError(ctx, "There was an error while processing your command :(");
-							return;
-						}
+						Database.setAnnouncementChannelId(ctx.getGuild().getId(), channels.get(0).getId());
 						sendAnswer(ctx, channels.get(0).getAsMention() + " set as announcement channel!");
 					}
 					else{
@@ -103,83 +82,55 @@ public class OptionsCommand extends ACommand{
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("joinmessage")){
 					if(ctx.getArgs().length < 2){
-						String message = String.join(" ", Utils.subArray(ctx.getArgs(), 1));
-						if(Database.setJoinMessage(ctx.getGuild().getId(), message)){
-							sendError(ctx, "There was an error while processing your command :(");
-							return;
-						}
+						var message = String.join(" ", Utils.subArray(ctx.getArgs(), 1));
+						Database.setJoinMessage(ctx.getGuild().getId(), message);
 						sendAnswer(ctx, "Join message set to: " + message);
 					}
 					else if(Utils.isHelp(ctx.getArgs()[1])){
 						sendUsage(ctx, "options joinmessage <message>");
 					}
-					else if(ctx.getArgs()[1].equalsIgnoreCase("enable") || ctx.getArgs()[1].equalsIgnoreCase("true") || ctx.getArgs()[1].equalsIgnoreCase("on") || ctx.getArgs()[1]
-							.equalsIgnoreCase("an")){
-						if(Database.setJoinMessageEnabled(ctx.getGuild().getId(), true)){
-							sendError(ctx, "There was an error while processing your command :(");
-							return;
-						}
+					else if(ctx.getArgs()[1].equalsIgnoreCase("enable") || ctx.getArgs()[1].equalsIgnoreCase("true") || ctx.getArgs()[1].equalsIgnoreCase("on") || ctx.getArgs()[1].equalsIgnoreCase("an")){
+						Database.setJoinMessageEnabled(ctx.getGuild().getId(), true);
 						sendAnswer(ctx, "Join messages enabled!");
 					}
 					else if(Utils.isDisable(ctx.getArgs()[1])){
-						if(Database.setJoinMessageEnabled(ctx.getGuild().getId(), false)){
-							sendError(ctx, "There was an error while processing your command :(");
-							return;
-						}
+						Database.setJoinMessageEnabled(ctx.getGuild().getId(), false);
 						sendAnswer(ctx, "Join messages disabled!");
 					}
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("leavemessage")){
 					if(ctx.getArgs().length < 2){
-						String message = String.join(" ", Utils.subArray(ctx.getArgs(), 1));
-						if(Database.setJoinMessage(ctx.getGuild().getId(), message)){
-							sendError(ctx, "There was an error while processing your command :(");
-							return;
-						}
+						var message = String.join(" ", Utils.subArray(ctx.getArgs(), 1));
+						Database.setJoinMessage(ctx.getGuild().getId(), message);
 						sendAnswer(ctx, "Leave message set to: " + message);
 					}
 					else if(Utils.isHelp(ctx.getArgs()[1])){
 						sendUsage(ctx, "options leavemessage <message>");
 					}
 					else if(Utils.isEnable(ctx.getArgs()[1])){
-						if(Database.setJoinMessageEnabled(ctx.getGuild().getId(), true)){
-							sendError(ctx, "There was an error while processing your command :(");
-							return;
-						}
+						Database.setJoinMessageEnabled(ctx.getGuild().getId(), true);
 						sendAnswer(ctx, "Leave messages enabled!");
 					}
 					else if(Utils.isDisable(ctx.getArgs()[1])){
-						if(Database.setJoinMessageEnabled(ctx.getGuild().getId(), false)){
-							sendError(ctx, "There was an error while processing your command :(");
-							return;
-						}
+						Database.setJoinMessageEnabled(ctx.getGuild().getId(), false);
 						sendAnswer(ctx, "Leave messages disabled!");
 					}
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("boostmessage")){
 					if(ctx.getArgs().length < 2){
-						String message = String.join(" ", Utils.subArray(ctx.getArgs(), 1));
-						if(Database.setJoinMessage(ctx.getGuild().getId(), message)){
-							sendError(ctx, "There was an error while processing your command :(");
-							return;
-						}
+						var message = String.join(" ", Utils.subArray(ctx.getArgs(), 1));
+						Database.setJoinMessage(ctx.getGuild().getId(), message);
 						sendAnswer(ctx, "Boost message set to: " + message);
 					}
 					else if(Utils.isHelp(ctx.getArgs()[1])){
 						sendUsage(ctx, "options boostmessage <message>");
 					}
 					else if(Utils.isEnable(ctx.getArgs()[1])){
-						if(Database.setJoinMessageEnabled(ctx.getGuild().getId(), true)){
-							sendError(ctx, "There was an error while processing your command :(");
-							return;
-						}
+						Database.setJoinMessageEnabled(ctx.getGuild().getId(), true);
 						sendAnswer(ctx, "Boost messages enabled!");
 					}
 					else if(Utils.isDisable(ctx.getArgs()[1])){
-						if(Database.setJoinMessageEnabled(ctx.getGuild().getId(), false)){
-							sendError(ctx, "There was an error while processing your command :(");
-							return;
-						}
+						Database.setJoinMessageEnabled(ctx.getGuild().getId(), false);
 						sendAnswer(ctx, "Boost messages disabled!");
 					}
 				}

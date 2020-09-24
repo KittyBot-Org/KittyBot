@@ -1,12 +1,11 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 import org.jooq.codegen.GenerationTool
+import org.jooq.meta.jaxb.Database
+import org.jooq.meta.jaxb.Generator
+import org.jooq.meta.jaxb.Jdbc
+import org.jooq.meta.jaxb.Target
 
 buildscript {
-
-    repositories {
-        mavenCentral()
-    }
-
     dependencies {
         classpath 'org.jooq:jooq:3.13.4'
         classpath 'org.jooq:jooq-meta:3.13.4'
@@ -108,18 +107,11 @@ String versionFromTag() {
     }
 }
 
-//create a simple version file that we will be reading to create appropriate docker tags
 void versionTxt() {
     new File("$projectDir/VERSION.txt").text = "$project.version\n"
 }
 
 versionTxt()
-
-
-import org.jooq.meta.jaxb.Database
-import org.jooq.meta.jaxb.Generator
-import org.jooq.meta.jaxb.Jdbc
-import org.jooq.meta.jaxb.Target
 
 def db = [
         url        : "jdbc:postgresql://${System.getenv('KITTYBOT_DB_HOST')}:${System.getenv('KITTYBOT_DB_PORT')}/${System.getenv('KITTYBOT_DB_DATABASE')}", //'jdbc:postgresql://anteiku.de:5432/kittybot',

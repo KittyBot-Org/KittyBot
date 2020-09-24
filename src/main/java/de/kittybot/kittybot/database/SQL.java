@@ -13,9 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static de.kittybot.kittybot.database.jooq.Tables.GUILDS;
@@ -60,18 +57,21 @@ public class SQL{
 		}
 	}
 
-	public static DSLContext getCtx() throws SQLException{
-		return DSL.using(dataSource.getConnection(), SQLDialect.POSTGRES);
-	}
-
 	public static <T> T getProperty(String guildId, Field<T> field){
 		try(var ctx = SQL.getCtx()){
-			return ctx.select(field).from(GUILDS).where(GUILDS.GUILD_ID.eq(guildId)).fetch().getValue(0, field);
+			var res = ctx.select(field).from(GUILDS).where(GUILDS.GUILD_ID.eq(guildId)).fetchOne();
+			if(res != null){
+				return res.getValue(field);
+			}
 		}
 		catch(SQLException e){
 			LOG.error("Error while getting key " + field.getName() + " from guild " + guildId, e);
 		}
 		return null;
+	}
+
+	public static DSLContext getCtx() throws SQLException{
+		return DSL.using(dataSource.getConnection(), SQLDialect.POSTGRES);
 	}
 
 	public static <T> void setProperty(String guildId, Field<T> field, T value){
