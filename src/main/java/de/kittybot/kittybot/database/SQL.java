@@ -58,7 +58,8 @@ public class SQL{
 	}
 
 	public static <T> T getProperty(String guildId, Field<T> field){
-		try(var ctx = SQL.getCtx()){
+		try{
+			var ctx = getCtx();
 			var res = ctx.select(field).from(GUILDS).where(GUILDS.GUILD_ID.eq(guildId)).fetchOne();
 			if(res != null){
 				return res.getValue(field);
@@ -71,11 +72,14 @@ public class SQL{
 	}
 
 	public static DSLContext getCtx() throws SQLException{
-		return DSL.using(dataSource.getConnection(), SQLDialect.POSTGRES);
+		try(var con = dataSource.getConnection()){
+			return DSL.using(con, SQLDialect.POSTGRES);
+		}
 	}
 
 	public static <T> void setProperty(String guildId, Field<T> field, T value){
-		try(var ctx = SQL.getCtx()){
+		try{
+			var ctx = getCtx();
 			ctx.update(GUILDS).set(field, value).where(GUILDS.GUILD_ID.eq(guildId)).executeAsync();
 		}
 		catch(SQLException e){

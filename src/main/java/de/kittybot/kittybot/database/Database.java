@@ -40,7 +40,8 @@ public class Database{
 	}
 
 	private static boolean isGuildRegistered(Guild guild){
-		try(var ctx = getCtx()){
+		try{
+			var ctx = getCtx();
 			return ctx.selectFrom(GUILDS).where(GUILDS.GUILD_ID.eq(guild.getId())).fetch().isNotEmpty();
 		}
 		catch(SQLException e){
@@ -51,7 +52,8 @@ public class Database{
 
 	public static void registerGuild(Guild guild){
 		LOG.debug("Registering new guild: {}", guild.getId());
-		try(var ctx = getCtx()){
+		try{
+			var ctx = getCtx();
 			ctx.insertInto(GUILDS)
 					.columns(GUILDS.fields())
 					.values(
@@ -80,7 +82,8 @@ public class Database{
 
 
 	public static void addCommandStatistics(String guildId, String commandId, String userId, String command, long processingTime){
-		try(var ctx = getCtx()){
+		try{
+			var ctx = getCtx();
 			ctx.insertInto(COMMANDS).columns(COMMANDS.fields()).values(commandId, guildId, userId, command, processingTime, Instant.now().getEpochSecond()).executeAsync();
 		}
 		catch(SQLException e){
@@ -121,7 +124,8 @@ public class Database{
 	}
 
 	public static boolean removeSelfAssignableRoles(String guildId, Set<String> roles){
-		try(var ctx = getCtx()){
+		try{
+			var ctx = getCtx();
 			return ctx.deleteFrom(SELF_ASSIGNABLE_ROLES).where(SELF_ASSIGNABLE_ROLES.GUILD_ID.eq(guildId).and(SELF_ASSIGNABLE_ROLES.ROLE_ID.in(roles))).execute() == roles.size();
 		}
 		catch(SQLException e){
@@ -131,7 +135,8 @@ public class Database{
 	}
 
 	public static void addSelfAssignableRoles(String guildId, Map<String, String> roles){
-		try(var ctx = getCtx()){
+		try{
+			var ctx = getCtx();
 			var col = ctx.insertInto(SELF_ASSIGNABLE_ROLES).columns(SELF_ASSIGNABLE_ROLES.fields());
 			for(var role : roles.entrySet()){
 				col.values(role.getKey(), guildId, role.getValue());
@@ -144,7 +149,8 @@ public class Database{
 	}
 
 	public static Map<String, String> getSelfAssignableRoles(String guildId){
-		try(var ctx = getCtx()){
+		try{
+			var ctx = getCtx();
 			return ctx.selectFrom(SELF_ASSIGNABLE_ROLES).where(SELF_ASSIGNABLE_ROLES.GUILD_ID.eq(guildId)).fetch()
 					.stream()
 					.collect(Collectors.toMap(sar -> sar.get(SELF_ASSIGNABLE_ROLES.ROLE_ID), sar -> sar.get(SELF_ASSIGNABLE_ROLES.ROLE_ID)));
@@ -220,7 +226,8 @@ public class Database{
 	}
 
 	public static ReactiveMessage getReactiveMessage(String guildId, String messageId){
-		try(var ctx = getCtx()){
+		try{
+			var ctx = getCtx();
 			var reactiveMsg = ctx.selectFrom(REACTIVE_MESSAGES).where(REACTIVE_MESSAGES.MESSAGE_ID.eq(messageId).and(REACTIVE_MESSAGES.GUILD_ID.eq(guildId))).fetchOne();
 			if(reactiveMsg != null){
 				return new ReactiveMessage(reactiveMsg.getChannelId(), reactiveMsg.getMessageId(), reactiveMsg.getUserId(), reactiveMsg.getCommandId(), reactiveMsg.getCommand(), reactiveMsg.getAllowed());
@@ -233,7 +240,8 @@ public class Database{
 	}
 
 	public static void addReactiveMessage(String guildId, String userId, String channelId, String messageId, String commandId, String command, String allowed){
-		try(var ctx = getCtx()){
+		try{
+			var ctx = getCtx();
 			ctx.insertInto(REACTIVE_MESSAGES).columns(REACTIVE_MESSAGES.fields()).values(channelId, messageId, commandId, userId, guildId, command, allowed).executeAsync();
 		}
 		catch(SQLException e){
@@ -242,7 +250,8 @@ public class Database{
 	}
 
 	public static void removeReactiveMessage(String guildId, String messageId){
-		try(var ctx = getCtx()){
+		try{
+			var ctx = getCtx();
 			ctx.deleteFrom(REACTIVE_MESSAGES).where(REACTIVE_MESSAGES.MESSAGE_ID.eq(messageId).and(REACTIVE_MESSAGES.GUILD_ID.eq(guildId))).executeAsync();
 		}
 		catch(SQLException e){
@@ -251,7 +260,8 @@ public class Database{
 	}
 
 	public static void addSession(String userId, String sessionId){
-		try(var ctx = getCtx()){
+		try{
+			var ctx = getCtx();
 			ctx.insertInto(SESSIONS).columns(SESSIONS.fields()).values(sessionId, userId).executeAsync();
 		}
 		catch(SQLException e){
@@ -268,7 +278,8 @@ public class Database{
 	}
 
 	public static boolean sessionExists(String sessionId){
-		try(var ctx = getCtx()){
+		try{
+			var ctx = getCtx();
 			return ctx.selectFrom(SESSIONS).where(SESSIONS.SESSION_ID.eq(sessionId)).fetchOne() == null;
 		}
 		catch(SQLException e){
@@ -278,7 +289,8 @@ public class Database{
 	}
 
 	public static boolean deleteSession(String sessionId){
-		try(var ctx = getCtx()){
+		try{
+			var ctx = getCtx();
 			ctx.deleteFrom(SESSIONS).where(SESSIONS.SESSION_ID.eq(sessionId)).executeAsync();
 		}
 		catch(SQLException e){
@@ -288,7 +300,8 @@ public class Database{
 	}
 
 	public static String getSession(String sessionId){
-		try(var ctx = getCtx()){
+		try{
+			var ctx = getCtx();
 			var res = ctx.selectFrom(SESSIONS).where(SESSIONS.SESSION_ID.eq(sessionId)).fetchOne();
 			if(res != null){
 				return res.getUserId();
