@@ -1,6 +1,5 @@
 package de.anteiku.kittybot.commands.admin;
 
-import de.anteiku.kittybot.KittyBot;
 import de.anteiku.kittybot.objects.Config;
 import de.anteiku.kittybot.objects.command.ACommand;
 import de.anteiku.kittybot.objects.command.Category;
@@ -29,7 +28,7 @@ public class EvalCommand extends ACommand{
 		System.setProperty("polyglot.js.nashorn-compat", "true"); // enables Nashorn compatibility mode
 		engine = new ScriptEngineManager().getEngineByName("graal.js");
 		try{
-			engine.eval("var imports = new JavaImporter(" + "java.io," + "java.lang," + "java.util," + "Packages.net.dv8tion.jda.api," + "Packages.net.dv8tion.jda.api.entities," + "Packages.net.dv8tion.jda.api.entities.impl," + "Packages.net.dv8tion.jda.api.managers," + "Packages.net.dv8tion.jda.api.managers.impl," + "Packages.net.dv8tion.jda.api.utils);");
+			engine.eval("var imports = new JavaImporter(" + "java.io," + "java.lang," + "java.util," + "java.util.concurrent.TimeUnit," + "Packages.net.dv8tion.jda.api," + "Packages.net.dv8tion.jda.api.entities," + "Packages.net.dv8tion.jda.api.entities.impl," + "Packages.net.dv8tion.jda.api.managers," + "Packages.net.dv8tion.jda.api.managers.impl," + "Packages.net.dv8tion.jda.api.utils);");
 		}
 		catch(ScriptException e){
 			LOG.error("Error while initializing script engine", e);
@@ -43,8 +42,7 @@ public class EvalCommand extends ACommand{
 				engine.put("ctx", ctx);
 				engine.put("message", ctx.getMessage());
 				engine.put("channel", ctx.getChannel());
-				engine.put("args", ctx.getArgs());
-				engine.put("scheduler", KittyBot.getScheduler());
+				engine.put("ctx.getArgs()", ctx.getArgs());
 				engine.put("api", ctx.getJDA());
 				if(ctx.getChannel().getType().equals(ChannelType.TEXT)){
 					engine.put("guild", ctx.getGuild());
