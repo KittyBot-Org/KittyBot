@@ -42,7 +42,8 @@ public class EvalCommand extends ACommand{
 				engine.put("ctx", ctx);
 				engine.put("message", ctx.getMessage());
 				engine.put("channel", ctx.getChannel());
-				engine.put("ctx.getArgs()", ctx.getArgs());
+				engine.put("args", ctx.getArgs());
+				engine.put("scheduler", KittyBot.getScheduler());
 				engine.put("api", ctx.getJDA());
 				if(ctx.getChannel().getType().equals(ChannelType.TEXT)){
 					engine.put("guild", ctx.getGuild());
