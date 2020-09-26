@@ -1,18 +1,17 @@
-import org.apache.tools.ant.filters.ReplaceTokens
-
 plugins {
     id 'java'
     id 'application'
     id 'com.github.johnrengelman.shadow' version '6.0.0'
-    id 'com.gorylenko.gradle-git-properties'version '2.2.3'
+    id 'com.gorylenko.gradle-git-properties' version '2.2.3'
     id 'org.ajoberstar.grgit' version '4.1.0'
+    id 'nu.studer.jooq' version '5.1.1'
 }
 
 group 'de.anteiku'
-mainClassName = 'de.anteiku.kittybot.KittyBot'
+mainClassName = 'de.kittybot.kittybot.KittyBot'
 version = "${versionFromTag()}".toString()
 ext {
-    moduleName = 'Lavalink-Server'
+    moduleName = 'KittyBot'
 }
 compileJava.options.encoding = 'UTF-8'
 
@@ -25,17 +24,23 @@ dependencies {
     // discord/jda related
     implementation 'net.dv8tion:JDA:4.2.0_204'
     implementation 'com.jagrosh:jda-utilities:3.0.4'
-    implementation 'com.github.KittyBot-Org:lavaplayer:43e9a8be51'
-    implementation 'com.github.KittyBot-Org:Lavalink-Client:4572ceae0d'
+    implementation 'com.github.sedmelluq:lavaplayer:bec3995'
+    implementation("com.github.KittyBot-Org:Lavalink-Client:66e1097") {
+        exclude group: 'com.sedmelluq', module: 'lavaplayer'
+    }
 
     // database
     implementation 'com.zaxxer:HikariCP:3.4.5'
     implementation 'org.postgresql:postgresql:42.2.16'
+    implementation 'org.jooq:jooq:3.13.4'
+    implementation 'org.jooq:jooq-meta:3.13.4'
+    implementation 'org.jooq:jooq-codegen:3.13.4'
+    jooqGenerator group: 'org.postgresql', name: 'postgresql', version: '42.2.16'
 
     // logging
     implementation 'ch.qos.logback:logback-classic:1.2.3'
     implementation 'io.sentry:sentry-logback:1.7.30'
-    
+
     // script engine
     implementation 'org.graalvm.js:js:20.2.0'
     implementation 'org.graalvm.js:js-scriptengine:20.2.0'
@@ -46,6 +51,48 @@ dependencies {
     implementation 'org.yaml:snakeyaml:1.26'
     implementation 'io.github.classgraph:classgraph:4.8.78'
 }
+
+jooq {
+    version = '3.13.4'
+
+    configurations {
+        main {
+            generateSchemaSourceOnCompilation = false
+            generationTool {
+                logging = org.jooq.meta.jaxb.Logging.WARN
+                jdbc {
+                    url = "jdbc:postgresql://${System.getenv('KITTYBOT_DB_HOST')}:${System.getenv('KITTYBOT_DB_PORT')}/${System.getenv('KITTYBOT_DB_DATABASE')}"
+                    user = System.getenv('KITTYBOT_DB_USER')
+                    password = System.getenv('KITTYBOT_DB_PASSWORD')
+                    driver = 'org.postgresql.Driver'
+                }
+                generator {
+                    name = 'org.jooq.codegen.DefaultGenerator'
+                    database {
+                        name = 'org.jooq.meta.postgres.PostgresDatabase'
+                        inputSchema = 'public'
+                        includes = '.*'
+                        excludes = ''
+                    }
+                    generate {
+                        deprecated = false
+                        records = true
+                        immutablePojos = true
+                        fluentSetters = true
+                    }
+                    target {
+                        packageName = 'de.kittybot.kittybot.database.jooq'
+                        directory = "${projectDir}/src/main/java"
+                        clean = false
+                    }
+                    strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
+                }
+            }
+        }
+    }
+}
+
+import org.apache.tools.ant.filters.ReplaceTokens
 
 processResources {
     //inject values into app.properties
@@ -88,7 +135,6 @@ String versionFromTag() {
     }
 }
 
-//create a simple version file that we will be reading to create appropriate docker tags
 void versionTxt() {
     new File("$projectDir/VERSION.txt").text = "$project.version\n"
 }
