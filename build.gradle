@@ -1,19 +1,27 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://dl.bintray.com/kittybot-org/gradle-jooq-plugin"
+        }
+    }
+    dependencies {
+        classpath 'de.kittybot.jooq:gradle-jooq-plugin:5.1.7'
+    }
+}
+
 plugins {
     id 'java'
     id 'application'
     id 'com.github.johnrengelman.shadow' version '6.0.0'
     id 'com.gorylenko.gradle-git-properties' version '2.2.3'
     id 'org.ajoberstar.grgit' version '4.1.0'
-    id 'nu.studer.jooq' version '5.1.1'
 }
 
-group 'de.anteiku'
+apply plugin: 'de.kittybot.jooq'
+
+group 'de.kittybot'
 mainClassName = 'de.kittybot.kittybot.KittyBot'
 version = "${versionFromTag()}".toString()
-ext {
-    moduleName = 'KittyBot'
-}
-compileJava.options.encoding = 'UTF-8'
 
 repositories {
     jcenter()
@@ -53,8 +61,6 @@ dependencies {
 }
 
 jooq {
-    version = '3.13.4'
-
     configurations {
         main {
             generateSchemaSourceOnCompilation = false
@@ -140,3 +146,5 @@ void versionTxt() {
 }
 
 versionTxt()
+
+compileJava.options.encoding = 'UTF-8'
