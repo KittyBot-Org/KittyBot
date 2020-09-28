@@ -54,13 +54,12 @@ public class SQL{
 		}
 	}
 
-	public static void close(){
-		dataSource.close();
-	}
-
-
 	public static Connection getCon() throws SQLException{
 		return dataSource.getConnection();
+	}
+
+	public static void close(){
+		dataSource.close();
 	}
 
 	public static <T> T getProperty(String guildId, Field<T> field){

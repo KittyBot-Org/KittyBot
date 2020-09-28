@@ -43,8 +43,8 @@ public class MessageUtils{
 		return "<@" + userId + ">";
 	}
 
-	public static String getRoleMention(String userId){
-		return "<@&" + userId + ">";
+	public static String getRoleMention(String roleId){
+		return "<@&" + roleId + ">";
 	}
 
 	public static String getChannelMention(String channelId){

@@ -22,7 +22,9 @@ apply plugin: 'de.kittybot.jooq'
 group 'de.kittybot'
 mainClassName = 'de.kittybot.kittybot.KittyBot'
 version = "${versionFromTag()}".toString()
-
+ext {
+    moduleName = 'KittyBot'
+}
 repositories {
     jcenter()
     maven { url 'https://jitpack.io' }

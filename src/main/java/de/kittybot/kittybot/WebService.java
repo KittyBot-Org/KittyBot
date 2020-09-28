@@ -8,8 +8,11 @@ import com.jagrosh.jdautilities.oauth2.session.DefaultSessionController;
 import com.jagrosh.jdautilities.oauth2.state.DefaultStateController;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.Config;
+import de.kittybot.kittybot.objects.SelfAssignableRole;
+import de.kittybot.kittybot.objects.SelfAssignableRoleGroup;
 import de.kittybot.kittybot.objects.cache.PrefixCache;
 import de.kittybot.kittybot.objects.cache.SelfAssignableRoleCache;
+import de.kittybot.kittybot.objects.cache.SelfAssignableRoleGroupCache;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandManager;
 import io.javalin.Javalin;
@@ -21,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
@@ -243,13 +246,18 @@ public class WebService{
 	private void getGuildSettings(Context ctx){
 		var guildId = ctx.pathParam(":guildId");
 		var roles = SelfAssignableRoleCache.getSelfAssignableRoles(guildId);
-		if(roles == null || KittyBot.getJda().getGuildById(guildId) == null){
+		var groups = SelfAssignableRoleGroupCache.getSelfAssignableRoleGroups(guildId);
+		if(roles == null || groups == null || KittyBot.getJda().getGuildById(guildId) == null){
 			error(ctx, 404, "guild not found");
 			return;
 		}
-		var data = DataArray.empty();
+		var selfAssignableRoles = DataArray.empty();
 		for(var role : roles){
-			data.add(DataObject.empty().put("role", role.getRoleId()).put("emote", role.getEmoteId()));
+			selfAssignableRoles.add(DataObject.empty().put("role", role.getRoleId()).put("emote", role.getEmoteId()));
+		}
+		var selfAssignableRoleGroups = DataArray.empty();
+		for(var group : groups){
+			selfAssignableRoleGroups.add(DataObject.empty().put("id", group.getId()).put("name", group.getName()).put("only_one", group.getOnlyOne()));
 		}
 		ok(ctx, DataObject.empty()
 				.put("prefix", PrefixCache.getCommandPrefix(guildId))
@@ -261,7 +269,8 @@ public class WebService{
 				.put("boost_messages", Database.getBoostMessage(guildId))
 				.put("announcement_channel_id", Database.getAnnouncementChannelId(guildId))
 				.put("nsfw_enabled", Database.getNSFWEnabled(guildId))
-				.put("self_assignable_roles", data));
+				.put("self_assignable_roles", selfAssignableRoles)
+				.put("self_assignable_role_groups", selfAssignableRoleGroups));
 	}
 
 	private void setGuildSettings(Context ctx){
@@ -299,13 +308,22 @@ public class WebService{
 			Database.setNSFWEnabled(guildId, json.getBoolean("nsfw_enabled"));
 		}
 		if(json.hasKey("self_assignable_roles")){
-			var roles = new ArrayList<SelfAssignableRole>();
+			var roles = new HashSet<SelfAssignableRole>();
 			var dataArray = json.getArray("self_assignable_roles");
 			for(var i = 0; i < dataArray.length(); i++){
 				var obj = dataArray.getObject(i);
 				roles.add(new SelfAssignableRole(guildId, obj.getString("group"), obj.getString("role"), obj.getString("emote")));
 			}
 			SelfAssignableRoleCache.setSelfAssignableRoles(guildId, roles);
+		}
+		if(json.hasKey("self_assignable_role_groups")){
+			var groups = new HashSet<SelfAssignableRoleGroup>();
+			var dataArray = json.getArray("self_assignable_roles");
+			for(var i = 0; i < dataArray.length(); i++){
+				var obj = dataArray.getObject(i);
+				groups.add(new SelfAssignableRoleGroup(guildId, obj.getString("id"), obj.getString("group_name"), obj.getBoolean("only_one")));
+			}
+			//SelfAssignableRoleGroupCache.setSelfAssignableRoleGroups(guildId, groups);
 		}
 		ok(ctx);
 	}

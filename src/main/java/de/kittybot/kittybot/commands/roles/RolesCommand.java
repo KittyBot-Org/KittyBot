@@ -2,11 +2,16 @@ package de.kittybot.kittybot.commands.roles;
 
 import de.kittybot.kittybot.objects.Emojis;
 import de.kittybot.kittybot.objects.ReactiveMessage;
+import de.kittybot.kittybot.objects.SelfAssignableRole;
+import de.kittybot.kittybot.objects.SelfAssignableRoleGroup;
+import de.kittybot.kittybot.objects.cache.PrefixCache;
 import de.kittybot.kittybot.objects.cache.ReactiveMessageCache;
 import de.kittybot.kittybot.objects.cache.SelfAssignableRoleCache;
+import de.kittybot.kittybot.objects.cache.SelfAssignableRoleGroupCache;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
+import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -15,10 +20,8 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 import java.awt.*;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class RolesCommand extends ACommand{
@@ -51,7 +54,7 @@ public class RolesCommand extends ACommand{
 				}
 				else if(ctx.getArgs().length >= 1){
 					if(ctx.getArgs()[1].equalsIgnoreCase("add")){
-						SelfAssignableRoleGroupCache.addSelfAssignableRoleGroups(ctx.getGuild().getId(), ctx.getArgs()[2], Boolean.parseBoolean(ctx.getArgs()[3]));
+						SelfAssignableRoleGroupCache.addSelfAssignableRoleGroup(ctx.getGuild().getId(), new SelfAssignableRoleGroup(ctx.getGuild().getId(), null, ctx.getArgs()[2], Boolean.parseBoolean(ctx.getArgs()[3])));
 						sendAnswer(ctx, "Groups added!");
 					}
 					else if(ctx.getArgs()[1].equalsIgnoreCase("remove")){
@@ -64,7 +67,11 @@ public class RolesCommand extends ACommand{
 							sendError(ctx, "Error while getting role groups");
 							return;
 						}
-						sendAnswer(ctx, "Role Groups: " + list.stream().map(SelfAssignableRoleGroup::getName).collect(Collectors.joining(", ")));
+						if(list.isEmpty()){
+							sendAnswer(ctx, "There are not groups defined.\nYou can add them with " + PrefixCache.getCommandPrefix(ctx.getGuild().getId()) + "`roles groups add <group name> <only one role>`");
+							return;
+						}
+						sendAnswer(ctx, "Role Groups:\n" + list.stream().map(SelfAssignableRoleGroup::getName).collect(Collectors.joining(", ")));
 					}
 				}
 				else{
@@ -76,20 +83,24 @@ public class RolesCommand extends ACommand{
 			var emotes = ctx.getMessage().getEmotes();
 			if(ctx.getArgs()[0].equalsIgnoreCase("add") && !roles.isEmpty() && !emotes.isEmpty()){
 				var group = SelfAssignableRoleGroupCache.getSelfAssignableRoleGroupByName(ctx.getGuild().getId(), ctx.getArgs()[1]);
-				SelfAssignableRoleCache.addSelfAssignableRoles(ctx.getGuild().getId(), Utils.toList(ctx.getGuild().getId(), group.getId(), roles, emotes));
+				if(group == null || group.isEmpty()){
+					sendError(ctx, "Role Group with name `" + ctx.getArgs()[1] + "` not found");
+					return;
+				}
+				SelfAssignableRoleCache.addSelfAssignableRoles(ctx.getGuild().getId(), Utils.toSet(ctx.getGuild().getId(), group.get(0).getId(), roles, emotes));
 				sendAnswer(ctx, "Roles added!");
 			}
 			else if(ctx.getArgs()[0].equalsIgnoreCase("remove") && !roles.isEmpty()){
-				SelfAssignableRoleCache.removeSelfAssignableRolesById(ctx.getGuild().getId(), roles.stream().map(Role::getId).collect(Collectors.toList()));
+				SelfAssignableRoleCache.removeSelfAssignableRoles(ctx.getGuild().getId(), roles.stream().map(Role::getId).collect(Collectors.toSet()));
 				sendAnswer(ctx, "Roles removed!");
 			}
 			else if(ctx.getArgs()[0].equalsIgnoreCase("list")){
-				var map = getRoleEmoteMap(ctx.getGuild());
-				if(map.size() == 0){
+				var list = SelfAssignableRoleCache.getSelfAssignableRoles(ctx.getGuild().getId());
+				if(list == null || list.isEmpty()){
 					sendAnswer(ctx, "There are no roles added!");
 				}
 				else{
-					sendAnswer(ctx, "Roles: " + map.keySet().stream().map(MessageUtils::getUserMention).collect(Collectors.joining(", ")));
+					sendAnswer(ctx, "Roles: " + list.stream().map(sarg -> MessageUtils.getRoleMention(sarg.getRoleId())).collect(Collectors.joining(", ")));
 				}
 			}
 			else{
@@ -97,22 +108,28 @@ public class RolesCommand extends ACommand{
 			}
 		}
 		else{
-			var roles = getRoleEmoteMap(ctx.getGuild());
-			if(roles.isEmpty()){
+			var groups = getSelfAssignableRoles(ctx.getGuild());
+			if(groups.isEmpty()){
 				sendError(ctx, "No self-assignable roles configured!\nIf you are an admin use `.roles add @role :emote: @role :emote:...` to add roles!");
 				return;
 			}
 			var value = new StringBuilder();
-			for(var k : roles.entrySet()){
-				value.append(MessageUtils.getEmoteMention(k.getValue())).append(Emojis.BLANK).append(Emojis.BLANK).append(MessageUtils.getRoleMention(k.getKey())).append("\n");
+			for(var group : groups.entrySet()){
+				value.append("**").append(group.getKey().getName()).append("**").append(Emojis.BLANK).append("only one: ").append(group.getKey().getOnlyOne()).append("\n");
+				for(var role : group.getValue()){
+					value.append(MessageUtils.getEmoteMention(role.getEmoteId())).append(Emojis.BLANK).append(MessageUtils.getRoleMention(role.getRoleId())).append("\n");
+				}
+				value.append("\n");
 			}
 			answer(ctx, new EmbedBuilder().setTitle(title)
 					.setDescription("To get/remove a role click reaction emote. " + Emojis.KITTY_BLINK + "\n\n")
 					.setColor(Color.MAGENTA)
-					.appendDescription("**Emote:**" + Emojis.BLANK + "**Role:**\n" + value)).queue(message -> {
+					.appendDescription(value)).queue(message -> {
 				ReactiveMessageCache.addReactiveMessage(ctx, message, this, ctx.getUser().getId());
-				for(var role : roles.entrySet()){
-					message.addReaction(":i:" + role.getValue()).queue();
+				for(var group : groups.entrySet()){
+					for(var role : group.getValue()){
+						message.addReaction(":i:" + role.getEmoteId()).queue();
+					}
 				}
 				message.addReaction(Emojis.WASTEBASKET).queue();
 				message.addReaction(Emojis.WASTEBASKET).queue();
@@ -120,22 +137,28 @@ public class RolesCommand extends ACommand{
 		}
 	}
 
-	private Map<String, String> getRoleEmoteMap(Guild guild){
+	private Map<SelfAssignableRoleGroup, List<SelfAssignableRole>> getSelfAssignableRoles(Guild guild){
 		var roles = SelfAssignableRoleCache.getSelfAssignableRoles(guild.getId());
-		if(roles == null){
+		var groups = SelfAssignableRoleGroupCache.getSelfAssignableRoleGroups(guild.getId());
+		if(roles == null || roles.isEmpty() || groups == null || groups.isEmpty()){
 			return Collections.emptyMap();
 		}
-		var map = new LinkedHashMap<String, String>();
+		var map = new LinkedHashMap<SelfAssignableRoleGroup, List<SelfAssignableRole>>();
 		for(var role : roles){
 			if(guild.getRoleById(role.getRoleId()) == null){
-				SelfAssignableRoleCache.removeSelfAssignableRoles(guild.getId(), Collections.singletonList(role));
+				SelfAssignableRoleCache.removeSelfAssignableRole(guild.getId(), role.getRoleId());
 				continue;
 			}
 			if(guild.getJDA().getEmoteById(role.getEmoteId()) == null){
-				SelfAssignableRoleCache.removeSelfAssignableRoles(guild.getId(), Collections.singletonList(role));
+				SelfAssignableRoleCache.removeSelfAssignableRole(guild.getId(), role.getRoleId());
 				continue;
 			}
-			map.put(role.getRoleId(), role.getEmoteId());
+			var group = groups.stream().filter(g -> g.getId().equals(role.getGroupId())).findFirst().orElse(null);
+			if(group == null){
+				continue;
+			}
+			map.putIfAbsent(group, new LinkedList<>());
+			map.get(group).add(role);
 		}
 		return map;
 	}
@@ -143,12 +166,16 @@ public class RolesCommand extends ACommand{
 	@Override
 	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
 		super.reactionAdd(reactiveMessage, event);
-		var roles = getRoleEmoteMap(event.getGuild());
-		for(var role : roles.entrySet()){
-			if(event.getReactionEmote().isEmote() && event.getReactionEmote().getId().equals(role.getValue())){
-				var r = event.getJDA().getRoleById(role.getKey());
+		var roles = SelfAssignableRoleCache.getSelfAssignableRoles(event.getGuild().getId());
+		var groups = SelfAssignableRoleGroupCache.getSelfAssignableRoleGroups(event.getGuild().getId());
+		if(roles == null || roles.isEmpty() || groups == null || groups.isEmpty()){
+			return;
+		}
+		for(var role : roles){
+			if(event.getReactionEmote().isEmote() && event.getReactionEmote().getId().equals(role.getEmoteId())){
+				var r = event.getJDA().getRoleById(role.getRoleId());
 				if(r != null){
-					if(event.getMember().getRoles().stream().anyMatch(ro -> ro.getId().equals(role.getKey()))){
+					if(event.getMember().getRoles().stream().anyMatch(ro -> ro.getId().equals(role.getRoleId()))){
 						event.getGuild().removeRoleFromMember(event.getMember(), r).queue();
 					}
 					else{

@@ -1,9 +1,11 @@
 package de.kittybot.kittybot.objects.cache;
 
 import de.kittybot.kittybot.database.Database;
+import de.kittybot.kittybot.objects.SelfAssignableRole;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -11,24 +13,22 @@ import java.util.stream.Collectors;
 public class SelfAssignableRoleCache{
 
 	private static final List<SelfAssignableRole> SELF_ASSIGNABLE_ROLES = new ArrayList<>();
-	private static final List<SelfAssignableRoleGroup> SELF_ASSIGNABLE_ROLE_GROUPS = new ArrayList<>();
 
-	public static void setSelfAssignableRoles(String guildId, List<SelfAssignableRole> selfAssignableRoles){
+	public static void setSelfAssignableRoles(String guildId, Set<SelfAssignableRole> selfAssignableRoles){
 		Database.setSelfAssignableRoles(guildId, selfAssignableRoles);
 		SELF_ASSIGNABLE_ROLES.addAll(selfAssignableRoles);
 	}
 
-	public static void removeSelfAssignableRoles(String guildId, List<SelfAssignableRole> roles){
-		Database.removeSelfAssignableRoles(guildId, roles);
-		SELF_ASSIGNABLE_ROLES.removeAll(roles);
+	public static void removeSelfAssignableRole(String guildId, String role){
+		removeSelfAssignableRoles(guildId, Collections.singleton(role));
 	}
 
-	public static void removeSelfAssignableRolesById(String guildId, List<String> roles){
-		Database.removeSelfAssignableRolesById(guildId, roles);
+	public static void removeSelfAssignableRoles(String guildId, Set<String> roles){
+		Database.removeSelfAssignableRoles(guildId, roles);
 		SELF_ASSIGNABLE_ROLES.removeIf(role -> roles.contains(role.getRoleId()));
 	}
 
-	public static void addSelfAssignableRoles(String guildId, List<SelfAssignableRole> roles){
+	public static void addSelfAssignableRoles(String guildId, Set<SelfAssignableRole> roles){
 		Database.addSelfAssignableRoles(guildId, roles);
 		SELF_ASSIGNABLE_ROLES.addAll(roles);
 	}

@@ -1,4 +1,4 @@
-package de.anteiku.kittybot.objects;
+package de.kittybot.kittybot.objects;
 
 public class SelfAssignableRoleGroup{
 

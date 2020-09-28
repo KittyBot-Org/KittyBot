@@ -1,12 +1,15 @@
 package de.kittybot.kittybot.utils;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import de.anteiku.kittybot.objects.SelfAssignableRole;
+import de.kittybot.kittybot.objects.SelfAssignableRole;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Role;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Utils{
@@ -41,8 +44,8 @@ public class Utils{
 		return set;
 	}
 
-	public static List<SelfAssignableRole> toList(String guildId, String groupId, List<Role> roles, List<Emote> emotes){
-		var list = new ArrayList<SelfAssignableRole>();
+	public static Set<SelfAssignableRole> toSet(String guildId, String groupId, List<Role> roles, List<Emote> emotes){
+		var list = new HashSet<SelfAssignableRole>();
 		int i = 0;
 		for(Role role : roles){
 			if(emotes.size() <= i){
