@@ -98,6 +98,10 @@ jooq {
 
 import org.apache.tools.ant.filters.ReplaceTokens
 
+ext {
+    moduleName = 'KittyBot'
+}
+
 processResources {
     //inject values into app.properties
     filesMatching("**/app.properties") {
