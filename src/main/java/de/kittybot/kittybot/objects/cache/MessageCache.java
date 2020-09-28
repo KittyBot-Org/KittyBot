@@ -44,6 +44,10 @@ public class MessageCache{
 		LAST_MESSAGE_EDITED_CACHE.remove(channelId, messageId);
 	}
 
+	public static boolean isCached(final String messageId){
+		return MESSAGE_CACHE.containsKey(messageId);
+	}
+
 	// MESSAGE EDITING CACHING
 
 	public static void setLastEditedMessage(final String channelId, final String messageId){

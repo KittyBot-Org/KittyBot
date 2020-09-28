@@ -52,6 +52,9 @@ public class OnGuildMessageEvent extends ListenerAdapter{
 
 	@Override
 	public void onGuildMessageUpdate(@NotNull final GuildMessageUpdateEvent event){
+		if(!MessageCache.isCached(event.getMessageId())){
+			return;
+		}
 		final var messageId = event.getMessageId();
 		MessageCache.cacheMessage(messageId, new MessageData(event.getMessage()));
 		MessageCache.setLastEditedMessage(event.getChannel().getId(), messageId);
@@ -61,6 +64,9 @@ public class OnGuildMessageEvent extends ListenerAdapter{
 	public void onGuildMessageDelete(GuildMessageDeleteEvent event){
 		CommandResponseCache.deleteCommandResponse(event.getChannel(), event.getMessageId());
 		Database.removeReactiveMessage(event.getGuild().getId(), event.getMessageId());
+		if(!MessageCache.isCached(event.getMessageId())){
+			return;
+		}
 		MessageCache.setLastDeletedMessage(event.getChannel().getId(), event.getMessageId());
 		MessageCache.uncacheEditedMessage(event.getChannel().getId(), event.getMessageId());
 	}
