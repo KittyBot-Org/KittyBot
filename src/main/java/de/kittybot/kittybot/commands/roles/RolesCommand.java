@@ -96,7 +96,6 @@ public class RolesCommand extends ACommand{
 
 	private Map<Role, Emote> getRoleEmoteMap(Guild guild){
 		var roles = SelfAssignableRoleCache.getSelfAssignableRoles(guild.getId());
-		LOG.info("roles: " + roles.toString());
 		var map = new LinkedHashMap<Role, Emote>();
 		for(var entry : roles.entrySet()){
 			Role role = guild.getRoleById(entry.getKey());
