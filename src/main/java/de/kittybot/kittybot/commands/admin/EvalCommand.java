@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.commands.admin;
 
+import de.kittybot.kittybot.KittyBot;
 import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
