@@ -25,7 +25,7 @@ public class Guilds extends TableImpl<GuildsRecord>{
 	 * The reference instance of <code>public.guilds</code>
 	 */
 	public static final Guilds GUILDS = new Guilds();
-	private static final long serialVersionUID = -784745749;
+	private static final long serialVersionUID = -1814477830;
 	/**
 	 * The column <code>public.guilds.guild_id</code>.
 	 */
@@ -82,10 +82,6 @@ public class Guilds extends TableImpl<GuildsRecord>{
 	 * The column <code>public.guilds.nsfw_enabled</code>.
 	 */
 	public final TableField<GuildsRecord, Boolean> NSFW_ENABLED = createField(DSL.name("nsfw_enabled"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
-	/**
-	 * The column <code>public.guilds.dj_role_id</code>.
-	 */
-	public final TableField<GuildsRecord, String> DJ_ROLE_ID = createField(DSL.name("dj_role_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
 	/**
 	 * The column <code>public.guilds.inactive_role_id</code>.
 	 */
@@ -174,12 +170,12 @@ public class Guilds extends TableImpl<GuildsRecord>{
 	}
 
 	// -------------------------------------------------------------------------
-	// Row16 type methods
+	// Row15 type methods
 	// -------------------------------------------------------------------------
 
 	@Override
-	public Row16<String, String, String, Boolean, String, String, Boolean, String, Boolean, String, Boolean, String, Boolean, Boolean, String, String> fieldsRow(){
-		return (Row16) super.fieldsRow();
+	public Row15<String, String, String, Boolean, String, String, Boolean, String, Boolean, String, Boolean, String, Boolean, Boolean, String> fieldsRow(){
+		return (Row15) super.fieldsRow();
 	}
 
 }

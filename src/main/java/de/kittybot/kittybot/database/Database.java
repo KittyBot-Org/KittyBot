@@ -81,7 +81,7 @@ public class Database{
 
 	public static void addCommandStatistics(String guildId, String commandId, String userId, String command, long processingTime){
 		try(var con = getCon(); var ctx = getCtx(con)){
-			ctx.insertInto(COMMANDS).columns(COMMANDS.fields()).values(commandId, guildId, userId, command, processingTime, Instant.now().getEpochSecond()).executeAsync();
+			ctx.insertInto(COMMANDS).columns(COMMANDS.fields()).values(commandId, guildId, userId, command, processingTime, Instant.now().getEpochSecond()).execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error adding command statistics for message: " + commandId, e);
@@ -136,7 +136,7 @@ public class Database{
 			for(var role : roles.entrySet()){
 				col.values(role.getKey(), guildId, role.getValue());
 			}
-			col.executeAsync();
+			col.execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error inserting self-assignable roles: " + roles.toString(), e);
@@ -147,7 +147,7 @@ public class Database{
 		try(var con = getCon(); var ctx = getCtx(con)){
 			return ctx.selectFrom(SELF_ASSIGNABLE_ROLES).where(SELF_ASSIGNABLE_ROLES.GUILD_ID.eq(guildId)).fetch()
 					.stream()
-					.collect(Collectors.toMap(sar -> sar.get(SELF_ASSIGNABLE_ROLES.ROLE_ID), sar -> sar.get(SELF_ASSIGNABLE_ROLES.ROLE_ID)));
+					.collect(Collectors.toMap(sar -> sar.get(SELF_ASSIGNABLE_ROLES.ROLE_ID), sar -> sar.get(SELF_ASSIGNABLE_ROLES.EMOTE_ID)));
 		}
 		catch(SQLException e){
 			LOG.error("Error while getting self-assignable roles from guild " + guildId, e);
@@ -234,7 +234,7 @@ public class Database{
 
 	public static void addReactiveMessage(String guildId, String userId, String channelId, String messageId, String commandId, String command, String allowed){
 		try(var con = getCon(); var ctx = getCtx(con)){
-			ctx.insertInto(REACTIVE_MESSAGES).columns(REACTIVE_MESSAGES.fields()).values(channelId, messageId, commandId, userId, guildId, command, allowed).executeAsync();
+			ctx.insertInto(REACTIVE_MESSAGES).columns(REACTIVE_MESSAGES.fields()).values(channelId, messageId, commandId, userId, guildId, command, allowed).execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error creating reactive message", e);
@@ -243,7 +243,7 @@ public class Database{
 
 	public static void removeReactiveMessage(String guildId, String messageId){
 		try(var con = getCon(); var ctx = getCtx(con)){
-			ctx.deleteFrom(REACTIVE_MESSAGES).where(REACTIVE_MESSAGES.MESSAGE_ID.eq(messageId).and(REACTIVE_MESSAGES.GUILD_ID.eq(guildId))).executeAsync();
+			ctx.deleteFrom(REACTIVE_MESSAGES).where(REACTIVE_MESSAGES.MESSAGE_ID.eq(messageId).and(REACTIVE_MESSAGES.GUILD_ID.eq(guildId))).execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error removing reactive message", e);
@@ -252,7 +252,7 @@ public class Database{
 
 	public static void addSession(String userId, String sessionId){
 		try(var con = getCon(); var ctx = getCtx(con)){
-			ctx.insertInto(SESSIONS).columns(SESSIONS.fields()).values(sessionId, userId).executeAsync();
+			ctx.insertInto(SESSIONS).columns(SESSIONS.fields()).values(sessionId, userId).execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error adding session for user " + userId, e);
@@ -279,7 +279,7 @@ public class Database{
 
 	public static boolean deleteSession(String sessionId){
 		try(var con = getCon(); var ctx = getCtx(con)){
-			ctx.deleteFrom(SESSIONS).where(SESSIONS.SESSION_ID.eq(sessionId)).executeAsync();
+			ctx.deleteFrom(SESSIONS).where(SESSIONS.SESSION_ID.eq(sessionId)).execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error deleting session", e);

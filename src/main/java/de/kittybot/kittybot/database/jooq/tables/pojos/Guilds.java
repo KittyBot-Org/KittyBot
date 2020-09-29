@@ -13,7 +13,7 @@ import java.io.Serializable;
 @SuppressWarnings({"all", "unchecked", "rawtypes"})
 public class Guilds implements Serializable{
 
-	private static final long serialVersionUID = -26515405;
+	private static final long serialVersionUID = 1697911251;
 
 	private final String guildId;
 	private final String commandPrefix;
@@ -29,7 +29,6 @@ public class Guilds implements Serializable{
 	private final String logChannelId;
 	private final Boolean logMessagesEnabled;
 	private final Boolean nsfwEnabled;
-	private final String djRoleId;
 	private final String inactiveRoleId;
 
 	public Guilds(Guilds value){
@@ -47,7 +46,6 @@ public class Guilds implements Serializable{
 		this.logChannelId = value.logChannelId;
 		this.logMessagesEnabled = value.logMessagesEnabled;
 		this.nsfwEnabled = value.nsfwEnabled;
-		this.djRoleId = value.djRoleId;
 		this.inactiveRoleId = value.inactiveRoleId;
 	}
 
@@ -66,7 +64,6 @@ public class Guilds implements Serializable{
 			String logChannelId,
 			Boolean logMessagesEnabled,
 			Boolean nsfwEnabled,
-			String djRoleId,
 			String inactiveRoleId
 	){
 		this.guildId = guildId;
@@ -83,7 +80,6 @@ public class Guilds implements Serializable{
 		this.logChannelId = logChannelId;
 		this.logMessagesEnabled = logMessagesEnabled;
 		this.nsfwEnabled = nsfwEnabled;
-		this.djRoleId = djRoleId;
 		this.inactiveRoleId = inactiveRoleId;
 	}
 
@@ -143,10 +139,6 @@ public class Guilds implements Serializable{
 		return this.nsfwEnabled;
 	}
 
-	public String getDjRoleId(){
-		return this.djRoleId;
-	}
-
 	public String getInactiveRoleId(){
 		return this.inactiveRoleId;
 	}
@@ -169,7 +161,6 @@ public class Guilds implements Serializable{
 		sb.append(", ").append(logChannelId);
 		sb.append(", ").append(logMessagesEnabled);
 		sb.append(", ").append(nsfwEnabled);
-		sb.append(", ").append(djRoleId);
 		sb.append(", ").append(inactiveRoleId);
 
 		sb.append(")");

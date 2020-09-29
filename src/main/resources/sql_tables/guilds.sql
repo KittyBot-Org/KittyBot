@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS guilds(
   boost_messages          text NOT NULL,
   boost_messages_enabled  boolean NOT NULL,
   log_channel_id          varchar(18) NOT NULL,
-  log_message_enabled     boolean NOT NULL,
+  log_messages_enabled     boolean NOT NULL,
   nsfw_enabled            boolean NOT NULL,
   inactive_role_id        varchar(18) NOT NULL,
 PRIMARY KEY(guild_id)
