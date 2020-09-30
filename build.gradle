@@ -34,11 +34,11 @@ dependencies {
     implementation 'com.jagrosh:jda-utilities:3.0.4'
 
     // audio
-    implementation 'com.github.devoxin:lavaplayer:a63c541dc5'
-    implementation 'com.sedmelluq:jda-nas:1.1.0'
-    implementation("com.github.KittyBot-Org:Lavalink-Client:2f8d745521") {
+    implementation("com.github.KittyBot-Org:Lavalink-Client:40ee407472") {
         exclude group: 'com.sedmelluq', module: 'lavaplayer'
     }
+    implementation 'com.github.devoxin:lavaplayer:a63c541dc5'
+    implementation 'com.sedmelluq:jda-nas:1.1.0'
 
     // database
     implementation 'com.zaxxer:HikariCP:3.4.5'
