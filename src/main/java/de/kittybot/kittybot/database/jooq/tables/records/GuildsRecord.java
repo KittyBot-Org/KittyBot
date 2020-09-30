@@ -338,39 +338,9 @@ public class GuildsRecord extends UpdatableRecordImpl<GuildsRecord> implements R
 		return getGuildId();
 	}
 
-	/**
-	 * Getter for <code>public.guilds.guild_id</code>.
-	 */
-	public String getGuildId(){
-		return (String) get(0);
-	}
-
-	/**
-	 * Setter for <code>public.guilds.guild_id</code>.
-	 */
-	public GuildsRecord setGuildId(String value){
-		set(0, value);
-		return this;
-	}
-
 	@Override
 	public String component2(){
 		return getCommandPrefix();
-	}
-
-	/**
-	 * Getter for <code>public.guilds.command_prefix</code>.
-	 */
-	public String getCommandPrefix(){
-		return (String) get(1);
-	}
-
-	/**
-	 * Setter for <code>public.guilds.command_prefix</code>.
-	 */
-	public GuildsRecord setCommandPrefix(String value){
-		set(1, value);
-		return this;
 	}
 
 	@Override
@@ -378,39 +348,9 @@ public class GuildsRecord extends UpdatableRecordImpl<GuildsRecord> implements R
 		return getRequestChannelId();
 	}
 
-	/**
-	 * Getter for <code>public.guilds.request_channel_id</code>.
-	 */
-	public String getRequestChannelId(){
-		return (String) get(2);
-	}
-
-	/**
-	 * Setter for <code>public.guilds.request_channel_id</code>.
-	 */
-	public GuildsRecord setRequestChannelId(String value){
-		set(2, value);
-		return this;
-	}
-
 	@Override
 	public Boolean component4(){
 		return getRequestsEnabled();
-	}
-
-	/**
-	 * Getter for <code>public.guilds.requests_enabled</code>.
-	 */
-	public Boolean getRequestsEnabled(){
-		return (Boolean) get(3);
-	}
-
-	/**
-	 * Setter for <code>public.guilds.requests_enabled</code>.
-	 */
-	public GuildsRecord setRequestsEnabled(Boolean value){
-		set(3, value);
-		return this;
 	}
 
 	@Override
@@ -418,39 +358,9 @@ public class GuildsRecord extends UpdatableRecordImpl<GuildsRecord> implements R
 		return getAnnouncementChannelId();
 	}
 
-	/**
-	 * Getter for <code>public.guilds.announcement_channel_id</code>.
-	 */
-	public String getAnnouncementChannelId(){
-		return (String) get(4);
-	}
-
-	/**
-	 * Setter for <code>public.guilds.announcement_channel_id</code>.
-	 */
-	public GuildsRecord setAnnouncementChannelId(String value){
-		set(4, value);
-		return this;
-	}
-
 	@Override
 	public String component6(){
 		return getJoinMessages();
-	}
-
-	/**
-	 * Getter for <code>public.guilds.join_messages</code>.
-	 */
-	public String getJoinMessages(){
-		return (String) get(5);
-	}
-
-	/**
-	 * Setter for <code>public.guilds.join_messages</code>.
-	 */
-	public GuildsRecord setJoinMessages(String value){
-		set(5, value);
-		return this;
 	}
 
 	@Override
@@ -458,39 +368,9 @@ public class GuildsRecord extends UpdatableRecordImpl<GuildsRecord> implements R
 		return getJoinMessagesEnabled();
 	}
 
-	/**
-	 * Getter for <code>public.guilds.join_messages_enabled</code>.
-	 */
-	public Boolean getJoinMessagesEnabled(){
-		return (Boolean) get(6);
-	}
-
-	/**
-	 * Setter for <code>public.guilds.join_messages_enabled</code>.
-	 */
-	public GuildsRecord setJoinMessagesEnabled(Boolean value){
-		set(6, value);
-		return this;
-	}
-
 	@Override
 	public String component8(){
 		return getLeaveMessages();
-	}
-
-	/**
-	 * Getter for <code>public.guilds.leave_messages</code>.
-	 */
-	public String getLeaveMessages(){
-		return (String) get(7);
-	}
-
-	/**
-	 * Setter for <code>public.guilds.leave_messages</code>.
-	 */
-	public GuildsRecord setLeaveMessages(String value){
-		set(7, value);
-		return this;
 	}
 
 	@Override
@@ -498,39 +378,9 @@ public class GuildsRecord extends UpdatableRecordImpl<GuildsRecord> implements R
 		return getLeaveMessagesEnabled();
 	}
 
-	/**
-	 * Getter for <code>public.guilds.leave_messages_enabled</code>.
-	 */
-	public Boolean getLeaveMessagesEnabled(){
-		return (Boolean) get(8);
-	}
-
-	/**
-	 * Setter for <code>public.guilds.leave_messages_enabled</code>.
-	 */
-	public GuildsRecord setLeaveMessagesEnabled(Boolean value){
-		set(8, value);
-		return this;
-	}
-
 	@Override
 	public String component10(){
 		return getBoostMessages();
-	}
-
-	/**
-	 * Getter for <code>public.guilds.boost_messages</code>.
-	 */
-	public String getBoostMessages(){
-		return (String) get(9);
-	}
-
-	/**
-	 * Setter for <code>public.guilds.boost_messages</code>.
-	 */
-	public GuildsRecord setBoostMessages(String value){
-		set(9, value);
-		return this;
 	}
 
 	@Override
@@ -538,39 +388,9 @@ public class GuildsRecord extends UpdatableRecordImpl<GuildsRecord> implements R
 		return getBoostMessagesEnabled();
 	}
 
-	/**
-	 * Getter for <code>public.guilds.boost_messages_enabled</code>.
-	 */
-	public Boolean getBoostMessagesEnabled(){
-		return (Boolean) get(10);
-	}
-
-	/**
-	 * Setter for <code>public.guilds.boost_messages_enabled</code>.
-	 */
-	public GuildsRecord setBoostMessagesEnabled(Boolean value){
-		set(10, value);
-		return this;
-	}
-
 	@Override
 	public String component12(){
 		return getLogChannelId();
-	}
-
-	/**
-	 * Getter for <code>public.guilds.log_channel_id</code>.
-	 */
-	public String getLogChannelId(){
-		return (String) get(11);
-	}
-
-	/**
-	 * Setter for <code>public.guilds.log_channel_id</code>.
-	 */
-	public GuildsRecord setLogChannelId(String value){
-		set(11, value);
-		return this;
 	}
 
 	@Override
@@ -578,24 +398,29 @@ public class GuildsRecord extends UpdatableRecordImpl<GuildsRecord> implements R
 		return getLogMessagesEnabled();
 	}
 
-	/**
-	 * Getter for <code>public.guilds.log_messages_enabled</code>.
-	 */
-	public Boolean getLogMessagesEnabled(){
-		return (Boolean) get(12);
-	}
-
-	/**
-	 * Setter for <code>public.guilds.log_messages_enabled</code>.
-	 */
-	public GuildsRecord setLogMessagesEnabled(Boolean value){
-		set(12, value);
-		return this;
-	}
-
 	@Override
 	public Boolean component14(){
 		return getNsfwEnabled();
+	}
+
+	@Override
+	public String component15(){
+		return getInactiveRoleId();
+	}
+
+	/**
+	 * Getter for <code>public.guilds.inactive_role_id</code>.
+	 */
+	public String getInactiveRoleId(){
+		return (String) get(14);
+	}
+
+	/**
+	 * Setter for <code>public.guilds.inactive_role_id</code>.
+	 */
+	public GuildsRecord setInactiveRoleId(String value){
+		set(14, value);
+		return this;
 	}
 
 	/**
@@ -613,9 +438,184 @@ public class GuildsRecord extends UpdatableRecordImpl<GuildsRecord> implements R
 		return this;
 	}
 
-	@Override
-	public String component15(){
-		return getInactiveRoleId();
+	/**
+	 * Getter for <code>public.guilds.log_messages_enabled</code>.
+	 */
+	public Boolean getLogMessagesEnabled(){
+		return (Boolean) get(12);
+	}
+
+	/**
+	 * Setter for <code>public.guilds.log_messages_enabled</code>.
+	 */
+	public GuildsRecord setLogMessagesEnabled(Boolean value){
+		set(12, value);
+		return this;
+	}
+
+	/**
+	 * Getter for <code>public.guilds.log_channel_id</code>.
+	 */
+	public String getLogChannelId(){
+		return (String) get(11);
+	}
+
+	/**
+	 * Setter for <code>public.guilds.log_channel_id</code>.
+	 */
+	public GuildsRecord setLogChannelId(String value){
+		set(11, value);
+		return this;
+	}
+
+	/**
+	 * Getter for <code>public.guilds.boost_messages_enabled</code>.
+	 */
+	public Boolean getBoostMessagesEnabled(){
+		return (Boolean) get(10);
+	}
+
+	/**
+	 * Setter for <code>public.guilds.boost_messages_enabled</code>.
+	 */
+	public GuildsRecord setBoostMessagesEnabled(Boolean value){
+		set(10, value);
+		return this;
+	}
+
+	/**
+	 * Getter for <code>public.guilds.boost_messages</code>.
+	 */
+	public String getBoostMessages(){
+		return (String) get(9);
+	}
+
+	/**
+	 * Setter for <code>public.guilds.boost_messages</code>.
+	 */
+	public GuildsRecord setBoostMessages(String value){
+		set(9, value);
+		return this;
+	}
+
+	/**
+	 * Getter for <code>public.guilds.leave_messages_enabled</code>.
+	 */
+	public Boolean getLeaveMessagesEnabled(){
+		return (Boolean) get(8);
+	}
+
+	/**
+	 * Setter for <code>public.guilds.leave_messages_enabled</code>.
+	 */
+	public GuildsRecord setLeaveMessagesEnabled(Boolean value){
+		set(8, value);
+		return this;
+	}
+
+	/**
+	 * Getter for <code>public.guilds.leave_messages</code>.
+	 */
+	public String getLeaveMessages(){
+		return (String) get(7);
+	}
+
+	/**
+	 * Setter for <code>public.guilds.leave_messages</code>.
+	 */
+	public GuildsRecord setLeaveMessages(String value){
+		set(7, value);
+		return this;
+	}
+
+	/**
+	 * Getter for <code>public.guilds.join_messages_enabled</code>.
+	 */
+	public Boolean getJoinMessagesEnabled(){
+		return (Boolean) get(6);
+	}
+
+	/**
+	 * Setter for <code>public.guilds.join_messages_enabled</code>.
+	 */
+	public GuildsRecord setJoinMessagesEnabled(Boolean value){
+		set(6, value);
+		return this;
+	}
+
+	/**
+	 * Getter for <code>public.guilds.join_messages</code>.
+	 */
+	public String getJoinMessages(){
+		return (String) get(5);
+	}
+
+	/**
+	 * Setter for <code>public.guilds.join_messages</code>.
+	 */
+	public GuildsRecord setJoinMessages(String value){
+		set(5, value);
+		return this;
+	}
+
+	/**
+	 * Getter for <code>public.guilds.announcement_channel_id</code>.
+	 */
+	public String getAnnouncementChannelId(){
+		return (String) get(4);
+	}
+
+	/**
+	 * Setter for <code>public.guilds.announcement_channel_id</code>.
+	 */
+	public GuildsRecord setAnnouncementChannelId(String value){
+		set(4, value);
+		return this;
+	}
+
+	/**
+	 * Getter for <code>public.guilds.requests_enabled</code>.
+	 */
+	public Boolean getRequestsEnabled(){
+		return (Boolean) get(3);
+	}
+
+	/**
+	 * Setter for <code>public.guilds.requests_enabled</code>.
+	 */
+	public GuildsRecord setRequestsEnabled(Boolean value){
+		set(3, value);
+		return this;
+	}
+
+	/**
+	 * Getter for <code>public.guilds.request_channel_id</code>.
+	 */
+	public String getRequestChannelId(){
+		return (String) get(2);
+	}
+
+	/**
+	 * Setter for <code>public.guilds.request_channel_id</code>.
+	 */
+	public GuildsRecord setRequestChannelId(String value){
+		set(2, value);
+		return this;
+	}
+
+	/**
+	 * Getter for <code>public.guilds.command_prefix</code>.
+	 */
+	public String getCommandPrefix(){
+		return (String) get(1);
+	}
+
+	/**
+	 * Setter for <code>public.guilds.command_prefix</code>.
+	 */
+	public GuildsRecord setCommandPrefix(String value){
+		set(1, value);
+		return this;
 	}
 
 	// -------------------------------------------------------------------------
@@ -623,17 +623,17 @@ public class GuildsRecord extends UpdatableRecordImpl<GuildsRecord> implements R
 	// -------------------------------------------------------------------------
 
 	/**
-	 * Getter for <code>public.guilds.inactive_role_id</code>.
+	 * Getter for <code>public.guilds.guild_id</code>.
 	 */
-	public String getInactiveRoleId(){
-		return (String) get(14);
+	public String getGuildId(){
+		return (String) get(0);
 	}
 
 	/**
-	 * Setter for <code>public.guilds.inactive_role_id</code>.
+	 * Setter for <code>public.guilds.guild_id</code>.
 	 */
-	public GuildsRecord setInactiveRoleId(String value){
-		set(14, value);
+	public GuildsRecord setGuildId(String value){
+		set(0, value);
 		return this;
 	}
 

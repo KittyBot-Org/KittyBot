@@ -179,39 +179,9 @@ public class CommandsRecord extends UpdatableRecordImpl<CommandsRecord> implemen
 		return getMessageId();
 	}
 
-	/**
-	 * Getter for <code>public.commands.message_id</code>.
-	 */
-	public String getMessageId(){
-		return (String) get(0);
-	}
-
-	/**
-	 * Setter for <code>public.commands.message_id</code>.
-	 */
-	public CommandsRecord setMessageId(String value){
-		set(0, value);
-		return this;
-	}
-
 	@Override
 	public String component2(){
 		return getGuildId();
-	}
-
-	/**
-	 * Getter for <code>public.commands.guild_id</code>.
-	 */
-	public String getGuildId(){
-		return (String) get(1);
-	}
-
-	/**
-	 * Setter for <code>public.commands.guild_id</code>.
-	 */
-	public CommandsRecord setGuildId(String value){
-		set(1, value);
-		return this;
 	}
 
 	@Override
@@ -219,44 +189,34 @@ public class CommandsRecord extends UpdatableRecordImpl<CommandsRecord> implemen
 		return getUserId();
 	}
 
-	/**
-	 * Getter for <code>public.commands.user_id</code>.
-	 */
-	public String getUserId(){
-		return (String) get(2);
-	}
-
-	/**
-	 * Setter for <code>public.commands.user_id</code>.
-	 */
-	public CommandsRecord setUserId(String value){
-		set(2, value);
-		return this;
-	}
-
 	@Override
 	public String component4(){
 		return getCommand();
 	}
 
-	/**
-	 * Getter for <code>public.commands.command</code>.
-	 */
-	public String getCommand(){
-		return (String) get(3);
-	}
-
-	/**
-	 * Setter for <code>public.commands.command</code>.
-	 */
-	public CommandsRecord setCommand(String value){
-		set(3, value);
-		return this;
-	}
-
 	@Override
 	public YearToSecond component5(){
 		return getProcessingTime();
+	}
+
+	@Override
+	public LocalDateTime component6(){
+		return getTime();
+	}
+
+	/**
+	 * Getter for <code>public.commands.time</code>.
+	 */
+	public LocalDateTime getTime(){
+		return (LocalDateTime) get(5);
+	}
+
+	/**
+	 * Setter for <code>public.commands.time</code>.
+	 */
+	public CommandsRecord setTime(LocalDateTime value){
+		set(5, value);
+		return this;
 	}
 
 	/**
@@ -274,9 +234,49 @@ public class CommandsRecord extends UpdatableRecordImpl<CommandsRecord> implemen
 		return this;
 	}
 
-	@Override
-	public LocalDateTime component6(){
-		return getTime();
+	/**
+	 * Getter for <code>public.commands.command</code>.
+	 */
+	public String getCommand(){
+		return (String) get(3);
+	}
+
+	/**
+	 * Setter for <code>public.commands.command</code>.
+	 */
+	public CommandsRecord setCommand(String value){
+		set(3, value);
+		return this;
+	}
+
+	/**
+	 * Getter for <code>public.commands.user_id</code>.
+	 */
+	public String getUserId(){
+		return (String) get(2);
+	}
+
+	/**
+	 * Setter for <code>public.commands.user_id</code>.
+	 */
+	public CommandsRecord setUserId(String value){
+		set(2, value);
+		return this;
+	}
+
+	/**
+	 * Getter for <code>public.commands.guild_id</code>.
+	 */
+	public String getGuildId(){
+		return (String) get(1);
+	}
+
+	/**
+	 * Setter for <code>public.commands.guild_id</code>.
+	 */
+	public CommandsRecord setGuildId(String value){
+		set(1, value);
+		return this;
 	}
 
 	// -------------------------------------------------------------------------
@@ -284,17 +284,17 @@ public class CommandsRecord extends UpdatableRecordImpl<CommandsRecord> implemen
 	// -------------------------------------------------------------------------
 
 	/**
-	 * Getter for <code>public.commands.time</code>.
+	 * Getter for <code>public.commands.message_id</code>.
 	 */
-	public LocalDateTime getTime(){
-		return (LocalDateTime) get(5);
+	public String getMessageId(){
+		return (String) get(0);
 	}
 
 	/**
-	 * Setter for <code>public.commands.time</code>.
+	 * Setter for <code>public.commands.message_id</code>.
 	 */
-	public CommandsRecord setTime(LocalDateTime value){
-		set(5, value);
+	public CommandsRecord setMessageId(String value){
+		set(0, value);
 		return this;
 	}
 

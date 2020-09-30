@@ -122,24 +122,29 @@ public class SelfAssignableRolesRecord extends UpdatableRecordImpl<SelfAssignabl
 		return getRoleId();
 	}
 
-	/**
-	 * Getter for <code>public.self_assignable_roles.role_id</code>.
-	 */
-	public String getRoleId(){
-		return (String) get(0);
-	}
-
-	/**
-	 * Setter for <code>public.self_assignable_roles.role_id</code>.
-	 */
-	public SelfAssignableRolesRecord setRoleId(String value){
-		set(0, value);
-		return this;
-	}
-
 	@Override
 	public String component2(){
 		return getGuildId();
+	}
+
+	@Override
+	public String component3(){
+		return getEmoteId();
+	}
+
+	/**
+	 * Getter for <code>public.self_assignable_roles.emote_id</code>.
+	 */
+	public String getEmoteId(){
+		return (String) get(2);
+	}
+
+	/**
+	 * Setter for <code>public.self_assignable_roles.emote_id</code>.
+	 */
+	public SelfAssignableRolesRecord setEmoteId(String value){
+		set(2, value);
+		return this;
 	}
 
 	/**
@@ -157,27 +162,22 @@ public class SelfAssignableRolesRecord extends UpdatableRecordImpl<SelfAssignabl
 		return this;
 	}
 
-	@Override
-	public String component3(){
-		return getEmoteId();
-	}
-
 	// -------------------------------------------------------------------------
 	// Constructors
 	// -------------------------------------------------------------------------
 
 	/**
-	 * Getter for <code>public.self_assignable_roles.emote_id</code>.
+	 * Getter for <code>public.self_assignable_roles.role_id</code>.
 	 */
-	public String getEmoteId(){
-		return (String) get(2);
+	public String getRoleId(){
+		return (String) get(0);
 	}
 
 	/**
-	 * Setter for <code>public.self_assignable_roles.emote_id</code>.
+	 * Setter for <code>public.self_assignable_roles.role_id</code>.
 	 */
-	public SelfAssignableRolesRecord setEmoteId(String value){
-		set(2, value);
+	public SelfAssignableRolesRecord setRoleId(String value){
+		set(0, value);
 		return this;
 	}
 
