@@ -3,13 +3,13 @@ package de.kittybot.kittybot.objects.cache;
 import de.kittybot.kittybot.database.Database;
 import net.dv8tion.jda.api.entities.Guild;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class SelfAssignableRoleCache{
 
-	private static final Map<String, Map<String, String>> SELF_ASSIGNABLE_ROLES = new ConcurrentHashMap<>();
+	private static final Map<String, Map<String, String>> SELF_ASSIGNABLE_ROLES = new HashMap<>();
 
 	public static void setSelfAssignableRoles(String guildId, Map<String, String> selfAssignableRoles){
 		Database.setSelfAssignableRoles(guildId, selfAssignableRoles);

@@ -11,9 +11,9 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
@@ -22,12 +22,12 @@ import java.util.function.BiConsumer;
  */
 public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your shitty paginator
 
-	private static final Map<Long, List<Long>> PAGINATOR_MESSAGES = new ConcurrentHashMap<>();                       // K = channelId, V = List<MessageId>
-	private static final Map<Long, Integer> TOTAL_PAGES = new ConcurrentHashMap<>();                                 // K = messageId, V = total pages
-	private static final Map<Long, Long> INVOKERS = new ConcurrentHashMap<>();                                       // K = messageId, V = invokerId
-	private static final Map<Long, Long> ORIGINALS = new ConcurrentHashMap<>();                                      // K = messageId, V = original messageId
-	private static final Map<Long, Integer> CURRENT_PAGE = new ConcurrentHashMap<>();                                // K = messageId, V = current page
-	private static final Map<Long, BiConsumer<Integer, EmbedBuilder>> CONTENT_CONSUMERS = new ConcurrentHashMap<>(); // K = messageId, V = BiConsumer<PageNumber, EmbedBuilder>
+	private static final Map<Long, List<Long>> PAGINATOR_MESSAGES = new HashMap<>();                       // K = channelId, V = List<MessageId>
+	private static final Map<Long, Integer> TOTAL_PAGES = new HashMap<>();                                 // K = messageId, V = total pages
+	private static final Map<Long, Long> INVOKERS = new HashMap<>();                                       // K = messageId, V = invokerId
+	private static final Map<Long, Long> ORIGINALS = new HashMap<>();                                      // K = messageId, V = original messageId
+	private static final Map<Long, Integer> CURRENT_PAGE = new HashMap<>();                                // K = messageId, V = current page
+	private static final Map<Long, BiConsumer<Integer, EmbedBuilder>> CONTENT_CONSUMERS = new HashMap<>(); // K = messageId, V = BiConsumer<PageNumber, EmbedBuilder>
 
 	public static void createCommandsPaginator(final Message message, final int totalPages, final Map<Integer, TitleInfo> titlePerPage, final Map<Integer, ArrayList<MessageEmbed.Field>> fields){
 		createPaginator(message, totalPages, (page, embedBuilder) -> {

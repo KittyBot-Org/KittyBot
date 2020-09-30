@@ -4,12 +4,12 @@ import de.kittybot.kittybot.KittyBot;
 import de.kittybot.kittybot.objects.MusicPlayer;
 import net.dv8tion.jda.api.entities.Guild;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class MusicPlayerCache{
 
-	private static final Map<String, MusicPlayer> MUSIC_PLAYERS = new ConcurrentHashMap<>();
+	private static final Map<String, MusicPlayer> MUSIC_PLAYERS = new HashMap<>();
 
 	public static void addMusicPlayer(Guild guild, MusicPlayer player){
 		MUSIC_PLAYERS.put(guild.getId(), player);
