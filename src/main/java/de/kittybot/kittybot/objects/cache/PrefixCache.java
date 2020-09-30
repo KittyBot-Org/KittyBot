@@ -3,12 +3,12 @@ package de.kittybot.kittybot.objects.cache;
 import de.kittybot.kittybot.database.Database;
 import net.dv8tion.jda.api.entities.Guild;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PrefixCache{
 
-	private static final Map<String, String> GUILD_PREFIXES = new HashMap<>();
+	private static final Map<String, String> GUILD_PREFIXES = new ConcurrentHashMap<>();
 
 	public static String getCommandPrefix(String guildId){
 		return GUILD_PREFIXES.computeIfAbsent(guildId, k -> Database.getCommandPrefix(guildId));

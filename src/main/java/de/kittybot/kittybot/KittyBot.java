@@ -25,8 +25,10 @@ import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import net.dv8tion.jda.internal.utils.config.ThreadingConfig;
 import okhttp3.OkHttpClient;
 import org.discordbots.api.client.DiscordBotListAPI;
 import org.slf4j.Logger;
@@ -46,7 +48,7 @@ public class KittyBot{
 	private static final AudioPlayerManager AUDIO_PLAYER_MANAGER = new DefaultAudioPlayerManager();
 	private static final ScheduledExecutorService SCHEDULER = Executors.newSingleThreadScheduledExecutor();
 	private static final EventWaiter WAITER = new EventWaiter();
-	private static JdaLavalink lavalink;
+	private static final JdaLavalink LAVALINK = new JdaLavalink(Config.BOT_ID, 0, null);
 	private static JDA jda;
 	private static DiscordBotListAPI discordBotListAPI;
 
@@ -66,12 +68,9 @@ public class KittyBot{
 				"\n");
 		LOG.info("Starting...");
 
-		Config.load("config.json");
-
 		try{
-			lavalink = new JdaLavalink(Config.BOT_ID, 1, this::getShardById);
 			for(LavalinkNode node : Config.LAVALINK_NODES){
-				lavalink.addNode(new URI("ws://" + node.host + ":" + node.port), node.password);
+				LAVALINK.addNode(new URI("ws://" + node.host + ":" + node.port), node.password);
 			}
 
 			AUDIO_PLAYER_MANAGER.registerSourceManager(new YoutubeAudioSourceManager());
@@ -86,20 +85,21 @@ public class KittyBot{
 			RestAction.setDefaultFailure(null);
 
 			jda = JDABuilder.create(
-					GatewayIntent.GUILD_MEMBERS,
-					GatewayIntent.GUILD_VOICE_STATES,
-					GatewayIntent.GUILD_MESSAGES,
-					GatewayIntent.GUILD_MESSAGE_REACTIONS,
-					GatewayIntent.GUILD_EMOJIS,
-					GatewayIntent.GUILD_INVITES
-			)
+						Config.BOT_TOKEN,
+						GatewayIntent.GUILD_MEMBERS,
+						GatewayIntent.GUILD_VOICE_STATES,
+						GatewayIntent.GUILD_MESSAGES,
+						GatewayIntent.GUILD_MESSAGE_REACTIONS,
+						GatewayIntent.GUILD_EMOJIS,
+						GatewayIntent.GUILD_INVITES
+					)
 					.disableCache(
 							CacheFlag.MEMBER_OVERRIDES,
 							CacheFlag.ACTIVITY,
 							CacheFlag.CLIENT_STATUS
 					)
-					.setMemberCachePolicy(MemberCachePolicy.ALL)
-					.setToken(Config.BOT_TOKEN)
+					.setMemberCachePolicy(MemberCachePolicy.DEFAULT) // voice or owner
+					.setChunkingFilter(ChunkingFilter.NONE)          // lazy loading
 					.addEventListeners(
 							new OnEmoteEvent(),
 							new OnGuildEvent(),
@@ -110,15 +110,19 @@ public class KittyBot{
 							new OnInviteEvent(),
 							new OnReadyEvent(),
 							new Paginator(),
-							lavalink
+							LAVALINK
 					)
-					.setVoiceDispatchInterceptor(lavalink.getVoiceInterceptor())
+					.setVoiceDispatchInterceptor(LAVALINK.getVoiceInterceptor())
 					.setActivity(Activity.playing("loading..."))
 					.setStatus(OnlineStatus.DO_NOT_DISTURB)
+					.setGatewayPool(ThreadingConfig.newScheduler(1, () -> "KittyBot", "Gateway"), true)
+					.setEventPool(ThreadingConfig.newScheduler(1, () -> "KittyBot", "Event"), true)
+					.setHttpClient(HTTP_CLIENT)
 					.setGatewayEncoding(GatewayEncoding.ETF)
 					.setAudioSendFactory(new NativeAudioSendFactory())
-					.build().awaitReady();
-
+					.setBulkDeleteSplittingEnabled(false)
+					.build()
+					.awaitReady();
 
 			if(Config.isSet(Config.DISCORD_BOT_LIST_TOKEN)){
 				discordBotListAPI = new DiscordBotListAPI.Builder().token(Config.DISCORD_BOT_LIST_TOKEN).botId(Config.BOT_ID).build();
@@ -142,10 +146,6 @@ public class KittyBot{
 		}
 	}
 
-	private JDA getShardById(int id){
-		return jda;
-	}
-
 	public static void sendToPublicLogChannel(String description){
 		var guild = jda.getGuildById(Config.SUPPORT_GUILD_ID);
 		if(guild == null){
@@ -163,7 +163,7 @@ public class KittyBot{
 	}
 
 	public void close(){
-		lavalink.getLinks().forEach(Link::destroy);
+		LAVALINK.getLinks().forEach(Link::destroy);
 		jda.shutdown();
 		SQL.close();
 		System.exit(0);
@@ -178,7 +178,7 @@ public class KittyBot{
 	}
 
 	public static JdaLavalink getLavalink(){
-		return lavalink;
+		return LAVALINK;
 	}
 
 	public static OkHttpClient getHttpClient(){

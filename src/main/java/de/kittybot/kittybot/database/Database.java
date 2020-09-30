@@ -300,7 +300,7 @@ public class Database{
 		return false;
 	}
 
-	public static String getSession(String sessionId){
+	public static String getSessionUserId(String sessionId){
 		try(var con = getCon(); var ctx = getCtx(con)){
 			var res = ctx.selectFrom(SESSIONS).where(SESSIONS.SESSION_ID.eq(sessionId)).fetchOne();
 			if(res != null){

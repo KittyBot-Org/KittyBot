@@ -7,12 +7,12 @@ import net.dv8tion.jda.api.entities.Invite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class InviteCache{
 
-	private static final Map<String, Map<String, InviteData>> INVITES = new HashMap<>();
+	private static final Map<String, Map<String, InviteData>> INVITES = new ConcurrentHashMap<>();
 	private static final Logger LOG = LoggerFactory.getLogger(InviteCache.class);
 
 	public static Invite getUsedInvite(Guild guild){
@@ -49,7 +49,7 @@ public class InviteCache{
 	public static void cacheInvite(Invite invite){
 		if(invite.getGuild() != null){
 			var guildId = invite.getGuild().getId();
-			INVITES.computeIfAbsent(guildId, k -> new HashMap<>());
+			INVITES.computeIfAbsent(guildId, k -> new ConcurrentHashMap<>());
 			INVITES.get(guildId).put(invite.getCode(), new InviteData(invite));
 		}
 	}

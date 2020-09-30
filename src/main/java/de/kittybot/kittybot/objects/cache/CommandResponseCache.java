@@ -4,12 +4,12 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CommandResponseCache{
 
-	private static final Map<String, String> COMMAND_RESPONSES = new HashMap<>();
+	private static final Map<String, String> COMMAND_RESPONSES = new ConcurrentHashMap<>();
 
 	public static void addCommandResponse(Message command, Message response){
 		COMMAND_RESPONSES.put(command.getId(), response.getId());

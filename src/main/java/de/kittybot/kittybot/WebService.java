@@ -4,8 +4,6 @@ import com.jagrosh.jdautilities.oauth2.OAuth2Client;
 import com.jagrosh.jdautilities.oauth2.Scope;
 import com.jagrosh.jdautilities.oauth2.entities.impl.OAuth2ClientImpl;
 import com.jagrosh.jdautilities.oauth2.exceptions.InvalidStateException;
-import com.jagrosh.jdautilities.oauth2.session.DefaultSessionController;
-import com.jagrosh.jdautilities.oauth2.state.DefaultStateController;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.cache.PrefixCache;
@@ -29,13 +27,11 @@ public class WebService{
 
 	private static final Logger LOG = LoggerFactory.getLogger(WebService.class);
 
-	private final Scope[] scopes = new Scope[]{Scope.IDENTIFY};
+	private final Scope[] scopes = new Scope[]{Scope.IDENTIFY, Scope.GUILDS};
 	private final OAuth2Client oAuthClient;
 
 	public WebService(int port){
-		DefaultSessionController sessionController = new DefaultSessionController();
-		DefaultStateController stateController = new DefaultStateController();
-		oAuthClient = new OAuth2ClientImpl(Long.parseLong(Config.BOT_ID), Config.BOT_SECRET, sessionController, stateController, KittyBot.getHttpClient());
+		oAuthClient = new OAuth2ClientImpl(Long.parseLong(Config.BOT_ID), Config.BOT_SECRET, null, null, KittyBot.getHttpClient());
 		Javalin.create(config -> config.enableCorsForOrigin(Config.ORIGIN_URL)).routes(() -> {
 			get("/discord_login", this::discordLogin);
 			get("/health_check", ctx -> ctx.result("alive"));
@@ -107,7 +103,7 @@ public class WebService{
 			error(ctx, 401, "Please login");
 			return;
 		}
-		var userId = Database.getSession(auth);
+		var userId = Database.getSessionUserId(auth);
 		if(userId == null){
 			error(ctx, 404, "Session not found");
 			return;
@@ -133,7 +129,7 @@ public class WebService{
 			error(ctx, 401, "Please login");
 			return;
 		}
-		var userId = Database.getSession(auth);
+		var userId = Database.getSessionUserId(auth);
 		if(userId == null){
 			error(ctx, 404, "Session not found");
 			return;
@@ -162,7 +158,7 @@ public class WebService{
 				error(ctx, 404, "guild not found");
 				return;
 			}
-			var userId = Database.getSession(ctx.header("Authorization"));
+			var userId = Database.getSessionUserId(ctx.header("Authorization"));
 			if(userId == null){
 				error(ctx, 404, "This user does not exist");
 				return;

@@ -7,12 +7,12 @@ import de.kittybot.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ReactiveMessageCache{
 
-	private static final Map<String, ReactiveMessage> REACTIVE_MESSAGES = new HashMap<>();
+	private static final Map<String, ReactiveMessage> REACTIVE_MESSAGES = new ConcurrentHashMap<>();
 
 	public static void removeReactiveMessage(Guild guild, String messageId){
 		var textChannel = guild.getTextChannelById(REACTIVE_MESSAGES.get(messageId).channelId);
