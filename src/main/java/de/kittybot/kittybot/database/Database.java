@@ -282,7 +282,7 @@ public class Database{
 
 	public static boolean sessionExists(String sessionId){
 		try(var con = getCon(); var ctx = getCtx(con)){
-			return ctx.selectFrom(SESSIONS).where(SESSIONS.SESSION_ID.eq(sessionId)).fetchOne() == null;
+			return ctx.selectFrom(SESSIONS).where(SESSIONS.SESSION_ID.eq(sessionId)).fetchOne() != null;
 		}
 		catch(SQLException e){
 			LOG.error("Error checking if session exists", e);
