@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS commands(
   guild_id        varchar(18) NOT NULL,
   user_id         varchar(18) NOT NULL,
   command         varchar(18) NOT NULL,
-  processing_time int NOT NULL,
-  time            varchar(20) NOT NULL,
+  processing_time interval NOT NULL,
+  time            timestamp NOT NULL,
 PRIMARY KEY(message_id, guild_id)
 );
