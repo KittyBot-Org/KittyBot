@@ -5,11 +5,19 @@ import de.kittybot.kittybot.objects.cache.PrefixCache;
 import io.github.classgraph.ClassGraph;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import org.jooq.types.DayToSecond;
+import org.jooq.types.Interval;
+import org.jooq.types.YearToSecond;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class CommandManager{
 
@@ -47,7 +55,7 @@ public class CommandManager{
 					var ctx = new CommandContext(event, command, message);
 					LOG.info("Command: {}, args: {}, by: {}, from: {}", command, ctx.getArgs(), event.getAuthor().getName(), event.getGuild().getName());
 					cmd.run(ctx);
-					Database.addCommandStatistics(event.getGuild().getId(), event.getMessageId(), event.getAuthor().getId(), command, System.nanoTime() - start);
+					Database.addCommandStatistics(event.getGuild().getId(), event.getMessageId(), event.getAuthor().getId(), command, YearToSecond.valueOf(Duration.of(System.nanoTime() - start, ChronoUnit.NANOS)));
 					return true;
 				}
 			}

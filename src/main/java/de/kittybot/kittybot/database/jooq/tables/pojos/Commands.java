@@ -4,6 +4,8 @@
 package de.kittybot.kittybot.database.jooq.tables.pojos;
 
 
+import org.jooq.types.YearToSecond;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -14,13 +16,13 @@ import java.time.LocalDateTime;
 @SuppressWarnings({"all", "unchecked", "rawtypes"})
 public class Commands implements Serializable{
 
-	private static final long serialVersionUID = -1811860226;
+	private static final long serialVersionUID = -1380580204;
 
 	private final String messageId;
 	private final String guildId;
 	private final String userId;
 	private final String command;
-	private final LocalDateTime processingTime;
+	private final YearToSecond processingTime;
 	private final LocalDateTime time;
 
 	public Commands(Commands value){
@@ -37,7 +39,7 @@ public class Commands implements Serializable{
 			String guildId,
 			String userId,
 			String command,
-			LocalDateTime processingTime,
+			YearToSecond processingTime,
 			LocalDateTime time
 	){
 		this.messageId = messageId;
@@ -64,7 +66,7 @@ public class Commands implements Serializable{
 		return this.command;
 	}
 
-	public LocalDateTime getProcessingTime(){
+	public YearToSecond getProcessingTime(){
 		return this.processingTime;
 	}
 

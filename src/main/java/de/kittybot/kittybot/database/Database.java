@@ -6,11 +6,15 @@ import de.kittybot.kittybot.objects.cache.SelfAssignableRoleCache;
 import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
+import org.jooq.types.DayToSecond;
+import org.jooq.types.YearToSecond;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
+import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -79,14 +83,26 @@ public class Database{
 	}
 
 
-	public static void addCommandStatistics(String guildId, String commandId, String userId, String command, long processingTime){
+	public static void addCommandStatistics(String guildId, String commandId, String userId, String command, YearToSecond processingTime){
 		try(var con = getCon(); var ctx = getCtx(con)){
-			ctx.insertInto(COMMANDS).columns(COMMANDS.fields()).values(commandId, guildId, userId, command, processingTime, Instant.now().getEpochSecond()).execute();
+			ctx.insertInto(COMMANDS).columns(COMMANDS.fields()).values(commandId, guildId, userId, command, processingTime, LocalDateTime.now()).execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error adding command statistics for message: " + commandId, e);
 		}
 	}
+
+/*	public static void getCommandStatistics(String guildId, String userId, String command){
+		try(var con = getCon(); var ctx = getCtx(con)){
+			var res = ctx.selectFrom(COMMANDS).where(COMMANDS.GUILD_ID.eq(guildId)).fetch();
+			for(var r : res){
+				r.get(COMMANDS.PROCESSING_TIME).
+			}
+		}
+		catch(SQLException e){
+			LOG.error("Error adding command statistics for message: " + commandId, e);
+		}
+	} */
 
 	public static void setCommandPrefix(String guildId, String prefix){
 		setProperty(guildId, GUILDS.COMMAND_PREFIX, prefix);
