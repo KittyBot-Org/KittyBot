@@ -16,8 +16,10 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 import java.awt.*;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
 
 public class RolesCommand extends ACommand{
 
@@ -95,17 +97,17 @@ public class RolesCommand extends ACommand{
 	}
 
 	private Map<Role, Emote> getRoleEmoteMap(Guild guild){
-		Map<String, String> roles = SelfAssignableRoleCache.getSelfAssignableRoles(guild.getId());
-		Map<Role, Emote> map = new LinkedHashMap<>();
-		for(Map.Entry<String, String> entry : roles.entrySet()){
+		var roles = SelfAssignableRoleCache.getSelfAssignableRoles(guild.getId());
+		var map = new LinkedHashMap<Role, Emote>();
+		for(var entry : roles.entrySet()){
 			Role role = guild.getRoleById(entry.getKey());
 			if(role == null){
-				SelfAssignableRoleCache.removeSelfAssignableRoles(guild.getId(), new HashSet<>(Collections.singleton(entry.getKey())));
+				SelfAssignableRoleCache.removeSelfAssignableRoles(guild.getId(), Collections.singleton(entry.getKey()));
 				continue;
 			}
 			Emote emote = guild.getJDA().getEmoteById(entry.getValue());
 			if(emote == null){
-				SelfAssignableRoleCache.removeSelfAssignableRoles(guild.getId(), new HashSet<>(Collections.singleton(entry.getKey())));
+				SelfAssignableRoleCache.removeSelfAssignableRoles(guild.getId(), Collections.singleton(entry.getKey()));
 				continue;
 			}
 			map.put(role, emote);

@@ -104,29 +104,10 @@ public class SessionsRecord extends UpdatableRecordImpl<SessionsRecord> implemen
 		return getSessionId();
 	}
 
-	/**
-	 * Getter for <code>public.sessions.session_id</code>.
-	 */
-	public String getSessionId(){
-		return (String) get(0);
-	}
-
-	/**
-	 * Setter for <code>public.sessions.session_id</code>.
-	 */
-	public SessionsRecord setSessionId(String value){
-		set(0, value);
-		return this;
-	}
-
 	@Override
 	public String component2(){
 		return getUserId();
 	}
-
-	// -------------------------------------------------------------------------
-	// Constructors
-	// -------------------------------------------------------------------------
 
 	/**
 	 * Getter for <code>public.sessions.user_id</code>.
@@ -140,6 +121,25 @@ public class SessionsRecord extends UpdatableRecordImpl<SessionsRecord> implemen
 	 */
 	public SessionsRecord setUserId(String value){
 		set(1, value);
+		return this;
+	}
+
+	// -------------------------------------------------------------------------
+	// Constructors
+	// -------------------------------------------------------------------------
+
+	/**
+	 * Getter for <code>public.sessions.session_id</code>.
+	 */
+	public String getSessionId(){
+		return (String) get(0);
+	}
+
+	/**
+	 * Setter for <code>public.sessions.session_id</code>.
+	 */
+	public SessionsRecord setSessionId(String value){
+		set(0, value);
 		return this;
 	}
 
