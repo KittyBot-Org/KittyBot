@@ -82,15 +82,15 @@ public class RolesCommand extends ACommand{
 			for(Map.Entry<Role, Emote> k : roles.entrySet()){
 				value.append(k.getValue().getAsMention()).append(Emojis.BLANK).append(Emojis.BLANK).append(k.getKey().getAsMention()).append("\n");
 			}
-			answer(ctx, new EmbedBuilder().setTitle(title)
+			ctx.getChannel().sendMessage(new EmbedBuilder().setTitle(title)
 					.setDescription("To get/remove a role click reaction emote. " + Emojis.KITTY_BLINK + "\n\n")
 					.setColor(Color.MAGENTA)
-					.appendDescription("**Emote:**" + Emojis.BLANK + "**Role:**\n" + value)).queue(message -> {
+					.appendDescription("**Emote:**" + Emojis.BLANK + "**Role:**\n" + value).build())
+			.queue(message ->{
 				ReactiveMessageCache.addReactiveMessage(ctx, message, this, "-1");
 				for(Map.Entry<Role, Emote> role : roles.entrySet()){
 					message.addReaction(role.getValue()).queue();
 				}
-				message.addReaction(Emojis.WASTEBASKET).queue();
 				message.addReaction(Emojis.WASTEBASKET).queue();
 			});
 		}

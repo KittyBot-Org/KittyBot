@@ -48,7 +48,7 @@ public class KittyBot{
 	private static final AudioPlayerManager AUDIO_PLAYER_MANAGER = new DefaultAudioPlayerManager();
 	private static final ScheduledExecutorService SCHEDULER = Executors.newSingleThreadScheduledExecutor();
 	private static final EventWaiter WAITER = new EventWaiter();
-	private static final JdaLavalink LAVALINK = new JdaLavalink(Config.BOT_ID, 0, null);
+	private static JdaLavalink lavalink;
 	private static JDA jda;
 	private static DiscordBotListAPI discordBotListAPI;
 
@@ -69,8 +69,9 @@ public class KittyBot{
 		LOG.info("Starting...");
 
 		try{
+			lavalink = new JdaLavalink(Config.BOT_ID, 1, this::fuckLavalink);
 			for(LavalinkNode node : Config.LAVALINK_NODES){
-				LAVALINK.addNode(new URI("ws://" + node.host + ":" + node.port), node.password);
+				lavalink.addNode(new URI("ws://" + node.host + ":" + node.port), node.password);
 			}
 
 			AUDIO_PLAYER_MANAGER.registerSourceManager(new YoutubeAudioSourceManager());
@@ -110,9 +111,9 @@ public class KittyBot{
 							new OnInviteEvent(),
 							new OnReadyEvent(),
 							new Paginator(),
-							LAVALINK
+							lavalink
 					)
-					.setVoiceDispatchInterceptor(LAVALINK.getVoiceInterceptor())
+					.setVoiceDispatchInterceptor(lavalink.getVoiceInterceptor())
 					.setActivity(Activity.playing("loading..."))
 					.setStatus(OnlineStatus.DO_NOT_DISTURB)
 					.setEventPool(ThreadingConfig.newScheduler(2, () -> "KittyBot", "Event"), true)
@@ -145,6 +146,10 @@ public class KittyBot{
 		}
 	}
 
+	private JDA fuckLavalink(int id){ // TODO maybe get rid of this fucking shit in our fork
+		return jda;
+	}
+
 	public static void sendToPublicLogChannel(String description){
 		var guild = jda.getGuildById(Config.SUPPORT_GUILD_ID);
 		if(guild == null){
@@ -162,7 +167,7 @@ public class KittyBot{
 	}
 
 	public void close(){
-		LAVALINK.getLinks().forEach(Link::destroy);
+		lavalink.getLinks().forEach(Link::destroy);
 		jda.shutdown();
 		SQL.close();
 		System.exit(0);
@@ -177,7 +182,7 @@ public class KittyBot{
 	}
 
 	public static JdaLavalink getLavalink(){
-		return LAVALINK;
+		return lavalink;
 	}
 
 	public static OkHttpClient getHttpClient(){
