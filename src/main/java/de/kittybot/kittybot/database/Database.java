@@ -281,6 +281,17 @@ public class Database{
 		return key;
 	}
 
+	public static String getSession(String userId){
+		try(var con = getCon(); var ctx = getCtx(con)){
+			var retrieved = ctx.selectFrom(SESSIONS).where(SESSIONS.USER_ID.eq(userId)).fetchOne();
+			return retrieved == null ? null : retrieved.getSessionId();
+		}
+		catch(SQLException e){
+			LOG.error("Error getting the session", e);
+		}
+		return null;
+	}
+
 	public static boolean sessionExists(String sessionId){
 		try(var con = getCon(); var ctx = getCtx(con)){
 			return ctx.selectFrom(SESSIONS).where(SESSIONS.SESSION_ID.eq(sessionId)).fetchOne() != null;
