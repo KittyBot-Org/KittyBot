@@ -347,10 +347,6 @@ public class WebService{
 		result(ctx, 200, data);
 	}
 
-	private void ok(Context ctx, CompletableFuture<?> completableFuture){
-		ctx.result(completableFuture);
-	}
-
 	private void result(Context ctx, int code, DataObject data){
 		ctx.header("Content-Type", "application/json");
 		ctx.status(code);
