@@ -2,21 +2,20 @@ package de.kittybot.kittybot;
 
 import com.jagrosh.jdautilities.oauth2.OAuth2Client;
 import com.jagrosh.jdautilities.oauth2.Scope;
-import com.jagrosh.jdautilities.oauth2.entities.OAuth2Guild;
 import com.jagrosh.jdautilities.oauth2.exceptions.InvalidStateException;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.Config;
-import de.kittybot.kittybot.objects.session.DashboardSession;
-import de.kittybot.kittybot.objects.session.DashboardSessionController;
+import de.kittybot.kittybot.objects.cache.GuildCache;
 import de.kittybot.kittybot.objects.cache.PrefixCache;
 import de.kittybot.kittybot.objects.cache.SelfAssignableRoleCache;
 import de.kittybot.kittybot.objects.cache.SessionCache;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandManager;
+import de.kittybot.kittybot.objects.guilds.GuildData;
+import de.kittybot.kittybot.objects.session.DashboardSessionController;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.slf4j.Logger;
@@ -26,7 +25,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
@@ -125,28 +123,24 @@ public class WebService{
 			error(ctx, 404, "Session not found");
 			return;
 		}
-		var user = KittyBot.getJda().retrieveUserById(session.getUserId()).complete();
+		var userId = session.getUserId();
+		var user = KittyBot.getJda().retrieveUserById(userId).complete();
 		if(user == null){
 			error(ctx, 404, "User not found");
 			return;
 		}
-		List<OAuth2Guild> guilds;
+		List<GuildData> guilds;
 		try{
-			guilds = O_AUTH_2_CLIENT.getGuilds(session).complete();
+			guilds = GuildCache.getGuilds(userId, O_AUTH_2_CLIENT, session);
 		}
 		catch (Exception ex){
-			LOG.error("Error while retrieving user guilds for user: " + session.getUserId(), ex);
+			LOG.error("Error while retrieving user guilds for user: {}", user, ex);
 			error(ctx, 500, "There was an internal error");
 			return;
 		}
 		var guildData = DataArray.empty();
-		var mapped = KittyBot.getJda().getGuildCache().applyStream(guildStream -> guildStream.map(Guild::getId).collect(Collectors.toList()));
-		//noinspection ConstantConditions shut the fuck up IJ
-		guilds.stream()
-			  .filter(guild -> mapped.contains(guild.getId()))
-			  .filter(guild -> guild.getPermissions().contains(Permission.ADMINISTRATOR))
-			  .forEach(guild -> guildData.add(DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl())));
-		ok(ctx, DataObject.empty().put("name", user.getName()).put("id", session.getUserId()).put("icon", user.getEffectiveAvatarUrl()).put("guilds", guildData));
+		guilds.forEach(guild -> guildData.add(DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl())));
+		ok(ctx, DataObject.empty().put("name", user.getName()).put("id", userId).put("icon", user.getEffectiveAvatarUrl()).put("guilds", guildData));
 	}
 
 	private void getAllGuilds(Context ctx){

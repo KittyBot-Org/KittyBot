@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.events;
 
 import de.kittybot.kittybot.database.Database;
+import de.kittybot.kittybot.objects.cache.GuildCache;
 import de.kittybot.kittybot.objects.cache.InviteCache;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.Permission;
@@ -40,6 +41,8 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 				}
 			}
 		}
+
+		GuildCache.uncacheGuildForUser(event.getUser().getId(), event.getGuild().getId());
 	}
 
 	@Override
@@ -84,6 +87,8 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 			}
 		}
 	}
+
+
 
 	private String generateBoostMessage(String message, User user){
 		if(BOOST_MESSAGES != null && BOOST_MESSAGES.size() > 1){
