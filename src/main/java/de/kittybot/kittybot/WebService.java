@@ -2,17 +2,20 @@ package de.kittybot.kittybot;
 
 import com.jagrosh.jdautilities.oauth2.OAuth2Client;
 import com.jagrosh.jdautilities.oauth2.Scope;
+import com.jagrosh.jdautilities.oauth2.entities.OAuth2Guild;
 import com.jagrosh.jdautilities.oauth2.entities.impl.OAuth2ClientImpl;
 import com.jagrosh.jdautilities.oauth2.exceptions.InvalidStateException;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.cache.PrefixCache;
 import de.kittybot.kittybot.objects.cache.SelfAssignableRoleCache;
+import de.kittybot.kittybot.objects.cache.SessionCache;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandManager;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.slf4j.Logger;
@@ -20,6 +23,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
@@ -27,7 +32,7 @@ public class WebService{
 
 	private static final Logger LOG = LoggerFactory.getLogger(WebService.class);
 
-	private final Scope[] scopes = new Scope[]{Scope.IDENTIFY};
+	private final Scope[] scopes = new Scope[]{Scope.IDENTIFY, Scope.GUILDS};
 	private final OAuth2Client oAuthClient;
 
 	public WebService(int port){
@@ -60,7 +65,7 @@ public class WebService{
 
 	private void discordLogin(Context ctx){
 		var key = ctx.header("Authorization");
-		if(key == null || !Database.sessionExists(key)){
+		if(key == null || SessionCache.sessionExists(key)){
 			ctx.redirect(oAuthClient.generateAuthorizationURL(Config.REDIRECT_URL, scopes));
 		}
 		else{
@@ -74,13 +79,11 @@ public class WebService{
 		var state = json.getString("state");
 		try{
 			var key = Database.generateUniqueKey();
-			var session = oAuthClient.startSession(code, state, key, scopes).complete();
-			var user = oAuthClient.getUser(session).complete();
-			Database.addSession(user.getId(), key);
+			SessionCache.createSession(oAuthClient, code, state, key, scopes);
 			ok(ctx, DataObject.empty().put("key", key));
 		}
 		catch(InvalidStateException e){
-			error(ctx, 401, "State invalid/expired please try again");
+			error(ctx, 401, "State invalid/expired. Please try again");
 		}
 		catch(IOException e){
 			LOG.error("State is invalid", e);
@@ -91,7 +94,7 @@ public class WebService{
 	private void checkDiscordLogin(Context ctx){
 		if(!ctx.method().equals("OPTIONS")){
 			var key = ctx.header("Authorization");
-			if(key == null || !Database.sessionExists(key)){
+			if(key == null || SessionCache.sessionExists(key)){
 				error(ctx, 401, "Please login with discord to continue");
 			}
 		}
@@ -103,7 +106,7 @@ public class WebService{
 			error(ctx, 401, "Please login");
 			return;
 		}
-		var userId = Database.getSessionUserId(auth);
+		var userId = SessionCache.getUserId(auth);
 		if(userId == null){
 			error(ctx, 404, "Session not found");
 			return;
@@ -113,14 +116,22 @@ public class WebService{
 			error(ctx, 404, "User not found");
 			return;
 		}
-		var data = DataArray.empty();
-		for(var guild : KittyBot.getJda().getMutualGuilds(user)){
-			var u = guild.getMember(user);
-			if(u != null && u.hasPermission(Permission.ADMINISTRATOR)){
-				data.add(DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl()));
-			}
+		List<OAuth2Guild> guilds;
+		try{
+			guilds = oAuthClient.getGuilds(SessionCache.getSession(userId)).complete();
 		}
-		ok(ctx, DataObject.empty().put("name", user.getName()).put("id", user.getId()).put("icon", user.getEffectiveAvatarUrl()).put("guilds", data));
+		catch (Exception ex){
+			error(ctx, 500, "There was an internal error");
+			return;
+		}
+		var guildData = DataArray.empty();
+		var mapped = KittyBot.getJda().getGuildCache().applyStream(guildStream -> guildStream.map(Guild::getId).collect(Collectors.toList()));
+		//noinspection ConstantConditions shut the fuck up IJ
+		guilds.stream()
+			  .filter(guild -> mapped.contains(guild.getId()))
+			  .filter(guild -> guild.getPermissions().contains(Permission.ADMINISTRATOR))
+			  .forEach(guild -> guildData.add(DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl())));
+		ok(ctx, DataObject.empty().put("name", user.getName()).put("id", userId).put("icon", user.getEffectiveAvatarUrl()).put("guilds", guildData));
 	}
 
 	private void getAllGuilds(Context ctx){
@@ -129,7 +140,7 @@ public class WebService{
 			error(ctx, 401, "Please login");
 			return;
 		}
-		var userId = Database.getSessionUserId(auth);
+		var userId = SessionCache.getUserId(auth);
 		if(userId == null){
 			error(ctx, 404, "Session not found");
 			return;
@@ -158,7 +169,8 @@ public class WebService{
 				error(ctx, 404, "guild not found");
 				return;
 			}
-			var userId = Database.getSessionUserId(ctx.header("Authorization"));
+			var key = ctx.header("Authorization");
+			var userId = SessionCache.getUserId(key);
 			if(userId == null){
 				error(ctx, 404, "This user does not exist");
 				return;

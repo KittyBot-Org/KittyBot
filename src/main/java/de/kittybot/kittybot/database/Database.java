@@ -3,6 +3,7 @@ package de.kittybot.kittybot.database;
 import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.ReactiveMessage;
 import de.kittybot.kittybot.objects.cache.SelfAssignableRoleCache;
+import de.kittybot.kittybot.objects.cache.SessionCache;
 import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
@@ -274,7 +275,7 @@ public class Database{
 
 	public static String generateUniqueKey(){
 		var key = Utils.generate(32);
-		while(sessionExists(key)){
+		while(SessionCache.sessionExists(key)){
 			key = Utils.generate(32);
 		}
 		return key;
