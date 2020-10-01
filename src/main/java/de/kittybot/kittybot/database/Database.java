@@ -309,14 +309,13 @@ public class Database{
 		return false;
 	}
 
-	public static boolean deleteSession(String sessionKey){
+	public static void deleteSession(String sessionKey){
 		try(var con = getCon(); var ctx = getCtx(con)){
 			ctx.deleteFrom(SESSIONS).where(SESSIONS.SESSION_KEY.eq(sessionKey)).execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error deleting session", e);
 		}
-		return false;
 	}
 
 	public void addSelfAssignableRole(String guildId, String role, String emote){
