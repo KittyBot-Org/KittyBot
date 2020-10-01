@@ -4,8 +4,8 @@ import com.jagrosh.jdautilities.oauth2.session.SessionData;
 import de.kittybot.kittybot.WebService;
 import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.ReactiveMessage;
+import de.kittybot.kittybot.objects.cache.DashboardSessionCache;
 import de.kittybot.kittybot.objects.cache.SelfAssignableRoleCache;
-import de.kittybot.kittybot.objects.cache.SessionCache;
 import de.kittybot.kittybot.objects.session.DashboardSession;
 import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.JDA;
@@ -271,7 +271,7 @@ public class Database{
 
 	public static String generateUniqueKey(){
 		var key = Utils.generate(32);
-		while(SessionCache.sessionExists(key)){
+		while(DashboardSessionCache.sessionExists(key)){
 			key = Utils.generate(32);
 		}
 		return key;
@@ -309,14 +309,13 @@ public class Database{
 		return false;
 	}
 
-	public static boolean deleteSession(String sessionKey){
+	public static void deleteSession(String sessionKey){
 		try(var con = getCon(); var ctx = getCtx(con)){
 			ctx.deleteFrom(SESSIONS).where(SESSIONS.SESSION_KEY.eq(sessionKey)).execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error deleting session", e);
 		}
-		return false;
 	}
 
 	public void addSelfAssignableRole(String guildId, String role, String emote){

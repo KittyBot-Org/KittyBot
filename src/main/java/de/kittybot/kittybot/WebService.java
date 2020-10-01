@@ -5,10 +5,9 @@ import com.jagrosh.jdautilities.oauth2.Scope;
 import com.jagrosh.jdautilities.oauth2.exceptions.InvalidStateException;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.Config;
-import de.kittybot.kittybot.objects.cache.GuildCache;
+import de.kittybot.kittybot.objects.cache.DashboardSessionCache;
 import de.kittybot.kittybot.objects.cache.PrefixCache;
 import de.kittybot.kittybot.objects.cache.SelfAssignableRoleCache;
-import de.kittybot.kittybot.objects.cache.SessionCache;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandManager;
 import de.kittybot.kittybot.objects.guilds.GuildData;
@@ -40,20 +39,13 @@ public class WebService{
 			.setSessionController(new DashboardSessionController())
 			.build();
 
-	public static OAuth2Client getOAuth2Client() {
-		return O_AUTH_2_CLIENT;
-	}
-
-	public static Scope[] getScopes() {
-		return SCOPES;
-	}
-
 	public WebService(int port){
 		Javalin.create(config -> config.enableCorsForOrigin(Config.ORIGIN_URL)).routes(() -> {
 			get("/discord_login", this::discordLogin);
 			get("/health_check", ctx -> ctx.result("alive"));
 			get("/commands/get", this::getCommands);
 			post("/login", this::login);
+			post("/logout", this::logout);
 			path("/user", () -> {
 				before("/*", this::checkDiscordLogin);
 				get("/me", this::getUserInfo);
@@ -75,9 +67,17 @@ public class WebService{
 		}).start(port);
 	}
 
+	public static OAuth2Client getOAuth2Client(){
+		return O_AUTH_2_CLIENT;
+	}
+
+	public static Scope[] getScopes(){
+		return SCOPES;
+	}
+
 	private void discordLogin(Context ctx){
 		var key = ctx.header("Authorization");
-		if(key == null || !SessionCache.sessionExists(key)){
+		if(key == null || !DashboardSessionCache.sessionExists(key)){
 			ctx.redirect(O_AUTH_2_CLIENT.generateAuthorizationURL(Config.REDIRECT_URL, SCOPES));
 		}
 		else{
@@ -103,10 +103,17 @@ public class WebService{
 		}
 	}
 
+	private void logout(Context ctx){
+		var auth = ctx.header("Authorization");
+		if(auth != null){
+			DashboardSessionCache.deleteSession(auth);
+		}
+	}
+
 	private void checkDiscordLogin(Context ctx){
 		if(!ctx.method().equals("OPTIONS")){
 			var key = ctx.header("Authorization");
-			if(key == null || !SessionCache.sessionExists(key)){
+			if(key == null || !DashboardSessionCache.sessionExists(key)){
 				error(ctx, 401, "Please login with discord to continue");
 			}
 		}
@@ -118,7 +125,7 @@ public class WebService{
 			error(ctx, 401, "Please login");
 			return;
 		}
-		var session = SessionCache.getSession(auth);
+		var session = DashboardSessionCache.getSession(auth);
 		if(session == null){
 			error(ctx, 404, "Session not found");
 			return;
@@ -133,12 +140,18 @@ public class WebService{
 		try{
 			guilds = GuildCache.getGuilds(userId, O_AUTH_2_CLIENT, session);
 		}
-		catch (Exception ex){
-			LOG.error("Error while retrieving user guilds for user: {}", user, ex);
+		catch(Exception ex){
+			LOG.error("Error while retrieving user guilds for user: {}", userId, ex);
 			error(ctx, 500, "There was an internal error");
 			return;
 		}
 		var guildData = DataArray.empty();
+		var mapped = KittyBot.getJda().getGuildCache().applyStream(guildStream -> guildStream.map(Guild::getId).collect(Collectors.toList()));
+		//noinspection ConstantConditions shut the fuck up IJ
+		guilds.stream()
+				.filter(guild -> mapped.contains(guild.getId()))
+				.filter(guild -> guild.getPermissions().contains(Permission.ADMINISTRATOR))
+				.forEach(guild -> guildData.add(DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl())));
 		guilds.forEach(guild -> guildData.add(DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl())));
 		ok(ctx, DataObject.empty().put("name", user.getName()).put("id", userId).put("icon", user.getEffectiveAvatarUrl()).put("guilds", guildData));
 	}
@@ -149,7 +162,7 @@ public class WebService{
 			error(ctx, 401, "Please login");
 			return;
 		}
-		var session = SessionCache.getSession(auth);
+		var session = DashboardSessionCache.getSession(auth);
 		if(session == null){
 			error(ctx, 404, "Session not found");
 			return;
@@ -183,7 +196,7 @@ public class WebService{
 				error(ctx, 401, "Please login");
 				return;
 			}
-			var session = SessionCache.getSession(auth);
+			var session = DashboardSessionCache.getSession(auth);
 			if(session == null){
 				error(ctx, 404, "This user does not exist");
 				return;

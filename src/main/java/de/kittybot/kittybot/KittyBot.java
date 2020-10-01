@@ -17,7 +17,6 @@ import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.LavalinkNode;
 import de.kittybot.kittybot.objects.StatusManager;
 import de.kittybot.kittybot.objects.cache.MessageCache;
-import de.kittybot.kittybot.objects.cache.SessionCache;
 import de.kittybot.kittybot.objects.command.CommandManager;
 import de.kittybot.kittybot.objects.paginator.Paginator;
 import lavalink.client.io.Link;
@@ -87,14 +86,14 @@ public class KittyBot{
 			RestAction.setDefaultFailure(null);
 
 			jda = JDABuilder.create(
-						Config.BOT_TOKEN,
-						GatewayIntent.GUILD_MEMBERS,
-						GatewayIntent.GUILD_VOICE_STATES,
-						GatewayIntent.GUILD_MESSAGES,
-						GatewayIntent.GUILD_MESSAGE_REACTIONS,
-						GatewayIntent.GUILD_EMOJIS,
-						GatewayIntent.GUILD_INVITES
-					)
+					Config.BOT_TOKEN,
+					GatewayIntent.GUILD_MEMBERS,
+					GatewayIntent.GUILD_VOICE_STATES,
+					GatewayIntent.GUILD_MESSAGES,
+					GatewayIntent.GUILD_MESSAGE_REACTIONS,
+					GatewayIntent.GUILD_EMOJIS,
+					GatewayIntent.GUILD_INVITES
+			)
 					.disableCache(
 							CacheFlag.MEMBER_OVERRIDES,
 							CacheFlag.ACTIVITY,
