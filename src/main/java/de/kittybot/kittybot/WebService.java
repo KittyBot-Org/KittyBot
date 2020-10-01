@@ -88,8 +88,12 @@ public class WebService{
 
 	private void login(Context ctx){
 		var json = DataObject.fromJson(ctx.body());
-		var code = json.getString("code");
-		var state = json.getString("state");
+		var code = json.getString("code", null);
+		var state = json.getString("state", null);
+		if(code == null || code.isBlank() || state == null || state.isBlank()){
+			error(ctx, 401, "State or code is invalid");
+			return;
+		}
 		try{
 			var sessionKey = Database.generateUniqueKey();
 			O_AUTH_2_CLIENT.startSession(code, state, sessionKey, SCOPES).complete();
@@ -122,10 +126,6 @@ public class WebService{
 
 	private void getUserInfo(Context ctx){
 		var auth = ctx.header("Authorization");
-		if(auth == null){
-			error(ctx, 401, "Please login");
-			return;
-		}
 		var session = DashboardSessionCache.getSession(auth);
 		if(session == null){
 			error(ctx, 404, "Session not found");
@@ -139,7 +139,7 @@ public class WebService{
 		}
 		List<GuildData> guilds;
 		try{
-			guilds = GuildCache.getGuilds(userId, O_AUTH_2_CLIENT, session);
+			guilds = GuildCache.getGuilds(session);
 		}
 		catch(Exception ex){
 			LOG.error("Error while retrieving user guilds for user: {}", userId, ex);
@@ -153,10 +153,6 @@ public class WebService{
 
 	private void getAllGuilds(Context ctx){
 		var auth = ctx.header("Authorization");
-		if(auth == null){
-			error(ctx, 401, "Please login");
-			return;
-		}
 		var session = DashboardSessionCache.getSession(auth);
 		if(session == null){
 			error(ctx, 404, "Session not found");

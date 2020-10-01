@@ -160,39 +160,9 @@ public class SessionsRecord extends UpdatableRecordImpl<SessionsRecord> implemen
 		return getSessionKey();
 	}
 
-	/**
-	 * Getter for <code>public.sessions.session_key</code>.
-	 */
-	public String getSessionKey(){
-		return (String) get(0);
-	}
-
-	/**
-	 * Setter for <code>public.sessions.session_key</code>.
-	 */
-	public SessionsRecord setSessionKey(String value){
-		set(0, value);
-		return this;
-	}
-
 	@Override
 	public String component2(){
 		return getUserId();
-	}
-
-	/**
-	 * Getter for <code>public.sessions.user_id</code>.
-	 */
-	public String getUserId(){
-		return (String) get(1);
-	}
-
-	/**
-	 * Setter for <code>public.sessions.user_id</code>.
-	 */
-	public SessionsRecord setUserId(String value){
-		set(1, value);
-		return this;
 	}
 
 	@Override
@@ -200,24 +170,29 @@ public class SessionsRecord extends UpdatableRecordImpl<SessionsRecord> implemen
 		return getAccessToken();
 	}
 
-	/**
-	 * Getter for <code>public.sessions.access_token</code>.
-	 */
-	public String getAccessToken(){
-		return (String) get(2);
-	}
-
-	/**
-	 * Setter for <code>public.sessions.access_token</code>.
-	 */
-	public SessionsRecord setAccessToken(String value){
-		set(2, value);
-		return this;
-	}
-
 	@Override
 	public String component4(){
 		return getRefreshToken();
+	}
+
+	@Override
+	public LocalDateTime component5(){
+		return getExpiration();
+	}
+
+	/**
+	 * Getter for <code>public.sessions.expiration</code>.
+	 */
+	public LocalDateTime getExpiration(){
+		return (LocalDateTime) get(4);
+	}
+
+	/**
+	 * Setter for <code>public.sessions.expiration</code>.
+	 */
+	public SessionsRecord setExpiration(LocalDateTime value){
+		set(4, value);
+		return this;
 	}
 
 	/**
@@ -235,9 +210,34 @@ public class SessionsRecord extends UpdatableRecordImpl<SessionsRecord> implemen
 		return this;
 	}
 
-	@Override
-	public LocalDateTime component5(){
-		return getExpiration();
+	/**
+	 * Getter for <code>public.sessions.access_token</code>.
+	 */
+	public String getAccessToken(){
+		return (String) get(2);
+	}
+
+	/**
+	 * Setter for <code>public.sessions.access_token</code>.
+	 */
+	public SessionsRecord setAccessToken(String value){
+		set(2, value);
+		return this;
+	}
+
+	/**
+	 * Getter for <code>public.sessions.user_id</code>.
+	 */
+	public String getUserId(){
+		return (String) get(1);
+	}
+
+	/**
+	 * Setter for <code>public.sessions.user_id</code>.
+	 */
+	public SessionsRecord setUserId(String value){
+		set(1, value);
+		return this;
 	}
 
 	// -------------------------------------------------------------------------
@@ -245,17 +245,17 @@ public class SessionsRecord extends UpdatableRecordImpl<SessionsRecord> implemen
 	// -------------------------------------------------------------------------
 
 	/**
-	 * Getter for <code>public.sessions.expiration</code>.
+	 * Getter for <code>public.sessions.session_key</code>.
 	 */
-	public LocalDateTime getExpiration(){
-		return (LocalDateTime) get(4);
+	public String getSessionKey(){
+		return (String) get(0);
 	}
 
 	/**
-	 * Setter for <code>public.sessions.expiration</code>.
+	 * Setter for <code>public.sessions.session_key</code>.
 	 */
-	public SessionsRecord setExpiration(LocalDateTime value){
-		set(4, value);
+	public SessionsRecord setSessionKey(String value){
+		set(0, value);
 		return this;
 	}
 
