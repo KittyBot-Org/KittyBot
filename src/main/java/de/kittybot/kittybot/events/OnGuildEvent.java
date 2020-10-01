@@ -91,7 +91,7 @@ public class OnGuildEvent extends ListenerAdapter{
 	public void onGuildUpdateName(final GuildUpdateNameEvent event){
 		var guild = event.getGuild();
 		var guildId = guild.getId();
-		GuildCache.cacheGuild(guildId, new GuildData(guildId, guild.getName(), guild.getIconUrl()));
+		GuildCache.cacheGuild(guildId, new GuildData(guildId, event.getNewName(), guild.getIconUrl()));
 	}
 
 }
