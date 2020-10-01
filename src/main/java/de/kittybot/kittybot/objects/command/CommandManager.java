@@ -48,7 +48,7 @@ public class CommandManager{
 				if(cmd.checkCmd(command)){
 					//event.getChannel().sendTyping().queue(); answer is sending too fast and I don't want to block the thread lol
 					var ctx = new CommandContext(event, command, message);
-					LOG.info("Command: {}, args: {}, by: {}, from: {}", command, ctx.getArgs(), event.getAuthor().getName(), event.getGuild().getName());
+					LOG.info("Command: {}, args: {}, by: {}, from: {}({})", command, ctx.getArgs(), event.getAuthor().getName(), event.getGuild().getName(), event.getGuild().getId());
 					cmd.run(ctx);
 					Database.addCommandStatistics(event.getGuild().getId(), event.getMessageId(), event.getAuthor().getId(), command, YearToSecond.valueOf(Duration.of(System.nanoTime() - start, ChronoUnit.NANOS)));
 					return true;
