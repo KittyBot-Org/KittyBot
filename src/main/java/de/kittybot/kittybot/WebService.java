@@ -65,7 +65,7 @@ public class WebService{
 
 	private void discordLogin(Context ctx){
 		var key = ctx.header("Authorization");
-		if(key == null || SessionCache.sessionExists(key)){
+		if(key == null || !SessionCache.sessionExists(key)){
 			ctx.redirect(oAuthClient.generateAuthorizationURL(Config.REDIRECT_URL, scopes));
 		}
 		else{
@@ -94,7 +94,7 @@ public class WebService{
 	private void checkDiscordLogin(Context ctx){
 		if(!ctx.method().equals("OPTIONS")){
 			var key = ctx.header("Authorization");
-			if(key == null || SessionCache.sessionExists(key)){
+			if(key == null || !SessionCache.sessionExists(key)){
 				error(ctx, 401, "Please login with discord to continue");
 			}
 		}
