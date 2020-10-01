@@ -3,10 +3,11 @@ package de.kittybot.kittybot;
 import com.jagrosh.jdautilities.oauth2.OAuth2Client;
 import com.jagrosh.jdautilities.oauth2.Scope;
 import com.jagrosh.jdautilities.oauth2.entities.OAuth2Guild;
-import com.jagrosh.jdautilities.oauth2.entities.impl.OAuth2ClientImpl;
 import com.jagrosh.jdautilities.oauth2.exceptions.InvalidStateException;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.Config;
+import de.kittybot.kittybot.objects.session.DashboardSession;
+import de.kittybot.kittybot.objects.session.DashboardSessionController;
 import de.kittybot.kittybot.objects.cache.PrefixCache;
 import de.kittybot.kittybot.objects.cache.SelfAssignableRoleCache;
 import de.kittybot.kittybot.objects.cache.SessionCache;
@@ -24,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
@@ -32,11 +34,23 @@ public class WebService{
 
 	private static final Logger LOG = LoggerFactory.getLogger(WebService.class);
 
-	private final Scope[] scopes = new Scope[]{Scope.IDENTIFY, Scope.GUILDS};
-	private final OAuth2Client oAuthClient;
+	private static final Scope[] SCOPES = new Scope[]{Scope.IDENTIFY, Scope.GUILDS};
+	private static final OAuth2Client O_AUTH_2_CLIENT = new OAuth2Client.Builder()
+			.setClientId(Long.parseLong(Config.BOT_ID))
+			.setClientSecret(Config.BOT_SECRET)
+			.setOkHttpClient(KittyBot.getHttpClient())
+			.setSessionController(new DashboardSessionController())
+			.build();
+
+	public static OAuth2Client getOAuth2Client() {
+		return O_AUTH_2_CLIENT;
+	}
+
+	public static Scope[] getScopes() {
+		return SCOPES;
+	}
 
 	public WebService(int port){
-		oAuthClient = new OAuth2ClientImpl(Long.parseLong(Config.BOT_ID), Config.BOT_SECRET, null, null, KittyBot.getHttpClient());
 		Javalin.create(config -> config.enableCorsForOrigin(Config.ORIGIN_URL)).routes(() -> {
 			get("/discord_login", this::discordLogin);
 			get("/health_check", ctx -> ctx.result("alive"));
@@ -66,7 +80,7 @@ public class WebService{
 	private void discordLogin(Context ctx){
 		var key = ctx.header("Authorization");
 		if(key == null || !SessionCache.sessionExists(key)){
-			ctx.redirect(oAuthClient.generateAuthorizationURL(Config.REDIRECT_URL, scopes));
+			ctx.redirect(O_AUTH_2_CLIENT.generateAuthorizationURL(Config.REDIRECT_URL, SCOPES));
 		}
 		else{
 			ctx.redirect(Config.REDIRECT_URL);
@@ -78,9 +92,9 @@ public class WebService{
 		var code = json.getString("code");
 		var state = json.getString("state");
 		try{
-			var key = Database.generateUniqueKey();
-			SessionCache.createSession(oAuthClient, code, state, key, scopes);
-			ok(ctx, DataObject.empty().put("key", key));
+			var sessionKey = Database.generateUniqueKey();
+			O_AUTH_2_CLIENT.startSession(code, state, sessionKey, SCOPES).complete();
+			ok(ctx, DataObject.empty().put("key", sessionKey));
 		}
 		catch(InvalidStateException e){
 			error(ctx, 401, "State invalid/expired. Please try again");
@@ -106,21 +120,22 @@ public class WebService{
 			error(ctx, 401, "Please login");
 			return;
 		}
-		var userId = SessionCache.getUserId(auth);
-		if(userId == null){
+		var session = SessionCache.getSession(auth);
+		if(session == null){
 			error(ctx, 404, "Session not found");
 			return;
 		}
-		var user = KittyBot.getJda().retrieveUserById(userId).complete();
+		var user = KittyBot.getJda().retrieveUserById(session.getUserId()).complete();
 		if(user == null){
 			error(ctx, 404, "User not found");
 			return;
 		}
 		List<OAuth2Guild> guilds;
 		try{
-			guilds = oAuthClient.getGuilds(SessionCache.getSession(userId)).complete();
+			guilds = O_AUTH_2_CLIENT.getGuilds(session).complete();
 		}
 		catch (Exception ex){
+			LOG.error("Error while retrieving user guilds for user: " + session.getUserId(), ex);
 			error(ctx, 500, "There was an internal error");
 			return;
 		}
@@ -131,7 +146,7 @@ public class WebService{
 			  .filter(guild -> mapped.contains(guild.getId()))
 			  .filter(guild -> guild.getPermissions().contains(Permission.ADMINISTRATOR))
 			  .forEach(guild -> guildData.add(DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl())));
-		ok(ctx, DataObject.empty().put("name", user.getName()).put("id", userId).put("icon", user.getEffectiveAvatarUrl()).put("guilds", guildData));
+		ok(ctx, DataObject.empty().put("name", user.getName()).put("id", session.getUserId()).put("icon", user.getEffectiveAvatarUrl()).put("guilds", guildData));
 	}
 
 	private void getAllGuilds(Context ctx){
@@ -140,12 +155,12 @@ public class WebService{
 			error(ctx, 401, "Please login");
 			return;
 		}
-		var userId = SessionCache.getUserId(auth);
-		if(userId == null){
+		var session = SessionCache.getSession(auth);
+		if(session == null){
 			error(ctx, 404, "Session not found");
 			return;
 		}
-		if(!Config.ADMIN_IDS.contains(userId)){
+		if(!Config.ADMIN_IDS.contains(session.getUserId())){
 			error(ctx, 403, "Only admins have access to this!");
 			return;
 		}
@@ -169,16 +184,20 @@ public class WebService{
 				error(ctx, 404, "guild not found");
 				return;
 			}
-			var key = ctx.header("Authorization");
-			var userId = SessionCache.getUserId(key);
-			if(userId == null){
+			var auth = ctx.header("Authorization");
+			if(auth == null){
+				error(ctx, 401, "Please login");
+				return;
+			}
+			var session = SessionCache.getSession(auth);
+			if(session == null){
 				error(ctx, 404, "This user does not exist");
 				return;
 			}
-			if(Config.ADMIN_IDS.contains(userId)){
+			if(Config.ADMIN_IDS.contains(session.getUserId())){
 				return;
 			}
-			var member = guild.retrieveMemberById(userId).complete();
+			var member = guild.retrieveMemberById(session.getUserId()).complete();
 			if(member == null){
 				error(ctx, 404, "I could not find you in that guild");
 				return;
@@ -328,6 +347,10 @@ public class WebService{
 
 	private void ok(Context ctx, DataObject data){
 		result(ctx, 200, data);
+	}
+
+	private void ok(Context ctx, CompletableFuture<?> completableFuture){
+		ctx.result(completableFuture);
 	}
 
 	private void result(Context ctx, int code, DataObject data){

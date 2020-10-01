@@ -17,6 +17,7 @@ import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.LavalinkNode;
 import de.kittybot.kittybot.objects.StatusManager;
 import de.kittybot.kittybot.objects.cache.MessageCache;
+import de.kittybot.kittybot.objects.cache.SessionCache;
 import de.kittybot.kittybot.objects.command.CommandManager;
 import de.kittybot.kittybot.objects.paginator.Paginator;
 import lavalink.client.io.Link;
