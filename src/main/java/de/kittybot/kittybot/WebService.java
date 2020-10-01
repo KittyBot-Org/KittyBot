@@ -6,6 +6,7 @@ import com.jagrosh.jdautilities.oauth2.exceptions.InvalidStateException;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.cache.DashboardSessionCache;
+import de.kittybot.kittybot.objects.cache.GuildCache;
 import de.kittybot.kittybot.objects.cache.PrefixCache;
 import de.kittybot.kittybot.objects.cache.SelfAssignableRoleCache;
 import de.kittybot.kittybot.objects.command.Category;
@@ -146,12 +147,6 @@ public class WebService{
 			return;
 		}
 		var guildData = DataArray.empty();
-		var mapped = KittyBot.getJda().getGuildCache().applyStream(guildStream -> guildStream.map(Guild::getId).collect(Collectors.toList()));
-		//noinspection ConstantConditions shut the fuck up IJ
-		guilds.stream()
-				.filter(guild -> mapped.contains(guild.getId()))
-				.filter(guild -> guild.getPermissions().contains(Permission.ADMINISTRATOR))
-				.forEach(guild -> guildData.add(DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl())));
 		guilds.forEach(guild -> guildData.add(DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl())));
 		ok(ctx, DataObject.empty().put("name", user.getName()).put("id", userId).put("icon", user.getEffectiveAvatarUrl()).put("guilds", guildData));
 	}
