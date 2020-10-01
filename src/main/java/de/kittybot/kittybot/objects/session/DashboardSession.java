@@ -8,10 +8,10 @@ import java.time.OffsetDateTime;
 
 public class DashboardSession implements Session{
 
-	private String userId;
 	private final String sessionKey, accessToken, refreshToken, tokenType;
 	private final OffsetDateTime expiration;
 	private final Scope[] scopes;
+	private String userId;
 
 	public DashboardSession(String userId, SessionData sessionData){
 		this.userId = userId;

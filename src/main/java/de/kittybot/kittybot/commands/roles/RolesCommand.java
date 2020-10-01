@@ -86,13 +86,13 @@ public class RolesCommand extends ACommand{
 					.setDescription("To get/remove a role click reaction emote. " + Emojis.KITTY_BLINK + "\n\n")
 					.setColor(Color.MAGENTA)
 					.appendDescription("**Emote:**" + Emojis.BLANK + "**Role:**\n" + value).build())
-			.queue(message ->{
-				ReactiveMessageCache.addReactiveMessage(ctx, message, this, "-1");
-				for(Map.Entry<Role, Emote> role : roles.entrySet()){
-					message.addReaction(role.getValue()).queue();
-				}
-				message.addReaction(Emojis.WASTEBASKET).queue();
-			});
+					.queue(message -> {
+						ReactiveMessageCache.addReactiveMessage(ctx, message, this, "-1");
+						for(Map.Entry<Role, Emote> role : roles.entrySet()){
+							message.addReaction(role.getValue()).queue();
+						}
+						message.addReaction(Emojis.WASTEBASKET).queue();
+					});
 		}
 	}
 

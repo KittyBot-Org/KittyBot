@@ -3,7 +3,7 @@ package de.kittybot.kittybot.objects.session;
 import com.jagrosh.jdautilities.oauth2.session.SessionController;
 import com.jagrosh.jdautilities.oauth2.session.SessionData;
 import de.kittybot.kittybot.WebService;
-import de.kittybot.kittybot.objects.cache.SessionCache;
+import de.kittybot.kittybot.objects.cache.DashboardSessionCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +18,7 @@ public class DashboardSessionController implements SessionController<DashboardSe
 
 	@Override
 	public DashboardSession getSession(final String identifier){
-		return SessionCache.getSession(identifier);
+		return DashboardSessionCache.getSession(identifier);
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class DashboardSessionController implements SessionController<DashboardSe
 		var session = new DashboardSession(null, sessionData);
 		try{
 			session.setUserId(WebService.getOAuth2Client().getUser(session).complete().getId());
-			SessionCache.addSession(session);
+			DashboardSessionCache.addSession(session);
 			return session;
 		}
 		catch(IOException e){
