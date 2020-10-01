@@ -88,8 +88,6 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 		}
 	}
 
-
-
 	private String generateBoostMessage(String message, User user){
 		if(BOOST_MESSAGES != null && BOOST_MESSAGES.size() > 1){
 			String random = BOOST_MESSAGES.get(ThreadLocalRandom.current().nextInt(BOOST_MESSAGES.size() - 1));
