@@ -118,14 +118,7 @@ public class WebService{
 		}
 		List<OAuth2Guild> guilds;
 		try{
-			var session = SessionCache.getSession(userId);
-			if (session == null){
-				var json = DataObject.fromJson(ctx.body());
-				var code = json.getString("code");
-				var state = json.getString("state");
-				session = SessionCache.createSession(oAuthClient, code, state, Database.getSession(userId), scopes);
-			}
-			guilds = oAuthClient.getGuilds(session).complete();
+			guilds = oAuthClient.getGuilds(SessionCache.getSession(userId)).complete();
 		}
 		catch (Exception ex){
 			error(ctx, 500, "There was an internal error");

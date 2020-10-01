@@ -16,13 +16,12 @@ public class SessionCache {
 
     private SessionCache(){}
 
-    public static Session createSession(final OAuth2Client oAuth2Client, final String code, final String state, final String key, final Scope[] scopes) throws InvalidStateException, IOException{
+    public static void createSession(final OAuth2Client oAuth2Client, final String code, final String state, final String key, final Scope[] scopes) throws InvalidStateException, IOException{
         final var newSession = oAuth2Client.startSession(code, state, key, scopes).complete();
         final var userId = oAuth2Client.getUser(newSession).complete().getId();
         SESSION_CACHE.put(userId, newSession);
         ACTIVE_SESSIONS_CACHE.put(key, userId);
         Database.addSession(userId, key);
-        return newSession;
     }
 
     public static Session getSession(final String userId){
