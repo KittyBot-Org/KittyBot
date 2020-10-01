@@ -21,20 +21,20 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SessionsRecord extends UpdatableRecordImpl<SessionsRecord> implements Record5<String, String, String, String, LocalDateTime> {
 
-    private static final long serialVersionUID = 1673999799;
+    private static final long serialVersionUID = 23966137;
 
     /**
-     * Setter for <code>public.sessions.session_id</code>.
+     * Setter for <code>public.sessions.session_key</code>.
      */
-    public SessionsRecord setSessionId(String value) {
+    public SessionsRecord setSessionKey(String value) {
         set(0, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.sessions.session_id</code>.
+     * Getter for <code>public.sessions.session_key</code>.
      */
-    public String getSessionId() {
+    public String getSessionKey() {
         return (String) get(0);
     }
 
@@ -123,7 +123,7 @@ public class SessionsRecord extends UpdatableRecordImpl<SessionsRecord> implemen
 
     @Override
     public Field<String> field1() {
-        return Sessions.SESSIONS.SESSION_ID;
+        return Sessions.SESSIONS.SESSION_KEY;
     }
 
     @Override
@@ -148,7 +148,7 @@ public class SessionsRecord extends UpdatableRecordImpl<SessionsRecord> implemen
 
     @Override
     public String component1() {
-        return getSessionId();
+        return getSessionKey();
     }
 
     @Override
@@ -173,7 +173,7 @@ public class SessionsRecord extends UpdatableRecordImpl<SessionsRecord> implemen
 
     @Override
     public String value1() {
-        return getSessionId();
+        return getSessionKey();
     }
 
     @Override
@@ -198,7 +198,7 @@ public class SessionsRecord extends UpdatableRecordImpl<SessionsRecord> implemen
 
     @Override
     public SessionsRecord value1(String value) {
-        setSessionId(value);
+        setSessionKey(value);
         return this;
     }
 
@@ -250,10 +250,10 @@ public class SessionsRecord extends UpdatableRecordImpl<SessionsRecord> implemen
     /**
      * Create a detached, initialised SessionsRecord
      */
-    public SessionsRecord(String sessionId, String userId, String accessToken, String refreshToken, LocalDateTime expiration) {
+    public SessionsRecord(String sessionKey, String userId, String accessToken, String refreshToken, LocalDateTime expiration) {
         super(Sessions.SESSIONS);
 
-        set(0, sessionId);
+        set(0, sessionKey);
         set(1, userId);
         set(2, accessToken);
         set(3, refreshToken);

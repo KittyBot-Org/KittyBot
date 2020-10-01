@@ -32,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Sessions extends TableImpl<SessionsRecord> {
 
-    private static final long serialVersionUID = 1175241868;
+    private static final long serialVersionUID = -517766618;
 
     /**
      * The reference instance of <code>public.sessions</code>
@@ -48,9 +48,9 @@ public class Sessions extends TableImpl<SessionsRecord> {
     }
 
     /**
-     * The column <code>public.sessions.session_id</code>.
+     * The column <code>public.sessions.session_key</code>.
      */
-    public final TableField<SessionsRecord, String> SESSION_ID = createField(DSL.name("session_id"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
+    public final TableField<SessionsRecord, String> SESSION_KEY = createField(DSL.name("session_key"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
 
     /**
      * The column <code>public.sessions.user_id</code>.

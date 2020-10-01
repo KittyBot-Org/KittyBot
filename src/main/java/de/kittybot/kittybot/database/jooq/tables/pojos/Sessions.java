@@ -14,16 +14,16 @@ import java.time.LocalDateTime;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Sessions implements Serializable {
 
-    private static final long serialVersionUID = 319920994;
+    private static final long serialVersionUID = -576394214;
 
-    private final String        sessionId;
+    private final String        sessionKey;
     private final String        userId;
     private final String        accessToken;
     private final String        refreshToken;
     private final LocalDateTime expiration;
 
     public Sessions(Sessions value) {
-        this.sessionId = value.sessionId;
+        this.sessionKey = value.sessionKey;
         this.userId = value.userId;
         this.accessToken = value.accessToken;
         this.refreshToken = value.refreshToken;
@@ -31,21 +31,21 @@ public class Sessions implements Serializable {
     }
 
     public Sessions(
-        String        sessionId,
+        String        sessionKey,
         String        userId,
         String        accessToken,
         String        refreshToken,
         LocalDateTime expiration
     ) {
-        this.sessionId = sessionId;
+        this.sessionKey = sessionKey;
         this.userId = userId;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.expiration = expiration;
     }
 
-    public String getSessionId() {
-        return this.sessionId;
+    public String getSessionKey() {
+        return this.sessionKey;
     }
 
     public String getUserId() {
@@ -68,7 +68,7 @@ public class Sessions implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("Sessions (");
 
-        sb.append(sessionId);
+        sb.append(sessionKey);
         sb.append(", ").append(userId);
         sb.append(", ").append(accessToken);
         sb.append(", ").append(refreshToken);
