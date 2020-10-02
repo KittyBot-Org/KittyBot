@@ -45,6 +45,13 @@ public class GuildCache{
 	}
 
 	public static void cacheGuild(final String guildId, final GuildData guildData){
+		cacheGuild(guildId, guildData, true);
+	}
+
+	public static void cacheGuild(final String guildId, final GuildData guildData, final boolean cacheIfNotCached){
+		if (!GUILD_CACHE.containsKey(guildId) && !cacheIfNotCached){
+			return;
+		}
 		GUILD_CACHE.put(guildId, guildData);
 	}
 
