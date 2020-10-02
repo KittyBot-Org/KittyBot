@@ -19,7 +19,6 @@ import de.kittybot.kittybot.objects.StatusManager;
 import de.kittybot.kittybot.objects.cache.MessageCache;
 import de.kittybot.kittybot.objects.command.CommandManager;
 import de.kittybot.kittybot.objects.paginator.Paginator;
-import de.kittybot.kittybot.objects.session.SessionUserCachePolicy;
 import lavalink.client.io.Link;
 import lavalink.client.io.jda.JdaLavalink;
 import net.dv8tion.jda.api.*;
@@ -100,8 +99,8 @@ public class KittyBot{
 							CacheFlag.ACTIVITY,
 							CacheFlag.CLIENT_STATUS
 					)
-					.setMemberCachePolicy(MemberCachePolicy.DEFAULT.and(new SessionUserCachePolicy())) // voice, owner or a user with a web session
-					.setChunkingFilter(ChunkingFilter.NONE)                                            // lazy loading
+					.setMemberCachePolicy(MemberCachePolicy.DEFAULT) // voice or owner
+					.setChunkingFilter(ChunkingFilter.NONE)          // lazy loading
 					.addEventListeners(
 							new OnEmoteEvent(),
 							new OnGuildEvent(),
@@ -111,9 +110,11 @@ public class KittyBot{
 							new OnGuildVoiceEvent(),
 							new OnInviteEvent(),
 							new OnReadyEvent(),
+							new OnRawEvent(),
 							new Paginator(),
 							lavalink
 					)
+					.setRawEventsEnabled(true)
 					.setVoiceDispatchInterceptor(lavalink.getVoiceInterceptor())
 					.setActivity(Activity.playing("loading..."))
 					.setStatus(OnlineStatus.DO_NOT_DISTURB)

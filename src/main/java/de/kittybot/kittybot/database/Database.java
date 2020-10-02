@@ -311,7 +311,7 @@ public class Database{
 
 	public static boolean hasSession(String userId){
 		try(var con = getCon(); var ctx = getCtx(con)){
-			return ctx.selectFrom(SESSIONS).where(SESSIONS.USER_ID.eq(userId)).fetch().size() > 0;
+			return ctx.selectFrom(SESSIONS).where(SESSIONS.USER_ID.eq(userId)).fetch().isNotEmpty();
 		}
 		catch(SQLException e){
 			LOG.error("Error checking if a user has a session", e);
