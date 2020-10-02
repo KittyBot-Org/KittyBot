@@ -4,11 +4,15 @@ import de.kittybot.kittybot.KittyBot;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.BotLists;
 import de.kittybot.kittybot.objects.cache.*;
+import de.kittybot.kittybot.objects.guilds.GuildData;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.audit.ActionType;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
+import net.dv8tion.jda.api.events.guild.update.GuildUpdateIconEvent;
+import net.dv8tion.jda.api.events.guild.update.GuildUpdateNameEvent;
+import net.dv8tion.jda.api.events.role.update.RoleUpdatePermissionsEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.awt.*;
@@ -51,11 +55,14 @@ public class OnGuildEvent extends ListenerAdapter{
 					.setTimestamp(Instant.now())
 					.build();
 			var defaultChannel = guild.getDefaultChannel();
-			user.openPrivateChannel()
-					.flatMap(channel -> channel.sendMessage(embed))
-					.onErrorFlatMap(ignored -> defaultChannel != null && defaultChannel.canTalk(), ignored -> defaultChannel.sendMessage(embed))
-					.queue();
+			var messageRestAction = user.openPrivateChannel().flatMap(channel -> channel.sendMessage(embed));
+			if(defaultChannel != null){
+				messageRestAction = messageRestAction.onErrorFlatMap(ignored -> defaultChannel.sendMessage(embed));
+			}
+			messageRestAction.queue();
 		});
+
+		GuildCache.cacheGuild(guild.getId(), new GuildData(guild.getId(), guild.getName(), guild.getIconUrl()));
 	}
 
 	@Override
@@ -70,7 +77,42 @@ public class OnGuildEvent extends ListenerAdapter{
 		CommandResponseCache.pruneCache(guild);
 		SelfAssignableRoleCache.pruneCache(guild);
 		MessageCache.pruneCache(guild);
+		GuildCache.uncacheGuild(guild);
 		KittyBot.sendToPublicLogChannel(String.format("Helluwu I got kicked from the guild: ``%s``%nCurrently I'm in %d guilds!", guild.getName(), guildCount));
+	}
+
+	@Override
+	public void onGuildUpdateIcon(final GuildUpdateIconEvent event){
+		var guild = event.getGuild();
+		var guildId = guild.getId();
+		GuildCache.cacheGuild(guildId, new GuildData(guildId, guild.getName(), event.getNewIconUrl()), false);
+	}
+
+	@Override
+	public void onGuildUpdateName(final GuildUpdateNameEvent event){
+		var guild = event.getGuild();
+		var guildId = guild.getId();
+		GuildCache.cacheGuild(guildId, new GuildData(guildId, event.getNewName(), guild.getIconUrl()), false);
+	}
+
+	@Override
+	public void onRoleUpdatePermissions(final RoleUpdatePermissionsEvent event){
+		var add = event.getNewPermissions().contains(Permission.ADMINISTRATOR) && !event.getOldPermissions().contains(Permission.ADMINISTRATOR);
+		var remove = !event.getNewPermissions().contains(Permission.ADMINISTRATOR) && event.getOldPermissions().contains(Permission.ADMINISTRATOR);
+		if(!add && !remove){
+			return;
+		}
+		event.getGuild().findMembers(member -> member.getRoles().contains(event.getRole()) && DashboardSessionCache.hasSession(member.getId()))
+				.onSuccess(members -> members.forEach(member -> {
+					var userId = member.getId();
+					var guildId = event.getGuild().getId();
+					if(add){
+						GuildCache.cacheGuildForUser(userId, guildId);
+					}
+					else{
+						GuildCache.uncacheGuildForUser(userId, guildId);
+					}
+				}));
 	}
 
 }

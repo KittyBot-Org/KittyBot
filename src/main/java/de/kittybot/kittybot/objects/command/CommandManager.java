@@ -11,15 +11,15 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class CommandManager{
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommandManager.class);
 	private static final ClassGraph CLASS_GRAPH = new ClassGraph().whitelistPackages("de.kittybot.kittybot.commands");
-	private static final Map<String, ACommand> COMMANDS = new ConcurrentHashMap<>();
-	private static final Map<String, ACommand> DISTINCT_COMMANDS = new ConcurrentHashMap<>();
+	private static final Map<String, ACommand> COMMANDS = new HashMap<>();
+	private static final Map<String, ACommand> DISTINCT_COMMANDS = new HashMap<>();
 
 	public static void registerCommands(){
 		try(var result = CLASS_GRAPH.scan()){

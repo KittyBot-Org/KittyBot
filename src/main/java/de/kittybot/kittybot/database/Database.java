@@ -1,8 +1,12 @@
 package de.kittybot.kittybot.database;
 
+import com.jagrosh.jdautilities.oauth2.session.SessionData;
+import de.kittybot.kittybot.WebService;
 import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.ReactiveMessage;
+import de.kittybot.kittybot.objects.cache.DashboardSessionCache;
 import de.kittybot.kittybot.objects.cache.SelfAssignableRoleCache;
+import de.kittybot.kittybot.objects.session.DashboardSession;
 import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
@@ -12,6 +16,8 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -263,26 +269,39 @@ public class Database{
 		}
 	}
 
-	public static void addSession(String userId, String sessionId){
-		try(var con = getCon(); var ctx = getCtx(con)){
-			ctx.insertInto(SESSIONS).columns(SESSIONS.fields()).values(sessionId, userId).execute();
-		}
-		catch(SQLException e){
-			LOG.error("Error adding session for user " + userId, e);
-		}
-	}
-
 	public static String generateUniqueKey(){
 		var key = Utils.generate(32);
-		while(sessionExists(key)){
+		while(DashboardSessionCache.sessionExists(key)){
 			key = Utils.generate(32);
 		}
 		return key;
 	}
 
-	public static boolean sessionExists(String sessionId){
+	public static void addSession(DashboardSession session){
 		try(var con = getCon(); var ctx = getCtx(con)){
-			return ctx.selectFrom(SESSIONS).where(SESSIONS.SESSION_ID.eq(sessionId)).fetchOne() != null;
+			ctx.insertInto(SESSIONS).columns(SESSIONS.fields()).values(session.getSessionKey(), session.getUserId(), session.getAccessToken(), session.getRefreshToken(), session.getExpiration().toLocalDateTime()).execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error adding session for user " + session.getUserId(), e);
+		}
+	}
+
+	public static DashboardSession getSession(String sessionKey){
+		try(var con = getCon(); var ctx = getCtx(con)){
+			var r = ctx.selectFrom(SESSIONS).where(SESSIONS.SESSION_KEY.eq(sessionKey)).fetchOne();
+			if(r != null){
+				return new DashboardSession(r.get(SESSIONS.USER_ID), new SessionData(sessionKey, r.get(SESSIONS.ACCESS_TOKEN), r.get(SESSIONS.REFRESH_TOKEN), "Bearer", OffsetDateTime.of(r.get(SESSIONS.EXPIRATION), ZoneOffset.UTC), WebService.getScopes()));
+			}
+		}
+		catch(SQLException e){
+			LOG.error("Error while getting session", e);
+		}
+		return null;
+	}
+
+	public static boolean sessionExists(String sessionKey){
+		try(var con = getCon(); var ctx = getCtx(con)){
+			return ctx.selectFrom(SESSIONS).where(SESSIONS.SESSION_KEY.eq(sessionKey)).fetchOne() != null;
 		}
 		catch(SQLException e){
 			LOG.error("Error checking if session exists", e);
@@ -290,27 +309,33 @@ public class Database{
 		return false;
 	}
 
-	public static boolean deleteSession(String sessionId){
+	public static boolean hasSession(String userId){
 		try(var con = getCon(); var ctx = getCtx(con)){
-			ctx.deleteFrom(SESSIONS).where(SESSIONS.SESSION_ID.eq(sessionId)).execute();
+			return ctx.selectFrom(SESSIONS).where(SESSIONS.USER_ID.eq(userId)).fetch().isNotEmpty();
 		}
 		catch(SQLException e){
-			LOG.error("Error deleting session", e);
+			LOG.error("Error checking if a user has a session", e);
 		}
 		return false;
 	}
 
-	public static String getSession(String sessionId){
+	public static int getUserSessions(String userId){
 		try(var con = getCon(); var ctx = getCtx(con)){
-			var res = ctx.selectFrom(SESSIONS).where(SESSIONS.SESSION_ID.eq(sessionId)).fetchOne();
-			if(res != null){
-				return res.getUserId();
-			}
+			return ctx.selectCount().from(SESSIONS).where(SESSIONS.USER_ID.eq(userId)).fetchOne(0, int.class);
 		}
 		catch(SQLException e){
 			LOG.error("Error while getting session", e);
 		}
-		return null;
+		return 0;
+	}
+
+	public static void deleteSession(String sessionKey){
+		try(var con = getCon(); var ctx = getCtx(con)){
+			ctx.deleteFrom(SESSIONS).where(SESSIONS.SESSION_KEY.eq(sessionKey)).execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error deleting session", e);
+		}
 	}
 
 	public void addSelfAssignableRole(String guildId, String role, String emote){

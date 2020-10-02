@@ -19,14 +19,17 @@ import de.kittybot.kittybot.objects.StatusManager;
 import de.kittybot.kittybot.objects.cache.MessageCache;
 import de.kittybot.kittybot.objects.command.CommandManager;
 import de.kittybot.kittybot.objects.paginator.Paginator;
+import de.kittybot.kittybot.objects.session.SessionUserCachePolicy;
 import lavalink.client.io.Link;
 import lavalink.client.io.jda.JdaLavalink;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import net.dv8tion.jda.internal.utils.config.ThreadingConfig;
 import okhttp3.OkHttpClient;
 import org.discordbots.api.client.DiscordBotListAPI;
 import org.slf4j.Logger;
@@ -66,10 +69,8 @@ public class KittyBot{
 				"\n");
 		LOG.info("Starting...");
 
-		Config.load("config.json");
-
 		try{
-			lavalink = new JdaLavalink(Config.BOT_ID, 1, this::getShardById);
+			lavalink = new JdaLavalink(Config.BOT_ID, 1, this::fuckLavalink);
 			for(LavalinkNode node : Config.LAVALINK_NODES){
 				lavalink.addNode(new URI("ws://" + node.host + ":" + node.port), node.password);
 			}
@@ -86,6 +87,7 @@ public class KittyBot{
 			RestAction.setDefaultFailure(null);
 
 			jda = JDABuilder.create(
+					Config.BOT_TOKEN,
 					GatewayIntent.GUILD_MEMBERS,
 					GatewayIntent.GUILD_VOICE_STATES,
 					GatewayIntent.GUILD_MESSAGES,
@@ -98,8 +100,8 @@ public class KittyBot{
 							CacheFlag.ACTIVITY,
 							CacheFlag.CLIENT_STATUS
 					)
-					.setMemberCachePolicy(MemberCachePolicy.ALL)
-					.setToken(Config.BOT_TOKEN)
+					.setMemberCachePolicy(MemberCachePolicy.DEFAULT.and(new SessionUserCachePolicy())) // voice, owner or a user with a web session
+					.setChunkingFilter(ChunkingFilter.NONE)                                            // lazy loading
 					.addEventListeners(
 							new OnEmoteEvent(),
 							new OnGuildEvent(),
@@ -109,16 +111,21 @@ public class KittyBot{
 							new OnGuildVoiceEvent(),
 							new OnInviteEvent(),
 							new OnReadyEvent(),
+							new OnRawEvent(),
 							new Paginator(),
 							lavalink
 					)
+					.setRawEventsEnabled(true)
 					.setVoiceDispatchInterceptor(lavalink.getVoiceInterceptor())
 					.setActivity(Activity.playing("loading..."))
 					.setStatus(OnlineStatus.DO_NOT_DISTURB)
+					.setEventPool(ThreadingConfig.newScheduler(2, () -> "KittyBot", "Event"), true)
+					.setHttpClient(HTTP_CLIENT)
 					.setGatewayEncoding(GatewayEncoding.ETF)
 					.setAudioSendFactory(new NativeAudioSendFactory())
-					.build().awaitReady();
-
+					.setBulkDeleteSplittingEnabled(false)
+					.build()
+					.awaitReady();
 
 			if(Config.isSet(Config.DISCORD_BOT_LIST_TOKEN)){
 				discordBotListAPI = new DiscordBotListAPI.Builder().token(Config.DISCORD_BOT_LIST_TOKEN).botId(Config.BOT_ID).build();
@@ -142,7 +149,7 @@ public class KittyBot{
 		}
 	}
 
-	private JDA getShardById(int id){
+	private JDA fuckLavalink(int id){ // TODO maybe get rid of this fucking shit in our fork
 		return jda;
 	}
 
