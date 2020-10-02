@@ -23,13 +23,13 @@ public class GuildCache{
 
 	public static List<GuildData> getGuilds(final DashboardSession dashboardSession) throws IOException{
 		var guilds = USER_GUILD_CACHE.get(dashboardSession.getUserId());
-		if (guilds == null || guilds.isEmpty()){
-			var guildsId = KittyBot.getJda().getGuildCache().applyStream(guildStream -> guildStream.map(Guild::getId).collect(Collectors.toList()));
+		if(guilds == null || guilds.isEmpty()){
+			var guildIds = KittyBot.getJda().getGuildCache().applyStream(guildStream -> guildStream.map(Guild::getId).collect(Collectors.toList()));
 			//noinspection ConstantConditions shut the fuck up IJ
 			var retrievedGuilds = WebService.getOAuth2Client().getGuilds(dashboardSession)
 					.complete()
 					.stream()
-					.filter(guild -> guildsId.contains(guild.getId())) // only collect guilds which kitty is in as we get a list of all guilds the user is in
+					.filter(guild -> guildIds.contains(guild.getId())) // only collect guilds which kitty is in as we get a list of all guilds the user is in
 					.filter(guild -> guild.getPermissions().contains(Permission.ADMINISTRATOR))
 					.map(guild -> new GuildData(guild.getId(), guild.getName(), guild.getIconUrl()))
 					.collect(Collectors.toList());
@@ -48,8 +48,12 @@ public class GuildCache{
 		cacheGuild(guildId, guildData, true);
 	}
 
+	public static void cacheGuildForUser(final String userId, final String guildId){
+		USER_GUILD_CACHE.computeIfAbsent(userId, k -> new ArrayList<>()).add(guildId);
+	}
+
 	public static void cacheGuild(final String guildId, final GuildData guildData, final boolean cacheIfNotCached){
-		if (!GUILD_CACHE.containsKey(guildId) && !cacheIfNotCached){
+		if(!GUILD_CACHE.containsKey(guildId) && !cacheIfNotCached){
 			return;
 		}
 		GUILD_CACHE.put(guildId, guildData);
@@ -59,10 +63,6 @@ public class GuildCache{
 		var guildId = guild.getId();
 		GUILD_CACHE.remove(guildId);
 		USER_GUILD_CACHE.forEach((userId, guildIds) -> guildIds.remove(guildId));
-	}
-
-	public static void cacheGuildForUser(final String userId, final String guildId){
-		USER_GUILD_CACHE.computeIfAbsent(userId, k -> new ArrayList<>()).add(guildId);
 	}
 
 	public static void uncacheGuildForUser(final String userId, final String guildId){
