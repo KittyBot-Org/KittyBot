@@ -49,7 +49,7 @@ public class Keys{
 		public static final UniqueKey<GuildsRecord> GUILDS_PKEY = Internal.createUniqueKey(Guilds.GUILDS, "guilds_pkey", new TableField[]{Guilds.GUILDS.GUILD_ID}, true);
 		public static final UniqueKey<ReactiveMessagesRecord> REACTIVE_MESSAGES_PKEY = Internal.createUniqueKey(ReactiveMessages.REACTIVE_MESSAGES, "reactive_messages_pkey", new TableField[]{ReactiveMessages.REACTIVE_MESSAGES.MESSAGE_ID, ReactiveMessages.REACTIVE_MESSAGES.USER_ID, ReactiveMessages.REACTIVE_MESSAGES.GUILD_ID}, true);
 		public static final UniqueKey<SelfAssignableRolesRecord> SELF_ASSIGNABLE_ROLES_PKEY = Internal.createUniqueKey(SelfAssignableRoles.SELF_ASSIGNABLE_ROLES, "self_assignable_roles_pkey", new TableField[]{SelfAssignableRoles.SELF_ASSIGNABLE_ROLES.ROLE_ID, SelfAssignableRoles.SELF_ASSIGNABLE_ROLES.GUILD_ID}, true);
-		public static final UniqueKey<SessionsRecord> SESSIONS_PKEY = Internal.createUniqueKey(Sessions.SESSIONS, "sessions_pkey", new TableField[]{Sessions.SESSIONS.SESSION_ID}, true);
+		public static final UniqueKey<SessionsRecord> SESSIONS_PKEY = Internal.createUniqueKey(Sessions.SESSIONS, "sessions_pkey", new TableField[]{Sessions.SESSIONS.SESSION_KEY}, true);
 		public static final UniqueKey<UserStatisticsRecord> USER_STATISTICS_PKEY = Internal.createUniqueKey(UserStatistics.USER_STATISTICS, "user_statistics_pkey", new TableField[]{UserStatistics.USER_STATISTICS.USER_ID, UserStatistics.USER_STATISTICS.GUILD_ID}, true);
 
 	}

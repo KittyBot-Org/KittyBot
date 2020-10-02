@@ -11,6 +11,7 @@ import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,15 +26,27 @@ public class Sessions extends TableImpl<SessionsRecord>{
 	 * The reference instance of <code>public.sessions</code>
 	 */
 	public static final Sessions SESSIONS = new Sessions();
-	private static final long serialVersionUID = -1758051538;
+	private static final long serialVersionUID = -517766618;
 	/**
-	 * The column <code>public.sessions.session_id</code>.
+	 * The column <code>public.sessions.session_key</code>.
 	 */
-	public final TableField<SessionsRecord, String> SESSION_ID = createField(DSL.name("session_id"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
+	public final TableField<SessionsRecord, String> SESSION_KEY = createField(DSL.name("session_key"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
 	/**
 	 * The column <code>public.sessions.user_id</code>.
 	 */
 	public final TableField<SessionsRecord, String> USER_ID = createField(DSL.name("user_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
+	/**
+	 * The column <code>public.sessions.access_token</code>.
+	 */
+	public final TableField<SessionsRecord, String> ACCESS_TOKEN = createField(DSL.name("access_token"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
+	/**
+	 * The column <code>public.sessions.refresh_token</code>.
+	 */
+	public final TableField<SessionsRecord, String> REFRESH_TOKEN = createField(DSL.name("refresh_token"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
+	/**
+	 * The column <code>public.sessions.expiration</code>.
+	 */
+	public final TableField<SessionsRecord, LocalDateTime> EXPIRATION = createField(DSL.name("expiration"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false), this, "");
 
 	/**
 	 * Create a <code>public.sessions</code> table reference
@@ -118,12 +131,12 @@ public class Sessions extends TableImpl<SessionsRecord>{
 	}
 
 	// -------------------------------------------------------------------------
-	// Row2 type methods
+	// Row5 type methods
 	// -------------------------------------------------------------------------
 
 	@Override
-	public Row2<String, String> fieldsRow(){
-		return (Row2) super.fieldsRow();
+	public Row5<String, String, String, String, LocalDateTime> fieldsRow(){
+		return (Row5) super.fieldsRow();
 	}
 
 }
