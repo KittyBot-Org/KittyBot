@@ -35,10 +35,14 @@ public class DashboardSessionCache{
 	}
 
 	public static void deleteSession(final String sessionKey){
-		var userId = SESSION_CACHE.get(sessionKey).getUserId();
-		SESSION_CACHE.remove(sessionKey);
+		var session = SESSION_CACHE.get(sessionKey);
 		Database.deleteSession(sessionKey);
-		if (Database.getUserSessions(userId) > 1){
+		if(session == null){
+			return;
+		}
+		var userId = session.getUserId();
+		SESSION_CACHE.remove(sessionKey);
+		if(Database.getUserSessions(userId) > 1){
 			return;
 		}
 		GuildCache.uncacheUser(userId);

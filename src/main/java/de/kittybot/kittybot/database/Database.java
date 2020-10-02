@@ -311,7 +311,7 @@ public class Database{
 
 	public static boolean hasSession(String userId){
 		try(var con = getCon(); var ctx = getCtx(con)){
-			return ctx.selectFrom(SESSIONS).where(SESSIONS.USER_ID.eq(userId)).fetchOne() != null;
+			return ctx.selectFrom(SESSIONS).where(SESSIONS.USER_ID.eq(userId)).fetch().size() > 0;
 		}
 		catch(SQLException e){
 			LOG.error("Error checking if a user has a session", e);
@@ -321,9 +321,7 @@ public class Database{
 
 	public static int getUserSessions(String userId){
 		try(var con = getCon(); var ctx = getCtx(con)){
-			var count = ctx.selectCount().from(SESSIONS).where(SESSIONS.USER_ID.eq(userId)).fetchOne().value1();
-			System.out.println(count);
-			return count;
+			return ctx.selectCount().from(SESSIONS).where(SESSIONS.USER_ID.eq(userId)).fetchOne(0, int.class);
 		}
 		catch(SQLException e){
 			LOG.error("Error while getting session", e);
