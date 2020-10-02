@@ -19,11 +19,9 @@ public class OnRawEvent extends ListenerAdapter {
         //noinspection ConstantConditions shut :)
         event.getJDA().getGuildById(guildId).retrieveMemberById(userId).queue(member ->{
             if (member.hasPermission(Permission.ADMINISTRATOR)){
-                System.out.println("user cached");
                 GuildCache.cacheGuildForUser(userId, guildId);
             }
             else {
-                System.out.println("user uncached");
                 GuildCache.uncacheGuildForUser(userId, guildId);
             }
         });
