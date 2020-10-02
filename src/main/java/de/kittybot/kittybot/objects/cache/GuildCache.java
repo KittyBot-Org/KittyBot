@@ -31,7 +31,7 @@ public class GuildCache{
 		var retrievedGuilds = WebService.getOAuth2Client().getGuilds(dashboardSession)
 				.complete()
 				.stream()
-				.filter(guild -> guildsId.contains(guild.getId()))
+				.filter(guild -> guildsId.contains(guild.getId())) // filter only by guilds kitty is in as we get a list of all user's guilds from oauth
 				.filter(guild -> guild.getPermissions().contains(Permission.ADMINISTRATOR))
 				.map(guild -> new GuildData(guild.getId(), guild.getName(), guild.getIconUrl()))
 				.collect(Collectors.toList());
