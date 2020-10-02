@@ -81,18 +81,17 @@ public class OnGuildEvent extends ListenerAdapter{
 	}
 
 	@Override
-	public void onGuildUpdateName(final GuildUpdateNameEvent event)
-	{
-		var guild = event.getGuild();
-		var guildId = guild.getId();
-		GuildCache.cacheGuild(guildId, new GuildData(guildId, guild.getName(), guild.getIconUrl()));
-	}
-
-	@Override
-	public void onGuildUpdateIcon(final GuildUpdateIconEvent event)
-	{
+	public void onGuildUpdateIcon(final GuildUpdateIconEvent event){
 		var guild = event.getGuild();
 		var guildId = guild.getId();
 		GuildCache.cacheGuild(guildId, new GuildData(guildId, guild.getName(), event.getNewIconUrl()));
 	}
+
+	@Override
+	public void onGuildUpdateName(final GuildUpdateNameEvent event){
+		var guild = event.getGuild();
+		var guildId = guild.getId();
+		GuildCache.cacheGuild(guildId, new GuildData(guildId, event.getNewName(), guild.getIconUrl()));
+	}
+
 }
