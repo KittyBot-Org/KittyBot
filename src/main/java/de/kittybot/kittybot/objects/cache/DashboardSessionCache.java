@@ -35,9 +35,14 @@ public class DashboardSessionCache{
 	}
 
 	public static void deleteSession(final String sessionKey){
-		GuildCache.uncacheUser(SESSION_CACHE.get(sessionKey).getUserId()); // TODO we should only uncache if there's only 1 session of the user
+		var userId = SESSION_CACHE.get(sessionKey).getUserId();
 		SESSION_CACHE.remove(sessionKey);
 		Database.deleteSession(sessionKey);
+		if (Database.getUserSessions(userId) > 1){
+			return;
+		}
+		GuildCache.uncacheUser(userId);
+		USER_SESSION_CACHE.remove(userId);
 	}
 
 	public static boolean sessionExists(final String sessionKey){

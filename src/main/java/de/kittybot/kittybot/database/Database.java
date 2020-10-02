@@ -319,6 +319,18 @@ public class Database{
 		return false;
 	}
 
+	public static int getUserSessions(String userId){
+		try(var con = getCon(); var ctx = getCtx(con)){
+			var count = ctx.selectCount().from(SESSIONS).where(SESSIONS.USER_ID.eq(userId)).fetchOne().value1();
+			System.out.println(count);
+			return count;
+		}
+		catch(SQLException e){
+			LOG.error("Error while getting session", e);
+		}
+		return 0;
+	}
+
 	public static void deleteSession(String sessionKey){
 		try(var con = getCon(); var ctx = getCtx(con)){
 			ctx.deleteFrom(SESSIONS).where(SESSIONS.SESSION_KEY.eq(sessionKey)).execute();
