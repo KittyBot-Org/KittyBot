@@ -10,6 +10,8 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateBoostTimeEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -85,6 +87,20 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 											.queue()));
 				}
 			}
+		}
+	}
+
+	@Override
+	public void onGuildMemberRoleAdd(final GuildMemberRoleAddEvent event){
+		if (event.getMember().hasPermission(Permission.ADMINISTRATOR)){
+			GuildCache.cacheGuildForUser(event.getUser().getId(), event.getGuild().getId());
+		}
+	}
+
+	@Override
+	public void onGuildMemberRoleRemove(final GuildMemberRoleRemoveEvent event){
+		if (!event.getMember().hasPermission(Permission.ADMINISTRATOR)){
+			GuildCache.uncacheGuildForUser(event.getUser().getId(), event.getGuild().getId());
 		}
 	}
 
