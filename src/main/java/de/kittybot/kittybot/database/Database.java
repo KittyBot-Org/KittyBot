@@ -309,6 +309,16 @@ public class Database{
 		return false;
 	}
 
+	public static boolean hasSession(String userId){
+		try(var con = getCon(); var ctx = getCtx(con)){
+			return ctx.selectFrom(SESSIONS).where(SESSIONS.USER_ID.eq(userId)).fetchOne() != null;
+		}
+		catch(SQLException e){
+			LOG.error("Error checking if a user has a session", e);
+		}
+		return false;
+	}
+
 	public static void deleteSession(String sessionKey){
 		try(var con = getCon(); var ctx = getCtx(con)){
 			ctx.deleteFrom(SESSIONS).where(SESSIONS.SESSION_KEY.eq(sessionKey)).execute();

@@ -55,6 +55,12 @@ public class GuildCache{
 		GUILD_CACHE.put(guildId, guildData);
 	}
 
+	public static void uncacheGuild(final Guild guild){
+		var guildId = guild.getId();
+		GUILD_CACHE.remove(guildId);
+		USER_GUILD_CACHE.forEach((userId, guildIds) -> guildIds.remove(guildId));
+	}
+
 	public static void cacheGuildForUser(final String userId, final String guildId){
 		USER_GUILD_CACHE.computeIfAbsent(userId, k -> new ArrayList<>()).add(guildId);
 	}
@@ -67,10 +73,8 @@ public class GuildCache{
 		userGuilds.remove(guildId);
 	}
 
-	public static void uncacheGuild(final Guild guild){
-		var guildId = guild.getId();
-		GUILD_CACHE.remove(guildId);
-		USER_GUILD_CACHE.forEach((userId, guildIds) -> guildIds.remove(guildId));
+	public static void uncacheUser(final String userId){
+		USER_GUILD_CACHE.remove(userId);
 	}
 
 }
