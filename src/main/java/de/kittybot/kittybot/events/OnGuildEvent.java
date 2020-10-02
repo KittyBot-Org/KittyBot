@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.update.GuildUpdateIconEvent;
 import net.dv8tion.jda.api.events.guild.update.GuildUpdateNameEvent;
+import net.dv8tion.jda.api.events.role.update.RoleUpdatePermissionsEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.awt.*;
@@ -92,6 +93,27 @@ public class OnGuildEvent extends ListenerAdapter{
 		var guild = event.getGuild();
 		var guildId = guild.getId();
 		GuildCache.cacheGuild(guildId, new GuildData(guildId, event.getNewName(), guild.getIconUrl()), false);
+	}
+
+	@Override
+	public void onRoleUpdatePermissions(final RoleUpdatePermissionsEvent event){
+		var add = false;
+		if(event.getNewPermissions().contains(Permission.ADMINISTRATOR) && !event.getOldPermissions().contains(Permission.ADMINISTRATOR)){
+			add = true;
+		}
+
+		final boolean tmpAdd = add;
+		event.getGuild().findMembers(member -> member.getRoles().contains(event.getRole()) && DashboardSessionCache.hasSession(member.getId()))
+				.onSuccess(members -> members.forEach(member -> {
+					var userId = member.getId();
+					var guildId = event.getGuild().getId();
+					if(tmpAdd){
+						GuildCache.cacheGuildForUser(userId, guildId);
+					}
+					else{
+						GuildCache.uncacheGuildForUser(userId, guildId);
+					}
+				}));
 	}
 
 }
