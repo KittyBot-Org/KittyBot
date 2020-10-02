@@ -8,8 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public class SessionUserCachePolicy implements MemberCachePolicy {
 
 	@Override
-	public boolean cacheMember(@NotNull final Member member)
-	{
+	public boolean cacheMember(@NotNull final Member member){
 		return DashboardSessionCache.hasSession(member.getId());
 	}
 }

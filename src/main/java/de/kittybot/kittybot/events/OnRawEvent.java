@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 public class OnRawEvent extends ListenerAdapter{
 
 	@Override
-	public void onRawGateway(@NotNull final RawGatewayEvent event){ // this is topi's fucking idea don't blame me ok - cane
+	public void onRawGateway(@NotNull final RawGatewayEvent event){ // literally how to bypass jda - this is topi's fucking idea don't blame me ok - cane
 		if(!event.getType().equals("GUILD_MEMBER_UPDATE")){
 			return;
 		}
