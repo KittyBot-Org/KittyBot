@@ -5,10 +5,11 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.jetbrains.annotations.NotNull;
 
-public class SessionUserCachePolicy implements MemberCachePolicy {
+public class SessionUserCachePolicy implements MemberCachePolicy{
 
 	@Override
 	public boolean cacheMember(@NotNull final Member member){
 		return DashboardSessionCache.hasSession(member.getId());
 	}
+
 }

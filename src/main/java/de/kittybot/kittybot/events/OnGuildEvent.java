@@ -97,17 +97,16 @@ public class OnGuildEvent extends ListenerAdapter{
 
 	@Override
 	public void onRoleUpdatePermissions(final RoleUpdatePermissionsEvent event){
-		var add = false;
-		if(event.getNewPermissions().contains(Permission.ADMINISTRATOR) && !event.getOldPermissions().contains(Permission.ADMINISTRATOR)){
-			add = true;
+		var add = event.getNewPermissions().contains(Permission.ADMINISTRATOR) && !event.getOldPermissions().contains(Permission.ADMINISTRATOR);
+		var remove = !event.getNewPermissions().contains(Permission.ADMINISTRATOR) && event.getOldPermissions().contains(Permission.ADMINISTRATOR);
+		if(!add && !remove){
+			return;
 		}
-
-		final boolean tmpAdd = add;
 		event.getGuild().findMembers(member -> member.getRoles().contains(event.getRole()) && DashboardSessionCache.hasSession(member.getId()))
 				.onSuccess(members -> members.forEach(member -> {
 					var userId = member.getId();
 					var guildId = event.getGuild().getId();
-					if(tmpAdd){
+					if(add){
 						GuildCache.cacheGuildForUser(userId, guildId);
 					}
 					else{
