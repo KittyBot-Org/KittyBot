@@ -23,25 +23,25 @@ public class GuildCache{
 
 	public static List<GuildData> getGuilds(final DashboardSession dashboardSession) throws IOException{
 		var guilds = USER_GUILD_CACHE.get(dashboardSession.getUserId());
-		if(guilds != null){
-			return guilds.stream().map(GUILD_CACHE::get).collect(Collectors.toList());
-		}
-		var guildsId = KittyBot.getJda().getGuildCache().applyStream(guildStream -> guildStream.map(Guild::getId).collect(Collectors.toList()));
-		//noinspection ConstantConditions shut the fuck up IJ
-		var retrievedGuilds = WebService.getOAuth2Client().getGuilds(dashboardSession)
-				.complete()
-				.stream()
-				.filter(guild -> guildsId.contains(guild.getId())) // only collect guilds which kitty is in as we get a list of all guilds the user is in
-				.filter(guild -> guild.getPermissions().contains(Permission.ADMINISTRATOR))
-				.map(guild -> new GuildData(guild.getId(), guild.getName(), guild.getIconUrl()))
-				.collect(Collectors.toList());
+		if (guilds == null || guilds.isEmpty()){
+			var guildsId = KittyBot.getJda().getGuildCache().applyStream(guildStream -> guildStream.map(Guild::getId).collect(Collectors.toList()));
+			//noinspection ConstantConditions shut the fuck up IJ
+			var retrievedGuilds = WebService.getOAuth2Client().getGuilds(dashboardSession)
+					.complete()
+					.stream()
+					.filter(guild -> guildsId.contains(guild.getId())) // only collect guilds which kitty is in as we get a list of all guilds the user is in
+					.filter(guild -> guild.getPermissions().contains(Permission.ADMINISTRATOR))
+					.map(guild -> new GuildData(guild.getId(), guild.getName(), guild.getIconUrl()))
+					.collect(Collectors.toList());
 
-		retrievedGuilds.forEach(guildData -> {
-			var guildId = guildData.getId();
-			cacheGuild(guildId, guildData);
-			cacheGuildForUser(dashboardSession.getUserId(), guildId);
-		});
-		return retrievedGuilds;
+			retrievedGuilds.forEach(guildData -> {
+				var guildId = guildData.getId();
+				cacheGuild(guildId, guildData);
+				cacheGuildForUser(dashboardSession.getUserId(), guildId);
+			});
+			return retrievedGuilds;
+		}
+		return guilds.stream().map(GUILD_CACHE::get).collect(Collectors.toList());
 	}
 
 	public static void cacheGuild(final String guildId, final GuildData guildData){

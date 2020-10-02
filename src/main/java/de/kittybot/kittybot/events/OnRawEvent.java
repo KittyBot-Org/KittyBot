@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.events;
 
 import de.kittybot.kittybot.objects.cache.GuildCache;
+import de.kittybot.kittybot.objects.guilds.GuildData;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.RawGatewayEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -16,9 +17,11 @@ public class OnRawEvent extends ListenerAdapter {
         final var json = event.getPayload();
         final var guildId = json.getString("guild_id");
         final var userId = json.getObject("user").getString("id");
+        final var guild = event.getJDA().getGuildById(guildId);
         //noinspection ConstantConditions shut :)
-        event.getJDA().getGuildById(guildId).retrieveMemberById(userId).queue(member ->{
+        guild.retrieveMemberById(userId).queue(member ->{
             if (member.hasPermission(Permission.ADMINISTRATOR)){
+                GuildCache.cacheGuild(guildId, new GuildData(guildId, guild.getName(), guild.getIconUrl()));
                 GuildCache.cacheGuildForUser(userId, guildId);
             }
             else {
