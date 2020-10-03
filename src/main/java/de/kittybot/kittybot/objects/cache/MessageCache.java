@@ -6,10 +6,11 @@ import net.dv8tion.jda.api.entities.Guild;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MessageCache{
 
-	private static final Map<String, MessageData> MESSAGE_CACHE = new HashMap<>();
+	private static final Map<String, MessageData> MESSAGE_CACHE = new ConcurrentHashMap<>();
 	private static final Map<String, String> LAST_MESSAGE_DELETED_CACHE = new HashMap<>();
 
 	private static final Map<String, String> LAST_MESSAGE_EDITED_CACHE = new HashMap<>();
