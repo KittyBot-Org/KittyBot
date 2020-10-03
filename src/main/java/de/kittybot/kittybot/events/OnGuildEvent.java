@@ -62,7 +62,10 @@ public class OnGuildEvent extends ListenerAdapter{
 			messageRestAction.queue();
 		});
 
-		GuildCache.cacheGuild(guild.getId(), new GuildData(guild.getId(), guild.getName(), guild.getIconUrl()));
+		var guildId = guild.getId();
+		GuildCache.cacheGuild(guild.getId(), new GuildData(guildId, guild.getName(), guild.getIconUrl()));
+		guild.findMembers(member -> member.hasPermission(Permission.ADMINISTRATOR))
+			 .onSuccess(members -> members.forEach(member -> GuildCache.cacheGuildForUser(member.getId(), guildId)));
 	}
 
 	@Override
