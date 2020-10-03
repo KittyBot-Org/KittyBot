@@ -50,7 +50,10 @@ public class DashboardSessionCache{
 	}
 
 	public static boolean sessionExists(final String sessionKey){
-		return SESSION_CACHE.containsKey(sessionKey) || Database.sessionExists(sessionKey);
+		if(SESSION_CACHE.containsKey(sessionKey)){
+			return true;
+		}
+		return getSession(sessionKey) != null;
 	}
 
 	public static boolean hasSession(final String userId){
