@@ -100,8 +100,8 @@ public class KittyBot{
 							CacheFlag.ACTIVITY,
 							CacheFlag.CLIENT_STATUS
 					)
-					.setMemberCachePolicy(MemberCachePolicy.DEFAULT.and(new SessionUserCachePolicy())) // voice, owner or a user with a web session
-					.setChunkingFilter(ChunkingFilter.ALL)                                            // lazy loading
+					.setMemberCachePolicy(MemberCachePolicy.DEFAULT.or(new SessionUserCachePolicy())) // voice, owner or a user with a web session
+					.setChunkingFilter(ChunkingFilter.NONE)                                            // lazy loading
 					.addEventListeners(
 							new OnEmoteEvent(),
 							new OnGuildEvent(),
