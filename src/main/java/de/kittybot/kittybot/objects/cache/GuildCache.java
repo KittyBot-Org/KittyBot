@@ -30,7 +30,7 @@ public class GuildCache{
 					.complete()
 					.stream()
 					.filter(guild -> guildIds.contains(guild.getId())) // only collect guilds which kitty is in as we get a list of all guilds the user is in
-					.filter(guild -> guild.getPermissions().contains(Permission.ADMINISTRATOR) || guild.isOwner())
+					.filter(guild -> guild.isOwner() || guild.getPermissions().contains(Permission.ADMINISTRATOR))
 					.map(guild -> new GuildData(guild.getId(), guild.getName(), guild.getIconUrl()))
 					.collect(Collectors.toList());
 
