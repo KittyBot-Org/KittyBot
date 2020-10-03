@@ -8,10 +8,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class GuildCache{
@@ -32,6 +29,7 @@ public class GuildCache{
 					.filter(guild -> guildIds.contains(guild.getId())) // only collect guilds which kitty is in as we get a list of all guilds the user is in
 					.filter(guild -> guild.isOwner() || guild.getPermissions().contains(Permission.ADMINISTRATOR))
 					.map(guild -> new GuildData(guild.getId(), guild.getName(), guild.getIconUrl()))
+					.sorted(Comparator.comparing(GuildData::getName, String.CASE_INSENSITIVE_ORDER))
 					.collect(Collectors.toList());
 
 			retrievedGuilds.forEach(guildData -> {
