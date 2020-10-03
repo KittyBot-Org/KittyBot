@@ -56,7 +56,7 @@ public class OnGuildEvent extends ListenerAdapter{
 					.build();
 			var defaultChannel = guild.getDefaultChannel();
 			var messageRestAction = user.openPrivateChannel().flatMap(channel -> channel.sendMessage(embed));
-			if(defaultChannel != null){
+			if(defaultChannel != null && defaultChannel.canTalk()){
 				messageRestAction = messageRestAction.onErrorFlatMap(ignored -> defaultChannel.sendMessage(embed));
 			}
 			messageRestAction.queue();
