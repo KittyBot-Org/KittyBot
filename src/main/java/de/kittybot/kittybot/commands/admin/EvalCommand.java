@@ -8,7 +8,8 @@ import de.kittybot.kittybot.objects.command.CommandContext;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
+import java.util.Arrays;
+import java.util.List;
 
 public class EvalCommand extends ACommand{
 
@@ -17,22 +18,12 @@ public class EvalCommand extends ACommand{
 	public static final String DESCRIPTION = "Evals some Java Code";
 	protected static final String[] ALIASES = {};
 	protected static final Category CATEGORY = Category.ADMIN;
-	private ScriptEngine engine;
+	private static final ScriptEngine SCRIPT_ENGINE = new ScriptEngineManager().getEngineByName("groovy");
+	private static final List<String> DEFAULT_IMPORTS = Arrays.asList("net.dv8tion.jda.api.entities.impl", "net.dv8tion.jda.api.managers", "net.dv8tion.jda.api.entities", "net.dv8tion.jda.api", "java.lang",
+			"java.io", "java.math", "java.util", "java.util.concurrent", "java.time");
 
 	public EvalCommand(){
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
-		initEngine();
-	}
-
-	private void initEngine(){
-		System.setProperty("polyglot.js.nashorn-compat", "true"); // enables Nashorn compatibility mode
-		engine = new ScriptEngineManager().getEngineByName("graal.js");
-		try{
-			engine.eval("var imports = new JavaImporter(" + "java.io," + "java.lang," + "java.util," + "java.util.concurrent.TimeUnit," + "Packages.net.dv8tion.jda.api," + "Packages.net.dv8tion.jda.api.entities," + "Packages.net.dv8tion.jda.api.entities.impl," + "Packages.net.dv8tion.jda.api.managers," + "Packages.net.dv8tion.jda.api.managers.impl," + "Packages.net.dv8tion.jda.api.utils);");
-		}
-		catch(ScriptException e){
-			LOG.error("Error while initializing script engine", e);
-		}
 	}
 
 	@Override
@@ -42,16 +33,20 @@ public class EvalCommand extends ACommand{
 			return;
 		}
 		try{
-			engine.put("ctx", ctx);
-			engine.put("message", ctx.getMessage());
-			engine.put("channel", ctx.getChannel());
-			engine.put("args", ctx.getArgs());
-			engine.put("scheduler", KittyBot.getScheduler());
-			engine.put("api", ctx.getJDA());
-			engine.put("guild", ctx.getGuild());
-			engine.put("member", ctx.getMember());
+			SCRIPT_ENGINE.put("ctx", ctx);
+			SCRIPT_ENGINE.put("message", ctx.getMessage());
+			SCRIPT_ENGINE.put("channel", ctx.getChannel());
+			SCRIPT_ENGINE.put("args", ctx.getArgs());
+			SCRIPT_ENGINE.put("scheduler", KittyBot.getScheduler());
+			SCRIPT_ENGINE.put("api", ctx.getJDA());
+			SCRIPT_ENGINE.put("jda", ctx.getJDA());
+			SCRIPT_ENGINE.put("guild", ctx.getGuild());
+			SCRIPT_ENGINE.put("member", ctx.getMember());
 
-			Object out = engine.eval("(function() {" + "with (imports) { return " + String.join(" ", ctx.getArgs()) + "}" + "})();");
+			var sb = new StringBuilder();
+			DEFAULT_IMPORTS.forEach(imp -> sb.append("import ").append(imp).append(".*; "));
+			sb.append(String.join(" ", ctx.getArgs()));
+			var out = SCRIPT_ENGINE.eval(sb.toString());
 			sendAnswer(ctx, out == null ? "Executed without error." : out.toString());
 		}
 		catch(Exception e){
