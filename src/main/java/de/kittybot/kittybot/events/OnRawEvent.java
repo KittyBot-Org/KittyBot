@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.events;
 
-import de.kittybot.kittybot.objects.cache.GuildCache;
+import de.kittybot.kittybot.cache.GuildCache;
 import de.kittybot.kittybot.objects.guilds.GuildData;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.RawGatewayEvent;

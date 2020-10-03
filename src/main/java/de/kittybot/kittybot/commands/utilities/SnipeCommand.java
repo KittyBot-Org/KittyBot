@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.commands.utilities;
 
 import de.kittybot.kittybot.KittyBot;
-import de.kittybot.kittybot.objects.cache.MessageCache;
+import de.kittybot.kittybot.cache.MessageCache;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;

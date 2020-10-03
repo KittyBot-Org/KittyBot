@@ -1,8 +1,8 @@
 package de.kittybot.kittybot.commands.info;
 
+import de.kittybot.kittybot.cache.PrefixCache;
 import de.kittybot.kittybot.objects.Emojis;
 import de.kittybot.kittybot.objects.TitleInfo;
-import de.kittybot.kittybot.objects.cache.PrefixCache;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;

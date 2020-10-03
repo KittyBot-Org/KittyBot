@@ -10,16 +10,15 @@ import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.vimeo.VimeoAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
+import de.kittybot.kittybot.cache.MessageCache;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.database.SQL;
 import de.kittybot.kittybot.events.*;
 import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.LavalinkNode;
 import de.kittybot.kittybot.objects.StatusManager;
-import de.kittybot.kittybot.objects.cache.MessageCache;
 import de.kittybot.kittybot.objects.command.CommandManager;
 import de.kittybot.kittybot.objects.paginator.Paginator;
-import de.kittybot.kittybot.objects.session.SessionUserCachePolicy;
 import lavalink.client.io.Link;
 import lavalink.client.io.jda.JdaLavalink;
 import net.dv8tion.jda.api.*;
@@ -100,8 +99,8 @@ public class KittyBot{
 							CacheFlag.ACTIVITY,
 							CacheFlag.CLIENT_STATUS
 					)
-					.setMemberCachePolicy(MemberCachePolicy.DEFAULT.or(new SessionUserCachePolicy()))  // voice, owner or a user with a web session
-					.setChunkingFilter(ChunkingFilter.NONE)                                            // lazy loading
+					.setMemberCachePolicy(MemberCachePolicy.DEFAULT.or(member -> Database.hasSession(member.getId())))  // voice, owner or a user with a web session
+					.setChunkingFilter(ChunkingFilter.NONE)                                                             // lazy loading
 					.addEventListeners(
 							new OnEmoteEvent(),
 							new OnGuildEvent(),

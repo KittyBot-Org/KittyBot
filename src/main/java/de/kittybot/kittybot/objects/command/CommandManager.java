@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.objects.command;
 
+import de.kittybot.kittybot.cache.PrefixCache;
 import de.kittybot.kittybot.database.Database;
-import de.kittybot.kittybot.objects.cache.PrefixCache;
 import io.github.classgraph.ClassGraph;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;

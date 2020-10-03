@@ -2,10 +2,10 @@ package de.kittybot.kittybot.database;
 
 import com.jagrosh.jdautilities.oauth2.session.SessionData;
 import de.kittybot.kittybot.WebService;
+import de.kittybot.kittybot.cache.DashboardSessionCache;
+import de.kittybot.kittybot.cache.SelfAssignableRoleCache;
 import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.ReactiveMessage;
-import de.kittybot.kittybot.objects.cache.DashboardSessionCache;
-import de.kittybot.kittybot.objects.cache.SelfAssignableRoleCache;
 import de.kittybot.kittybot.objects.session.DashboardSession;
 import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.JDA;

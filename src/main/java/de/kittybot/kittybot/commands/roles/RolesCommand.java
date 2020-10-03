@@ -1,9 +1,9 @@
 package de.kittybot.kittybot.commands.roles;
 
+import de.kittybot.kittybot.cache.ReactiveMessageCache;
+import de.kittybot.kittybot.cache.SelfAssignableRoleCache;
 import de.kittybot.kittybot.objects.Emojis;
 import de.kittybot.kittybot.objects.ReactiveMessage;
-import de.kittybot.kittybot.objects.cache.ReactiveMessageCache;
-import de.kittybot.kittybot.objects.cache.SelfAssignableRoleCache;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;

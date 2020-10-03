@@ -1,9 +1,9 @@
 package de.kittybot.kittybot.events;
 
 import de.kittybot.kittybot.KittyBot;
+import de.kittybot.kittybot.cache.*;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.BotLists;
-import de.kittybot.kittybot.objects.cache.*;
 import de.kittybot.kittybot.objects.guilds.GuildData;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -46,7 +46,7 @@ public class OnGuildEvent extends ListenerAdapter{
 			var embed = new EmbedBuilder().setTitle("Hellowo and thank your for adding me to your Discord Server!")
 					.setDescription("To get started you maybe want to set up some self assignable roles. This can be done with `.roles add @role :emote:`. You will need a emote for each role and they should be from your server!\n\n"
 							+ "If you want to know my other commands just type ``.commands``.\n"
-							+ "To change my prefix use ``.options prefix <your wished prefix>``.\n" + "In case you forgot any command just type ``.cmds`` to get a full list off all my commands!\n"
+							+ "To change my prefix use ``.options prefix <your wished prefix>``.\n" + "In case you forgot any command just type ``.cmds`` to get a full list of all my commands!\n"
 							+ "You can also setup all this stuff via the webinterface at https://kittybot.de\n\n"
 							+ "To report bugs/suggest features either join my [Support Server](https://discord.gg/sD3ABd5), add me on Discord ``toπ#3141`` or message me on [Twitter](https://twitter.com/TopiSenpai)")
 					.setColor(new Color(76, 80, 193))
@@ -56,13 +56,16 @@ public class OnGuildEvent extends ListenerAdapter{
 					.build();
 			var defaultChannel = guild.getDefaultChannel();
 			var messageRestAction = user.openPrivateChannel().flatMap(channel -> channel.sendMessage(embed));
-			if(defaultChannel != null){
+			if(defaultChannel != null && defaultChannel.canTalk()){
 				messageRestAction = messageRestAction.onErrorFlatMap(ignored -> defaultChannel.sendMessage(embed));
 			}
 			messageRestAction.queue();
 		});
 
-		GuildCache.cacheGuild(guild.getId(), new GuildData(guild.getId(), guild.getName(), guild.getIconUrl()));
+		var guildId = guild.getId();
+		GuildCache.cacheGuild(guildId, new GuildData(guildId, guild.getName(), guild.getIconUrl()));
+		guild.findMembers(member -> member.hasPermission(Permission.ADMINISTRATOR))
+			 .onSuccess(members -> members.forEach(member -> GuildCache.cacheGuildForUser(member.getId(), guildId)));
 	}
 
 	@Override
