@@ -21,19 +21,6 @@ public class DashboardSessionCache{
 		Database.addSession(session);
 	}
 
-	public static DashboardSession getSession(final String sessionKey){
-		var session = SESSION_CACHE.get(sessionKey);
-		if(session != null){
-			return session;
-		}
-		session = Database.getSession(sessionKey);
-		if(session != null){
-			SESSION_CACHE.put(sessionKey, session);
-		}
-		return session;
-
-	}
-
 	public static void deleteSession(final String sessionKey){
 		var session = SESSION_CACHE.get(sessionKey);
 		Database.deleteSession(sessionKey);
@@ -51,6 +38,19 @@ public class DashboardSessionCache{
 
 	public static boolean sessionExists(final String sessionKey){
 		return SESSION_CACHE.containsKey(sessionKey) || getSession(sessionKey) != null;
+	}
+
+	public static DashboardSession getSession(final String sessionKey){
+		var session = SESSION_CACHE.get(sessionKey);
+		if(session != null){
+			return session;
+		}
+		session = Database.getSession(sessionKey);
+		if(session != null){
+			SESSION_CACHE.put(sessionKey, session);
+		}
+		return session;
+
 	}
 
 	public static boolean hasSession(final String userId){

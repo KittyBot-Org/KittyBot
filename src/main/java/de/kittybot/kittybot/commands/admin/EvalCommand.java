@@ -37,7 +37,7 @@ public class EvalCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		if (!Config.ADMIN_IDS.contains(ctx.getUser().getId())){
+		if(!Config.ADMIN_IDS.contains(ctx.getUser().getId())){
 			sendNoPermission(ctx);
 			return;
 		}
