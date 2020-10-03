@@ -54,17 +54,14 @@ public class DashboardSessionCache{
 	}
 
 	public static boolean hasSession(final String userId){
-		var hasSession = false;
-		if (!USER_SESSION_CACHE.contains(userId)){
-			if(Database.hasSession(userId)){
-				USER_SESSION_CACHE.add(userId);
-				hasSession = true;
-			}
+		if(USER_SESSION_CACHE.contains(userId)){
+			return true;
 		}
-		else{
-			hasSession = true;
+		if(Database.hasSession(userId)){
+			USER_SESSION_CACHE.add(userId);
+			return true;
 		}
-		return hasSession;
+		return false;
 	}
 
 }
