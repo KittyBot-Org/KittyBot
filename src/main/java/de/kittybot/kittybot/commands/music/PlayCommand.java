@@ -1,13 +1,12 @@
 package de.kittybot.kittybot.commands.music;
 
-import de.kittybot.kittybot.KittyBot;
 import de.kittybot.kittybot.cache.MusicPlayerCache;
 import de.kittybot.kittybot.objects.Emojis;
-import de.kittybot.kittybot.objects.MusicPlayer;
 import de.kittybot.kittybot.objects.ReactiveMessage;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
+import de.kittybot.kittybot.utils.AudioUtils;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 public class PlayCommand extends ACommand{
@@ -29,25 +28,27 @@ public class PlayCommand extends ACommand{
 			sendError(ctx, "Please provide a link or search term");
 			return;
 		}
-		var voiceState = ctx.getMember().getVoiceState();
-		if(voiceState == null || !voiceState.inVoiceChannel()){
-			sendError(ctx, "Please connect to a voice channel to play some stuff");
-			return;
-		}
-		var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
-		if(musicPlayer == null){
-			var link = KittyBot.getLavalink().getLink(ctx.getGuild());
-			var player = link.getPlayer();
-			musicPlayer = new MusicPlayer(player);
-			player.addListener(musicPlayer);
-			MusicPlayerCache.addMusicPlayer(ctx.getGuild(), musicPlayer);
-		}
-		musicPlayer.loadItem(this, ctx);
+		AudioUtils.checkVoiceChannel(ctx).thenAcceptAsync(connectFailureReason -> {
+			if(connectFailureReason != null){
+				sendError(ctx, "I can't play music as " + connectFailureReason.getReason() + ".");
+				return;
+			}
+			final var musicManager = MusicPlayerCache.getMusicManager(ctx.getGuild(), true);
+			final var channelId = musicManager.getChannelId();
+			if (channelId == null){
+				musicManager.loadQuery(this, ctx);
+				return;
+			}
+			if (!ctx.getChannel().getId().equals(channelId)){
+				return;
+			}
+			musicManager.loadQuery(this, ctx);
+		});
 	}
 
 	@Override
 	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
-		var musicPlayer = MusicPlayerCache.getMusicPlayer(event.getGuild());
+		var musicPlayer = MusicPlayerCache.getMusicManager(event.getGuild(), false);
 		if(musicPlayer == null){
 			return;
 		}
@@ -86,7 +87,6 @@ public class PlayCommand extends ACommand{
 		else if(event.getReactionEmote().getId().equals("744945002416963634")){
 			musicPlayer.pause();
 		}
-		musicPlayer.updateMusicControlMessage(event.getChannel());
 		event.getReaction().removeReaction(event.getUser()).queue();
 	}
 

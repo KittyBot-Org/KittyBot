@@ -17,12 +17,12 @@ public class OnGuildVoiceEvent extends ListenerAdapter{
 	public void onGuildVoiceUpdate(@NotNull final GuildVoiceUpdateEvent event){
 		if(event instanceof GuildVoiceMoveEvent || event instanceof GuildVoiceLeaveEvent){
 			var guild = event.getEntity().getGuild();
-			var musicPlayer = MusicPlayerCache.getMusicPlayer(guild);
+			var musicPlayer = MusicPlayerCache.getMusicManager(guild, false);
 			if(musicPlayer == null){
 				return;
 			}
 			var channel = event.getChannelLeft();
-			var currentChannel = musicPlayer.getPlayer().getLink().getChannel();
+			var currentChannel = musicPlayer.getChannelId();
 			if(channel == null || !channel.getId().equals(currentChannel)){
 				return;
 			}
