@@ -1,4 +1,4 @@
-package de.kittybot.kittybot.objects.cache;
+package de.kittybot.kittybot.cache;
 
 import de.kittybot.kittybot.KittyBot;
 import de.kittybot.kittybot.objects.MusicPlayer;

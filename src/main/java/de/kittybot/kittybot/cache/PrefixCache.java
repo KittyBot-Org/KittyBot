@@ -1,4 +1,4 @@
-package de.kittybot.kittybot.objects.cache;
+package de.kittybot.kittybot.cache;
 
 import de.kittybot.kittybot.database.Database;
 import net.dv8tion.jda.api.entities.Guild;

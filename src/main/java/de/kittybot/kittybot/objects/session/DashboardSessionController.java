@@ -3,7 +3,7 @@ package de.kittybot.kittybot.objects.session;
 import com.jagrosh.jdautilities.oauth2.session.SessionController;
 import com.jagrosh.jdautilities.oauth2.session.SessionData;
 import de.kittybot.kittybot.WebService;
-import de.kittybot.kittybot.objects.cache.DashboardSessionCache;
+import de.kittybot.kittybot.cache.DashboardSessionCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,4 +1,4 @@
-package de.kittybot.kittybot.objects.cache;
+package de.kittybot.kittybot.cache;
 
 import de.kittybot.kittybot.objects.invites.InviteData;
 import net.dv8tion.jda.api.Permission;

@@ -3,12 +3,12 @@ package de.kittybot.kittybot;
 import com.jagrosh.jdautilities.oauth2.OAuth2Client;
 import com.jagrosh.jdautilities.oauth2.Scope;
 import com.jagrosh.jdautilities.oauth2.exceptions.InvalidStateException;
+import de.kittybot.kittybot.cache.DashboardSessionCache;
+import de.kittybot.kittybot.cache.GuildCache;
+import de.kittybot.kittybot.cache.PrefixCache;
+import de.kittybot.kittybot.cache.SelfAssignableRoleCache;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.Config;
-import de.kittybot.kittybot.objects.cache.DashboardSessionCache;
-import de.kittybot.kittybot.objects.cache.GuildCache;
-import de.kittybot.kittybot.objects.cache.PrefixCache;
-import de.kittybot.kittybot.objects.cache.SelfAssignableRoleCache;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandManager;
 import de.kittybot.kittybot.objects.guilds.GuildData;
@@ -16,14 +16,17 @@ import de.kittybot.kittybot.objects.session.DashboardSessionController;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
@@ -162,7 +165,8 @@ public class WebService{
 			return;
 		}
 		var data = DataArray.empty();
-		for(var guild : KittyBot.getJda().getGuildCache()){
+		//noinspection ConstantConditions shut
+		for(var guild : KittyBot.getJda().getGuildCache().applyStream(stream -> stream.sorted(Comparator.comparing(Guild::getName, String.CASE_INSENSITIVE_ORDER)).collect(Collectors.toList()))){
 			var owner = guild.getOwner();
 			var obj = DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl()).put("count", guild.getMemberCount());
 			if(owner != null){
