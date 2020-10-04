@@ -1,11 +1,11 @@
 package de.kittybot.kittybot.events;
 
+import de.kittybot.kittybot.cache.CommandResponseCache;
+import de.kittybot.kittybot.cache.MessageCache;
+import de.kittybot.kittybot.cache.ReactiveMessageCache;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.Emojis;
 import de.kittybot.kittybot.objects.ReactiveMessage;
-import de.kittybot.kittybot.objects.cache.CommandResponseCache;
-import de.kittybot.kittybot.objects.cache.MessageCache;
-import de.kittybot.kittybot.objects.cache.ReactiveMessageCache;
 import de.kittybot.kittybot.objects.command.CommandManager;
 import de.kittybot.kittybot.objects.messages.MessageData;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -52,6 +52,9 @@ public class OnGuildMessageEvent extends ListenerAdapter{
 
 	@Override
 	public void onGuildMessageUpdate(@NotNull final GuildMessageUpdateEvent event){
+		if(!MessageCache.isCached(event.getMessageId())){
+			return;
+		}
 		final var messageId = event.getMessageId();
 		MessageCache.cacheMessage(messageId, new MessageData(event.getMessage()));
 		MessageCache.setLastEditedMessage(event.getChannel().getId(), messageId);
@@ -61,6 +64,9 @@ public class OnGuildMessageEvent extends ListenerAdapter{
 	public void onGuildMessageDelete(GuildMessageDeleteEvent event){
 		CommandResponseCache.deleteCommandResponse(event.getChannel(), event.getMessageId());
 		Database.removeReactiveMessage(event.getGuild().getId(), event.getMessageId());
+		if(!MessageCache.isCached(event.getMessageId())){
+			return;
+		}
 		MessageCache.setLastDeletedMessage(event.getChannel().getId(), event.getMessageId());
 		MessageCache.uncacheEditedMessage(event.getChannel().getId(), event.getMessageId());
 	}

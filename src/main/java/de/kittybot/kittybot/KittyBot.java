@@ -1,6 +1,7 @@
 package de.kittybot.kittybot;
 
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
+import com.sedmelluq.discord.lavaplayer.jdaudp.NativeAudioSendFactory;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
@@ -9,13 +10,13 @@ import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.vimeo.VimeoAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
+import de.kittybot.kittybot.cache.MessageCache;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.database.SQL;
 import de.kittybot.kittybot.events.*;
 import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.LavalinkNode;
 import de.kittybot.kittybot.objects.StatusManager;
-import de.kittybot.kittybot.objects.cache.MessageCache;
 import de.kittybot.kittybot.objects.command.CommandManager;
 import de.kittybot.kittybot.objects.paginator.Paginator;
 import lavalink.client.io.Link;
@@ -27,6 +28,7 @@ import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import net.dv8tion.jda.internal.utils.config.ThreadingConfig;
 import okhttp3.OkHttpClient;
 import org.discordbots.api.client.DiscordBotListAPI;
 import org.slf4j.Logger;
@@ -66,10 +68,8 @@ public class KittyBot{
 				"\n");
 		LOG.info("Starting...");
 
-		Config.load("config.json");
-
 		try{
-			lavalink = new JdaLavalink(Config.BOT_ID, 1, this::getShardById);
+			lavalink = new JdaLavalink(Config.BOT_ID, 1, this::fuckLavalink);
 			for(LavalinkNode node : Config.LAVALINK_NODES){
 				lavalink.addNode(new URI("ws://" + node.host + ":" + node.port), node.password);
 			}
@@ -86,23 +86,21 @@ public class KittyBot{
 			RestAction.setDefaultFailure(null);
 
 			jda = JDABuilder.create(
+					Config.BOT_TOKEN,
 					GatewayIntent.GUILD_MEMBERS,
 					GatewayIntent.GUILD_VOICE_STATES,
 					GatewayIntent.GUILD_MESSAGES,
 					GatewayIntent.GUILD_MESSAGE_REACTIONS,
 					GatewayIntent.GUILD_EMOJIS,
-					GatewayIntent.GUILD_INVITES,
-					GatewayIntent.DIRECT_MESSAGES,
-					GatewayIntent.DIRECT_MESSAGE_REACTIONS
+					GatewayIntent.GUILD_INVITES
 			)
 					.disableCache(
 							CacheFlag.MEMBER_OVERRIDES,
 							CacheFlag.ACTIVITY,
 							CacheFlag.CLIENT_STATUS
 					)
-					.setMemberCachePolicy(MemberCachePolicy.ALL)
-					.setChunkingFilter(ChunkingFilter.ALL)
-					.setToken(Config.BOT_TOKEN)
+					.setMemberCachePolicy(MemberCachePolicy.DEFAULT.or(member -> Database.hasSession(member.getId())))  // voice, owner or a user with a web session
+					.setChunkingFilter(ChunkingFilter.NONE)                                                             // lazy loading
 					.addEventListeners(
 							new OnEmoteEvent(),
 							new OnGuildEvent(),
@@ -112,15 +110,21 @@ public class KittyBot{
 							new OnGuildVoiceEvent(),
 							new OnInviteEvent(),
 							new OnReadyEvent(),
+							new OnRawEvent(),
 							new Paginator(),
 							lavalink
 					)
+					.setRawEventsEnabled(true)
 					.setVoiceDispatchInterceptor(lavalink.getVoiceInterceptor())
 					.setActivity(Activity.playing("loading..."))
 					.setStatus(OnlineStatus.DO_NOT_DISTURB)
+					.setEventPool(ThreadingConfig.newScheduler(2, () -> "KittyBot", "Event"), true)
+					.setHttpClient(HTTP_CLIENT)
 					.setGatewayEncoding(GatewayEncoding.ETF)
-					.build().awaitReady();
-
+					.setAudioSendFactory(new NativeAudioSendFactory())
+					.setBulkDeleteSplittingEnabled(false)
+					.build()
+					.awaitReady();
 
 			if(Config.isSet(Config.DISCORD_BOT_LIST_TOKEN)){
 				discordBotListAPI = new DiscordBotListAPI.Builder().token(Config.DISCORD_BOT_LIST_TOKEN).botId(Config.BOT_ID).build();
@@ -132,7 +136,7 @@ public class KittyBot{
 
 			SCHEDULER.scheduleAtFixedRate(MessageCache::pruneCache, 1, 1, TimeUnit.HOURS);
 
-			SCHEDULER.scheduleAtFixedRate(StatusManager::newRandomStatus, 0, 5, TimeUnit.MINUTES);
+			SCHEDULER.scheduleAtFixedRate(StatusManager::newRandomStatus, 0, 2, TimeUnit.MINUTES);
 
 			if(Config.isSet(Config.LOG_CHANNEL_ID)){
 				sendToPublicLogChannel("I'm now online uwu");
@@ -144,7 +148,7 @@ public class KittyBot{
 		}
 	}
 
-	private JDA getShardById(int id){
+	private JDA fuckLavalink(int id){ // TODO maybe get rid of this fucking shit in our fork
 		return jda;
 	}
 

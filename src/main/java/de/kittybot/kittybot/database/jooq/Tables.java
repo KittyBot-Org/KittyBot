@@ -29,11 +29,14 @@ public class Tables{
 	public static final ReactiveMessages REACTIVE_MESSAGES = ReactiveMessages.REACTIVE_MESSAGES;
 
 	/**
+<<<<<<< HEAD
 	 * The table <code>public.self_assignable_role_groups</code>.
 	 */
 	public static final SelfAssignableRoleGroups SELF_ASSIGNABLE_ROLE_GROUPS = SelfAssignableRoleGroups.SELF_ASSIGNABLE_ROLE_GROUPS;
 
 	/**
+=======
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 	 * The table <code>public.self_assignable_roles</code>.
 	 */
 	public static final SelfAssignableRoles SELF_ASSIGNABLE_ROLES = SelfAssignableRoles.SELF_ASSIGNABLE_ROLES;

@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.commands.roles;
 
-import de.kittybot.kittybot.objects.cache.SelfAssignableRoleCache;
+import de.kittybot.kittybot.cache.SelfAssignableRoleCache;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;

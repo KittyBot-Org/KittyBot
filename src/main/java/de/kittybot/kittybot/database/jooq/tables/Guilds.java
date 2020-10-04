@@ -25,7 +25,11 @@ public class Guilds extends TableImpl<GuildsRecord>{
 	 * The reference instance of <code>public.guilds</code>
 	 */
 	public static final Guilds GUILDS = new Guilds();
+<<<<<<< HEAD
 	private static final long serialVersionUID = -784745749;
+=======
+	private static final long serialVersionUID = -1814477830;
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 	/**
 	 * The column <code>public.guilds.guild_id</code>.
 	 */
@@ -83,10 +87,13 @@ public class Guilds extends TableImpl<GuildsRecord>{
 	 */
 	public final TableField<GuildsRecord, Boolean> NSFW_ENABLED = createField(DSL.name("nsfw_enabled"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
 	/**
+<<<<<<< HEAD
 	 * The column <code>public.guilds.dj_role_id</code>.
 	 */
 	public final TableField<GuildsRecord, String> DJ_ROLE_ID = createField(DSL.name("dj_role_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
 	/**
+=======
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 	 * The column <code>public.guilds.inactive_role_id</code>.
 	 */
 	public final TableField<GuildsRecord, String> INACTIVE_ROLE_ID = createField(DSL.name("inactive_role_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
@@ -174,12 +181,21 @@ public class Guilds extends TableImpl<GuildsRecord>{
 	}
 
 	// -------------------------------------------------------------------------
+<<<<<<< HEAD
 	// Row16 type methods
 	// -------------------------------------------------------------------------
 
 	@Override
 	public Row16<String, String, String, Boolean, String, String, Boolean, String, Boolean, String, Boolean, String, Boolean, Boolean, String, String> fieldsRow(){
 		return (Row16) super.fieldsRow();
+=======
+	// Row15 type methods
+	// -------------------------------------------------------------------------
+
+	@Override
+	public Row15<String, String, String, Boolean, String, String, Boolean, String, Boolean, String, Boolean, String, Boolean, Boolean, String> fieldsRow(){
+		return (Row15) super.fieldsRow();
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 	}
 
 }

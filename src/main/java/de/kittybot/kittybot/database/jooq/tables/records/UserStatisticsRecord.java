@@ -230,6 +230,7 @@ public class UserStatisticsRecord extends UpdatableRecordImpl<UserStatisticsReco
 		return getUserId();
 	}
 
+<<<<<<< HEAD
 	/**
 	 * Getter for <code>public.user_statistics.user_id</code>.
 	 */
@@ -330,6 +331,93 @@ public class UserStatisticsRecord extends UpdatableRecordImpl<UserStatisticsReco
 		return getVoiceTime();
 	}
 
+=======
+	@Override
+	public String component2(){
+		return getGuildId();
+	}
+
+	@Override
+	public Integer component3(){
+		return getXp();
+	}
+
+	@Override
+	public Integer component4(){
+		return getLevel();
+	}
+
+	@Override
+	public Integer component5(){
+		return getBotCalls();
+	}
+
+	@Override
+	public Integer component6(){
+		return getVoiceTime();
+	}
+
+	@Override
+	public Integer component7(){
+		return getMessageCount();
+	}
+
+	@Override
+	public Integer component8(){
+		return getEmoteCount();
+	}
+
+	@Override
+	public String component9(){
+		return getLastActive();
+	}
+
+	/**
+	 * Getter for <code>public.user_statistics.last_active</code>.
+	 */
+	public String getLastActive(){
+		return (String) get(8);
+	}
+
+	/**
+	 * Setter for <code>public.user_statistics.last_active</code>.
+	 */
+	public UserStatisticsRecord setLastActive(String value){
+		set(8, value);
+		return this;
+	}
+
+	/**
+	 * Getter for <code>public.user_statistics.emote_count</code>.
+	 */
+	public Integer getEmoteCount(){
+		return (Integer) get(7);
+	}
+
+	/**
+	 * Setter for <code>public.user_statistics.emote_count</code>.
+	 */
+	public UserStatisticsRecord setEmoteCount(Integer value){
+		set(7, value);
+		return this;
+	}
+
+	/**
+	 * Getter for <code>public.user_statistics.message_count</code>.
+	 */
+	public Integer getMessageCount(){
+		return (Integer) get(6);
+	}
+
+	/**
+	 * Setter for <code>public.user_statistics.message_count</code>.
+	 */
+	public UserStatisticsRecord setMessageCount(Integer value){
+		set(6, value);
+		return this;
+	}
+
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 	/**
 	 * Getter for <code>public.user_statistics.voice_time</code>.
 	 */
@@ -345,6 +433,7 @@ public class UserStatisticsRecord extends UpdatableRecordImpl<UserStatisticsReco
 		return this;
 	}
 
+<<<<<<< HEAD
 	@Override
 	public Integer component7(){
 		return getMessageCount();
@@ -388,6 +477,66 @@ public class UserStatisticsRecord extends UpdatableRecordImpl<UserStatisticsReco
 	@Override
 	public String component9(){
 		return getLastActive();
+=======
+	/**
+	 * Getter for <code>public.user_statistics.bot_calls</code>.
+	 */
+	public Integer getBotCalls(){
+		return (Integer) get(4);
+	}
+
+	/**
+	 * Setter for <code>public.user_statistics.bot_calls</code>.
+	 */
+	public UserStatisticsRecord setBotCalls(Integer value){
+		set(4, value);
+		return this;
+	}
+
+	/**
+	 * Getter for <code>public.user_statistics.level</code>.
+	 */
+	public Integer getLevel(){
+		return (Integer) get(3);
+	}
+
+	/**
+	 * Setter for <code>public.user_statistics.level</code>.
+	 */
+	public UserStatisticsRecord setLevel(Integer value){
+		set(3, value);
+		return this;
+	}
+
+	/**
+	 * Getter for <code>public.user_statistics.xp</code>.
+	 */
+	public Integer getXp(){
+		return (Integer) get(2);
+	}
+
+	/**
+	 * Setter for <code>public.user_statistics.xp</code>.
+	 */
+	public UserStatisticsRecord setXp(Integer value){
+		set(2, value);
+		return this;
+	}
+
+	/**
+	 * Getter for <code>public.user_statistics.guild_id</code>.
+	 */
+	public String getGuildId(){
+		return (String) get(1);
+	}
+
+	/**
+	 * Setter for <code>public.user_statistics.guild_id</code>.
+	 */
+	public UserStatisticsRecord setGuildId(String value){
+		set(1, value);
+		return this;
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 	}
 
 	// -------------------------------------------------------------------------
@@ -395,6 +544,7 @@ public class UserStatisticsRecord extends UpdatableRecordImpl<UserStatisticsReco
 	// -------------------------------------------------------------------------
 
 	/**
+<<<<<<< HEAD
 	 * Getter for <code>public.user_statistics.last_active</code>.
 	 */
 	public String getLastActive(){
@@ -406,6 +556,19 @@ public class UserStatisticsRecord extends UpdatableRecordImpl<UserStatisticsReco
 	 */
 	public UserStatisticsRecord setLastActive(String value){
 		set(8, value);
+=======
+	 * Getter for <code>public.user_statistics.user_id</code>.
+	 */
+	public String getUserId(){
+		return (String) get(0);
+	}
+
+	/**
+	 * Setter for <code>public.user_statistics.user_id</code>.
+	 */
+	public UserStatisticsRecord setUserId(String value){
+		set(0, value);
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 		return this;
 	}
 

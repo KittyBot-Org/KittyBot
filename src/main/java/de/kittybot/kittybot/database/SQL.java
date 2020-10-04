@@ -81,10 +81,17 @@ public class SQL{
 
 	public static <T> void setProperty(String guildId, Field<T> field, T value){
 		try(var con = getCon(); var ctx = getCtx(con)){
+<<<<<<< HEAD
 			ctx.update(GUILDS).set(field, value).where(GUILDS.GUILD_ID.eq(guildId)).executeAsync();
 		}
 		catch(SQLException e){
 			LOG.error("Error while getting key " + field.getName() + " from guild " + guildId, e);
+=======
+			ctx.update(GUILDS).set(field, value).where(GUILDS.GUILD_ID.eq(guildId)).execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error while setting key " + field.getName() + " from guild " + guildId, e);
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 		}
 	}
 

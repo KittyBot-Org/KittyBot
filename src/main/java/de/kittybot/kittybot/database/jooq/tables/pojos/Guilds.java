@@ -13,7 +13,11 @@ import java.io.Serializable;
 @SuppressWarnings({"all", "unchecked", "rawtypes"})
 public class Guilds implements Serializable{
 
+<<<<<<< HEAD
 	private static final long serialVersionUID = -26515405;
+=======
+	private static final long serialVersionUID = 1697911251;
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 
 	private final String guildId;
 	private final String commandPrefix;
@@ -29,7 +33,10 @@ public class Guilds implements Serializable{
 	private final String logChannelId;
 	private final Boolean logMessagesEnabled;
 	private final Boolean nsfwEnabled;
+<<<<<<< HEAD
 	private final String djRoleId;
+=======
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 	private final String inactiveRoleId;
 
 	public Guilds(Guilds value){
@@ -47,7 +54,10 @@ public class Guilds implements Serializable{
 		this.logChannelId = value.logChannelId;
 		this.logMessagesEnabled = value.logMessagesEnabled;
 		this.nsfwEnabled = value.nsfwEnabled;
+<<<<<<< HEAD
 		this.djRoleId = value.djRoleId;
+=======
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 		this.inactiveRoleId = value.inactiveRoleId;
 	}
 
@@ -66,7 +76,10 @@ public class Guilds implements Serializable{
 			String logChannelId,
 			Boolean logMessagesEnabled,
 			Boolean nsfwEnabled,
+<<<<<<< HEAD
 			String djRoleId,
+=======
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 			String inactiveRoleId
 	){
 		this.guildId = guildId;
@@ -83,7 +96,10 @@ public class Guilds implements Serializable{
 		this.logChannelId = logChannelId;
 		this.logMessagesEnabled = logMessagesEnabled;
 		this.nsfwEnabled = nsfwEnabled;
+<<<<<<< HEAD
 		this.djRoleId = djRoleId;
+=======
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 		this.inactiveRoleId = inactiveRoleId;
 	}
 
@@ -143,10 +159,13 @@ public class Guilds implements Serializable{
 		return this.nsfwEnabled;
 	}
 
+<<<<<<< HEAD
 	public String getDjRoleId(){
 		return this.djRoleId;
 	}
 
+=======
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 	public String getInactiveRoleId(){
 		return this.inactiveRoleId;
 	}
@@ -169,7 +188,10 @@ public class Guilds implements Serializable{
 		sb.append(", ").append(logChannelId);
 		sb.append(", ").append(logMessagesEnabled);
 		sb.append(", ").append(nsfwEnabled);
+<<<<<<< HEAD
 		sb.append(", ").append(djRoleId);
+=======
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 		sb.append(", ").append(inactiveRoleId);
 
 		sb.append(")");

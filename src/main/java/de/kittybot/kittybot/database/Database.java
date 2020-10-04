@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.database;
 
+<<<<<<< HEAD
 import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.ReactiveMessage;
 import de.kittybot.kittybot.objects.SelfAssignableRole;
@@ -8,15 +9,35 @@ import de.kittybot.kittybot.objects.cache.SelfAssignableRoleCache;
 import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
+=======
+import com.jagrosh.jdautilities.oauth2.session.SessionData;
+import de.kittybot.kittybot.WebService;
+import de.kittybot.kittybot.cache.DashboardSessionCache;
+import de.kittybot.kittybot.cache.SelfAssignableRoleCache;
+import de.kittybot.kittybot.objects.Config;
+import de.kittybot.kittybot.objects.ReactiveMessage;
+import de.kittybot.kittybot.objects.session.DashboardSession;
+import de.kittybot.kittybot.utils.Utils;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Guild;
+import org.jooq.types.YearToSecond;
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
+<<<<<<< HEAD
 import java.time.Instant;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+=======
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.*;
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 import java.util.stream.Collectors;
 
 import static de.kittybot.kittybot.database.SQL.*;
@@ -32,7 +53,10 @@ public class Database{
 	public static void init(JDA jda){
 		createTable("guilds");
 		createTable("self_assignable_roles");
+<<<<<<< HEAD
 		createTable("self_assignable_role_groups");
+=======
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 		createTable("commands");
 		createTable("reactive_messages");
 		createTable("user_statistics");
@@ -77,22 +101,49 @@ public class Database{
 							true,
 							"-1"
 					)
+<<<<<<< HEAD
 					.execute();
+=======
+			.onDuplicateKeyIgnore()
+			.execute();
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 		}
 		catch(SQLException e){
 			LOG.error("Error registering guild: " + guild.getId(), e);
 		}
 	}
 
+<<<<<<< HEAD
 	public static void addCommandStatistics(String guildId, String commandId, String userId, String command, long processingTime){
 		try(var con = getCon(); var ctx = getCtx(con)){
 			ctx.insertInto(COMMANDS).columns(COMMANDS.fields()).values(commandId, guildId, userId, command, processingTime, Instant.now().getEpochSecond()).executeAsync();
+=======
+
+	public static void addCommandStatistics(String guildId, String commandId, String userId, String command, YearToSecond processingTime){
+		try(var con = getCon(); var ctx = getCtx(con)){
+			ctx.insertInto(COMMANDS).columns(COMMANDS.fields()).values(commandId, guildId, userId, command, processingTime, LocalDateTime.now()).execute();
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 		}
 		catch(SQLException e){
 			LOG.error("Error adding command statistics for message: " + commandId, e);
 		}
 	}
 
+<<<<<<< HEAD
+=======
+/*	public static void getCommandStatistics(String guildId, String userId, String command){
+		try(var con = getCon(); var ctx = getCtx(con)){
+			var res = ctx.selectFrom(COMMANDS).where(COMMANDS.GUILD_ID.eq(guildId)).fetch();
+			for(var r : res){
+				r.get(COMMANDS.PROCESSING_TIME).
+			}
+		}
+		catch(SQLException e){
+			LOG.error("Error adding command statistics for message: " + commandId, e);
+		}
+	} */
+
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 	public static void setCommandPrefix(String guildId, String prefix){
 		setProperty(guildId, GUILDS.COMMAND_PREFIX, prefix);
 	}
@@ -101,6 +152,7 @@ public class Database{
 		return getProperty(guildId, GUILDS.COMMAND_PREFIX);
 	}
 
+<<<<<<< HEAD
 	public static void setSelfAssignableRoles(String guildId, Set<SelfAssignableRole> newRoles){
 		var roles = SelfAssignableRoleCache.getSelfAssignableRoles(guildId);
 		if(roles != null){
@@ -114,6 +166,21 @@ public class Database{
 			for(var role : newRoles){
 				if(!SelfAssignableRoleCache.isSelfAssignableRole(guildId, role.getRoleId())){
 					addRoles.add(role);
+=======
+	public static void setSelfAssignableRoles(String guildId, Map<String, String> newRoles){
+		var roles = SelfAssignableRoleCache.getSelfAssignableRoles(guildId);
+		if(roles != null){
+			var addRoles = new HashMap<String, String>();
+			var removeRoles = new HashSet<String>();
+			for(var role : roles.entrySet()){
+				if(newRoles.get(role.getKey()) == null){
+					removeRoles.add(role.getKey());
+				}
+			}
+			for(var role : newRoles.entrySet()){
+				if(roles.get(role.getKey()) == null){
+					addRoles.put(role.getKey(), role.getValue());
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 				}
 			}
 			if(!removeRoles.isEmpty()){
@@ -130,16 +197,28 @@ public class Database{
 			return ctx.deleteFrom(SELF_ASSIGNABLE_ROLES).where(SELF_ASSIGNABLE_ROLES.GUILD_ID.eq(guildId).and(SELF_ASSIGNABLE_ROLES.ROLE_ID.in(roles))).execute() == roles.size();
 		}
 		catch(SQLException e){
+<<<<<<< HEAD
 			LOG.error("Error removing self-assignable roles: " + roles.toString() + " from guild " + guildId, e);
+=======
+			LOG.error("Error removing self-assignable roles: " + roles.toString() + " guild " + guildId, e);
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 		}
 		return false;
 	}
 
+<<<<<<< HEAD
 	public static void addSelfAssignableRoles(String guildId, Set<SelfAssignableRole> roles){
 		try(var con = getCon(); var ctx = getCtx(con)){
 			var col = ctx.insertInto(SELF_ASSIGNABLE_ROLES).columns(SELF_ASSIGNABLE_ROLES.fields());
 			for(var role : roles){
 				col.values(role.getRoleId(), role.getGroupId(), guildId, role.getEmoteId());
+=======
+	public static void addSelfAssignableRoles(String guildId, Map<String, String> roles){
+		try(var con = getCon(); var ctx = getCtx(con)){
+			var col = ctx.insertInto(SELF_ASSIGNABLE_ROLES).columns(SELF_ASSIGNABLE_ROLES.fields());
+			for(var role : roles.entrySet()){
+				col.values(role.getKey(), guildId, role.getValue());
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 			}
 			col.execute();
 		}
@@ -148,6 +227,7 @@ public class Database{
 		}
 	}
 
+<<<<<<< HEAD
 	public static Set<SelfAssignableRoleGroup> addSelfAssignableRoleGroups(String guildId, Set<SelfAssignableRoleGroup> groups){
 		try(var con = getCon(); var ctx = getCtx(con)){
 			var col = ctx.insertInto(SELF_ASSIGNABLE_ROLE_GROUPS).columns(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID, SELF_ASSIGNABLE_ROLE_GROUPS.GROUP_NAME, SELF_ASSIGNABLE_ROLE_GROUPS.ONLY_ONE);
@@ -173,6 +253,13 @@ public class Database{
 					.stream()
 					.map(sar -> new SelfAssignableRole(sar.get(SELF_ASSIGNABLE_ROLES.GUILD_ID), sar.get(SELF_ASSIGNABLE_ROLES.GROUP_ID), sar.get(SELF_ASSIGNABLE_ROLES.ROLE_ID), sar.get(SELF_ASSIGNABLE_ROLES.EMOTE_ID)))
 					.collect(Collectors.toList());
+=======
+	public static Map<String, String> getSelfAssignableRoles(String guildId){
+		try(var con = getCon(); var ctx = getCtx(con)){
+			return ctx.selectFrom(SELF_ASSIGNABLE_ROLES).where(SELF_ASSIGNABLE_ROLES.GUILD_ID.eq(guildId)).fetch()
+					.stream()
+					.collect(Collectors.toMap(sar -> sar.get(SELF_ASSIGNABLE_ROLES.ROLE_ID), sar -> sar.get(SELF_ASSIGNABLE_ROLES.EMOTE_ID)));
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 		}
 		catch(SQLException e){
 			LOG.error("Error while getting self-assignable roles from guild " + guildId, e);
@@ -180,6 +267,7 @@ public class Database{
 		return null;
 	}
 
+<<<<<<< HEAD
 	public static List<SelfAssignableRoleGroup> getSelfAssignableRoleGroups(String guildId){
 		try(var con = getCon(); var ctx = getCtx(con)){
 			return ctx.selectFrom(SELF_ASSIGNABLE_ROLE_GROUPS).where(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID.eq(guildId)).fetch()
@@ -203,6 +291,8 @@ public class Database{
 		return false;
 	}
 
+=======
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 	public static String getAnnouncementChannelId(String guildId){
 		return getProperty(guildId, GUILDS.ANNOUNCEMENT_CHANNEL_ID);
 	}
@@ -282,7 +372,11 @@ public class Database{
 
 	public static void addReactiveMessage(String guildId, String userId, String channelId, String messageId, String commandId, String command, String allowed){
 		try(var con = getCon(); var ctx = getCtx(con)){
+<<<<<<< HEAD
 			ctx.insertInto(REACTIVE_MESSAGES).columns(REACTIVE_MESSAGES.fields()).values(channelId, messageId, commandId, userId, guildId, command, allowed).executeAsync();
+=======
+			ctx.insertInto(REACTIVE_MESSAGES).columns(REACTIVE_MESSAGES.fields()).values(channelId, messageId, commandId, userId, guildId, command, allowed).execute();
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 		}
 		catch(SQLException e){
 			LOG.error("Error creating reactive message", e);
@@ -291,13 +385,18 @@ public class Database{
 
 	public static void removeReactiveMessage(String guildId, String messageId){
 		try(var con = getCon(); var ctx = getCtx(con)){
+<<<<<<< HEAD
 			ctx.deleteFrom(REACTIVE_MESSAGES).where(REACTIVE_MESSAGES.MESSAGE_ID.eq(messageId).and(REACTIVE_MESSAGES.GUILD_ID.eq(guildId))).executeAsync();
+=======
+			ctx.deleteFrom(REACTIVE_MESSAGES).where(REACTIVE_MESSAGES.MESSAGE_ID.eq(messageId).and(REACTIVE_MESSAGES.GUILD_ID.eq(guildId))).execute();
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 		}
 		catch(SQLException e){
 			LOG.error("Error removing reactive message", e);
 		}
 	}
 
+<<<<<<< HEAD
 	public static void addSession(String userId, String sessionId){
 		try(var con = getCon(); var ctx = getCtx(con)){
 			ctx.insertInto(SESSIONS).columns(SESSIONS.fields()).values(sessionId, userId).executeAsync();
@@ -318,6 +417,41 @@ public class Database{
 	public static boolean sessionExists(String sessionId){
 		try(var con = getCon(); var ctx = getCtx(con)){
 			return ctx.selectFrom(SESSIONS).where(SESSIONS.SESSION_ID.eq(sessionId)).fetchOne() == null;
+=======
+	public static String generateUniqueKey(){
+		var key = Utils.generate(32);
+		while(DashboardSessionCache.sessionExists(key)){
+			key = Utils.generate(32);
+		}
+		return key;
+	}
+
+	public static void addSession(DashboardSession session){
+		try(var con = getCon(); var ctx = getCtx(con)){
+			ctx.insertInto(SESSIONS).columns(SESSIONS.fields()).values(session.getSessionKey(), session.getUserId(), session.getAccessToken(), session.getRefreshToken(), session.getExpiration().toLocalDateTime()).execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error adding session for user " + session.getUserId(), e);
+		}
+	}
+
+	public static DashboardSession getSession(String sessionKey){
+		try(var con = getCon(); var ctx = getCtx(con)){
+			var r = ctx.selectFrom(SESSIONS).where(SESSIONS.SESSION_KEY.eq(sessionKey)).fetchOne();
+			if(r != null){
+				return new DashboardSession(r.get(SESSIONS.USER_ID), new SessionData(sessionKey, r.get(SESSIONS.ACCESS_TOKEN), r.get(SESSIONS.REFRESH_TOKEN), "Bearer", OffsetDateTime.of(r.get(SESSIONS.EXPIRATION), ZoneOffset.UTC), WebService.getScopes()));
+			}
+		}
+		catch(SQLException e){
+			LOG.error("Error while getting session", e);
+		}
+		return null;
+	}
+
+	public static boolean sessionExists(String sessionKey){
+		try(var con = getCon(); var ctx = getCtx(con)){
+			return ctx.selectFrom(SESSIONS).where(SESSIONS.SESSION_KEY.eq(sessionKey)).fetchOne() != null;
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 		}
 		catch(SQLException e){
 			LOG.error("Error checking if session exists", e);
@@ -325,26 +459,42 @@ public class Database{
 		return false;
 	}
 
+<<<<<<< HEAD
 	public static boolean deleteSession(String sessionId){
 		try(var con = getCon(); var ctx = getCtx(con)){
 			ctx.deleteFrom(SESSIONS).where(SESSIONS.SESSION_ID.eq(sessionId)).executeAsync();
 		}
 		catch(SQLException e){
 			LOG.error("Error deleting session", e);
+=======
+	public static boolean hasSession(String userId){
+		try(var con = getCon(); var ctx = getCtx(con)){
+			return ctx.selectFrom(SESSIONS).where(SESSIONS.USER_ID.eq(userId)).fetch().isNotEmpty();
+		}
+		catch(SQLException e){
+			LOG.error("Error checking if a user has a session", e);
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 		}
 		return false;
 	}
 
+<<<<<<< HEAD
 	public static String getSession(String sessionId){
 		try(var con = getCon(); var ctx = getCtx(con)){
 			var res = ctx.selectFrom(SESSIONS).where(SESSIONS.SESSION_ID.eq(sessionId)).fetchOne();
 			if(res != null){
 				return res.getUserId();
 			}
+=======
+	public static int getUserSessions(String userId){
+		try(var con = getCon(); var ctx = getCtx(con)){
+			return ctx.selectCount().from(SESSIONS).where(SESSIONS.USER_ID.eq(userId)).fetchOne(0, int.class);
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 		}
 		catch(SQLException e){
 			LOG.error("Error while getting session", e);
 		}
+<<<<<<< HEAD
 		return null;
 	}
 
@@ -354,6 +504,26 @@ public class Database{
 
 	public void removeSelfAssignableRole(String guildId, String roleId){
 		removeSelfAssignableRoles(guildId, Collections.singleton(roleId));
+=======
+		return 0;
+	}
+
+	public static void deleteSession(String sessionKey){
+		try(var con = getCon(); var ctx = getCtx(con)){
+			ctx.deleteFrom(SESSIONS).where(SESSIONS.SESSION_KEY.eq(sessionKey)).execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error deleting session", e);
+		}
+	}
+
+	public void addSelfAssignableRole(String guildId, String role, String emote){
+		addSelfAssignableRoles(guildId, Collections.singletonMap(role, emote));
+	}
+
+	public void removeSelfAssignableRole(String guildId, String role){
+		removeSelfAssignableRoles(guildId, Collections.singleton(role));
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 	}
 
 }

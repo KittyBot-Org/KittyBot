@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.commands.utilities;
 
+import de.kittybot.kittybot.cache.PrefixCache;
 import de.kittybot.kittybot.database.Database;
-import de.kittybot.kittybot.objects.cache.PrefixCache;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
@@ -102,35 +102,35 @@ public class OptionsCommand extends ACommand{
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("leavemessage")){
 					if(ctx.getArgs().length < 2){
-						Database.setJoinMessage(ctx.getGuild().getId(), joined);
+						Database.setLeaveMessage(ctx.getGuild().getId(), joined);
 						sendAnswer(ctx, "Leave message set to: " + joined);
 					}
 					else if(Utils.isHelp(ctx.getArgs()[1])){
 						sendUsage(ctx, "options leavemessage <message>");
 					}
 					else if(Utils.isEnable(ctx.getArgs()[1])){
-						Database.setJoinMessageEnabled(ctx.getGuild().getId(), true);
+						Database.setLeaveMessageEnabled(ctx.getGuild().getId(), true);
 						sendAnswer(ctx, "Leave messages enabled!");
 					}
 					else if(Utils.isDisable(ctx.getArgs()[1])){
-						Database.setJoinMessageEnabled(ctx.getGuild().getId(), false);
+						Database.setLeaveMessageEnabled(ctx.getGuild().getId(), false);
 						sendAnswer(ctx, "Leave messages disabled!");
 					}
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("boostmessage")){
 					if(ctx.getArgs().length < 2){
-						Database.setJoinMessage(ctx.getGuild().getId(), joined);
+						Database.setBoostMessage(ctx.getGuild().getId(), joined);
 						sendAnswer(ctx, "Boost message set to: " + joined);
 					}
 					else if(Utils.isHelp(ctx.getArgs()[1])){
 						sendUsage(ctx, "options boostmessage <message>");
 					}
 					else if(Utils.isEnable(ctx.getArgs()[1])){
-						Database.setJoinMessageEnabled(ctx.getGuild().getId(), true);
+						Database.setBoostMessageEnabled(ctx.getGuild().getId(), true);
 						sendAnswer(ctx, "Boost messages enabled!");
 					}
 					else if(Utils.isDisable(ctx.getArgs()[1])){
-						Database.setJoinMessageEnabled(ctx.getGuild().getId(), false);
+						Database.setBoostMessageEnabled(ctx.getGuild().getId(), false);
 						sendAnswer(ctx, "Boost messages disabled!");
 					}
 				}

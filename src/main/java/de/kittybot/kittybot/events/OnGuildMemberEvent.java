@@ -1,7 +1,8 @@
 package de.kittybot.kittybot.events;
 
+import de.kittybot.kittybot.cache.GuildCache;
+import de.kittybot.kittybot.cache.InviteCache;
 import de.kittybot.kittybot.database.Database;
-import de.kittybot.kittybot.objects.cache.InviteCache;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Invite;
@@ -40,6 +41,8 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 				}
 			}
 		}
+
+		GuildCache.uncacheGuildForUser(event.getUser().getId(), event.getGuild().getId());
 	}
 
 	@Override

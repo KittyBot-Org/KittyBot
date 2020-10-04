@@ -5,6 +5,10 @@ package de.kittybot.kittybot.database.jooq.tables.pojos;
 
 
 import java.io.Serializable;
+<<<<<<< HEAD
+=======
+import java.time.LocalDateTime;
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 
 
 /**
@@ -13,6 +17,7 @@ import java.io.Serializable;
 @SuppressWarnings({"all", "unchecked", "rawtypes"})
 public class Sessions implements Serializable{
 
+<<<<<<< HEAD
 	private static final long serialVersionUID = 1175759351;
 
 	private final String sessionId;
@@ -33,18 +38,75 @@ public class Sessions implements Serializable{
 
 	public String getSessionId(){
 		return this.sessionId;
+=======
+	private static final long serialVersionUID = -576394214;
+
+	private final String sessionKey;
+	private final String userId;
+	private final String accessToken;
+	private final String refreshToken;
+	private final LocalDateTime expiration;
+
+	public Sessions(Sessions value){
+		this.sessionKey = value.sessionKey;
+		this.userId = value.userId;
+		this.accessToken = value.accessToken;
+		this.refreshToken = value.refreshToken;
+		this.expiration = value.expiration;
+	}
+
+	public Sessions(
+			String sessionKey,
+			String userId,
+			String accessToken,
+			String refreshToken,
+			LocalDateTime expiration
+	){
+		this.sessionKey = sessionKey;
+		this.userId = userId;
+		this.accessToken = accessToken;
+		this.refreshToken = refreshToken;
+		this.expiration = expiration;
+	}
+
+	public String getSessionKey(){
+		return this.sessionKey;
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 	}
 
 	public String getUserId(){
 		return this.userId;
 	}
 
+<<<<<<< HEAD
+=======
+	public String getAccessToken(){
+		return this.accessToken;
+	}
+
+	public String getRefreshToken(){
+		return this.refreshToken;
+	}
+
+	public LocalDateTime getExpiration(){
+		return this.expiration;
+	}
+
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 	@Override
 	public String toString(){
 		StringBuilder sb = new StringBuilder("Sessions (");
 
+<<<<<<< HEAD
 		sb.append(sessionId);
 		sb.append(", ").append(userId);
+=======
+		sb.append(sessionKey);
+		sb.append(", ").append(userId);
+		sb.append(", ").append(accessToken);
+		sb.append(", ").append(refreshToken);
+		sb.append(", ").append(expiration);
+>>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 
 		sb.append(")");
 		return sb.toString();

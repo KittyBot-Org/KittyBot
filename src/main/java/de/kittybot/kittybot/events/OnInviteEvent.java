@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.events;
 
-import de.kittybot.kittybot.objects.cache.InviteCache;
+import de.kittybot.kittybot.cache.InviteCache;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteCreateEvent;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteDeleteEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
