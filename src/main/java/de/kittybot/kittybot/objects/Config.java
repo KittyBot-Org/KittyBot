@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.utils.data.DataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class Config{
 	public static String BOT_TOKEN;
 	public static String BOT_SECRET;
 	public static String BOT_ID;
+	public static List<String> ADMIN_IDS;
 	public static String SUPPORT_GUILD_ID;
 	public static String LOG_CHANNEL_ID;
 	public static String INVITE_URL;
@@ -31,14 +33,13 @@ public class Config{
 	public static String DB_USER;
 	public static String DB_PASSWORD;
 
-	public static List<String> ADMIN_IDS = new ArrayList<>();
-	public static List<LavalinkNode> LAVALINK_NODES = new ArrayList<>();
+	public static List<LavalinkNode> LAVALINK_NODES;
 
 	public static String DEFAULT_PREFIX = ".";
 
-	static{
+	public static void load(String filePath){
 		try{
-			var json = DataObject.fromJson(new FileInputStream("config.json"));
+			var json = DataObject.fromJson(new FileInputStream(new File(filePath)));
 
 			BOT_TOKEN = json.getString("bot_token");
 			BOT_SECRET = json.getString("bot_secret");
@@ -64,6 +65,7 @@ public class Config{
 			DB_USER = db.getString("user");
 			DB_PASSWORD = db.getString("password");
 
+			LAVALINK_NODES = new ArrayList<>();
 			var lavalinkNodes = json.getArray("lavalink_nodes");
 			for(var i = 0; i < lavalinkNodes.length(); i++){
 				var node = lavalinkNodes.getObject(i);

@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.commands.music;
 
-import de.kittybot.kittybot.cache.MusicPlayerCache;
+import de.kittybot.kittybot.objects.cache.MusicPlayerCache;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;

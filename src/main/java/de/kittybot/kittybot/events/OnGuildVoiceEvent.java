@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.events;
 
 import de.kittybot.kittybot.KittyBot;
-import de.kittybot.kittybot.cache.MusicPlayerCache;
+import de.kittybot.kittybot.objects.cache.MusicPlayerCache;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;

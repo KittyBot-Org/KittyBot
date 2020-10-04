@@ -1,11 +1,11 @@
 package de.kittybot.kittybot.objects.command;
 
 import de.kittybot.kittybot.KittyBot;
-import de.kittybot.kittybot.cache.CommandResponseCache;
-import de.kittybot.kittybot.cache.ReactiveMessageCache;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.Emojis;
 import de.kittybot.kittybot.objects.ReactiveMessage;
+import de.kittybot.kittybot.objects.cache.CommandResponseCache;
+import de.kittybot.kittybot.objects.cache.ReactiveMessageCache;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;

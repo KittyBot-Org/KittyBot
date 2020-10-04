@@ -1,6 +1,0 @@
-FROM gradle:6.6.1-jdk11
-
-WORKDIR /home/kittybot
-
-COPY ./src ./home/kittybot/src
-

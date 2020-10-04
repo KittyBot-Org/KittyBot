@@ -36,11 +36,12 @@ public class AvatarCommand extends ACommand{
 			}
 		}
 		if(users.isEmpty()){
-			users.add(ctx.getUser());
+			sendError(ctx, "Please mention a user or provide a valid id");
+			return;
 		}
 		var stringBuilder = new StringBuilder();
 		for(var user : users){
-			stringBuilder.append(user.getAsTag()).append(": ");
+			stringBuilder.append("(").append(user.getAsTag()).append(")").append(": ");
 			for(var size : sizes){
 				stringBuilder.append(MessageUtils.maskLink(size + "px", user.getAvatarUrl() + "?size=" + size)).append(" ");
 			}

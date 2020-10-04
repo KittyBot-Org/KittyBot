@@ -25,23 +25,16 @@ public class SelfAssignableRoles extends TableImpl<SelfAssignableRolesRecord>{
 	 * The reference instance of <code>public.self_assignable_roles</code>
 	 */
 	public static final SelfAssignableRoles SELF_ASSIGNABLE_ROLES = new SelfAssignableRoles();
-<<<<<<< HEAD
 	private static final long serialVersionUID = 1900902597;
-=======
-	private static final long serialVersionUID = -1494643558;
->>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 	/**
 	 * The column <code>public.self_assignable_roles.role_id</code>.
 	 */
 	public final TableField<SelfAssignableRolesRecord, String> ROLE_ID = createField(DSL.name("role_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
 	/**
-<<<<<<< HEAD
 	 * The column <code>public.self_assignable_roles.group_id</code>.
 	 */
 	public final TableField<SelfAssignableRolesRecord, String> GROUP_ID = createField(DSL.name("group_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
 	/**
-=======
->>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 	 * The column <code>public.self_assignable_roles.guild_id</code>.
 	 */
 	public final TableField<SelfAssignableRolesRecord, String> GUILD_ID = createField(DSL.name("guild_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
@@ -133,21 +126,12 @@ public class SelfAssignableRoles extends TableImpl<SelfAssignableRolesRecord>{
 	}
 
 	// -------------------------------------------------------------------------
-<<<<<<< HEAD
 	// Row4 type methods
 	// -------------------------------------------------------------------------
 
 	@Override
 	public Row4<String, String, String, String> fieldsRow(){
 		return (Row4) super.fieldsRow();
-=======
-	// Row3 type methods
-	// -------------------------------------------------------------------------
-
-	@Override
-	public Row3<String, String, String> fieldsRow(){
-		return (Row3) super.fieldsRow();
->>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 	}
 
 }

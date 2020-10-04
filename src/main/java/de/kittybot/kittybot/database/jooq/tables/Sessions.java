@@ -11,10 +11,6 @@ import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
 
-<<<<<<< HEAD
-=======
-import java.time.LocalDateTime;
->>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,38 +25,15 @@ public class Sessions extends TableImpl<SessionsRecord>{
 	 * The reference instance of <code>public.sessions</code>
 	 */
 	public static final Sessions SESSIONS = new Sessions();
-<<<<<<< HEAD
 	private static final long serialVersionUID = -1758051538;
 	/**
 	 * The column <code>public.sessions.session_id</code>.
 	 */
 	public final TableField<SessionsRecord, String> SESSION_ID = createField(DSL.name("session_id"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
-=======
-	private static final long serialVersionUID = -517766618;
-	/**
-	 * The column <code>public.sessions.session_key</code>.
-	 */
-	public final TableField<SessionsRecord, String> SESSION_KEY = createField(DSL.name("session_key"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
->>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 	/**
 	 * The column <code>public.sessions.user_id</code>.
 	 */
 	public final TableField<SessionsRecord, String> USER_ID = createField(DSL.name("user_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
-<<<<<<< HEAD
-=======
-	/**
-	 * The column <code>public.sessions.access_token</code>.
-	 */
-	public final TableField<SessionsRecord, String> ACCESS_TOKEN = createField(DSL.name("access_token"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
-	/**
-	 * The column <code>public.sessions.refresh_token</code>.
-	 */
-	public final TableField<SessionsRecord, String> REFRESH_TOKEN = createField(DSL.name("refresh_token"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
-	/**
-	 * The column <code>public.sessions.expiration</code>.
-	 */
-	public final TableField<SessionsRecord, LocalDateTime> EXPIRATION = createField(DSL.name("expiration"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false), this, "");
->>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 
 	/**
 	 * Create a <code>public.sessions</code> table reference
@@ -145,21 +118,12 @@ public class Sessions extends TableImpl<SessionsRecord>{
 	}
 
 	// -------------------------------------------------------------------------
-<<<<<<< HEAD
 	// Row2 type methods
 	// -------------------------------------------------------------------------
 
 	@Override
 	public Row2<String, String> fieldsRow(){
 		return (Row2) super.fieldsRow();
-=======
-	// Row5 type methods
-	// -------------------------------------------------------------------------
-
-	@Override
-	public Row5<String, String, String, String, LocalDateTime> fieldsRow(){
-		return (Row5) super.fieldsRow();
->>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 	}
 
 }

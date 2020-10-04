@@ -4,11 +4,6 @@
 package de.kittybot.kittybot.database.jooq.tables.pojos;
 
 
-<<<<<<< HEAD
-=======
-import org.jooq.types.YearToSecond;
-
->>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -19,21 +14,13 @@ import java.time.LocalDateTime;
 @SuppressWarnings({"all", "unchecked", "rawtypes"})
 public class Commands implements Serializable{
 
-<<<<<<< HEAD
 	private static final long serialVersionUID = -1811860226;
-=======
-	private static final long serialVersionUID = -1380580204;
->>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 
 	private final String messageId;
 	private final String guildId;
 	private final String userId;
 	private final String command;
-<<<<<<< HEAD
 	private final LocalDateTime processingTime;
-=======
-	private final YearToSecond processingTime;
->>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 	private final LocalDateTime time;
 
 	public Commands(Commands value){
@@ -50,11 +37,7 @@ public class Commands implements Serializable{
 			String guildId,
 			String userId,
 			String command,
-<<<<<<< HEAD
 			LocalDateTime processingTime,
-=======
-			YearToSecond processingTime,
->>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 			LocalDateTime time
 	){
 		this.messageId = messageId;
@@ -81,11 +64,7 @@ public class Commands implements Serializable{
 		return this.command;
 	}
 
-<<<<<<< HEAD
 	public LocalDateTime getProcessingTime(){
-=======
-	public YearToSecond getProcessingTime(){
->>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 		return this.processingTime;
 	}
 

@@ -13,43 +13,28 @@ import java.io.Serializable;
 @SuppressWarnings({"all", "unchecked", "rawtypes"})
 public class SelfAssignableRoles implements Serializable{
 
-<<<<<<< HEAD
 	private static final long serialVersionUID = 964432359;
 
 	private final String roleId;
 	private final String groupId;
-=======
-	private static final long serialVersionUID = 808033970;
-
-	private final String roleId;
->>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 	private final String guildId;
 	private final String emoteId;
 
 	public SelfAssignableRoles(SelfAssignableRoles value){
 		this.roleId = value.roleId;
-<<<<<<< HEAD
 		this.groupId = value.groupId;
-=======
->>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 		this.guildId = value.guildId;
 		this.emoteId = value.emoteId;
 	}
 
 	public SelfAssignableRoles(
 			String roleId,
-<<<<<<< HEAD
 			String groupId,
-=======
->>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 			String guildId,
 			String emoteId
 	){
 		this.roleId = roleId;
-<<<<<<< HEAD
 		this.groupId = groupId;
-=======
->>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 		this.guildId = guildId;
 		this.emoteId = emoteId;
 	}
@@ -58,13 +43,10 @@ public class SelfAssignableRoles implements Serializable{
 		return this.roleId;
 	}
 
-<<<<<<< HEAD
 	public String getGroupId(){
 		return this.groupId;
 	}
 
-=======
->>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 	public String getGuildId(){
 		return this.guildId;
 	}
@@ -78,10 +60,7 @@ public class SelfAssignableRoles implements Serializable{
 		StringBuilder sb = new StringBuilder("SelfAssignableRoles (");
 
 		sb.append(roleId);
-<<<<<<< HEAD
 		sb.append(", ").append(groupId);
-=======
->>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 		sb.append(", ").append(guildId);
 		sb.append(", ").append(emoteId);
 

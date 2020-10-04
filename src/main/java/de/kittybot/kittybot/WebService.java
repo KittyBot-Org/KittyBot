@@ -2,31 +2,29 @@ package de.kittybot.kittybot;
 
 import com.jagrosh.jdautilities.oauth2.OAuth2Client;
 import com.jagrosh.jdautilities.oauth2.Scope;
+import com.jagrosh.jdautilities.oauth2.entities.impl.OAuth2ClientImpl;
 import com.jagrosh.jdautilities.oauth2.exceptions.InvalidStateException;
-import de.kittybot.kittybot.cache.DashboardSessionCache;
-import de.kittybot.kittybot.cache.GuildCache;
-import de.kittybot.kittybot.cache.PrefixCache;
-import de.kittybot.kittybot.cache.SelfAssignableRoleCache;
+import com.jagrosh.jdautilities.oauth2.session.DefaultSessionController;
+import com.jagrosh.jdautilities.oauth2.state.DefaultStateController;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.Config;
+import de.kittybot.kittybot.objects.SelfAssignableRole;
+import de.kittybot.kittybot.objects.SelfAssignableRoleGroup;
+import de.kittybot.kittybot.objects.cache.PrefixCache;
+import de.kittybot.kittybot.objects.cache.SelfAssignableRoleCache;
+import de.kittybot.kittybot.objects.cache.SelfAssignableRoleGroupCache;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandManager;
-import de.kittybot.kittybot.objects.guilds.GuildData;
-import de.kittybot.kittybot.objects.session.DashboardSessionController;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.HashSet;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
@@ -34,21 +32,18 @@ public class WebService{
 
 	private static final Logger LOG = LoggerFactory.getLogger(WebService.class);
 
-	private static final Scope[] SCOPES = new Scope[]{Scope.IDENTIFY, Scope.GUILDS};
-	private static final OAuth2Client O_AUTH_2_CLIENT = new OAuth2Client.Builder()
-			.setClientId(Long.parseLong(Config.BOT_ID))
-			.setClientSecret(Config.BOT_SECRET)
-			.setOkHttpClient(KittyBot.getHttpClient())
-			.setSessionController(new DashboardSessionController())
-			.build();
+	private final Scope[] scopes = new Scope[]{Scope.IDENTIFY};
+	private final OAuth2Client oAuthClient;
 
 	public WebService(int port){
+		DefaultSessionController sessionController = new DefaultSessionController();
+		DefaultStateController stateController = new DefaultStateController();
+		oAuthClient = new OAuth2ClientImpl(Long.parseLong(Config.BOT_ID), Config.BOT_SECRET, sessionController, stateController, KittyBot.getHttpClient());
 		Javalin.create(config -> config.enableCorsForOrigin(Config.ORIGIN_URL)).routes(() -> {
 			get("/discord_login", this::discordLogin);
 			get("/health_check", ctx -> ctx.result("alive"));
 			get("/commands/get", this::getCommands);
 			post("/login", this::login);
-			post("/logout", this::logout);
 			path("/user", () -> {
 				before("/*", this::checkDiscordLogin);
 				get("/me", this::getUserInfo);
@@ -70,18 +65,10 @@ public class WebService{
 		}).start(port);
 	}
 
-	public static OAuth2Client getOAuth2Client(){
-		return O_AUTH_2_CLIENT;
-	}
-
-	public static Scope[] getScopes(){
-		return SCOPES;
-	}
-
 	private void discordLogin(Context ctx){
 		var key = ctx.header("Authorization");
-		if(key == null || !DashboardSessionCache.sessionExists(key)){
-			ctx.redirect(O_AUTH_2_CLIENT.generateAuthorizationURL(Config.REDIRECT_URL, SCOPES));
+		if(key == null || !Database.sessionExists(key)){
+			ctx.redirect(oAuthClient.generateAuthorizationURL(Config.REDIRECT_URL, scopes));
 		}
 		else{
 			ctx.redirect(Config.REDIRECT_URL);
@@ -90,19 +77,17 @@ public class WebService{
 
 	private void login(Context ctx){
 		var json = DataObject.fromJson(ctx.body());
-		var code = json.getString("code", null);
-		var state = json.getString("state", null);
-		if(code == null || code.isBlank() || state == null || state.isBlank()){
-			error(ctx, 401, "State or code is invalid");
-			return;
-		}
+		var code = json.getString("code");
+		var state = json.getString("state");
 		try{
-			var sessionKey = Database.generateUniqueKey();
-			O_AUTH_2_CLIENT.startSession(code, state, sessionKey, SCOPES).complete();
-			ok(ctx, DataObject.empty().put("key", sessionKey));
+			var key = Database.generateUniqueKey();
+			var session = oAuthClient.startSession(code, state, key, scopes).complete();
+			var user = oAuthClient.getUser(session).complete();
+			Database.addSession(user.getId(), key);
+			ok(ctx, DataObject.empty().put("key", key));
 		}
 		catch(InvalidStateException e){
-			error(ctx, 401, "State invalid/expired. Please try again");
+			error(ctx, 401, "State invalid/expired please try again");
 		}
 		catch(IOException e){
 			LOG.error("State is invalid", e);
@@ -110,17 +95,10 @@ public class WebService{
 		}
 	}
 
-	private void logout(Context ctx){
-		var auth = ctx.header("Authorization");
-		if(auth != null){
-			DashboardSessionCache.deleteSession(auth);
-		}
-	}
-
 	private void checkDiscordLogin(Context ctx){
 		if(!ctx.method().equals("OPTIONS")){
 			var key = ctx.header("Authorization");
-			if(key == null || !DashboardSessionCache.sessionExists(key)){
+			if(key == null || !Database.sessionExists(key)){
 				error(ctx, 401, "Please login with discord to continue");
 			}
 		}
@@ -128,45 +106,47 @@ public class WebService{
 
 	private void getUserInfo(Context ctx){
 		var auth = ctx.header("Authorization");
-		var session = DashboardSessionCache.getSession(auth);
-		if(session == null){
+		if(auth == null){
+			error(ctx, 401, "Please login");
+			return;
+		}
+		var userId = Database.getSession(auth);
+		if(userId == null){
 			error(ctx, 404, "Session not found");
 			return;
 		}
-		var userId = session.getUserId();
 		var user = KittyBot.getJda().retrieveUserById(userId).complete();
 		if(user == null){
 			error(ctx, 404, "User not found");
 			return;
 		}
-		List<GuildData> guilds;
-		try{
-			guilds = GuildCache.getGuilds(session);
+		var data = DataArray.empty();
+		for(var guild : KittyBot.getJda().getMutualGuilds(user)){
+			var u = guild.getMember(user);
+			if(u != null && u.hasPermission(Permission.ADMINISTRATOR)){
+				data.add(DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl()));
+			}
 		}
-		catch(Exception ex){
-			LOG.error("Error while retrieving user guilds for user: {}", userId, ex);
-			error(ctx, 500, "There was an internal error");
-			return;
-		}
-		var guildData = DataArray.empty();
-		guilds.forEach(guild -> guildData.add(DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl())));
-		ok(ctx, DataObject.empty().put("name", user.getName()).put("id", userId).put("icon", user.getEffectiveAvatarUrl()).put("guilds", guildData));
+		ok(ctx, DataObject.empty().put("name", user.getName()).put("id", user.getId()).put("icon", user.getEffectiveAvatarUrl()).put("guilds", data));
 	}
 
 	private void getAllGuilds(Context ctx){
 		var auth = ctx.header("Authorization");
-		var session = DashboardSessionCache.getSession(auth);
-		if(session == null){
+		if(auth == null){
+			error(ctx, 401, "Please login");
+			return;
+		}
+		var userId = Database.getSession(auth);
+		if(userId == null){
 			error(ctx, 404, "Session not found");
 			return;
 		}
-		if(!Config.ADMIN_IDS.contains(session.getUserId())){
+		if(!Config.ADMIN_IDS.contains(userId)){
 			error(ctx, 403, "Only admins have access to this!");
 			return;
 		}
 		var data = DataArray.empty();
-		//noinspection ConstantConditions shut
-		for(var guild : KittyBot.getJda().getGuildCache().applyStream(stream -> stream.sorted(Comparator.comparing(Guild::getName, String.CASE_INSENSITIVE_ORDER)).collect(Collectors.toList()))){
+		for(var guild : KittyBot.getJda().getGuildCache()){
 			var owner = guild.getOwner();
 			var obj = DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl()).put("count", guild.getMemberCount());
 			if(owner != null){
@@ -185,20 +165,15 @@ public class WebService{
 				error(ctx, 404, "guild not found");
 				return;
 			}
-			var auth = ctx.header("Authorization");
-			if(auth == null){
-				error(ctx, 401, "Please login");
-				return;
-			}
-			var session = DashboardSessionCache.getSession(auth);
-			if(session == null){
+			var userId = Database.getSession(ctx.header("Authorization"));
+			if(userId == null){
 				error(ctx, 404, "This user does not exist");
 				return;
 			}
-			if(Config.ADMIN_IDS.contains(session.getUserId())){
+			if(Config.ADMIN_IDS.contains(userId)){
 				return;
 			}
-			var member = guild.retrieveMemberById(session.getUserId()).complete();
+			var member = guild.retrieveMemberById(userId).complete();
 			if(member == null){
 				error(ctx, 404, "I could not find you in that guild");
 				return;

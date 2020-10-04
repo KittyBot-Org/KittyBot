@@ -194,7 +194,6 @@ public class ReactiveMessagesRecord extends UpdatableRecordImpl<ReactiveMessages
 		return getChannelId();
 	}
 
-<<<<<<< HEAD
 	/**
 	 * Getter for <code>public.reactive_messages.channel_id</code>.
 	 */
@@ -253,81 +252,6 @@ public class ReactiveMessagesRecord extends UpdatableRecordImpl<ReactiveMessages
 	@Override
 	public String component4(){
 		return getGuildId();
-=======
-	@Override
-	public String component2(){
-		return getMessageId();
-	}
-
-	@Override
-	public String component3(){
-		return getUserId();
-	}
-
-	@Override
-	public String component4(){
-		return getGuildId();
-	}
-
-	@Override
-	public String component5(){
-		return getCommandId();
-	}
-
-	@Override
-	public String component6(){
-		return getCommand();
-	}
-
-	@Override
-	public String component7(){
-		return getAllowed();
-	}
-
-	/**
-	 * Getter for <code>public.reactive_messages.allowed</code>.
-	 */
-	public String getAllowed(){
-		return (String) get(6);
-	}
-
-	/**
-	 * Setter for <code>public.reactive_messages.allowed</code>.
-	 */
-	public ReactiveMessagesRecord setAllowed(String value){
-		set(6, value);
-		return this;
-	}
-
-	/**
-	 * Getter for <code>public.reactive_messages.command</code>.
-	 */
-	public String getCommand(){
-		return (String) get(5);
-	}
-
-	/**
-	 * Setter for <code>public.reactive_messages.command</code>.
-	 */
-	public ReactiveMessagesRecord setCommand(String value){
-		set(5, value);
-		return this;
-	}
-
-	/**
-	 * Getter for <code>public.reactive_messages.command_id</code>.
-	 */
-	public String getCommandId(){
-		return (String) get(4);
-	}
-
-	/**
-	 * Setter for <code>public.reactive_messages.command_id</code>.
-	 */
-	public ReactiveMessagesRecord setCommandId(String value){
-		set(4, value);
-		return this;
->>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 	}
 
 	/**
@@ -345,7 +269,6 @@ public class ReactiveMessagesRecord extends UpdatableRecordImpl<ReactiveMessages
 		return this;
 	}
 
-<<<<<<< HEAD
 	@Override
 	public String component5(){
 		return getCommandId();
@@ -391,44 +314,11 @@ public class ReactiveMessagesRecord extends UpdatableRecordImpl<ReactiveMessages
 		return getAllowed();
 	}
 
-=======
-	/**
-	 * Getter for <code>public.reactive_messages.user_id</code>.
-	 */
-	public String getUserId(){
-		return (String) get(2);
-	}
-
-	/**
-	 * Setter for <code>public.reactive_messages.user_id</code>.
-	 */
-	public ReactiveMessagesRecord setUserId(String value){
-		set(2, value);
-		return this;
-	}
-
-	/**
-	 * Getter for <code>public.reactive_messages.message_id</code>.
-	 */
-	public String getMessageId(){
-		return (String) get(1);
-	}
-
-	/**
-	 * Setter for <code>public.reactive_messages.message_id</code>.
-	 */
-	public ReactiveMessagesRecord setMessageId(String value){
-		set(1, value);
-		return this;
-	}
-
->>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 	// -------------------------------------------------------------------------
 	// Constructors
 	// -------------------------------------------------------------------------
 
 	/**
-<<<<<<< HEAD
 	 * Getter for <code>public.reactive_messages.allowed</code>.
 	 */
 	public String getAllowed(){
@@ -440,19 +330,6 @@ public class ReactiveMessagesRecord extends UpdatableRecordImpl<ReactiveMessages
 	 */
 	public ReactiveMessagesRecord setAllowed(String value){
 		set(6, value);
-=======
-	 * Getter for <code>public.reactive_messages.channel_id</code>.
-	 */
-	public String getChannelId(){
-		return (String) get(0);
-	}
-
-	/**
-	 * Setter for <code>public.reactive_messages.channel_id</code>.
-	 */
-	public ReactiveMessagesRecord setChannelId(String value){
-		set(0, value);
->>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 		return this;
 	}
 

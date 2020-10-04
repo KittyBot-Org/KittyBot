@@ -10,10 +10,6 @@ import de.kittybot.kittybot.database.jooq.tables.records.CommandsRecord;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
-<<<<<<< HEAD
-=======
-import org.jooq.types.YearToSecond;
->>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -30,11 +26,7 @@ public class Commands extends TableImpl<CommandsRecord>{
 	 * The reference instance of <code>public.commands</code>
 	 */
 	public static final Commands COMMANDS = new Commands();
-<<<<<<< HEAD
 	private static final long serialVersionUID = 1505630354;
-=======
-	private static final long serialVersionUID = 146877277;
->>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 	/**
 	 * The column <code>public.commands.message_id</code>.
 	 */
@@ -54,11 +46,7 @@ public class Commands extends TableImpl<CommandsRecord>{
 	/**
 	 * The column <code>public.commands.processing_time</code>.
 	 */
-<<<<<<< HEAD
 	public final TableField<CommandsRecord, LocalDateTime> PROCESSING_TIME = createField(DSL.name("processing_time"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false), this, "");
-=======
-	public final TableField<CommandsRecord, YearToSecond> PROCESSING_TIME = createField(DSL.name("processing_time"), org.jooq.impl.SQLDataType.INTERVAL.nullable(false), this, "");
->>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 	/**
 	 * The column <code>public.commands.time</code>.
 	 */
@@ -151,11 +139,7 @@ public class Commands extends TableImpl<CommandsRecord>{
 	// -------------------------------------------------------------------------
 
 	@Override
-<<<<<<< HEAD
 	public Row6<String, String, String, String, LocalDateTime, LocalDateTime> fieldsRow(){
-=======
-	public Row6<String, String, String, String, YearToSecond, LocalDateTime> fieldsRow(){
->>>>>>> 5f967a545f8eea6186fa2652a1886e6637fbf9cd
 		return (Row6) super.fieldsRow();
 	}
 
