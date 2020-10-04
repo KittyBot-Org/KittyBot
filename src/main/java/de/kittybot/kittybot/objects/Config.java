@@ -32,7 +32,6 @@ public class Config{
 	public static String DB_PASSWORD;
 
 	public static List<String> ADMIN_IDS = new ArrayList<>();
-	public static List<LavalinkNode> LAVALINK_NODES = new ArrayList<>();
 
 	public static String DEFAULT_PREFIX = ".";
 
@@ -65,12 +64,6 @@ public class Config{
 			DB_DB = db.getString("db");
 			DB_USER = db.getString("user");
 			DB_PASSWORD = db.getString("password");
-
-			var lavalinkNodes = json.getArray("lavalink_nodes");
-			for(var i = 0; i < lavalinkNodes.length(); i++){
-				var node = lavalinkNodes.getObject(i);
-				LAVALINK_NODES.add(new LavalinkNode(node.getString("host"), node.getString("port"), node.getString("password")));
-			}
 		}
 		catch(FileNotFoundException e){
 			LOG.error("Error while reading config file", e);

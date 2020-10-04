@@ -11,6 +11,8 @@ public class MusicPlayerCache{
 
 	private static final Map<String, MusicPlayer> MUSIC_PLAYERS = new HashMap<>();
 
+	private MusicPlayerCache() {}
+
 	public static void addMusicPlayer(Guild guild, MusicPlayer player){
 		MUSIC_PLAYERS.put(guild.getId(), player);
 	}
