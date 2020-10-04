@@ -136,7 +136,7 @@ public class KittyBot{
 
 			SCHEDULER.scheduleAtFixedRate(MessageCache::pruneCache, 1, 1, TimeUnit.HOURS);
 
-			SCHEDULER.scheduleAtFixedRate(StatusManager::newRandomStatus, 0, 5, TimeUnit.MINUTES);
+			SCHEDULER.scheduleAtFixedRate(StatusManager::newRandomStatus, 0, 2, TimeUnit.MINUTES);
 
 			if(Config.isSet(Config.LOG_CHANNEL_ID)){
 				sendToPublicLogChannel("I'm now online uwu");
