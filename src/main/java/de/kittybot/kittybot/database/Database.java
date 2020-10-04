@@ -78,7 +78,8 @@ public class Database{
 							true,
 							"-1"
 					)
-					.execute();
+			.onDuplicateKeyIgnore()
+			.execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error registering guild: " + guild.getId(), e);
