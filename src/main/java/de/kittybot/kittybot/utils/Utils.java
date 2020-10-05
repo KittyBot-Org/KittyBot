@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.utils;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import de.kittybot.kittybot.objects.SelfAssignableRole;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Role;
 
@@ -32,12 +33,17 @@ public class Utils{
 		return string.equalsIgnoreCase("?") || string.equalsIgnoreCase("help") || string.equalsIgnoreCase("hilfe");
 	}
 
-	public static Set<String> toSet(List<Role> roles){
-		Set<String> set = new HashSet<>();
+	public static Set<SelfAssignableRole> toSet(String guildId, String groupId, List<Role> roles, List<Emote> emotes){
+		var list = new HashSet<SelfAssignableRole>();
+		int i = 0;
 		for(Role role : roles){
-			set.add(role.getId());
+			if(emotes.size() <= i){
+				break;
+			}
+			list.add(new SelfAssignableRole(guildId, groupId, role.getId(), emotes.get(i).getId()));
+			i++;
 		}
-		return set;
+		return list;
 	}
 
 	public static Map<String, String> toMap(List<Role> roles, List<Emote> emotes){

@@ -16,6 +16,7 @@ public class SelfAssignableRoleCache{
 
 	public static void setSelfAssignableRoles(String guildId, Set<SelfAssignableRole> selfAssignableRoles){
 		Database.setSelfAssignableRoles(guildId, selfAssignableRoles);
+		SELF_ASSIGNABLE_ROLES.removeIf(selfAssignableRole -> selfAssignableRole.getGroupId().equals(guildId));
 		SELF_ASSIGNABLE_ROLES.addAll(selfAssignableRoles);
 	}
 

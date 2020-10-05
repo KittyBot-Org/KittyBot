@@ -10,6 +10,20 @@ public class SelfAssignableRoleGroupCache{
 
 	private static final List<SelfAssignableRoleGroup> SELF_ASSIGNABLE_ROLE_GROUPS = new ArrayList<>();
 
+	public static void setSelfAssignableRoleGroups(String guildId, Set<SelfAssignableRoleGroup> groups){
+		var setGroups = Database.setSelfAssignableRoleGroups(guildId, groups);
+		SELF_ASSIGNABLE_ROLE_GROUPS.removeIf(selfAssignableRole -> selfAssignableRole.getGuildId().equals(guildId));
+		SELF_ASSIGNABLE_ROLE_GROUPS.addAll(setGroups);
+	}
+
+	public static boolean isSelfAssignableRoleGroup(String guildId, String groupId){
+		var groups = getSelfAssignableRoleGroups(guildId);
+		if(groups == null){
+			return false;
+		}
+		return groups.stream().anyMatch(selfAssignableRoleGroup -> selfAssignableRoleGroup.getId().equals(groupId));
+	}
+
 	public static void addSelfAssignableRoleGroup(String guildId, SelfAssignableRoleGroup group){
 		addSelfAssignableRoleGroups(guildId, Collections.singleton(group));
 	}
@@ -22,8 +36,8 @@ public class SelfAssignableRoleGroupCache{
 		SELF_ASSIGNABLE_ROLE_GROUPS.addAll(newGroups);
 	}
 
-	public static List<SelfAssignableRoleGroup> getSelfAssignableRoleGroups(String guildId){
-		var groups = SELF_ASSIGNABLE_ROLE_GROUPS.stream().filter(group -> group.getGuildId().equals(guildId)).collect(Collectors.toList());
+	public static Set<SelfAssignableRoleGroup> getSelfAssignableRoleGroups(String guildId){
+		var groups = SELF_ASSIGNABLE_ROLE_GROUPS.stream().filter(group -> group.getGuildId().equals(guildId)).collect(Collectors.toSet());
 		if(!groups.isEmpty()){
 			return groups;
 		}
@@ -57,8 +71,8 @@ public class SelfAssignableRoleGroupCache{
 		SELF_ASSIGNABLE_ROLE_GROUPS.removeIf(groups::contains);
 	}
 
-	public static List<SelfAssignableRoleGroup> getSelfAssignableRoleGroupByName(String guildId, String groupName){
-		var groups = filterGroupsByName(SELF_ASSIGNABLE_ROLE_GROUPS, groupName);
+	public static Set<SelfAssignableRoleGroup> getSelfAssignableRoleGroupByName(String guildId, String groupName){
+		var groups = filterGroupsByName((Set<SelfAssignableRoleGroup>) SELF_ASSIGNABLE_ROLE_GROUPS, groupName);
 		if(!groups.isEmpty()){
 			return groups;
 		}
@@ -70,8 +84,8 @@ public class SelfAssignableRoleGroupCache{
 		return filterGroupsByName(newGroups, groupName);
 	}
 
-	private static List<SelfAssignableRoleGroup> filterGroupsByName(List<SelfAssignableRoleGroup> groups, String groupName){
-		return groups.stream().filter(srg -> srg.getName().equalsIgnoreCase(groupName)).collect(Collectors.toList());
+	private static Set<SelfAssignableRoleGroup> filterGroupsByName(Set<SelfAssignableRoleGroup> groups, String groupName){
+		return groups.stream().filter(srg -> srg.getName().equalsIgnoreCase(groupName)).collect(Collectors.toSet());
 	}
 
 }
