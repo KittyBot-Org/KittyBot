@@ -31,7 +31,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import static de.kittybot.kittybot.objects.command.ACommand.sendError;
 import static de.kittybot.kittybot.utils.Utils.formatDuration;
 
-public class GuildMusicManager extends AudioEventAdapter {
+public class MusicPlayer extends AudioEventAdapter {
 	private final AudioPlayer player;
 	private final BlockingQueue<AudioTrack> queue;
 	private final Deque<AudioTrack> history;
@@ -41,7 +41,7 @@ public class GuildMusicManager extends AudioEventAdapter {
 	private ACommand command;
 	private String channelId;
 
-	public GuildMusicManager(final AudioPlayerManager manager){
+	public MusicPlayer(final AudioPlayerManager manager){
 		this.player = manager.createPlayer();
 		this.queue = new LinkedBlockingQueue<>();
 		this.history = new LinkedBlockingDeque<>();
@@ -91,11 +91,13 @@ public class GuildMusicManager extends AudioEventAdapter {
 
 	@Override
 	public void onEvent(final AudioEvent event){
+		System.out.println(event);
 		updateMusicControlMessage(ctx.getJDA().getTextChannelById(channelId));
 	}
 
 	@Override
 	public void onTrackStart(final AudioPlayer player, final AudioTrack track){
+		System.out.println(player);
 		if(controllerMessageId != null){
 			ReactiveMessageCache.removeReactiveMessage(ctx.getGuild(), controllerMessageId);
 		}

@@ -33,16 +33,16 @@ public class PlayCommand extends ACommand{
 				sendError(ctx, "I can't play music as " + connectFailureReason.getReason() + ".");
 				return;
 			}
-			final var musicManager = MusicPlayerCache.getMusicManager(ctx.getGuild(), true);
-			final var channelId = musicManager.getChannelId();
+			final var musicPlayer = MusicPlayerCache.getMusicManager(ctx.getGuild(), true);
+			final var channelId = musicPlayer.getChannelId();
 			if (channelId == null){
-				musicManager.loadQuery(this, ctx);
+				musicPlayer.loadQuery(this, ctx);
 				return;
 			}
 			if (!ctx.getChannel().getId().equals(channelId)){
 				return;
 			}
-			musicManager.loadQuery(this, ctx);
+			musicPlayer.loadQuery(this, ctx);
 		});
 	}
 

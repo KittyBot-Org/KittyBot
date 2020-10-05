@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.cache;
 
 import de.kittybot.kittybot.KittyBot;
-import de.kittybot.kittybot.objects.audio.GuildMusicManager;
+import de.kittybot.kittybot.objects.audio.MusicPlayer;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.util.HashMap;
@@ -9,34 +9,34 @@ import java.util.Map;
 
 public class MusicPlayerCache{
 
-	private static final Map<String, GuildMusicManager> MUSIC_MANAGERS = new HashMap<>();
+	private static final Map<String, MusicPlayer> MUSIC_PLAYERS = new HashMap<>();
 
 	private MusicPlayerCache() {}
 
-	public static GuildMusicManager getMusicManager(Guild guild){
+	public static MusicPlayer getMusicManager(Guild guild){
 		return getMusicManager(guild, false);
 	}
 
-	public static GuildMusicManager getMusicManager(Guild guild, boolean createIfAbsent){
+	public static MusicPlayer getMusicManager(Guild guild, boolean createIfAbsent){
 		final var guildId = guild.getId();
-		var manager = MUSIC_MANAGERS.get(guildId);
-		if (manager == null && createIfAbsent){
-			final var newManager = new GuildMusicManager(KittyBot.getAudioPlayerManager());
-			manager = newManager;
-			guild.getAudioManager().setSendingHandler(manager.getSendHandler());
-			MUSIC_MANAGERS.put(guildId, newManager);
+		var musicPlayer = MUSIC_PLAYERS.get(guildId);
+		if(musicPlayer == null && createIfAbsent){
+			final var newPlayer = new MusicPlayer(KittyBot.getAudioPlayerManager());
+			musicPlayer = newPlayer;
+			guild.getAudioManager().setSendingHandler(musicPlayer.getSendHandler());
+			MUSIC_PLAYERS.put(guildId, newPlayer);
 		}
-		return manager;
+		return musicPlayer;
 	}
 
 	public static void destroyMusicPlayer(Guild guild){
-		final var musicManager = getMusicManager(guild, false);
-		if(musicManager == null){
+		final var musicPlayer = getMusicManager(guild, false);
+		if(musicPlayer == null){
 			return;
 		}
-		musicManager.getPlayer().destroy();
-		ReactiveMessageCache.removeReactiveMessage(guild, musicManager.getControllerMessageId());
-		MUSIC_MANAGERS.remove(guild.getId());
+		musicPlayer.getPlayer().destroy();
+		ReactiveMessageCache.removeReactiveMessage(guild, musicPlayer.getControllerMessageId());
+		MUSIC_PLAYERS.remove(guild.getId());
 		guild.getAudioManager().closeAudioConnection();
 		guild.getAudioManager().setSendingHandler(null);
 	}
