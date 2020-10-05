@@ -13,7 +13,8 @@ public class DashboardSessionCache{
 	private static final Map<String, DashboardSession> SESSION_CACHE = new HashMap<>();
 	private static final List<String> USER_SESSION_CACHE = new ArrayList<>();
 
-	private DashboardSessionCache(){}
+	private DashboardSessionCache(){
+	}
 
 	public static void addSession(final DashboardSession session){
 		SESSION_CACHE.put(session.getSessionKey(), session);

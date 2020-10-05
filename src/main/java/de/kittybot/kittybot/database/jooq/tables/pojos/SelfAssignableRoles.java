@@ -13,30 +13,38 @@ import java.io.Serializable;
 @SuppressWarnings({"all", "unchecked", "rawtypes"})
 public class SelfAssignableRoles implements Serializable{
 
-	private static final long serialVersionUID = 808033970;
+	private static final long serialVersionUID = 964432359;
 
 	private final String roleId;
+	private final String groupId;
 	private final String guildId;
 	private final String emoteId;
 
 	public SelfAssignableRoles(SelfAssignableRoles value){
 		this.roleId = value.roleId;
+		this.groupId = value.groupId;
 		this.guildId = value.guildId;
 		this.emoteId = value.emoteId;
 	}
 
 	public SelfAssignableRoles(
 			String roleId,
+			String groupId,
 			String guildId,
 			String emoteId
 	){
 		this.roleId = roleId;
+		this.groupId = groupId;
 		this.guildId = guildId;
 		this.emoteId = emoteId;
 	}
 
 	public String getRoleId(){
 		return this.roleId;
+	}
+
+	public String getGroupId(){
+		return this.groupId;
 	}
 
 	public String getGuildId(){
@@ -52,6 +60,7 @@ public class SelfAssignableRoles implements Serializable{
 		StringBuilder sb = new StringBuilder("SelfAssignableRoles (");
 
 		sb.append(roleId);
+		sb.append(", ").append(groupId);
 		sb.append(", ").append(guildId);
 		sb.append(", ").append(emoteId);
 

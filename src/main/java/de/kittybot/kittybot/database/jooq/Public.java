@@ -6,6 +6,7 @@ package de.kittybot.kittybot.database.jooq;
 
 import de.kittybot.kittybot.database.jooq.tables.*;
 import org.jooq.Catalog;
+import org.jooq.Sequence;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
 
@@ -23,7 +24,7 @@ public class Public extends SchemaImpl{
 	 * The reference instance of <code>public</code>
 	 */
 	public static final Public PUBLIC = new Public();
-	private static final long serialVersionUID = 1158900516;
+	private static final long serialVersionUID = 352233502;
 	/**
 	 * The table <code>public.commands</code>.
 	 */
@@ -38,6 +39,11 @@ public class Public extends SchemaImpl{
 	 * The table <code>public.reactive_messages</code>.
 	 */
 	public final ReactiveMessages REACTIVE_MESSAGES = ReactiveMessages.REACTIVE_MESSAGES;
+
+	/**
+	 * The table <code>public.self_assignable_role_groups</code>.
+	 */
+	public final SelfAssignableRoleGroups SELF_ASSIGNABLE_ROLE_GROUPS = SelfAssignableRoleGroups.SELF_ASSIGNABLE_ROLE_GROUPS;
 
 	/**
 	 * The table <code>public.self_assignable_roles</code>.
@@ -73,9 +79,16 @@ public class Public extends SchemaImpl{
 				Commands.COMMANDS,
 				Guilds.GUILDS,
 				ReactiveMessages.REACTIVE_MESSAGES,
+				SelfAssignableRoleGroups.SELF_ASSIGNABLE_ROLE_GROUPS,
 				SelfAssignableRoles.SELF_ASSIGNABLE_ROLES,
 				Sessions.SESSIONS,
 				UserStatistics.USER_STATISTICS);
+	}
+
+	@Override
+	public final List<Sequence<?>> getSequences(){
+		return Arrays.<Sequence<?>>asList(
+				Sequences.SELF_ASSIGNABLE_ROLE_GROUPS_GROUP_ID_SEQ);
 	}
 
 }

@@ -6,6 +6,8 @@ import de.kittybot.kittybot.cache.DashboardSessionCache;
 import de.kittybot.kittybot.cache.SelfAssignableRoleCache;
 import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.ReactiveMessage;
+import de.kittybot.kittybot.objects.SelfAssignableRole;
+import de.kittybot.kittybot.objects.SelfAssignableRoleGroup;
 import de.kittybot.kittybot.objects.session.DashboardSession;
 import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.JDA;
@@ -18,7 +20,10 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static de.kittybot.kittybot.database.SQL.*;
@@ -34,6 +39,7 @@ public class Database{
 	public static void init(JDA jda){
 		createTable("guilds");
 		createTable("self_assignable_roles");
+		createTable("self_assignable_role_groups");
 		createTable("commands");
 		createTable("reactive_messages");
 		createTable("user_statistics");
@@ -78,8 +84,8 @@ public class Database{
 							true,
 							"-1"
 					)
-			.onDuplicateKeyIgnore()
-			.execute();
+					.onDuplicateKeyIgnore()
+					.execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error registering guild: " + guild.getId(), e);
@@ -116,19 +122,19 @@ public class Database{
 		return getProperty(guildId, GUILDS.COMMAND_PREFIX);
 	}
 
-	public static void setSelfAssignableRoles(String guildId, Map<String, String> newRoles){
+	public static void setSelfAssignableRoles(String guildId, Set<SelfAssignableRole> newRoles){
 		var roles = SelfAssignableRoleCache.getSelfAssignableRoles(guildId);
 		if(roles != null){
-			var addRoles = new HashMap<String, String>();
+			var addRoles = new HashSet<SelfAssignableRole>();
 			var removeRoles = new HashSet<String>();
-			for(var role : roles.entrySet()){
-				if(newRoles.get(role.getKey()) == null){
-					removeRoles.add(role.getKey());
+			for(var role : roles){
+				if(newRoles.stream().noneMatch(selfAssignableRole -> selfAssignableRole.getRoleId().equals(role.getRoleId()))){
+					removeRoles.add(role.getRoleId());
 				}
 			}
-			for(var role : newRoles.entrySet()){
-				if(roles.get(role.getKey()) == null){
-					addRoles.put(role.getKey(), role.getValue());
+			for(var role : newRoles){
+				if(!SelfAssignableRoleCache.isSelfAssignableRole(guildId, role.getRoleId())){
+					addRoles.add(role);
 				}
 			}
 			if(!removeRoles.isEmpty()){
@@ -145,16 +151,16 @@ public class Database{
 			return ctx.deleteFrom(SELF_ASSIGNABLE_ROLES).where(SELF_ASSIGNABLE_ROLES.GUILD_ID.eq(guildId).and(SELF_ASSIGNABLE_ROLES.ROLE_ID.in(roles))).execute() == roles.size();
 		}
 		catch(SQLException e){
-			LOG.error("Error removing self-assignable roles: " + roles.toString() + " guild " + guildId, e);
+			LOG.error("Error removing self-assignable roles: " + roles.toString() + " from guild " + guildId, e);
 		}
 		return false;
 	}
 
-	public static void addSelfAssignableRoles(String guildId, Map<String, String> roles){
+	public static void addSelfAssignableRoles(String guildId, Set<SelfAssignableRole> roles){
 		try(var con = getCon(); var ctx = getCtx(con)){
 			var col = ctx.insertInto(SELF_ASSIGNABLE_ROLES).columns(SELF_ASSIGNABLE_ROLES.fields());
-			for(var role : roles.entrySet()){
-				col.values(role.getKey(), guildId, role.getValue());
+			for(var role : roles){
+				col.values(role.getRoleId(), role.getGroupId(), guildId, role.getEmoteId());
 			}
 			col.execute();
 		}
@@ -163,16 +169,59 @@ public class Database{
 		}
 	}
 
-	public static Map<String, String> getSelfAssignableRoles(String guildId){
+	public static Set<SelfAssignableRoleGroup> addSelfAssignableRoleGroups(String guildId, Set<SelfAssignableRoleGroup> groups){
+		try(var con = getCon(); var ctx = getCtx(con)){
+			var col = ctx.insertInto(SELF_ASSIGNABLE_ROLE_GROUPS).columns(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID, SELF_ASSIGNABLE_ROLE_GROUPS.GROUP_NAME, SELF_ASSIGNABLE_ROLE_GROUPS.MAX_ROLES);
+			for(var group : groups){
+				col.values(guildId, group.getName(), group.getMaxRoles());
+			}
+			var res = col.returningResult(SELF_ASSIGNABLE_ROLE_GROUPS.fields()).fetch();
+			final var newGroups = new HashSet<SelfAssignableRoleGroup>();
+			for(var r : res){
+				newGroups.add(new SelfAssignableRoleGroup(guildId, String.valueOf(r.get(SELF_ASSIGNABLE_ROLE_GROUPS.GROUP_ID)), r.get(SELF_ASSIGNABLE_ROLE_GROUPS.GROUP_NAME), r.get(SELF_ASSIGNABLE_ROLE_GROUPS.MAX_ROLES)));
+			}
+			return newGroups;
+		}
+		catch(SQLException e){
+			LOG.error("Error inserting self-assignable role groups: " + groups.toString(), e);
+		}
+		return null;
+	}
+
+	public static List<SelfAssignableRole> getSelfAssignableRoles(String guildId){
 		try(var con = getCon(); var ctx = getCtx(con)){
 			return ctx.selectFrom(SELF_ASSIGNABLE_ROLES).where(SELF_ASSIGNABLE_ROLES.GUILD_ID.eq(guildId)).fetch()
 					.stream()
-					.collect(Collectors.toMap(sar -> sar.get(SELF_ASSIGNABLE_ROLES.ROLE_ID), sar -> sar.get(SELF_ASSIGNABLE_ROLES.EMOTE_ID)));
+					.map(sar -> new SelfAssignableRole(sar.get(SELF_ASSIGNABLE_ROLES.GUILD_ID), sar.get(SELF_ASSIGNABLE_ROLES.GROUP_ID), sar.get(SELF_ASSIGNABLE_ROLES.ROLE_ID), sar.get(SELF_ASSIGNABLE_ROLES.EMOTE_ID)))
+					.collect(Collectors.toList());
 		}
 		catch(SQLException e){
 			LOG.error("Error while getting self-assignable roles from guild " + guildId, e);
 		}
 		return null;
+	}
+
+	public static List<SelfAssignableRoleGroup> getSelfAssignableRoleGroups(String guildId){
+		try(var con = getCon(); var ctx = getCtx(con)){
+			return ctx.selectFrom(SELF_ASSIGNABLE_ROLE_GROUPS).where(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID.eq(guildId)).fetch()
+					.stream()
+					.map(sar -> new SelfAssignableRoleGroup(sar.get(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID), String.valueOf(sar.get(SELF_ASSIGNABLE_ROLE_GROUPS.GROUP_ID)), sar.get(SELF_ASSIGNABLE_ROLE_GROUPS.GROUP_NAME), sar.get(SELF_ASSIGNABLE_ROLE_GROUPS.MAX_ROLES)))
+					.collect(Collectors.toList());
+		}
+		catch(SQLException e){
+			LOG.error("Error while getting self-assignable role groups from guild " + guildId, e);
+		}
+		return null;
+	}
+
+	public static boolean removeSelfAssignableRoleGroups(String guildId, Set<String> groups){
+		try(var con = getCon(); var ctx = getCtx(con)){
+			return ctx.deleteFrom(SELF_ASSIGNABLE_ROLE_GROUPS).where(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID.eq(guildId).and(SELF_ASSIGNABLE_ROLE_GROUPS.GROUP_ID.in(groups))).execute() == groups.size();
+		}
+		catch(SQLException e){
+			LOG.error("Error removing self-assignable role groups: " + groups.toString() + " from guild " + guildId, e);
+		}
+		return false;
 	}
 
 	public static String getAnnouncementChannelId(String guildId){
@@ -339,12 +388,12 @@ public class Database{
 		}
 	}
 
-	public void addSelfAssignableRole(String guildId, String role, String emote){
-		addSelfAssignableRoles(guildId, Collections.singletonMap(role, emote));
+	public void addSelfAssignableRole(String guildId, String roleId, String groupId, String emoteId){
+		addSelfAssignableRoles(guildId, Collections.singleton(new SelfAssignableRole(guildId, groupId, roleId, emoteId)));
 	}
 
-	public void removeSelfAssignableRole(String guildId, String role){
-		removeSelfAssignableRoles(guildId, Collections.singleton(role));
+	public void removeSelfAssignableRole(String guildId, String roleId){
+		removeSelfAssignableRoles(guildId, Collections.singleton(roleId));
 	}
 
 }

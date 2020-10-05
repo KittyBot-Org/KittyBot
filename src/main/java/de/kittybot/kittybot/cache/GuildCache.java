@@ -16,7 +16,8 @@ public class GuildCache{
 	private static final Map<String, GuildData> GUILD_CACHE = new HashMap<>();
 	private static final Map<String, List<String>> USER_GUILD_CACHE = new HashMap<>();
 
-	private GuildCache(){}
+	private GuildCache(){
+	}
 
 	public static List<GuildData> getGuilds(final DashboardSession dashboardSession) throws IOException{
 		var guilds = USER_GUILD_CACHE.get(dashboardSession.getUserId());

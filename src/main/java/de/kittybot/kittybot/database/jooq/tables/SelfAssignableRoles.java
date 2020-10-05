@@ -7,6 +7,7 @@ package de.kittybot.kittybot.database.jooq.tables;
 import de.kittybot.kittybot.database.jooq.Keys;
 import de.kittybot.kittybot.database.jooq.Public;
 import de.kittybot.kittybot.database.jooq.tables.records.SelfAssignableRolesRecord;
+import org.jooq.Record;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
@@ -25,11 +26,15 @@ public class SelfAssignableRoles extends TableImpl<SelfAssignableRolesRecord>{
 	 * The reference instance of <code>public.self_assignable_roles</code>
 	 */
 	public static final SelfAssignableRoles SELF_ASSIGNABLE_ROLES = new SelfAssignableRoles();
-	private static final long serialVersionUID = -1494643558;
+	private static final long serialVersionUID = 1900902597;
 	/**
 	 * The column <code>public.self_assignable_roles.role_id</code>.
 	 */
 	public final TableField<SelfAssignableRolesRecord, String> ROLE_ID = createField(DSL.name("role_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
+	/**
+	 * The column <code>public.self_assignable_roles.group_id</code>.
+	 */
+	public final TableField<SelfAssignableRolesRecord, String> GROUP_ID = createField(DSL.name("group_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
 	/**
 	 * The column <code>public.self_assignable_roles.guild_id</code>.
 	 */
@@ -122,12 +127,12 @@ public class SelfAssignableRoles extends TableImpl<SelfAssignableRolesRecord>{
 	}
 
 	// -------------------------------------------------------------------------
-	// Row3 type methods
+	// Row4 type methods
 	// -------------------------------------------------------------------------
 
 	@Override
-	public Row3<String, String, String> fieldsRow(){
-		return (Row3) super.fieldsRow();
+	public Row4<String, String, String, String> fieldsRow(){
+		return (Row4) super.fieldsRow();
 	}
 
 }
