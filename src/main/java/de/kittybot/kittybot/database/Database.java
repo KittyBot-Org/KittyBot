@@ -218,12 +218,12 @@ public class Database{
 		return null;
 	}
 
-	public static List<SelfAssignableRole> getSelfAssignableRoles(String guildId){
+	public static Set<SelfAssignableRole> getSelfAssignableRoles(String guildId){
 		try(var con = getCon(); var ctx = getCtx(con)){
 			return ctx.selectFrom(SELF_ASSIGNABLE_ROLES).where(SELF_ASSIGNABLE_ROLES.GUILD_ID.eq(guildId)).fetch()
 					.stream()
 					.map(sar -> new SelfAssignableRole(sar.get(SELF_ASSIGNABLE_ROLES.GUILD_ID), sar.get(SELF_ASSIGNABLE_ROLES.GROUP_ID), sar.get(SELF_ASSIGNABLE_ROLES.ROLE_ID), sar.get(SELF_ASSIGNABLE_ROLES.EMOTE_ID)))
-					.collect(Collectors.toList());
+					.collect(Collectors.toSet());
 		}
 		catch(SQLException e){
 			LOG.error("Error while getting self-assignable roles from guild " + guildId, e);

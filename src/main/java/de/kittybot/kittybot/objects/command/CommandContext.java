@@ -7,6 +7,7 @@ import org.apache.commons.collections4.Bag;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class CommandContext{
@@ -51,7 +52,7 @@ public class CommandContext{
 	}
 
 	public List<User> getMentionedUsers(){
-		var users = new ArrayList<>(getMessage().getMentionedUsers());
+		var users = new LinkedList<>(getMessage().getMentionedUsers());
 		var selfUser = getSelfUser();
 
 		if(isMentionCommand()){
@@ -77,7 +78,7 @@ public class CommandContext{
 	}
 
 	public List<Member> getMentionedMembers(){
-		var members = new ArrayList<>(getMessage().getMentionedMembers());
+		var members = new LinkedList<>(getMessage().getMentionedMembers());
 		var selfMember = getSelfMember();
 
 		if(isMentionCommand()){

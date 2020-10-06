@@ -46,19 +46,6 @@ public class Utils{
 		return list;
 	}
 
-	public static Map<String, String> toMap(List<Role> roles, List<Emote> emotes){
-		Map<String, String> map = new HashMap<>();
-		int i = 0;
-		for(Role role : roles){
-			if(emotes.size() <= i){
-				break;
-			}
-			map.put(role.getId(), emotes.get(i).getId());
-			i++;
-		}
-		return map;
-	}
-
 	public static String formatDuration(long length){
 		Duration duration = Duration.ofMillis(length);
 		var seconds = duration.toSecondsPart();

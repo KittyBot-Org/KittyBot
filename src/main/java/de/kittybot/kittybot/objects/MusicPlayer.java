@@ -63,7 +63,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	public void loadItem(ACommand command, CommandContext ctx){
 		this.command = command;
 		this.ctx = ctx;
-		String argStr = String.join(" ", ctx.getArgs());
+		var argStr = String.join(" ", ctx.getArgs());
 		final String query = URL_PATTERN.matcher(argStr).matches() ? argStr : "ytsearch:" + argStr;
 		KittyBot.getAudioPlayerManager().loadItem(query, new AudioLoadResultHandler(){
 
@@ -86,7 +86,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 			@Override
 			public void playlistLoaded(AudioPlaylist playlist){
-				List<AudioTrack> queuedTracks = new ArrayList<>();
+				var queuedTracks = new ArrayList<AudioTrack>();
 				if(playlist.isSearchResult()){
 					var track = playlist.getTracks().get(0);
 					if(!lengthCheck(track)){
@@ -98,7 +98,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 					queue(track);
 				}
 				else{
-					for(AudioTrack track : playlist.getTracks()){
+					for(var track : playlist.getTracks()){
 						if(!lengthCheck(track)){
 							if(playlist.getTracks().size() == 1){
 								sendError(ctx, "The maximum length of a track is 20 minutes");
@@ -189,7 +189,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	public boolean shuffle(){
-		System.out.println("Shuffle: " + queue.toString());
 		if(queue.size() > 1){
 			Collections.shuffle((List<?>) queue);
 			return true;
@@ -292,7 +291,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	public boolean nextTrack(){
-		AudioTrack track = queue.poll();
+		var track = queue.poll();
 		var channel = KittyBot.getJda().getTextChannelById(channelId);
 		if(track != null){
 			player.playTrack(track);
@@ -321,7 +320,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	public boolean previousTrack(){
-		AudioTrack track = history.poll();
+		var track = history.poll();
 		if(track != null){
 			track.setPosition(0);
 			player.playTrack(track);

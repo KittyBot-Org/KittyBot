@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 public class SelfAssignableRoleGroupCache{
 
-	private static final List<SelfAssignableRoleGroup> SELF_ASSIGNABLE_ROLE_GROUPS = new ArrayList<>();
+	private static final Set<SelfAssignableRoleGroup> SELF_ASSIGNABLE_ROLE_GROUPS = new HashSet<>();
 
 	public static void setSelfAssignableRoleGroups(String guildId, Set<SelfAssignableRoleGroup> groups){
 		var setGroups = Database.setSelfAssignableRoleGroups(guildId, groups);
@@ -58,17 +58,18 @@ public class SelfAssignableRoleGroupCache{
 		SELF_ASSIGNABLE_ROLE_GROUPS.removeIf(group -> groups.contains(group.getId()));
 	}
 
-	public static void removeSelfAssignableRoleGroupByName(String guildId, String group){
-		removeSelfAssignableRoleGroupsByName(guildId, Collections.singleton(group));
+	public static Set<SelfAssignableRoleGroup> removeSelfAssignableRoleGroupByName(String guildId, String group){
+		return removeSelfAssignableRoleGroupsByName(guildId, Collections.singleton(group));
 	}
 
-	public static void removeSelfAssignableRoleGroupsByName(String guildId, Set<String> groupNames){
+	public static Set<SelfAssignableRoleGroup> removeSelfAssignableRoleGroupsByName(String guildId, Set<String> groupNames){
 		var groups = new HashSet<SelfAssignableRoleGroup>();
 		for(var groupName : groupNames){
 			groups.addAll(getSelfAssignableRoleGroupByName(guildId, groupName));
 		}
 		Database.removeSelfAssignableRoleGroups(guildId, groups.stream().map(SelfAssignableRoleGroup::getId).collect(Collectors.toSet()));
 		SELF_ASSIGNABLE_ROLE_GROUPS.removeIf(groups::contains);
+		return groups;
 	}
 
 	public static Set<SelfAssignableRoleGroup> getSelfAssignableRoleGroupByName(String guildId, String groupName){

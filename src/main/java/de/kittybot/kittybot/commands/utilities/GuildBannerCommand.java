@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.utils.MiscUtil;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 
 public class GuildBannerCommand extends ACommand{
@@ -27,11 +28,11 @@ public class GuildBannerCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		var guilds = new ArrayList<Guild>();
+		var guilds = new HashSet<Guild>();
 		for(var arg : ctx.getArgs()){
 			try{
 				var guild = ctx.getJDA().getGuildById(MiscUtil.parseSnowflake(arg));
-				if(guild != null && !guilds.contains(guild)){
+				if(guild != null){
 					guilds.add(guild);
 				}
 			}

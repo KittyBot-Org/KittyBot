@@ -3,15 +3,12 @@ package de.kittybot.kittybot.cache;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.session.DashboardSession;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DashboardSessionCache{
 
 	private static final Map<String, DashboardSession> SESSION_CACHE = new HashMap<>();
-	private static final List<String> USER_SESSION_CACHE = new ArrayList<>();
+	private static final Set<String> USER_SESSION_CACHE = new HashSet<>();
 
 	private DashboardSessionCache(){
 	}

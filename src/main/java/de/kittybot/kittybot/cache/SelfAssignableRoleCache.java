@@ -4,15 +4,12 @@ import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.SelfAssignableRole;
 import net.dv8tion.jda.api.entities.Guild;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class SelfAssignableRoleCache{
 
-	private static final List<SelfAssignableRole> SELF_ASSIGNABLE_ROLES = new ArrayList<>();
+	private static final Set<SelfAssignableRole> SELF_ASSIGNABLE_ROLES = new HashSet<>();
 
 	public static void setSelfAssignableRoles(String guildId, Set<SelfAssignableRole> selfAssignableRoles){
 		Database.setSelfAssignableRoles(guildId, selfAssignableRoles);
@@ -42,8 +39,8 @@ public class SelfAssignableRoleCache{
 		return roles.stream().anyMatch(selfAssignableRole -> selfAssignableRole.getRoleId().equals(roleId));
 	}
 
-	public static List<SelfAssignableRole> getSelfAssignableRoles(String guildId){
-		var roles = SELF_ASSIGNABLE_ROLES.stream().filter(selfAssignableRole -> selfAssignableRole.getGuildId().equals(guildId)).collect(Collectors.toList());
+	public static Set<SelfAssignableRole> getSelfAssignableRoles(String guildId){
+		var roles = SELF_ASSIGNABLE_ROLES.stream().filter(selfAssignableRole -> selfAssignableRole.getGuildId().equals(guildId)).collect(Collectors.toSet());
 		if(!roles.isEmpty()){
 			return roles;
 		}

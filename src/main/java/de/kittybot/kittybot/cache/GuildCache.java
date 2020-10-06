@@ -14,12 +14,12 @@ import java.util.stream.Collectors;
 public class GuildCache{
 
 	private static final Map<String, GuildData> GUILD_CACHE = new HashMap<>();
-	private static final Map<String, List<String>> USER_GUILD_CACHE = new HashMap<>();
+	private static final Map<String, Set<String>> USER_GUILD_CACHE = new HashMap<>();
 
 	private GuildCache(){
 	}
 
-	public static List<GuildData> getGuilds(final DashboardSession dashboardSession) throws IOException{
+	public static Set<GuildData> getGuilds(final DashboardSession dashboardSession) throws IOException{
 		var guilds = USER_GUILD_CACHE.get(dashboardSession.getUserId());
 		if(guilds == null || guilds.isEmpty()){
 			var guildIds = KittyBot.getJda().getGuildCache().applyStream(guildStream -> guildStream.map(Guild::getId).collect(Collectors.toList()));
@@ -31,7 +31,7 @@ public class GuildCache{
 					.filter(guild -> guild.isOwner() || guild.getPermissions().contains(Permission.ADMINISTRATOR))
 					.map(guild -> new GuildData(guild.getId(), guild.getName(), guild.getIconUrl()))
 					.sorted(Comparator.comparing(GuildData::getName, String.CASE_INSENSITIVE_ORDER))
-					.collect(Collectors.toList());
+					.collect(Collectors.toSet());
 
 			retrievedGuilds.forEach(guildData -> {
 				var guildId = guildData.getId();
@@ -40,7 +40,7 @@ public class GuildCache{
 			});
 			return retrievedGuilds;
 		}
-		return guilds.stream().map(GUILD_CACHE::get).collect(Collectors.toList());
+		return guilds.stream().map(GUILD_CACHE::get).collect(Collectors.toSet());
 	}
 
 	public static void cacheGuild(final String guildId, final GuildData guildData){
@@ -48,7 +48,7 @@ public class GuildCache{
 	}
 
 	public static void cacheGuildForUser(final String userId, final String guildId){
-		USER_GUILD_CACHE.computeIfAbsent(userId, k -> new ArrayList<>()).add(guildId);
+		USER_GUILD_CACHE.computeIfAbsent(userId, k -> new HashSet<>()).add(guildId);
 	}
 
 	public static void cacheGuild(final String guildId, final GuildData guildData, final boolean cacheIfNotCached){

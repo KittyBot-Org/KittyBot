@@ -9,6 +9,9 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class MessageUtils{
 
@@ -33,6 +36,10 @@ public class MessageUtils{
 			LOG.error("Error reading message file", e);
 		}
 		return set;
+	}
+
+	public static <T> String join(Set<T> set, Function<? super T, ? extends String> mapper){
+		return set.stream().map(mapper).collect(Collectors.joining(", "));
 	}
 
 	public static String maskLink(String title, String url){

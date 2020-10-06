@@ -31,13 +31,13 @@ public class HastebinCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		List<Message.Attachment> attachments = ctx.getMessage().getAttachments();
+		var attachments = ctx.getMessage().getAttachments();
 		if(!attachments.isEmpty()){
 			for(Message.Attachment attachment : attachments){
 				if(!attachment.isImage() && !attachment.isVideo()){
 					try{
-						String text = IOUtils.toString(attachment.retrieveInputStream().get(), StandardCharsets.UTF_8.name());
-						Request request = new Request.Builder().url(Config.HASTEBIN_URL + "/documents")
+						var text = IOUtils.toString(attachment.retrieveInputStream().get(), StandardCharsets.UTF_8.name());
+						var request = new Request.Builder().url(Config.HASTEBIN_URL + "/documents")
 								.post(RequestBody.create(MediaType.parse("text/html; charset=utf-8"), text))
 								.build();
 						KittyBot.getHttpClient().newCall(request).enqueue(new Callback(){
@@ -54,7 +54,7 @@ public class HastebinCommand extends ACommand{
 										sendError(ctx, "Error while creating hastebin");
 										return;
 									}
-									sendAnswer(ctx, "[here](" + Config.HASTEBIN_URL + "/" + DataObject.fromJson(body.string()).getString("key") + ") is a hastebin");
+									sendAnswer(ctx, "[here is a hastebin](" + Config.HASTEBIN_URL + "/" + DataObject.fromJson(body.string()).getString("key") + ")");
 								}
 							}
 						});
