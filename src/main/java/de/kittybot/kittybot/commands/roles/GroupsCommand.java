@@ -1,27 +1,16 @@
 package de.kittybot.kittybot.commands.roles;
 
 import de.kittybot.kittybot.cache.PrefixCache;
-import de.kittybot.kittybot.cache.ReactiveMessageCache;
-import de.kittybot.kittybot.cache.SelfAssignableRoleCache;
 import de.kittybot.kittybot.cache.SelfAssignableRoleGroupCache;
-import de.kittybot.kittybot.objects.Emojis;
-import de.kittybot.kittybot.objects.ReactiveMessage;
-import de.kittybot.kittybot.objects.SelfAssignableRole;
 import de.kittybot.kittybot.objects.SelfAssignableRoleGroup;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
 import de.kittybot.kittybot.utils.MessageUtils;
-import de.kittybot.kittybot.utils.Utils;
-import net.dv8tion.jda.api.EmbedBuilder;
+import de.kittybot.kittybot.utils.TableBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
-import java.awt.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class GroupsCommand extends ACommand{
 
@@ -71,7 +60,13 @@ public class GroupsCommand extends ACommand{
 				sendAnswer(ctx, "There are not groups defined.\nYou can add them with " + PrefixCache.getCommandPrefix(ctx.getGuild().getId()) + "`roles groups add <group name> <only one role>`");
 				return;
 			}
-			sendAnswer(ctx, "Role Groups:\n" + MessageUtils.join(groups, SelfAssignableRoleGroup::getName));
+			var table = new TableBuilder<SelfAssignableRoleGroup>()
+			.addColumn("id", SelfAssignableRoleGroup::getId)
+			.addColumn("group name", SelfAssignableRoleGroup::getName)
+			.addColumn("max roles", SelfAssignableRoleGroup::getMaxRoles)
+			.build(groups);
+
+			sendAnswer(ctx, "```\n" + table + "\n```");
 		}
 		else{
 			sendUsage(ctx);

@@ -4,7 +4,6 @@ import de.kittybot.kittybot.objects.Emojis;
 import de.kittybot.kittybot.objects.ReactiveMessage;
 import de.kittybot.kittybot.objects.SelfAssignableRole;
 import de.kittybot.kittybot.objects.SelfAssignableRoleGroup;
-import de.kittybot.kittybot.cache.PrefixCache;
 import de.kittybot.kittybot.cache.ReactiveMessageCache;
 import de.kittybot.kittybot.cache.SelfAssignableRoleCache;
 import de.kittybot.kittybot.cache.SelfAssignableRoleGroupCache;
@@ -20,7 +19,6 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -87,12 +85,12 @@ public class RolesCommand extends ACommand{
 		for(var group : groups.entrySet()){
 			value.append("**").append(group.getKey().getName()).append("**").append(Emojis.BLANK).append("max roles: ").append(group.getKey().getMaxRoles()).append("\n");
 			for(var role : group.getValue()){
-				value.append(MessageUtils.getEmoteMention(role.getEmoteId())).append(Emojis.BLANK).append(MessageUtils.getRoleMention(role.getRoleId())).append("\n");
+				value.append(MessageUtils.getEmoteMention(role.getEmoteId())).append(Emojis.BLANK).append(Emojis.BLANK).append(MessageUtils.getRoleMention(role.getRoleId())).append("\n");
 			}
 			value.append("\n");
 		}
 		answer(ctx, new EmbedBuilder().setTitle(title)
-				.setDescription("To get/remove a role click reaction emote. " + Emojis.KITTY_BLINK + "\n\n")
+				.setDescription("To get/remove a role react to this message with the specific  emote\n\n")
 				.setColor(Color.MAGENTA)
 				.appendDescription(value)).queue(message -> {
 			ReactiveMessageCache.addReactiveMessage(ctx, message, this, ctx.getUser().getId());

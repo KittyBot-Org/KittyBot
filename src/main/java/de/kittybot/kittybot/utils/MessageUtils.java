@@ -39,7 +39,11 @@ public class MessageUtils{
 	}
 
 	public static <T> String join(Set<T> set, Function<? super T, ? extends String> mapper){
-		return set.stream().map(mapper).collect(Collectors.joining(", "));
+		return join(set, mapper, ", ");
+	}
+
+	public static <T> String join(Set<T> set, Function<? super T, ? extends String> mapper, String delimiter){
+		return set.stream().map(mapper).collect(Collectors.joining(delimiter));
 	}
 
 	public static String maskLink(String title, String url){
