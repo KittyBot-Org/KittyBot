@@ -8,8 +8,6 @@ import de.kittybot.kittybot.objects.command.CommandContext;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 
 public class EvalCommand extends ACommand{

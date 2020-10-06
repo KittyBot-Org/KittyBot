@@ -3,7 +3,10 @@ package de.kittybot.kittybot.cache;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.session.DashboardSession;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class DashboardSessionCache{
 

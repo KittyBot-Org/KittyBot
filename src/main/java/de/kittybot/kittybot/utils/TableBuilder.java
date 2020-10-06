@@ -23,7 +23,7 @@ public class TableBuilder<T>{
 	public String build(Iterable<? extends T> elements){
 		var columnWidths = computeColumnWidths(elements);
 
-		var sb = new StringBuilder();
+		var sb = new StringBuilder("```\n");
 		for(int c = 0; c < columnNames.size(); c++){
 			sb.append("│");
 			var format = "%" + columnWidths.get(c) + "s";
@@ -50,6 +50,7 @@ public class TableBuilder<T>{
 			}
 			sb.append("|\n");
 		}
+		sb.append("\n```");
 		return sb.toString();
 	}
 

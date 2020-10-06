@@ -8,9 +8,12 @@ import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
 import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.TableBuilder;
+import de.kittybot.kittybot.utils.Utils;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Set;
 
 public class GroupsCommand extends ACommand{
 
@@ -31,26 +34,7 @@ public class GroupsCommand extends ACommand{
 			sendError(ctx, "You need to be an administrator to use this command!");
 			return;
 		}
-		if(args.length < 1){
-			System.out.println("yes");
-			sendUsage(ctx);
-			return;
-		}
-		if(args[0].equalsIgnoreCase("add")){
-			try{
-				var maxRoles = Integer.parseInt(args[2]);
-				SelfAssignableRoleGroupCache.addSelfAssignableRoleGroup(ctx.getGuild().getId(), new SelfAssignableRoleGroup(ctx.getGuild().getId(), null, args[1], maxRoles));
-				sendAnswer(ctx, "Group added!");
-			}
-			catch(NumberFormatException e){
-				sendError(ctx, "Please provide a number as your second argument");
-			}
-		}
-		else if(args[0].equalsIgnoreCase("remove")){
-			var groups = SelfAssignableRoleGroupCache.removeSelfAssignableRoleGroupsByName(ctx.getGuild().getId(), Set.of(Arrays.copyOfRange(args, 1, args.length)));
-			sendAnswer(ctx, "Removed groups " + MessageUtils.join(groups, SelfAssignableRoleGroup::getName) + "!");
-		}
-		else if(args[0].equalsIgnoreCase("list")){
+		if(args.length == 0 || args[0].equalsIgnoreCase("list")){
 			var groups = SelfAssignableRoleGroupCache.getSelfAssignableRoleGroups(ctx.getGuild().getId());
 			if(groups == null){
 				sendError(ctx, "Error while getting self assignable role groups");
@@ -61,12 +45,32 @@ public class GroupsCommand extends ACommand{
 				return;
 			}
 			var table = new TableBuilder<SelfAssignableRoleGroup>()
-			.addColumn("id", SelfAssignableRoleGroup::getId)
-			.addColumn("group name", SelfAssignableRoleGroup::getName)
-			.addColumn("max roles", SelfAssignableRoleGroup::getMaxRoles)
-			.build(groups);
+					.addColumn("group name", SelfAssignableRoleGroup::getName)
+					.addColumn("max roles", SelfAssignableRoleGroup::getMaxRoles)
+					.build(groups);
 
-			sendAnswer(ctx, "```\n" + table + "\n```");
+			sendAnswer(ctx, new EmbedBuilder().setTitle("Self-assignable role groups:").setDescription(table));
+		}
+		else if(args[0].equalsIgnoreCase("add")){
+			if(args.length < 3){
+				sendUsage(ctx, "groups add <name> <max roles>");
+				return;
+			}
+			try{
+				SelfAssignableRoleGroupCache.addSelfAssignableRoleGroup(ctx.getGuild().getId(), new SelfAssignableRoleGroup(ctx.getGuild().getId(), null, args[1], Integer.parseInt(args[2])));
+				sendAnswer(ctx, "Group added!");
+			}
+			catch(NumberFormatException e){
+				sendError(ctx, "Please provide a number as your second argument");
+			}
+		}
+		else if(args[0].equalsIgnoreCase("remove")){
+			if(args.length < 2){
+				sendUsage(ctx, "groups remove <group name>...");
+				return;
+			}
+			var groups = SelfAssignableRoleGroupCache.removeSelfAssignableRoleGroupsByName(ctx.getGuild().getId(), Set.of(Arrays.copyOfRange(args, 1, args.length)));
+			sendAnswer(ctx, Utils.pluralize("Removed group", groups) + " " + MessageUtils.join(groups, SelfAssignableRoleGroup::getName));
 		}
 		else{
 			sendUsage(ctx);

@@ -23,7 +23,6 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -199,6 +198,16 @@ public class Database{
 		return groups;
 	}
 
+	public static boolean removeSelfAssignableRoleGroups(String guildId, Set<String> groups){
+		try(var con = getCon(); var ctx = getCtx(con)){
+			return ctx.deleteFrom(SELF_ASSIGNABLE_ROLE_GROUPS).where(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID.eq(guildId).and(SELF_ASSIGNABLE_ROLE_GROUPS.GROUP_ID.in(groups))).execute() == groups.size();
+		}
+		catch(SQLException e){
+			LOG.error("Error removing self-assignable role groups: " + groups.toString() + " from guild " + guildId, e);
+		}
+		return false;
+	}
+
 	public static Set<SelfAssignableRoleGroup> addSelfAssignableRoleGroups(String guildId, Set<SelfAssignableRoleGroup> groups){
 		try(var con = getCon(); var ctx = getCtx(con)){
 			var col = ctx.insertInto(SELF_ASSIGNABLE_ROLE_GROUPS).columns(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID, SELF_ASSIGNABLE_ROLE_GROUPS.GROUP_NAME, SELF_ASSIGNABLE_ROLE_GROUPS.MAX_ROLES);
@@ -242,16 +251,6 @@ public class Database{
 			LOG.error("Error while getting self-assignable role groups from guild " + guildId, e);
 		}
 		return null;
-	}
-
-	public static boolean removeSelfAssignableRoleGroups(String guildId, Set<String> groups){
-		try(var con = getCon(); var ctx = getCtx(con)){
-			return ctx.deleteFrom(SELF_ASSIGNABLE_ROLE_GROUPS).where(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID.eq(guildId).and(SELF_ASSIGNABLE_ROLE_GROUPS.GROUP_ID.in(groups))).execute() == groups.size();
-		}
-		catch(SQLException e){
-			LOG.error("Error removing self-assignable role groups: " + groups.toString() + " from guild " + guildId, e);
-		}
-		return false;
 	}
 
 	public static String getAnnouncementChannelId(String guildId){

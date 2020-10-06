@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.utils.MiscUtil;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 

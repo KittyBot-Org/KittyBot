@@ -4,7 +4,9 @@ import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.SelfAssignableRole;
 import net.dv8tion.jda.api.entities.Guild;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SelfAssignableRoleCache{

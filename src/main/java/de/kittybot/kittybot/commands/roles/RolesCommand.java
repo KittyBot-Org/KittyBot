@@ -1,12 +1,12 @@
 package de.kittybot.kittybot.commands.roles;
 
+import de.kittybot.kittybot.cache.ReactiveMessageCache;
+import de.kittybot.kittybot.cache.SelfAssignableRoleCache;
+import de.kittybot.kittybot.cache.SelfAssignableRoleGroupCache;
 import de.kittybot.kittybot.objects.Emojis;
 import de.kittybot.kittybot.objects.ReactiveMessage;
 import de.kittybot.kittybot.objects.SelfAssignableRole;
 import de.kittybot.kittybot.objects.SelfAssignableRoleGroup;
-import de.kittybot.kittybot.cache.ReactiveMessageCache;
-import de.kittybot.kittybot.cache.SelfAssignableRoleCache;
-import de.kittybot.kittybot.cache.SelfAssignableRoleGroupCache;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
@@ -38,7 +38,7 @@ public class RolesCommand extends ACommand{
 	@Override
 	public void run(CommandContext ctx){
 		var args = ctx.getArgs();
-		if(args.length > 0){
+		if(args.length > 0){//TODO make this a bit nicer...
 			if(!ctx.getMember().isOwner() && !ctx.getMember().hasPermission(Permission.ADMINISTRATOR)){
 				sendError(ctx, "You need to be an administrator to use this command!");
 				return;
@@ -132,23 +132,34 @@ public class RolesCommand extends ACommand{
 	@Override
 	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
 		super.reactionAdd(reactiveMessage, event);
+		event.getReaction().removeReaction(event.getUser()).queue();
+		if(!event.getReactionEmote().isEmote()){
+			return;
+		}
 		var roles = SelfAssignableRoleCache.getSelfAssignableRoles(event.getGuild().getId());
 		var groups = SelfAssignableRoleGroupCache.getSelfAssignableRoleGroups(event.getGuild().getId());
 		if(roles == null || roles.isEmpty() || groups == null || groups.isEmpty()){
 			return;
 		}
-		for(var role : roles){
-			if(event.getReactionEmote().isEmote() && event.getReactionEmote().getId().equals(role.getEmoteId())){
-				var r = event.getJDA().getRoleById(role.getRoleId());
-				if(r != null){
-					if(event.getMember().getRoles().stream().anyMatch(ro -> ro.getId().equals(role.getRoleId()))){
-						event.getGuild().removeRoleFromMember(event.getMember(), r).queue();
-					}
-					else{
-						event.getGuild().addRoleToMember(event.getMember(), r).queue();
-					}
-				}
-				event.getReaction().removeReaction(event.getUser()).queue();
+		var selfAssignableRole = roles.stream().filter(r -> r.getEmoteId().equals(event.getReactionEmote().getId())).findFirst().orElse(null);
+		if(selfAssignableRole == null){
+			return;
+		}
+		var role = event.getJDA().getRoleById(selfAssignableRole.getRoleId());
+		if(role == null){
+			return;
+		}
+		var memberRoles = event.getMember().getRoles();
+		if(memberRoles.stream().anyMatch(r -> r.getId().equals(selfAssignableRole.getRoleId()))){
+			event.getGuild().removeRoleFromMember(event.getMember(), role).queue();
+		}
+		else{
+			var group = groups.stream().filter(g -> g.getId().equals(selfAssignableRole.getGroupId())).findFirst().orElse(null);
+			if(group == null){
+				return;
+			}
+			if(roles.stream().filter(r -> r.getGroupId().equals(group.getId()) && memberRoles.stream().anyMatch(mr -> mr.getId().equals(r.getRoleId()))).count() < group.getMaxRoles()){
+				event.getGuild().addRoleToMember(event.getMember(), role).queue();
 			}
 		}
 	}
