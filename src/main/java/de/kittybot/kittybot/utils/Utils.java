@@ -3,6 +3,7 @@ package de.kittybot.kittybot.utils;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.kittybot.kittybot.objects.SelfAssignableRole;
 import net.dv8tion.jda.api.entities.Emote;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 
 import java.time.Duration;
@@ -11,10 +12,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 public class Utils{
 
 	private static final String CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+	private Utils() {}
 
 	public static String generate(int length){
 		StringBuilder builder = new StringBuilder();
@@ -66,6 +70,11 @@ public class Utils{
 
 	public static String pluralize(String text, int count){
 		return count != 1 ? text + "s" : text;
+	}
+
+	public static int getUserCount(JDA jda){
+		//noinspection ConstantConditions shut
+		return jda.getGuildCache().applyStream(guildStream -> guildStream.mapToInt(Guild::getMemberCount).sum());
 	}
 
 }

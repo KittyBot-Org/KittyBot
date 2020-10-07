@@ -10,6 +10,7 @@ import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.vimeo.VimeoAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
+import de.kittybot.kittybot.cache.DashboardSessionCache;
 import de.kittybot.kittybot.cache.MessageCache;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.database.SQL;
@@ -99,8 +100,8 @@ public class KittyBot{
 							CacheFlag.ACTIVITY,
 							CacheFlag.CLIENT_STATUS
 					)
-					.setMemberCachePolicy(MemberCachePolicy.DEFAULT.or(member -> Database.hasSession(member.getId())))  // voice, owner or a user with a web session
-					.setChunkingFilter(ChunkingFilter.NONE)                                                             // lazy loading
+					.setMemberCachePolicy(MemberCachePolicy.DEFAULT.or(member -> DashboardSessionCache.hasSession(member.getId())))  // voice, owner or a user with a web session
+					.setChunkingFilter(ChunkingFilter.NONE)                                                                          // lazy loading
 					.addEventListeners(
 							new OnEmoteEvent(),
 							new OnGuildEvent(),
@@ -116,9 +117,9 @@ public class KittyBot{
 					)
 					.setRawEventsEnabled(true)
 					.setVoiceDispatchInterceptor(lavalink.getVoiceInterceptor())
-					.setActivity(Activity.playing("loading..."))
+					.setActivity(Activity.playing("loading.."))
 					.setStatus(OnlineStatus.DO_NOT_DISTURB)
-					.setEventPool(ThreadingConfig.newScheduler(2, () -> "KittyBot", "Event"), true)
+					.setEventPool(ThreadingConfig.newScheduler(2, () -> "KittyBot", "Events"), true)
 					.setHttpClient(HTTP_CLIENT)
 					.setGatewayEncoding(GatewayEncoding.ETF)
 					.setAudioSendFactory(new NativeAudioSendFactory())
