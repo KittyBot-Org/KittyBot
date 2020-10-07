@@ -38,24 +38,24 @@ public class AssignCommand extends ACommand{
 		}
 		var selfAssignableRole = selfAssignableRoles.stream().filter(r -> r.getRoleId().equals(role.getId())).findFirst().orElse(null);
 		if(selfAssignableRole == null){
-			sendError(ctx, "Role `" + roleName + "` is not self assignable");
+			sendError(ctx, "Role " + role.getAsMention() + " is not self assignable");
 			return;
 		}
 		if(ctx.getMember().getRoles().stream().anyMatch(r -> r.getId().equals(role.getId()))){
-			sendError(ctx, "You already have the role `" + roleName + "`");
+			sendError(ctx, "You already have the role " + role.getAsMention());
 			return;
 		}
 		if(!ctx.getSelfMember().canInteract(role)){
-			sendError(ctx, "I can't interact with role `" + roleName + "`");
+			sendError(ctx, "I can't interact with role " + role.getAsMention());
 			return;
 		}
 		var group = SelfAssignableRoleGroupCache.getSelfAssignableRoleGroup(ctx.getGuild().getId(), selfAssignableRole.getGroupId());
 		if(group == null){
-			sendError(ctx, "Role `" + roleName + "` has no self assignable role group anymore");
+			sendError(ctx, "Role " + role.getAsMention() + " has no self assignable role group anymore");
 			return;
 		}
 		if(selfAssignableRoles.stream().filter(r -> r.getGroupId().equals(group.getId()) && ctx.getMember().getRoles().stream().anyMatch(mr -> mr.getId().equals(r.getRoleId()))).count() >= group.getMaxRoles()){
-			sendError(ctx, "You already have the max roles of this group");
+			sendError(ctx, "Can't assign you " + role.getAsMention() + ". You already have the max roles of this group");
 			return;
 		}
 		ctx.getGuild().addRoleToMember(ctx.getMember(), role).reason("self-assigned with  message: " + ctx.getMessage().getId()).queue();
