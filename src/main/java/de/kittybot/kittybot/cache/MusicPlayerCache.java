@@ -30,7 +30,7 @@ public class MusicPlayerCache{
 	}
 
 	public static void destroyMusicPlayer(Guild guild){
-		final var musicPlayer = getMusicManager(guild, false);
+		final var musicPlayer = getMusicManager(guild);
 		if(musicPlayer == null){
 			return;
 		}

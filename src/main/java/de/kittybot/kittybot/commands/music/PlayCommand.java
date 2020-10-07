@@ -48,7 +48,7 @@ public class PlayCommand extends ACommand{
 
 	@Override
 	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
-		var musicPlayer = MusicPlayerCache.getMusicManager(event.getGuild(), false);
+		var musicPlayer = MusicPlayerCache.getMusicManager(event.getGuild());
 		if(musicPlayer == null){
 			return;
 		}

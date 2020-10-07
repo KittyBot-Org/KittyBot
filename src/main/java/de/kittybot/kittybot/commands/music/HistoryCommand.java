@@ -1,11 +1,13 @@
 package de.kittybot.kittybot.commands.music;
 
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.kittybot.kittybot.cache.MusicPlayerCache;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
 import de.kittybot.kittybot.utils.Utils;
+
+import static de.kittybot.kittybot.utils.Utils.formatDuration;
+import static de.kittybot.kittybot.utils.Utils.formatTrackTitle;
 
 public class HistoryCommand extends ACommand{
 
@@ -26,28 +28,24 @@ public class HistoryCommand extends ACommand{
 			sendError(ctx, "To use this command you need to be connected to a voice channel");
 			return;
 		}
-		var musicPlayer = MusicPlayerCache.getMusicManager(ctx.getGuild(), false);
+		var musicPlayer = MusicPlayerCache.getMusicManager(ctx.getGuild());
 		if(musicPlayer == null){
 			sendError(ctx, "No active music player found!");
 			return;
 		}
-		if(ctx.getArgs().length == 0){
-			var history = musicPlayer.getHistory();
-			if(history.isEmpty()){
-				sendAnswer(ctx, "There are currently no tracks in history");
-				return;
-			}
-			var message = new StringBuilder("Currently **").append(history.size())
-					.append("** ")
-					.append(Utils.pluralize("track", history))
-					.append(" ")
-					.append(history.size() > 1 ? "are" : "is")
-					.append(" in the history:\n");
-			for(AudioTrack track : history){
-				message.append(Utils.formatTrackTitle(track)).append(" ").append(Utils.formatDuration(track.getDuration())).append("\n");
-			}
-			sendAnswer(ctx, message.toString());
+		var history = musicPlayer.getHistory();
+		if(history.isEmpty()){
+			sendAnswer(ctx, "There are currently no tracks in history");
+			return;
 		}
+		var message = new StringBuilder("Currently **").append(history.size())
+				.append("** ")
+				.append(Utils.pluralize("track", history))
+				.append(" ")
+				.append(history.size() > 1 ? "are" : "is")
+				.append(" in the history:\n");
+		history.forEach(track -> message.append(formatTrackTitle(track)).append(" ").append(formatDuration(track.getDuration())).append("\n"));
+		sendAnswer(ctx, message.toString());
 	}
 
 }
