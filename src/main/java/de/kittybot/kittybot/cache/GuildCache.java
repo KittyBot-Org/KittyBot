@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class GuildCache{
 
 	private static final Map<String, GuildData> GUILD_CACHE = new HashMap<>();
-	private static final Map<String, List<String>> USER_GUILD_CACHE = new HashMap<>();
+	private static final Map<String, Set<String>> USER_GUILD_CACHE = new HashMap<>();
 
 	private GuildCache(){}
 
@@ -47,7 +47,7 @@ public class GuildCache{
 	}
 
 	public static void cacheGuildForUser(final String userId, final String guildId){
-		USER_GUILD_CACHE.computeIfAbsent(userId, k -> new ArrayList<>()).add(guildId);
+		USER_GUILD_CACHE.computeIfAbsent(userId, k -> new HashSet<>()).add(guildId);
 	}
 
 	public static void cacheGuild(final String guildId, final GuildData guildData, final boolean cacheIfNotCached){

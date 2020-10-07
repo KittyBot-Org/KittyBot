@@ -15,7 +15,7 @@ public class Utils{
 
 	private static final String CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-	private Utils() {}
+	private Utils(){}
 
 	public static String generate(int length){
 		StringBuilder builder = new StringBuilder();
