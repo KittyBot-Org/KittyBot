@@ -39,6 +39,14 @@ public class SelfAssignableRoleGroupCache{
 		return groups;
 	}
 
+	public static SelfAssignableRoleGroup getSelfAssignableRoleGroup(String guildId, String groupId){
+		var groups = getSelfAssignableRoleGroups(guildId);
+		if(groups == null){
+			return null;
+		}
+		return groups.stream().filter(group -> group.getId().equals(groupId)).findFirst().orElse(null);
+	}
+
 	public static void addSelfAssignableRoleGroup(String guildId, SelfAssignableRoleGroup group){
 		addSelfAssignableRoleGroups(guildId, Collections.singleton(group));
 	}

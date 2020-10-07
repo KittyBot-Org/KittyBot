@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.commands.roles;
 
 import de.kittybot.kittybot.cache.SelfAssignableRoleCache;
+import de.kittybot.kittybot.cache.SelfAssignableRoleGroupCache;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
@@ -30,7 +31,13 @@ public class AssignCommand extends ACommand{
 			return;
 		}
 		var role = roles.get(0);
-		if(!SelfAssignableRoleCache.isSelfAssignableRole(ctx.getGuild().getId(), role.getId())){
+		var selfAssignableRoles = SelfAssignableRoleCache.getSelfAssignableRoles(ctx.getGuild().getId());
+		if(selfAssignableRoles == null){
+			sendError(ctx, "No self assignable roles found");
+			return;
+		}
+		var selfAssignableRole = selfAssignableRoles.stream().filter(r -> r.getRoleId().equals(role.getId())).findFirst().orElse(null);
+		if(selfAssignableRole == null){
 			sendError(ctx, "Role `" + roleName + "` is not self assignable");
 			return;
 		}
@@ -42,8 +49,17 @@ public class AssignCommand extends ACommand{
 			sendError(ctx, "I can't interact with role `" + roleName + "`");
 			return;
 		}
+		var group = SelfAssignableRoleGroupCache.getSelfAssignableRoleGroup(ctx.getGuild().getId(), selfAssignableRole.getGroupId());
+		if(group == null){
+			sendError(ctx, "Role `" + roleName + "` has no self assignable role group anymore");
+			return;
+		}
+		if(selfAssignableRoles.stream().filter(r -> r.getGroupId().equals(group.getId()) && ctx.getMember().getRoles().stream().anyMatch(mr -> mr.getId().equals(r.getRoleId()))).count() >= group.getMaxRoles()){
+			sendError(ctx, "You already have the max roles of this group");
+			return;
+		}
 		ctx.getGuild().addRoleToMember(ctx.getMember(), role).reason("self-assigned with  message: " + ctx.getMessage().getId()).queue();
-		sendAnswer(ctx, "Assigned role `" + roleName + "` to you");
+		sendAnswer(ctx, "Assigned " + role.getAsMention() + " to you");
 	}
 
 }

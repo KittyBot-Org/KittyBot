@@ -38,69 +38,77 @@ public class RolesCommand extends ACommand{
 	@Override
 	public void run(CommandContext ctx){
 		var args = ctx.getArgs();
-		if(args.length > 0){//TODO make this a bit nicer...
-			if(!ctx.getMember().isOwner() && !ctx.getMember().hasPermission(Permission.ADMINISTRATOR)){
-				sendError(ctx, "You need to be an administrator to use this command!");
+		if(args.length == 0){
+			var groups = getSelfAssignableRoles(ctx.getGuild());
+			if(groups.isEmpty()){
+				sendError(ctx, "No self-assignable roles configured!\nIf you are an admin use `.roles add group name @role :emote: @role :emote:...` to add roles!");
 				return;
 			}
-			if(args[0].equalsIgnoreCase("?") || args[0].equalsIgnoreCase("help")){
-				sendUsage(ctx);
+			var value = new StringBuilder();
+			for(var group : groups.entrySet()){
+				value.append("**").append(group.getKey().getName()).append("**").append(Emojis.BLANK).append("max roles: ").append(group.getKey().getMaxRoles()).append("\n");
+				for(var role : group.getValue()){
+					value.append(MessageUtils.getEmoteMention(role.getEmoteId())).append(Emojis.BLANK).append(Emojis.BLANK).append(MessageUtils.getRoleMention(role.getRoleId())).append("\n");
+				}
+				value.append("\n");
+			}
+			answer(ctx, new EmbedBuilder().setTitle(title)
+					.setDescription("To get/remove a role react to this message with the specific  emote\n\n")
+					.setColor(Color.MAGENTA)
+					.appendDescription(value)).queue(message -> {
+				ReactiveMessageCache.addReactiveMessage(ctx, message, this, ctx.getUser().getId());
+				for(var group : groups.entrySet()){
+					for(var role : group.getValue()){
+						message.addReaction(":i:" + role.getEmoteId()).queue();
+					}
+				}
+				message.addReaction(Emojis.WASTEBASKET).queue();
+			});
+		}
+		else if(args[0].equalsIgnoreCase("list")){
+			var sRoles = SelfAssignableRoleCache.getSelfAssignableRoles(ctx.getGuild().getId());
+			if(sRoles == null || sRoles.isEmpty()){
+				sendAnswer(ctx, "There are no roles added!");
+			}
+			else{
+				sendAnswer(ctx, "Roles: \n" + sRoles.stream().map(sarg -> MessageUtils.getRoleMention(sarg.getRoleId())).collect(Collectors.joining("\n")));
+			}
+		}
+		else if(args[0].equalsIgnoreCase("add")){
+			if(!ctx.getMember().hasPermission(Permission.ADMINISTRATOR)){
+				sendError(ctx, "You need to be an administrator to use this command!");
 				return;
 			}
 			var roles = ctx.getMessage().getMentionedRoles();
 			var emotes = ctx.getMessage().getEmotes();
-			if(args[0].equalsIgnoreCase("add") && !roles.isEmpty() && !emotes.isEmpty()){
-				var groups = SelfAssignableRoleGroupCache.getSelfAssignableRoleGroupByName(ctx.getGuild().getId(), args[1]);
-				if(groups == null || groups.isEmpty()){
-					sendError(ctx, "Role Group with name `" + args[1] + "` not found");
-					return;
-				}
-				SelfAssignableRoleCache.addSelfAssignableRoles(ctx.getGuild().getId(), Utils.toSet(ctx.getGuild().getId(), groups.iterator().next().getId(), roles, emotes));
-				sendAnswer(ctx, "Roles added!");
-			}
-			else if(args[0].equalsIgnoreCase("remove") && !roles.isEmpty()){
-				SelfAssignableRoleCache.removeSelfAssignableRoles(ctx.getGuild().getId(), roles.stream().map(Role::getId).collect(Collectors.toSet()));
-				sendAnswer(ctx, "Roles removed!");
-			}
-			else if(args[0].equalsIgnoreCase("list")){
-				var sRoles = SelfAssignableRoleCache.getSelfAssignableRoles(ctx.getGuild().getId());
-				if(sRoles == null || sRoles.isEmpty()){
-					sendAnswer(ctx, "There are no roles added!");
-				}
-				else{
-					sendAnswer(ctx, "Roles: " + sRoles.stream().map(sarg -> MessageUtils.getRoleMention(sarg.getRoleId())).collect(Collectors.joining(", ")));
-				}
-			}
-			else{
+			if(args.length < 4 || roles.isEmpty() || emotes.isEmpty()){
 				sendError(ctx, "Please be sure to mention a role & a custom discord emote");
+				return;
 			}
-			return;
-		}
-		var groups = getSelfAssignableRoles(ctx.getGuild());
-		if(groups.isEmpty()){
-			sendError(ctx, "No self-assignable roles configured!\nIf you are an admin use `.roles add group name @role :emote: @role :emote:...` to add roles!");
-			return;
-		}
-		var value = new StringBuilder();
-		for(var group : groups.entrySet()){
-			value.append("**").append(group.getKey().getName()).append("**").append(Emojis.BLANK).append("max roles: ").append(group.getKey().getMaxRoles()).append("\n");
-			for(var role : group.getValue()){
-				value.append(MessageUtils.getEmoteMention(role.getEmoteId())).append(Emojis.BLANK).append(Emojis.BLANK).append(MessageUtils.getRoleMention(role.getRoleId())).append("\n");
+			var groups = SelfAssignableRoleGroupCache.getSelfAssignableRoleGroupByName(ctx.getGuild().getId(), args[1]);
+			if(groups == null || groups.isEmpty()){
+				sendError(ctx, "Role Group with name `" + args[1] + "` not found");
+				return;
 			}
-			value.append("\n");
+			SelfAssignableRoleCache.addSelfAssignableRoles(ctx.getGuild().getId(), Utils.toSet(ctx.getGuild().getId(), groups.iterator().next().getId(), roles, emotes));
+			sendAnswer(ctx, "Roles added!");
 		}
-		answer(ctx, new EmbedBuilder().setTitle(title)
-				.setDescription("To get/remove a role react to this message with the specific  emote\n\n")
-				.setColor(Color.MAGENTA)
-				.appendDescription(value)).queue(message -> {
-			ReactiveMessageCache.addReactiveMessage(ctx, message, this, ctx.getUser().getId());
-			for(var group : groups.entrySet()){
-				for(var role : group.getValue()){
-					message.addReaction(":i:" + role.getEmoteId()).queue();
-				}
+		else if(args[0].equalsIgnoreCase("remove")){
+			if(!ctx.getMember().hasPermission(Permission.ADMINISTRATOR)){
+				sendError(ctx, "You need to be an administrator to use this command!");
+				return;
 			}
-			message.addReaction(Emojis.WASTEBASKET).queue();
-		});
+			var roles = ctx.getMessage().getMentionedRoles();
+			if(args.length < 2 || roles.isEmpty()){
+				sendError(ctx, "Please be sure to mention a role");
+				return;
+			}
+			SelfAssignableRoleCache.removeSelfAssignableRoles(ctx.getGuild().getId(), roles.stream().map(Role::getId).collect(Collectors.toSet()));
+			sendAnswer(ctx, "Roles removed!");
+		}
+		else{
+			sendUsage(ctx);
+		}
 	}
 
 	private Map<SelfAssignableRoleGroup, Set<SelfAssignableRole>> getSelfAssignableRoles(Guild guild){
