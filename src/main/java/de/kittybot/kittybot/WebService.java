@@ -237,7 +237,8 @@ public class WebService{
 			if(role.isPublicRole()){
 				continue;
 			}
-			data.add(DataObject.empty().put("name", role.getName()).put("id", role.getId()));
+			var color = role.getColor();
+			data.add(DataObject.empty().put("name", role.getName()).put("id", role.getId()).put("color", color == null ? "" : "#"+Integer.toHexString(color.getRGB()).substring(2)));
 		}
 		ok(ctx, DataObject.empty().put("roles", data));
 	}
