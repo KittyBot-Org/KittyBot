@@ -14,13 +14,14 @@ import java.util.stream.Collectors;
 public class GuildCache{
 
 	private static final Map<String, GuildData> GUILD_CACHE = new HashMap<>();
-	private static final Map<String, List<String>> USER_GUILD_CACHE = new HashMap<>();
+	private static final Map<String, Set<String>> USER_GUILD_CACHE = new HashMap<>();
 
 	private GuildCache(){}
 
 	public static List<GuildData> getGuilds(final DashboardSession dashboardSession) throws IOException{
-		var guilds = USER_GUILD_CACHE.get(dashboardSession.getUserId());
-		if(guilds == null || guilds.isEmpty()){
+		var userId = dashboardSession.getUserId();
+		var userGuilds = USER_GUILD_CACHE.get(userId);
+		if(userGuilds == null || userGuilds.isEmpty()){
 			var guildIds = KittyBot.getJda().getGuildCache().applyStream(guildStream -> guildStream.map(Guild::getId).collect(Collectors.toList()));
 			//noinspection ConstantConditions shut the fuck up IJ
 			var retrievedGuilds = WebService.getOAuth2Client().getGuilds(dashboardSession)
@@ -35,11 +36,11 @@ public class GuildCache{
 			retrievedGuilds.forEach(guildData -> {
 				var guildId = guildData.getId();
 				cacheGuild(guildId, guildData);
-				cacheGuildForUser(dashboardSession.getUserId(), guildId);
+				cacheGuildForUser(userId, guildId);
 			});
 			return retrievedGuilds;
 		}
-		return guilds.stream().map(GUILD_CACHE::get).collect(Collectors.toList());
+		return userGuilds.stream().map(GUILD_CACHE::get).collect(Collectors.toList());
 	}
 
 	public static void cacheGuild(final String guildId, final GuildData guildData){
@@ -47,7 +48,7 @@ public class GuildCache{
 	}
 
 	public static void cacheGuildForUser(final String userId, final String guildId){
-		USER_GUILD_CACHE.computeIfAbsent(userId, k -> new ArrayList<>()).add(guildId);
+		USER_GUILD_CACHE.computeIfAbsent(userId, k -> new HashSet<>()).add(guildId);
 	}
 
 	public static void cacheGuild(final String guildId, final GuildData guildData, final boolean cacheIfNotCached){
@@ -65,7 +66,7 @@ public class GuildCache{
 
 	public static void uncacheGuildForUser(final String userId, final String guildId){
 		var userGuilds = USER_GUILD_CACHE.get(userId);
-		if(userGuilds == null){
+		if(userGuilds == null || userGuilds.isEmpty()){
 			return;
 		}
 		userGuilds.remove(guildId);

@@ -1,16 +1,21 @@
 package de.kittybot.kittybot.utils;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Emote;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 public class Utils{
 
 	private static final String CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+	private Utils(){}
 
 	public static String generate(int length){
 		StringBuilder builder = new StringBuilder();
@@ -33,11 +38,7 @@ public class Utils{
 	}
 
 	public static Set<String> toSet(List<Role> roles){
-		Set<String> set = new HashSet<>();
-		for(Role role : roles){
-			set.add(role.getId());
-		}
-		return set;
+		return roles.stream().map(Role::getId).collect(Collectors.toSet());
 	}
 
 	public static Map<String, String> toMap(List<Role> roles, List<Emote> emotes){
@@ -70,6 +71,11 @@ public class Utils{
 
 	public static String pluralize(String text, int count){
 		return count != 1 ? text + "s" : text;
+	}
+
+	public static int getUserCount(JDA jda){
+		//noinspection ConstantConditions shut
+		return jda.getGuildCache().applyStream(guildStream -> guildStream.mapToInt(Guild::getMemberCount).sum());
 	}
 
 }
