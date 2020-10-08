@@ -130,7 +130,7 @@ public class WebService{
 		var auth = ctx.header("Authorization");
 		var session = DashboardSessionCache.getSession(auth);
 		if(session == null){
-			error(ctx, 404, "Session not found");
+			error(ctx, 404, "Please login again");
 			return;
 		}
 		var userId = session.getUserId();
