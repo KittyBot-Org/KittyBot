@@ -14,6 +14,8 @@ public class StatusManager{
 
 	private static final List<String> STATUS_MESSAGES = MessageUtils.loadMessageFile("status");
 
+	private StatusManager(){}
+
 	public static void newRandomStatus(){
 		var jda = KittyBot.getJda();
 		jda.getPresence().setPresence(OnlineStatus.ONLINE, generateRandomMessage(jda));

@@ -14,6 +14,8 @@ public class MessageUtils{
 
 	private static final Logger LOG = LoggerFactory.getLogger(MessageUtils.class);
 
+	private MessageUtils(){}
+
 	public static List<String> loadMessageFile(String fileName){
 		var inputStream = MessageUtils.class.getClassLoader().getResourceAsStream("messages/" + fileName + "_messages.txt");
 		if(inputStream == null){
