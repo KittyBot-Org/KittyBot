@@ -53,7 +53,7 @@ dependencies {
     // other
     implementation 'org.discordbots:DBL-Java-Library:2.0.1'
     implementation 'io.javalin:javalin:3.11.0'
-    implementation 'io.github.classgraph:classgraph:4.8.78'
+    implementation 'io.github.classgraph:classgraph:4.8.90'
 }
 
 jooq {

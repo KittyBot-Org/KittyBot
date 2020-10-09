@@ -17,9 +17,11 @@ import java.util.Map;
 public class CommandManager{
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommandManager.class);
-	private static final ClassGraph CLASS_GRAPH = new ClassGraph().whitelistPackages("de.kittybot.kittybot.commands");
+	private static final ClassGraph CLASS_GRAPH = new ClassGraph().acceptPackages("de.kittybot.kittybot.commands");
 	private static final Map<String, ACommand> COMMANDS = new HashMap<>();
 	private static final Map<String, ACommand> DISTINCT_COMMANDS = new HashMap<>();
+
+	private CommandManager(){}
 
 	public static void registerCommands(){
 		try(var result = CLASS_GRAPH.scan()){
