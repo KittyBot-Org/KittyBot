@@ -129,7 +129,7 @@ public class WebService{
 		var auth = ctx.header("Authorization");
 		var session = DashboardSessionCache.getSession(auth);
 		if(session == null){
-			error(ctx, 404, "Session not found");
+			error(ctx, 404, "Please login again");
 			return;
 		}
 		var userId = session.getUserId();
@@ -236,7 +236,8 @@ public class WebService{
 			if(role.isPublicRole()){
 				continue;
 			}
-			data.add(DataObject.empty().put("name", role.getName()).put("id", role.getId()));
+			var color = role.getColor();
+			data.add(DataObject.empty().put("name", role.getName()).put("id", role.getId()).put("color", color == null ? "" : "#"+Integer.toHexString(color.getRGB()).substring(2)));
 		}
 		ok(ctx, DataObject.empty().put("roles", data));
 	}

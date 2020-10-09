@@ -1,7 +1,6 @@
 package de.kittybot.kittybot.utils;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import de.kittybot.kittybot.objects.SelfAssignableRole;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
@@ -13,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 public class Utils{
 
@@ -21,11 +21,11 @@ public class Utils{
 	private Utils(){}
 
 	public static String generate(int length){
-		StringBuilder builder = new StringBuilder();
-		while(length-- != 0){
-			builder.append(CHARS.charAt((int) (ThreadLocalRandom.current().nextDouble() * CHARS.length())));
+		StringBuilder sb = new StringBuilder(length);
+		for(var i = 0; i < length; i++){
+			sb.append(CHARS.charAt(ThreadLocalRandom.current().nextInt(CHARS.length())));
 		}
-		return builder.toString();
+		return sb.toString();
 	}
 
 	public static boolean isEnable(String string){
@@ -40,8 +40,12 @@ public class Utils{
 		return string.equalsIgnoreCase("?") || string.equalsIgnoreCase("help") || string.equalsIgnoreCase("hilfe");
 	}
 
-	public static Set<SelfAssignableRole> toSet(String guildId, String groupId, List<Role> roles, List<Emote> emotes){
-		var list = new HashSet<SelfAssignableRole>();
+	public static Set<String> toSet(List<Role> roles){
+		return roles.stream().map(Role::getId).collect(Collectors.toSet());
+	}
+
+	public static Map<String, String> toMap(List<Role> roles, List<Emote> emotes){
+		Map<String, String> map = new HashMap<>();
 		int i = 0;
 		for(Role role : roles){
 			if(emotes.size() <= i){

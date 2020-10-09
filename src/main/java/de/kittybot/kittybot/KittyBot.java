@@ -136,7 +136,6 @@ public class KittyBot{
 			new WebService(6969);
 
 			SCHEDULER.scheduleAtFixedRate(MessageCache::pruneCache, 1, 1, TimeUnit.HOURS);
-
 			SCHEDULER.scheduleAtFixedRate(StatusManager::newRandomStatus, 0, 2, TimeUnit.MINUTES);
 
 			if(Config.isSet(Config.LOG_CHANNEL_ID)){

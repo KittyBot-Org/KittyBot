@@ -13,9 +13,6 @@ public class DashboardSessionController implements SessionController<DashboardSe
 
 	private static final Logger LOG = LoggerFactory.getLogger(DashboardSessionController.class);
 
-	public DashboardSessionController(){
-	}
-
 	@Override
 	public DashboardSession getSession(final String identifier){
 		return DashboardSessionCache.getSession(identifier);

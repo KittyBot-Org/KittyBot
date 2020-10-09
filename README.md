@@ -7,20 +7,16 @@
 [![Docker Latest Version](https://img.shields.io/docker/v/topisenpai/kittybot)](https://hub.docker.com/repository/docker/topisenpai/kittybot) 
 [![KittyBot Support Guild](https://img.shields.io/discord/608506410803658753)](https://discord.gg/sD3ABd5)
 [![KittyBot License](https://img.shields.io/github/license/TopISenpai/KittyBot)](LICENSE)
-[![CodeFactor](https://www.codefactor.io/repository/github/kittybot-org/kittybot/badge)](https://www.codefactor.io/repository/github/kittybot-org/kittybot)
 
 [![KittyBot Support Guild](https://discordapp.com/api/guilds/608506410803658753/embed.png?style=banner2)](https://discord.gg/sD3ABd5)
 
 [CI Server](https://ci.anteiku.de/project/KittyBot_Bot?guest=1)
-
-[Issues](https://youtrack.anteiku.de/dashboard?id=59b76be4-5d54-4839-a972-4c62a5671315)
-
 [Docker Hub](https://hub.docker.com/repository/docker/topisenpai/kittybot)
 
 [Website Project](https://github.com/KittyBot-Org/KittyBot-Website)
 
 [Website](https://kittybot.de)
-#### A Discord Bot to manage your roles
+#### The only discord bot you need
 ---
 
 # hewe to manyage uw discowd
