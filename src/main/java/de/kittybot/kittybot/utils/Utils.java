@@ -18,11 +18,11 @@ public class Utils{
 	private Utils(){}
 
 	public static String generate(int length){
-		StringBuilder builder = new StringBuilder();
-		while(length-- != 0){
-			builder.append(CHARS.charAt((int) (ThreadLocalRandom.current().nextDouble() * CHARS.length())));
+		StringBuilder sb = new StringBuilder(length);
+		for(var i = 0; i < length; i++){
+			sb.append(CHARS.charAt(ThreadLocalRandom.current().nextInt(CHARS.length())));
 		}
-		return builder.toString();
+		return sb.toString();
 	}
 
 	public static boolean isEnable(String string){

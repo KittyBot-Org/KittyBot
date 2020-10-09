@@ -6,6 +6,8 @@ import de.kittybot.kittybot.objects.command.CommandContext;
 
 public class MusicUtils{
 
+	private MusicUtils(){}
+
 	public static void seekTrack(final CommandContext ctx){
 		final var voiceState = ctx.getMember().getVoiceState();
 		if(voiceState == null){
