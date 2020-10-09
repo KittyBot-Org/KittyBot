@@ -25,7 +25,6 @@ public class InfoCommand extends ACommand{
 	public void run(CommandContext ctx){
 		var jda = ctx.getJDA();
 		var runtime = Runtime.getRuntime();
-		var totalMemory = runtime.totalMemory() / 1000000;
 		sendAnswer(ctx, new EmbedBuilder()
 				.setAuthor("KittyBot information", Config.ORIGIN_URL, jda.getSelfUser().getEffectiveAvatarUrl())
 
@@ -34,7 +33,7 @@ public class InfoCommand extends ACommand{
 				.addField("Total Guilds:", String.valueOf(jda.getGuildCache().size()), true)
 				.addField("Total Users:", String.valueOf(Utils.getUserCount(jda)), true)
 
-				.addField("Memory Usage:", (totalMemory - (runtime.freeMemory() / 1000000)) + "mb / " + totalMemory + "mb", false)
+				.addField("Memory Usage:", ((runtime.totalMemory() - runtime.freeMemory()) >> 20) + "MB / " + (runtime.maxMemory() >> 20) + "MB", false)
 				.addField("Thread count:", "" + ManagementFactory.getThreadMXBean().getThreadCount(), true)
 		);
 	}
