@@ -24,7 +24,7 @@ public class OnGuildEvent extends ListenerAdapter{
 	public void onGuildJoin(GuildJoinEvent event){
 		var guildCount = (int) event.getJDA().getGuildCache().size();
 		var guild = event.getGuild();
-		BotLists.update(event.getJDA(), guildCount);
+		BotLists.update(guildCount);
 		Database.registerGuild(guild);
 		InviteCache.initCaching(guild);
 		var owner = guild.getOwner();
@@ -72,7 +72,7 @@ public class OnGuildEvent extends ListenerAdapter{
 	public void onGuildLeave(GuildLeaveEvent event){
 		var guildCount = (int) event.getJDA().getGuildCache().size();
 		var guild = event.getGuild();
-		BotLists.update(event.getJDA(), guildCount);
+		BotLists.update(guildCount);
 		InviteCache.pruneCache(guild);
 		PrefixCache.pruneCache(guild);
 		MusicPlayerCache.pruneCache(guild);
