@@ -35,11 +35,11 @@ public class PlayCommand extends ACommand{
 			}
 			final var musicPlayer = MusicPlayerCache.getMusicManager(ctx.getGuild(), true);
 			final var channelId = musicPlayer.getChannelId();
-			if (channelId == null){
+			if(channelId == null){
 				musicPlayer.loadQuery(this, ctx);
 				return;
 			}
-			if (!ctx.getChannel().getId().equals(channelId)){
+			if(!ctx.getChannel().getId().equals(channelId)){
 				return;
 			}
 			musicPlayer.loadQuery(this, ctx);

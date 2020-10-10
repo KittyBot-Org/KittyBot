@@ -10,16 +10,18 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import de.kittybot.kittybot.KittyBot;
+import de.kittybot.kittybot.cache.PrefixCache;
 import de.kittybot.kittybot.cache.ReactiveMessageCache;
+import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.Emojis;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.CommandContext;
 import de.kittybot.kittybot.utils.AudioUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.awt.*;
-import java.time.Instant;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
@@ -30,6 +32,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import static de.kittybot.kittybot.objects.command.ACommand.sendError;
 import static de.kittybot.kittybot.utils.Utils.formatDuration;
+import static de.kittybot.kittybot.utils.Utils.formatTrackTitle;
 
 public class MusicPlayer extends AudioEventAdapter {
 	private final AudioPlayer player;
@@ -51,7 +54,7 @@ public class MusicPlayer extends AudioEventAdapter {
 	public void loadQuery(final ACommand command, final CommandContext ctx){
 		this.command = command;
 		this.ctx = ctx;
-		if (channelId == null){
+		if(channelId == null){
 			this.channelId = ctx.getChannel().getId();
 		}
 		var query = String.join(" ", ctx.getArgs());
@@ -91,23 +94,21 @@ public class MusicPlayer extends AudioEventAdapter {
 
 	@Override
 	public void onEvent(final AudioEvent event){
-		System.out.println(event);
-		updateMusicControlMessage(ctx.getJDA().getTextChannelById(channelId));
+		super.onEvent(event);
+		updateMusicControlMessage();
 	}
 
 	@Override
 	public void onTrackStart(final AudioPlayer player, final AudioTrack track){
-		System.out.println(player);
 		if(controllerMessageId != null){
 			ReactiveMessageCache.removeReactiveMessage(ctx.getGuild(), controllerMessageId);
 		}
-		sendMusicController(command, ctx);
 	}
 
 	@Override
 	public void onTrackEnd(final AudioPlayer player, final AudioTrack track, final AudioTrackEndReason endReason){
 		history.push(track);
-		if (endReason.mayStartNext){
+		if(endReason.mayStartNext){
 			nextTrack();
 		}
 	}
@@ -117,6 +118,9 @@ public class MusicPlayer extends AudioEventAdapter {
 	public void queue(final AudioTrack track){
 		if (!player.startTrack(track, true)){
 			queue.offer(track);
+			if(queue.size() == 1){
+				updateMusicControlMessage();
+			}
 		}
 	}
 
@@ -146,24 +150,14 @@ public class MusicPlayer extends AudioEventAdapter {
 	}
 
 	public void changeVolume(final int volumeStep){
-		var volume = player.getVolume();
-		if(volume > 0){
-			if(volume + volumeStep < 200){
-				volume += volumeStep;
-			}
-			else{
-				volume = 200;
-			}
+		var oldVolume = player.getVolume();
+		var newVolume = volumeStep < 0 ? Math.max(oldVolume + volumeStep, 0) // a + (-b) = -
+									   : Math.min(oldVolume + volumeStep, 200);
+		if(newVolume == oldVolume){
+			return;
 		}
-		else{
-			if(volume - volumeStep > 0){
-				volume -= volumeStep;
-			}
-			else{
-				volume = 0;
-			}
-		}
-		player.setVolume(volume);
+		player.setVolume(newVolume);
+		updateMusicControlMessage();
 	}
 
 	private void connectToChannel(final CommandContext ctx){
@@ -185,9 +179,7 @@ public class MusicPlayer extends AudioEventAdapter {
 	public void sendMusicController(ACommand command, CommandContext ctx){
 		var msg = ctx.getMessage();
 		msg.getChannel()
-				.sendMessage(buildMusicControlMessage()
-						.setTimestamp(Instant.now())
-						.build())
+				.sendMessage(buildMusicControlMessage())
 				.queue(message -> {
 					controllerMessageId = message.getId();
 					ReactiveMessageCache.addReactiveMessage(ctx, message, command, "-1");
@@ -201,42 +193,53 @@ public class MusicPlayer extends AudioEventAdapter {
 				});
 	}
 
-	private EmbedBuilder buildMusicControlMessage(){
-		var embed = new EmbedBuilder();
+	private MessageEmbed buildMusicControlMessage(){
+		var prefix = PrefixCache.getCommandPrefix(ctx.getGuild().getId());
+		var embedBuilder = new EmbedBuilder();
 		var track = player.getPlayingTrack();
+		embedBuilder.setAuthor("KittyBot Music", Config.ORIGIN_URL, ctx.getJDA().getSelfUser().getAvatarUrl());
 
 		if(track == null){
-			embed.setAuthor("Nothing to play")
-					.setColor(Color.RED)
-					.addField("Author", "", true)
-					.addField("Length", "", true)
-					.addField("Volume", player.getVolume() + "%", true);
+			embedBuilder.setColor(Color.RED);
+			embedBuilder.setDescription("There's nothing to play! Use `" + prefix + "play` to queue some songs.");
+			return embedBuilder.build();
 		}
-		else{
-			var info = track.getInfo();
-			var duration = formatDuration(info.length);
-			var paused = player.isPaused();
-			embed.setTitle(info.title, info.uri)
-					.setThumbnail("https://i.ytimg.com/vi/" + info.identifier + "/hqdefault.jpg")
-					.addField("Author", info.author, true)
-					.addField("Length", duration, true)
-					.addField("Volume", player.getVolume() + "%", true);
-			embed.setAuthor(player.isPaused() ? "Paused at " + formatDuration(track.getPosition()) + "/" + duration : "Playing");
-			embed.setColor(paused ? Color.ORANGE : Color.GREEN);
+		var info = track.getInfo();
+		var paused = player.isPaused();
+		var member = ctx.getGuild().getMemberById(getRequesterId());
+		embedBuilder.setThumbnail("https://i.ytimg.com/vi/" + info.identifier + "/maxresdefault.jpg");
+		//noinspection ConstantConditions shut :)
+		embedBuilder.setFooter("Requested by " + member.getEffectiveName() + " | View the queue with " + prefix + "queue", member.getUser().getEffectiveAvatarUrl());
+		embedBuilder.setColor(paused ? Color.ORANGE : Color.GREEN);
+		embedBuilder.addField("Now playing" + (paused ? " (paused at " + formatDuration(track.getPosition()) + ")" : ""), (paused ? "\u23F8\uFE0F" : "\u25B6\uFE0F") + " " + formatTrackTitle(track, true), false);
 
-			var member = ctx.getGuild().getMemberById(getRequesterId());
-			var user = ctx.getJDA().getUserById(getRequesterId());
-			//noinspection ConstantConditions shut
-			embed.setFooter("Requested by " + member.getEffectiveName(), user.getEffectiveAvatarUrl());
+		var next = queue.peek();
+		if(next != null){
+			embedBuilder.addField("Next up", "\u23ED\uFE0F " + formatTrackTitle(next, true), false);
 		}
-		return embed;
+		embedBuilder.addField("Volume", player.getVolume() + "%", false);
+		embedBuilder.addField("Song duration", formatDuration(info.length), true);
+		if(next != null){
+			var totalDuration = 0;
+			for(final var queued : queue){
+				totalDuration += queued.getDuration();
+			}
+			embedBuilder.addField("Total duration", formatDuration(totalDuration), true);
+			embedBuilder.addField("Songs remaining", "" + queue.size(), true);
+		}
+		return embedBuilder.build();
 	}
 
-	public void updateMusicControlMessage(TextChannel channel){
-		if(channel == null || controllerMessageId == null){
+	public void updateMusicControlMessage(){
+		if(controllerMessageId == null){
+			sendMusicController(command, ctx);
 			return;
 		}
-		channel.editMessageById(controllerMessageId, buildMusicControlMessage().setTimestamp(Instant.now()).build()).queue();
+		getControllerChannel().editMessageById(controllerMessageId, buildMusicControlMessage()).queue();
+	}
+
+	public TextChannel getControllerChannel(){
+		return ctx.getJDA().getTextChannelById(channelId);
 	}
 
 	public String getRequesterId(){

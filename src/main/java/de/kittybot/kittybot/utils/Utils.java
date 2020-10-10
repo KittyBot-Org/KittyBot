@@ -57,12 +57,16 @@ public class Utils{
 	public static String formatDuration(long length){
 		Duration duration = Duration.ofMillis(length);
 		var seconds = duration.toSecondsPart();
-		return String.format("%d:%s", duration.toMinutes(), seconds > 9 ? seconds : "0" + seconds);
+		return String.format("%02d:%s", duration.toMinutes(), seconds > 9 ? seconds : "0" + seconds);
 	}
 
 	public static String formatTrackTitle(AudioTrack track){
+		return formatTrackTitle(track, false);
+	}
+
+	public static String formatTrackTitle(AudioTrack track, boolean useQuotes){
 		var info = track.getInfo();
-		return "[" + info.title + "]" + "(" + info.uri + ")";
+		return "[" + (useQuotes ? "`" : "") + info.title + (useQuotes ? "`" : "") + "]" + "(" + info.uri + ")";
 	}
 
 	public static <T> String pluralize(String text, Collection<T> collection){
