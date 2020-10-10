@@ -23,11 +23,6 @@ public class HistoryCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		var voiceState = ctx.getMember().getVoiceState();
-		if(voiceState != null && !voiceState.inVoiceChannel()){
-			sendError(ctx, "To use this command you need to be connected to a voice channel");
-			return;
-		}
 		var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
 		if(musicPlayer == null){
 			sendError(ctx, "No active music player found!");
@@ -43,8 +38,8 @@ public class HistoryCommand extends ACommand{
 				.append(Utils.pluralize("track", history))
 				.append(" ")
 				.append(history.size() > 1 ? "are" : "is")
-				.append(" in the history:\n");
-		history.forEach(track -> message.append(formatTrackTitle(track)).append(" ").append(formatDuration(track.getDuration())).append("\n"));
+				.append(" in the history:\n\n");
+		history.forEach(track -> message.append(formatTrackTitle(track, true)).append(" - ").append(formatDuration(track.getDuration())).append("\n"));
 		sendAnswer(ctx, message.toString());
 	}
 

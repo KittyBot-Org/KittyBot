@@ -70,6 +70,9 @@ public class MusicPlayer extends AudioEventAdapter {
 				}
 				track.setUserData(ctx.getUser().getId());
 				queue(track);
+				if(!queue.isEmpty()){
+					sendQueuedTracks(command, ctx, Collections.singletonList(track));
+				}
 				connectToChannel(ctx);
 			}
 
@@ -191,6 +194,18 @@ public class MusicPlayer extends AudioEventAdapter {
 					message.addReaction(Emojis.SHUFFLE).queue();
 					message.addReaction(Emojis.X).queue();
 				});
+	}
+
+	private void sendQueuedTracks(ACommand command, CommandContext ctx, List<AudioTrack> tracks){
+		var message = new StringBuilder("Queued ");
+		if(tracks.size() == 1){
+			message.append(formatTrackTitle(tracks.get(0), true));
+		}
+		else{
+			message.append(tracks.size()).append("** ").append("tracks");
+		}
+		message.append(".").append("\n\nTo see the current queue, type `").append(PrefixCache.getCommandPrefix(ctx.getGuild().getId())).append("queue`.");
+		command.sendAnswer(ctx, message.toString());
 	}
 
 	private MessageEmbed buildMusicControlMessage(){

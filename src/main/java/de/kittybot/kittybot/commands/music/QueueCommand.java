@@ -1,11 +1,13 @@
 package de.kittybot.kittybot.commands.music;
 
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.kittybot.kittybot.cache.MusicPlayerCache;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
 import de.kittybot.kittybot.utils.Utils;
+
+import static de.kittybot.kittybot.utils.Utils.formatDuration;
+import static de.kittybot.kittybot.utils.Utils.formatTrackTitle;
 
 public class QueueCommand extends ACommand{
 
@@ -42,10 +44,8 @@ public class QueueCommand extends ACommand{
 					.append(Utils.pluralize("track", queue))
 					.append(" ")
 					.append(queue.size() > 1 ? "are" : "is")
-					.append(" queued:\n");
-			for(AudioTrack track : queue){
-				message.append(Utils.formatTrackTitle(track)).append(" ").append(Utils.formatDuration(track.getDuration())).append("\n");
-			}
+					.append(" queued:\n\n");
+			queue.forEach(track -> message.append(formatTrackTitle(track, true)).append(" - ").append(formatDuration(track.getDuration())).append("\n"));
 			sendAnswer(ctx, message.toString());
 			return;
 		}
