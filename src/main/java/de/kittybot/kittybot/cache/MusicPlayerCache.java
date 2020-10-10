@@ -11,13 +11,13 @@ public class MusicPlayerCache{
 
 	private static final Map<String, MusicPlayer> MUSIC_PLAYERS = new HashMap<>();
 
-	private MusicPlayerCache() {}
+	private MusicPlayerCache(){}
 
-	public static MusicPlayer getMusicManager(Guild guild){
-		return getMusicManager(guild, false);
+	public static MusicPlayer getMusicPlayer(Guild guild){
+		return getMusicPlayer(guild, false);
 	}
 
-	public static MusicPlayer getMusicManager(Guild guild, boolean createIfAbsent){
+	public static MusicPlayer getMusicPlayer(Guild guild, boolean createIfAbsent){
 		final var guildId = guild.getId();
 		var musicPlayer = MUSIC_PLAYERS.get(guildId);
 		if(musicPlayer == null && createIfAbsent){
@@ -30,7 +30,7 @@ public class MusicPlayerCache{
 	}
 
 	public static void destroyMusicPlayer(Guild guild){
-		final var musicPlayer = getMusicManager(guild);
+		final var musicPlayer = getMusicPlayer(guild);
 		if(musicPlayer == null){
 			return;
 		}

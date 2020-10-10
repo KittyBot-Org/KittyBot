@@ -18,7 +18,7 @@ public class MusicUtils{
 			sendError(ctx, "To use this command you need to be connected to a voice channel");
 			return;
 		}
-		final var musicPlayer = MusicPlayerCache.getMusicManager(ctx.getGuild());
+		final var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
 		if(musicPlayer == null){
 			sendError(ctx, "No active music player found!");
 			return;

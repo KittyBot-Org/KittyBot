@@ -33,7 +33,7 @@ public class PlayCommand extends ACommand{
 				sendError(ctx, "I can't play music as " + connectFailureReason.getReason() + ".");
 				return;
 			}
-			final var musicPlayer = MusicPlayerCache.getMusicManager(ctx.getGuild(), true);
+			final var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild(), true);
 			final var channelId = musicPlayer.getChannelId();
 			if(channelId == null){
 				musicPlayer.loadQuery(this, ctx);
@@ -48,7 +48,7 @@ public class PlayCommand extends ACommand{
 
 	@Override
 	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
-		var musicPlayer = MusicPlayerCache.getMusicManager(event.getGuild());
+		var musicPlayer = MusicPlayerCache.getMusicPlayer(event.getGuild());
 		if(musicPlayer == null){
 			return;
 		}

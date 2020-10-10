@@ -17,7 +17,7 @@ public class OnGuildVoiceEvent extends ListenerAdapter{
 	public void onGuildVoiceUpdate(@NotNull final GuildVoiceUpdateEvent event){
 		if(event instanceof GuildVoiceMoveEvent || event instanceof GuildVoiceLeaveEvent){
 			var guild = event.getEntity().getGuild();
-			var musicPlayer = MusicPlayerCache.getMusicManager(guild);
+			var musicPlayer = MusicPlayerCache.getMusicPlayer(guild);
 			if(musicPlayer == null){
 				return;
 			}

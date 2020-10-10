@@ -28,7 +28,7 @@ public class HistoryCommand extends ACommand{
 			sendError(ctx, "To use this command you need to be connected to a voice channel");
 			return;
 		}
-		var musicPlayer = MusicPlayerCache.getMusicManager(ctx.getGuild());
+		var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
 		if(musicPlayer == null){
 			sendError(ctx, "No active music player found!");
 			return;
