@@ -41,6 +41,10 @@ public class AudioUtils {
 		return TimeUnit.MILLISECONDS.toMinutes(track.getDuration()) <= 20;
 	}
 
+	public static void reactSuccess(final CommandContext ctx){
+		ctx.getMessage().addReaction("\uD83D\uDC4C").queue();
+	}
+
 	public enum ConnectFailureReason{
 		NO_CHANNEL("you're not connected to any channel"),
 		NO_PERMS("i don't have permissions to join your channel"),

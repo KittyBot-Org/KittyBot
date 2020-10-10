@@ -2,7 +2,6 @@ package de.kittybot.kittybot.objects.audio;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEvent;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
@@ -44,14 +43,15 @@ public class MusicPlayer extends AudioEventAdapter {
 	private ACommand command;
 	private String channelId;
 
-	public MusicPlayer(final AudioPlayerManager manager){
-		this.player = manager.createPlayer();
+	public MusicPlayer(){
+		this.player = KittyBot.getAudioPlayerManager().createPlayer();
 		this.queue = new LinkedBlockingQueue<>();
 		this.history = new LinkedBlockingDeque<>();
 		player.addListener(this);
 	}
 
 	public void loadQuery(final ACommand command, final CommandContext ctx){
+		ctx.getMessage().suppressEmbeds(true).queue();
 		this.command = command;
 		this.ctx = ctx;
 		if(channelId == null){
@@ -71,8 +71,9 @@ public class MusicPlayer extends AudioEventAdapter {
 				track.setUserData(ctx.getUser().getId());
 				queue(track);
 				if(!queue.isEmpty()){
-					sendQueuedTracks(command, ctx, Collections.singletonList(track));
+					sendQueuedTracks(ctx, Collections.singletonList(track));
 				}
+				AudioUtils.reactSuccess(ctx);
 				connectToChannel(ctx);
 			}
 
@@ -119,7 +120,7 @@ public class MusicPlayer extends AudioEventAdapter {
 	// methods
 
 	public void queue(final AudioTrack track){
-		if (!player.startTrack(track, true)){
+		if(!player.startTrack(track, true)){
 			queue.offer(track);
 			if(queue.size() == 1){
 				updateMusicControlMessage();
@@ -174,6 +175,7 @@ public class MusicPlayer extends AudioEventAdapter {
 				sendError(ctx, "I can't play music as " + connectFailureReason.getReason() + ".");
 				return;
 			}
+			audioManager.setSelfDeafened(true);
 			//noinspection ConstantConditions it's unlikely to fail after checking
 			audioManager.openAudioConnection(ctx.getMember().getVoiceState().getChannel());
 		});
@@ -196,7 +198,7 @@ public class MusicPlayer extends AudioEventAdapter {
 				});
 	}
 
-	private void sendQueuedTracks(ACommand command, CommandContext ctx, List<AudioTrack> tracks){
+	private void sendQueuedTracks(CommandContext ctx, List<AudioTrack> tracks){
 		var message = new StringBuilder("Queued ");
 		if(tracks.size() == 1){
 			message.append(formatTrackTitle(tracks.get(0), true));
@@ -204,8 +206,8 @@ public class MusicPlayer extends AudioEventAdapter {
 		else{
 			message.append(tracks.size()).append("** ").append("tracks");
 		}
-		message.append(".").append("\n\nTo see the current queue, type `").append(PrefixCache.getCommandPrefix(ctx.getGuild().getId())).append("queue`.");
-		command.sendAnswer(ctx, message.toString());
+		message.append(" ").append("[").append(ctx.getUser().getAsMention()).append("]");
+		getControllerChannel().sendMessage(new EmbedBuilder().setColor(6053866).setDescription(message.toString()).build()).queue();
 	}
 
 	private MessageEmbed buildMusicControlMessage(){
@@ -217,6 +219,7 @@ public class MusicPlayer extends AudioEventAdapter {
 		if(track == null){
 			embedBuilder.setColor(Color.RED);
 			embedBuilder.setDescription("There's nothing to play! Use `" + prefix + "play` to queue some songs.");
+			getControllerChannel().clearReactionsById(controllerMessageId).queue();
 			return embedBuilder.build();
 		}
 		var info = track.getInfo();
@@ -239,8 +242,8 @@ public class MusicPlayer extends AudioEventAdapter {
 			for(final var queued : queue){
 				totalDuration += queued.getDuration();
 			}
-			embedBuilder.addField("Total duration", formatDuration(totalDuration), true);
-			embedBuilder.addField("Songs remaining", "" + queue.size(), true);
+			embedBuilder.addField("Songs in the queue", "" + queue.size(), true);
+			embedBuilder.addField("Queue duration", formatDuration(totalDuration), true);
 		}
 		return embedBuilder.build();
 	}

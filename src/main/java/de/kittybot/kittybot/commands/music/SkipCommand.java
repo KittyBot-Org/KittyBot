@@ -4,6 +4,7 @@ import de.kittybot.kittybot.cache.MusicPlayerCache;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
+import de.kittybot.kittybot.utils.AudioUtils;
 
 public class SkipCommand extends ACommand{
 
@@ -33,8 +34,8 @@ public class SkipCommand extends ACommand{
 			sendError(ctx, "You have to be the requester of the song to control it");
 			return;
 		}
-		sendAnswer(ctx, "Track skipped");
 		musicPlayer.nextTrack();
+		AudioUtils.reactSuccess(ctx);
 	}
 
 }

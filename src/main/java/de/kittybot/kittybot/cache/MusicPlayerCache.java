@@ -1,6 +1,5 @@
 package de.kittybot.kittybot.cache;
 
-import de.kittybot.kittybot.KittyBot;
 import de.kittybot.kittybot.objects.audio.MusicPlayer;
 import net.dv8tion.jda.api.entities.Guild;
 
@@ -21,7 +20,7 @@ public class MusicPlayerCache{
 		final var guildId = guild.getId();
 		var musicPlayer = MUSIC_PLAYERS.get(guildId);
 		if(musicPlayer == null && createIfAbsent){
-			final var newPlayer = new MusicPlayer(KittyBot.getAudioPlayerManager());
+			final var newPlayer = new MusicPlayer();
 			musicPlayer = newPlayer;
 			guild.getAudioManager().setSendingHandler(musicPlayer.getSendHandler());
 			MUSIC_PLAYERS.put(guildId, newPlayer);

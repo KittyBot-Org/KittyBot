@@ -64,9 +64,9 @@ public class Utils{
 		return formatTrackTitle(track, false);
 	}
 
-	public static String formatTrackTitle(AudioTrack track, boolean useQuotes){
+	public static String formatTrackTitle(AudioTrack track, boolean appendQuotes){
 		var info = track.getInfo();
-		return "[" + (useQuotes ? "`" : "") + info.title + (useQuotes ? "`" : "") + "]" + "(" + info.uri + ")";
+		return "[" + (appendQuotes ? "`" : "") + info.title + (appendQuotes ? "`" : "") + "]" + "(" + info.uri + ")";
 	}
 
 	public static <T> String pluralize(String text, Collection<T> collection){
