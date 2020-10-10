@@ -14,6 +14,8 @@ public class ReactiveMessageCache{
 
 	private static final Map<String, ReactiveMessage> REACTIVE_MESSAGES = new HashMap<>();
 
+	private ReactiveMessageCache(){}
+
 	public static void removeReactiveMessage(Guild guild, String messageId){
 		var textChannel = guild.getTextChannelById(REACTIVE_MESSAGES.get(messageId).channelId);
 		if(textChannel != null){
