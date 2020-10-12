@@ -55,9 +55,8 @@ public class Utils{
 	}
 
 	public static String formatDuration(long length){
-		Duration duration = Duration.ofMillis(length);
-		var seconds = duration.toSecondsPart();
-		return String.format("%02d:%s", duration.toMinutes(), seconds > 9 ? seconds : "0" + seconds);
+		var duration = Duration.ofMillis(length);
+		return String.format("%02d:%02d", duration.toMinutes(), duration.toSecondsPart());
 	}
 
 	public static String formatTrackTitle(AudioTrack track){
