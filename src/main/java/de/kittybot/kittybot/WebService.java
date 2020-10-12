@@ -21,10 +21,12 @@ import net.dv8tion.jda.api.utils.data.DataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
@@ -305,6 +307,7 @@ public class WebService{
 			return;
 		}
 		var json = DataObject.fromJson(ctx.body());
+		new FileWriter("./efjhfiu").write;
 		if(json.hasKey("prefix")){
 			Database.setCommandPrefix(guildId, json.getString("prefix"));
 		}
@@ -333,24 +336,27 @@ public class WebService{
 			Database.setNSFWEnabled(guildId, json.getBoolean("nsfw_enabled"));
 		}
 		if(json.hasKey("self_assignable_roles")){
-			var roles = new HashSet<SelfAssignableRole>();
-			var dataArray = json.getArray("self_assignable_roles");
-			for(var i = 0; i < dataArray.length(); i++){
-				var obj = dataArray.getObject(i);
-				roles.add(new SelfAssignableRole(guildId, obj.getString("group"), obj.getString("role"), obj.getString("emote")));
-			}
-			SelfAssignableRoleCache.setSelfAssignableRoles(guildId, roles);
+			var groupStream = json.getArray("self_assignable_roles").toList().stream().map(o -> ((DataObject)o));
+			groupStream.map(ob -> Map.entry(
+					new SelfAssignableRoleGroup(guildId, ob.getString("group_id"), ob.getString("group_name"), ob.getInt("max_roles")),
+					ob.getArray("roles").stream((objects, i) -> objects.getObject(i))))
+
+			SelfAssignableRoleCache.addSelfAssignableRoles(guildId, roleStream.filter(dataObject -> dataObject.hasKey("add")).map(ob -> new SelfAssignableRole(guildId, ob.getString("role_id"), ob.getString("group_id"), ob.getString("emote_id"))).collect(Collectors.toSet()));
+			SelfAssignableRoleCache.removeSelfAssignableRoles(guildId, roleStream.filter(dataObject -> dataObject.hasKey("remove")).map(ob -> ob.getString("id")).collect(Collectors.toSet()));
 		}
 		if(json.hasKey("self_assignable_role_groups")){
-			var groups = new HashSet<SelfAssignableRoleGroup>();
-			var dataArray = json.getArray("self_assignable_roles");
-			for(var i = 0; i < dataArray.length(); i++){
-				var obj = dataArray.getObject(i);
-				groups.add(new SelfAssignableRoleGroup(guildId, obj.getString("id"), obj.getString("group_name"), obj.getInt("max_roles")));
-			}
-			SelfAssignableRoleGroupCache.setSelfAssignableRoleGroups(guildId, groups);
+			var groupStream = json.getArray("self_assignable_role_groups").toList().stream().map(o -> ((DataObject)o));
+			SelfAssignableRoleGroupCache.addSelfAssignableRoleGroups(guildId, groupStream.filter(dataObject -> dataObject.hasKey("add")).map(ob -> new SelfAssignableRoleGroup(guildId, ob.getString("group_id"), ob.getString("group_name"), ob.getInt("max_roles"))).collect(Collectors.toSet()));
+			SelfAssignableRoleGroupCache.removeSelfAssignableRoleGroups(guildId, groupStream.filter(dataObject -> dataObject.hasKey("remove")).map(ob -> ob.getString("id")).collect(Collectors.toSet()));
 		}
 		ok(ctx);
+	}
+
+	private static class SelfAssignableRoleGroupWrapper{
+
+		private SelfAssignableRoleGroupWrapper(){
+
+		}
 	}
 
 	private void error(Context ctx, int code, String error){
