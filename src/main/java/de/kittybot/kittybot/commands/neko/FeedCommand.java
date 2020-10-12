@@ -19,10 +19,10 @@ public class FeedCommand extends ACommand{
 	@Override
 	public void run(CommandContext ctx){
 		if(ctx.getArgs().length == 0){
-			sendUsage(ctx);
+			this.sendUsage(ctx);
 			return;
 		}
-		sendReactionImage(ctx, "feed", "feeds");
+		this.sendReactionImage(ctx, "feed", "feeds");
 	}
 
 }

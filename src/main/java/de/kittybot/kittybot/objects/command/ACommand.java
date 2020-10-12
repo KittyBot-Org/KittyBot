@@ -66,10 +66,10 @@ public abstract class ACommand{
 	protected abstract void run(CommandContext ctx);
 
 	protected boolean checkCmd(String cmd){
-		if(cmd.equalsIgnoreCase(command)){
+		if(cmd.equalsIgnoreCase(this.command)){
 			return true;
 		}
-		for(var a : aliases){
+		for(var a : this.aliases){
 			if(a.equalsIgnoreCase(cmd)){
 				return true;
 			}
@@ -78,23 +78,23 @@ public abstract class ACommand{
 	}
 
 	protected String[] getAliases(){
-		return aliases;
+		return this.aliases;
 	}
 
 	public String getCommand(){
-		return command;
+		return this.command;
 	}
 
 	public String getDescription(){
-		return description;
+		return this.description;
 	}
 
 	protected String getUsage(){
-		return usage;
+		return this.usage;
 	}
 
 	public Category getCategory(){
-		return category;
+		return this.category;
 	}
 
 	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
@@ -110,15 +110,15 @@ public abstract class ACommand{
 		privateMessage(ctx, eb).queue(null, failure -> sendError(ctx, "There was an error processing your command!\nError: " + failure.getLocalizedMessage()));
 	}
 
-	protected RestAction<Message> privateMessage(CommandContext ctx, EmbedBuilder eb){
+	protected static RestAction<Message> privateMessage(CommandContext ctx, EmbedBuilder eb){
 		return ctx.getUser().openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage(eb.setTimestamp(Instant.now()).build()));
 	}
 
-	protected void sendNoPermission(CommandContext ctx){
+	protected static void sendNoPermission(CommandContext ctx){
 		queue(noPermission(ctx), ctx);
 	}
 
-	protected MessageAction noPermission(CommandContext ctx){
+	protected static MessageAction noPermission(CommandContext ctx){
 		return error(ctx, "Sorry you don't have the permission to use this command :(");
 	}
 
@@ -126,20 +126,20 @@ public abstract class ACommand{
 		queue(answer(ctx, answer), ctx);
 	}
 
-	protected void sendAnswer(CommandContext ctx, EmbedBuilder embed){
+	protected static void sendAnswer(CommandContext ctx, EmbedBuilder embed){
 		queue(answer(ctx, embed), ctx);
 	}
 
-	protected MessageAction answer(CommandContext ctx, String answer){
+	protected static MessageAction answer(CommandContext ctx, String answer){
 		return answer(ctx, new EmbedBuilder().setDescription(answer));
 	}
 
-	protected MessageAction answer(CommandContext ctx, byte[] file, String fileName, EmbedBuilder embed){
+	protected static MessageAction answer(CommandContext ctx, byte[] file, String fileName, EmbedBuilder embed){
 		// add attachment://[the file name with extension] in embed
 		return answer(ctx, embed).addFile(file, fileName);
 	}
 
-	protected MessageAction answer(CommandContext ctx, EmbedBuilder answer){
+	protected static MessageAction answer(CommandContext ctx, EmbedBuilder answer){
 		addStatus(ctx.getMessage(), Status.OK);
 		if(ctx.getGuild().getSelfMember().hasPermission(ctx.getChannel(), Permission.MESSAGE_WRITE)){
 			return ctx.getChannel()
@@ -168,20 +168,20 @@ public abstract class ACommand{
 		message.addReaction(emote).queue(success -> message.getTextChannel().removeReactionById(message.getId(), emote).queueAfter(5, TimeUnit.SECONDS));
 	}
 
-	protected MessageAction answer(CommandContext ctx, InputStream file, String fileName, EmbedBuilder embed){
+	protected static MessageAction answer(CommandContext ctx, InputStream file, String fileName, EmbedBuilder embed){
 		// add attachment://[the file name with extension] in embed
 		return answer(ctx, embed).addFile(file, fileName);
 	}
 
 	protected void sendUsage(CommandContext ctx){
+		queue(usage(ctx, this.usage), ctx);
+	}
+
+	protected static void sendUsage(CommandContext ctx, String usage){
 		queue(usage(ctx, usage), ctx);
 	}
 
-	protected void sendUsage(CommandContext ctx, String usage){
-		queue(usage(ctx, usage), ctx);
-	}
-
-	protected MessageAction usage(CommandContext ctx, String usage){
+	protected static MessageAction usage(CommandContext ctx, String usage){
 		addStatus(ctx.getMessage(), Status.QUESTION);
 		return ctx.getChannel()
 				.sendMessage(new EmbedBuilder().setColor(Color.ORANGE)
@@ -192,7 +192,7 @@ public abstract class ACommand{
 	}
 
 	protected void sendReactionImage(CommandContext ctx, String type, String text){
-		queue(reactionImage(ctx, type, text), ctx);
+		queue(this.reactionImage(ctx, type, text), ctx);
 	}
 
 	protected MessageAction reactionImage(CommandContext ctx, String type, String text){
@@ -231,7 +231,7 @@ public abstract class ACommand{
 		return answer(ctx, new EmbedBuilder().setDescription(message).setImage(url));
 	}
 
-	protected String getNeko(String type){
+	protected static String getNeko(String type){
 		try{
 			var request = new Request.Builder().url("https://nekos.life/api/v2/img/" + type).build();
 			return DataObject.fromJson(KittyBot.getHttpClient().newCall(request).execute().body().string()).getString("url");
@@ -242,7 +242,7 @@ public abstract class ACommand{
 		return null;
 	}
 
-	protected MessageAction image(CommandContext ctx, String url){
+	protected static MessageAction image(CommandContext ctx, String url){
 		return answer(ctx, new EmbedBuilder().setImage(url).setColor(Color.GREEN));
 	}
 

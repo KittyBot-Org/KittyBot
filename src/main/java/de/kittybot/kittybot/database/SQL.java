@@ -2,6 +2,7 @@ package de.kittybot.kittybot.database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import de.kittybot.kittybot.database.jooq.Tables;
 import de.kittybot.kittybot.objects.Config;
 import org.apache.commons.io.IOUtils;
 import org.jooq.DSLContext;
@@ -16,13 +17,13 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import static de.kittybot.kittybot.database.jooq.Tables.GUILDS;
-
 public class SQL{
 
 	private static final Logger LOG = LoggerFactory.getLogger(SQL.class);
 
 	private static final HikariDataSource dataSource;
+
+	private SQL(){}
 
 	static{
 		var config = new HikariConfig();
@@ -47,10 +48,10 @@ public class SQL{
 			con.createStatement().execute(sql);
 		}
 		catch(IOException e){
-			LOG.error("Error while reading sql table file: " + table, e);
+			LOG.error("Error while reading sql table file: {}", table, e);
 		}
 		catch(SQLException e){
-			LOG.error("Error while creating new table: " + table, e);
+			LOG.error("Error while creating new table: {}", table, e);
 		}
 	}
 
@@ -64,13 +65,13 @@ public class SQL{
 
 	public static <T> T getProperty(String guildId, Field<T> field){
 		try(var con = getCon(); var ctx = getCtx(con)){
-			var res = ctx.select(field).from(GUILDS).where(GUILDS.GUILD_ID.eq(guildId)).fetchOne();
+			var res = ctx.select(field).from(Tables.GUILDS).where(Tables.GUILDS.GUILD_ID.eq(guildId)).fetchOne();
 			if(res != null){
 				return res.getValue(field);
 			}
 		}
 		catch(SQLException e){
-			LOG.error("Error while getting key " + field.getName() + " from guild " + guildId, e);
+			LOG.error("Error while getting key {} from guild {}", field.getName(), guildId, e);
 		}
 		return null;
 	}
@@ -81,10 +82,10 @@ public class SQL{
 
 	public static <T> void setProperty(String guildId, Field<T> field, T value){
 		try(var con = getCon(); var ctx = getCtx(con)){
-			ctx.update(GUILDS).set(field, value).where(GUILDS.GUILD_ID.eq(guildId)).execute();
+			ctx.update(Tables.GUILDS).set(field, value).where(Tables.GUILDS.GUILD_ID.eq(guildId)).execute();
 		}
 		catch(SQLException e){
-			LOG.error("Error while setting key " + field.getName() + " from guild " + guildId, e);
+			LOG.error("Error while setting key {} from guild {}", field.getName(), guildId, e);
 		}
 	}
 

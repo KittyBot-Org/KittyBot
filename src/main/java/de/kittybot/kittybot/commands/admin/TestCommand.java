@@ -18,7 +18,7 @@ public class TestCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		sendAnswer(ctx, "Test command working!");
+		this.sendAnswer(ctx, "Test command working!");
 	}
 
 }

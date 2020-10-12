@@ -13,15 +13,15 @@ public class GuildData{
 	}
 
 	public String getId(){
-		return id;
+		return this.id;
 	}
 
 	public String getName(){
-		return name;
+		return this.name;
 	}
 
 	public String getIconUrl(){
-		return iconUrl;
+		return this.iconUrl;
 	}
 
 }

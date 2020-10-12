@@ -19,10 +19,10 @@ public class PatCommand extends ACommand{
 	@Override
 	public void run(CommandContext ctx){
 		if(ctx.getArgs().length == 0){
-			sendUsage(ctx);
+			this.sendUsage(ctx);
 			return;
 		}
-		sendReactionImage(ctx, "pat", "pats");
+		this.sendReactionImage(ctx, "pat", "pats");
 	}
 
 }

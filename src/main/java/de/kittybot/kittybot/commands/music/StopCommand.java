@@ -24,7 +24,7 @@ public class StopCommand extends ACommand{
 			return;
 		}
 		MusicPlayerCache.destroyMusicPlayer(ctx.getGuild());
-		sendAnswer(ctx, "Successfully disconnected");
+		this.sendAnswer(ctx, "Successfully disconnected");
 	}
 
 }

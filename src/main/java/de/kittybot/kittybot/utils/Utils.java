@@ -70,7 +70,7 @@ public class Utils{
 	}
 
 	public static String pluralize(String text, int count){
-		return count != 1 ? text + "s" : text;
+		return count == 1 ? text : text + "s";
 	}
 
 	public static int getUserCount(JDA jda){
