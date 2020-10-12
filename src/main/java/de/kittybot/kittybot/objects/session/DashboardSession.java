@@ -24,11 +24,11 @@ public class DashboardSession implements Session{
 	}
 
 	public String getSessionKey(){
-		return sessionKey;
+		return this.sessionKey;
 	}
 
 	public String getUserId(){
-		return userId;
+		return this.userId;
 	}
 
 	public void setUserId(String userId){
@@ -37,27 +37,27 @@ public class DashboardSession implements Session{
 
 	@Override
 	public String getAccessToken(){
-		return accessToken;
+		return this.accessToken;
 	}
 
 	@Override
 	public String getRefreshToken(){
-		return refreshToken;
+		return this.refreshToken;
 	}
 
 	@Override
 	public Scope[] getScopes(){
-		return scopes;
+		return this.scopes;
 	}
 
 	@Override
 	public String getTokenType(){
-		return tokenType;
+		return this.tokenType;
 	}
 
 	@Override
 	public OffsetDateTime getExpiration(){
-		return expiration;
+		return this.expiration;
 	}
 
 }

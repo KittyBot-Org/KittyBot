@@ -19,10 +19,10 @@ public class KissCommand extends ACommand{
 	@Override
 	public void run(CommandContext ctx){
 		if(ctx.getArgs().length == 0){
-			sendUsage(ctx);
+			this.sendUsage(ctx);
 			return;
 		}
-		sendReactionImage(ctx, "kiss", "kisses");
+		this.sendReactionImage(ctx, "kiss", "kisses");
 	}
 
 }

@@ -23,10 +23,10 @@ public class SpankCommand extends ACommand{
 			return;
 		}
 		if(ctx.getArgs().length == 0){
-			sendUsage(ctx);
+			this.sendUsage(ctx);
 			return;
 		}
-		sendReactionImage(ctx, "spank", "spanks");
+		this.sendReactionImage(ctx, "spank", "spanks");
 	}
 
 }

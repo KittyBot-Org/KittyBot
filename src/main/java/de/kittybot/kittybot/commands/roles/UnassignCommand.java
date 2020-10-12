@@ -43,7 +43,7 @@ public class UnassignCommand extends ACommand{
 			return;
 		}
 		ctx.getGuild().removeRoleFromMember(ctx.getMember(), role).reason("self-unassigned with message: " + ctx.getMessage().getId()).queue();
-		sendAnswer(ctx, "Unassigned role `" + roleName + "` from you");
+		this.sendAnswer(ctx, "Unassigned role `" + roleName + "` from you");
 	}
 
 }

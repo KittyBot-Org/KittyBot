@@ -19,7 +19,7 @@ public class DogCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		image(ctx, getNeko("woof")).queue(message -> message.addReaction(Emojis.DOG).queue());
+		ACommand.image(ctx, ACommand.getNeko("woof")).queue(message -> message.addReaction(Emojis.DOG).queue());
 	}
 
 }

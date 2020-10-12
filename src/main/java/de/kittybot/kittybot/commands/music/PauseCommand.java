@@ -36,7 +36,7 @@ public class PauseCommand extends ACommand{
 		}
 		var paused = !player.isPaused();
 		player.setPaused(paused);
-		sendAnswer(ctx, "Track " + (paused ? "paused" : "resumed"));
+		this.sendAnswer(ctx, "Track " + (paused ? "paused" : "resumed"));
 	}
 
 }

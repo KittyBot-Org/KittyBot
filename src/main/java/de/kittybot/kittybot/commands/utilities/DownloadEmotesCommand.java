@@ -23,21 +23,20 @@ public class DownloadEmotesCommand extends ACommand{
 	@Override
 	public void run(CommandContext ctx){
 		List<Emote> emotes = ctx.getMessage().getEmotes();
-		if(!emotes.isEmpty()){
-			StringBuilder links = new StringBuilder();
-			for(Emote emote : emotes){
-				String link = emote.getImageUrl();
-				if(links.length() + (" -O " + link).length() > Message.MAX_CONTENT_LENGTH - 20){
-					sendAnswer(ctx, "Command: \ncurl" + links.toString());
-					links = new StringBuilder();
-				}
-				links.append(" -O ").append(link);
+		if(emotes.isEmpty()){
+			this.sendUsage(ctx);
+			return;
+		}
+		StringBuilder links = new StringBuilder();
+		for(Emote emote : emotes){
+			String link = emote.getImageUrl();
+			if(links.length() + (" -O " + link).length() > Message.MAX_CONTENT_LENGTH - 20){
+				this.sendAnswer(ctx, "Command: \ncurl" + links);
+				links = new StringBuilder();
 			}
-			sendAnswer(ctx, "Command: \ncurl" + links.toString());
+			links.append(" -O ").append(link);
 		}
-		else{
-			sendUsage(ctx);
-		}
+		this.sendAnswer(ctx, "Command: \ncurl" + links);
 	}
 
 }

@@ -14,6 +14,7 @@ import de.kittybot.kittybot.objects.command.CommandManager;
 import de.kittybot.kittybot.objects.guilds.GuildData;
 import de.kittybot.kittybot.objects.session.DashboardSessionController;
 import io.javalin.Javalin;
+import io.javalin.apibuilder.ApiBuilder;
 import io.javalin.http.Context;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.utils.data.DataArray;
@@ -25,13 +26,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
-import static io.javalin.apibuilder.ApiBuilder.*;
-
 public class WebService{
 
 	private static final Logger LOG = LoggerFactory.getLogger(WebService.class);
 
-	private static final Scope[] SCOPES = new Scope[]{Scope.IDENTIFY, Scope.GUILDS};
+	private static final Scope[] SCOPES = {Scope.IDENTIFY, Scope.GUILDS};
 	private static final OAuth2Client O_AUTH_2_CLIENT = new OAuth2Client.Builder()
 			.setClientId(Long.parseLong(Config.BOT_ID))
 			.setClientSecret(Config.BOT_SECRET)
@@ -41,26 +40,26 @@ public class WebService{
 
 	public WebService(int port){
 		Javalin.create(config -> config.enableCorsForOrigin(Config.ORIGIN_URL)).routes(() -> {
-			get("/discord_login", this::discordLogin);
-			get("/health_check", ctx -> ctx.result("alive"));
-			get("/commands/get", this::getCommands);
-			post("/login", this::login);
-			post("/logout", this::logout);
-			path("/user", () -> {
-				before("/*", this::checkDiscordLogin);
-				get("/me", this::getUserInfo);
+			ApiBuilder.get("/discord_login", WebService::discordLogin);
+			ApiBuilder.get("/health_check", ctx -> ctx.result("alive"));
+			ApiBuilder.get("/commands/get", WebService::getCommands);
+			ApiBuilder.post("/login", WebService::login);
+			ApiBuilder.post("/logout", WebService::logout);
+			ApiBuilder.path("/user", () -> {
+				ApiBuilder.before("/*", WebService::checkDiscordLogin);
+				ApiBuilder.get("/me", WebService::getUserInfo);
 			});
-			path("/guilds", () -> {
-				before("/*", this::checkDiscordLogin);
-				get("/all", this::getAllGuilds);
-				path("/:guildId", () -> {
-					before("/*", this::checkGuildPerms);
-					get("/roles/get", this::getRoles);
-					get("/channels/get", this::getChannels);
-					get("/emotes/get", this::getEmotes);
-					path("/settings", () -> {
-						get("/get", this::getGuildSettings);
-						post("/set", this::setGuildSettings);
+			ApiBuilder.path("/guilds", () -> {
+				ApiBuilder.before("/*", WebService::checkDiscordLogin);
+				ApiBuilder.get("/all", WebService::getAllGuilds);
+				ApiBuilder.path("/:guildId", () -> {
+					ApiBuilder.before("/*", WebService::checkGuildPerms);
+					ApiBuilder.get("/roles/get", WebService::getRoles);
+					ApiBuilder.get("/channels/get", WebService::getChannels);
+					ApiBuilder.get("/emotes/get", WebService::getEmotes);
+					ApiBuilder.path("/settings", () -> {
+						ApiBuilder.get("/get", WebService::getGuildSettings);
+						ApiBuilder.post("/set", WebService::setGuildSettings);
 					});
 				});
 			});
@@ -75,7 +74,7 @@ public class WebService{
 		return SCOPES;
 	}
 
-	private void discordLogin(Context ctx){
+	private static void discordLogin(Context ctx){
 		var key = ctx.header("Authorization");
 		if(key == null || !DashboardSessionCache.sessionExists(key)){
 			ctx.redirect(O_AUTH_2_CLIENT.generateAuthorizationURL(Config.REDIRECT_URL, SCOPES));
@@ -85,7 +84,7 @@ public class WebService{
 		}
 	}
 
-	private void login(Context ctx){
+	private static void login(Context ctx){
 		var json = DataObject.fromJson(ctx.body());
 		var code = json.getString("code", null);
 		var state = json.getString("state", null);
@@ -107,14 +106,14 @@ public class WebService{
 		}
 	}
 
-	private void logout(Context ctx){
+	private static void logout(Context ctx){
 		var auth = ctx.header("Authorization");
 		if(auth != null){
 			DashboardSessionCache.deleteSession(auth);
 		}
 	}
 
-	private void checkDiscordLogin(Context ctx){
+	private static void checkDiscordLogin(Context ctx){
 		if(!ctx.method().equals("OPTIONS")){
 			var key = ctx.header("Authorization");
 			if(key == null || !DashboardSessionCache.sessionExists(key)){
@@ -123,7 +122,7 @@ public class WebService{
 		}
 	}
 
-	private void getUserInfo(Context ctx){
+	private static void getUserInfo(Context ctx){
 		var auth = ctx.header("Authorization");
 		var session = DashboardSessionCache.getSession(auth);
 		if(session == null){
@@ -150,7 +149,7 @@ public class WebService{
 		ok(ctx, DataObject.empty().put("name", user.getName()).put("id", userId).put("icon", user.getEffectiveAvatarUrl()).put("guilds", guildData));
 	}
 
-	private void getAllGuilds(Context ctx){
+	private static void getAllGuilds(Context ctx){
 		var auth = ctx.header("Authorization");
 		var session = DashboardSessionCache.getSession(auth);
 		if(session == null){
@@ -173,7 +172,7 @@ public class WebService{
 		ok(ctx, DataObject.empty().put("guilds", data));
 	}
 
-	private void checkGuildPerms(Context ctx){
+	private static void checkGuildPerms(Context ctx){
 		if(!ctx.method().equals("OPTIONS")){
 			var guildId = ctx.pathParam(":guildId");
 			var guild = KittyBot.getJda().getGuildById(guildId);
@@ -205,14 +204,14 @@ public class WebService{
 		}
 	}
 
-	private void getCommands(Context ctx){
+	private static void getCommands(Context ctx){
 		var commandSet = CommandManager.getDistinctCommands().entrySet();
 		var data = DataArray.empty();
 		for(var cat : Category.values()){
 			var commands = DataArray.empty();
 			for(var cmd : commandSet){
 				var command = cmd.getValue();
-				if(cat.equals(command.getCategory())){
+				if(cat == command.getCategory()){
 					commands.add(DataObject.empty().put("command", command.getCommand()).put("description", command.getDescription()));
 				}
 			}
@@ -222,7 +221,7 @@ public class WebService{
 		ok(ctx, DataObject.empty().put("prefix", Config.DEFAULT_PREFIX).put("categories", data));
 	}
 
-	private void getRoles(Context ctx){
+	private static void getRoles(Context ctx){
 		var guild = KittyBot.getJda().getGuildById(ctx.pathParam(":guildId"));
 		if(guild == null){
 			error(ctx, 404, "guild not found");
@@ -239,7 +238,7 @@ public class WebService{
 		ok(ctx, DataObject.empty().put("roles", data));
 	}
 
-	private void getChannels(Context ctx){
+	private static void getChannels(Context ctx){
 		var guild = KittyBot.getJda().getGuildById(ctx.pathParam(":guildId"));
 		if(guild == null){
 			error(ctx, 404, "guild not found");
@@ -252,7 +251,7 @@ public class WebService{
 		ok(ctx, DataObject.empty().put("channels", data));
 	}
 
-	private void getEmotes(Context ctx){
+	private static void getEmotes(Context ctx){
 		var guild = KittyBot.getJda().getGuildById(ctx.pathParam(":guildId"));
 		if(guild == null){
 			error(ctx, 404, "guild not found");
@@ -265,7 +264,7 @@ public class WebService{
 		ok(ctx, DataObject.empty().put("emotes", data));
 	}
 
-	private void getGuildSettings(Context ctx){
+	private static void getGuildSettings(Context ctx){
 		var guildId = ctx.pathParam(":guildId");
 		var roles = SelfAssignableRoleCache.getSelfAssignableRoles(guildId);
 		if(roles == null || KittyBot.getJda().getGuildById(guildId) == null){
@@ -289,7 +288,7 @@ public class WebService{
 				.put("self_assignable_roles", data));
 	}
 
-	private void setGuildSettings(Context ctx){
+	private static void setGuildSettings(Context ctx){
 		var guildId = ctx.pathParam(":guildId");
 		if(KittyBot.getJda().getGuildById(guildId) == null){
 			error(ctx, 404, "guild not found");
@@ -335,19 +334,19 @@ public class WebService{
 		ok(ctx);
 	}
 
-	private void error(Context ctx, int code, String error){
+	private static void error(Context ctx, int code, String error){
 		result(ctx, code, DataObject.empty().put("error", error));
 	}
 
-	private void ok(Context ctx){
+	private static void ok(Context ctx){
 		result(ctx, 200, DataObject.empty().put("status", 200));
 	}
 
-	private void ok(Context ctx, DataObject data){
+	private static void ok(Context ctx, DataObject data){
 		result(ctx, 200, data);
 	}
 
-	private void result(Context ctx, int code, DataObject data){
+	private static void result(Context ctx, int code, DataObject data){
 		ctx.header("Content-Type", "application/json");
 		ctx.status(code);
 		ctx.result(data.toString());

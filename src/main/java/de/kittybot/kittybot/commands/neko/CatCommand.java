@@ -19,7 +19,7 @@ public class CatCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		image(ctx, getNeko("meow")).queue(message -> message.addReaction(Emojis.CAT).queue());
+		ACommand.image(ctx, ACommand.getNeko("meow")).queue(message -> message.addReaction(Emojis.CAT).queue());
 	}
 
 }

@@ -20,7 +20,7 @@ public class DashboardCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		sendAnswer(ctx, "You can find our dashboard " + MessageUtils.maskLink("here", Config.ORIGIN_URL));
+		this.sendAnswer(ctx, "You can find our dashboard " + MessageUtils.maskLink("here", Config.ORIGIN_URL));
 	}
 
 }

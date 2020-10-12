@@ -11,22 +11,24 @@ public class Emojis{
 	public static final String DISCORD = "<:discord:702991398840041505>";
 
 	// EMOJIS
-	public static final String ARROW_LEFT = "\u2B05\uFE0F";
-	public static final String ARROW_RIGHT = "\u27A1\uFE0F";
+	public static final String ARROW_LEFT = "⬅️";
+	public static final String ARROW_RIGHT = "➡️";
 
-	public static final String BACK = "\u25C0";
-	public static final String FORWARD = "\u25B6";
+	public static final String BACK = "◀";
+	public static final String FORWARD = "▶";
 
-	public static final String WASTEBASKET = "\uD83D\uDDD1\uFE0F";
+	public static final String WASTEBASKET = "\uD83D\uDDD1️";
 	public static final String SHUFFLE = "\uD83D\uDD00";
 	public static final String VOLUME_DOWN = "\uD83D\uDD09";
 	public static final String VOLUME_UP = "\uD83D\uDD0A";
 
-	public static final String X = "\u274C";
-	public static final String QUESTION = "\u2753";
-	public static final String CHECK = "\u2705";
+	public static final String X = "❌";
+	public static final String QUESTION = "❓";
+	public static final String CHECK = "✅";
 
 	public static final String CAT = "\uD83D\uDC31";
 	public static final String DOG = "\uD83D\uDC36";
+
+	private Emojis(){}
 
 }

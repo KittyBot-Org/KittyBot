@@ -19,18 +19,18 @@ public enum Category{
 	}
 
 	public String getEmote(){
-		return "<:bla:" + emoteId + ">";
+		return "<:bla:" + this.emoteId + ">";
 	}
 
 	public String getEmoteUrl(){
-		return "https://cdn.discordapp.com/emojis/" + emoteId + ".png";
+		return "https://cdn.discordapp.com/emojis/" + this.emoteId + ".png";
 	}
 
 	public String getFriendlyName(){
-		return friendlyName;
+		return this.friendlyName;
 	}
 
 	public String getUrl(){
-		return Config.ORIGIN_URL + "/commands#" + friendlyName.toLowerCase();
+		return Config.ORIGIN_URL + "/commands#" + this.friendlyName.toLowerCase();
 	}
 }

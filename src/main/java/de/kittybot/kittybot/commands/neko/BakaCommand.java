@@ -19,10 +19,10 @@ public class BakaCommand extends ACommand{
 	@Override
 	public void run(CommandContext ctx){
 		if(ctx.getArgs().length == 0){
-			sendUsage(ctx);
+			this.sendUsage(ctx);
 			return;
 		}
-		sendReactionImage(ctx, "baka", "said baka to");
+		this.sendReactionImage(ctx, "baka", "said baka to");
 	}
 
 }
