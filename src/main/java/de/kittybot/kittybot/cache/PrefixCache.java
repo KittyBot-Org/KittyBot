@@ -10,6 +10,8 @@ public class PrefixCache{
 
 	private static final Map<String, String> GUILD_PREFIXES = new HashMap<>();
 
+	private PrefixCache(){}
+
 	public static String getCommandPrefix(String guildId){
 		return GUILD_PREFIXES.computeIfAbsent(guildId, k -> Database.getCommandPrefix(guildId));
 	}
