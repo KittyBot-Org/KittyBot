@@ -11,6 +11,8 @@ public class SelfAssignableRoleCache{
 
 	private static final Map<String, Map<String, String>> SELF_ASSIGNABLE_ROLES = new HashMap<>();
 
+	private SelfAssignableRoleCache(){}
+
 	public static void setSelfAssignableRoles(String guildId, Map<String, String> selfAssignableRoles){
 		Database.setSelfAssignableRoles(guildId, selfAssignableRoles);
 		SELF_ASSIGNABLE_ROLES.put(guildId, selfAssignableRoles);

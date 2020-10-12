@@ -15,6 +15,8 @@ public class InviteCache{
 	private static final Map<String, Map<String, InviteData>> INVITES = new HashMap<>();
 	private static final Logger LOG = LoggerFactory.getLogger(InviteCache.class);
 
+	private InviteCache(){}
+
 	public static Invite getUsedInvite(Guild guild){
 		if(!guild.getSelfMember().hasPermission(Permission.MANAGE_SERVER)){
 			return null;
