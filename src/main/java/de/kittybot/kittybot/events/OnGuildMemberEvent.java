@@ -11,8 +11,10 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateBoostTimeEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -90,6 +92,15 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 				}
 			}
 		}
+	}
+
+	@Override
+	public void onGuildMemberRoleAdd(@NotNull final GuildMemberRoleAddEvent event){
+		final var userId = event.getUser().getId();
+		if(GuildCache.isGuildCachedForUser(event.getGuild().getId(), userId)){
+			return;
+		} // TODO finish
+
 	}
 
 	private String generateBoostMessage(String message, User user){
