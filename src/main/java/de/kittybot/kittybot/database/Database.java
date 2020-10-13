@@ -153,8 +153,40 @@ public class Database{
 		SQL.setProperty(guildId, Tables.GUILDS.COMMAND_PREFIX, prefix);
 	}
 
-	public static String getCommandPrefix(String guildId){
-		return SQL.getProperty(guildId, Tables.GUILDS.COMMAND_PREFIX);
+	public static void setAnnouncementChannelId(String guildId, String channelId){
+		SQL.setProperty(guildId, Tables.GUILDS.ANNOUNCEMENT_CHANNEL_ID, channelId);
+	}
+
+	public static void setJoinMessage(String guildId, String message){
+		SQL.setProperty(guildId, Tables.GUILDS.JOIN_MESSAGES, message);
+	}
+
+	public static void setJoinMessageEnabled(String guildId, boolean enabled){
+		SQL.setProperty(guildId, Tables.GUILDS.JOIN_MESSAGES_ENABLED, enabled);
+	}
+
+	public static void setLeaveMessage(String guildId, String message){
+		SQL.setProperty(guildId, Tables.GUILDS.LEAVE_MESSAGES, message);
+	}
+
+	public static void setLeaveMessageEnabled(String guildId, boolean enabled){
+		SQL.setProperty(guildId, Tables.GUILDS.LEAVE_MESSAGES_ENABLED, enabled);
+	}
+
+	public static String getBoostMessage(String guildId){
+		return SQL.getProperty(guildId, Tables.GUILDS.BOOST_MESSAGES);
+	}
+
+	public static void setBoostMessage(String guildId, String message){
+		SQL.setProperty(guildId, Tables.GUILDS.BOOST_MESSAGES, message);
+	}
+
+	public static void setBoostMessageEnabled(String guildId, boolean enabled){
+		SQL.setProperty(guildId, Tables.GUILDS.BOOST_MESSAGES_ENABLED, enabled);
+	}
+
+	public static void setNSFWEnabled(String guildId, boolean enabled){
+		SQL.setProperty(guildId, Tables.GUILDS.NSFW_ENABLED, enabled);
 	}
 
 	public static void setSelfAssignableRoles(String guildId, Map<String, String> newRoles){
@@ -214,70 +246,6 @@ public class Database{
 			LOG.error("Error while getting self-assignable roles from guild {}", guildId, e);
 		}
 		return null;
-	}
-
-	public static String getAnnouncementChannelId(String guildId){
-		return SQL.getProperty(guildId, Tables.GUILDS.ANNOUNCEMENT_CHANNEL_ID);
-	}
-
-	public static void setAnnouncementChannelId(String guildId, String channelId){
-		SQL.setProperty(guildId, Tables.GUILDS.ANNOUNCEMENT_CHANNEL_ID, channelId);
-	}
-
-	public static String getJoinMessage(String guildId){
-		return SQL.getProperty(guildId, Tables.GUILDS.JOIN_MESSAGES);
-	}
-
-	public static void setJoinMessage(String guildId, String message){
-		SQL.setProperty(guildId, Tables.GUILDS.JOIN_MESSAGES, message);
-	}
-
-	public static Boolean getJoinMessageEnabled(String guildId){
-		return SQL.getProperty(guildId, Tables.GUILDS.JOIN_MESSAGES_ENABLED);
-	}
-
-	public static void setJoinMessageEnabled(String guildId, boolean enabled){
-		SQL.setProperty(guildId, Tables.GUILDS.JOIN_MESSAGES_ENABLED, enabled);
-	}
-
-	public static String getLeaveMessage(String guildId){
-		return SQL.getProperty(guildId, Tables.GUILDS.LEAVE_MESSAGES);
-	}
-
-	public static void setLeaveMessage(String guildId, String message){
-		SQL.setProperty(guildId, Tables.GUILDS.LEAVE_MESSAGES, message);
-	}
-
-	public static Boolean getLeaveMessageEnabled(String guildId){
-		return SQL.getProperty(guildId, Tables.GUILDS.LEAVE_MESSAGES_ENABLED);
-	}
-
-	public static void setLeaveMessageEnabled(String guildId, boolean enabled){
-		SQL.setProperty(guildId, Tables.GUILDS.LEAVE_MESSAGES_ENABLED, enabled);
-	}
-
-	public static String getBoostMessage(String guildId){
-		return SQL.getProperty(guildId, Tables.GUILDS.BOOST_MESSAGES);
-	}
-
-	public static void setBoostMessage(String guildId, String message){
-		SQL.setProperty(guildId, Tables.GUILDS.BOOST_MESSAGES, message);
-	}
-
-	public static Boolean getBoostMessageEnabled(String guildId){
-		return SQL.getProperty(guildId, Tables.GUILDS.BOOST_MESSAGES_ENABLED);
-	}
-
-	public static void setBoostMessageEnabled(String guildId, boolean enabled){
-		SQL.setProperty(guildId, Tables.GUILDS.BOOST_MESSAGES_ENABLED, enabled);
-	}
-
-	public static Boolean getNSFWEnabled(String guildId){
-		return SQL.getProperty(guildId, Tables.GUILDS.NSFW_ENABLED);
-	}
-
-	public static void setNSFWEnabled(String guildId, boolean enabled){
-		SQL.setProperty(guildId, Tables.GUILDS.NSFW_ENABLED, enabled);
 	}
 
 	public static ReactiveMessage getReactiveMessage(String guildId, String messageId){
