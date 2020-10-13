@@ -105,17 +105,25 @@ public class OnGuildEvent extends ListenerAdapter{
 		if(!add && !remove){
 			return;
 		}
-		event.getGuild().findMembers(member -> member.getRoles().contains(event.getRole()) && DashboardSessionCache.hasSession(member.getId()))
-				.onSuccess(members -> members.forEach(member -> {
-					var userId = member.getId();
-					var guildId = event.getGuild().getId();
-					if(add){
-						GuildCache.cacheGuildForUser(userId, guildId);
-					}
-					else{
-						GuildCache.uncacheGuildForUser(userId, guildId);
-					}
-				}));
+		final var guild = event.getGuild();
+		final var guildId = guild.getId();
+		guild.findMembers(member -> {
+			final var userId = member.getId();
+			final var hasRole = member.getRoles().contains(event.getRole());
+			if(add){
+				return !GuildCache.isGuildCachedForUser(guildId, userId) && DashboardSessionCache.hasSession(userId) && hasRole;
+			}
+			return DashboardSessionCache.hasSession(userId) && hasRole;
+		})
+			.onSuccess(members -> members.forEach(member ->{
+				final var userId = member.getId();
+				if(add){
+					GuildCache.cacheGuildForUser(userId, guildId);
+				}
+				else{
+					GuildCache.uncacheGuildForUser(userId, guildId);
+				}
+			}));
 	}
 
 }
