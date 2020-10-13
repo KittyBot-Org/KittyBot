@@ -108,7 +108,6 @@ public class Database{
 	} */
 
 	public static GuildSettings getGuildSettings(String guildId){
-		var query = "SELECT * FROM guilds WHERE guild_id = ?";
 		try(var con = SQL.getCon(); var ctx = SQL.getCtx(con)){
 			var res = ctx.selectFrom(Tables.GUILDS).where(Tables.GUILDS.GUILD_ID.eq(guildId)).fetchOne();
 			if(res == null){
