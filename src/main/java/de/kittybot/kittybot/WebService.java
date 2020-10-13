@@ -284,7 +284,7 @@ public class WebService{
 				.put("join_messages", settings.getJoinMessage())
 				.put("leave_messages_enabled", settings.areLeaveMessagesEnabled())
 				.put("leave_messages", settings.getLeaveMessage())
-				.put("boost_messages_enabled", Database.getBoostMessageEnabled(guildId))
+				.put("boost_messages_enabled", settings.areBoostMessagesEnabled())
 				.put("boost_messages", settings.getBoostMessage())
 				.put("announcement_channel_id", settings.getAnnouncementChannelId())
 				.put("nsfw_enabled", settings.isNSFWEnabled())
@@ -313,21 +313,26 @@ public class WebService{
 		if(json.hasKey("leave_messages")){
 			GuildSettingsCache.setLeaveMessage(guildId, json.getString("leave_messages"));
 		}
-
 		if(json.hasKey("boost_messages_enabled")){
 			GuildSettingsCache.setBoostMessagesEnabled(guildId, json.getBoolean("boost_messages_enabled"));
 		}
-
 		if(json.hasKey("boost_messages")){
 			GuildSettingsCache.setBoostMessage(guildId, json.getString("boost_messages"));
 		}
-
 		if(json.hasKey("announcement_channel_id")){
 			GuildSettingsCache.setAnnouncementChannelId(guildId, json.getString("announcement_channel_id"));
 		}
-
 		if(json.hasKey("nsfw_enabled")){
 			GuildSettingsCache.setNSFWEnabled(guildId, json.getBoolean("nsfw_enabled"));
+		}
+		if(json.hasKey("self_assignable_roles")){
+			var roles = new HashMap<String, String>();
+			var dataArray = json.getArray("self_assignable_roles");
+			for(var i = 0; i < dataArray.length(); i++){
+				var obj = dataArray.getObject(i);
+				roles.put(obj.getString("role"), obj.getString("emote"));
+			}
+			SelfAssignableRoleCache.setSelfAssignableRoles(guildId, roles);
 		}
 		ok(ctx);
 	}
