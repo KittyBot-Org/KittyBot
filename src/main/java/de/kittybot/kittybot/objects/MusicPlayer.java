@@ -7,7 +7,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import de.kittybot.kittybot.KittyBot;
 import de.kittybot.kittybot.cache.MusicPlayerCache;
-import de.kittybot.kittybot.cache.PrefixCache;
+import de.kittybot.kittybot.cache.GuildSettingsCache;
 import de.kittybot.kittybot.cache.ReactiveMessageCache;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.CommandContext;
@@ -149,7 +149,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	private void sendQueuedTracks(ACommand command, CommandContext ctx, List<AudioTrack> tracks){
 		var message = new StringBuilder("Queued **").append(tracks.size()).append("** ").append(pluralize("track", tracks)).append(".");
-		message.append("\n\nTo see the current queue, type `").append(PrefixCache.getCommandPrefix(ctx.getGuild().getId())).append("queue`.");
+		message.append("\n\nTo see the current queue, type `").append(GuildSettingsCache.getCommandPrefix(ctx.getGuild().getId())).append("queue`.");
 		command.sendAnswer(ctx, message.toString());
 	}
 

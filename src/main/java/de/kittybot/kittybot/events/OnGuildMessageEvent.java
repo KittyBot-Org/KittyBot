@@ -1,10 +1,12 @@
 package de.kittybot.kittybot.events;
 
 import de.kittybot.kittybot.cache.CommandResponseCache;
+import de.kittybot.kittybot.cache.GuildSettingsCache;
 import de.kittybot.kittybot.cache.MessageCache;
 import de.kittybot.kittybot.cache.ReactiveMessageCache;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.Emojis;
+import de.kittybot.kittybot.objects.GuildSettings;
 import de.kittybot.kittybot.objects.ReactiveMessage;
 import de.kittybot.kittybot.objects.command.CommandManager;
 import de.kittybot.kittybot.objects.messages.MessageData;
@@ -33,14 +35,13 @@ public class OnGuildMessageEvent extends ListenerAdapter{
 		if(!CommandManager.checkCommands(event)){
 			if(event.getMessage().getMentionedUsers().size() == 1 && event.getMessage().getMentionedUsers().get(0).getId().equals(event.getJDA().getSelfUser().getId())){
 				event.getMessage().addReaction(Emojis.QUESTION).queue();
+				var prefix = GuildSettingsCache.getCommandPrefix(event.getGuild().getId());
 				event.getChannel()
 						.sendMessage(new EmbedBuilder().setColor(Color.ORANGE)
 								.setTitle("Do you need help?")
-								.setDescription("My current prefix for this guild is `" + Database.getCommandPrefix(event.getGuild()
-										.getId()) + "`\n" + "If you don't like my prefix you can ping me directly!\n" + "To have a look at all my commands use `" + Database
-										.getCommandPrefix(event.getGuild()
-												.getId()) + "cmds`\n" + "To get help use `" + Database.getCommandPrefix(event.getGuild()
-										.getId()) + "help`")
+								.setDescription("My current prefix for this guild is `" + prefix + "`\n"
+										+ "If you don't like my prefix you can ping me directly!\n" + "To have a look at all my commands use `" + prefix
+										+ "cmds`\n" + "To get help use `" + prefix + "help`")
 								.setThumbnail(event.getJDA().getSelfUser().getAvatarUrl())
 								.setFooter(event.getMember() == null ? event.getAuthor().getName() : event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
 								.setTimestamp(Instant.now())

@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.commands.info;
 
-import de.kittybot.kittybot.cache.PrefixCache;
+import de.kittybot.kittybot.cache.GuildSettingsCache;
 import de.kittybot.kittybot.objects.Emojis;
 import de.kittybot.kittybot.objects.TitleInfo;
 import de.kittybot.kittybot.objects.command.ACommand;
@@ -51,7 +51,7 @@ public class CommandsCommand extends ACommand{
 		final var titles = new HashMap<Integer, TitleInfo>();
 		final var contents = new HashMap<Integer, ArrayList<MessageEmbed.Field>>();
 
-		final var prefix = PrefixCache.getCommandPrefix(ctx.getGuild().getId());
+		final var prefix = GuildSettingsCache.getCommandPrefix(ctx.getGuild().getId());
 		final var commands = CommandManager.getDistinctCommands().values();
 		final var categories = Category.values();
 		var c = 0;

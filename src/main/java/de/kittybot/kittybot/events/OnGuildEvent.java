@@ -74,7 +74,7 @@ public class OnGuildEvent extends ListenerAdapter{
 		var guild = event.getGuild();
 		BotLists.update(guildCount);
 		InviteCache.pruneCache(guild);
-		PrefixCache.pruneCache(guild);
+		GuildSettingsCache.pruneCache(guild);
 		MusicPlayerCache.pruneCache(guild);
 		ReactiveMessageCache.pruneCache(guild);
 		CommandResponseCache.pruneCache(guild);
