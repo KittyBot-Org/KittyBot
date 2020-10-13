@@ -33,7 +33,7 @@ public class SkipCommand extends ACommand{
 			sendError(ctx, "You have to be the requester of the song to control it");
 			return;
 		}
-		this.sendAnswer(ctx, "Track skipped");
+		sendAnswer(ctx, "Track skipped");
 		musicPlayer.nextTrack();
 	}
 

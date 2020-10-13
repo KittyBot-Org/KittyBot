@@ -34,7 +34,7 @@ public class HistoryCommand extends ACommand{
 		if(ctx.getArgs().length == 0){
 			var history = musicPlayer.getHistory();
 			if(history.isEmpty()){
-				this.sendAnswer(ctx, "There are currently no tracks in history");
+				sendAnswer(ctx, "There are currently no tracks in history");
 				return;
 			}
 			var message = new StringBuilder("Currently **").append(history.size())
@@ -46,7 +46,7 @@ public class HistoryCommand extends ACommand{
 			for(AudioTrack track : history){
 				message.append(Utils.formatTrackTitle(track)).append(" ").append(Utils.formatDuration(track.getDuration())).append("\n");
 			}
-			this.sendAnswer(ctx, message.toString());
+			sendAnswer(ctx, message.toString());
 		}
 	}
 

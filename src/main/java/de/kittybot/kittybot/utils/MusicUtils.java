@@ -1,8 +1,9 @@
 package de.kittybot.kittybot.utils;
 
 import de.kittybot.kittybot.cache.MusicPlayerCache;
-import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.CommandContext;
+
+import static de.kittybot.kittybot.objects.command.ACommand.sendError;
 
 public class MusicUtils{
 
@@ -14,31 +15,31 @@ public class MusicUtils{
 			return;
 		}
 		if(!voiceState.inVoiceChannel()){
-			ACommand.sendError(ctx, "To use this command you need to be connected to a voice channel");
+			sendError(ctx, "To use this command you need to be connected to a voice channel");
 			return;
 		}
 		final var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
 		if(musicPlayer == null){
-			ACommand.sendError(ctx, "No active music player found!");
+			sendError(ctx, "No active music player found!");
 			return;
 		}
 		final var player = musicPlayer.getPlayer();
 		if(!player.getLink().getChannel().equals(voiceState.getChannel().getId())){
-			ACommand.sendError(ctx, "To use this command you need to be connected to the same voice channel as me");
+			sendError(ctx, "To use this command you need to be connected to the same voice channel as me");
 			return;
 		}
 		final var playing = player.getPlayingTrack();
 		if(playing == null){
-			ACommand.sendError(ctx, "There is currently no song playing");
+			sendError(ctx, "There is currently no song playing");
 			return;
 		}
 		if(!musicPlayer.getRequesterId().equals(ctx.getUser().getId())){
-			ACommand.sendError(ctx, "You have to be the requester of the song to control it");
+			sendError(ctx, "You have to be the requester of the song to control it");
 			return;
 		}
 		final var args = ctx.getArgs();
 		if(args.length == 0){
-			ACommand.sendError(ctx, "Please provide the amount of seconds");
+			sendError(ctx, "Please provide the amount of seconds");
 			return;
 		}
 		var toSeek = 0;
@@ -46,7 +47,7 @@ public class MusicUtils{
 			toSeek = Integer.parseUnsignedInt(args[0]);
 		}
 		catch(final NumberFormatException ex){
-			ACommand.sendError(ctx, "Please provide a valid amount of seconds");
+			sendError(ctx, "Please provide a valid amount of seconds");
 			return;
 		}
 		toSeek *= 1000;

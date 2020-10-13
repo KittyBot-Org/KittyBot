@@ -54,7 +54,7 @@ public class GuildIconCommand extends ACommand{
 			}
 			stringBuilder.append("\n\n");
 		}
-		ACommand.sendAnswer(ctx, new EmbedBuilder().setTitle(Utils.pluralize("Guild Icon", guilds.size())).setDescription(stringBuilder.toString()));
+		sendAnswer(ctx, new EmbedBuilder().setTitle(Utils.pluralize("Guild Icon", guilds.size())).setDescription(stringBuilder.toString()));
 	}
 
 }

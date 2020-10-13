@@ -34,7 +34,7 @@ public class QueueCommand extends ACommand{
 		if(ctx.getArgs().length == 0){
 			var queue = musicPlayer.getQueue();
 			if(queue.isEmpty()){
-				this.sendAnswer(ctx, "There are currently no tracks queued");
+				sendAnswer(ctx, "There are currently no tracks queued");
 				return;
 			}
 			var message = new StringBuilder("Currently **").append(queue.size())
@@ -46,7 +46,7 @@ public class QueueCommand extends ACommand{
 			for(AudioTrack track : queue){
 				message.append(Utils.formatTrackTitle(track)).append(" ").append(Utils.formatDuration(track.getDuration())).append("\n");
 			}
-			this.sendAnswer(ctx, message.toString());
+			sendAnswer(ctx, message.toString());
 			return;
 		}
 		musicPlayer.loadItem(this, ctx);

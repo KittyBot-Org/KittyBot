@@ -39,7 +39,7 @@ public class VolumeCommand extends ACommand{
 			return;
 		}
 		musicPlayer.shuffle();
-		this.sendAnswer(ctx, "Queue shuffled");
+		sendAnswer(ctx, "Queue shuffled");
 	}
 
 }

@@ -19,10 +19,10 @@ public class TickleCommand extends ACommand{
 	@Override
 	public void run(CommandContext ctx){
 		if(ctx.getArgs().length == 0){
-			this.sendUsage(ctx);
+			sendUsage(ctx);
 			return;
 		}
-		this.sendReactionImage(ctx, "tickle", "tickles");
+		sendReactionImage(ctx, "tickle", "tickles");
 	}
 
 }

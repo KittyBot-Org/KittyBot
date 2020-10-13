@@ -29,7 +29,7 @@ public class EvalCommand extends ACommand{
 	@Override
 	public void run(CommandContext ctx){
 		if(!Config.ADMIN_IDS.contains(ctx.getUser().getId())){
-			ACommand.sendNoPermission(ctx);
+			sendNoPermission(ctx);
 			return;
 		}
 		try{
@@ -47,7 +47,7 @@ public class EvalCommand extends ACommand{
 			DEFAULT_IMPORTS.forEach(imp -> sb.append("import ").append(imp).append(".*; "));
 			sb.append(String.join(" ", ctx.getArgs()));
 			var out = SCRIPT_ENGINE.eval(sb.toString());
-			this.sendAnswer(ctx, out == null ? "Executed without error." : out.toString());
+			sendAnswer(ctx, out == null ? "Executed without error." : out.toString());
 		}
 		catch(Exception e){
 			sendError(ctx, e.getMessage());

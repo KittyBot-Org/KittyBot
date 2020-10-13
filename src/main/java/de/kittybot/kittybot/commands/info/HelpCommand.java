@@ -25,7 +25,7 @@ public class HelpCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		ACommand.answer(ctx, new EmbedBuilder().setColor(Color.orange)
+		answer(ctx, new EmbedBuilder().setColor(Color.orange)
 				.setThumbnail(ctx.getJDA().getSelfUser().getEffectiveAvatarUrl())
 				.addField(Emojis.INVITE + " Invite:", Emojis.BLANK + " :small_blue_diamond: You want me on your server? Click " + MessageUtils.maskLink("here", Config.INVITE_URL) + " to invite me!", false)
 				.addField(":gear: Settings:", Emojis.BLANK + " :small_blue_diamond: You can manage all your settings in our " + MessageUtils.maskLink("dashboard", Config.ORIGIN_URL) + "!", false)

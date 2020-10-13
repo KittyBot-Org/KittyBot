@@ -25,7 +25,7 @@ public class InfoCommand extends ACommand{
 	public void run(CommandContext ctx){
 		var jda = ctx.getJDA();
 		var runtime = Runtime.getRuntime();
-		ACommand.sendAnswer(ctx, new EmbedBuilder()
+		sendAnswer(ctx, new EmbedBuilder()
 				.setAuthor("KittyBot information", Config.ORIGIN_URL, jda.getSelfUser().getEffectiveAvatarUrl())
 
 				.addField("JVM version:", System.getProperty("java.version"), false)

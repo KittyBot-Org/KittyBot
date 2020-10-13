@@ -30,13 +30,13 @@ public class NekoCommand extends ACommand{
 			return;
 		}
 		if(ctx.getArgs().length > 0 && NEKOS.contains(ctx.getArgs()[0])){
-			ACommand.image(ctx, ACommand.getNeko(ctx.getArgs()[0])).queue(message -> {
+			image(ctx, getNeko(ctx.getArgs()[0])).queue(message -> {
 				ReactiveMessageCache.addReactiveMessage(ctx, message, this, "-1");
 				message.addReaction(Emojis.WASTEBASKET).queue();
 			});
 		}
 		else{
-			this.sendUsage(ctx);
+			sendUsage(ctx);
 		}
 	}
 

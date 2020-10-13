@@ -43,7 +43,7 @@ public class AssignCommand extends ACommand{
 			return;
 		}
 		ctx.getGuild().addRoleToMember(ctx.getMember(), role).reason("self-assigned with  message: " + ctx.getMessage().getId()).queue();
-		this.sendAnswer(ctx, "Assigned role `" + roleName + "` to you");
+		sendAnswer(ctx, "Assigned role `" + roleName + "` to you");
 	}
 
 }

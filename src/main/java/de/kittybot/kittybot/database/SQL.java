@@ -2,7 +2,6 @@ package de.kittybot.kittybot.database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import de.kittybot.kittybot.database.jooq.Tables;
 import de.kittybot.kittybot.objects.Config;
 import org.apache.commons.io.IOUtils;
 import org.jooq.DSLContext;
@@ -16,6 +15,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
+
+import static de.kittybot.kittybot.database.jooq.Tables.GUILDS;
 
 public class SQL{
 
@@ -42,10 +43,10 @@ public class SQL{
 	}
 
 	public static void createTable(String table){
-		try(var con = getCon()){
+		try(var con = getCon(); var statement = con.createStatement()){
 			var sql = IOUtils.toString(SQL.class.getClassLoader().getResourceAsStream("sql_tables/" + table + ".sql"), StandardCharsets.UTF_8.name());
 			LOG.info("Read sql table from resources: {}", table);
-			con.createStatement().execute(sql);
+			statement.execute(sql);
 		}
 		catch(IOException e){
 			LOG.error("Error while reading sql table file: {}", table, e);
@@ -65,7 +66,7 @@ public class SQL{
 
 	public static <T> T getProperty(String guildId, Field<T> field){
 		try(var con = getCon(); var ctx = getCtx(con)){
-			var res = ctx.select(field).from(Tables.GUILDS).where(Tables.GUILDS.GUILD_ID.eq(guildId)).fetchOne();
+			var res = ctx.select(field).from(GUILDS).where(GUILDS.GUILD_ID.eq(guildId)).fetchOne();
 			if(res != null){
 				return res.getValue(field);
 			}
@@ -82,7 +83,7 @@ public class SQL{
 
 	public static <T> void setProperty(String guildId, Field<T> field, T value){
 		try(var con = getCon(); var ctx = getCtx(con)){
-			ctx.update(Tables.GUILDS).set(field, value).where(Tables.GUILDS.GUILD_ID.eq(guildId)).execute();
+			ctx.update(GUILDS).set(field, value).where(GUILDS.GUILD_ID.eq(guildId)).execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error while setting key {} from guild {}", field.getName(), guildId, e);

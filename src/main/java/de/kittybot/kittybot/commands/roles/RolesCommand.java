@@ -38,30 +38,30 @@ public class RolesCommand extends ACommand{
 	public void run(CommandContext ctx){
 		if(ctx.getArgs().length > 0){
 			if(ctx.getArgs()[0].equals("?") || ctx.getArgs()[0].equals("help")){
-				this.sendUsage(ctx);
+				sendUsage(ctx);
 			}
 			if(ctx.getMember().isOwner() || ctx.getMember().hasPermission(Permission.ADMINISTRATOR)){
 				List<Role> roles = ctx.getMessage().getMentionedRoles();
 				List<Emote> emotes = ctx.getMessage().getEmotes();
 				if(ctx.getArgs()[0].equalsIgnoreCase("add") && !roles.isEmpty() && !emotes.isEmpty()){
 					SelfAssignableRoleCache.addSelfAssignableRoles(ctx.getGuild().getId(), Utils.toMap(roles, emotes));
-					this.sendAnswer(ctx, "Roles added!");
+					sendAnswer(ctx, "Roles added!");
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("remove") && !roles.isEmpty()){
 					SelfAssignableRoleCache.removeSelfAssignableRoles(ctx.getGuild().getId(), Utils.toSet(roles));
-					this.sendAnswer(ctx, "Roles removed!");
+					sendAnswer(ctx, "Roles removed!");
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("list")){
 					Map<Role, Emote> map = getRoleEmoteMap(ctx.getGuild());
 					if(map.isEmpty()){
-						this.sendAnswer(ctx, "There are no roles added!");
+						sendAnswer(ctx, "There are no roles added!");
 					}
 					else{
 						StringBuilder message = new StringBuilder();
 						for(Map.Entry<Role, Emote> m : map.entrySet()){
 							message.append(m.getKey().getAsMention()).append(", ");
 						}
-						this.sendAnswer(ctx, "Roles: " + message);
+						sendAnswer(ctx, "Roles: " + message);
 					}
 				}
 				else{
@@ -96,7 +96,7 @@ public class RolesCommand extends ACommand{
 		}
 	}
 
-	private static Map<Role, Emote> getRoleEmoteMap(Guild guild){
+	private Map<Role, Emote> getRoleEmoteMap(Guild guild){
 		var roles = SelfAssignableRoleCache.getSelfAssignableRoles(guild.getId());
 		var map = new LinkedHashMap<Role, Emote>();
 		for(var entry : roles.entrySet()){
