@@ -9,7 +9,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import de.kittybot.kittybot.KittyBot;
-import de.kittybot.kittybot.cache.PrefixCache;
+import de.kittybot.kittybot.cache.GuildSettingsCache;
 import de.kittybot.kittybot.cache.ReactiveMessageCache;
 import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.Emojis;
@@ -211,7 +211,7 @@ public class MusicPlayer extends AudioEventAdapter {
 	}
 
 	private MessageEmbed buildMusicControlMessage(){
-		var prefix = PrefixCache.getCommandPrefix(ctx.getGuild().getId());
+		var prefix = GuildSettingsCache.getCommandPrefix(ctx.getGuild().getId());
 		var embedBuilder = new EmbedBuilder();
 		var track = player.getPlayingTrack();
 		embedBuilder.setAuthor("KittyBot Music", Config.ORIGIN_URL, ctx.getJDA().getSelfUser().getAvatarUrl());
@@ -242,7 +242,7 @@ public class MusicPlayer extends AudioEventAdapter {
 			for(final var queued : queue){
 				totalDuration += queued.getDuration();
 			}
-			embedBuilder.addField("Songs in the queue", "" + queue.size(), true);
+			embedBuilder.addField("Songs in the queue", String.valueOf(queue.size()), true);
 			embedBuilder.addField("Queue duration", formatDuration(totalDuration), true);
 		}
 		return embedBuilder.build();
