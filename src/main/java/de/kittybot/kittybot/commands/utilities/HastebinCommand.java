@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class HastebinCommand extends ACommand{
 
@@ -56,12 +55,12 @@ public class HastebinCommand extends ACommand{
 								sendError(ctx, "Error while creating hastebin");
 								return;
 							}
-							HastebinCommand.this.sendAnswer(ctx, "[here](" + Config.HASTEBIN_URL + "/" + DataObject.fromJson(body.string()).getString("key") + ") is a hastebin");
+							sendAnswer(ctx, "[here](" + Config.HASTEBIN_URL + "/" + DataObject.fromJson(body.string()).getString("key") + ") is a hastebin");
 						}
 					}
 				});
 			}
-			catch(IOException | InterruptedException | ExecutionException e){
+			catch(Exception e){
 				LOG.error("Error while creating hastebin", e);
 				sendError(ctx, "Error while creating hastebin");
 			}

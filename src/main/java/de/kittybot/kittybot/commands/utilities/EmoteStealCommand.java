@@ -36,7 +36,7 @@ public class EmoteStealCommand extends ACommand{
 			var attachment = ctx.getMessage().getAttachments().get(0); //Users can't add multiple attachments in one message
 			var extension = attachment.getFileExtension();
 			if(extension != null && (extension.equalsIgnoreCase("png") || extension.equalsIgnoreCase("jpg") || extension.equalsIgnoreCase("gif") || extension.equalsIgnoreCase("webp"))){
-				attachment.retrieveInputStream().thenAccept(inputStream -> this.createEmote(ctx, ctx.getArgs()[0], inputStream));
+				attachment.retrieveInputStream().thenAccept(inputStream -> createEmote(ctx, ctx.getArgs()[0], inputStream));
 			}
 			else{
 				sendError(ctx, "The image provided is not a valid image file");
@@ -48,15 +48,15 @@ public class EmoteStealCommand extends ACommand{
 		if(!emotes.isEmpty()){
 			for(Emote emote : emotes){
 				if(!guildEmotes.contains(emote)){
-					this.createEmote(ctx, emote.getName(), emote.getImageUrl());
+					createEmote(ctx, emote.getName(), emote.getImageUrl());
 				}
 			}
 		}
 		else if(ctx.getArgs().length >= 2){
-			this.createEmote(ctx, ctx.getArgs()[1], ctx.getArgs()[0]);
+			createEmote(ctx, ctx.getArgs()[1], ctx.getArgs()[0]);
 		}
 		else{
-			this.sendUsage(ctx);
+			sendUsage(ctx);
 		}
 	}
 
@@ -68,7 +68,7 @@ public class EmoteStealCommand extends ACommand{
 			}
 			ctx.getGuild()
 					.createEmote(name, Icon.from(inputStream))
-					.queue(success -> this.sendAnswer(ctx, "Emote stolen"), failure -> sendError(ctx, "Error creating emote: " + failure.getMessage()));
+					.queue(success -> sendAnswer(ctx, "Emote stolen"), failure -> sendError(ctx, "Error creating emote: " + failure.getMessage()));
 		}
 		catch(IOException e){
 			LOG.error("Error with stream", e);
@@ -78,7 +78,7 @@ public class EmoteStealCommand extends ACommand{
 
 	private void createEmote(CommandContext ctx, String name, String url){
 		try{
-			this.createEmote(ctx, name, new URL(url).openStream());
+			createEmote(ctx, name, new URL(url).openStream());
 		}
 		catch(MalformedURLException e){
 			sendError(ctx, "Please provide a valid url");

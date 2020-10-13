@@ -29,7 +29,7 @@ public class ShuffleCommand extends ACommand{
 			return;
 		}
 		musicPlayer.shuffle();
-		this.sendAnswer(ctx, "Queue shuffled");
+		sendAnswer(ctx, "Queue shuffled");
 	}
 
 }

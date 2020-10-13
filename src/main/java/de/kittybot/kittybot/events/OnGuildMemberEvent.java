@@ -92,7 +92,7 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 		}
 	}
 
-	private static String generateBoostMessage(String message, User user){
+	private String generateBoostMessage(String message, User user){
 		if(BOOST_MESSAGES != null && BOOST_MESSAGES.size() > 1){
 			String random = BOOST_MESSAGES.get(ThreadLocalRandom.current().nextInt(BOOST_MESSAGES.size() - 1));
 			message = message.replace("${random_boost_message}", random);
@@ -103,7 +103,7 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 		return message;
 	}
 
-	private static String generateJoinMessage(String message, User user, Invite invite){
+	private String generateJoinMessage(String message, User user, Invite invite){
 		if(JOIN_MESSAGES != null && JOIN_MESSAGES.size() > 1){
 			String random = JOIN_MESSAGES.get(ThreadLocalRandom.current().nextInt(JOIN_MESSAGES.size() - 1));
 			message = message.replace("${random_join_message}", random);
@@ -122,7 +122,7 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 		return message;
 	}
 
-	private static String generateLeaveMessage(String message, User user){
+	private String generateLeaveMessage(String message, User user){
 		if(LEAVE_MESSAGES != null && LEAVE_MESSAGES.size() > 1){
 			String random = LEAVE_MESSAGES.get(ThreadLocalRandom.current().nextInt(LEAVE_MESSAGES.size() - 1));
 			message = message.replace("${random_leave_message}", random);

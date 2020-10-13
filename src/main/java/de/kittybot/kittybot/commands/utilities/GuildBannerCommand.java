@@ -54,7 +54,7 @@ public class GuildBannerCommand extends ACommand{
 			}
 			stringBuilder.append("\n\n");
 		}
-		ACommand.sendAnswer(ctx, new EmbedBuilder().setTitle(Utils.pluralize("Guild Banner", guilds.size())).setDescription(stringBuilder.toString()));
+		sendAnswer(ctx, new EmbedBuilder().setTitle(Utils.pluralize("Guild Banner", guilds.size())).setDescription(stringBuilder.toString()));
 	}
 
 }

@@ -31,7 +31,7 @@ public class SettingsCommand extends ACommand{
 		}
 		if(ctx.getArgs().length == 0){
 			var settings = GuildSettingsCache.getGuildSettings(ctx.getGuild().getId());
-			ACommand.sendAnswer(ctx, new EmbedBuilder()
+			sendAnswer(ctx, new EmbedBuilder()
 					.setTitle("Guild settings:")
 					.addField("Command Prefix:", settings.getCommandPrefix(), false)
 					.addField("Announcement Channel:", settings.getAnnouncementChannel(), false)
@@ -52,91 +52,91 @@ public class SettingsCommand extends ACommand{
 			var joined = String.join(" ", Arrays.copyOfRange(ctx.getArgs(), 1, ctx.getArgs().length));
 			if(ctx.getArgs()[0].equalsIgnoreCase("prefix") && ctx.getArgs().length == 2){
 				GuildSettingsCache.setCommandPrefix(ctx.getGuild().getId(), ctx.getArgs()[1]);
-				this.sendAnswer(ctx, "Prefix set to: `" + ctx.getArgs()[1] + "`");
+				sendAnswer(ctx, "Prefix set to: `" + ctx.getArgs()[1] + "`");
 			}
 			else if(ctx.getArgs()[0].equalsIgnoreCase("nsfw")){
 				if(ctx.getArgs().length >= 2){
 					if(Utils.isEnable(ctx.getArgs()[1])){
 						GuildSettingsCache.setNSFWEnabled(ctx.getGuild().getId(), true);
-						this.sendAnswer(ctx, "NSFW `activated`");
+						sendAnswer(ctx, "NSFW `activated`");
 					}
 					else if(Utils.isDisable(ctx.getArgs()[1])){
 						GuildSettingsCache.setNSFWEnabled(ctx.getGuild().getId(), false);
-						this.sendAnswer(ctx, "NSFW `deactivated`");
+						sendAnswer(ctx, "NSFW `deactivated`");
 					}
 					else{
-						ACommand.sendUsage(ctx, "options nsfw <on|off|yes|no|on|off|ja|nein>");
+						sendUsage(ctx, "options nsfw <on|off|yes|no|on|off|ja|nein>");
 					}
 				}
 				else{
 					var state = GuildSettingsCache.isNSFWEnabled(ctx.getGuild().getId());
 					GuildSettingsCache.setNSFWEnabled(ctx.getGuild().getId(), !state);
-					this.sendAnswer(ctx, "NSFW set to: `" + (state ? "deactivated" : "activated") + "`");
+					sendAnswer(ctx, "NSFW set to: `" + (state ? "deactivated" : "activated") + "`");
 				}
 			}
 			else if(ctx.getArgs()[0].equalsIgnoreCase("announcementchannel")){
 				var channels = ctx.getMessage().getMentionedChannels();
 				if(channels.size() == 1){
 					GuildSettingsCache.setAnnouncementChannelId(ctx.getGuild().getId(), channels.get(0).getId());
-					this.sendAnswer(ctx, channels.get(0).getAsMention() + " set as announcement channel!");
+					sendAnswer(ctx, channels.get(0).getAsMention() + " set as announcement channel!");
 				}
 				else{
-					ACommand.sendUsage(ctx, "options announcement <#TextChannel>");
+					sendUsage(ctx, "options announcement <#TextChannel>");
 				}
 			}
 			else if(ctx.getArgs()[0].equalsIgnoreCase("joinmessage")){
 				if(ctx.getArgs().length < 2){
 					GuildSettingsCache.setJoinMessage(ctx.getGuild().getId(), joined);
-					this.sendAnswer(ctx, "Join message set to: " + joined);
+					sendAnswer(ctx, "Join message set to: " + joined);
 				}
 				else if(Utils.isHelp(ctx.getArgs()[1])){
-					ACommand.sendUsage(ctx, "options joinmessage <message>");
+					sendUsage(ctx, "options joinmessage <message>");
 				}
 				else if(ctx.getArgs()[1].equalsIgnoreCase("enable") || ctx.getArgs()[1].equalsIgnoreCase("true") || ctx.getArgs()[1].equalsIgnoreCase("on") || ctx.getArgs()[1].equalsIgnoreCase("an")){
 					GuildSettingsCache.setJoinMessagesEnabled(ctx.getGuild().getId(), true);
-					this.sendAnswer(ctx, "Join messages enabled!");
+					sendAnswer(ctx, "Join messages enabled!");
 				}
 				else if(Utils.isDisable(ctx.getArgs()[1])){
 					GuildSettingsCache.setJoinMessagesEnabled(ctx.getGuild().getId(), false);
-					this.sendAnswer(ctx, "Join messages disabled!");
+					sendAnswer(ctx, "Join messages disabled!");
 				}
 			}
 			else if(ctx.getArgs()[0].equalsIgnoreCase("leavemessage")){
 				if(ctx.getArgs().length < 2){
 					GuildSettingsCache.setLeaveMessage(ctx.getGuild().getId(), joined);
-					this.sendAnswer(ctx, "Leave message set to: " + joined);
+					sendAnswer(ctx, "Leave message set to: " + joined);
 				}
 				else if(Utils.isHelp(ctx.getArgs()[1])){
-					ACommand.sendUsage(ctx, "options leavemessage <message>");
+					sendUsage(ctx, "options leavemessage <message>");
 				}
 				else if(Utils.isEnable(ctx.getArgs()[1])){
 					GuildSettingsCache.setLeaveMessagesEnabled(ctx.getGuild().getId(), true);
-					this.sendAnswer(ctx, "Leave messages enabled!");
+					sendAnswer(ctx, "Leave messages enabled!");
 				}
 				else if(Utils.isDisable(ctx.getArgs()[1])){
 					GuildSettingsCache.setLeaveMessagesEnabled(ctx.getGuild().getId(), false);
-					this.sendAnswer(ctx, "Leave messages disabled!");
+					sendAnswer(ctx, "Leave messages disabled!");
 				}
 			}
 			else if(ctx.getArgs()[0].equalsIgnoreCase("boostmessage")){
 				if(ctx.getArgs().length < 2){
 					GuildSettingsCache.setBoostMessage(ctx.getGuild().getId(), joined);
-					this.sendAnswer(ctx, "Boost message set to: " + joined);
+					sendAnswer(ctx, "Boost message set to: " + joined);
 				}
 				else if(Utils.isHelp(ctx.getArgs()[1])){
-					ACommand.sendUsage(ctx, "options boostmessage <message>");
+					sendUsage(ctx, "options boostmessage <message>");
 				}
 				else if(Utils.isEnable(ctx.getArgs()[1])){
 					GuildSettingsCache.setBoostMessagesEnabled(ctx.getGuild().getId(), true);
-					this.sendAnswer(ctx, "Boost messages enabled!");
+					sendAnswer(ctx, "Boost messages enabled!");
 				}
 				else if(Utils.isDisable(ctx.getArgs()[1])){
 					GuildSettingsCache.setBoostMessagesEnabled(ctx.getGuild().getId(), false);
-					this.sendAnswer(ctx, "Boost messages disabled!");
+					sendAnswer(ctx, "Boost messages disabled!");
 				}
 			}
 			else{
-				this.sendUsage(ctx);
+				sendUsage(ctx);
 			}
 		}
 	}

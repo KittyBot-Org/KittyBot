@@ -24,19 +24,19 @@ public class DownloadEmotesCommand extends ACommand{
 	public void run(CommandContext ctx){
 		List<Emote> emotes = ctx.getMessage().getEmotes();
 		if(emotes.isEmpty()){
-			this.sendUsage(ctx);
+			sendUsage(ctx);
 			return;
 		}
 		StringBuilder links = new StringBuilder();
 		for(Emote emote : emotes){
 			String link = emote.getImageUrl();
 			if(links.length() + (" -O " + link).length() > Message.MAX_CONTENT_LENGTH - 20){
-				this.sendAnswer(ctx, "Command: \ncurl" + links);
+				sendAnswer(ctx, "Command: \ncurl" + links);
 				links = new StringBuilder();
 			}
 			links.append(" -O ").append(link);
 		}
-		this.sendAnswer(ctx, "Command: \ncurl" + links);
+		sendAnswer(ctx, "Command: \ncurl" + links);
 	}
 
 }

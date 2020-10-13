@@ -19,10 +19,10 @@ public class SlapCommand extends ACommand{
 	@Override
 	public void run(CommandContext ctx){
 		if(ctx.getArgs().length == 0){
-			this.sendUsage(ctx);
+			sendUsage(ctx);
 			return;
 		}
-		this.sendReactionImage(ctx, "slap", "slaps");
+		sendReactionImage(ctx, "slap", "slaps");
 	}
 
 }
