@@ -1,7 +1,8 @@
 package de.kittybot.kittybot.commands.utilities;
 
-import de.kittybot.kittybot.cache.PrefixCache;
+import de.kittybot.kittybot.cache.GuildSettingsCache;
 import de.kittybot.kittybot.database.Database;
+import de.kittybot.kittybot.objects.Emojis;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
@@ -11,15 +12,15 @@ import net.dv8tion.jda.api.Permission;
 
 import java.util.Arrays;
 
-public class OptionsCommand extends ACommand{
+public class SettingsCommand extends ACommand{
 
-	public static final String COMMAND = "options";
-	public static final String USAGE = "options <prefix/announcementchannel/joinmessage/leavemessage/boostmessage/nsfw> <value>";
-	public static final String DESCRIPTION = "Used to set some guild specified options";
-	protected static final String[] ALIASES = {"opts", "opt"};
+	public static final String COMMAND = "settings";
+	public static final String USAGE = "settings <prefix/announcementchannel/joinmessage/leavemessage/boostmessage/nsfw> <value>";
+	public static final String DESCRIPTION = "Used to set guild specified settings";
+	protected static final String[] ALIASES = {"opts", "opt", "set"};
 	protected static final Category CATEGORY = Category.UTILITIES;
 
-	public OptionsCommand(){
+	public SettingsCommand(){
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
@@ -28,29 +29,28 @@ public class OptionsCommand extends ACommand{
 		if(ctx.getMember().isOwner() || ctx.getMember().hasPermission(Permission.ADMINISTRATOR)){
 			if(ctx.getArgs().length == 0){
 				var guildId = ctx.getGuild().getId();
+				var settings = GuildSettingsCache.getGuildSettings(ctx.getGuild().getId());
 				ACommand.sendAnswer(ctx, new EmbedBuilder()
-						.setTitle("Current guild options:")
-						.addField("Prefix:", PrefixCache.getCommandPrefix(guildId), false)
-						.addField("Announcement Channel:", "<#" + Database.getAnnouncementChannelId(guildId) + ">", false)
+						.setTitle("Guild settings:")
+						.addField("Command Prefix:", settings.getCommandPrefix(), false)
+						.addField("Announcement Channel:", settings.getAnnouncementChannel(), false)
 
-						.addField("Join Messages Enabled:", String.valueOf(Database.getJoinMessageEnabled(guildId)), true)
-						.addField("Join Message:", Database.getJoinMessage(guildId), true)
-						.addBlankField(true)
+						//.addField("Join Messages Enabled:", String.valueOf(settings.areJoinMessagesEnabled()), true)
+						.addField("Join Messages: " + (settings.areJoinMessagesEnabled() ? Emojis.X : Emojis.CHECK), settings.getJoinMessage(), false)
 
-						.addField("Leave Messages Enabled:", String.valueOf(Database.getLeaveMessageEnabled(guildId)), true)
-						.addField("Leave Message:", Database.getLeaveMessage(guildId), true)
-						.addBlankField(true)
+						//.addField("Leave Messages Enabled:", String.valueOf(settings.areLeaveMessagesEnabled()), true)
+						.addField("Leave Messages: " + (settings.areLeaveMessagesEnabled() ? Emojis.X : Emojis.CHECK), settings.getLeaveMessage(), false)
 
-						.addField("Boost Messages Enabled:", String.valueOf(Database.getBoostMessageEnabled(guildId)), true)
-						.addField("Boost Message:", Database.getBoostMessage(guildId), true)
-						.addBlankField(true)
+						//.addField("Boost Messages Enabled:", String.valueOf(settings.areBoostMessagesEnabled()), true)
+						.addField("Boost Messages: " + (settings.areBoostMessagesEnabled() ? Emojis.X : Emojis.CHECK), settings.getBoostMessage(), false)
 
-						.addField("NSFW Enabled:", String.valueOf(Database.getNSFWEnabled(guildId)), false));
+						.addField("NSFW Enabled: " + (settings.isNSFWEnabled() ? Emojis.X : Emojis.CHECK), "", false)
+				);
 			}
 			else{
 				var joined = String.join(" ", Arrays.copyOfRange(ctx.getArgs(), 1, ctx.getArgs().length));
 				if(ctx.getArgs()[0].equalsIgnoreCase("prefix") && ctx.getArgs().length == 2){
-					PrefixCache.setCommandPrefix(ctx.getGuild().getId(), ctx.getArgs()[1]);
+					GuildSettingsCache.setCommandPrefix(ctx.getGuild().getId(), ctx.getArgs()[1]);
 					this.sendAnswer(ctx, "Prefix set to: `" + ctx.getArgs()[1] + "`");
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("nsfw")){

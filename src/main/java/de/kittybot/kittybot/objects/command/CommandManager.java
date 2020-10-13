@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.objects.command;
 
-import de.kittybot.kittybot.cache.PrefixCache;
+import de.kittybot.kittybot.cache.GuildSettingsCache;
 import de.kittybot.kittybot.database.Database;
 import io.github.classgraph.ClassGraph;
 import net.dv8tion.jda.api.entities.Guild;
@@ -63,7 +63,7 @@ public class CommandManager{
 	private static String cutCommandPrefix(Guild guild, String message){
 		String prefix;
 		var botId = guild.getSelfMember().getId();
-		if(message.startsWith(prefix = PrefixCache.getCommandPrefix(guild.getId())) || message.startsWith(
+		if(message.startsWith(prefix = GuildSettingsCache.getCommandPrefix(guild.getId())) || message.startsWith(
 				prefix = "<@!" + botId + ">") || message.startsWith(prefix = "<@" + botId + ">")){
 			return message.substring(prefix.length()).trim();
 		}

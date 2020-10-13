@@ -5,7 +5,7 @@ import com.jagrosh.jdautilities.oauth2.Scope;
 import com.jagrosh.jdautilities.oauth2.exceptions.InvalidStateException;
 import de.kittybot.kittybot.cache.DashboardSessionCache;
 import de.kittybot.kittybot.cache.GuildCache;
-import de.kittybot.kittybot.cache.PrefixCache;
+import de.kittybot.kittybot.cache.GuildSettingsCache;
 import de.kittybot.kittybot.cache.SelfAssignableRoleCache;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.Config;
@@ -78,10 +78,9 @@ public class WebService{
 		var key = ctx.header("Authorization");
 		if(key == null || !DashboardSessionCache.sessionExists(key)){
 			ctx.redirect(O_AUTH_2_CLIENT.generateAuthorizationURL(Config.REDIRECT_URL, SCOPES));
+			return;
 		}
-		else{
-			ctx.redirect(Config.REDIRECT_URL);
-		}
+		ctx.redirect(Config.REDIRECT_URL);
 	}
 
 	private static void login(Context ctx){
@@ -108,17 +107,19 @@ public class WebService{
 
 	private static void logout(Context ctx){
 		var auth = ctx.header("Authorization");
-		if(auth != null){
-			DashboardSessionCache.deleteSession(auth);
+		if(auth == null){
+			return;
 		}
+		DashboardSessionCache.deleteSession(auth);
 	}
 
 	private static void checkDiscordLogin(Context ctx){
 		if(!ctx.method().equals("OPTIONS")){
-			var key = ctx.header("Authorization");
-			if(key == null || !DashboardSessionCache.sessionExists(key)){
-				error(ctx, 401, "Please login with discord to continue");
-			}
+			return;
+		}
+		var key = ctx.header("Authorization");
+		if(key == null || !DashboardSessionCache.sessionExists(key)){
+			error(ctx, 401, "Please login with discord to continue");
 		}
 	}
 
@@ -174,33 +175,34 @@ public class WebService{
 
 	private static void checkGuildPerms(Context ctx){
 		if(!ctx.method().equals("OPTIONS")){
-			var guildId = ctx.pathParam(":guildId");
-			var guild = KittyBot.getJda().getGuildById(guildId);
-			if(guild == null){
-				error(ctx, 404, "guild not found");
-				return;
-			}
-			var auth = ctx.header("Authorization");
-			if(auth == null){
-				error(ctx, 401, "Please login");
-				return;
-			}
-			var session = DashboardSessionCache.getSession(auth);
-			if(session == null){
-				error(ctx, 404, "This user does not exist");
-				return;
-			}
-			if(Config.ADMIN_IDS.contains(session.getUserId())){
-				return;
-			}
-			var member = guild.retrieveMemberById(session.getUserId()).complete();
-			if(member == null){
-				error(ctx, 404, "I could not find you in that guild");
-				return;
-			}
-			if(!member.hasPermission(Permission.ADMINISTRATOR)){
-				error(ctx, 401, "You have no permission for this guild");
-			}
+			return;
+		}
+		var guildId = ctx.pathParam(":guildId");
+		var guild = KittyBot.getJda().getGuildById(guildId);
+		if(guild == null){
+			error(ctx, 404, "guild not found");
+			return;
+		}
+		var auth = ctx.header("Authorization");
+		if(auth == null){
+			error(ctx, 401, "Please login");
+			return;
+		}
+		var session = DashboardSessionCache.getSession(auth);
+		if(session == null){
+			error(ctx, 404, "This user does not exist");
+			return;
+		}
+		if(Config.ADMIN_IDS.contains(session.getUserId())){
+			return;
+		}
+		var member = guild.retrieveMemberById(session.getUserId()).complete();
+		if(member == null){
+			error(ctx, 404, "I could not find you in that guild");
+			return;
+		}
+		if(!member.hasPermission(Permission.ADMINISTRATOR)){
+			error(ctx, 401, "You have no permission for this guild");
 		}
 	}
 
@@ -275,16 +277,17 @@ public class WebService{
 		for(var role : roles.entrySet()){
 			data.add(DataObject.empty().put("role", role.getKey()).put("emote", role.getValue()));
 		}
+		var settings = GuildSettingsCache.getGuildSettings(guildId);
 		ok(ctx, DataObject.empty()
-				.put("prefix", PrefixCache.getCommandPrefix(guildId))
-				.put("join_messages_enabled", Database.getJoinMessageEnabled(guildId))
-				.put("join_messages", Database.getJoinMessage(guildId))
-				.put("leave_messages_enabled", Database.getLeaveMessageEnabled(guildId))
-				.put("leave_messages", Database.getLeaveMessage(guildId))
+				.put("prefix", settings.getCommandPrefix())
+				.put("join_messages_enabled", settings.areJoinMessagesEnabled())
+				.put("join_messages", settings.getJoinMessage())
+				.put("leave_messages_enabled", settings.areLeaveMessagesEnabled())
+				.put("leave_messages", settings.getLeaveMessage())
 				.put("boost_messages_enabled", Database.getBoostMessageEnabled(guildId))
-				.put("boost_messages", Database.getBoostMessage(guildId))
-				.put("announcement_channel_id", Database.getAnnouncementChannelId(guildId))
-				.put("nsfw_enabled", Database.getNSFWEnabled(guildId))
+				.put("boost_messages", settings.getBoostMessage())
+				.put("announcement_channel_id", settings.getAnnouncementChannelId())
+				.put("nsfw_enabled", settings.isNSFWEnabled())
 				.put("self_assignable_roles", data));
 	}
 
@@ -296,40 +299,35 @@ public class WebService{
 		}
 		var json = DataObject.fromJson(ctx.body());
 		if(json.hasKey("prefix")){
-			Database.setCommandPrefix(guildId, json.getString("prefix"));
+			GuildSettingsCache.setCommandPrefix(guildId, json.getString("prefix"));
 		}
 		if(json.hasKey("join_messages_enabled")){
-			Database.setJoinMessageEnabled(guildId, json.getBoolean("join_messages_enabled"));
+			GuildSettingsCache.setJoinMessagesEnabled(guildId, json.getBoolean("join_messages_enabled"));
 		}
 		if(json.hasKey("join_messages")){
-			Database.setJoinMessage(guildId, json.getString("join_messages"));
+			GuildSettingsCache.setJoinMessage(guildId, json.getString("join_messages"));
 		}
 		if(json.hasKey("leave_messages_enabled")){
-			Database.setLeaveMessageEnabled(guildId, json.getBoolean("leave_messages_enabled"));
+			GuildSettingsCache.setLeaveMessagesEnabled(guildId, json.getBoolean("leave_messages_enabled"));
 		}
 		if(json.hasKey("leave_messages")){
-			Database.setLeaveMessage(guildId, json.getString("leave_messages"));
+			GuildSettingsCache.setLeaveMessage(guildId, json.getString("leave_messages"));
 		}
+
 		if(json.hasKey("boost_messages_enabled")){
-			Database.setBoostMessageEnabled(guildId, json.getBoolean("boost_messages_enabled"));
+			GuildSettingsCache.setBoostMessagesEnabled(guildId, json.getBoolean("boost_messages_enabled"));
 		}
+
 		if(json.hasKey("boost_messages")){
-			Database.setBoostMessage(guildId, json.getString("boost_messages"));
+			GuildSettingsCache.setBoostMessage(guildId, json.getString("boost_messages"));
 		}
+
 		if(json.hasKey("announcement_channel_id")){
-			Database.setAnnouncementChannelId(guildId, json.getString("announcement_channel_id"));
+			GuildSettingsCache.setAnnouncementChannelId(guildId, json.getString("announcement_channel_id"));
 		}
+
 		if(json.hasKey("nsfw_enabled")){
-			Database.setNSFWEnabled(guildId, json.getBoolean("nsfw_enabled"));
-		}
-		if(json.hasKey("self_assignable_roles")){
-			var roles = new HashMap<String, String>();
-			var dataArray = json.getArray("self_assignable_roles");
-			for(var i = 0; i < dataArray.length(); i++){
-				var obj = dataArray.getObject(i);
-				roles.put(obj.getString("role"), obj.getString("emote"));
-			}
-			SelfAssignableRoleCache.setSelfAssignableRoles(guildId, roles);
+			GuildSettingsCache.setNSFWEnabled(guildId, json.getBoolean("nsfw_enabled"));
 		}
 		ok(ctx);
 	}

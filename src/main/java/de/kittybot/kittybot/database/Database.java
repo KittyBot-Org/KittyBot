@@ -6,6 +6,7 @@ import de.kittybot.kittybot.cache.DashboardSessionCache;
 import de.kittybot.kittybot.cache.SelfAssignableRoleCache;
 import de.kittybot.kittybot.database.jooq.Tables;
 import de.kittybot.kittybot.objects.Config;
+import de.kittybot.kittybot.objects.GuildSettings;
 import de.kittybot.kittybot.objects.ReactiveMessage;
 import de.kittybot.kittybot.objects.session.DashboardSession;
 import de.kittybot.kittybot.utils.Utils;
@@ -105,6 +106,48 @@ public class Database{
 			LOG.error("Error adding command statistics for message: " + commandId, e);
 		}
 	} */
+
+	public static GuildSettings getGuildSettings(String guildId){
+		var query = "SELECT * FROM guilds WHERE guild_id = ?";
+		try(var con = SQL.getCon(); var ctx = SQL.getCtx(con)){
+			var res = ctx.selectFrom(Tables.GUILDS).where(Tables.GUILDS.GUILD_ID.eq(guildId)).fetchOne();
+			if(res == null){
+				return null;
+			}
+
+			return new GuildSettings(guildId,
+					res.get(Tables.GUILDS.COMMAND_PREFIX), res.get(Tables.GUILDS.REQUEST_CHANNEL_ID), res.get(Tables.GUILDS.REQUESTS_ENABLED),
+					res.get(Tables.GUILDS.ANNOUNCEMENT_CHANNEL_ID), res.get(Tables.GUILDS.JOIN_MESSAGES), res.get(Tables.GUILDS.JOIN_MESSAGES_ENABLED),
+					res.get(Tables.GUILDS.LEAVE_MESSAGES), res.get(Tables.GUILDS.LEAVE_MESSAGES_ENABLED), res.get(Tables.GUILDS.BOOST_MESSAGES),
+					res.get(Tables.GUILDS.BOOST_MESSAGES_ENABLED), res.get(Tables.GUILDS.LOG_CHANNEL_ID), res.get(Tables.GUILDS.LOG_MESSAGES_ENABLED),
+					res.get(Tables.GUILDS.NSFW_ENABLED), res.get(Tables.GUILDS.INACTIVE_ROLE_ID)
+					);
+		}
+		catch(SQLException e){
+			LOG.error("Error getting guild settings for guild: " + guildId, e);
+		}
+		return null;
+	}
+
+	public static void setInactiveRoleId(String guildId, String roleId){
+		SQL.setProperty(guildId, Tables.GUILDS.INACTIVE_ROLE_ID, roleId);
+	}
+
+	public static void setRequestChannelId(String guildId, String roleId){
+		SQL.setProperty(guildId, Tables.GUILDS.REQUEST_CHANNEL_ID, roleId);
+	}
+
+	public static void setRequestsEnabled(String guildId, boolean enabled){
+		SQL.setProperty(guildId, Tables.GUILDS.REQUESTS_ENABLED, enabled);
+	}
+
+	public static void setLogChannelId(String guildId, String channelId){
+		SQL.setProperty(guildId, Tables.GUILDS.LOG_CHANNEL_ID, channelId);
+	}
+
+	public static void setLogMessagesEnabled(String guildId, boolean enabled){
+		SQL.setProperty(guildId, Tables.GUILDS.LOG_MESSAGES_ENABLED, enabled);
+	}
 
 	public static void setCommandPrefix(String guildId, String prefix){
 		SQL.setProperty(guildId, Tables.GUILDS.COMMAND_PREFIX, prefix);
