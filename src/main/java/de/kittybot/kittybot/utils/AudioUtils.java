@@ -14,24 +14,26 @@ import static java.util.concurrent.CompletableFuture.completedFuture;
 public class AudioUtils {
 	public static final Pattern YOUTUBE_URL_PATTERN = Pattern.compile("^(https?://)?((www|m)\\.)?youtu(\\.be|be\\.com)/(playlist\\?list=([a-zA-Z0-9-_]+))?((watch\\?v=)?([a-zA-Z0-9-_]{11})(&list=([a-zA-Z0-9-_]+))?)?");
 
+	private AudioUtils(){}
+
 	public static CompletionStage<ConnectFailureReason> checkVoiceChannel(final CommandContext ctx){
 		final var voiceState = ctx.getMember().getVoiceState();
-		if (voiceState == null){
+		if(voiceState == null){
 			return completedFuture(NO_CHANNEL);
 		}
 		final var voiceChannel = voiceState.getChannel();
-		if (voiceChannel == null){
+		if(voiceChannel == null){
 			return completedFuture(NO_CHANNEL);
 		}
 		final var selfMember = ctx.getGuild().getSelfMember();
-		if (!selfMember.hasAccess(voiceChannel)){
+		if(!selfMember.hasAccess(voiceChannel)){
 			return completedFuture(NO_PERMS);
 		}
 		final var userLimit = voiceChannel.getUserLimit();
-		if (userLimit != 0 && voiceChannel.getMembers().size() >= userLimit){
+		if(userLimit != 0 && voiceChannel.getMembers().size() >= userLimit){
 			return completedFuture(CHANNEL_FULL);
 		}
-		if (!selfMember.hasPermission(voiceChannel, Permission.VOICE_SPEAK)){
+		if(!selfMember.hasPermission(voiceChannel, Permission.VOICE_SPEAK)){
 			return completedFuture(CANT_SPEAK);
 		}
 		return completedFuture(null);
