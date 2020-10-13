@@ -31,7 +31,7 @@ public class Config{
 	public static String DB_USER;
 	public static String DB_PASSWORD;
 
-	public static List<String> ADMIN_IDS = new ArrayList<>();
+	public static final List<String> ADMIN_IDS = new ArrayList<>();
 
 	public static String DEFAULT_PREFIX = ".";
 
@@ -44,7 +44,6 @@ public class Config{
 			BOT_TOKEN = json.getString("bot_token");
 			BOT_SECRET = json.getString("bot_secret");
 			BOT_ID = json.getString("bot_id");
-			ADMIN_IDS = new ArrayList<>();
 			var adminIds = json.getArray("admin_ids");
 			for(var i = 0; i < adminIds.length(); i++){
 				ADMIN_IDS.add(adminIds.getString(i));

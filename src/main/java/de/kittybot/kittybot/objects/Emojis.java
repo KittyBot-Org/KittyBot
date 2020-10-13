@@ -29,4 +29,6 @@ public class Emojis{
 	public static final String CAT = "\uD83D\uDC31";
 	public static final String DOG = "\uD83D\uDC36";
 
+	private Emojis(){}
+
 }

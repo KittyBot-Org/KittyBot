@@ -16,11 +16,11 @@ public class TitleInfo{
 	}
 
 	public String getTitle(){
-		return title;
+		return this.title;
 	}
 
 	public String getUrl(){
-		return url;
+		return this.url;
 	}
 
 }

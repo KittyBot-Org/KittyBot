@@ -5,6 +5,7 @@ import de.kittybot.kittybot.WebService;
 import de.kittybot.kittybot.cache.DashboardSessionCache;
 import de.kittybot.kittybot.cache.SelfAssignableRoleCache;
 import de.kittybot.kittybot.objects.Config;
+import de.kittybot.kittybot.objects.GuildSettings;
 import de.kittybot.kittybot.objects.ReactiveMessage;
 import de.kittybot.kittybot.objects.session.DashboardSession;
 import de.kittybot.kittybot.utils.Utils;
@@ -82,7 +83,7 @@ public class Database{
 					.execute();
 		}
 		catch(SQLException e){
-			LOG.error("Error registering guild: " + guild.getId(), e);
+			LOG.error("Error registering guild: {}", guild.getId(), e);
 		}
 	}
 
@@ -92,7 +93,7 @@ public class Database{
 			ctx.insertInto(COMMANDS).columns(COMMANDS.fields()).values(commandId, guildId, userId, command, processingTime, LocalDateTime.now()).execute();
 		}
 		catch(SQLException e){
-			LOG.error("Error adding command statistics for message: " + commandId, e);
+			LOG.error("Error adding command statistics for message: {}", commandId, e);
 		}
 	}
 
@@ -108,12 +109,85 @@ public class Database{
 		}
 	} */
 
+	public static GuildSettings getGuildSettings(String guildId){
+		try(var con = getCon(); var ctx = getCtx(con)){
+			var res = ctx.selectFrom(GUILDS).where(GUILDS.GUILD_ID.eq(guildId)).fetchOne();
+			if(res == null){
+				return null;
+			}
+
+			return new GuildSettings(
+					res.get(GUILDS.COMMAND_PREFIX), res.get(GUILDS.REQUEST_CHANNEL_ID), res.get(GUILDS.REQUESTS_ENABLED),
+					res.get(GUILDS.ANNOUNCEMENT_CHANNEL_ID), res.get(GUILDS.JOIN_MESSAGES), res.get(GUILDS.JOIN_MESSAGES_ENABLED),
+					res.get(GUILDS.LEAVE_MESSAGES), res.get(GUILDS.LEAVE_MESSAGES_ENABLED), res.get(GUILDS.BOOST_MESSAGES),
+					res.get(GUILDS.BOOST_MESSAGES_ENABLED), res.get(GUILDS.LOG_CHANNEL_ID), res.get(GUILDS.LOG_MESSAGES_ENABLED),
+					res.get(GUILDS.NSFW_ENABLED), res.get(GUILDS.INACTIVE_ROLE_ID)
+					);
+		}
+		catch(SQLException e){
+			LOG.error("Error getting guild settings for guild: {}", guildId, e);
+		}
+		return null;
+	}
+
+	public static void setInactiveRoleId(String guildId, String roleId){
+		setProperty(guildId, GUILDS.INACTIVE_ROLE_ID, roleId);
+	}
+
+	public static void setRequestChannelId(String guildId, String roleId){
+		setProperty(guildId, GUILDS.REQUEST_CHANNEL_ID, roleId);
+	}
+
+	public static void setRequestsEnabled(String guildId, boolean enabled){
+		setProperty(guildId, GUILDS.REQUESTS_ENABLED, enabled);
+	}
+
+	public static void setLogChannelId(String guildId, String channelId){
+		setProperty(guildId, GUILDS.LOG_CHANNEL_ID, channelId);
+	}
+
+	public static void setLogMessagesEnabled(String guildId, boolean enabled){
+		setProperty(guildId, GUILDS.LOG_MESSAGES_ENABLED, enabled);
+	}
+
 	public static void setCommandPrefix(String guildId, String prefix){
 		setProperty(guildId, GUILDS.COMMAND_PREFIX, prefix);
 	}
 
-	public static String getCommandPrefix(String guildId){
-		return getProperty(guildId, GUILDS.COMMAND_PREFIX);
+	public static void setAnnouncementChannelId(String guildId, String channelId){
+		setProperty(guildId, GUILDS.ANNOUNCEMENT_CHANNEL_ID, channelId);
+	}
+
+	public static void setJoinMessage(String guildId, String message){
+		setProperty(guildId, GUILDS.JOIN_MESSAGES, message);
+	}
+
+	public static void setJoinMessageEnabled(String guildId, boolean enabled){
+		setProperty(guildId, GUILDS.JOIN_MESSAGES_ENABLED, enabled);
+	}
+
+	public static void setLeaveMessage(String guildId, String message){
+		setProperty(guildId, GUILDS.LEAVE_MESSAGES, message);
+	}
+
+	public static void setLeaveMessageEnabled(String guildId, boolean enabled){
+		setProperty(guildId, GUILDS.LEAVE_MESSAGES_ENABLED, enabled);
+	}
+
+	public static String getBoostMessage(String guildId){
+		return getProperty(guildId, GUILDS.BOOST_MESSAGES);
+	}
+
+	public static void setBoostMessage(String guildId, String message){
+		setProperty(guildId, GUILDS.BOOST_MESSAGES, message);
+	}
+
+	public static void setBoostMessageEnabled(String guildId, boolean enabled){
+		setProperty(guildId, GUILDS.BOOST_MESSAGES_ENABLED, enabled);
+	}
+
+	public static void setNSFWEnabled(String guildId, boolean enabled){
+		setProperty(guildId, GUILDS.NSFW_ENABLED, enabled);
 	}
 
 	public static void setSelfAssignableRoles(String guildId, Map<String, String> newRoles){
@@ -145,7 +219,7 @@ public class Database{
 			return ctx.deleteFrom(SELF_ASSIGNABLE_ROLES).where(SELF_ASSIGNABLE_ROLES.GUILD_ID.eq(guildId).and(SELF_ASSIGNABLE_ROLES.ROLE_ID.in(roles))).execute() == roles.size();
 		}
 		catch(SQLException e){
-			LOG.error("Error removing self-assignable roles: " + roles.toString() + " guild " + guildId, e);
+			LOG.error("Error removing self-assignable roles: {} guilds {}", roles, guildId, e);
 		}
 		return false;
 	}
@@ -159,7 +233,7 @@ public class Database{
 			col.execute();
 		}
 		catch(SQLException e){
-			LOG.error("Error inserting self-assignable roles: " + roles.toString(), e);
+			LOG.error("Error inserting self-assignable roles: {}", roles, e);
 		}
 	}
 
@@ -170,73 +244,9 @@ public class Database{
 					.collect(Collectors.toMap(sar -> sar.get(SELF_ASSIGNABLE_ROLES.ROLE_ID), sar -> sar.get(SELF_ASSIGNABLE_ROLES.EMOTE_ID)));
 		}
 		catch(SQLException e){
-			LOG.error("Error while getting self-assignable roles from guild " + guildId, e);
+			LOG.error("Error while getting self-assignable roles from guild {}", guildId, e);
 		}
 		return null;
-	}
-
-	public static String getAnnouncementChannelId(String guildId){
-		return getProperty(guildId, GUILDS.ANNOUNCEMENT_CHANNEL_ID);
-	}
-
-	public static void setAnnouncementChannelId(String guildId, String channelId){
-		setProperty(guildId, GUILDS.ANNOUNCEMENT_CHANNEL_ID, channelId);
-	}
-
-	public static String getJoinMessage(String guildId){
-		return getProperty(guildId, GUILDS.JOIN_MESSAGES);
-	}
-
-	public static void setJoinMessage(String guildId, String message){
-		setProperty(guildId, GUILDS.JOIN_MESSAGES, message);
-	}
-
-	public static Boolean getJoinMessageEnabled(String guildId){
-		return getProperty(guildId, GUILDS.JOIN_MESSAGES_ENABLED);
-	}
-
-	public static void setJoinMessageEnabled(String guildId, boolean enabled){
-		setProperty(guildId, GUILDS.JOIN_MESSAGES_ENABLED, enabled);
-	}
-
-	public static String getLeaveMessage(String guildId){
-		return getProperty(guildId, GUILDS.LEAVE_MESSAGES);
-	}
-
-	public static void setLeaveMessage(String guildId, String message){
-		setProperty(guildId, GUILDS.LEAVE_MESSAGES, message);
-	}
-
-	public static Boolean getLeaveMessageEnabled(String guildId){
-		return getProperty(guildId, GUILDS.LEAVE_MESSAGES_ENABLED);
-	}
-
-	public static void setLeaveMessageEnabled(String guildId, boolean enabled){
-		setProperty(guildId, GUILDS.LEAVE_MESSAGES_ENABLED, enabled);
-	}
-
-	public static String getBoostMessage(String guildId){
-		return getProperty(guildId, GUILDS.BOOST_MESSAGES);
-	}
-
-	public static void setBoostMessage(String guildId, String message){
-		setProperty(guildId, GUILDS.BOOST_MESSAGES, message);
-	}
-
-	public static Boolean getBoostMessageEnabled(String guildId){
-		return getProperty(guildId, GUILDS.BOOST_MESSAGES_ENABLED);
-	}
-
-	public static void setBoostMessageEnabled(String guildId, boolean enabled){
-		setProperty(guildId, GUILDS.BOOST_MESSAGES_ENABLED, enabled);
-	}
-
-	public static Boolean getNSFWEnabled(String guildId){
-		return getProperty(guildId, GUILDS.NSFW_ENABLED);
-	}
-
-	public static void setNSFWEnabled(String guildId, boolean enabled){
-		setProperty(guildId, GUILDS.NSFW_ENABLED, enabled);
 	}
 
 	public static ReactiveMessage getReactiveMessage(String guildId, String messageId){
@@ -247,7 +257,7 @@ public class Database{
 			}
 		}
 		catch(SQLException e){
-			LOG.error("Error while checking reactive message for guild " + guildId + " message " + messageId, e);
+			LOG.error("Error while checking reactive message for guild {} message {}", guildId, messageId, e);
 		}
 		return null;
 	}
@@ -283,7 +293,7 @@ public class Database{
 			ctx.insertInto(SESSIONS).columns(SESSIONS.fields()).values(session.getSessionKey(), session.getUserId(), session.getAccessToken(), session.getRefreshToken(), session.getExpiration().toLocalDateTime()).execute();
 		}
 		catch(SQLException e){
-			LOG.error("Error adding session for user " + session.getUserId(), e);
+			LOG.error("Error adding session for user {}", session.getUserId(), e);
 		}
 	}
 

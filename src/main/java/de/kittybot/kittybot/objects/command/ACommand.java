@@ -2,8 +2,8 @@ package de.kittybot.kittybot.objects.command;
 
 import de.kittybot.kittybot.KittyBot;
 import de.kittybot.kittybot.cache.CommandResponseCache;
+import de.kittybot.kittybot.cache.GuildSettingsCache;
 import de.kittybot.kittybot.cache.ReactiveMessageCache;
-import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.Emojis;
 import de.kittybot.kittybot.objects.ReactiveMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -28,7 +28,7 @@ public abstract class ACommand{
 
 	protected static final Logger LOG = LoggerFactory.getLogger(ACommand.class);
 
-	public final String command;
+	private final String command;
 	protected final String usage;
 	protected final String description;
 	protected final String[] aliases;
@@ -66,10 +66,10 @@ public abstract class ACommand{
 	protected abstract void run(CommandContext ctx);
 
 	protected boolean checkCmd(String cmd){
-		if(cmd.equalsIgnoreCase(command)){
+		if(cmd.equalsIgnoreCase(this.command)){
 			return true;
 		}
-		for(var a : aliases){
+		for(var a : this.aliases){
 			if(a.equalsIgnoreCase(cmd)){
 				return true;
 			}
@@ -78,23 +78,23 @@ public abstract class ACommand{
 	}
 
 	protected String[] getAliases(){
-		return aliases;
+		return this.aliases;
 	}
 
 	public String getCommand(){
-		return command;
+		return this.command;
 	}
 
 	public String getDescription(){
-		return description;
+		return this.description;
 	}
 
 	protected String getUsage(){
-		return usage;
+		return this.usage;
 	}
 
 	public Category getCategory(){
-		return category;
+		return this.category;
 	}
 
 	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
@@ -160,7 +160,6 @@ public abstract class ACommand{
 			case ERROR:
 				emote = Emojis.X;
 				break;
-			case QUESTION:
 			default:
 				emote = Emojis.QUESTION;
 				break;
@@ -174,7 +173,7 @@ public abstract class ACommand{
 	}
 
 	protected void sendUsage(CommandContext ctx){
-		queue(usage(ctx, usage), ctx);
+		queue(usage(ctx, this.usage), ctx);
 	}
 
 	protected void sendUsage(CommandContext ctx, String usage){
@@ -185,7 +184,7 @@ public abstract class ACommand{
 		addStatus(ctx.getMessage(), Status.QUESTION);
 		return ctx.getChannel()
 				.sendMessage(new EmbedBuilder().setColor(Color.ORANGE)
-						.addField("Command usage:", "`" + Database.getCommandPrefix(ctx.getGuild().getId()) + usage + "`", true)
+						.addField("Command usage:", "`" + GuildSettingsCache.getCommandPrefix(ctx.getGuild().getId()) + usage + "`", true)
 						.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
 						.setTimestamp(Instant.now())
 						.build());

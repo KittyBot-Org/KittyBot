@@ -23,19 +23,19 @@ public class InviteData{
 	}
 
 	public String getGuildId(){
-		return guildId;
+		return this.guildId;
 	}
 
 	public String getUser(){
-		return user;
+		return this.user;
 	}
 
 	public String getCode(){
-		return code;
+		return this.code;
 	}
 
 	public int getUses(){
-		return uses;
+		return this.uses;
 	}
 
 	public void used(){

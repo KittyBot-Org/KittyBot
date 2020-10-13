@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public class OnReadyEvent extends ListenerAdapter{
 
 	@Override
-	public final void onReady(@NotNull ReadyEvent event){
+	public void onReady(@NotNull ReadyEvent event){
 		BotLists.update(event.getGuildTotalCount());
 	}
 
