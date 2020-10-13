@@ -153,11 +153,18 @@ public abstract class ACommand{
 	}
 
 	protected static void addStatus(Message message, Status status){
-		String emote = switch(status){
-			case OK -> Emojis.CHECK;
-			case ERROR -> Emojis.X;
-			default -> Emojis.QUESTION;
-		};
+		String emote;
+		switch(status){
+			case OK:
+				emote = Emojis.CHECK;
+				break;
+			case ERROR:
+				emote = Emojis.X;
+				break;
+			default:
+				emote = Emojis.QUESTION;
+				break;
+		}
 		message.addReaction(emote).queue(success -> message.getTextChannel().removeReactionById(message.getId(), emote).queueAfter(5, TimeUnit.SECONDS));
 	}
 

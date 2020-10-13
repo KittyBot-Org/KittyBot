@@ -114,7 +114,7 @@ public class WebService{
 	}
 
 	private static void checkDiscordLogin(Context ctx){
-		if(!ctx.method().equals("OPTIONS")){
+		if(ctx.method().equals("OPTIONS")){
 			return;
 		}
 		var key = ctx.header("Authorization");
@@ -174,7 +174,7 @@ public class WebService{
 	}
 
 	private static void checkGuildPerms(Context ctx){
-		if(!ctx.method().equals("OPTIONS")){
+		if(ctx.method().equals("OPTIONS")){
 			return;
 		}
 		var guildId = ctx.pathParam(":guildId");
