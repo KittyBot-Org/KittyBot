@@ -1,6 +1,9 @@
 package de.kittybot.kittybot.utils;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import de.kittybot.kittybot.objects.Config;
+import de.kittybot.kittybot.objects.requests.API;
+import de.kittybot.kittybot.objects.requests.Requester;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
@@ -76,6 +79,15 @@ public class Utils{
 	public static int getUserCount(JDA jda){
 		//noinspection ConstantConditions shut
 		return jda.getGuildCache().applyStream(guildStream -> guildStream.mapToInt(Guild::getMemberCount).sum());
+	}
+
+	public static void updateStats(final int guildCount){
+		if(Config.isSet(Config.TOP_GG_TOKEN)){
+			Requester.updateStats(API.TOP_GG, guildCount);
+		}
+		if(Config.isSet(Config.DISCORD_BOTS_TOKEN)){
+			Requester.updateStats(API.DISCORD_BOTS, guildCount);
+		}
 	}
 
 }

@@ -12,6 +12,7 @@ import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandManager;
 import de.kittybot.kittybot.objects.guilds.GuildData;
+import de.kittybot.kittybot.objects.requests.Requester;
 import de.kittybot.kittybot.objects.session.DashboardSessionController;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -35,7 +36,7 @@ public class WebService{
 	private static final OAuth2Client O_AUTH_2_CLIENT = new OAuth2Client.Builder()
 			.setClientId(Long.parseLong(Config.BOT_ID))
 			.setClientSecret(Config.BOT_SECRET)
-			.setOkHttpClient(KittyBot.getHttpClient())
+			.setOkHttpClient(Requester.getHttpClient())
 			.setSessionController(new DashboardSessionController())
 			.build();
 

@@ -1,11 +1,11 @@
 package de.kittybot.kittybot.objects.command;
 
-import de.kittybot.kittybot.KittyBot;
 import de.kittybot.kittybot.cache.CommandResponseCache;
 import de.kittybot.kittybot.cache.GuildSettingsCache;
 import de.kittybot.kittybot.cache.ReactiveMessageCache;
 import de.kittybot.kittybot.objects.Emojis;
 import de.kittybot.kittybot.objects.ReactiveMessage;
+import de.kittybot.kittybot.objects.requests.Requester;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
@@ -13,13 +13,10 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
-import net.dv8tion.jda.api.utils.data.DataObject;
-import okhttp3.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
-import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
@@ -231,14 +228,7 @@ public abstract class ACommand{
 	}
 
 	protected String getNeko(String type){
-		try{
-			var request = new Request.Builder().url("https://nekos.life/api/v2/img/" + type).build();
-			return DataObject.fromJson(KittyBot.getHttpClient().newCall(request).execute().body().string()).getString("url");
-		}
-		catch(IOException e){
-			LOG.error("Error while retrieving Neko", e);
-		}
-		return null;
+		return Requester.getNeko(type);
 	}
 
 	protected MessageAction image(CommandContext ctx, String url){
