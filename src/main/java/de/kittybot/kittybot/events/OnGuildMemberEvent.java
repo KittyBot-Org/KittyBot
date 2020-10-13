@@ -26,9 +26,9 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 	@Override
 	public void onGuildMemberRemove(GuildMemberRemoveEvent event){
 		var settings = GuildSettingsCache.getGuildSettings(event.getGuild().getId());
-		String id = settings.getAnnouncementChannelId();
-		if(!id.equals("-1") && settings.areLeaveMessagesEnabled()){
-			TextChannel channel = event.getGuild().getTextChannelById(id);
+		String announcementChannelId = settings.getAnnouncementChannelId();
+		if(!announcementChannelId.equals("-1") && settings.areLeaveMessagesEnabled()){
+			TextChannel channel = event.getGuild().getTextChannelById(announcementChannelId);
 			if(channel != null){
 				if(event.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE)){
 					channel.sendMessage(generateLeaveMessage(settings.getLeaveMessage(), event.getUser())).queue();
