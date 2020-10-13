@@ -51,7 +51,6 @@ dependencies {
     implementation 'org.codehaus.groovy:groovy-jsr223:3.0.6'
 
     // other
-    implementation 'org.discordbots:DBL-Java-Library:2.0.1'
     implementation 'io.javalin:javalin:3.11.0'
     implementation 'io.github.classgraph:classgraph:4.8.90'
 }

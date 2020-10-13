@@ -23,7 +23,7 @@ public class Config{
 	public static String ORIGIN_URL;
 	public static String HASTEBIN_URL;
 	public static String DISCORD_BOTS_TOKEN;
-	public static String DISCORD_BOT_LIST_TOKEN;
+	public static String TOP_GG_TOKEN;
 
 	public static String DB_HOST;
 	public static String DB_PORT;
@@ -56,7 +56,7 @@ public class Config{
 			ORIGIN_URL = json.getString("origin_url");
 			HASTEBIN_URL = json.getString("hastebin_url");
 			DISCORD_BOTS_TOKEN = json.getString("discord_bots_token");
-			DISCORD_BOT_LIST_TOKEN = json.getString("discord_bot_list_token");
+			TOP_GG_TOKEN = json.getString("top_gg_token");
 
 			var db = json.getObject("db");
 			DB_HOST = db.getString("host");

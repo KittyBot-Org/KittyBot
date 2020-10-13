@@ -9,7 +9,7 @@
     "origin_url": "your frontend origin url",
     "hastebin_url": "a hastebin url",
     "discord_bots_token": "your https://discord.bots.gg token",
-    "discord_bot_list_token": "your https://top.gg token",
+    "top_gg_token": "your https://top.gg token",
     "db": {
         "host": "your database host",
         "port": "your database port",
