@@ -158,7 +158,7 @@ public class GuildSettingsCache{
 	}
 
 	public static void pruneCache(Guild guild){
-		SETTINGS.entrySet().removeIf(entry -> entry.getValue().getGuildId().equals(guild.getId()));
+		SETTINGS.remove(guild.getId());
 	}
 
 }

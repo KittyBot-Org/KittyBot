@@ -5,7 +5,6 @@ import de.kittybot.kittybot.utils.Utils;
 
 public class GuildSettings{
 
-	private final String guildId;
 	private String commandPrefix;
 	private String requestChannelId;
 	private boolean requestsEnabled;
@@ -21,10 +20,9 @@ public class GuildSettings{
 	private boolean nsfwEnabled;
 	private String inactiveRoleId;
 
-	public GuildSettings(String guildId, String commandPrefix, String requestChannelId, boolean requestsEnabled, String announcementChannelId, String joinMessages, boolean joinMessagesEnabled,
+	public GuildSettings(String commandPrefix, String requestChannelId, boolean requestsEnabled, String announcementChannelId, String joinMessages, boolean joinMessagesEnabled,
 	                     String leaveMessages, boolean leaveMessagesEnabled, String boostMessages, boolean boostMessagesEnabled, String logChannelId, boolean logMessageEnabled, boolean nsfwEnabled,
 	                     String inactiveRoleId){
-		this.guildId = guildId;
 		this.commandPrefix = commandPrefix;
 		this.requestChannelId = requestChannelId;
 		this.requestsEnabled = requestsEnabled;
@@ -39,10 +37,6 @@ public class GuildSettings{
 		this.logMessageEnabled = logMessageEnabled;
 		this.nsfwEnabled = nsfwEnabled;
 		this.inactiveRoleId = inactiveRoleId;
-	}
-
-	public String getGuildId(){
-		return guildId;
 	}
 
 	public String getCommandPrefix(){

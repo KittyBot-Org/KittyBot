@@ -107,10 +107,9 @@ public class WebService{
 
 	private static void logout(Context ctx){
 		var auth = ctx.header("Authorization");
-		if(auth == null){
-			return;
+		if(auth != null){
+			DashboardSessionCache.deleteSession(auth);
 		}
-		DashboardSessionCache.deleteSession(auth);
 	}
 
 	private static void checkDiscordLogin(Context ctx){

@@ -114,7 +114,7 @@ public class Database{
 				return null;
 			}
 
-			return new GuildSettings(guildId,
+			return new GuildSettings(
 					res.get(Tables.GUILDS.COMMAND_PREFIX), res.get(Tables.GUILDS.REQUEST_CHANNEL_ID), res.get(Tables.GUILDS.REQUESTS_ENABLED),
 					res.get(Tables.GUILDS.ANNOUNCEMENT_CHANNEL_ID), res.get(Tables.GUILDS.JOIN_MESSAGES), res.get(Tables.GUILDS.JOIN_MESSAGES_ENABLED),
 					res.get(Tables.GUILDS.LEAVE_MESSAGES), res.get(Tables.GUILDS.LEAVE_MESSAGES_ENABLED), res.get(Tables.GUILDS.BOOST_MESSAGES),
