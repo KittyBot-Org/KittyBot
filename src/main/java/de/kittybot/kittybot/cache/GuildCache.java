@@ -72,6 +72,11 @@ public class GuildCache{
 		userGuilds.remove(guildId);
 	}
 
+	public static boolean isGuildCachedForUser(final String guildId, final String userId){
+		var userGuilds = USER_GUILD_CACHE.get(userId);
+		return userGuilds != null && userGuilds.contains(guildId);
+	}
+
 	public static void uncacheUser(final String userId){
 		USER_GUILD_CACHE.remove(userId);
 	}

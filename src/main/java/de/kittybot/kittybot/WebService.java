@@ -12,10 +12,12 @@ import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandManager;
 import de.kittybot.kittybot.objects.guilds.GuildData;
+import de.kittybot.kittybot.objects.requests.Requester;
 import de.kittybot.kittybot.objects.session.DashboardSessionController;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.utils.MiscUtil;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.slf4j.Logger;
@@ -35,7 +37,7 @@ public class WebService{
 	private static final OAuth2Client O_AUTH_2_CLIENT = new OAuth2Client.Builder()
 			.setClientId(Long.parseLong(Config.BOT_ID))
 			.setClientSecret(Config.BOT_SECRET)
-			.setOkHttpClient(KittyBot.getHttpClient())
+			.setOkHttpClient(Requester.getHttpClient())
 			.setSessionController(new DashboardSessionController())
 			.build();
 
@@ -177,7 +179,10 @@ public class WebService{
 		if(ctx.method().equals("OPTIONS")){
 			return;
 		}
-		var guildId = ctx.pathParam(":guildId");
+		var guildId = getGuildId(ctx);
+		if(guildId == null){
+			return;
+		}
 		var guild = KittyBot.getJda().getGuildById(guildId);
 		if(guild == null){
 			error(ctx, 404, "guild not found");
@@ -267,7 +272,10 @@ public class WebService{
 	}
 
 	private void getGuildSettings(Context ctx){
-		var guildId = ctx.pathParam(":guildId");
+		var guildId = getGuildId(ctx);
+		if(guildId == null){
+			return;
+		}
 		var roles = SelfAssignableRoleCache.getSelfAssignableRoles(guildId);
 		if(roles == null || KittyBot.getJda().getGuildById(guildId) == null){
 			error(ctx, 404, "guild not found");
@@ -292,7 +300,10 @@ public class WebService{
 	}
 
 	private void setGuildSettings(Context ctx){
-		var guildId = ctx.pathParam(":guildId");
+		var guildId = getGuildId(ctx);
+		if(guildId == null){
+			return;
+		}
 		if(KittyBot.getJda().getGuildById(guildId) == null){
 			error(ctx, 404, "guild not found");
 			return;
@@ -335,6 +346,18 @@ public class WebService{
 			SelfAssignableRoleCache.setSelfAssignableRoles(guildId, roles);
 		}
 		ok(ctx);
+	}
+
+	private String getGuildId(Context ctx){
+		var guildId = ctx.pathParam(":guildId");
+		try{
+			MiscUtil.parseSnowflake(guildId);
+			return guildId;
+		}
+		catch(NumberFormatException ignored){
+			error(ctx, 400, "Please provide a valid guild id");
+		}
+		return null;
 	}
 
 	private void error(Context ctx, int code, String error){

@@ -27,8 +27,6 @@ import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.dv8tion.jda.internal.utils.config.ThreadingConfig;
-import okhttp3.OkHttpClient;
-import org.discordbots.api.client.DiscordBotListAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,12 +39,10 @@ import java.util.concurrent.TimeUnit;
 public class KittyBot{
 
 	private static final Logger LOG = LoggerFactory.getLogger(KittyBot.class);
-	private static final OkHttpClient HTTP_CLIENT = new OkHttpClient();
 	private static final AudioPlayerManager AUDIO_PLAYER_MANAGER = new DefaultAudioPlayerManager();
 	private static final ScheduledExecutorService SCHEDULER = Executors.newSingleThreadScheduledExecutor();
 	private static final EventWaiter WAITER = new EventWaiter();
 	private static JDA jda;
-	private static DiscordBotListAPI discordBotListAPI;
 
 	public KittyBot(){
 		LOG.info("\n" +
@@ -100,7 +96,6 @@ public class KittyBot{
 							new OnGuildReadyEvent(),
 							new OnGuildVoiceEvent(),
 							new OnInviteEvent(),
-							new OnReadyEvent(),
 							new OnRawEvent(),
 							new Paginator()
 					)
@@ -108,16 +103,14 @@ public class KittyBot{
 					.setActivity(Activity.playing("loading.."))
 					.setStatus(OnlineStatus.DO_NOT_DISTURB)
 					.setEventPool(ThreadingConfig.newScheduler(2, () -> "KittyBot", "Events"), true)
-					.setHttpClient(HTTP_CLIENT)
+					.setHttpClient(Requester.getHttpClient())
 					.setGatewayEncoding(GatewayEncoding.ETF)
 					.setAudioSendFactory(new NativeAudioSendFactory())
 					.setBulkDeleteSplittingEnabled(false)
 					.build()
 					.awaitReady();
 
-			if(Config.isSet(Config.DISCORD_BOT_LIST_TOKEN)){
-				discordBotListAPI = new DiscordBotListAPI.Builder().token(Config.DISCORD_BOT_LIST_TOKEN).botId(Config.BOT_ID).build();
-			}
+			Utils.updateStats((int) jda.getGuildCache().size());
 
 			Database.init(jda);
 
@@ -166,16 +159,8 @@ public class KittyBot{
 		return AUDIO_PLAYER_MANAGER;
 	}
 
-	public static OkHttpClient getHttpClient(){
-		return HTTP_CLIENT;
-	}
-
 	public static JDA getJda(){
 		return jda;
-	}
-
-	public static DiscordBotListAPI getDiscordBotListAPI(){
-		return discordBotListAPI;
 	}
 
 	public static ScheduledExecutorService getScheduler(){
