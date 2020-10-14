@@ -44,6 +44,7 @@ public class Requester{
 	public static String getNeko(final String type){
 		final var url = String.format(API.NEKOS_LIFE.getUrl(), type);
 		REQUEST_BUILDER.url(url);
+		REQUEST_BUILDER.method("GET", null);
 		final var json = executeRequest(REQUEST_BUILDER.build());
 		return json.getString("url");
 	}
