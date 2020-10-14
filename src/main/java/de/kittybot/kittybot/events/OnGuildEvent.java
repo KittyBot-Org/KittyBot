@@ -113,7 +113,7 @@ public class OnGuildEvent extends ListenerAdapter{
 			if(add){
 				return !GuildCache.isGuildCachedForUser(guildId, userId) && DashboardSessionCache.hasSession(userId) && hasRole;
 			}
-			return DashboardSessionCache.hasSession(userId) && hasRole;
+			return GuildCache.isGuildCachedForUser(guildId, userId) && DashboardSessionCache.hasSession(userId) && hasRole;
 		})
 			.onSuccess(members -> members.forEach(member ->{
 				final var userId = member.getId();
