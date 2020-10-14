@@ -229,7 +229,11 @@ public class WebService{
 	}
 
 	private void getRoles(Context ctx){
-		var guild = KittyBot.getJda().getGuildById(ctx.pathParam(":guildId"));
+		var guildId = getGuildId(ctx);
+		if(guildId == null){
+			return;
+		}
+		var guild = KittyBot.getJda().getGuildById(guildId);
 		if(guild == null){
 			error(ctx, 404, "guild not found");
 			return;
@@ -246,7 +250,11 @@ public class WebService{
 	}
 
 	private void getChannels(Context ctx){
-		var guild = KittyBot.getJda().getGuildById(ctx.pathParam(":guildId"));
+		var guildId = getGuildId(ctx);
+		if(guildId == null){
+			return;
+		}
+		var guild = KittyBot.getJda().getGuildById(guildId);
 		if(guild == null){
 			error(ctx, 404, "guild not found");
 			return;
@@ -259,7 +267,11 @@ public class WebService{
 	}
 
 	private void getEmotes(Context ctx){
-		var guild = KittyBot.getJda().getGuildById(ctx.pathParam(":guildId"));
+		var guildId = getGuildId(ctx);
+		if(guildId == null){
+			return;
+		}
+		var guild = KittyBot.getJda().getGuildById(guildId);
 		if(guild == null){
 			error(ctx, 404, "guild not found");
 			return;
