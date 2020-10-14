@@ -31,7 +31,7 @@ dependencies {
     implementation 'com.jagrosh:jda-utilities:3.0.4'
 
     // audio
-    implementation 'com.github.devoxin:lavaplayer:1.3.57'
+    implementation 'com.github.devoxin:lavaplayer:1.3.58'
     implementation 'com.sedmelluq:jda-nas:1.1.0'
 
     // database
