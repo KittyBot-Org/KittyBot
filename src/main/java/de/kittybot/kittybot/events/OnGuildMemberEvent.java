@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.events;
 
 import de.kittybot.kittybot.cache.GuildCache;
+import de.kittybot.kittybot.cache.GuildSettingsCache;
 import de.kittybot.kittybot.cache.InviteCache;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.utils.MessageUtils;
@@ -24,12 +25,13 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 
 	@Override
 	public void onGuildMemberRemove(GuildMemberRemoveEvent event){
-		String id = Database.getAnnouncementChannelId(event.getGuild().getId());
-		if(!id.equals("-1") && Database.getLeaveMessageEnabled(event.getGuild().getId())){
-			TextChannel channel = event.getGuild().getTextChannelById(id);
+		var settings = GuildSettingsCache.getGuildSettings(event.getGuild().getId());
+		String announcementChannelId = settings.getAnnouncementChannelId();
+		if(!announcementChannelId.equals("-1") && settings.areLeaveMessagesEnabled()){
+			TextChannel channel = event.getGuild().getTextChannelById(announcementChannelId);
 			if(channel != null){
 				if(event.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE)){
-					channel.sendMessage(generateLeaveMessage(Database.getLeaveMessage(event.getGuild().getId()), event.getUser())).queue();
+					channel.sendMessage(generateLeaveMessage(settings.getLeaveMessage(), event.getUser())).queue();
 				}
 				else{
 					event.getGuild()
@@ -47,12 +49,13 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 
 	@Override
 	public void onGuildMemberJoin(GuildMemberJoinEvent event){
-		String id = Database.getAnnouncementChannelId(event.getGuild().getId());
-		if(!id.equals("-1") && Database.getJoinMessageEnabled(event.getGuild().getId())){
-			TextChannel channel = event.getGuild().getTextChannelById(id);
+		var settings = GuildSettingsCache.getGuildSettings(event.getGuild().getId());
+		String announcementChannelId = settings.getAnnouncementChannelId();
+		if(!announcementChannelId.equals("-1") && settings.areJoinMessagesEnabled()){
+			TextChannel channel = event.getGuild().getTextChannelById(announcementChannelId);
 			if(channel != null){
 				if(event.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE)){
-					channel.sendMessage(generateJoinMessage(Database.getJoinMessage(event.getGuild().getId()), event.getUser(), InviteCache.getUsedInvite(event.getGuild())))
+					channel.sendMessage(generateJoinMessage(settings.getJoinMessage(), event.getUser(), InviteCache.getUsedInvite(event.getGuild())))
 							.queue();
 				}
 				else{
@@ -69,9 +72,10 @@ public class OnGuildMemberEvent extends ListenerAdapter{
 
 	@Override
 	public void onGuildMemberUpdateBoostTime(GuildMemberUpdateBoostTimeEvent event){
-		String id = Database.getAnnouncementChannelId(event.getGuild().getId());
-		if(!id.equals("-1") && Database.getLeaveMessageEnabled(event.getGuild().getId())){
-			TextChannel channel = event.getGuild().getTextChannelById(id);
+		var settings = GuildSettingsCache.getGuildSettings(event.getGuild().getId());
+		String announcementChannelId = settings.getAnnouncementChannelId();
+		if(!announcementChannelId.equals("-1") && settings.areLeaveMessagesEnabled()){
+			TextChannel channel = event.getGuild().getTextChannelById(announcementChannelId);
 			if(channel != null){
 				if(event.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE)){
 					channel.sendMessage(generateBoostMessage(Database.getBoostMessage(event.getGuild().getId()), event.getUser())).queue();

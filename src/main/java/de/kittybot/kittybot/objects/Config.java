@@ -23,7 +23,7 @@ public class Config{
 	public static String ORIGIN_URL;
 	public static String HASTEBIN_URL;
 	public static String DISCORD_BOTS_TOKEN;
-	public static String DISCORD_BOT_LIST_TOKEN;
+	public static String TOP_GG_TOKEN;
 
 	public static String DB_HOST;
 	public static String DB_PORT;
@@ -31,10 +31,12 @@ public class Config{
 	public static String DB_USER;
 	public static String DB_PASSWORD;
 
-	public static List<String> ADMIN_IDS = new ArrayList<>();
-	public static List<LavalinkNode> LAVALINK_NODES = new ArrayList<>();
+	public static final List<String> ADMIN_IDS = new ArrayList<>();
+	public static final List<LavalinkNode> LAVALINK_NODES = new ArrayList<>();
 
 	public static String DEFAULT_PREFIX = ".";
+
+	private Config(){}
 
 	static{
 		try{
@@ -43,7 +45,6 @@ public class Config{
 			BOT_TOKEN = json.getString("bot_token");
 			BOT_SECRET = json.getString("bot_secret");
 			BOT_ID = json.getString("bot_id");
-			ADMIN_IDS = new ArrayList<>();
 			var adminIds = json.getArray("admin_ids");
 			for(var i = 0; i < adminIds.length(); i++){
 				ADMIN_IDS.add(adminIds.getString(i));
@@ -55,7 +56,7 @@ public class Config{
 			ORIGIN_URL = json.getString("origin_url");
 			HASTEBIN_URL = json.getString("hastebin_url");
 			DISCORD_BOTS_TOKEN = json.getString("discord_bots_token");
-			DISCORD_BOT_LIST_TOKEN = json.getString("discord_bot_list_token");
+			TOP_GG_TOKEN = json.getString("top_gg_token");
 
 			var db = json.getObject("db");
 			DB_HOST = db.getString("host");

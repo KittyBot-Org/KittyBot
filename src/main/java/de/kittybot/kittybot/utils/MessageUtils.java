@@ -14,6 +14,8 @@ public class MessageUtils{
 
 	private static final Logger LOG = LoggerFactory.getLogger(MessageUtils.class);
 
+	private MessageUtils(){}
+
 	public static List<String> loadMessageFile(String fileName){
 		var inputStream = MessageUtils.class.getClassLoader().getResourceAsStream("messages/" + fileName + "_messages.txt");
 		if(inputStream == null){
@@ -37,6 +39,34 @@ public class MessageUtils{
 
 	public static String maskLink(String title, String url){
 		return "[" + title + "](" + url + ")";
+	}
+
+	public static String getUserMention(String userId){
+		if(userId.equals("-1")){
+			return "unset";
+		}
+		return "<@" + userId + ">";
+	}
+
+	public static String getRoleMention(String roleId){
+		if(roleId.equals("-1")){
+			return "unset";
+		}
+		return "<@&" + roleId + ">";
+	}
+
+	public static String getChannelMention(String channelId){
+		if(channelId.equals("-1")){
+			return "unset";
+		}
+		return "<#" + channelId + ">";
+	}
+
+	public static String getEmoteMention(String emoteId){
+		if(emoteId.equals("-1")){
+			return "unset";
+		}
+		return "<:i:" + emoteId + ">";
 	}
 
 }

@@ -3,21 +3,19 @@ package de.kittybot.kittybot.cache;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.session.DashboardSession;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class DashboardSessionCache{
 
 	private static final Map<String, DashboardSession> SESSION_CACHE = new HashMap<>();
-	private static final List<String> USER_SESSION_CACHE = new ArrayList<>();
+	private static final Map<String, Boolean> USER_SESSION_CACHE = new HashMap<>();
 
 	private DashboardSessionCache(){}
 
 	public static void addSession(final DashboardSession session){
 		SESSION_CACHE.put(session.getSessionKey(), session);
-		USER_SESSION_CACHE.add(session.getUserId());
+		USER_SESSION_CACHE.put(session.getUserId(), true);
 		Database.addSession(session);
 	}
 
@@ -54,14 +52,13 @@ public class DashboardSessionCache{
 	}
 
 	public static boolean hasSession(final String userId){
-		if(USER_SESSION_CACHE.contains(userId)){
-			return true;
+		var hasSession = USER_SESSION_CACHE.get(userId);
+		if(hasSession != null){
+			return hasSession;
 		}
-		if(Database.hasSession(userId)){
-			USER_SESSION_CACHE.add(userId);
-			return true;
-		}
-		return false;
+		hasSession = Database.hasSession(userId);
+		USER_SESSION_CACHE.put(userId, hasSession);
+		return hasSession;
 	}
 
 }

@@ -1,21 +1,16 @@
 package de.kittybot.kittybot.commands.utilities;
 
-import de.kittybot.kittybot.KittyBot;
 import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
+import de.kittybot.kittybot.objects.requests.Requester;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.utils.data.DataObject;
-import okhttp3.*;
 import org.apache.commons.io.IOUtils;
-import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class HastebinCommand extends ACommand{
 
@@ -32,43 +27,22 @@ public class HastebinCommand extends ACommand{
 	@Override
 	public void run(CommandContext ctx){
 		List<Message.Attachment> attachments = ctx.getMessage().getAttachments();
-		if(!attachments.isEmpty()){
-			for(Message.Attachment attachment : attachments){
-				if(!attachment.isImage() && !attachment.isVideo()){
-					try{
-						String text = IOUtils.toString(attachment.retrieveInputStream().get(), StandardCharsets.UTF_8.name());
-						Request request = new Request.Builder().url(Config.HASTEBIN_URL + "/documents")
-								.post(RequestBody.create(MediaType.parse("text/html; charset=utf-8"), text))
-								.build();
-						KittyBot.getHttpClient().newCall(request).enqueue(new Callback(){
-							@Override
-							public void onFailure(@NotNull Call call, @NotNull IOException e){
-								LOG.error("Error while creating hastebin", e);
-								sendError(ctx, "Error while creating hastebin");
-							}
-
-							@Override
-							public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException{
-								try(var body = response.body()){
-									if(body == null){
-										sendError(ctx, "Error while creating hastebin");
-										return;
-									}
-									sendAnswer(ctx, "[here](" + Config.HASTEBIN_URL + "/" + DataObject.fromJson(body.string()).getString("key") + ") is a hastebin");
-								}
-							}
-						});
-					}
-					catch(IOException | InterruptedException | ExecutionException e){
-						LOG.error("Error while creating hastebin", e);
-						sendError(ctx, "Error while creating hastebin");
-					}
-				}
-			}
-		}
-		else{
+		if(attachments.isEmpty()){
 			sendError(ctx, "Please provide a file");
+			return;
 		}
+		attachments.stream().filter(attachment -> !attachment.isImage() && !attachment.isVideo()).forEach(attachment -> {
+			attachment.retrieveInputStream().thenAcceptAsync(inputStream -> {
+				try(inputStream){
+					final var text = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
+					sendAnswer(ctx, "[here](" + Requester.postToHastebin(text) + ") is a hastebin");
+				}
+				catch(final Exception e){
+					LOG.error("Error while creating hastebin", e);
+					sendError(ctx, "Error while creating hastebin");
+				}
+			});
+		});
 	}
 
 }

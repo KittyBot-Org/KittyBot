@@ -24,6 +24,8 @@ public class SQL{
 
 	private static final HikariDataSource dataSource;
 
+	private SQL(){}
+
 	static{
 		var config = new HikariConfig();
 		config.setDriverClassName("org.postgresql.Driver");
@@ -41,16 +43,16 @@ public class SQL{
 	}
 
 	public static void createTable(String table){
-		try(var con = getCon()){
+		try(var con = getCon(); var statement = con.createStatement()){
 			var sql = IOUtils.toString(SQL.class.getClassLoader().getResourceAsStream("sql_tables/" + table + ".sql"), StandardCharsets.UTF_8.name());
 			LOG.info("Read sql table from resources: {}", table);
-			con.createStatement().execute(sql);
+			statement.execute(sql);
 		}
 		catch(IOException e){
-			LOG.error("Error while reading sql table file: " + table, e);
+			LOG.error("Error while reading sql table file: {}", table, e);
 		}
 		catch(SQLException e){
-			LOG.error("Error while creating new table: " + table, e);
+			LOG.error("Error while creating new table: {}", table, e);
 		}
 	}
 
@@ -70,7 +72,7 @@ public class SQL{
 			}
 		}
 		catch(SQLException e){
-			LOG.error("Error while getting key " + field.getName() + " from guild " + guildId, e);
+			LOG.error("Error while getting key {} from guild {}", field.getName(), guildId, e);
 		}
 		return null;
 	}
@@ -84,7 +86,7 @@ public class SQL{
 			ctx.update(GUILDS).set(field, value).where(GUILDS.GUILD_ID.eq(guildId)).execute();
 		}
 		catch(SQLException e){
-			LOG.error("Error while setting key " + field.getName() + " from guild " + guildId, e);
+			LOG.error("Error while setting key {} from guild {}", field.getName(), guildId, e);
 		}
 	}
 

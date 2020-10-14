@@ -27,35 +27,35 @@ public class MessageData{
 	}
 
 	public String getId(){
-		return messageId;
+		return this.messageId;
 	}
 
 	public String getAuthorId(){
-		return authorId;
+		return this.authorId;
 	}
 
 	public String getContent(){
-		return content;
+		return this.content;
 	}
 
 	public String getChannelId(){
-		return channelId;
+		return this.channelId;
 	}
 
 	public String getGuildId(){
-		return guildId;
+		return this.guildId;
 	}
 
 	public String getJumpUrl(){
-		return jumpUrl;
+		return this.jumpUrl;
 	}
 
 	public OffsetDateTime getTimeCreated(){
-		return timeCreated;
+		return this.timeCreated;
 	}
 
 	public OffsetDateTime getTimeEdited(){
-		return timeEdited;
+		return this.timeEdited;
 	}
 
 	public MessageData setTimeEdited(final OffsetDateTime timeEdited){

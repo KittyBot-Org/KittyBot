@@ -61,7 +61,7 @@ public class RolesCommand extends ACommand{
 						for(Map.Entry<Role, Emote> m : map.entrySet()){
 							message.append(m.getKey().getAsMention()).append(", ");
 						}
-						sendAnswer(ctx, "Roles: " + message.toString());
+						sendAnswer(ctx, "Roles: " + message);
 					}
 				}
 				else{

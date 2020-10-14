@@ -11,6 +11,8 @@ public class CommandResponseCache{
 
 	private static final Map<String, String> COMMAND_RESPONSES = new HashMap<>();
 
+	private CommandResponseCache(){}
+
 	public static void addCommandResponse(Message command, Message response){
 		COMMAND_RESPONSES.put(command.getId(), response.getId());
 	}
