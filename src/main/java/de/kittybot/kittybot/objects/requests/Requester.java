@@ -36,7 +36,7 @@ public class Requester{
 			return json;
 		}
 		catch(final Exception ex){
-			LOG.error("There was an error while sending a request to {}", requestUrl);
+			LOG.error("There was an error while sending a request to {}", requestUrl, ex);
 		}
 		return DataObject.empty();
 	}
