@@ -9,7 +9,7 @@ public class Emojis{
 	public static final String CONSOLE = "<:console:702991438287470643>";
 	public static final String INVITE = "<:invite:702991540171046993>";
 	public static final String DISCORD = "<:discord:702991398840041505>";
-	public static final String GITHUB = "<:github:766055410360516658>";
+	public static final String GITHUB = "<:github:766203064486068234>";
 
 	// EMOJIS
 	public static final String ARROW_LEFT = "\u2B05\uFE0F";
