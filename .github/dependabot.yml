@@ -2,7 +2,7 @@ version: 2
 updates:
 - package-ecosystem: gradle
   directory: "/"
-  target-branch: development
+  target-branch: dev
   schedule:
     interval: daily
     time: '14:00'
