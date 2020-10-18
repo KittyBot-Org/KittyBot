@@ -4,6 +4,7 @@ import de.kittybot.kittybot.KittyBot;
 import de.kittybot.kittybot.objects.Emojis;
 import de.kittybot.kittybot.objects.TitleInfo;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
@@ -57,16 +58,21 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 			PAGINATOR_MESSAGES.computeIfAbsent(channelId, k -> new ArrayList<>()).add(messageId);
 			TOTAL_PAGES.put(messageId, totalPages);
 			INVOKERS.put(messageId, authorId);
-			ORIGINALS.put(messageId, message.getIdLong());
 			CURRENT_PAGE.put(messageId, 0);
 			CONTENT_CONSUMERS.put(messageId, contentConsumer);
+
+			if(hasDeletePerm(message)){
+				ORIGINALS.put(messageId, message.getIdLong());
+			}
 
 			// TIMEOUT
 
 			KittyBot.getWaiter()
 					.waitForEvent(GuildMessageReactionAddEvent.class, ev -> ev.getMessageIdLong() == messageId && ev.getUserIdLong() == authorId, ev -> {}, 3, TimeUnit.MINUTES,
 							() -> {
-								message.delete().queue();
+								if(hasDeletePerm(message)){
+									message.delete().queue();
+								}
 								channel.deleteMessageById(messageId).queue();
 
 								removePaginator(channelId, messageId);
@@ -81,6 +87,10 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 		ORIGINALS.remove(messageId);
 		CURRENT_PAGE.remove(messageId);
 		CONTENT_CONSUMERS.remove(messageId);
+	}
+
+	private static boolean hasDeletePerm(final Message message){
+		return message.getGuild().getSelfMember().hasPermission(message.getTextChannel(), Permission.MESSAGE_MANAGE); // thanks top.gg admins
 	}
 
 	@Override
@@ -113,7 +123,9 @@ public class Paginator extends ListenerAdapter{ // thanks jda-utilities for your
 
 		switch(emoji){
 			case Emojis.WASTEBASKET:
-				channel.deleteMessageById(ORIGINALS.get(messageId)).queue();
+				if(ORIGINALS.containsKey(messageId)){
+					channel.deleteMessageById(ORIGINALS.get(messageId)).queue();
+				}
 				channel.deleteMessageById(messageId).queue();
 				removePaginator(channelId, messageId);
 				return;
