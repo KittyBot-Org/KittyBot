@@ -1,16 +1,15 @@
 package de.kittybot.kittybot.utils;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import de.kittybot.kittybot.objects.SelfAssignableRole;
+import de.kittybot.kittybot.objects.SelfAssignableRoleGroup;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 
 import java.time.Duration;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -44,17 +43,10 @@ public class Utils{
 		return roles.stream().map(Role::getId).collect(Collectors.toSet());
 	}
 
-	public static Map<String, String> toMap(List<Role> roles, List<Emote> emotes){
-		Map<String, String> map = new HashMap<>();
-		int i = 0;
-		for(Role role : roles){
-			if(emotes.size() <= i){
-				break;
-			}
-			list.add(new SelfAssignableRole(guildId, groupId, role.getId(), emotes.get(i).getId()));
-			i++;
-		}
-		return list;
+	public static Set<SelfAssignableRole> toSet(String guildId, String groupId, List<Role> roles, List<Emote> emotes){
+		return roles.stream().map(role ->
+				emotes.get(roles.indexOf(role)) == null ? null : new SelfAssignableRole(guildId, groupId, role.getId(), emotes.get(roles.indexOf(role)).getId())
+		).filter(Objects::nonNull).collect(Collectors.toSet());
 	}
 
 	public static String formatDuration(long length){

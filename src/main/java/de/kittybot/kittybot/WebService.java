@@ -278,14 +278,13 @@ public class WebService{
 			error(ctx, 404, "guild not found");
 			return;
 		}
-		var selfAssignableRoles = DataArray.empty();
-		for(var role : roles){
-			selfAssignableRoles.add(DataObject.empty().put("role", role.getRoleId()).put("emote", role.getEmoteId()));
-		}
-		var selfAssignableRoleGroups = DataArray.empty();
-		for(var group : groups){
-			selfAssignableRoleGroups.add(DataObject.empty().put("id", group.getId()).put("name", group.getName()).put("max_roles", group.getMaxRoles()));
-		}
+		var selfAssignableRoles = DataArray.fromCollection(groups.stream().map(
+				group -> DataObject.empty().put("id", group.getId()).put("name", group.getName()).put("max_roles", group.getMaxRoles()).put("roles",
+						DataArray.fromCollection(roles.stream().filter(role -> role.getGroupId().equals(group.getId())).map(role ->
+								DataObject.empty().put("role", role.getRoleId()).put("emote", role.getEmoteId())
+				).collect(Collectors.toSet())))
+			).collect(Collectors.toSet()));
+
 		ok(ctx, DataObject.empty()
 				.put("prefix", PrefixCache.getCommandPrefix(guildId))
 				.put("join_messages_enabled", Database.getJoinMessageEnabled(guildId))
@@ -296,8 +295,7 @@ public class WebService{
 				.put("boost_messages", Database.getBoostMessage(guildId))
 				.put("announcement_channel_id", Database.getAnnouncementChannelId(guildId))
 				.put("nsfw_enabled", Database.getNSFWEnabled(guildId))
-				.put("self_assignable_roles", selfAssignableRoles)
-				.put("self_assignable_role_groups", selfAssignableRoleGroups));
+				.put("self_assignable_roles", selfAssignableRoles));
 	}
 
 	private void setGuildSettings(Context ctx){
@@ -307,7 +305,6 @@ public class WebService{
 			return;
 		}
 		var json = DataObject.fromJson(ctx.body());
-		new FileWriter("./efjhfiu").write;
 		if(json.hasKey("prefix")){
 			Database.setCommandPrefix(guildId, json.getString("prefix"));
 		}
@@ -336,18 +333,7 @@ public class WebService{
 			Database.setNSFWEnabled(guildId, json.getBoolean("nsfw_enabled"));
 		}
 		if(json.hasKey("self_assignable_roles")){
-			var groupStream = json.getArray("self_assignable_roles").toList().stream().map(o -> ((DataObject)o));
-			groupStream.map(ob -> Map.entry(
-					new SelfAssignableRoleGroup(guildId, ob.getString("group_id"), ob.getString("group_name"), ob.getInt("max_roles")),
-					ob.getArray("roles").stream((objects, i) -> objects.getObject(i))))
-
-			SelfAssignableRoleCache.addSelfAssignableRoles(guildId, roleStream.filter(dataObject -> dataObject.hasKey("add")).map(ob -> new SelfAssignableRole(guildId, ob.getString("role_id"), ob.getString("group_id"), ob.getString("emote_id"))).collect(Collectors.toSet()));
-			SelfAssignableRoleCache.removeSelfAssignableRoles(guildId, roleStream.filter(dataObject -> dataObject.hasKey("remove")).map(ob -> ob.getString("id")).collect(Collectors.toSet()));
-		}
-		if(json.hasKey("self_assignable_role_groups")){
-			var groupStream = json.getArray("self_assignable_role_groups").toList().stream().map(o -> ((DataObject)o));
-			SelfAssignableRoleGroupCache.addSelfAssignableRoleGroups(guildId, groupStream.filter(dataObject -> dataObject.hasKey("add")).map(ob -> new SelfAssignableRoleGroup(guildId, ob.getString("group_id"), ob.getString("group_name"), ob.getInt("max_roles"))).collect(Collectors.toSet()));
-			SelfAssignableRoleGroupCache.removeSelfAssignableRoleGroups(guildId, groupStream.filter(dataObject -> dataObject.hasKey("remove")).map(ob -> ob.getString("id")).collect(Collectors.toSet()));
+			// todo
 		}
 		ok(ctx);
 	}
