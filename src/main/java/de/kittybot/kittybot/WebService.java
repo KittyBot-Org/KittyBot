@@ -17,6 +17,7 @@ import de.kittybot.kittybot.objects.session.DashboardSessionController;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.utils.MiscUtil;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
@@ -179,11 +180,7 @@ public class WebService{
 		if(ctx.method().equals("OPTIONS")){
 			return;
 		}
-		var guildId = getGuildId(ctx);
-		if(guildId == null){
-			return;
-		}
-		var guild = KittyBot.getJda().getGuildById(guildId);
+		var guild = getGuild(ctx);
 		if(guild == null){
 			error(ctx, 404, "guild not found");
 			return;
@@ -229,11 +226,7 @@ public class WebService{
 	}
 
 	private void getRoles(Context ctx){
-		var guildId = getGuildId(ctx);
-		if(guildId == null){
-			return;
-		}
-		var guild = KittyBot.getJda().getGuildById(guildId);
+		var guild = getGuild(ctx);
 		if(guild == null){
 			error(ctx, 404, "guild not found");
 			return;
@@ -249,11 +242,7 @@ public class WebService{
 	}
 
 	private void getChannels(Context ctx){
-		var guildId = getGuildId(ctx);
-		if(guildId == null){
-			return;
-		}
-		var guild = KittyBot.getJda().getGuildById(guildId);
+		var guild = getGuild(ctx);
 		if(guild == null){
 			error(ctx, 404, "guild not found");
 			return;
@@ -264,11 +253,7 @@ public class WebService{
 	}
 
 	private void getEmotes(Context ctx){
-		var guildId = getGuildId(ctx);
-		if(guildId == null){
-			return;
-		}
-		var guild = KittyBot.getJda().getGuildById(guildId);
+		var guild = getGuild(ctx);
 		if(guild == null){
 			error(ctx, 404, "guild not found");
 			return;
@@ -279,15 +264,13 @@ public class WebService{
 	}
 
 	private void getGuildSettings(Context ctx){
-		var guildId = getGuildId(ctx);
-		if(guildId == null){
-			return;
-		}
-		var roles = SelfAssignableRoleCache.getSelfAssignableRoles(guildId);
-		if(roles == null || KittyBot.getJda().getGuildById(guildId) == null){
+		var guildId = ctx.pathParam(":guildId");
+		var guild = getGuild(ctx);
+		if(guild == null){
 			error(ctx, 404, "guild not found");
 			return;
 		}
+		var roles = SelfAssignableRoleCache.getSelfAssignableRoles(guildId);
 		var data = DataArray.empty();
 		for(var role : roles.entrySet()){
 			data.add(DataObject.empty().put("role", role.getKey()).put("emote", role.getValue()));
@@ -307,11 +290,9 @@ public class WebService{
 	}
 
 	private void setGuildSettings(Context ctx){
-		var guildId = getGuildId(ctx);
-		if(guildId == null){
-			return;
-		}
-		if(KittyBot.getJda().getGuildById(guildId) == null){
+		var guildId = ctx.pathParam(":guildId");
+		var guild = getGuild(ctx);
+		if(guild == null){
 			error(ctx, 404, "guild not found");
 			return;
 		}
@@ -355,16 +336,16 @@ public class WebService{
 		ok(ctx);
 	}
 
-	private String getGuildId(Context ctx){
+	private Guild getGuild(final Context ctx){
 		var guildId = ctx.pathParam(":guildId");
 		try{
 			MiscUtil.parseSnowflake(guildId);
-			return guildId;
+			return KittyBot.getJda().getGuildById(guildId);
 		}
-		catch(NumberFormatException ignored){
+		catch(NumberFormatException ex){
 			error(ctx, 400, "Please provide a valid guild id");
+			return null;
 		}
-		return null;
 	}
 
 	private void error(Context ctx, int code, String error){
