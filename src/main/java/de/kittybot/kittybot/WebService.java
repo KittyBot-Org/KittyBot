@@ -239,13 +239,12 @@ public class WebService{
 			return;
 		}
 		var data = DataArray.empty();
-		for(var role : guild.getRoles()){
-			if(role.isPublicRole()){
-				continue;
+		guild.getRoleCache().forEach(role -> {
+			if(!role.isPublicRole()){
+				var color = role.getColor();
+				data.add(DataObject.empty().put("name", role.getName()).put("id", role.getId()).put("color", color == null ? "" : "#" + Integer.toHexString(color.getRGB()).substring(2)));
 			}
-			var color = role.getColor();
-			data.add(DataObject.empty().put("name", role.getName()).put("id", role.getId()).put("color", color == null ? "" : "#"+Integer.toHexString(color.getRGB()).substring(2)));
-		}
+		});
 		ok(ctx, DataObject.empty().put("roles", data));
 	}
 
@@ -260,9 +259,7 @@ public class WebService{
 			return;
 		}
 		var data = DataArray.empty();
-		for(var channel : guild.getTextChannels()){
-			data.add(DataObject.empty().put("name", channel.getName()).put("id", channel.getId()));
-		}
+		guild.getTextChannelCache().forEach(channel -> data.add(DataObject.empty().put("name", channel.getName()).put("id", channel.getId())));
 		ok(ctx, DataObject.empty().put("channels", data));
 	}
 
@@ -277,9 +274,7 @@ public class WebService{
 			return;
 		}
 		var data = DataArray.empty();
-		for(var emote : guild.getEmotes()){
-			data.add(DataObject.empty().put("name", emote.getName()).put("id", emote.getId()).put("url", emote.getImageUrl()));
-		}
+		guild.getEmoteCache().forEach(emote -> data.add(DataObject.empty().put("name", emote.getName()).put("id", emote.getId()).put("url", emote.getImageUrl())));
 		ok(ctx, DataObject.empty().put("emotes", data));
 	}
 
