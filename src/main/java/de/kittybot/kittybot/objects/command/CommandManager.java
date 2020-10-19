@@ -43,18 +43,19 @@ public class CommandManager{
 	public static boolean checkCommands(GuildMessageReceivedEvent event){
 		long start = System.nanoTime();
 		String message = cutCommandPrefix(event.getGuild(), event.getMessage().getContentRaw());
-		if(message != null){
-			String command = getCommandString(message);
-			for(var entry : COMMANDS.entrySet()){
-				var cmd = entry.getValue();
-				if(cmd.checkCmd(command)){
-					//event.getChannel().sendTyping().queue(); answer is sending too fast and I don't want to block the thread lol
-					var ctx = new CommandContext(event, cmd.getCommand(), message);
-					LOG.info("Command: {}, args: {}, by: {}, from: {}({})", cmd.getCommand(), ctx.getArgs(), event.getAuthor().getName(), event.getGuild().getName(), event.getGuild().getId());
-					cmd.run(ctx);
-					Database.addCommandStatistics(event.getGuild().getId(), event.getMessageId(), event.getAuthor().getId(), cmd.getCommand(), YearToSecond.valueOf(Duration.of(System.nanoTime() - start, ChronoUnit.NANOS)));
-					return true;
-				}
+		if(message == null){
+			return false;
+		}
+		String command = getCommandString(message);
+		for(var entry : COMMANDS.entrySet()){
+			var cmd = entry.getValue();
+			if(cmd.checkCmd(command)){ // what even is this @topi
+				//event.getChannel().sendTyping().queue(); answer is sending too fast and I don't want to block the thread lol
+				var ctx = new CommandContext(event, cmd.getCommand(), message);
+				LOG.info("Command: {}, args: {}, by: {}, from: {}({})", cmd.getCommand(), ctx.getArgs(), event.getAuthor().getName(), event.getGuild().getName(), event.getGuild().getId());
+				cmd.run(ctx);
+				Database.addCommandStatistics(event.getGuild().getId(), event.getMessageId(), event.getAuthor().getId(), cmd.getCommand(), YearToSecond.valueOf(Duration.of(System.nanoTime() - start, ChronoUnit.NANOS)));
+				return true;
 			}
 		}
 		return false;
