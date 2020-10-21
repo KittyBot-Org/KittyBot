@@ -93,11 +93,6 @@ jooq {
     }
 }
 
-shadowJar {
-    dependsOn generateJooq
-    shadowJar.mustRunAfter generateJooq
-}
-
 ext {
     moduleName = 'KittyBot'
 }
