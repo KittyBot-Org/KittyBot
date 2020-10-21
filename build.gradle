@@ -5,7 +5,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'de.kittybot.jooq:gradle-jooq-plugin:5.1.7'
+        classpath 'de.kittybot.jooq:gradle-jooq-plugin:5.2.3'
     }
 }
 
@@ -40,7 +40,7 @@ dependencies {
     // database
     implementation 'com.zaxxer:HikariCP:3.4.5'
     implementation 'org.postgresql:postgresql:42.2.18'
-    implementation 'org.jooq:jooq:3.13.5'
+    implementation 'org.jooq:jooq:3.14.0' // TODO we need to wait for a new release
     jooqGenerator 'org.postgresql:postgresql:42.2.18'
 
     // logging
@@ -84,13 +84,18 @@ jooq {
                     target {
                         packageName = 'de.kittybot.kittybot.database.jooq'
                         directory = "${projectDir}/src/main/java"
-                        clean = false
+                        clean = true
                     }
                     strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
                 }
             }
         }
     }
+}
+
+shadowJar {
+    dependsOn generateJooq
+    shadowJar.mustRunAfter generateJooq
 }
 
 ext {
