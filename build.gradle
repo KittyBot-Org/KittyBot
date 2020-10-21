@@ -5,7 +5,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'de.kittybot.jooq:gradle-jooq-plugin:5.2.3'
+        classpath 'de.kittybot.jooq:gradle-jooq-plugin:5.2.4.1-DEV'
     }
 }
 
