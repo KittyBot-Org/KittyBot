@@ -6,8 +6,6 @@ import com.jagrosh.jdautilities.oauth2.exceptions.InvalidStateException;
 import de.kittybot.kittybot.cache.*;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.Config;
-import de.kittybot.kittybot.objects.SelfAssignableRole;
-import de.kittybot.kittybot.objects.SelfAssignableRoleGroup;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandManager;
 import de.kittybot.kittybot.objects.guilds.GuildData;
@@ -21,12 +19,9 @@ import net.dv8tion.jda.api.utils.data.DataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
@@ -239,7 +234,7 @@ public class WebService{
 				continue;
 			}
 			var color = role.getColor();
-			data.add(DataObject.empty().put("name", role.getName()).put("id", role.getId()).put("color", color == null ? "" : "#"+Integer.toHexString(color.getRGB()).substring(2)));
+			data.add(DataObject.empty().put("name", role.getName()).put("id", role.getId()).put("color", color == null ? "" : "#" + Integer.toHexString(color.getRGB()).substring(2)));
 		}
 		ok(ctx, DataObject.empty().put("roles", data));
 	}
@@ -278,12 +273,12 @@ public class WebService{
 			error(ctx, 404, "guild not found");
 			return;
 		}
-		var selfAssignableRoles = DataArray.fromCollection(groups.stream().map(
-				group -> DataObject.empty().put("id", group.getId()).put("name", group.getName()).put("max_roles", group.getMaxRoles()).put("roles",
+		var selfAssignableRoles = DataArray.fromCollection(groups.stream().map(group ->
+				DataObject.empty().put("id", group.getId()).put("name", group.getName()).put("max_roles", group.getMaxRoles()).put("roles",
 						DataArray.fromCollection(roles.stream().filter(role -> role.getGroupId().equals(group.getId())).map(role ->
 								DataObject.empty().put("role", role.getRoleId()).put("emote", role.getEmoteId())
-				).collect(Collectors.toSet())))
-			).collect(Collectors.toSet()));
+						).collect(Collectors.toSet())))
+		).collect(Collectors.toSet()));
 
 		ok(ctx, DataObject.empty()
 				.put("prefix", PrefixCache.getCommandPrefix(guildId))
@@ -336,13 +331,6 @@ public class WebService{
 			// todo
 		}
 		ok(ctx);
-	}
-
-	private static class SelfAssignableRoleGroupWrapper{
-
-		private SelfAssignableRoleGroupWrapper(){
-
-		}
 	}
 
 	private void error(Context ctx, int code, String error){
