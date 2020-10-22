@@ -130,22 +130,21 @@ public class WebService{
 		var auth = ctx.header("Authorization");
 		var session = DashboardSessionCache.getSession(auth);
 		if(session == null){
-			error(ctx, 404, "Please login again");
+			error(ctx, 400, "Please login");
 			return;
 		}
 		var userId = session.getUserId();
 		var user = KittyBot.getJda().retrieveUserById(userId).complete();
 		if(user == null){
-			error(ctx, 404, "User not found");
+			error(ctx, 400, "User not found");
 			return;
 		}
 		List<GuildData> guilds;
 		try{
 			guilds = GuildCache.getGuilds(session);
 		}
-		catch(Exception ex){
-			LOG.error("Error while retrieving user guilds for user: {}", userId, ex);
-			error(ctx, 500, "There was an internal error");
+		catch(IOException ex){
+			error(ctx, 400, "There was a problem while login. Please try again");
 			return;
 		}
 		var guildData = DataArray.empty();
