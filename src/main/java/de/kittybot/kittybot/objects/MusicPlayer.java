@@ -257,10 +257,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		return embed;
 	}
 
-	public LavalinkPlayer getPlayer(){
-		return player;
-	}
-
 	public String getRequesterId(){
 		var playing = player.getPlayingTrack();
 		return playing == null ? null : playing.getUserData(String.class);
@@ -305,6 +301,10 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	@Override
 	public void onTrackStuck(IPlayer player, AudioTrack track, long thresholdMs){
 		LOG.error("Track is stuck in guild {}", this.player.getLink().getGuildId());
+	}
+
+	public LavalinkPlayer getPlayer(){
+		return player;
 	}
 
 	public boolean previousTrack(){
