@@ -109,17 +109,17 @@ public class MusicUtils{
 		return null;
 	}
 
+	public static int parseVolume(final int volume, final int oldVolume){
+		return volume < 0 ? Math.max(oldVolume + volume, 0) // a + (-b) = -
+						  : Math.min(oldVolume + volume, 200);
+	}
+
 	public static int parseVolume(final String volumeToParse, final int oldVolume) throws NumberFormatException{
 		var volume = Integer.parseInt(volumeToParse);
 		if(!(volumeToParse.charAt(0) == '+' || volumeToParse.charAt(0) == '-')){
 			return Math.min(volume, 200);
 		}
 		return parseVolume(volume, oldVolume);
-	}
-
-	public static int parseVolume(final int volume, final int oldVolume){
-		return volume < 0 ? Math.max(oldVolume + volume, 0) // a + (-b) = -
-				: Math.min(oldVolume + volume, 200);
 	}
 
 	public enum ConnectFailureReason{

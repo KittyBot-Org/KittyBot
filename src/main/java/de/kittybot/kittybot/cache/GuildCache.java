@@ -47,10 +47,6 @@ public class GuildCache{
 		cacheGuild(guildId, guildData, true);
 	}
 
-	public static void cacheGuildForUser(final String userId, final String guildId){
-		USER_GUILD_CACHE.computeIfAbsent(userId, k -> new HashSet<>()).add(guildId);
-	}
-
 	public static void cacheGuild(final String guildId, final GuildData guildData, final boolean cacheIfNotCached){
 		if(!GUILD_CACHE.containsKey(guildId) && !cacheIfNotCached){
 			return;
@@ -62,6 +58,10 @@ public class GuildCache{
 		var guildId = guild.getId();
 		GUILD_CACHE.remove(guildId);
 		USER_GUILD_CACHE.forEach((userId, guildIds) -> guildIds.remove(guildId));
+	}
+
+	public static void cacheGuildForUser(final String userId, final String guildId){
+		USER_GUILD_CACHE.computeIfAbsent(userId, k -> new HashSet<>()).add(guildId);
 	}
 
 	public static void uncacheGuildForUser(final String userId, final String guildId){

@@ -11,9 +11,8 @@ import java.util.List;
 
 public class Config{
 
-	public static final List<String> ADMIN_IDS = new ArrayList<>();
-	public static final List<LavalinkNode> LAVALINK_NODES = new ArrayList<>();
 	private static final Logger LOG = LoggerFactory.getLogger(Config.class);
+
 	public static String BOT_TOKEN;
 	public static String BOT_SECRET;
 	public static String BOT_ID;
@@ -25,12 +24,20 @@ public class Config{
 	public static String HASTEBIN_URL;
 	public static String DISCORD_BOTS_TOKEN;
 	public static String TOP_GG_TOKEN;
+
 	public static String DB_HOST;
 	public static String DB_PORT;
 	public static String DB_DB;
 	public static String DB_USER;
 	public static String DB_PASSWORD;
+
+	public static final List<String> ADMIN_IDS = new ArrayList<>();
+	public static final List<LavalinkNode> LAVALINK_NODES = new ArrayList<>();
+
 	public static String DEFAULT_PREFIX = ".";
+
+	private Config(){}
+
 	static{
 		try{
 			var json = DataObject.fromJson(new FileInputStream("config.json"));
@@ -68,8 +75,6 @@ public class Config{
 			LOG.error("Error while reading config file", e);
 		}
 	}
-
-	private Config(){}
 
 	public static boolean isSet(String setting){
 		return setting != null && !setting.isEmpty();

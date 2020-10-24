@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.objects;
 
 import de.kittybot.kittybot.utils.MessageUtils;
+import de.kittybot.kittybot.utils.Utils;
 
 public class GuildSettings{
 
