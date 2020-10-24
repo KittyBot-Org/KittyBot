@@ -9,7 +9,7 @@ import de.kittybot.kittybot.utils.MusicUtils;
 public class VolumeCommand extends ACommand{
 
 	public static final String COMMAND = "volume";
-	public static final String USAGE = "volume <0-200>";
+	public static final String USAGE = "volume <+-volume/reset>";
 	public static final String DESCRIPTION = "Sets the current volume";
 	protected static final String[] ALIASES = {"vol", "v", "lautstärke"};
 	protected static final Category CATEGORY = Category.MUSIC;
@@ -39,6 +39,10 @@ public class VolumeCommand extends ACommand{
 		var args = ctx.getArgs();
 		if(args.length == 0){
 			sendError(ctx, "Please provide the volume to set");
+			return;
+		}
+		if(args[0].equalsIgnoreCase("reset")){
+			player.setVolume(100);
 			return;
 		}
 		var oldVolume = player.getVolume();
