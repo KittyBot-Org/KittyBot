@@ -11,12 +11,14 @@ public class GuildSettingsCache{
 
 	private static final Map<String, GuildSettings> SETTINGS = new HashMap<>();
 
-	public static GuildSettings getGuildSettings(String guildId){
-		return SETTINGS.computeIfAbsent(guildId, k -> Database.getGuildSettings(guildId));
-	}
+	private GuildSettingsCache(){}
 
 	public static String getCommandPrefix(String guildId){
 		return getGuildSettings(guildId).getCommandPrefix();
+	}
+
+	public static GuildSettings getGuildSettings(String guildId){
+		return SETTINGS.computeIfAbsent(guildId, k -> Database.getGuildSettings(guildId));
 	}
 
 	public static String getRequestChannelId(String guildId){

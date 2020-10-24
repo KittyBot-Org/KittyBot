@@ -25,7 +25,7 @@ public abstract class ACommand{
 
 	protected static final Logger LOG = LoggerFactory.getLogger(ACommand.class);
 
-	private final String command;
+	protected final String command;
 	protected final String usage;
 	protected final String description;
 	protected final String[] aliases;

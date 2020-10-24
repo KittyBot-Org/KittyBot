@@ -5,8 +5,8 @@ import de.kittybot.kittybot.cache.MusicPlayerCache;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
+import de.kittybot.kittybot.utils.MusicUtils;
 import de.kittybot.kittybot.utils.Utils;
-import net.dv8tion.jda.api.Permission;
 
 public class QueueCommand extends ACommand{
 
@@ -22,13 +22,9 @@ public class QueueCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		var voiceState = ctx.getMember().getVoiceState();
-		if(voiceState == null || !voiceState.inVoiceChannel() || voiceState.getChannel() == null){
-			sendError(ctx, "Please connect to a voice channel to play some stuff");
-			return;
-		}
-		if(!ctx.getSelfMember().hasPermission(voiceState.getChannel(), Permission.VOICE_CONNECT)){
-			sendError(ctx, "Please give me permission to join your voice channel");
+		final var connectionFailure = MusicUtils.checkVoiceChannel(ctx);
+		if(connectionFailure != null){
+			sendError(ctx, "I can't play music as " + connectionFailure.getReason());
 			return;
 		}
 		var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());

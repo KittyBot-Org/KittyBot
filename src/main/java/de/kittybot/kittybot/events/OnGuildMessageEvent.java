@@ -6,7 +6,6 @@ import de.kittybot.kittybot.cache.MessageCache;
 import de.kittybot.kittybot.cache.ReactiveMessageCache;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.Emojis;
-import de.kittybot.kittybot.objects.GuildSettings;
 import de.kittybot.kittybot.objects.ReactiveMessage;
 import de.kittybot.kittybot.objects.command.CommandManager;
 import de.kittybot.kittybot.objects.messages.MessageData;

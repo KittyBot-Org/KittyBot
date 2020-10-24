@@ -8,7 +8,7 @@ import de.kittybot.kittybot.objects.ReactiveMessage;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
-import net.dv8tion.jda.api.Permission;
+import de.kittybot.kittybot.utils.MusicUtils;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 public class PlayCommand extends ACommand{
@@ -30,13 +30,9 @@ public class PlayCommand extends ACommand{
 			sendError(ctx, "Please provide a link or search term");
 			return;
 		}
-		var voiceState = ctx.getMember().getVoiceState();
-		if(voiceState == null || !voiceState.inVoiceChannel() || voiceState.getChannel() == null){
-			sendError(ctx, "Please connect to a voice channel to play some stuff");
-			return;
-		}
-		if(!ctx.getSelfMember().hasPermission(voiceState.getChannel(), Permission.VOICE_CONNECT)){
-			sendError(ctx, "Please give me permission to join your voice channel");
+		final var connectionFailure = MusicUtils.checkVoiceChannel(ctx);
+		if(connectionFailure != null){
+			sendError(ctx, "I can't play music as " + connectionFailure.getReason());
 			return;
 		}
 		var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
