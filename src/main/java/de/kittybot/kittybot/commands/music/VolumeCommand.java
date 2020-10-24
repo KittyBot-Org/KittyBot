@@ -43,6 +43,7 @@ public class VolumeCommand extends ACommand{
 		}
 		if(args[0].equalsIgnoreCase("reset")){
 			player.setVolume(100);
+			musicPlayer.updateMusicControlMessage(ctx.getChannel());
 			return;
 		}
 		var oldVolume = player.getVolume();
