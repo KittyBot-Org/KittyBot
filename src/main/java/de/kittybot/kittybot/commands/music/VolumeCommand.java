@@ -4,6 +4,7 @@ import de.kittybot.kittybot.cache.MusicPlayerCache;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
+import de.kittybot.kittybot.utils.MusicUtils;
 
 public class VolumeCommand extends ACommand{
 
@@ -29,17 +30,31 @@ public class VolumeCommand extends ACommand{
 			sendError(ctx, "No active music player found!");
 			return;
 		}
-		var channel = musicPlayer.getPlayer().getLink().getChannel();
+		var player = musicPlayer.getPlayer();
+		var channel = player.getLink().getChannel();
 		if(channel == null || voiceState.getChannel() == null || !channel.equals(voiceState.getChannel().getId())){
 			sendError(ctx, "To use this command you need to be connected to the same voice channel as me");
 			return;
 		}
-		if(musicPlayer.getQueue().isEmpty()){
-			sendError(ctx, "There are currently no tracks queued");
+		var args = ctx.getArgs();
+		if(args.length == 0){
+			sendError(ctx, "Please provide the volume to set");
 			return;
 		}
-		musicPlayer.shuffle();
-		sendAnswer(ctx, "Queue shuffled");
+		var oldVolume = player.getVolume();
+		var newVolume = 0;
+		try{
+			newVolume = MusicUtils.parseVolume(args[0], oldVolume);
+		}
+		catch(final NumberFormatException ex){
+			sendError(ctx, "Please provide the volume to set");
+			return;
+		}
+		if(newVolume == oldVolume){
+			return;
+		}
+		player.setVolume(newVolume);
+		musicPlayer.updateMusicControlMessage(ctx.getChannel());
 	}
 
 }
