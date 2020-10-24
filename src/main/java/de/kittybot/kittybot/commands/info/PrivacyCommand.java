@@ -1,13 +1,8 @@
 package de.kittybot.kittybot.commands.info;
 
-import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
-import de.kittybot.kittybot.utils.Utils;
-import net.dv8tion.jda.api.EmbedBuilder;
-
-import java.lang.management.ManagementFactory;
 
 public class PrivacyCommand extends ACommand{
 

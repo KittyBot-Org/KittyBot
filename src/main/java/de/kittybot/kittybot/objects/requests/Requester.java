@@ -10,11 +10,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Requester{
+
 	private static final Logger LOG = LoggerFactory.getLogger(Requester.class);
 	private static final OkHttpClient HTTP_CLIENT = new OkHttpClient();
 	private static final Request.Builder REQUEST_BUILDER = new Request.Builder().header("user-agent", "de.kittybot");
 
 	private Requester(){}
+
+	public static String getNeko(final String type){
+		final var url = String.format(API.NEKOS_LIFE.getUrl(), type);
+		REQUEST_BUILDER.url(url);
+		REQUEST_BUILDER.method("GET", null);
+		final var json = executeRequest(REQUEST_BUILDER.build());
+		return json.getString("url");
+	}
 
 	public static DataObject executeRequest(final Request request){
 		return executeRequest(request, null);
@@ -41,14 +50,6 @@ public class Requester{
 		return DataObject.empty();
 	}
 
-	public static String getNeko(final String type){
-		final var url = String.format(API.NEKOS_LIFE.getUrl(), type);
-		REQUEST_BUILDER.url(url);
-		REQUEST_BUILDER.method("GET", null);
-		final var json = executeRequest(REQUEST_BUILDER.build());
-		return json.getString("url");
-	}
-
 	public static String postToHastebin(final String content){
 		final var url = API.HASTEBIN.getUrl();
 		final var requestBody = RequestBody.create(MediaType.parse("text/html; charset=utf-8"), content);
@@ -73,4 +74,5 @@ public class Requester{
 	public static OkHttpClient getHttpClient(){
 		return HTTP_CLIENT;
 	}
+
 }

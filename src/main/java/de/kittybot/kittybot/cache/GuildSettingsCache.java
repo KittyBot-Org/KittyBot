@@ -13,12 +13,12 @@ public class GuildSettingsCache{
 
 	private GuildSettingsCache(){}
 
-	public static GuildSettings getGuildSettings(String guildId){
-		return SETTINGS.computeIfAbsent(guildId, k -> Database.getGuildSettings(guildId));
-	}
-
 	public static String getCommandPrefix(String guildId){
 		return getGuildSettings(guildId).getCommandPrefix();
+	}
+
+	public static GuildSettings getGuildSettings(String guildId){
+		return SETTINGS.computeIfAbsent(guildId, k -> Database.getGuildSettings(guildId));
 	}
 
 	public static String getRequestChannelId(String guildId){
