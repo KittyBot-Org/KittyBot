@@ -23,14 +23,18 @@ public class Config{
 	public static String REDIRECT_URL;
 	public static String ORIGIN_URL;
 	public static String HASTEBIN_URL;
+
 	public static String DISCORD_BOTS_TOKEN;
 	public static String TOP_GG_TOKEN;
+	public static String DISCORD_EXTREME_LIST;
+
 	public static String DB_HOST;
 	public static String DB_PORT;
 	public static String DB_DB;
 	public static String DB_USER;
 	public static String DB_PASSWORD;
 	public static String DEFAULT_PREFIX = ".";
+
 	static{
 		try{
 			var json = DataObject.fromJson(new FileInputStream("config.json"));
@@ -48,8 +52,10 @@ public class Config{
 			REDIRECT_URL = json.getString("redirect_url");
 			ORIGIN_URL = json.getString("origin_url");
 			HASTEBIN_URL = json.getString("hastebin_url");
+
 			DISCORD_BOTS_TOKEN = json.getString("discord_bots_token");
 			TOP_GG_TOKEN = json.getString("top_gg_token");
+			DISCORD_EXTREME_LIST = json.getString("discord_extreme_list_token");
 
 			var db = json.getObject("db");
 			DB_HOST = db.getString("host");
