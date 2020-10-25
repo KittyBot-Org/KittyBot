@@ -17,14 +17,6 @@ public class Requester{
 
 	private Requester(){}
 
-	public static String getNeko(final String type){
-		final var url = String.format(API.NEKOS_LIFE.getUrl(), type);
-		REQUEST_BUILDER.url(url);
-		REQUEST_BUILDER.method("GET", null);
-		final var json = executeRequest(REQUEST_BUILDER.build());
-		return json.getString("url");
-	}
-
 	public static DataObject executeRequest(final Request request){
 		return executeRequest(request, null);
 	}
@@ -48,6 +40,14 @@ public class Requester{
 			LOG.error("There was an error while sending a request to {}", requestUrl, ex);
 		}
 		return DataObject.empty();
+	}
+
+	public static String getNeko(final String type){
+		final var url = String.format(API.NEKOS_LIFE.getUrl(), type);
+		REQUEST_BUILDER.url(url);
+		REQUEST_BUILDER.method("GET", null);
+		final var json = executeRequest(REQUEST_BUILDER.build());
+		return json.getString("url");
 	}
 
 	public static String postToHastebin(final String content){
