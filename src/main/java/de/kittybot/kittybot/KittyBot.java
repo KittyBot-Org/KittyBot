@@ -19,7 +19,6 @@ import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.LavalinkNode;
 import de.kittybot.kittybot.objects.StatusManager;
 import de.kittybot.kittybot.objects.command.CommandManager;
-import de.kittybot.kittybot.objects.paginator.Paginator;
 import de.kittybot.kittybot.objects.requests.Requester;
 import de.kittybot.kittybot.utils.Utils;
 import lavalink.client.io.Link;
@@ -109,7 +108,6 @@ public class KittyBot{
 							new OnGuildVoiceEvent(),
 							new OnInviteEvent(),
 							new OnRawEvent(),
-							new Paginator(),
 							lavalink
 					)
 					.setRawEventsEnabled(true)
