@@ -82,11 +82,14 @@ public class Utils{
 	}
 
 	public static void updateStats(final int guildCount){
+		if(Config.isSet(Config.DISCORD_BOTS_TOKEN)){
+			Requester.updateStats(API.DISCORD_BOTS, guildCount);
+		}
 		if(Config.isSet(Config.TOP_GG_TOKEN)){
 			Requester.updateStats(API.TOP_GG, guildCount);
 		}
-		if(Config.isSet(Config.DISCORD_BOTS_TOKEN)){
-			Requester.updateStats(API.DISCORD_BOTS, guildCount);
+		if(Config.isSet(Config.DISCORD_EXTREME_LIST)){
+			Requester.updateStats(API.DISCORD_EXTREME_LIST, guildCount);
 		}
 	}
 
