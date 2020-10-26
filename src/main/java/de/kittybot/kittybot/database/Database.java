@@ -69,11 +69,11 @@ public class Database{
 							false,
 							guild.getDefaultChannel() == null ? "-1" : guild.getDefaultChannel().getId(),
 							"Welcome ${user} to this server!",
-							true,
+							false,
 							"Goodbye ${user}(${user_tag})!",
-							true,
+							false,
 							"${user} boosted this server!",
-							true,
+							false,
 							"-1",
 							false,
 							true,
@@ -122,7 +122,7 @@ public class Database{
 					res.get(GUILDS.LEAVE_MESSAGES), res.get(GUILDS.LEAVE_MESSAGES_ENABLED), res.get(GUILDS.BOOST_MESSAGES),
 					res.get(GUILDS.BOOST_MESSAGES_ENABLED), res.get(GUILDS.LOG_CHANNEL_ID), res.get(GUILDS.LOG_MESSAGES_ENABLED),
 					res.get(GUILDS.NSFW_ENABLED), res.get(GUILDS.INACTIVE_ROLE_ID)
-					);
+			);
 		}
 		catch(SQLException e){
 			LOG.error("Error getting guild settings for guild: {}", guildId, e);

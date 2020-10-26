@@ -11,6 +11,8 @@ public class GuildSettingsCache{
 
 	private static final Map<String, GuildSettings> SETTINGS = new HashMap<>();
 
+	private GuildSettingsCache(){}
+
 	public static GuildSettings getGuildSettings(String guildId){
 		return SETTINGS.computeIfAbsent(guildId, k -> Database.getGuildSettings(guildId));
 	}

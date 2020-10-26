@@ -23,9 +23,6 @@ public class SQL{
 	private static final Logger LOG = LoggerFactory.getLogger(SQL.class);
 
 	private static final HikariDataSource dataSource;
-
-	private SQL(){}
-
 	static{
 		var config = new HikariConfig();
 		config.setDriverClassName("org.postgresql.Driver");
@@ -41,6 +38,8 @@ public class SQL{
 
 		dataSource = new HikariDataSource(config);
 	}
+
+	private SQL(){}
 
 	public static void createTable(String table){
 		try(var con = getCon(); var statement = con.createStatement()){

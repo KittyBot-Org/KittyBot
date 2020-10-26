@@ -11,8 +11,9 @@ import java.util.List;
 
 public class Config{
 
+	public static final List<String> ADMIN_IDS = new ArrayList<>();
+	public static final List<LavalinkNode> LAVALINK_NODES = new ArrayList<>();
 	private static final Logger LOG = LoggerFactory.getLogger(Config.class);
-
 	public static String BOT_TOKEN;
 	public static String BOT_SECRET;
 	public static String BOT_ID;
@@ -22,8 +23,10 @@ public class Config{
 	public static String REDIRECT_URL;
 	public static String ORIGIN_URL;
 	public static String HASTEBIN_URL;
+
 	public static String DISCORD_BOTS_TOKEN;
 	public static String TOP_GG_TOKEN;
+	public static String DISCORD_EXTREME_LIST;
 
 	public static String DB_HOST;
 	public static String DB_PORT;
@@ -34,8 +37,6 @@ public class Config{
 	public static final List<String> ADMIN_IDS = new ArrayList<>();
 
 	public static String DEFAULT_PREFIX = ".";
-
-	private Config(){}
 
 	static{
 		try{
@@ -54,8 +55,10 @@ public class Config{
 			REDIRECT_URL = json.getString("redirect_url");
 			ORIGIN_URL = json.getString("origin_url");
 			HASTEBIN_URL = json.getString("hastebin_url");
+
 			DISCORD_BOTS_TOKEN = json.getString("discord_bots_token");
 			TOP_GG_TOKEN = json.getString("top_gg_token");
+			DISCORD_EXTREME_LIST = json.getString("discord_extreme_list_token");
 
 			var db = json.getObject("db");
 			DB_HOST = db.getString("host");
@@ -68,6 +71,8 @@ public class Config{
 			LOG.error("Error while reading config file", e);
 		}
 	}
+
+	private Config(){}
 
 	public static boolean isSet(String setting){
 		return setting != null && !setting.isEmpty();

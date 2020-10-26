@@ -2,8 +2,10 @@ package de.kittybot.kittybot.utils;
 
 import de.kittybot.kittybot.cache.MusicPlayerCache;
 import de.kittybot.kittybot.objects.command.CommandContext;
+import net.dv8tion.jda.api.Permission;
 
 import static de.kittybot.kittybot.objects.command.ACommand.sendError;
+import static de.kittybot.kittybot.utils.MusicUtils.ConnectFailureReason.*;
 
 public class MusicUtils{
 
@@ -82,6 +84,59 @@ public class MusicUtils{
 			default:
 		}
 		musicPlayer.updateMusicControlMessage();
+	}
+
+	public static ConnectFailureReason checkVoiceChannel(final CommandContext ctx){
+		final var voiceState = ctx.getMember().getVoiceState();
+		if(voiceState == null){
+			return NO_CHANNEL;
+		}
+		final var voiceChannel = voiceState.getChannel();
+		if(voiceChannel == null){
+			return NO_CHANNEL;
+		}
+		final var selfMember = ctx.getGuild().getSelfMember();
+		if(!selfMember.hasAccess(voiceChannel)){
+			return NO_PERMS;
+		}
+		final var userLimit = voiceChannel.getUserLimit();
+		if(userLimit != 0 && voiceChannel.getMembers().size() >= userLimit){
+			return CHANNEL_FULL;
+		}
+		if(!selfMember.hasPermission(voiceChannel, Permission.VOICE_SPEAK)){
+			return CANT_SPEAK;
+		}
+		return null;
+	}
+
+	public static int parseVolume(final int volume, final int oldVolume){
+		return volume < 0 ? Math.max(oldVolume + volume, 0) // a + (-b) = -
+				: Math.min(oldVolume + volume, 200);
+	}
+
+	public static int parseVolume(final String volumeToParse, final int oldVolume) throws NumberFormatException{
+		var volume = Integer.parseInt(volumeToParse);
+		if(!(volumeToParse.charAt(0) == '+' || volumeToParse.charAt(0) == '-')){
+			return Math.min(volume, 200);
+		}
+		return parseVolume(volume, oldVolume);
+	}
+
+	public enum ConnectFailureReason{
+		NO_CHANNEL("you're not connected to any channel"),
+		NO_PERMS("i don't have permissions to join your channel"),
+		CHANNEL_FULL("the voice channel you're in is full"),
+		CANT_SPEAK("i can't speak in your channel");
+
+		private final String reason;
+
+		ConnectFailureReason(final String reason){
+			this.reason = reason;
+		}
+
+		public String getReason(){
+			return reason;
+		}
 	}
 
 }

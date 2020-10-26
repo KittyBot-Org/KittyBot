@@ -115,15 +115,15 @@ public class OnGuildEvent extends ListenerAdapter{
 			}
 			return GuildCache.isGuildCachedForUser(guildId, userId) && DashboardSessionCache.hasSession(userId) && hasRole;
 		})
-			.onSuccess(members -> members.forEach(member ->{
-				final var userId = member.getId();
-				if(add){
-					GuildCache.cacheGuildForUser(userId, guildId);
-				}
-				else{
-					GuildCache.uncacheGuildForUser(userId, guildId);
-				}
-			}));
+				.onSuccess(members -> members.forEach(member -> {
+					final var userId = member.getId();
+					if(add){
+						GuildCache.cacheGuildForUser(userId, guildId);
+					}
+					else{
+						GuildCache.uncacheGuildForUser(userId, guildId);
+					}
+				}));
 	}
 
 }

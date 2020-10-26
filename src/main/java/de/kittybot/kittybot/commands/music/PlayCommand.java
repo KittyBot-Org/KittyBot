@@ -1,12 +1,14 @@
 package de.kittybot.kittybot.commands.music;
 
+import de.kittybot.kittybot.KittyBot;
 import de.kittybot.kittybot.cache.MusicPlayerCache;
 import de.kittybot.kittybot.objects.Emojis;
+import de.kittybot.kittybot.objects.MusicPlayer;
 import de.kittybot.kittybot.objects.ReactiveMessage;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
-import de.kittybot.kittybot.utils.AudioUtils;
+import de.kittybot.kittybot.utils.MusicUtils;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 public class PlayCommand extends ACommand{
@@ -28,22 +30,20 @@ public class PlayCommand extends ACommand{
 			sendError(ctx, "Please provide a link or search term");
 			return;
 		}
-		AudioUtils.checkVoiceChannel(ctx).thenAcceptAsync(connectFailureReason -> {
-			if(connectFailureReason != null){
-				sendError(ctx, "I can't play music as " + connectFailureReason.getReason() + ".");
-				return;
-			}
-			final var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild(), true);
-			final var channelId = musicPlayer.getChannelId();
-			if(channelId == null){
-				musicPlayer.loadQuery(this, ctx);
-				return;
-			}
-			if(!ctx.getChannel().getId().equals(channelId)){
-				return;
-			}
-			musicPlayer.loadQuery(this, ctx);
-		});
+		final var connectionFailure = MusicUtils.checkVoiceChannel(ctx);
+		if(connectionFailure != null){
+			sendError(ctx, "I can't play music as " + connectionFailure.getReason());
+			return;
+		}
+		var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
+		if(musicPlayer == null){
+			var link = KittyBot.getLavalink().getLink(ctx.getGuild());
+			var player = link.getPlayer();
+			musicPlayer = new MusicPlayer(player);
+			player.addListener(musicPlayer);
+			MusicPlayerCache.addMusicPlayer(ctx.getGuild(), musicPlayer);
+		}
+		musicPlayer.loadItem(this, ctx);
 	}
 
 	@Override
@@ -87,6 +87,7 @@ public class PlayCommand extends ACommand{
 		else if(event.getReactionEmote().getId().equals("744945002416963634")){
 			musicPlayer.pause();
 		}
+		musicPlayer.updateMusicControlMessage(event.getChannel());
 		event.getReaction().removeReaction(event.getUser()).queue();
 	}
 
