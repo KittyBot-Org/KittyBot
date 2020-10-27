@@ -5,6 +5,7 @@ package de.kittybot.kittybot.database.jooq.tables.records;
 
 
 import de.kittybot.kittybot.database.jooq.tables.ReactiveMessages;
+
 import org.jooq.Field;
 import org.jooq.Record3;
 import org.jooq.Record7;

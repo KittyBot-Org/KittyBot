@@ -7,14 +7,24 @@ package de.kittybot.kittybot.database.jooq.tables;
 import de.kittybot.kittybot.database.jooq.Keys;
 import de.kittybot.kittybot.database.jooq.Public;
 import de.kittybot.kittybot.database.jooq.tables.records.CommandsRecord;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
-import org.jooq.types.YearToSecond;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+
+import org.jooq.Field;
+import org.jooq.ForeignKey;
+import org.jooq.Name;
+import org.jooq.Record;
+import org.jooq.Row6;
+import org.jooq.Schema;
+import org.jooq.Table;
+import org.jooq.TableField;
+import org.jooq.TableOptions;
+import org.jooq.UniqueKey;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
+import org.jooq.types.YearToSecond;
 
 
 /**

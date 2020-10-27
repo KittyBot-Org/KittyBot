@@ -5,7 +5,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'de.kittybot.jooq:gradle-jooq-plugin:5.2.3'
+        classpath 'de.kittybot.jooq:gradle-jooq-plugin:5.1.7'
     }
 }
 
@@ -22,6 +22,7 @@ mainClassName = 'de.kittybot.kittybot.KittyBot'
 
 repositories {
     jcenter()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -52,6 +53,9 @@ dependencies {
 
     // other
     implementation 'io.javalin:javalin:3.11.2'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
     implementation 'io.github.classgraph:classgraph:4.8.90'
 }
 
