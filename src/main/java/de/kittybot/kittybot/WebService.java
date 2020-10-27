@@ -85,17 +85,10 @@ public class WebService{
 	}
 
 	private void discordLogin(Context ctx){
-		var token = ctx.header("Authorization");
-		if(token != null && !token.isBlank()){
-			try{
-				var userId = getUserId(token);
-				if(userId != null && !DashboardSessionCache.hasSession(userId)){
-					ctx.redirect(Config.REDIRECT_URL);
-					return;
-				}
-			}
-			catch(JwtException ignored){
-			}
+		var userId = getUserId(ctx);
+		if(userId != null && !DashboardSessionCache.hasSession(userId)){
+			ctx.redirect(Config.REDIRECT_URL);
+			return;
 		}
 		ctx.redirect(O_AUTH_2_CLIENT.generateAuthorizationURL(Config.REDIRECT_URL, SCOPES));
 	}
@@ -116,8 +109,7 @@ public class WebService{
 			error(ctx, 401, "State invalid/expired. Please try again");
 		}
 		catch(IOException e){
-			LOG.error("State is invalid", e);
-			error(ctx, 403, "could not login");
+			error(ctx, 403, "Could not login");
 		}
 	}
 
@@ -132,18 +124,17 @@ public class WebService{
 		if(ctx.method().equals("OPTIONS")){
 			return;
 		}
-		var token = ctx.header("Authorization");
-		if(token == null){
-			error(ctx, 401, "No token provided");
+		var userId = getUserId(ctx);
+		if(userId == null){
+			return;
 		}
-		var userId = getUserId(token);
-		if(userId == null || !DashboardSessionCache.hasSession(userId)){
+		if(!DashboardSessionCache.hasSession(userId)){
 			error(ctx, 401, "Invalid token");
 		}
 	}
 
 	private void getUserInfo(Context ctx){
-		var userId = getUserId(ctx.header("Authorization"));
+		var userId = getUserId(ctx);
 		if(userId == null){
 			return;
 		}
@@ -171,7 +162,10 @@ public class WebService{
 	}
 
 	private void getAllGuilds(Context ctx){
-		var userId = getUserId(ctx.header("Authorization"));
+		var userId = getUserId(ctx);
+		if(userId == null){
+			return;
+		}
 		if(!Config.ADMIN_IDS.contains(userId)){
 			error(ctx, 403, "Only admins have access to this!");
 			return;
@@ -196,20 +190,14 @@ public class WebService{
 		if(guild == null){
 			return;
 		}
-		var auth = ctx.header("Authorization");
-		if(auth == null){
-			error(ctx, 401, "Please login");
+		var userId = getUserId(ctx);
+		if(userId == null){
 			return;
 		}
-		var session = DashboardSessionCache.getSession(auth);
-		if(session == null){
-			error(ctx, 404, "This user does not exist");
+		if(Config.ADMIN_IDS.contains(userId)){
 			return;
 		}
-		if(Config.ADMIN_IDS.contains(session.getUserId())){
-			return;
-		}
-		var member = guild.retrieveMemberById(session.getUserId()).complete();
+		var member = guild.retrieveMemberById(userId).complete();
 		if(member == null){
 			error(ctx, 404, "I could not find you in that guild");
 			return;
@@ -272,11 +260,11 @@ public class WebService{
 	}
 
 	private void getGuildSettings(Context ctx){
-		var guildId = ctx.pathParam(":guildId");
 		var guild = getGuild(ctx);
 		if(guild == null){
 			return;
 		}
+		var guildId = guild.getId();
 		var roles = SelfAssignableRoleCache.getSelfAssignableRoles(guildId);
 		var data = DataArray.empty();
 		for(var role : roles.entrySet()){
@@ -297,11 +285,11 @@ public class WebService{
 	}
 
 	private void setGuildSettings(Context ctx){
-		var guildId = ctx.pathParam(":guildId");
 		var guild = getGuild(ctx);
 		if(guild == null){
 			return;
 		}
+		var guildId = guild.getId();
 		var json = DataObject.fromJson(ctx.body());
 		if(json.hasKey("prefix")){
 			GuildSettingsCache.setCommandPrefix(guildId, json.getString("prefix"));
@@ -344,6 +332,10 @@ public class WebService{
 
 	private Guild getGuild(final Context ctx){
 		var guildId = ctx.pathParam(":guildId");
+		if(guildId.isBlank()){
+			error(ctx, 400, "Please provide a valid guild id");
+			return null;
+		}
 		try{
 			MiscUtil.parseSnowflake(guildId);
 			var guild = KittyBot.getJda().getGuildById(guildId);
@@ -371,10 +363,6 @@ public class WebService{
 		return userId;
 	}
 
-	private void error(Context ctx, int code, String error){
-		result(ctx, code, DataObject.empty().put("error", error));
-	}
-
 	private String getUserId(String token){
 		try{
 			return Jwts.parserBuilder()
@@ -387,6 +375,10 @@ public class WebService{
 		catch(ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | IllegalArgumentException e){
 			return null;
 		}
+	}
+
+	private void error(Context ctx, int code, String error){
+		result(ctx, code, DataObject.empty().put("error", error));
 	}
 
 	private void result(Context ctx, int code, DataObject data){
