@@ -37,6 +37,7 @@ public class EditSnipeCommand extends ACommand{
 		eb.setTimestamp(lastEditedMessage.getTimeEdited());
 		eb.setColor(Color.GREEN);
 		eb.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl());
+
 		ctx.getJDA().retrieveUserById(lastEditedMessage.getAuthorId()).queue(user -> {
 			eb.setAuthor(user.getName(), lastEditedMessage.getJumpUrl(), user.getEffectiveAvatarUrl());
 			ctx.getChannel().sendMessage(eb.build()).queue();
