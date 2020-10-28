@@ -27,7 +27,8 @@ public class Config{
 
 	public static String DISCORD_BOTS_TOKEN;
 	public static String TOP_GG_TOKEN;
-	public static String DISCORD_EXTREME_LIST;
+	public static String DISCORD_EXTREME_LIST_TOKEN;
+	public static String DISCORD_BOATS_TOKEN;
 
 	public static String DB_HOST;
 	public static String DB_PORT;
@@ -57,7 +58,8 @@ public class Config{
 
 			DISCORD_BOTS_TOKEN = json.getString("discord_bots_token");
 			TOP_GG_TOKEN = json.getString("top_gg_token");
-			DISCORD_EXTREME_LIST = json.getString("discord_extreme_list_token");
+			DISCORD_EXTREME_LIST_TOKEN = json.getString("discord_extreme_list_token");
+			DISCORD_BOATS_TOKEN = json.getString("discord_boats_token");
 
 			var db = json.getObject("db");
 			DB_HOST = db.getString("host");
