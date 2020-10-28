@@ -18,7 +18,7 @@ public class CommandContext{
 	public CommandContext(GuildMessageReceivedEvent event, String command, String message){
 		this.event = event;
 		this.command = command;
-		this.args = getCommandArguments(message);
+		this.args = this.getCommandArguments(message);
 	}
 
 	private String[] getCommandArguments(String message){
@@ -27,11 +27,11 @@ public class CommandContext{
 	}
 
 	public JDA getJDA(){
-		return event.getJDA();
+		return this.event.getJDA();
 	}
 
 	public TextChannel getChannel(){
-		return getEvent().getChannel();
+		return this.event.getChannel();
 	}
 
 	public GuildMessageReceivedEvent getEvent(){
@@ -51,11 +51,11 @@ public class CommandContext{
 	}
 
 	public List<User> getMentionedUsers(){
-		var users = new LinkedList<>(getMessage().getMentionedUsers());
-		var selfUser = getSelfUser();
+		var users = new ArrayList<>(this.getMessage().getMentionedUsers());
+		var selfUser = this.getSelfUser();
 
-		if(isMentionCommand()){
-			if(getMessage().getMentionedUsersBag().getCount(selfUser) == 1){
+		if(this.isMentionCommand()){
+			if(this.getMessage().getMentionedUsersBag().getCount(selfUser) == 1){
 				users.remove(selfUser);
 			}
 		}
@@ -63,25 +63,25 @@ public class CommandContext{
 	}
 
 	public Message getMessage(){
-		return getEvent().getMessage();
+		return this.event.getMessage();
 	}
 
 	public User getSelfUser(){
-		return getEvent().getJDA().getSelfUser();
+		return this.event.getJDA().getSelfUser();
 	}
 
 	private boolean isMentionCommand(){
-		var content = getMessage().getContentRaw();
-		var botId = getSelfUser().getId();
+		var content = this.getMessage().getContentRaw();
+		var botId = this.getSelfUser().getId();
 		return content.startsWith("<@" + botId + ">") || content.startsWith("<@!" + botId + ">");
 	}
 
 	public List<Member> getMentionedMembers(){
-		var members = new LinkedList<>(getMessage().getMentionedMembers());
-		var selfMember = getSelfMember();
+		var members = new ArrayList<>(this.getMessage().getMentionedMembers());
+		var selfMember = this.getSelfMember();
 
-		if(isMentionCommand()){
-			if(getMessage().getMentionedUsersBag().getCount(selfMember) == 1){
+		if(this.isMentionCommand()){
+			if(this.getMessage().getMentionedUsersBag().getCount(selfMember) == 1){
 				members.remove(selfMember);
 			}
 		}
@@ -89,18 +89,18 @@ public class CommandContext{
 	}
 
 	public Member getSelfMember(){
-		return getGuild().getSelfMember();
+		return this.getGuild().getSelfMember();
 	}
 
 	public Guild getGuild(){
-		return getEvent().getGuild();
+		return this.event.getGuild();
 	}
 
 	public Bag<User> getMentionedUsersBag(){
-		var users = getMessage().getMentionedUsersBag();
-		var selfUser = getSelfUser();
+		var users = this.getMessage().getMentionedUsersBag();
+		var selfUser = this.getSelfUser();
 
-		if(isMentionCommand()){
+		if(this.isMentionCommand()){
 			var occurrences = users.getCount(selfUser);
 			users.remove(selfUser, occurrences == 1 ? 1 : occurrences - 1);
 		}
@@ -108,23 +108,23 @@ public class CommandContext{
 	}
 
 	public Member getMember(){
-		return getEvent().getMember();
+		return this.event.getMember();
 	}
 
 	public List<TextChannel> getMentionedChannels(){
-		return getMessage().getMentionedChannels();
+		return this.getMessage().getMentionedChannels();
 	}
 
 	public Bag<TextChannel> getMentionedChannelsBag(){
-		return getMessage().getMentionedChannelsBag();
+		return this.getMessage().getMentionedChannelsBag();
 	}
 
 	public List<Role> getMentionedRoles(){
-		return getMessage().getMentionedRoles();
+		return this.getMessage().getMentionedRoles();
 	}
 
 	public Bag<Role> getMentionedRolesBag(){
-		return getMessage().getMentionedRolesBag();
+		return this.getMessage().getMentionedRolesBag();
 	}
 
 }

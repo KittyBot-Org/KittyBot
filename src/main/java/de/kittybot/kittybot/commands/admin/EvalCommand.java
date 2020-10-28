@@ -18,8 +18,8 @@ public class EvalCommand extends ACommand{
 	protected static final String[] ALIASES = {};
 	protected static final Category CATEGORY = Category.ADMIN;
 	private static final ScriptEngine SCRIPT_ENGINE = new ScriptEngineManager().getEngineByName("groovy");
-	private static final Set<String> DEFAULT_IMPORTS = Set.of("net.dv8tion.jda.api.entities.impl", "net.dv8tion.jda.api.managers", "net.dv8tion.jda.api.entities", "net.dv8tion.jda.api", "java.lang",
-			"java.io", "java.math", "java.util", "java.util.concurrent", "java.time");
+	private static final List<String> DEFAULT_IMPORTS = Arrays.asList("net.dv8tion.jda.api.entities.impl", "net.dv8tion.jda.api.managers", "net.dv8tion.jda.api.entities", "net.dv8tion.jda.api", "java.lang",
+			"java.io", "java.math", "java.util", "java.util.concurrent", "java.time", "java.util.stream");
 
 	public EvalCommand(){
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);

@@ -27,7 +27,7 @@ public class AvatarCommand extends ACommand{
 		var users = ctx.getMentionedUsers();
 		for(var arg : ctx.getArgs()){
 			try{
-				var user = ctx.getJDA().getUserById(MiscUtil.parseSnowflake(arg));
+				var user = ctx.getJDA().retrieveUserById(MiscUtil.parseSnowflake(arg)).complete();
 				if(user != null && !users.contains(user)){
 					users.add(user);
 				}

@@ -8,14 +8,13 @@ import java.time.OffsetDateTime;
 
 public class DashboardSession implements Session{
 
-	private final String sessionKey, accessToken, refreshToken, tokenType;
+	private final String accessToken, refreshToken, tokenType;
 	private final OffsetDateTime expiration;
 	private final Scope[] scopes;
 	private String userId;
 
-	public DashboardSession(String userId, SessionData sessionData){
-		this.userId = userId;
-		this.sessionKey = sessionData.getIdentifier();
+	public DashboardSession(SessionData sessionData){
+		this.userId = sessionData.getIdentifier();
 		this.accessToken = sessionData.getAccessToken();
 		this.refreshToken = sessionData.getRefreshToken();
 		this.tokenType = sessionData.getTokenType();
@@ -23,12 +22,8 @@ public class DashboardSession implements Session{
 		this.scopes = sessionData.getScopes();
 	}
 
-	public String getSessionKey(){
-		return sessionKey;
-	}
-
 	public String getUserId(){
-		return userId;
+		return this.userId;
 	}
 
 	public void setUserId(String userId){
@@ -37,27 +32,27 @@ public class DashboardSession implements Session{
 
 	@Override
 	public String getAccessToken(){
-		return accessToken;
+		return this.accessToken;
 	}
 
 	@Override
 	public String getRefreshToken(){
-		return refreshToken;
+		return this.refreshToken;
 	}
 
 	@Override
 	public Scope[] getScopes(){
-		return scopes;
+		return this.scopes;
 	}
 
 	@Override
 	public String getTokenType(){
-		return tokenType;
+		return this.tokenType;
 	}
 
 	@Override
 	public OffsetDateTime getExpiration(){
-		return expiration;
+		return this.expiration;
 	}
 
 }

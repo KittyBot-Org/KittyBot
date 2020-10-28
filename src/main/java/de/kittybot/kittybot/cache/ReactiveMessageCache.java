@@ -14,6 +14,8 @@ public class ReactiveMessageCache{
 
 	private static final Map<String, ReactiveMessage> REACTIVE_MESSAGES = new HashMap<>();
 
+	private ReactiveMessageCache(){}
+
 	public static void removeReactiveMessage(Guild guild, String messageId){
 		var textChannel = guild.getTextChannelById(REACTIVE_MESSAGES.get(messageId).channelId);
 		if(textChannel != null){
@@ -24,8 +26,8 @@ public class ReactiveMessageCache{
 	}
 
 	public static void addReactiveMessage(CommandContext ctx, Message message, ACommand cmd, String allowed){
-		REACTIVE_MESSAGES.put(message.getId(), new ReactiveMessage(ctx.getChannel().getId(), ctx.getMessage().getId(), ctx.getUser().getId(), message.getId(), cmd.command, allowed));
-		Database.addReactiveMessage(ctx.getGuild().getId(), ctx.getUser().getId(), ctx.getChannel().getId(), message.getId(), ctx.getMessage().getId(), cmd.command, allowed);
+		REACTIVE_MESSAGES.put(message.getId(), new ReactiveMessage(ctx.getChannel().getId(), ctx.getMessage().getId(), ctx.getUser().getId(), message.getId(), cmd.getCommand(), allowed));
+		Database.addReactiveMessage(ctx.getGuild().getId(), ctx.getUser().getId(), ctx.getChannel().getId(), message.getId(), ctx.getMessage().getId(), cmd.getCommand(), allowed);
 	}
 
 	public static ReactiveMessage getReactiveMessage(Guild guild, String messageId){

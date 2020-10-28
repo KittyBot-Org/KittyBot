@@ -16,41 +16,28 @@ public class DashboardSessionCache{
 	}
 
 	public static void addSession(final DashboardSession session){
-		SESSION_CACHE.put(session.getSessionKey(), session);
+		SESSION_CACHE.put(session.getUserId(), session);
 		USER_SESSION_CACHE.put(session.getUserId(), true);
 		Database.addSession(session);
 	}
 
-	public static void deleteSession(final String sessionKey){
-		var session = SESSION_CACHE.get(sessionKey);
-		Database.deleteSession(sessionKey);
-		if(session == null){
-			return;
-		}
-		var userId = session.getUserId();
-		SESSION_CACHE.remove(sessionKey);
-		if(Database.getUserSessions(userId) > 1){
-			return;
-		}
+	public static void deleteSession(final String userId){
+		Database.deleteSession(userId);
+		USER_SESSION_CACHE.put(userId, false);
 		GuildCache.uncacheUser(userId);
-		USER_SESSION_CACHE.remove(userId);
+		SESSION_CACHE.remove(userId);
 	}
 
-	public static boolean sessionExists(final String sessionKey){
-		return SESSION_CACHE.containsKey(sessionKey) || getSession(sessionKey) != null;
-	}
-
-	public static DashboardSession getSession(final String sessionKey){
-		var session = SESSION_CACHE.get(sessionKey);
+	public static DashboardSession getSession(final String userId){
+		var session = SESSION_CACHE.get(userId);
 		if(session != null){
 			return session;
 		}
-		session = Database.getSession(sessionKey);
+		session = Database.getSession(userId);
 		if(session != null){
-			SESSION_CACHE.put(sessionKey, session);
+			SESSION_CACHE.put(userId, session);
 		}
 		return session;
-
 	}
 
 	public static boolean hasSession(final String userId){

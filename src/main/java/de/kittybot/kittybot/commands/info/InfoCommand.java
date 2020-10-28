@@ -34,7 +34,7 @@ public class InfoCommand extends ACommand{
 				.addField("Total Users:", String.valueOf(Utils.getUserCount(jda)), true)
 
 				.addField("Memory Usage:", ((runtime.totalMemory() - runtime.freeMemory()) >> 20) + "MB / " + (runtime.maxMemory() >> 20) + "MB", false)
-				.addField("Thread count:", "" + ManagementFactory.getThreadMXBean().getThreadCount(), true)
+				.addField("Thread count:", String.valueOf(ManagementFactory.getThreadMXBean().getThreadCount()), true)
 		);
 	}
 

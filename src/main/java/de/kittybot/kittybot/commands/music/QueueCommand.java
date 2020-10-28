@@ -5,6 +5,7 @@ import de.kittybot.kittybot.cache.MusicPlayerCache;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
+import de.kittybot.kittybot.utils.MusicUtils;
 import de.kittybot.kittybot.utils.Utils;
 
 public class QueueCommand extends ACommand{
@@ -21,9 +22,9 @@ public class QueueCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		var voiceState = ctx.getMember().getVoiceState();
-		if(voiceState != null && !voiceState.inVoiceChannel()){
-			sendError(ctx, "To use this command you need to be connected to a voice channel");
+		final var connectionFailure = MusicUtils.checkVoiceChannel(ctx);
+		if(connectionFailure != null){
+			sendError(ctx, "I can't play music as " + connectionFailure.getReason());
 			return;
 		}
 		var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());

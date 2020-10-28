@@ -14,13 +14,13 @@ public class DashboardSessionController implements SessionController<DashboardSe
 	private static final Logger LOG = LoggerFactory.getLogger(DashboardSessionController.class);
 
 	@Override
-	public DashboardSession getSession(final String identifier){
-		return DashboardSessionCache.getSession(identifier);
+	public DashboardSession getSession(final String userId){
+		return DashboardSessionCache.getSession(userId);
 	}
 
 	@Override
 	public DashboardSession createSession(final SessionData sessionData){
-		var session = new DashboardSession(null, sessionData);
+		var session = new DashboardSession(sessionData);
 		try{
 			session.setUserId(WebService.getOAuth2Client().getUser(session).complete().getId());
 			DashboardSessionCache.addSession(session);

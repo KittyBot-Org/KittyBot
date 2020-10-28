@@ -3,8 +3,8 @@ package de.kittybot.kittybot.events;
 import de.kittybot.kittybot.KittyBot;
 import de.kittybot.kittybot.cache.*;
 import de.kittybot.kittybot.database.Database;
-import de.kittybot.kittybot.objects.BotLists;
 import de.kittybot.kittybot.objects.guilds.GuildData;
+import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.audit.ActionType;
@@ -24,7 +24,7 @@ public class OnGuildEvent extends ListenerAdapter{
 	public void onGuildJoin(GuildJoinEvent event){
 		var guildCount = (int) event.getJDA().getGuildCache().size();
 		var guild = event.getGuild();
-		BotLists.update(guildCount);
+		Utils.updateStats(guildCount);
 		Database.registerGuild(guild);
 		InviteCache.initCaching(guild);
 		var owner = guild.getOwner();
@@ -72,9 +72,9 @@ public class OnGuildEvent extends ListenerAdapter{
 	public void onGuildLeave(GuildLeaveEvent event){
 		var guildCount = (int) event.getJDA().getGuildCache().size();
 		var guild = event.getGuild();
-		BotLists.update(guildCount);
+		Utils.updateStats(guildCount);
 		InviteCache.pruneCache(guild);
-		PrefixCache.pruneCache(guild);
+		GuildSettingsCache.pruneCache(guild);
 		MusicPlayerCache.pruneCache(guild);
 		ReactiveMessageCache.pruneCache(guild);
 		CommandResponseCache.pruneCache(guild);
@@ -105,10 +105,18 @@ public class OnGuildEvent extends ListenerAdapter{
 		if(!add && !remove){
 			return;
 		}
-		event.getGuild().findMembers(member -> member.getRoles().contains(event.getRole()) && DashboardSessionCache.hasSession(member.getId()))
+		final var guild = event.getGuild();
+		final var guildId = guild.getId();
+		guild.findMembers(member -> {
+			final var userId = member.getId();
+			final var hasRole = member.getRoles().contains(event.getRole());
+			if(add){
+				return !GuildCache.isGuildCachedForUser(guildId, userId) && DashboardSessionCache.hasSession(userId) && hasRole;
+			}
+			return GuildCache.isGuildCachedForUser(guildId, userId) && DashboardSessionCache.hasSession(userId) && hasRole;
+		})
 				.onSuccess(members -> members.forEach(member -> {
-					var userId = member.getId();
-					var guildId = event.getGuild().getId();
+					final var userId = member.getId();
 					if(add){
 						GuildCache.cacheGuildForUser(userId, guildId);
 					}

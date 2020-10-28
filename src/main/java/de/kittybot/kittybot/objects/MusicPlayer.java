@@ -6,11 +6,12 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import de.kittybot.kittybot.KittyBot;
+import de.kittybot.kittybot.cache.GuildSettingsCache;
 import de.kittybot.kittybot.cache.MusicPlayerCache;
-import de.kittybot.kittybot.cache.PrefixCache;
 import de.kittybot.kittybot.cache.ReactiveMessageCache;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.CommandContext;
+import de.kittybot.kittybot.utils.MusicUtils;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavalinkPlayer;
 import lavalink.client.player.event.PlayerEventListenerAdapter;
@@ -36,7 +37,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	public static final Pattern URL_PATTERN = Pattern.compile("^(https?://)?((www|m)\\.)?youtu(\\.be|be\\.com)/(playlist\\?list=([a-zA-Z0-9-_]+))?((watch\\?v=)?([a-zA-Z0-9-_]{11})(&list=([a-zA-Z0-9-_]+))?)?");
 	private static final Logger LOG = LoggerFactory.getLogger(MusicPlayer.class);
-	private static final int VOLUME_MAX = 200;
 	private final LavalinkPlayer player;
 	private final Queue<AudioTrack> queue;
 	private final Deque<AudioTrack> history;
@@ -149,7 +149,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	private void sendQueuedTracks(ACommand command, CommandContext ctx, List<AudioTrack> tracks){
 		var message = new StringBuilder("Queued **").append(tracks.size()).append("** ").append(pluralize("track", tracks)).append(".");
-		message.append("\n\nTo see the current queue, type `").append(PrefixCache.getCommandPrefix(ctx.getGuild().getId())).append("queue`.");
+		message.append("\n\nTo see the current queue, type `").append(GuildSettingsCache.getCommandPrefix(ctx.getGuild().getId())).append("queue`.");
 		command.sendAnswer(ctx, message.toString());
 	}
 
@@ -166,26 +166,13 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		return paused;
 	}
 
-	public int changeVolume(int volumeStep){
-		var volume = player.getVolume();
-		if(volume > 0){
-			if(volume + volumeStep < VOLUME_MAX){
-				volume += volumeStep;
-			}
-			else{
-				volume = VOLUME_MAX;
-			}
+	public void changeVolume(int volumeStep){
+		var oldVolume = player.getVolume();
+		var newVolume = MusicUtils.parseVolume(volumeStep, oldVolume);
+		if(newVolume == oldVolume){
+			return;
 		}
-		else{
-			if(volume - volumeStep > 0){
-				volume -= volumeStep;
-			}
-			else{
-				volume = 0;
-			}
-		}
-		player.setVolume(volume);
-		return volume;
+		player.setVolume(newVolume);
 	}
 
 	public boolean shuffle(){
@@ -254,7 +241,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 					.addField("Length", duration, true)
 					.addField("Volume", player.getVolume() + "%", true);
 			if(player.isPaused()){
-				embed.setAuthor("Paused at " + formatDuration(getPlayer().getTrackPosition()) + "/" + duration);
+				embed.setAuthor("Paused at " + formatDuration(player.getTrackPosition()) + "/" + duration);
 				embed.setColor(Color.ORANGE);
 			}
 			else{
@@ -269,10 +256,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		return embed;
 	}
 
-	public LavalinkPlayer getPlayer(){
-		return player;
-	}
-
 	public String getRequesterId(){
 		var playing = player.getPlayingTrack();
 		return playing == null ? null : playing.getUserData(String.class);
@@ -281,7 +264,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	@Override
 	public void onTrackEnd(IPlayer player, AudioTrack track, AudioTrackEndReason endReason){
 		this.history.push(track);
-		var guild = KittyBot.getJda().getGuildById(getPlayer().getLink().getGuildId());
+		var guild = KittyBot.getJda().getGuildById(this.player.getLink().getGuildId());
 		if(guild == null){
 			return;
 		}
@@ -317,6 +300,10 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	@Override
 	public void onTrackStuck(IPlayer player, AudioTrack track, long thresholdMs){
 		LOG.error("Track is stuck in guild {}", this.player.getLink().getGuildId());
+	}
+
+	public LavalinkPlayer getPlayer(){
+		return player;
 	}
 
 	public boolean previousTrack(){
