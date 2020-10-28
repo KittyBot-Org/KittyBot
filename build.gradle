@@ -68,9 +68,9 @@ jooq {
             generationTool {
                 logging = org.jooq.meta.jaxb.Logging.WARN
                 jdbc {
-                    url = "jdbc:postgresql://${System.getenv('KITTYBOT_DB_HOST')}:${System.getenv('KITTYBOT_DB_PORT')}/${System.getenv('KITTYBOT_DB_DATABASE')}"
-                    user = System.getenv('KITTYBOT_DB_USER')
-                    password = System.getenv('KITTYBOT_DB_PASSWORD')
+                    url = "jdbc:postgresql://${KITTYBOT_DB_HOST}:${KITTYBOT_DB_PORT}/${KITTYBOT_DB_DATABASE}"
+                    user = KITTYBOT_DB_USER
+                    password = KITTYBOT_DB_PASSWORD
                     driver = 'org.postgresql.Driver'
                 }
                 generator {
