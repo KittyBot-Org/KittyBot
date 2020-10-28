@@ -12,6 +12,8 @@
     "top_gg_token": "your https://top.gg token",
     "discord_extreme_list_token": "your https://discordextremelist.xyz token",
     "discord_boats_token": "your https://discord.boats token",
+    "signing_key": "",
+    "backend_port": "",
     "db": {
         "host": "your database host",
         "port": "your database port",

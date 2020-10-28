@@ -126,7 +126,7 @@ public class KittyBot{
 
 			Database.init(jda);
 
-			new WebService(6969);
+			new WebService(Config.BACKEND_PORT);
 
 			SCHEDULER.scheduleAtFixedRate(MessageCache::pruneCache, 1, 1, TimeUnit.HOURS);
 			SCHEDULER.scheduleAtFixedRate(StatusManager::newRandomStatus, 0, 2, TimeUnit.MINUTES);
