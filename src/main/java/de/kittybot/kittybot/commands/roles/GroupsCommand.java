@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.commands.roles;
 
-import de.kittybot.kittybot.cache.PrefixCache;
+import de.kittybot.kittybot.cache.GuildSettingsCache;
 import de.kittybot.kittybot.cache.SelfAssignableRoleGroupCache;
 import de.kittybot.kittybot.objects.SelfAssignableRoleGroup;
 import de.kittybot.kittybot.objects.command.ACommand;
@@ -41,7 +41,7 @@ public class GroupsCommand extends ACommand{
 				return;
 			}
 			if(groups.isEmpty()){
-				sendAnswer(ctx, "There are not groups defined.\nYou can add them with " + PrefixCache.getCommandPrefix(ctx.getGuild().getId()) + "`roles groups add <group name> <only one role>`");
+				sendAnswer(ctx, "There are not groups defined.\nYou can add them with " + GuildSettingsCache.getCommandPrefix(ctx.getGuild().getId()) + "`roles groups add <group name> <only one role>`");
 				return;
 			}
 			var table = new TableBuilder<SelfAssignableRoleGroup>()

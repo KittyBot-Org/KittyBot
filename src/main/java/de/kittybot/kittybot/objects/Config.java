@@ -37,8 +37,6 @@ public class Config{
 	public static String DB_PASSWORD;
 	public static String DEFAULT_PREFIX = ".";
 
-	private Config(){}
-
 	static{
 		try{
 			var json = DataObject.fromJson(new FileInputStream("config.json"));

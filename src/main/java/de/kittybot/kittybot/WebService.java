@@ -3,10 +3,7 @@ package de.kittybot.kittybot;
 import com.jagrosh.jdautilities.oauth2.OAuth2Client;
 import com.jagrosh.jdautilities.oauth2.Scope;
 import com.jagrosh.jdautilities.oauth2.exceptions.InvalidStateException;
-import de.kittybot.kittybot.cache.DashboardSessionCache;
-import de.kittybot.kittybot.cache.GuildCache;
-import de.kittybot.kittybot.cache.GuildSettingsCache;
-import de.kittybot.kittybot.cache.SelfAssignableRoleCache;
+import de.kittybot.kittybot.cache.*;
 import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandManager;
@@ -32,6 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 

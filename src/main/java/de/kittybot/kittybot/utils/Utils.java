@@ -2,6 +2,7 @@ package de.kittybot.kittybot.utils;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.kittybot.kittybot.objects.Config;
+import de.kittybot.kittybot.objects.SelfAssignableRole;
 import de.kittybot.kittybot.objects.requests.API;
 import de.kittybot.kittybot.objects.requests.Requester;
 import net.dv8tion.jda.api.JDA;
