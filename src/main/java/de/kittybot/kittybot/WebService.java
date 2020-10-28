@@ -263,11 +263,8 @@ public class WebService{
 			return;
 		}
 		var guildId = guild.getId();
-		var roles = SelfAssignableRoleCache.getSelfAssignableRoles(guildId);
 		var data = DataArray.empty();
-		for(var role : roles.entrySet()){
-			data.add(DataObject.empty().put("role", role.getKey()).put("emote", role.getValue()));
-		}
+		SelfAssignableRoleCache.getSelfAssignableRoles(guildId).forEach((key, value) -> data.add(DataObject.empty().put("role", key).put("emote", value)));
 		var settings = GuildSettingsCache.getGuildSettings(guildId);
 		ok(ctx, DataObject.empty()
 				.put("prefix", settings.getCommandPrefix())
@@ -385,12 +382,12 @@ public class WebService{
 		ctx.result(data.toString());
 	}
 
-	private void ok(Context ctx){
-		result(ctx, 200, DataObject.empty().put("status", 200));
-	}
-
 	private void created(Context ctx, DataObject data){
 		result(ctx, 202, data);
+	}
+
+	private void ok(Context ctx){
+		result(ctx, 200, DataObject.empty().put("status", 200));
 	}
 
 	private void ok(Context ctx, DataObject data){
