@@ -7,15 +7,17 @@ import de.kittybot.kittybot.cache.DashboardSessionCache;
 import de.kittybot.kittybot.cache.GuildCache;
 import de.kittybot.kittybot.cache.GuildSettingsCache;
 import de.kittybot.kittybot.cache.SelfAssignableRoleCache;
-import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandManager;
 import de.kittybot.kittybot.objects.guilds.GuildData;
 import de.kittybot.kittybot.objects.requests.Requester;
+import de.kittybot.kittybot.objects.session.DashboardSession;
 import de.kittybot.kittybot.objects.session.DashboardSessionController;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.utils.MiscUtil;
@@ -24,7 +26,10 @@ import net.dv8tion.jda.api.utils.data.DataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.crypto.SecretKey;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -32,8 +37,7 @@ import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class WebService{
 
-	private static final Logger LOG = LoggerFactory.getLogger(WebService.class);
-
+	private static final SecretKey KEY = Keys.hmacShaKeyFor(Config.SIGNING_KEY.getBytes(StandardCharsets.UTF_8));
 	private static final Scope[] SCOPES = {Scope.IDENTIFY, Scope.GUILDS};
 	private static final OAuth2Client O_AUTH_2_CLIENT = new OAuth2Client.Builder()
 			.setClientId(Long.parseLong(Config.BOT_ID))
@@ -79,12 +83,12 @@ public class WebService{
 	}
 
 	private void discordLogin(Context ctx){
-		var key = ctx.header("Authorization");
-		if(key == null || !DashboardSessionCache.sessionExists(key)){
-			ctx.redirect(O_AUTH_2_CLIENT.generateAuthorizationURL(Config.REDIRECT_URL, SCOPES));
+		var userId = getUserId(ctx);
+		if(userId != null && !DashboardSessionCache.hasSession(userId)){
+			ctx.redirect(Config.REDIRECT_URL);
 			return;
 		}
-		ctx.redirect(Config.REDIRECT_URL);
+		ctx.redirect(O_AUTH_2_CLIENT.generateAuthorizationURL(Config.REDIRECT_URL, SCOPES));
 	}
 
 	private void login(Context ctx){
@@ -96,23 +100,21 @@ public class WebService{
 			return;
 		}
 		try{
-			var sessionKey = Database.generateUniqueKey();
-			O_AUTH_2_CLIENT.startSession(code, state, sessionKey, SCOPES).complete();
-			ok(ctx, DataObject.empty().put("key", sessionKey));
+			var session = (DashboardSession) O_AUTH_2_CLIENT.startSession(code, state, "", SCOPES).complete();
+			created(ctx, DataObject.empty().put("token", Jwts.builder().setIssuedAt(new Date()).setSubject(session.getUserId()).signWith(KEY).compact()));
 		}
 		catch(InvalidStateException e){
 			error(ctx, 401, "State invalid/expired. Please try again");
 		}
 		catch(IOException e){
-			LOG.error("State is invalid", e);
-			error(ctx, 403, "could not login");
+			error(ctx, 403, "Could not login");
 		}
 	}
 
 	private void logout(Context ctx){
-		var auth = ctx.header("Authorization");
-		if(auth != null){
-			DashboardSessionCache.deleteSession(auth);
+		var userId = getUserId(ctx);
+		if(userId != null){
+			DashboardSessionCache.deleteSession(userId);
 		}
 	}
 
@@ -120,23 +122,28 @@ public class WebService{
 		if(ctx.method().equals("OPTIONS")){
 			return;
 		}
-		var key = ctx.header("Authorization");
-		if(key == null || !DashboardSessionCache.sessionExists(key)){
-			error(ctx, 401, "Please login with discord to continue");
+		var userId = getUserId(ctx);
+		if(userId == null){
+			return;
+		}
+		if(!DashboardSessionCache.hasSession(userId)){
+			error(ctx, 401, "Invalid token");
 		}
 	}
 
 	private void getUserInfo(Context ctx){
-		var auth = ctx.header("Authorization");
-		var session = DashboardSessionCache.getSession(auth);
-		if(session == null){
-			error(ctx, 400, "Please login");
+		var userId = getUserId(ctx);
+		if(userId == null){
 			return;
 		}
-		var userId = session.getUserId();
+		var session = DashboardSessionCache.getSession(userId);
+		if(session == null){
+			error(ctx, 404, "Session not found");
+			return;
+		}
 		var user = KittyBot.getJda().retrieveUserById(userId).complete();
 		if(user == null){
-			error(ctx, 400, "User not found");
+			error(ctx, 404, "User not found");
 			return;
 		}
 		List<GuildData> guilds;
@@ -153,13 +160,11 @@ public class WebService{
 	}
 
 	private void getAllGuilds(Context ctx){
-		var auth = ctx.header("Authorization");
-		var session = DashboardSessionCache.getSession(auth);
-		if(session == null){
-			error(ctx, 404, "Session not found");
+		var userId = getUserId(ctx);
+		if(userId == null){
 			return;
 		}
-		if(!Config.ADMIN_IDS.contains(session.getUserId())){
+		if(!Config.ADMIN_IDS.contains(userId)){
 			error(ctx, 403, "Only admins have access to this!");
 			return;
 		}
@@ -181,23 +186,16 @@ public class WebService{
 		}
 		var guild = getGuild(ctx);
 		if(guild == null){
-			error(ctx, 404, "guild not found");
 			return;
 		}
-		var auth = ctx.header("Authorization");
-		if(auth == null){
-			error(ctx, 401, "Please login");
+		var userId = getUserId(ctx);
+		if(userId == null){
 			return;
 		}
-		var session = DashboardSessionCache.getSession(auth);
-		if(session == null){
-			error(ctx, 404, "This user does not exist");
+		if(Config.ADMIN_IDS.contains(userId)){
 			return;
 		}
-		if(Config.ADMIN_IDS.contains(session.getUserId())){
-			return;
-		}
-		var member = guild.retrieveMemberById(session.getUserId()).complete();
+		var member = guild.retrieveMemberById(userId).complete();
 		if(member == null){
 			error(ctx, 404, "I could not find you in that guild");
 			return;
@@ -227,7 +225,6 @@ public class WebService{
 	private void getRoles(Context ctx){
 		var guild = getGuild(ctx);
 		if(guild == null){
-			error(ctx, 404, "guild not found");
 			return;
 		}
 		var data = DataArray.empty();
@@ -243,7 +240,6 @@ public class WebService{
 	private void getChannels(Context ctx){
 		var guild = getGuild(ctx);
 		if(guild == null){
-			error(ctx, 404, "guild not found");
 			return;
 		}
 		var data = DataArray.empty();
@@ -254,7 +250,6 @@ public class WebService{
 	private void getEmotes(Context ctx){
 		var guild = getGuild(ctx);
 		if(guild == null){
-			error(ctx, 404, "guild not found");
 			return;
 		}
 		var data = DataArray.empty();
@@ -263,12 +258,11 @@ public class WebService{
 	}
 
 	private void getGuildSettings(Context ctx){
-		var guildId = ctx.pathParam(":guildId");
 		var guild = getGuild(ctx);
 		if(guild == null){
-			error(ctx, 404, "guild not found");
 			return;
 		}
+		var guildId = guild.getId();
 		var roles = SelfAssignableRoleCache.getSelfAssignableRoles(guildId);
 		var data = DataArray.empty();
 		for(var role : roles.entrySet()){
@@ -289,12 +283,11 @@ public class WebService{
 	}
 
 	private void setGuildSettings(Context ctx){
-		var guildId = ctx.pathParam(":guildId");
 		var guild = getGuild(ctx);
 		if(guild == null){
-			error(ctx, 404, "guild not found");
 			return;
 		}
+		var guildId = guild.getId();
 		var json = DataObject.fromJson(ctx.body());
 		if(json.hasKey("prefix")){
 			GuildSettingsCache.setCommandPrefix(guildId, json.getString("prefix"));
@@ -337,12 +330,47 @@ public class WebService{
 
 	private Guild getGuild(final Context ctx){
 		var guildId = ctx.pathParam(":guildId");
+		if(guildId.isBlank()){
+			error(ctx, 400, "Please provide a valid guild id");
+			return null;
+		}
 		try{
 			MiscUtil.parseSnowflake(guildId);
-			return KittyBot.getJda().getGuildById(guildId);
+			var guild = KittyBot.getJda().getGuildById(guildId);
+			if(guild == null){
+				error(ctx, 404, "Guild not found");
+			}
+			return guild;
 		}
 		catch(NumberFormatException ex){
 			error(ctx, 400, "Please provide a valid guild id");
+			return null;
+		}
+	}
+
+	private String getUserId(final Context ctx){
+		var token = ctx.header("Authorization");
+		if(token == null || token.isBlank()){
+			error(ctx, 401, "No token provided");
+			return null;
+		}
+		var userId = getUserId(token);
+		if(userId == null){
+			error(ctx, 401, "Invalid token");
+		}
+		return userId;
+	}
+
+	private String getUserId(String token){
+		try{
+			return Jwts.parserBuilder()
+					.setSigningKey(KEY)
+					.build()
+					.parseClaimsJws(token)
+					.getBody()
+					.getSubject();
+		}
+		catch(ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | IllegalArgumentException e){
 			return null;
 		}
 	}
@@ -351,18 +379,22 @@ public class WebService{
 		result(ctx, code, DataObject.empty().put("error", error));
 	}
 
-	private void ok(Context ctx){
-		result(ctx, 200, DataObject.empty().put("status", 200));
-	}
-
-	private void ok(Context ctx, DataObject data){
-		result(ctx, 200, data);
-	}
-
 	private void result(Context ctx, int code, DataObject data){
 		ctx.header("Content-Type", "application/json");
 		ctx.status(code);
 		ctx.result(data.toString());
+	}
+
+	private void ok(Context ctx){
+		result(ctx, 200, DataObject.empty().put("status", 200));
+	}
+
+	private void created(Context ctx, DataObject data){
+		result(ctx, 202, data);
+	}
+
+	private void ok(Context ctx, DataObject data){
+		result(ctx, 200, data);
 	}
 
 }
