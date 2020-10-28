@@ -9,22 +9,21 @@ import java.util.Map;
 public class DashboardSessionCache{
 
 	private static final Map<String, DashboardSession> SESSION_CACHE = new HashMap<>();
+	private static final Map<String, Boolean> USER_SESSION_CACHE = new HashMap<>();
 
 	private DashboardSessionCache(){}
 
 	public static void addSession(final DashboardSession session){
 		SESSION_CACHE.put(session.getUserId(), session);
+		USER_SESSION_CACHE.put(session.getUserId(), true);
 		Database.addSession(session);
 	}
 
 	public static void deleteSession(final String userId){
-		var session = SESSION_CACHE.get(userId);
-		if(session == null){
-			return;
-		}
 		Database.deleteSession(userId);
-		SESSION_CACHE.remove(userId);
+		USER_SESSION_CACHE.put(userId, false);
 		GuildCache.uncacheUser(userId);
+		SESSION_CACHE.remove(userId);
 	}
 
 	public static DashboardSession getSession(final String userId){
@@ -40,7 +39,13 @@ public class DashboardSessionCache{
 	}
 
 	public static boolean hasSession(final String userId){
-		return SESSION_CACHE.containsKey(userId) || Database.hasSession(userId);
+		var hasSession = USER_SESSION_CACHE.get(userId);
+		if(hasSession != null){
+			return hasSession;
+		}
+		hasSession = Database.hasSession(userId);
+		USER_SESSION_CACHE.put(userId, hasSession);
+		return hasSession;
 	}
 
 }

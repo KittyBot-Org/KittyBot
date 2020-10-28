@@ -37,8 +37,6 @@ import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class WebService{
 
-	private static final Logger LOG = LoggerFactory.getLogger(WebService.class);
-
 	private static final SecretKey KEY = Keys.hmacShaKeyFor(Config.SIGNING_KEY.getBytes(StandardCharsets.UTF_8));
 	private static final Scope[] SCOPES = {Scope.IDENTIFY, Scope.GUILDS};
 	private static final OAuth2Client O_AUTH_2_CLIENT = new OAuth2Client.Builder()
@@ -114,9 +112,9 @@ public class WebService{
 	}
 
 	private void logout(Context ctx){
-		var token = ctx.header("Authorization");
-		if(token != null){
-			DashboardSessionCache.deleteSession(token);
+		var userId = getUserId(ctx);
+		if(userId != null){
+			DashboardSessionCache.deleteSession(userId);
 		}
 	}
 
