@@ -43,19 +43,19 @@ public class EmoteStealCommand extends ACommand{
 		}
 		var emotes = ctx.getMessage().getEmotes();
 		var guildEmotes = ctx.getGuild().getEmotes();
-		if(!emotes.isEmpty()){
-			for(var emote : emotes){
-				if(!guildEmotes.contains(emote)){
-					createEmote(ctx, emote.getName(), emote.getImageUrl());
-				}
+		if(emotes.isEmpty()){
+			if(ctx.getArgs().length >= 2){
+				createEmote(ctx, ctx.getArgs()[1], ctx.getArgs()[0]);
+				return;
 			}
-		}
-		else if(ctx.getArgs().length >= 2){
-			createEmote(ctx, ctx.getArgs()[1], ctx.getArgs()[0]);
-		}
-		else{
 			sendUsage(ctx);
+			return;
 		}
+		emotes.forEach(emote -> {
+			if(!guildEmotes.contains(emote)){
+				createEmote(ctx, emote.getName(), emote.getImageUrl());
+			}
+		});
 	}
 
 	private void createEmote(CommandContext ctx, String name, InputStream inputStream){

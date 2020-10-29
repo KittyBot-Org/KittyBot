@@ -11,22 +11,11 @@ import net.dv8tion.jda.api.entities.Role;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class Utils{
 
-	private static final String CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
 	private Utils(){}
-
-	public static String generate(int length){
-		var sb = new StringBuilder(length);
-		for(var i = 0; i < length; i++){
-			sb.append(CHARS.charAt(ThreadLocalRandom.current().nextInt(CHARS.length())));
-		}
-		return sb.toString();
-	}
 
 	public static boolean isEnable(String string){
 		return string.equalsIgnoreCase("enable") || string.equalsIgnoreCase("true") || string.equalsIgnoreCase("on") || string.equalsIgnoreCase("an");

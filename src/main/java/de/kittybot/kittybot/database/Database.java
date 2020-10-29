@@ -228,9 +228,7 @@ public class Database{
 	public static void addSelfAssignableRoles(String guildId, Map<String, String> roles){
 		try(var con = getCon()){
 			var col = getCtx(con).insertInto(SELF_ASSIGNABLE_ROLES).columns(SELF_ASSIGNABLE_ROLES.fields());
-			for(var role : roles.entrySet()){
-				col.values(role.getKey(), guildId, role.getValue());
-			}
+			roles.forEach((key, value) -> col.values(key, guildId, value));
 			col.execute();
 		}
 		catch(SQLException e){

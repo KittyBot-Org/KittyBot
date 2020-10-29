@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.utils.MiscUtil;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 
 public class GuildIconCommand extends ACommand{
@@ -19,7 +19,7 @@ public class GuildIconCommand extends ACommand{
 	public static final String DESCRIPTION = "Gives some quicklinks to guild icons";
 	protected static final String[] ALIASES = {"gicon"};
 	protected static final Category CATEGORY = Category.UTILITIES;
-	private static final String[] sizes = {"128", "256", "512", "1024"};
+	private static final String[] SIZES = {"128", "256", "512", "1024"};
 
 	public GuildIconCommand(){
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
@@ -27,16 +27,15 @@ public class GuildIconCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		var guilds = new ArrayList<Guild>();
+		var guilds = new HashSet<Guild>();
 		for(var arg : ctx.getArgs()){
 			try{
 				var guild = ctx.getJDA().getGuildById(MiscUtil.parseSnowflake(arg));
-				if(guild != null && !guilds.contains(guild)){
+				if(guild != null){
 					guilds.add(guild);
 				}
 			}
-			catch(NumberFormatException ignore){
-			}
+			catch(NumberFormatException ignore){}
 		}
 		if(guilds.isEmpty()){
 			guilds.add(ctx.getGuild());
@@ -49,7 +48,7 @@ public class GuildIconCommand extends ACommand{
 				stringBuilder.append("No icon set");
 				continue;
 			}
-			for(var size : sizes){
+			for(var size : SIZES){
 				stringBuilder.append(MessageUtils.maskLink(size + "px", guild.getIconUrl() + "?size=" + size)).append(" ");
 			}
 			stringBuilder.append("\n\n");
