@@ -1,5 +1,5 @@
-KITTYBOT_DB_HOST=//the database host which should jooq gnerate it classes from
-KITTYBOT_DB_PORT=//the database port which should jooq gnerate it classes from
-KITTYBOT_DB_DATABASE=//the database name which should jooq gnerate it classes from
-KITTYBOT_DB_USER=//the database user which should jooq gnerate it classes from
-KITTYBOT_DB_PASSWORD=//the database password which should jooq gnerate it classes from
+KITTYBOT_DB_HOST=//the database host which should jooq generate its classes from
+KITTYBOT_DB_PORT=//the database port which should jooq generate its classes from
+KITTYBOT_DB_DATABASE=//the database name which should jooq generate its classes from
+KITTYBOT_DB_USER=//the database user which should jooq generate its classes from
+KITTYBOT_DB_PASSWORD=//the database password which should jooq generate its classes from
