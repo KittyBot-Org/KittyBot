@@ -301,8 +301,8 @@ public class Database{
 	}
 
 	public static boolean hasSession(String userId){
-		try(var con = getCon(); var deleteStep = getCtx(con).selectFrom(SESSIONS)){
-			return deleteStep.where(SESSIONS.USER_ID.eq(userId)).fetch().isNotEmpty();
+		try(var con = getCon(); var selectStep = getCtx(con).selectFrom(SESSIONS)){
+			return selectStep.where(SESSIONS.USER_ID.eq(userId)).fetch().isNotEmpty();
 		}
 		catch(SQLException e){
 			LOG.error("Error checking if user: {} has a session", userId, e);
@@ -311,7 +311,7 @@ public class Database{
 	}
 
 	public static void deleteSession(String userId){
-		try(var con = getCon(); var deleteStep = getCtx(con).selectFrom(SESSIONS)){
+		try(var con = getCon(); var deleteStep = getCtx(con).deleteFrom(SESSIONS)){
 			deleteStep.where(SESSIONS.USER_ID.eq(userId)).execute();
 		}
 		catch(SQLException e){
