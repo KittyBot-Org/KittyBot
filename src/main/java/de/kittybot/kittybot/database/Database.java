@@ -27,8 +27,7 @@ public class Database{
 
 	private static final Logger LOG = LoggerFactory.getLogger(Database.class);
 
-	private Database(){
-	}
+	private Database(){}
 
 	public static void init(JDA jda){
 		createTable("guilds");
@@ -37,12 +36,13 @@ public class Database{
 		createTable("reactive_messages");
 		createTable("user_statistics");
 		createTable("sessions");
-		for(var guild : jda.getGuilds()){
+
+		jda.getGuildCache().forEach(guild -> {
 			LOG.debug("Loading Guild: {}...", guild.getName());
 			if(!isGuildRegistered(guild)){
 				registerGuild(guild);
 			}
-		}
+		});
 	}
 
 	private static boolean isGuildRegistered(Guild guild){
@@ -190,25 +190,28 @@ public class Database{
 
 	public static void setSelfAssignableRoles(String guildId, Map<String, String> newRoles){
 		var roles = SelfAssignableRoleCache.getSelfAssignableRoles(guildId);
-		if(roles != null){
-			var addRoles = new HashMap<String, String>();
-			var removeRoles = new HashSet<String>();
-			for(var role : roles.entrySet()){
-				if(newRoles.get(role.getKey()) == null){
-					removeRoles.add(role.getKey());
-				}
+		if(roles == null){
+			return;
+		}
+		var addRoles = new HashMap<String, String>();
+		var removeRoles = new HashSet<String>();
+
+		roles.keySet().forEach(key -> {
+			if(newRoles.get(key) == null){
+				removeRoles.add(key);
 			}
-			for(var role : newRoles.entrySet()){
-				if(roles.get(role.getKey()) == null){
-					addRoles.put(role.getKey(), role.getValue());
-				}
+		});
+		newRoles.forEach((key, value) -> {
+			if(roles.get(key) == null){
+				addRoles.put(key, value);
 			}
-			if(!removeRoles.isEmpty()){
-				removeSelfAssignableRoles(guildId, removeRoles);
-			}
-			if(!addRoles.isEmpty()){
-				addSelfAssignableRoles(guildId, addRoles);
-			}
+		});
+
+		if(!removeRoles.isEmpty()){
+			removeSelfAssignableRoles(guildId, removeRoles);
+		}
+		if(!addRoles.isEmpty()){
+			addSelfAssignableRoles(guildId, addRoles);
 		}
 	}
 
