@@ -107,10 +107,8 @@ public class KittyBot{
 							new OnGuildReadyEvent(),
 							new OnGuildVoiceEvent(),
 							new OnInviteEvent(),
-							new OnRawEvent(),
 							lavalink
 					)
-					.setRawEventsEnabled(true)
 					.setVoiceDispatchInterceptor(lavalink.getVoiceInterceptor())
 					.setActivity(Activity.playing("loading.."))
 					.setStatus(OnlineStatus.DO_NOT_DISTURB)
