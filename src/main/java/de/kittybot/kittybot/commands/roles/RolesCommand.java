@@ -18,7 +18,6 @@ import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEve
 import java.awt.*;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 public class RolesCommand extends ACommand{
@@ -41,8 +40,8 @@ public class RolesCommand extends ACommand{
 				sendUsage(ctx);
 			}
 			if(ctx.getMember().isOwner() || ctx.getMember().hasPermission(Permission.ADMINISTRATOR)){
-				List<Role> roles = ctx.getMessage().getMentionedRoles();
-				List<Emote> emotes = ctx.getMessage().getEmotes();
+				var roles = ctx.getMessage().getMentionedRoles();
+				var emotes = ctx.getMessage().getEmotes();
 				if(ctx.getArgs()[0].equalsIgnoreCase("add") && !roles.isEmpty() && !emotes.isEmpty()){
 					SelfAssignableRoleCache.addSelfAssignableRoles(ctx.getGuild().getId(), Utils.toMap(roles, emotes));
 					sendAnswer(ctx, "Roles added!");
@@ -52,13 +51,13 @@ public class RolesCommand extends ACommand{
 					sendAnswer(ctx, "Roles removed!");
 				}
 				else if(ctx.getArgs()[0].equalsIgnoreCase("list")){
-					Map<Role, Emote> map = getRoleEmoteMap(ctx.getGuild());
+					var map = getRoleEmoteMap(ctx.getGuild());
 					if(map.isEmpty()){
 						sendAnswer(ctx, "There are no roles added!");
 					}
 					else{
-						StringBuilder message = new StringBuilder();
-						for(Map.Entry<Role, Emote> m : map.entrySet()){
+						var message = new StringBuilder();
+						for(var m : map.entrySet()){
 							message.append(m.getKey().getAsMention()).append(", ");
 						}
 						sendAnswer(ctx, "Roles: " + message);
@@ -73,13 +72,13 @@ public class RolesCommand extends ACommand{
 			}
 		}
 		else{
-			Map<Role, Emote> roles = getRoleEmoteMap(ctx.getGuild());
+			var roles = getRoleEmoteMap(ctx.getGuild());
 			if(roles.isEmpty()){
 				sendError(ctx, "No self-assignable roles configured!\nIf you are an admin use `.roles add @role :emote: @role :emote:...` to add roles!");
 				return;
 			}
-			StringBuilder value = new StringBuilder();
-			for(Map.Entry<Role, Emote> k : roles.entrySet()){
+			var value = new StringBuilder();
+			for(var k : roles.entrySet()){
 				value.append(k.getValue().getAsMention()).append(Emojis.BLANK).append(Emojis.BLANK).append(k.getKey().getAsMention()).append("\n");
 			}
 			ctx.getChannel().sendMessage(new EmbedBuilder().setTitle(title)
@@ -88,7 +87,7 @@ public class RolesCommand extends ACommand{
 					.appendDescription("**Emote:**" + Emojis.BLANK + "**Role:**\n" + value).build())
 					.queue(message -> {
 						ReactiveMessageCache.addReactiveMessage(ctx, message, this, "-1");
-						for(Map.Entry<Role, Emote> role : roles.entrySet()){
+						for(var role : roles.entrySet()){
 							message.addReaction(role.getValue()).queue();
 						}
 						message.addReaction(Emojis.WASTEBASKET).queue();
@@ -100,12 +99,12 @@ public class RolesCommand extends ACommand{
 		var roles = SelfAssignableRoleCache.getSelfAssignableRoles(guild.getId());
 		var map = new LinkedHashMap<Role, Emote>();
 		for(var entry : roles.entrySet()){
-			Role role = guild.getRoleById(entry.getKey());
+			var role = guild.getRoleById(entry.getKey());
 			if(role == null){
 				SelfAssignableRoleCache.removeSelfAssignableRoles(guild.getId(), Collections.singleton(entry.getKey()));
 				continue;
 			}
-			Emote emote = guild.getJDA().getEmoteById(entry.getValue());
+			var emote = guild.getJDA().getEmoteById(entry.getValue());
 			if(emote == null){
 				SelfAssignableRoleCache.removeSelfAssignableRoles(guild.getId(), Collections.singleton(entry.getKey()));
 				continue;
@@ -118,8 +117,8 @@ public class RolesCommand extends ACommand{
 	@Override
 	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
 		super.reactionAdd(reactiveMessage, event);
-		Map<Role, Emote> roles = getRoleEmoteMap(event.getGuild());
-		for(Map.Entry<Role, Emote> r : roles.entrySet()){
+		var roles = getRoleEmoteMap(event.getGuild());
+		for(var r : roles.entrySet()){
 			if(event.getReactionEmote().isEmote() && event.getReactionEmote().getId().equals(r.getValue().getId())){
 				if(event.getMember().getRoles().contains(r.getKey())){
 					event.getGuild().removeRoleFromMember(event.getMember(), r.getKey()).queue();

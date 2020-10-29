@@ -63,8 +63,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	public void loadItem(ACommand command, CommandContext ctx){
 		this.command = command;
 		this.ctx = ctx;
-		String argStr = String.join(" ", ctx.getArgs());
-		final String query = URL_PATTERN.matcher(argStr).matches() ? argStr : "ytsearch:" + argStr;
+		var argStr = String.join(" ", ctx.getArgs());
+		final var query = URL_PATTERN.matcher(argStr).matches() ? argStr : "ytsearch:" + argStr;
 		KittyBot.getAudioPlayerManager().loadItem(query, new AudioLoadResultHandler(){
 
 			@Override
@@ -90,7 +90,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 					queue(track);
 				}
 				else{
-					for(AudioTrack track : playlist.getTracks()){
+					for(var track : playlist.getTracks()){
 						track.setUserData(ctx.getUser().getId());
 						queuedTracks.add(track);
 						queue(track);
@@ -254,7 +254,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	public boolean nextTrack(){
-		AudioTrack track = queue.poll();
+		var track = queue.poll();
 		var channel = KittyBot.getJda().getTextChannelById(channelId);
 		if(track != null){
 			player.playTrack(track);
@@ -287,7 +287,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	public boolean previousTrack(){
-		AudioTrack track = history.poll();
+		var track = history.poll();
 		if(track != null){
 			track.setPosition(0);
 			player.playTrack(track);

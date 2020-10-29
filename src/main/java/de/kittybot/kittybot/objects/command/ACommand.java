@@ -9,7 +9,6 @@ import de.kittybot.kittybot.objects.requests.Requester;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
@@ -210,7 +209,7 @@ public abstract class ACommand{
 		else{
 			message.append(ctx.getUser().getAsMention()).append(" ").append(text).append(" ");
 
-			for(User user : users){
+			for(var user : users){
 				if(user.getId().equals(ctx.getUser().getId())){
 					continue;
 				}

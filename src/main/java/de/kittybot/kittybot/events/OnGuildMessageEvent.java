@@ -6,7 +6,6 @@ import de.kittybot.kittybot.cache.MessageCache;
 import de.kittybot.kittybot.cache.ReactiveMessageCache;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.Emojis;
-import de.kittybot.kittybot.objects.ReactiveMessage;
 import de.kittybot.kittybot.objects.command.CommandManager;
 import de.kittybot.kittybot.objects.messages.MessageData;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -80,7 +79,7 @@ public class OnGuildMessageEvent extends ListenerAdapter{
 			return;
 		}
 
-		ReactiveMessage reactiveMessage = ReactiveMessageCache.getReactiveMessage(event.getGuild(), event.getMessageId());
+		var reactiveMessage = ReactiveMessageCache.getReactiveMessage(event.getGuild(), event.getMessageId());
 		if(reactiveMessage != null){
 			if(reactiveMessage.allowed.equals("-1") || reactiveMessage.allowed.equals(event.getUserId())){
 				CommandManager.getCommands().get(reactiveMessage.command).reactionAdd(reactiveMessage, event);

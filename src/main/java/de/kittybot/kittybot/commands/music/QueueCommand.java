@@ -1,6 +1,5 @@
 package de.kittybot.kittybot.commands.music;
 
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.kittybot.kittybot.cache.MusicPlayerCache;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
@@ -44,7 +43,7 @@ public class QueueCommand extends ACommand{
 					.append(" ")
 					.append(queue.size() > 1 ? "are" : "is")
 					.append(" queued:\n");
-			for(AudioTrack track : queue){
+			for(var track : queue){
 				message.append(Utils.formatTrackTitle(track)).append(" ").append(Utils.formatDuration(track.getDuration())).append("\n");
 			}
 			sendAnswer(ctx, message.toString());

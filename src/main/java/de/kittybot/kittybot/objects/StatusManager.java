@@ -25,7 +25,7 @@ public class StatusManager{
 		if(STATUS_MESSAGES == null || STATUS_MESSAGES.isEmpty()){
 			return Activity.watching("you \uD83D\uDC40");
 		}
-		String randomMessage = STATUS_MESSAGES.get(ThreadLocalRandom.current().nextInt(STATUS_MESSAGES.size() - 1));
+		var randomMessage = STATUS_MESSAGES.get(ThreadLocalRandom.current().nextInt(STATUS_MESSAGES.size() - 1));
 
 		var activityMessage = randomMessage.split("\\s+", 2);
 		var type = activityMessage[0].toUpperCase();

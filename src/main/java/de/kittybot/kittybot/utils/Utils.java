@@ -21,7 +21,7 @@ public class Utils{
 	private Utils(){}
 
 	public static String generate(int length){
-		StringBuilder sb = new StringBuilder(length);
+		var sb = new StringBuilder(length);
 		for(var i = 0; i < length; i++){
 			sb.append(CHARS.charAt(ThreadLocalRandom.current().nextInt(CHARS.length())));
 		}
@@ -46,8 +46,8 @@ public class Utils{
 
 	public static Map<String, String> toMap(List<Role> roles, List<Emote> emotes){
 		Map<String, String> map = new HashMap<>();
-		int i = 0;
-		for(Role role : roles){
+		var i = 0;
+		for(var role : roles){
 			if(emotes.size() <= i){
 				break;
 			}
@@ -58,7 +58,7 @@ public class Utils{
 	}
 
 	public static String formatDuration(long length){
-		Duration duration = Duration.ofMillis(length);
+		var duration = Duration.ofMillis(length);
 		var seconds = duration.toSecondsPart();
 		return String.format("%d:%s", duration.toMinutes(), seconds > 9 ? seconds : "0" + seconds);
 	}

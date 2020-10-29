@@ -5,11 +5,9 @@ import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
 import de.kittybot.kittybot.objects.requests.Requester;
-import net.dv8tion.jda.api.entities.Message;
 import org.apache.commons.io.IOUtils;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 import static de.kittybot.kittybot.utils.MessageUtils.maskLink;
 
@@ -27,7 +25,7 @@ public class HastebinCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		List<Message.Attachment> attachments = ctx.getMessage().getAttachments();
+		var attachments = ctx.getMessage().getAttachments();
 		if(attachments.isEmpty()){
 			sendError(ctx, "Please provide a file");
 			return;

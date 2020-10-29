@@ -37,7 +37,7 @@ public class Database{
 		createTable("reactive_messages");
 		createTable("user_statistics");
 		createTable("sessions");
-		for(Guild guild : jda.getGuilds()){
+		for(var guild : jda.getGuilds()){
 			LOG.debug("Loading Guild: {}...", guild.getName());
 			if(!isGuildRegistered(guild)){
 				registerGuild(guild);

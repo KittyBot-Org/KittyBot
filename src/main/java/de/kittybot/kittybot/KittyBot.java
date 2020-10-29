@@ -16,7 +16,6 @@ import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.database.SQL;
 import de.kittybot.kittybot.events.*;
 import de.kittybot.kittybot.objects.Config;
-import de.kittybot.kittybot.objects.LavalinkNode;
 import de.kittybot.kittybot.objects.StatusManager;
 import de.kittybot.kittybot.objects.command.CommandManager;
 import de.kittybot.kittybot.objects.requests.Requester;
@@ -68,7 +67,7 @@ public class KittyBot{
 
 		try{
 			lavalink = new JdaLavalink(Config.BOT_ID, 1, this::fuckLavalink);
-			for(LavalinkNode node : Config.LAVALINK_NODES){
+			for(var node : Config.LAVALINK_NODES){
 				lavalink.addNode(new URI("ws://" + node.host + ":" + node.port), node.password);
 			}
 

@@ -1,6 +1,5 @@
 package de.kittybot.kittybot.commands.music;
 
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.kittybot.kittybot.cache.MusicPlayerCache;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
@@ -43,7 +42,7 @@ public class HistoryCommand extends ACommand{
 					.append(" ")
 					.append(history.size() > 1 ? "are" : "is")
 					.append(" in the history:\n");
-			for(AudioTrack track : history){
+			for(var track : history){
 				message.append(Utils.formatTrackTitle(track)).append(" ").append(Utils.formatDuration(track.getDuration())).append("\n");
 			}
 			sendAnswer(ctx, message.toString());

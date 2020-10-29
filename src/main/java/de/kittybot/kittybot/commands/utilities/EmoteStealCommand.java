@@ -4,14 +4,12 @@ import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Icon;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 
 public class EmoteStealCommand extends ACommand{
 
@@ -43,10 +41,10 @@ public class EmoteStealCommand extends ACommand{
 			}
 			return;
 		}
-		List<Emote> emotes = ctx.getMessage().getEmotes();
-		List<Emote> guildEmotes = ctx.getGuild().getEmotes();
+		var emotes = ctx.getMessage().getEmotes();
+		var guildEmotes = ctx.getGuild().getEmotes();
 		if(!emotes.isEmpty()){
-			for(Emote emote : emotes){
+			for(var emote : emotes){
 				if(!guildEmotes.contains(emote)){
 					createEmote(ctx, emote.getName(), emote.getImageUrl());
 				}

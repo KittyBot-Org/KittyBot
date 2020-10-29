@@ -41,12 +41,12 @@ public class CommandManager{
 	}
 
 	public static boolean checkCommands(GuildMessageReceivedEvent event){
-		long start = System.nanoTime();
-		String message = cutCommandPrefix(event.getGuild(), event.getMessage().getContentRaw());
+		var start = System.nanoTime();
+		var message = cutCommandPrefix(event.getGuild(), event.getMessage().getContentRaw());
 		if(message == null){
 			return false;
 		}
-		String command = getCommandString(message);
+		var command = getCommandString(message);
 		for(var entry : COMMANDS.entrySet()){
 			var cmd = entry.getValue();
 			if(cmd.checkCmd(command)){ // what even is this @topi
