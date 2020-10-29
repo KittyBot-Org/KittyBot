@@ -213,8 +213,8 @@ public class Database{
 	}
 
 	public static boolean removeSelfAssignableRoles(String guildId, Set<String> roles){
-		try(var con = getCon(); var selectStep = getCtx(con).deleteFrom(SELF_ASSIGNABLE_ROLES)){
-			return selectStep.where(SELF_ASSIGNABLE_ROLES.GUILD_ID.eq(guildId).and(SELF_ASSIGNABLE_ROLES.ROLE_ID.in(roles))).execute() == roles.size();
+		try(var con = getCon(); var deleteStep = getCtx(con).deleteFrom(SELF_ASSIGNABLE_ROLES)){
+			return deleteStep.where(SELF_ASSIGNABLE_ROLES.GUILD_ID.eq(guildId).and(SELF_ASSIGNABLE_ROLES.ROLE_ID.in(roles))).execute() == roles.size();
 		}
 		catch(SQLException e){
 			LOG.error("Error removing self-assignable roles: {} guilds {}", roles, guildId, e);
