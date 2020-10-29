@@ -64,8 +64,8 @@ public class SQL{
 	}
 
 	public static <T> T getProperty(String guildId, Field<T> field){
-		try(var con = getCon()){
-			var res = getCtx(con).select(field).from(GUILDS).where(GUILDS.GUILD_ID.eq(guildId)).fetchOne();
+		try(var con = getCon(); var selectStep = getCtx(con).select(field)){
+			var res = selectStep.from(GUILDS).where(GUILDS.GUILD_ID.eq(guildId)).fetchOne();
 			if(res != null){
 				return res.getValue(field);
 			}

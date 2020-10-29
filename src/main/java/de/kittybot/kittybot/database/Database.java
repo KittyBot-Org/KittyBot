@@ -46,8 +46,8 @@ public class Database{
 	}
 
 	private static boolean isGuildRegistered(Guild guild){
-		try(var con = getCon()){
-			return getCtx(con).selectFrom(GUILDS).where(GUILDS.GUILD_ID.eq(guild.getId())).fetch().isNotEmpty();
+		try(var con = getCon(); var selectStep = getCtx(con).selectFrom(GUILDS)){
+			return selectStep.where(GUILDS.GUILD_ID.eq(guild.getId())).fetch().isNotEmpty();
 		}
 		catch(SQLException e){
 			LOG.error("Error while checking if guild exists", e);
@@ -108,8 +108,8 @@ public class Database{
 	} */
 
 	public static GuildSettings getGuildSettings(String guildId){
-		try(var con = getCon()){
-			var res = getCtx(con).selectFrom(GUILDS).where(GUILDS.GUILD_ID.eq(guildId)).fetchOne();
+		try(var con = getCon(); var selectStep = getCtx(con).selectFrom(GUILDS)){
+			var res = selectStep.where(GUILDS.GUILD_ID.eq(guildId)).fetchOne();
 			if(res == null){
 				return null;
 			}
@@ -213,8 +213,8 @@ public class Database{
 	}
 
 	public static boolean removeSelfAssignableRoles(String guildId, Set<String> roles){
-		try(var con = getCon()){
-			return getCtx(con).deleteFrom(SELF_ASSIGNABLE_ROLES).where(SELF_ASSIGNABLE_ROLES.GUILD_ID.eq(guildId).and(SELF_ASSIGNABLE_ROLES.ROLE_ID.in(roles))).execute() == roles.size();
+		try(var con = getCon(); var selectStep = getCtx(con).deleteFrom(SELF_ASSIGNABLE_ROLES)){
+			return selectStep.where(SELF_ASSIGNABLE_ROLES.GUILD_ID.eq(guildId).and(SELF_ASSIGNABLE_ROLES.ROLE_ID.in(roles))).execute() == roles.size();
 		}
 		catch(SQLException e){
 			LOG.error("Error removing self-assignable roles: {} guilds {}", roles, guildId, e);
@@ -236,8 +236,8 @@ public class Database{
 	}
 
 	public static Map<String, String> getSelfAssignableRoles(String guildId){
-		try(var con = getCon()){
-			return getCtx(con).selectFrom(SELF_ASSIGNABLE_ROLES).where(SELF_ASSIGNABLE_ROLES.GUILD_ID.eq(guildId)).fetch()
+		try(var con = getCon(); var selectStep = getCtx(con).selectFrom(SELF_ASSIGNABLE_ROLES)){
+			return selectStep.where(SELF_ASSIGNABLE_ROLES.GUILD_ID.eq(guildId)).fetch()
 					.stream()
 					.collect(Collectors.toMap(sar -> sar.get(SELF_ASSIGNABLE_ROLES.ROLE_ID), sar -> sar.get(SELF_ASSIGNABLE_ROLES.EMOTE_ID)));
 		}
@@ -248,8 +248,8 @@ public class Database{
 	}
 
 	public static ReactiveMessage getReactiveMessage(String guildId, String messageId){
-		try(var con = getCon()){
-			var reactiveMsg = getCtx(con).selectFrom(REACTIVE_MESSAGES).where(REACTIVE_MESSAGES.MESSAGE_ID.eq(messageId).and(REACTIVE_MESSAGES.GUILD_ID.eq(guildId))).fetchOne();
+		try(var con = getCon(); var selectStep = getCtx(con).selectFrom(REACTIVE_MESSAGES)){
+			var reactiveMsg = selectStep.where(REACTIVE_MESSAGES.MESSAGE_ID.eq(messageId).and(REACTIVE_MESSAGES.GUILD_ID.eq(guildId))).fetchOne();
 			if(reactiveMsg != null){
 				return new ReactiveMessage(reactiveMsg.getChannelId(), reactiveMsg.getMessageId(), reactiveMsg.getUserId(), reactiveMsg.getCommandId(), reactiveMsg.getCommand(), reactiveMsg.getAllowed());
 			}
@@ -270,8 +270,8 @@ public class Database{
 	}
 
 	public static void removeReactiveMessage(String guildId, String messageId){
-		try(var con = getCon()){
-			getCtx(con).deleteFrom(REACTIVE_MESSAGES).where(REACTIVE_MESSAGES.MESSAGE_ID.eq(messageId).and(REACTIVE_MESSAGES.GUILD_ID.eq(guildId))).execute();
+		try(var con = getCon(); var deleteStep = getCtx(con).deleteFrom(REACTIVE_MESSAGES)){
+			deleteStep.where(REACTIVE_MESSAGES.MESSAGE_ID.eq(messageId).and(REACTIVE_MESSAGES.GUILD_ID.eq(guildId))).execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error removing reactive message", e);
@@ -288,8 +288,8 @@ public class Database{
 	}
 
 	public static DashboardSession getSession(String userId){
-		try(var con = getCon()){
-			var r = getCtx(con).selectFrom(SESSIONS).where(SESSIONS.USER_ID.eq(userId)).fetchOne();
+		try(var con = getCon(); var selectStep = getCtx(con).selectFrom(SESSIONS)){
+			var r = selectStep.where(SESSIONS.USER_ID.eq(userId)).fetchOne();
 			if(r != null){
 				return new DashboardSession(new SessionData(userId, r.get(SESSIONS.ACCESS_TOKEN), r.get(SESSIONS.REFRESH_TOKEN), "Bearer", OffsetDateTime.of(r.get(SESSIONS.EXPIRATION), ZoneOffset.UTC), WebService.getScopes()));
 			}
@@ -301,8 +301,8 @@ public class Database{
 	}
 
 	public static boolean hasSession(String userId){
-		try(var con = getCon()){
-			return getCtx(con).selectFrom(SESSIONS).where(SESSIONS.USER_ID.eq(userId)).fetch().isNotEmpty();
+		try(var con = getCon(); var deleteStep = getCtx(con).selectFrom(SESSIONS)){
+			return deleteStep.where(SESSIONS.USER_ID.eq(userId)).fetch().isNotEmpty();
 		}
 		catch(SQLException e){
 			LOG.error("Error checking if user: {} has a session", userId, e);
@@ -311,8 +311,8 @@ public class Database{
 	}
 
 	public static void deleteSession(String userId){
-		try(var con = getCon()){
-			getCtx(con).deleteFrom(SESSIONS).where(SESSIONS.USER_ID.eq(userId)).execute();
+		try(var con = getCon(); var deleteStep = getCtx(con).selectFrom(SESSIONS)){
+			deleteStep.where(SESSIONS.USER_ID.eq(userId)).execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error deleting session for user: {}", userId, e);
