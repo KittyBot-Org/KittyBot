@@ -6,6 +6,8 @@ public enum API{
 	// stats APIs
 	DISCORD_BOTS("discord.bots.gg", Config.DISCORD_BOTS_TOKEN, "https://discord.bots.gg/api/v1/bots/%s/stats", "guildCount"),
 	TOP_GG("top.gg", Config.TOP_GG_TOKEN, "https://top.gg/api/bots/%s/stats", "server_count"),
+	DISCORD_EXTREME_LIST("discordextremelist.xyz", Config.DISCORD_EXTREME_LIST_TOKEN, "https://api.discordextremelist.xyz/v2/bot/%s/stats", "guildCount"),
+	DISCORD_BOATS("discord.boats", Config.DISCORD_BOATS_TOKEN, "https://discord.boats/api/bot/%s", "server_count"),
 
 	// other
 	NEKOS_LIFE("nekos life", "https://nekos.life/api/v2/img/%s"),

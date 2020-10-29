@@ -4,8 +4,19 @@
 package de.kittybot.kittybot.database.jooq;
 
 
-import de.kittybot.kittybot.database.jooq.tables.*;
-import de.kittybot.kittybot.database.jooq.tables.records.*;
+import de.kittybot.kittybot.database.jooq.tables.Commands;
+import de.kittybot.kittybot.database.jooq.tables.Guilds;
+import de.kittybot.kittybot.database.jooq.tables.ReactiveMessages;
+import de.kittybot.kittybot.database.jooq.tables.SelfAssignableRoles;
+import de.kittybot.kittybot.database.jooq.tables.Sessions;
+import de.kittybot.kittybot.database.jooq.tables.UserStatistics;
+import de.kittybot.kittybot.database.jooq.tables.records.CommandsRecord;
+import de.kittybot.kittybot.database.jooq.tables.records.GuildsRecord;
+import de.kittybot.kittybot.database.jooq.tables.records.ReactiveMessagesRecord;
+import de.kittybot.kittybot.database.jooq.tables.records.SelfAssignableRolesRecord;
+import de.kittybot.kittybot.database.jooq.tables.records.SessionsRecord;
+import de.kittybot.kittybot.database.jooq.tables.records.UserStatisticsRecord;
+
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.Internal;
@@ -48,7 +59,7 @@ public class Keys {
         public static final UniqueKey<GuildsRecord> GUILDS_PKEY = Internal.createUniqueKey(Guilds.GUILDS, "guilds_pkey", new TableField[] { Guilds.GUILDS.GUILD_ID }, true);
         public static final UniqueKey<ReactiveMessagesRecord> REACTIVE_MESSAGES_PKEY = Internal.createUniqueKey(ReactiveMessages.REACTIVE_MESSAGES, "reactive_messages_pkey", new TableField[] { ReactiveMessages.REACTIVE_MESSAGES.MESSAGE_ID, ReactiveMessages.REACTIVE_MESSAGES.USER_ID, ReactiveMessages.REACTIVE_MESSAGES.GUILD_ID }, true);
         public static final UniqueKey<SelfAssignableRolesRecord> SELF_ASSIGNABLE_ROLES_PKEY = Internal.createUniqueKey(SelfAssignableRoles.SELF_ASSIGNABLE_ROLES, "self_assignable_roles_pkey", new TableField[] { SelfAssignableRoles.SELF_ASSIGNABLE_ROLES.ROLE_ID, SelfAssignableRoles.SELF_ASSIGNABLE_ROLES.GUILD_ID }, true);
-        public static final UniqueKey<SessionsRecord> SESSIONS_PKEY = Internal.createUniqueKey(Sessions.SESSIONS, "sessions_pkey", new TableField[] { Sessions.SESSIONS.SESSION_KEY }, true);
+        public static final UniqueKey<SessionsRecord> SESSIONS_PKEY = Internal.createUniqueKey(Sessions.SESSIONS, "sessions_pkey", new TableField[] { Sessions.SESSIONS.USER_ID }, true);
         public static final UniqueKey<UserStatisticsRecord> USER_STATISTICS_PKEY = Internal.createUniqueKey(UserStatistics.USER_STATISTICS, "user_statistics_pkey", new TableField[] { UserStatistics.USER_STATISTICS.USER_ID, UserStatistics.USER_STATISTICS.GUILD_ID }, true);
     }
 }

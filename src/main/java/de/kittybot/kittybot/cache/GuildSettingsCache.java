@@ -4,21 +4,21 @@ import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.GuildSettings;
 import net.dv8tion.jda.api.entities.Guild;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GuildSettingsCache{
 
-	private static final Map<String, GuildSettings> SETTINGS = new HashMap<>();
+	private static final Map<String, GuildSettings> SETTINGS = new ConcurrentHashMap<>();
 
 	private GuildSettingsCache(){}
 
-	public static String getCommandPrefix(String guildId){
-		return getGuildSettings(guildId).getCommandPrefix();
-	}
-
 	public static GuildSettings getGuildSettings(String guildId){
 		return SETTINGS.computeIfAbsent(guildId, k -> Database.getGuildSettings(guildId));
+	}
+
+	public static String getCommandPrefix(String guildId){
+		return getGuildSettings(guildId).getCommandPrefix();
 	}
 
 	public static String getRequestChannelId(String guildId){

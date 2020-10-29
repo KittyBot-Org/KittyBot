@@ -7,13 +7,23 @@ package de.kittybot.kittybot.database.jooq.tables;
 import de.kittybot.kittybot.database.jooq.Keys;
 import de.kittybot.kittybot.database.jooq.Public;
 import de.kittybot.kittybot.database.jooq.tables.records.SessionsRecord;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+
+import org.jooq.Field;
+import org.jooq.ForeignKey;
+import org.jooq.Name;
+import org.jooq.Record;
+import org.jooq.Row4;
+import org.jooq.Schema;
+import org.jooq.Table;
+import org.jooq.TableField;
+import org.jooq.TableOptions;
+import org.jooq.UniqueKey;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
 
 /**
@@ -22,7 +32,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Sessions extends TableImpl<SessionsRecord> {
 
-    private static final long serialVersionUID = -517766618;
+    private static final long serialVersionUID = 1587653110;
 
     /**
      * The reference instance of <code>public.sessions</code>
@@ -36,11 +46,6 @@ public class Sessions extends TableImpl<SessionsRecord> {
     public Class<SessionsRecord> getRecordType() {
         return SessionsRecord.class;
     }
-
-    /**
-     * The column <code>public.sessions.session_key</code>.
-     */
-    public final TableField<SessionsRecord, String> SESSION_KEY = createField(DSL.name("session_key"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
 
     /**
      * The column <code>public.sessions.user_id</code>.
@@ -137,11 +142,11 @@ public class Sessions extends TableImpl<SessionsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<String, String, String, String, LocalDateTime> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row4<String, String, String, LocalDateTime> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 }

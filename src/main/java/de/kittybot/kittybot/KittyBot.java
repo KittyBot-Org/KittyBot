@@ -19,7 +19,6 @@ import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.LavalinkNode;
 import de.kittybot.kittybot.objects.StatusManager;
 import de.kittybot.kittybot.objects.command.CommandManager;
-import de.kittybot.kittybot.objects.paginator.Paginator;
 import de.kittybot.kittybot.objects.requests.Requester;
 import de.kittybot.kittybot.utils.Utils;
 import lavalink.client.io.Link;
@@ -98,8 +97,8 @@ public class KittyBot{
 							CacheFlag.ACTIVITY,
 							CacheFlag.CLIENT_STATUS
 					)
-					.setMemberCachePolicy(MemberCachePolicy.DEFAULT.or(member -> DashboardSessionCache.hasSession(member.getId())))  // voice, owner or a user with a web session
-					.setChunkingFilter(ChunkingFilter.NONE)                                                                          // lazy loading
+					.setMemberCachePolicy(MemberCachePolicy.DEFAULT.or(member -> DashboardSessionCache.hasSession(member.getId()))) // voice, owner or a user with a web session
+					.setChunkingFilter(ChunkingFilter.NONE)                                                                         // lazy loading
 					.addEventListeners(
 							new OnEmoteEvent(),
 							new OnGuildEvent(),
@@ -109,7 +108,6 @@ public class KittyBot{
 							new OnGuildVoiceEvent(),
 							new OnInviteEvent(),
 							new OnRawEvent(),
-							new Paginator(),
 							lavalink
 					)
 					.setRawEventsEnabled(true)
@@ -128,7 +126,7 @@ public class KittyBot{
 
 			Database.init(jda);
 
-			new WebService(6969);
+			new WebService(Config.BACKEND_PORT);
 
 			SCHEDULER.scheduleAtFixedRate(MessageCache::pruneCache, 1, 1, TimeUnit.HOURS);
 			SCHEDULER.scheduleAtFixedRate(StatusManager::newRandomStatus, 0, 2, TimeUnit.MINUTES);

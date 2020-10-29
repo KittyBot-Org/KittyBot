@@ -69,10 +69,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 			@Override
 			public void trackLoaded(AudioTrack track){
-				if(!lengthCheck(track)){
-					sendError(ctx, "The maximum length of a track is 20 minutes");
-					return;
-				}
 				track.setUserData(ctx.getUser().getId());
 				queue(track);
 				if(!queue.isEmpty()){
@@ -89,25 +85,12 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				List<AudioTrack> queuedTracks = new ArrayList<>();
 				if(playlist.isSearchResult()){
 					var track = playlist.getTracks().get(0);
-					if(!lengthCheck(track)){
-						sendError(ctx, "The maximum length of a track is 20 minutes");
-						return;
-					}
 					track.setUserData(ctx.getUser().getId());
 					queuedTracks.add(track);
 					queue(track);
 				}
 				else{
 					for(AudioTrack track : playlist.getTracks()){
-						if(!lengthCheck(track)){
-							if(playlist.getTracks().size() == 1){
-								sendError(ctx, "The maximum length of a track is 20 minutes");
-								return;
-							}
-							else{
-								continue;
-							}
-						}
 						track.setUserData(ctx.getUser().getId());
 						queuedTracks.add(track);
 						queue(track);
@@ -132,10 +115,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				sendError(ctx, "Failed to load track");
 			}
 		});
-	}
-
-	public boolean lengthCheck(AudioTrack track){
-		return TimeUnit.MILLISECONDS.toMinutes(track.getDuration()) <= 20;
 	}
 
 	public void queue(AudioTrack track){
