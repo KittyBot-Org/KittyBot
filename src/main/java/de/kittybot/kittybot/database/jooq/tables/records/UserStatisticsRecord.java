@@ -5,6 +5,7 @@ package de.kittybot.kittybot.database.jooq.tables.records;
 
 
 import de.kittybot.kittybot.database.jooq.tables.UserStatistics;
+
 import org.jooq.Field;
 import org.jooq.Record2;
 import org.jooq.Record9;

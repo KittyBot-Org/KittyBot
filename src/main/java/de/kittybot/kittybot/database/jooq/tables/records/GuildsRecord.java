@@ -5,6 +5,7 @@ package de.kittybot.kittybot.database.jooq.tables.records;
 
 
 import de.kittybot.kittybot.database.jooq.tables.Guilds;
+
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record15;

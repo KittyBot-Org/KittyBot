@@ -4,13 +4,19 @@
 package de.kittybot.kittybot.database.jooq;
 
 
-import de.kittybot.kittybot.database.jooq.tables.*;
-import org.jooq.Catalog;
-import org.jooq.Table;
-import org.jooq.impl.SchemaImpl;
+import de.kittybot.kittybot.database.jooq.tables.Commands;
+import de.kittybot.kittybot.database.jooq.tables.Guilds;
+import de.kittybot.kittybot.database.jooq.tables.ReactiveMessages;
+import de.kittybot.kittybot.database.jooq.tables.SelfAssignableRoles;
+import de.kittybot.kittybot.database.jooq.tables.Sessions;
+import de.kittybot.kittybot.database.jooq.tables.UserStatistics;
 
 import java.util.Arrays;
 import java.util.List;
+
+import org.jooq.Catalog;
+import org.jooq.Table;
+import org.jooq.impl.SchemaImpl;
 
 
 /**

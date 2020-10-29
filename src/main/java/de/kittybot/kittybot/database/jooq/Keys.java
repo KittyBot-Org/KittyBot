@@ -4,8 +4,19 @@
 package de.kittybot.kittybot.database.jooq;
 
 
-import de.kittybot.kittybot.database.jooq.tables.*;
-import de.kittybot.kittybot.database.jooq.tables.records.*;
+import de.kittybot.kittybot.database.jooq.tables.Commands;
+import de.kittybot.kittybot.database.jooq.tables.Guilds;
+import de.kittybot.kittybot.database.jooq.tables.ReactiveMessages;
+import de.kittybot.kittybot.database.jooq.tables.SelfAssignableRoles;
+import de.kittybot.kittybot.database.jooq.tables.Sessions;
+import de.kittybot.kittybot.database.jooq.tables.UserStatistics;
+import de.kittybot.kittybot.database.jooq.tables.records.CommandsRecord;
+import de.kittybot.kittybot.database.jooq.tables.records.GuildsRecord;
+import de.kittybot.kittybot.database.jooq.tables.records.ReactiveMessagesRecord;
+import de.kittybot.kittybot.database.jooq.tables.records.SelfAssignableRolesRecord;
+import de.kittybot.kittybot.database.jooq.tables.records.SessionsRecord;
+import de.kittybot.kittybot.database.jooq.tables.records.UserStatisticsRecord;
+
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
