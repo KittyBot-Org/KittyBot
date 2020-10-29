@@ -5,7 +5,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'de.kittybot.jooq:gradle-jooq-plugin:5.1.7'
+        classpath 'de.kittybot.jooq:gradle-jooq-plugin:5.2.4'
     }
 }
 
@@ -27,7 +27,7 @@ repositories {
 
 dependencies {
     // discord/jda related
-    implementation 'net.dv8tion:JDA:4.2.0_211'
+    implementation 'net.dv8tion:JDA:4.2.0_212'
     implementation 'com.jagrosh:jda-utilities:3.0.4'
 
     // audio
@@ -39,7 +39,7 @@ dependencies {
 
     // database
     implementation 'com.zaxxer:HikariCP:3.4.5'
-    implementation 'org.jooq:jooq:3.14.0'
+    implementation 'org.jooq:jooq:3.14.1'
 
     implementation 'org.postgresql:postgresql:42.2.18'
     jooqGenerator 'org.postgresql:postgresql:42.2.18'
