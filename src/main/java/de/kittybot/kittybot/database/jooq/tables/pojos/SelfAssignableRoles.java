@@ -13,7 +13,7 @@ import java.io.Serializable;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SelfAssignableRoles implements Serializable {
 
-    private static final long serialVersionUID = 808033970;
+    private static final long serialVersionUID = 1L;
 
     private final String roleId;
     private final String guildId;
@@ -35,14 +35,23 @@ public class SelfAssignableRoles implements Serializable {
         this.emoteId = emoteId;
     }
 
+    /**
+     * Getter for <code>public.self_assignable_roles.role_id</code>.
+     */
     public String getRoleId() {
         return this.roleId;
     }
 
+    /**
+     * Getter for <code>public.self_assignable_roles.guild_id</code>.
+     */
     public String getGuildId() {
         return this.guildId;
     }
 
+    /**
+     * Getter for <code>public.self_assignable_roles.emote_id</code>.
+     */
     public String getEmoteId() {
         return this.emoteId;
     }

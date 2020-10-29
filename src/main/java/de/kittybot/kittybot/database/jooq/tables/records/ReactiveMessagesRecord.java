@@ -5,6 +5,7 @@ package de.kittybot.kittybot.database.jooq.tables.records;
 
 
 import de.kittybot.kittybot.database.jooq.tables.ReactiveMessages;
+
 import org.jooq.Field;
 import org.jooq.Record3;
 import org.jooq.Record7;
@@ -18,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReactiveMessagesRecord extends UpdatableRecordImpl<ReactiveMessagesRecord> implements Record7<String, String, String, String, String, String, String> {
 
-    private static final long serialVersionUID = -1532157114;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.reactive_messages.channel_id</code>.
@@ -324,12 +325,12 @@ public class ReactiveMessagesRecord extends UpdatableRecordImpl<ReactiveMessages
     public ReactiveMessagesRecord(String channelId, String messageId, String userId, String guildId, String commandId, String command, String allowed) {
         super(ReactiveMessages.REACTIVE_MESSAGES);
 
-        set(0, channelId);
-        set(1, messageId);
-        set(2, userId);
-        set(3, guildId);
-        set(4, commandId);
-        set(5, command);
-        set(6, allowed);
+        setChannelId(channelId);
+        setMessageId(messageId);
+        setUserId(userId);
+        setGuildId(guildId);
+        setCommandId(commandId);
+        setCommand(command);
+        setAllowed(allowed);
     }
 }

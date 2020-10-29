@@ -23,6 +23,8 @@ public class Config{
 	public static String REDIRECT_URL;
 	public static String ORIGIN_URL;
 	public static String HASTEBIN_URL;
+	public static String SIGNING_KEY;
+	public static int BACKEND_PORT;
 
 	public static String DISCORD_BOTS_TOKEN;
 	public static String TOP_GG_TOKEN;
@@ -53,6 +55,8 @@ public class Config{
 			REDIRECT_URL = json.getString("redirect_url");
 			ORIGIN_URL = json.getString("origin_url");
 			HASTEBIN_URL = json.getString("hastebin_url");
+			SIGNING_KEY = json.getString("signing_key");
+			BACKEND_PORT = json.getInt("backend_port");
 
 			DISCORD_BOTS_TOKEN = json.getString("discord_bots_token");
 			TOP_GG_TOKEN = json.getString("top_gg_token");

@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CommandsRecord extends UpdatableRecordImpl<CommandsRecord> implements Record6<String, String, String, String, YearToSecond, LocalDateTime> {
 
-    private static final long serialVersionUID = 319545998;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.commands.message_id</code>.
@@ -290,11 +290,11 @@ public class CommandsRecord extends UpdatableRecordImpl<CommandsRecord> implemen
     public CommandsRecord(String messageId, String guildId, String userId, String command, YearToSecond processingTime, LocalDateTime time) {
         super(Commands.COMMANDS);
 
-        set(0, messageId);
-        set(1, guildId);
-        set(2, userId);
-        set(3, command);
-        set(4, processingTime);
-        set(5, time);
+        setMessageId(messageId);
+        setGuildId(guildId);
+        setUserId(userId);
+        setCommand(command);
+        setProcessingTime(processingTime);
+        setTime(time);
     }
 }

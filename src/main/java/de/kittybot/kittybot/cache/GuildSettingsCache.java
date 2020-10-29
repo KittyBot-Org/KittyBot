@@ -4,12 +4,12 @@ import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.GuildSettings;
 import net.dv8tion.jda.api.entities.Guild;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GuildSettingsCache{
 
-	private static final Map<String, GuildSettings> SETTINGS = new HashMap<>();
+	private static final Map<String, GuildSettings> SETTINGS = new ConcurrentHashMap<>();
 
 	private GuildSettingsCache(){}
 

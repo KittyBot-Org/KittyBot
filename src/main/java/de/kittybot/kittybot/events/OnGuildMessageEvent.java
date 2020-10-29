@@ -34,6 +34,9 @@ public class OnGuildMessageEvent extends ListenerAdapter{
 		if(!CommandManager.checkCommands(event)){
 			if(event.getMessage().getMentionedUsers().size() == 1 && event.getMessage().getMentionedUsers().get(0).getId().equals(event.getJDA().getSelfUser().getId())){
 				event.getMessage().addReaction(Emojis.QUESTION).queue();
+				if(!event.getChannel().canTalk()){
+					return;
+				}
 				var prefix = GuildSettingsCache.getCommandPrefix(event.getGuild().getId());
 				event.getChannel()
 						.sendMessage(new EmbedBuilder().setColor(Color.ORANGE)

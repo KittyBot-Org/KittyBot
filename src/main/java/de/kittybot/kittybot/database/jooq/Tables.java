@@ -4,11 +4,16 @@
 package de.kittybot.kittybot.database.jooq;
 
 
-import de.kittybot.kittybot.database.jooq.tables.*;
+import de.kittybot.kittybot.database.jooq.tables.Commands;
+import de.kittybot.kittybot.database.jooq.tables.Guilds;
+import de.kittybot.kittybot.database.jooq.tables.ReactiveMessages;
+import de.kittybot.kittybot.database.jooq.tables.SelfAssignableRoles;
+import de.kittybot.kittybot.database.jooq.tables.Sessions;
+import de.kittybot.kittybot.database.jooq.tables.UserStatistics;
 
 
 /**
- * Convenience access to all tables in public
+ * Convenience access to all tables in public.
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {

@@ -2,13 +2,11 @@ package de.kittybot.kittybot.database;
 
 import com.jagrosh.jdautilities.oauth2.session.SessionData;
 import de.kittybot.kittybot.WebService;
-import de.kittybot.kittybot.cache.DashboardSessionCache;
 import de.kittybot.kittybot.cache.SelfAssignableRoleCache;
 import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.GuildSettings;
 import de.kittybot.kittybot.objects.ReactiveMessage;
 import de.kittybot.kittybot.objects.session.DashboardSession;
-import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import org.jooq.types.YearToSecond;
@@ -280,44 +278,26 @@ public class Database{
 		}
 	}
 
-	public static String generateUniqueKey(){
-		var key = Utils.generate(32);
-		while(DashboardSessionCache.sessionExists(key)){
-			key = Utils.generate(32);
-		}
-		return key;
-	}
-
 	public static void addSession(DashboardSession session){
 		try(var con = getCon(); var ctx = getCtx(con)){
-			ctx.insertInto(SESSIONS).columns(SESSIONS.fields()).values(session.getSessionKey(), session.getUserId(), session.getAccessToken(), session.getRefreshToken(), session.getExpiration().toLocalDateTime()).execute();
+			ctx.insertInto(SESSIONS).columns(SESSIONS.fields()).values(session.getUserId(), session.getAccessToken(), session.getRefreshToken(), session.getExpiration().toLocalDateTime()).onDuplicateKeyIgnore().execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error adding session for user {}", session.getUserId(), e);
 		}
 	}
 
-	public static DashboardSession getSession(String sessionKey){
+	public static DashboardSession getSession(String userId){
 		try(var con = getCon(); var ctx = getCtx(con)){
-			var r = ctx.selectFrom(SESSIONS).where(SESSIONS.SESSION_KEY.eq(sessionKey)).fetchOne();
+			var r = ctx.selectFrom(SESSIONS).where(SESSIONS.USER_ID.eq(userId)).fetchOne();
 			if(r != null){
-				return new DashboardSession(r.get(SESSIONS.USER_ID), new SessionData(sessionKey, r.get(SESSIONS.ACCESS_TOKEN), r.get(SESSIONS.REFRESH_TOKEN), "Bearer", OffsetDateTime.of(r.get(SESSIONS.EXPIRATION), ZoneOffset.UTC), WebService.getScopes()));
+				return new DashboardSession(new SessionData(userId, r.get(SESSIONS.ACCESS_TOKEN), r.get(SESSIONS.REFRESH_TOKEN), "Bearer", OffsetDateTime.of(r.get(SESSIONS.EXPIRATION), ZoneOffset.UTC), WebService.getScopes()));
 			}
 		}
 		catch(SQLException e){
-			LOG.error("Error while getting session", e);
+			LOG.error("Error while getting session for user: {}", userId, e);
 		}
 		return null;
-	}
-
-	public static boolean sessionExists(String sessionKey){
-		try(var con = getCon(); var ctx = getCtx(con)){
-			return ctx.selectFrom(SESSIONS).where(SESSIONS.SESSION_KEY.eq(sessionKey)).fetchOne() != null;
-		}
-		catch(SQLException e){
-			LOG.error("Error checking if session exists", e);
-		}
-		return false;
 	}
 
 	public static boolean hasSession(String userId){
@@ -325,27 +305,17 @@ public class Database{
 			return ctx.selectFrom(SESSIONS).where(SESSIONS.USER_ID.eq(userId)).fetch().isNotEmpty();
 		}
 		catch(SQLException e){
-			LOG.error("Error checking if a user has a session", e);
+			LOG.error("Error checking if user: {} has a session", userId, e);
 		}
 		return false;
 	}
 
-	public static int getUserSessions(String userId){
+	public static void deleteSession(String userId){
 		try(var con = getCon(); var ctx = getCtx(con)){
-			return ctx.selectCount().from(SESSIONS).where(SESSIONS.USER_ID.eq(userId)).fetchOne(0, int.class);
+			ctx.deleteFrom(SESSIONS).where(SESSIONS.USER_ID.eq(userId)).execute();
 		}
 		catch(SQLException e){
-			LOG.error("Error while getting session", e);
-		}
-		return 0;
-	}
-
-	public static void deleteSession(String sessionKey){
-		try(var con = getCon(); var ctx = getCtx(con)){
-			ctx.deleteFrom(SESSIONS).where(SESSIONS.SESSION_KEY.eq(sessionKey)).execute();
-		}
-		catch(SQLException e){
-			LOG.error("Error deleting session", e);
+			LOG.error("Error deleting session for user: {}", userId, e);
 		}
 	}
 

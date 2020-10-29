@@ -12,6 +12,8 @@
     "top_gg_token": "your https://top.gg token",
     "discord_extreme_list_token": "your https://discordextremelist.xyz token",
     "discord_boats_token": "your https://discord.boats token",
+    "signing_key": "the signing key which should be used to create token for the frontend",
+    "backend_port": "the port on which the rest backend should run",
     "db": {
         "host": "your database host",
         "port": "your database port",

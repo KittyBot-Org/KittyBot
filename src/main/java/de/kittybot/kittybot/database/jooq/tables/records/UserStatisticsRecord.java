@@ -5,6 +5,7 @@ package de.kittybot.kittybot.database.jooq.tables.records;
 
 
 import de.kittybot.kittybot.database.jooq.tables.UserStatistics;
+
 import org.jooq.Field;
 import org.jooq.Record2;
 import org.jooq.Record9;
@@ -18,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserStatisticsRecord extends UpdatableRecordImpl<UserStatisticsRecord> implements Record9<String, String, Integer, Integer, Integer, Integer, Integer, Integer, String> {
 
-    private static final long serialVersionUID = 1625047636;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.user_statistics.user_id</code>.
@@ -398,14 +399,14 @@ public class UserStatisticsRecord extends UpdatableRecordImpl<UserStatisticsReco
     public UserStatisticsRecord(String userId, String guildId, Integer xp, Integer level, Integer botCalls, Integer voiceTime, Integer messageCount, Integer emoteCount, String lastActive) {
         super(UserStatistics.USER_STATISTICS);
 
-        set(0, userId);
-        set(1, guildId);
-        set(2, xp);
-        set(3, level);
-        set(4, botCalls);
-        set(5, voiceTime);
-        set(6, messageCount);
-        set(7, emoteCount);
-        set(8, lastActive);
+        setUserId(userId);
+        setGuildId(guildId);
+        setXp(xp);
+        setLevel(level);
+        setBotCalls(botCalls);
+        setVoiceTime(voiceTime);
+        setMessageCount(messageCount);
+        setEmoteCount(emoteCount);
+        setLastActive(lastActive);
     }
 }
