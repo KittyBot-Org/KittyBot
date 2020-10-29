@@ -5,15 +5,14 @@ package de.kittybot.kittybot.database.jooq.tables.records;
 
 
 import de.kittybot.kittybot.database.jooq.tables.Commands;
-
-import java.time.LocalDateTime;
-
 import org.jooq.Field;
 import org.jooq.Record2;
 import org.jooq.Record6;
 import org.jooq.Row6;
 import org.jooq.impl.UpdatableRecordImpl;
 import org.jooq.types.YearToSecond;
+
+import java.time.LocalDateTime;
 
 
 /**
@@ -22,7 +21,7 @@ import org.jooq.types.YearToSecond;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CommandsRecord extends UpdatableRecordImpl<CommandsRecord> implements Record6<String, String, String, String, YearToSecond, LocalDateTime> {
 
-    private static final long serialVersionUID = 319545998;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.commands.message_id</code>.
@@ -291,11 +290,11 @@ public class CommandsRecord extends UpdatableRecordImpl<CommandsRecord> implemen
     public CommandsRecord(String messageId, String guildId, String userId, String command, YearToSecond processingTime, LocalDateTime time) {
         super(Commands.COMMANDS);
 
-        set(0, messageId);
-        set(1, guildId);
-        set(2, userId);
-        set(3, command);
-        set(4, processingTime);
-        set(5, time);
+        setMessageId(messageId);
+        setGuildId(guildId);
+        setUserId(userId);
+        setCommand(command);
+        setProcessingTime(processingTime);
+        setTime(time);
     }
 }

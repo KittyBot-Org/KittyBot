@@ -7,23 +7,14 @@ package de.kittybot.kittybot.database.jooq.tables;
 import de.kittybot.kittybot.database.jooq.Keys;
 import de.kittybot.kittybot.database.jooq.Public;
 import de.kittybot.kittybot.database.jooq.tables.records.SessionsRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
+import org.jooq.impl.TableImpl;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Row4;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.TableOptions;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -32,7 +23,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Sessions extends TableImpl<SessionsRecord> {
 
-    private static final long serialVersionUID = 1587653110;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.sessions</code>
@@ -50,28 +41,29 @@ public class Sessions extends TableImpl<SessionsRecord> {
     /**
      * The column <code>public.sessions.user_id</code>.
      */
-    public final TableField<SessionsRecord, String> USER_ID = createField(DSL.name("user_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
+    public final TableField<SessionsRecord, String> USER_ID = createField(DSL.name("user_id"), SQLDataType.VARCHAR(18).nullable(false), this, "");
 
     /**
      * The column <code>public.sessions.access_token</code>.
      */
-    public final TableField<SessionsRecord, String> ACCESS_TOKEN = createField(DSL.name("access_token"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
+    public final TableField<SessionsRecord, String> ACCESS_TOKEN = createField(DSL.name("access_token"), SQLDataType.VARCHAR(32).nullable(false), this, "");
 
     /**
      * The column <code>public.sessions.refresh_token</code>.
      */
-    public final TableField<SessionsRecord, String> REFRESH_TOKEN = createField(DSL.name("refresh_token"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
+    public final TableField<SessionsRecord, String> REFRESH_TOKEN = createField(DSL.name("refresh_token"), SQLDataType.VARCHAR(32).nullable(false), this, "");
 
     /**
      * The column <code>public.sessions.expiration</code>.
      */
-    public final TableField<SessionsRecord, LocalDateTime> EXPIRATION = createField(DSL.name("expiration"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false), this, "");
+    public final TableField<SessionsRecord, LocalDateTime> EXPIRATION = createField(DSL.name("expiration"), SQLDataType.LOCALDATETIME(6).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.sessions</code> table reference
-     */
-    public Sessions() {
-        this(DSL.name("sessions"), null);
+    private Sessions(Name alias, Table<SessionsRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Sessions(Name alias, Table<SessionsRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -88,12 +80,11 @@ public class Sessions extends TableImpl<SessionsRecord> {
         this(alias, SESSIONS);
     }
 
-    private Sessions(Name alias, Table<SessionsRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Sessions(Name alias, Table<SessionsRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.sessions</code> table reference
+     */
+    public Sessions() {
+        this(DSL.name("sessions"), null);
     }
 
     public <O extends Record> Sessions(Table<O> child, ForeignKey<O, SessionsRecord> key) {

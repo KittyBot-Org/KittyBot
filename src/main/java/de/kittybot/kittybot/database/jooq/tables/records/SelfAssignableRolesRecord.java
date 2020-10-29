@@ -5,7 +5,6 @@ package de.kittybot.kittybot.database.jooq.tables.records;
 
 
 import de.kittybot.kittybot.database.jooq.tables.SelfAssignableRoles;
-
 import org.jooq.Field;
 import org.jooq.Record2;
 import org.jooq.Record3;
@@ -19,7 +18,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SelfAssignableRolesRecord extends UpdatableRecordImpl<SelfAssignableRolesRecord> implements Record3<String, String, String> {
 
-    private static final long serialVersionUID = -738421121;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.self_assignable_roles.role_id</code>.
@@ -177,8 +176,8 @@ public class SelfAssignableRolesRecord extends UpdatableRecordImpl<SelfAssignabl
     public SelfAssignableRolesRecord(String roleId, String guildId, String emoteId) {
         super(SelfAssignableRoles.SELF_ASSIGNABLE_ROLES);
 
-        set(0, roleId);
-        set(1, guildId);
-        set(2, emoteId);
+        setRoleId(roleId);
+        setGuildId(guildId);
+        setEmoteId(emoteId);
     }
 }

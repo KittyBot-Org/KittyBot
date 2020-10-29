@@ -13,7 +13,7 @@ import java.io.Serializable;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserStatistics implements Serializable {
 
-    private static final long serialVersionUID = 1219551348;
+    private static final long serialVersionUID = 1L;
 
     private final String  userId;
     private final String  guildId;
@@ -59,38 +59,65 @@ public class UserStatistics implements Serializable {
         this.lastActive = lastActive;
     }
 
+    /**
+     * Getter for <code>public.user_statistics.user_id</code>.
+     */
     public String getUserId() {
         return this.userId;
     }
 
+    /**
+     * Getter for <code>public.user_statistics.guild_id</code>.
+     */
     public String getGuildId() {
         return this.guildId;
     }
 
+    /**
+     * Getter for <code>public.user_statistics.xp</code>.
+     */
     public Integer getXp() {
         return this.xp;
     }
 
+    /**
+     * Getter for <code>public.user_statistics.level</code>.
+     */
     public Integer getLevel() {
         return this.level;
     }
 
+    /**
+     * Getter for <code>public.user_statistics.bot_calls</code>.
+     */
     public Integer getBotCalls() {
         return this.botCalls;
     }
 
+    /**
+     * Getter for <code>public.user_statistics.voice_time</code>.
+     */
     public Integer getVoiceTime() {
         return this.voiceTime;
     }
 
+    /**
+     * Getter for <code>public.user_statistics.message_count</code>.
+     */
     public Integer getMessageCount() {
         return this.messageCount;
     }
 
+    /**
+     * Getter for <code>public.user_statistics.emote_count</code>.
+     */
     public Integer getEmoteCount() {
         return this.emoteCount;
     }
 
+    /**
+     * Getter for <code>public.user_statistics.last_active</code>.
+     */
     public String getLastActive() {
         return this.lastActive;
     }

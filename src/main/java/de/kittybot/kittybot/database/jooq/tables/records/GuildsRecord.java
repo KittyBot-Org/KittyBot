@@ -5,7 +5,6 @@ package de.kittybot.kittybot.database.jooq.tables.records;
 
 
 import de.kittybot.kittybot.database.jooq.tables.Guilds;
-
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record15;
@@ -19,7 +18,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GuildsRecord extends UpdatableRecordImpl<GuildsRecord> implements Record15<String, String, String, Boolean, String, String, Boolean, String, Boolean, String, Boolean, String, Boolean, Boolean, String> {
 
-    private static final long serialVersionUID = -146101540;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.guilds.guild_id</code>.
@@ -621,20 +620,20 @@ public class GuildsRecord extends UpdatableRecordImpl<GuildsRecord> implements R
     public GuildsRecord(String guildId, String commandPrefix, String requestChannelId, Boolean requestsEnabled, String announcementChannelId, String joinMessages, Boolean joinMessagesEnabled, String leaveMessages, Boolean leaveMessagesEnabled, String boostMessages, Boolean boostMessagesEnabled, String logChannelId, Boolean logMessagesEnabled, Boolean nsfwEnabled, String inactiveRoleId) {
         super(Guilds.GUILDS);
 
-        set(0, guildId);
-        set(1, commandPrefix);
-        set(2, requestChannelId);
-        set(3, requestsEnabled);
-        set(4, announcementChannelId);
-        set(5, joinMessages);
-        set(6, joinMessagesEnabled);
-        set(7, leaveMessages);
-        set(8, leaveMessagesEnabled);
-        set(9, boostMessages);
-        set(10, boostMessagesEnabled);
-        set(11, logChannelId);
-        set(12, logMessagesEnabled);
-        set(13, nsfwEnabled);
-        set(14, inactiveRoleId);
+        setGuildId(guildId);
+        setCommandPrefix(commandPrefix);
+        setRequestChannelId(requestChannelId);
+        setRequestsEnabled(requestsEnabled);
+        setAnnouncementChannelId(announcementChannelId);
+        setJoinMessages(joinMessages);
+        setJoinMessagesEnabled(joinMessagesEnabled);
+        setLeaveMessages(leaveMessages);
+        setLeaveMessagesEnabled(leaveMessagesEnabled);
+        setBoostMessages(boostMessages);
+        setBoostMessagesEnabled(boostMessagesEnabled);
+        setLogChannelId(logChannelId);
+        setLogMessagesEnabled(logMessagesEnabled);
+        setNsfwEnabled(nsfwEnabled);
+        setInactiveRoleId(inactiveRoleId);
     }
 }

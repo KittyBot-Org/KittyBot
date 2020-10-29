@@ -7,22 +7,13 @@ package de.kittybot.kittybot.database.jooq.tables;
 import de.kittybot.kittybot.database.jooq.Keys;
 import de.kittybot.kittybot.database.jooq.Public;
 import de.kittybot.kittybot.database.jooq.tables.records.UserStatisticsRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
+import org.jooq.impl.TableImpl;
 
 import java.util.Arrays;
 import java.util.List;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Row9;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.TableOptions;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -31,7 +22,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserStatistics extends TableImpl<UserStatisticsRecord> {
 
-    private static final long serialVersionUID = -1763511363;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.user_statistics</code>
@@ -49,53 +40,54 @@ public class UserStatistics extends TableImpl<UserStatisticsRecord> {
     /**
      * The column <code>public.user_statistics.user_id</code>.
      */
-    public final TableField<UserStatisticsRecord, String> USER_ID = createField(DSL.name("user_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
+    public final TableField<UserStatisticsRecord, String> USER_ID = createField(DSL.name("user_id"), SQLDataType.VARCHAR(18).nullable(false), this, "");
 
     /**
      * The column <code>public.user_statistics.guild_id</code>.
      */
-    public final TableField<UserStatisticsRecord, String> GUILD_ID = createField(DSL.name("guild_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
+    public final TableField<UserStatisticsRecord, String> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.VARCHAR(18).nullable(false), this, "");
 
     /**
      * The column <code>public.user_statistics.xp</code>.
      */
-    public final TableField<UserStatisticsRecord, Integer> XP = createField(DSL.name("xp"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<UserStatisticsRecord, Integer> XP = createField(DSL.name("xp"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.user_statistics.level</code>.
      */
-    public final TableField<UserStatisticsRecord, Integer> LEVEL = createField(DSL.name("level"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<UserStatisticsRecord, Integer> LEVEL = createField(DSL.name("level"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.user_statistics.bot_calls</code>.
      */
-    public final TableField<UserStatisticsRecord, Integer> BOT_CALLS = createField(DSL.name("bot_calls"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<UserStatisticsRecord, Integer> BOT_CALLS = createField(DSL.name("bot_calls"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.user_statistics.voice_time</code>.
      */
-    public final TableField<UserStatisticsRecord, Integer> VOICE_TIME = createField(DSL.name("voice_time"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<UserStatisticsRecord, Integer> VOICE_TIME = createField(DSL.name("voice_time"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.user_statistics.message_count</code>.
      */
-    public final TableField<UserStatisticsRecord, Integer> MESSAGE_COUNT = createField(DSL.name("message_count"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<UserStatisticsRecord, Integer> MESSAGE_COUNT = createField(DSL.name("message_count"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.user_statistics.emote_count</code>.
      */
-    public final TableField<UserStatisticsRecord, Integer> EMOTE_COUNT = createField(DSL.name("emote_count"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<UserStatisticsRecord, Integer> EMOTE_COUNT = createField(DSL.name("emote_count"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.user_statistics.last_active</code>.
      */
-    public final TableField<UserStatisticsRecord, String> LAST_ACTIVE = createField(DSL.name("last_active"), org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false), this, "");
+    public final TableField<UserStatisticsRecord, String> LAST_ACTIVE = createField(DSL.name("last_active"), SQLDataType.VARCHAR(20).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.user_statistics</code> table reference
-     */
-    public UserStatistics() {
-        this(DSL.name("user_statistics"), null);
+    private UserStatistics(Name alias, Table<UserStatisticsRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private UserStatistics(Name alias, Table<UserStatisticsRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -112,12 +104,11 @@ public class UserStatistics extends TableImpl<UserStatisticsRecord> {
         this(alias, USER_STATISTICS);
     }
 
-    private UserStatistics(Name alias, Table<UserStatisticsRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private UserStatistics(Name alias, Table<UserStatisticsRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.user_statistics</code> table reference
+     */
+    public UserStatistics() {
+        this(DSL.name("user_statistics"), null);
     }
 
     public <O extends Record> UserStatistics(Table<O> child, ForeignKey<O, UserStatisticsRecord> key) {
