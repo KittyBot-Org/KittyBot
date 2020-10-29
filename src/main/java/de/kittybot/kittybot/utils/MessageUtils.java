@@ -133,10 +133,7 @@ public class MessageUtils{
 			var random = BOOST_MESSAGES.get(ThreadLocalRandom.current().nextInt(BOOST_MESSAGES.size() - 1));
 			message = message.replace("${random_boost_message}", random);
 		}
-		message = message.replace("${user}", user.getAsMention());
-		message = message.replace("${user_tag}", user.getAsTag());
-		message = message.replace("${name}", user.getName());
-		return message;
+		return replacePlaceholders(message, user);
 	}
 
 	private static String generateJoinMessage(String message, User user, Invite invite){
@@ -152,10 +149,7 @@ public class MessageUtils{
 			message = message.replace("${invite_code}", invite.getCode());
 			message = message.replace("${invite_uses}", String.valueOf(invite.getUses()));
 		}
-		message = message.replace("${user}", user.getAsMention());
-		message = message.replace("${user_tag}", user.getAsTag());
-		message = message.replace("${name}", user.getName());
-		return message;
+		return replacePlaceholders(message, user);
 	}
 
 	private static String generateLeaveMessage(String message, User user){
@@ -163,6 +157,10 @@ public class MessageUtils{
 			var random = LEAVE_MESSAGES.get(ThreadLocalRandom.current().nextInt(LEAVE_MESSAGES.size() - 1));
 			message = message.replace("${random_leave_message}", random);
 		}
+		return replacePlaceholders(message, user);
+	}
+
+	private static String replacePlaceholders(String message, User user){
 		message = message.replace("${user}", user.getAsMention());
 		message = message.replace("${user_tag}", user.getAsTag());
 		message = message.replace("${name}", user.getName());
