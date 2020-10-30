@@ -7,7 +7,6 @@ import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.utils.MiscUtil;
 
 import java.util.ArrayList;
 
@@ -29,13 +28,12 @@ public class GuildBannerCommand extends ACommand{
 	public void run(CommandContext ctx){
 		var guilds = new ArrayList<Guild>();
 		for(var arg : ctx.getArgs()){
-			try{
-				var guild = ctx.getJDA().getGuildById(MiscUtil.parseSnowflake(arg));
-				if(guild != null && !guilds.contains(guild)){
-					guilds.add(guild);
-				}
+			if(!Utils.isSnowflake(arg)){
+				continue;
 			}
-			catch(NumberFormatException ignore){
+			var guild = ctx.getJDA().getGuildById(arg);
+			if(guild != null && !guilds.contains(guild)){
+				guilds.add(guild);
 			}
 		}
 		if(guilds.isEmpty()){

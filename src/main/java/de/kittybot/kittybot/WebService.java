@@ -14,6 +14,7 @@ import de.kittybot.kittybot.objects.guilds.GuildData;
 import de.kittybot.kittybot.objects.requests.Requester;
 import de.kittybot.kittybot.objects.session.DashboardSession;
 import de.kittybot.kittybot.objects.session.DashboardSessionController;
+import de.kittybot.kittybot.utils.Utils;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -23,7 +24,6 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.utils.MiscUtil;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
 
@@ -332,18 +332,15 @@ public class WebService{
 			error(ctx, 400, "Please provide a valid guild id");
 			return null;
 		}
-		try{
-			MiscUtil.parseSnowflake(guildId);
-			var guild = KittyBot.getJda().getGuildById(guildId);
-			if(guild == null){
-				error(ctx, 404, "Guild not found");
-			}
-			return guild;
-		}
-		catch(NumberFormatException ex){
+		if(!Utils.isSnowflake(guildId)){
 			error(ctx, 400, "Please provide a valid guild id");
 			return null;
 		}
+		var guild = KittyBot.getJda().getGuildById(guildId);
+		if(guild == null){
+			error(ctx, 404, "Guild not found");
+		}
+		return guild;
 	}
 
 	private String getUserId(final Context ctx){

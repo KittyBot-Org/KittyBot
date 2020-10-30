@@ -22,11 +22,10 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class MessageUtils{
 
+	private static final Logger LOG = LoggerFactory.getLogger(MessageUtils.class);
 	private static final List<String> JOIN_MESSAGES = loadMessageFile("join");
 	private static final List<String> LEAVE_MESSAGES = loadMessageFile("leave");
 	private static final List<String> BOOST_MESSAGES = loadMessageFile("boost");
-
-	private static final Logger LOG = LoggerFactory.getLogger(MessageUtils.class);
 
 	private MessageUtils(){}
 
