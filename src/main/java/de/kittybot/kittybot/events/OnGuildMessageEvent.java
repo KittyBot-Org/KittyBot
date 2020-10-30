@@ -27,29 +27,25 @@ public class OnGuildMessageEvent extends ListenerAdapter{
 		if(!content.isEmpty()){
 			MessageCache.cacheMessage(event.getMessageId(), new MessageData(event.getMessage()));
 		}
-		if(event.getAuthor().isBot()){
+		if(event.getAuthor().isBot() || CommandManager.checkCommands(event) || event.getMessage().getMentionedUsers().size() != 1 || !event.getMessage().getMentionedUsers().get(0).getId().equals(event.getJDA().getSelfUser().getId())){
 			return;
 		}
-		if(!CommandManager.checkCommands(event)){
-			if(event.getMessage().getMentionedUsers().size() == 1 && event.getMessage().getMentionedUsers().get(0).getId().equals(event.getJDA().getSelfUser().getId())){
-				event.getMessage().addReaction(Emojis.QUESTION).queue();
-				if(!event.getChannel().canTalk()){
-					return;
-				}
-				var prefix = GuildSettingsCache.getCommandPrefix(event.getGuild().getId());
-				event.getChannel()
-						.sendMessage(new EmbedBuilder().setColor(Color.ORANGE)
-								.setTitle("Do you need help?")
-								.setDescription("My current prefix for this guild is `" + prefix + "`\n"
-										+ "If you don't like my prefix you can ping me directly!\n" + "To have a look at all my commands use `" + prefix
-										+ "cmds`\n" + "To get help use `" + prefix + "help`")
-								.setThumbnail(event.getJDA().getSelfUser().getAvatarUrl())
-								.setFooter(event.getMember() == null ? event.getAuthor().getName() : event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
-								.setTimestamp(Instant.now())
-								.build())
-						.queue();
-			}
+		event.getMessage().addReaction(Emojis.QUESTION).queue();
+		if(!event.getChannel().canTalk()){
+			return;
 		}
+		var prefix = GuildSettingsCache.getCommandPrefix(event.getGuild().getId());
+		event.getChannel()
+				.sendMessage(new EmbedBuilder().setColor(Color.ORANGE)
+						.setTitle("Do you need help?")
+						.setDescription("My current prefix for this guild is `" + prefix + "`\n"
+								+ "If you don't like my prefix you can ping me directly!\n" + "To have a look at all my commands use `" + prefix
+								+ "cmds`\n" + "To get help use `" + prefix + "help`")
+						.setThumbnail(event.getJDA().getSelfUser().getAvatarUrl())
+						.setFooter(event.getMember() == null ? event.getAuthor().getName() : event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
+						.setTimestamp(Instant.now())
+						.build())
+				.queue();
 	}
 
 	@Override
@@ -84,10 +80,9 @@ public class OnGuildMessageEvent extends ListenerAdapter{
 		}
 		if(reactiveMessage.allowed.equals("-1") || reactiveMessage.allowed.equals(event.getUserId())){
 			CommandManager.getCommands().get(reactiveMessage.command).reactionAdd(reactiveMessage, event);
+			return;
 		}
-		else{
-			event.getReaction().removeReaction(event.getUser()).queue();
-		}
+		event.getReaction().removeReaction(event.getUser()).queue();
 	}
 
 }
