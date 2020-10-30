@@ -52,7 +52,7 @@ public class GuildBannerCommand extends ACommand{
 			}
 			stringBuilder.append("\n\n");
 		}
-		sendAnswer(ctx, new EmbedBuilder().setTitle(Utils.pluralize("Guild Banner", guilds.size())).setDescription(stringBuilder.toString()));
+		sendSuccess(ctx, new EmbedBuilder().setTitle(Utils.pluralize("Guild Banner", guilds.size())).setDescription(stringBuilder.toString()));
 	}
 
 }

@@ -85,7 +85,7 @@ public class EmoteStealCommand extends ACommand{
 			}
 			ctx.getGuild()
 					.createEmote(name, Icon.from(inputStream))
-					.queue(success -> sendAnswer(ctx, "Emote stolen"), failure -> sendError(ctx, "Error creating emote: " + failure.getMessage()));
+					.queue(success -> sendSuccess(ctx, "Emote stolen"), failure -> sendError(ctx, "Error creating emote: " + failure.getMessage()));
 		}
 		catch(IOException e){
 			LOG.error("Error with stream", e);

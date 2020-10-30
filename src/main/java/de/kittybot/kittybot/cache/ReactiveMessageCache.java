@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.cache;
 
 import de.kittybot.kittybot.database.Database;
-import de.kittybot.kittybot.objects.ReactiveMessage;
+import de.kittybot.kittybot.objects.data.ReactiveMessage;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.entities.Guild;

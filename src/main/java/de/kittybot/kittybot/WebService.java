@@ -10,7 +10,7 @@ import de.kittybot.kittybot.cache.SelfAssignableRoleCache;
 import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandManager;
-import de.kittybot.kittybot.objects.guilds.GuildData;
+import de.kittybot.kittybot.objects.data.GuildData;
 import de.kittybot.kittybot.objects.requests.Requester;
 import de.kittybot.kittybot.objects.session.DashboardSession;
 import de.kittybot.kittybot.objects.session.DashboardSessionController;

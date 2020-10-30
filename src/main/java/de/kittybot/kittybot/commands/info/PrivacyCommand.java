@@ -18,7 +18,7 @@ public class PrivacyCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		sendAnswer(ctx, "You can find our privacy policy here: https://kittybot.de/privacy");
+		sendSuccess(ctx, "You can find our privacy policy here: https://kittybot.de/privacy");
 	}
 
 }

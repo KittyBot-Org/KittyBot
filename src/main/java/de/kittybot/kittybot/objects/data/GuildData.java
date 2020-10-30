@@ -1,4 +1,4 @@
-package de.kittybot.kittybot.objects.guilds;
+package de.kittybot.kittybot.objects.data;
 
 public class GuildData{
 

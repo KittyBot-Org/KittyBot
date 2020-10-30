@@ -3,7 +3,7 @@ package de.kittybot.kittybot.commands.roles;
 import de.kittybot.kittybot.cache.ReactiveMessageCache;
 import de.kittybot.kittybot.cache.SelfAssignableRoleCache;
 import de.kittybot.kittybot.objects.Emojis;
-import de.kittybot.kittybot.objects.ReactiveMessage;
+import de.kittybot.kittybot.objects.data.ReactiveMessage;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
@@ -73,23 +73,23 @@ public class RolesCommand extends ACommand{
 		var emotes = ctx.getMessage().getEmotes();
 		if(ctx.getArgs()[0].equalsIgnoreCase("add") && !roles.isEmpty() && !emotes.isEmpty()){
 			SelfAssignableRoleCache.addSelfAssignableRoles(ctx.getGuild().getId(), Utils.toMap(roles, emotes));
-			sendAnswer(ctx, "Roles added!");
+			sendSuccess(ctx, "Roles added!");
 			return;
 		}
 		if(ctx.getArgs()[0].equalsIgnoreCase("remove") && !roles.isEmpty()){
 			SelfAssignableRoleCache.removeSelfAssignableRoles(ctx.getGuild().getId(), Utils.toSet(roles));
-			sendAnswer(ctx, "Roles removed!");
+			sendSuccess(ctx, "Roles removed!");
 			return;
 		}
 		if(ctx.getArgs()[0].equalsIgnoreCase("list")){
 			var map = getRoleEmoteMap(ctx.getGuild());
 			if(map.isEmpty()){
-				sendAnswer(ctx, "There are no roles added!");
+				sendSuccess(ctx, "There are no roles added!");
 				return;
 			}
 			var message = new StringBuilder();
 			map.keySet().forEach(role -> message.append(role.getAsMention()).append(", "));
-			sendAnswer(ctx, "Roles: " + message);
+			sendSuccess(ctx, "Roles: " + message);
 			return;
 		}
 		sendError(ctx, "Please be sure to mention a role & a custom discord emote");

@@ -44,7 +44,7 @@ public class AvatarCommand extends ACommand{
 			}
 			stringBuilder.append("\n\n");
 		}
-		sendAnswer(ctx, new EmbedBuilder().setTitle(Utils.pluralize("User Avatar", users.size())).setDescription(stringBuilder.toString()));
+		sendSuccess(ctx, new EmbedBuilder().setTitle(Utils.pluralize("User Avatar", users.size())).setDescription(stringBuilder.toString()));
 	}
 
 }

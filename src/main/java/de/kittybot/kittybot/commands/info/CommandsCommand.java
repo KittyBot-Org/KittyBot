@@ -19,7 +19,7 @@ public class CommandsCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		sendAnswer(ctx, "You can see all available commands " + MessageUtils.maskLink("here", "https://kittybot.de/commands"));
+		sendSuccess(ctx, "You can see all available commands " + MessageUtils.maskLink("here", "https://kittybot.de/commands"));
 	}
 
 }

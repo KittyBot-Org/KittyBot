@@ -28,12 +28,12 @@ public class DownloadEmotesCommand extends ACommand{
 		for(var emote : emotes){
 			var link = emote.getImageUrl();
 			if(links.length() + (" -O " + link).length() > Message.MAX_CONTENT_LENGTH - 20){
-				sendAnswer(ctx, "Command: \ncurl" + links);
+				sendSuccess(ctx, "Command: \ncurl" + links);
 				links = new StringBuilder();
 			}
 			links.append(" -O ").append(link);
 		}
-		sendAnswer(ctx, "Command: \ncurl" + links);
+		sendSuccess(ctx, "Command: \ncurl" + links);
 	}
 
 }

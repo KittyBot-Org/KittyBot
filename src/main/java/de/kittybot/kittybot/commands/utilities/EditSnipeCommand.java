@@ -32,15 +32,16 @@ public class EditSnipeCommand extends ACommand{
 			sendError(ctx, "There's no edited message to snipe");
 			return;
 		}
-		final var eb = new EmbedBuilder();
-		eb.setDescription(lastEditedMessage.getContent());
-		eb.setTimestamp(lastEditedMessage.getTimeEdited());
-		eb.setColor(Color.GREEN);
-		eb.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl());
 
 		ctx.getJDA().retrieveUserById(lastEditedMessage.getAuthorId()).queue(user -> {
-			eb.setAuthor(user.getName(), lastEditedMessage.getJumpUrl(), user.getEffectiveAvatarUrl());
-			ctx.getChannel().sendMessage(eb.build()).queue();
+			ctx.getChannel().sendMessage(new EmbedBuilder()
+					.setAuthor(user.getName(), lastEditedMessage.getJumpUrl(), user.getEffectiveAvatarUrl())
+					.setDescription(lastEditedMessage.getContent())
+					.setTimestamp(lastEditedMessage.getTimeEdited())
+					.setColor(Color.GREEN)
+					.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
+					.build()
+			).queue();
 			KittyBot.getScheduler().schedule(() -> MessageCache.uncacheEditedMessage(lastEditedMessage.getChannelId(), lastEditedMessage.getId()), 2, TimeUnit.MINUTES);
 		});
 	}
