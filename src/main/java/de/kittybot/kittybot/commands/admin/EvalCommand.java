@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,9 +21,8 @@ public class EvalCommand extends ACommand{
 	protected static final String[] ALIASES = {"e"};
 	protected static final Category CATEGORY = Category.ADMIN;
 	private static final ScriptEngine SCRIPT_ENGINE = new ScriptEngineManager().getEngineByName("groovy");
-	private static final List<String> DEFAULT_IMPORTS = Arrays.asList("net.dv8tion.jda.api.entities.impl", "net.dv8tion.jda.api.managers",
-		"net.dv8tion.jda.api.entities", "net.dv8tion.jda.api", "java.lang",
-		"java.io", "java.math", "java.util", "java.util.concurrent", "java.time", "java.util.stream"
+	private static final List<String> DEFAULT_IMPORTS = Arrays.asList("net.dv8tion.jda.api.entities.impl", "net.dv8tion.jda.api.managers", "net.dv8tion.jda.api.entities", "net.dv8tion.jda.api",
+			"java.io", "java.math", "java.util", "java.util.concurrent", "java.time", "java.util.stream"
 	);
 
 	public EvalCommand(){
@@ -36,6 +36,7 @@ public class EvalCommand extends ACommand{
 			return;
 		}
 		Object out;
+		var color = Color.GREEN;
 		var status = "Success";
 		SCRIPT_ENGINE.put("ctx", ctx);
 		SCRIPT_ENGINE.put("message", ctx.getMessage());
@@ -52,18 +53,20 @@ public class EvalCommand extends ACommand{
 		var code = String.join(" ", ctx.getArgs());
 		long start = System.currentTimeMillis();
 		try{
-			out = SCRIPT_ENGINE.eval(imports.toString() + code);
+			out = SCRIPT_ENGINE.eval(imports + code);
 		}
 		catch(Exception e){
 			out = e.getMessage();
+			color = Color.RED;
 			status = "Failed";
 		}
-		sendAnswer(ctx, new EmbedBuilder().setTitle("Eval")
+		ctx.getChannel().sendMessage(new EmbedBuilder().setTitle("Eval")
+				.setColor(color)
 				.addField("Status:", status, true)
 				.addField("Duration:", (System.currentTimeMillis() - start) + "ms", true)
 				.addField("Code:", "```java\n" + code + "\n```", false)
-				.addField("Result:", out == null ? "" : out.toString(), false)
-		);
+				.addField("Result:", out == null ? "" : out.toString(), false).build())
+				.queue();
 	}
 
 }
