@@ -78,15 +78,15 @@ public class OnGuildMessageEvent extends ListenerAdapter{
 		if(event.getMember().getUser().isBot()){
 			return;
 		}
-
 		var reactiveMessage = ReactiveMessageCache.getReactiveMessage(event.getGuild(), event.getMessageId());
-		if(reactiveMessage != null){
-			if(reactiveMessage.allowed.equals("-1") || reactiveMessage.allowed.equals(event.getUserId())){
-				CommandManager.getCommands().get(reactiveMessage.command).reactionAdd(reactiveMessage, event);
-			}
-			else{
-				event.getReaction().removeReaction(event.getUser()).queue();
-			}
+		if(reactiveMessage == null){
+			return;
+		}
+		if(reactiveMessage.allowed.equals("-1") || reactiveMessage.allowed.equals(event.getUserId())){
+			CommandManager.getCommands().get(reactiveMessage.command).reactionAdd(reactiveMessage, event);
+		}
+		else{
+			event.getReaction().removeReaction(event.getUser()).queue();
 		}
 	}
 

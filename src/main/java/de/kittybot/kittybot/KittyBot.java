@@ -148,14 +148,15 @@ public class KittyBot{
 			return;
 		}
 		var channel = guild.getTextChannelById(Config.LOG_CHANNEL_ID);
-		if(channel != null){
-			channel.sendMessage(new EmbedBuilder()
-					.setDescription(description)
-					.setColor(new Color(76, 80, 193))
-					.setFooter(jda.getSelfUser().getName(), jda.getSelfUser().getAvatarUrl())
-					.setTimestamp(Instant.now())
-					.build()).queue();
+		if(channel == null){
+			return;
 		}
+		channel.sendMessage(new EmbedBuilder()
+				.setDescription(description)
+				.setColor(new Color(76, 80, 193))
+				.setFooter(jda.getSelfUser().getName(), jda.getSelfUser().getAvatarUrl())
+				.setTimestamp(Instant.now())
+				.build()).queue();
 	}
 
 	public void close(){
