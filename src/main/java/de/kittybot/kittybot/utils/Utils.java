@@ -18,15 +18,15 @@ public class Utils{
 	private Utils(){}
 
 	public static boolean isEnable(String string){
-		return string.equalsIgnoreCase("enable") || string.equalsIgnoreCase("true") || string.equalsIgnoreCase("on") || string.equalsIgnoreCase("an");
+		return string.equalsIgnoreCase("enable")||string.equalsIgnoreCase("true")||string.equalsIgnoreCase("on")||string.equalsIgnoreCase("an");
 	}
 
 	public static boolean isDisable(String string){
-		return string.equalsIgnoreCase("disable") || string.equalsIgnoreCase("false") || string.equalsIgnoreCase("off") || string.equalsIgnoreCase("aus");
+		return string.equalsIgnoreCase("disable")||string.equalsIgnoreCase("false")||string.equalsIgnoreCase("off")||string.equalsIgnoreCase("aus");
 	}
 
 	public static boolean isHelp(String string){
-		return string.equalsIgnoreCase("?") || string.equalsIgnoreCase("help") || string.equalsIgnoreCase("hilfe");
+		return string.equalsIgnoreCase("?")||string.equalsIgnoreCase("help")||string.equalsIgnoreCase("hilfe");
 	}
 
 	public static Set<String> toSet(List<Role> roles){
@@ -50,6 +50,16 @@ public class Utils{
 		var duration = Duration.ofMillis(length);
 		var seconds = duration.toSecondsPart();
 		return String.format("%d:%s", duration.toMinutes(), seconds > 9 ? seconds : "0" + seconds);
+	}
+
+	public static String formatDurationDHMS(long length){
+		Duration duration = Duration.ofMillis(length);
+		return String.format(
+			"%sd %s:%s:%s", duration.toDays(), fTime(duration.toHoursPart()), fTime(duration.toMinutesPart()), fTime(duration.toSecondsPart()));
+	}
+
+	public static String fTime(int time){
+		return time > 9 ? String.valueOf(time) : "0" + time;
 	}
 
 	public static String formatTrackTitle(AudioTrack track){
