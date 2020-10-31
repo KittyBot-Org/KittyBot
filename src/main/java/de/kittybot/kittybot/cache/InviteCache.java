@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.cache;
 
-import de.kittybot.kittybot.objects.invites.InviteData;
+import de.kittybot.kittybot.objects.data.InviteData;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;

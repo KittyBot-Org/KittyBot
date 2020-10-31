@@ -7,6 +7,7 @@ import de.kittybot.kittybot.objects.command.CommandContext;
 import de.kittybot.kittybot.objects.requests.Requester;
 import org.apache.commons.io.IOUtils;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import static de.kittybot.kittybot.utils.MessageUtils.maskLink;
@@ -33,11 +34,10 @@ public class HastebinCommand extends ACommand{
 		attachments.stream().filter(attachment -> !attachment.isImage() && !attachment.isVideo()).forEach(attachment -> {
 			attachment.retrieveInputStream().thenAcceptAsync(inputStream -> {
 				try(inputStream){
-					final var text = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
-					sendAnswer(ctx, maskLink("here", Requester.postToHastebin(text)) + " is a hastebin");
+					String text = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
+					sendSuccess(ctx, maskLink("here is a hastebin", Requester.postToHastebin(text)));
 				}
-				catch(final Exception e){
-					LOG.error("Error while creating hastebin", e);
+				catch(NullPointerException | IOException e){
 					sendError(ctx, "Error while creating hastebin");
 				}
 			});

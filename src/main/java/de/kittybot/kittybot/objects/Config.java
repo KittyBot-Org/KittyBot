@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.objects;
 
+import de.kittybot.kittybot.objects.data.LavalinkNode;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

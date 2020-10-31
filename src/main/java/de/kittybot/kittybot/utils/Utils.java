@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.utils.MiscUtil;
 
 import java.time.Duration;
 import java.util.*;
@@ -18,15 +19,15 @@ public class Utils{
 	private Utils(){}
 
 	public static boolean isEnable(String string){
-		return string.equalsIgnoreCase("enable")||string.equalsIgnoreCase("true")||string.equalsIgnoreCase("on")||string.equalsIgnoreCase("an");
+		return string.equalsIgnoreCase("enable") || string.equalsIgnoreCase("true") || string.equalsIgnoreCase("on") || string.equalsIgnoreCase("an");
 	}
 
 	public static boolean isDisable(String string){
-		return string.equalsIgnoreCase("disable")||string.equalsIgnoreCase("false")||string.equalsIgnoreCase("off")||string.equalsIgnoreCase("aus");
+		return string.equalsIgnoreCase("disable") || string.equalsIgnoreCase("false") || string.equalsIgnoreCase("off") || string.equalsIgnoreCase("aus");
 	}
 
 	public static boolean isHelp(String string){
-		return string.equalsIgnoreCase("?")||string.equalsIgnoreCase("help")||string.equalsIgnoreCase("hilfe");
+		return string.equalsIgnoreCase("?") || string.equalsIgnoreCase("help") || string.equalsIgnoreCase("hilfe");
 	}
 
 	public static Set<String> toSet(List<Role> roles){
@@ -46,6 +47,16 @@ public class Utils{
 		return map;
 	}
 
+	public static boolean isSnowflake(String id){
+		try{
+			MiscUtil.parseSnowflake(id);
+			return true;
+		}
+		catch(NumberFormatException ignored){
+			return false;
+		}
+	}
+
 	public static String formatDuration(long length){
 		var duration = Duration.ofMillis(length);
 		var seconds = duration.toSecondsPart();
@@ -55,7 +66,7 @@ public class Utils{
 	public static String formatDurationDHMS(long length){
 		Duration duration = Duration.ofMillis(length);
 		return String.format(
-			"%sd %s:%s:%s", duration.toDays(), fTime(duration.toHoursPart()), fTime(duration.toMinutesPart()), fTime(duration.toSecondsPart()));
+				"%sd %s:%s:%s", duration.toDays(), fTime(duration.toHoursPart()), fTime(duration.toMinutesPart()), fTime(duration.toSecondsPart()));
 	}
 
 	public static String fTime(int time){

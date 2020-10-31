@@ -6,8 +6,9 @@ import de.kittybot.kittybot.cache.MessageCache;
 import de.kittybot.kittybot.cache.ReactiveMessageCache;
 import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.Emojis;
+import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.CommandManager;
-import de.kittybot.kittybot.objects.messages.MessageData;
+import de.kittybot.kittybot.objects.data.MessageData;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -17,7 +18,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.time.Instant;
 
 public class OnGuildMessageEvent extends ListenerAdapter{
 
@@ -35,17 +35,13 @@ public class OnGuildMessageEvent extends ListenerAdapter{
 			return;
 		}
 		var prefix = GuildSettingsCache.getCommandPrefix(event.getGuild().getId());
-		event.getChannel()
-				.sendMessage(new EmbedBuilder().setColor(Color.ORANGE)
-						.setTitle("Do you need help?")
-						.setDescription("My current prefix for this guild is `" + prefix + "`\n"
-								+ "If you don't like my prefix you can ping me directly!\n" + "To have a look at all my commands use `" + prefix
-								+ "cmds`\n" + "To get help use `" + prefix + "help`")
-						.setThumbnail(event.getJDA().getSelfUser().getAvatarUrl())
-						.setFooter(event.getMember() == null ? event.getAuthor().getName() : event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
-						.setTimestamp(Instant.now())
-						.build())
-				.queue();
+		ACommand.sendAnswer(event.getChannel(), event.getMember(), new EmbedBuilder().setColor(Color.ORANGE)
+			.setTitle("Do you need help?")
+			.setDescription("My current prefix for this guild is `" + prefix + "`\n"
+					+ "If you don't like my prefix you can ping me directly!\n" + "To have a look at all my commands use `" + prefix
+					+ "cmds`\n" + "To get help use `" + prefix + "help`")
+			.setThumbnail(event.getJDA().getSelfUser().getAvatarUrl())
+		);
 	}
 
 	@Override

@@ -32,7 +32,7 @@ public class EvalCommand extends ACommand{
 	@Override
 	public void run(CommandContext ctx){
 		if(!Config.ADMIN_IDS.contains(ctx.getUser().getId())){
-			sendNoPermission(ctx);
+			sendNoPerms(ctx);
 			return;
 		}
 		Object out;
@@ -60,13 +60,13 @@ public class EvalCommand extends ACommand{
 			color = Color.RED;
 			status = "Failed";
 		}
-		ctx.getChannel().sendMessage(new EmbedBuilder().setTitle("Eval")
+		sendAnswer(ctx, new EmbedBuilder().setTitle("Eval")
 				.setColor(color)
 				.addField("Status:", status, true)
 				.addField("Duration:", (System.currentTimeMillis() - start) + "ms", true)
 				.addField("Code:", "```java\n" + code + "\n```", false)
-				.addField("Result:", out == null ? "" : out.toString(), false).build())
-				.queue();
+				.addField("Result:", out == null ? "" : out.toString(), false)
+		);
 	}
 
 }

@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.events;
 
 import de.kittybot.kittybot.cache.GuildCache;
-import de.kittybot.kittybot.objects.guilds.GuildData;
+import de.kittybot.kittybot.objects.data.GuildData;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;

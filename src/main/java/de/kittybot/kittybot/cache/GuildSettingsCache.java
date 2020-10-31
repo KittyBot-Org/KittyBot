@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.cache;
 
 import de.kittybot.kittybot.database.Database;
-import de.kittybot.kittybot.objects.GuildSettings;
+import de.kittybot.kittybot.objects.data.GuildSettings;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.util.Map;
