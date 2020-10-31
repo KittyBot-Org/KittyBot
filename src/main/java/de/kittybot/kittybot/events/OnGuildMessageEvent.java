@@ -36,11 +36,11 @@ public class OnGuildMessageEvent extends ListenerAdapter{
 		}
 		var prefix = GuildSettingsCache.getCommandPrefix(event.getGuild().getId());
 		ACommand.sendAnswer(event.getChannel(), event.getMember(), new EmbedBuilder().setColor(Color.ORANGE)
-			.setTitle("Do you need help?")
-			.setDescription("My current prefix for this guild is `" + prefix + "`\n"
-					+ "If you don't like my prefix you can ping me directly!\n" + "To have a look at all my commands use `" + prefix
-					+ "cmds`\n" + "To get help use `" + prefix + "help`")
-			.setThumbnail(event.getJDA().getSelfUser().getAvatarUrl())
+				.setTitle("Do you need help?")
+				.setDescription("My current prefix for this guild is `" + prefix + "`\n"
+						+ "If you don't like my prefix you can ping me directly!\n" + "To have a look at all my commands use `" + prefix
+						+ "cmds`\n" + "To get help use `" + prefix + "help`")
+				.setThumbnail(event.getJDA().getSelfUser().getAvatarUrl())
 		);
 	}
 

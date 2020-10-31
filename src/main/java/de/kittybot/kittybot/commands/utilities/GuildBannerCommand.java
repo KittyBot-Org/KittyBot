@@ -32,7 +32,7 @@ public class GuildBannerCommand extends ACommand{
 				continue;
 			}
 			var guild = ctx.getJDA().getGuildById(arg);
-			if(guild != null && !guilds.contains(guild)){
+			if(guild != null){
 				guilds.add(guild);
 			}
 		}

@@ -129,7 +129,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	private void sendQueuedTracks(ACommand command, CommandContext ctx, List<AudioTrack> tracks){
 		var message = new StringBuilder("Queued **").append(tracks.size()).append("** ").append(pluralize("track", tracks)).append(".");
 		message.append("\n\nTo see the current queue, type `").append(GuildSettingsCache.getCommandPrefix(ctx.getGuild().getId())).append("queue`.");
-		command.sendSuccess(ctx, message.toString());
+		ACommand.sendSuccess(ctx, message.toString());
 	}
 
 	public void connectToChannel(CommandContext ctx){

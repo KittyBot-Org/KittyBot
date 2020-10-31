@@ -12,7 +12,6 @@ import javax.script.ScriptEngineManager;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 public class EvalCommand extends ACommand{
 
