@@ -4,14 +4,12 @@
 package de.kittybot.kittybot.database.jooq;
 
 
-import de.kittybot.kittybot.database.jooq.tables.Commands;
 import de.kittybot.kittybot.database.jooq.tables.Guilds;
 import de.kittybot.kittybot.database.jooq.tables.ReactiveMessages;
 import de.kittybot.kittybot.database.jooq.tables.SelfAssignableRoleGroups;
 import de.kittybot.kittybot.database.jooq.tables.SelfAssignableRoles;
 import de.kittybot.kittybot.database.jooq.tables.Sessions;
 import de.kittybot.kittybot.database.jooq.tables.UserStatistics;
-import de.kittybot.kittybot.database.jooq.tables.records.CommandsRecord;
 import de.kittybot.kittybot.database.jooq.tables.records.GuildsRecord;
 import de.kittybot.kittybot.database.jooq.tables.records.ReactiveMessagesRecord;
 import de.kittybot.kittybot.database.jooq.tables.records.SelfAssignableRoleGroupsRecord;
@@ -36,7 +34,6 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<CommandsRecord> COMMANDS_PKEY = Internal.createUniqueKey(Commands.COMMANDS, DSL.name("commands_pkey"), new TableField[] { Commands.COMMANDS.MESSAGE_ID, Commands.COMMANDS.GUILD_ID }, true);
     public static final UniqueKey<GuildsRecord> GUILDS_PKEY = Internal.createUniqueKey(Guilds.GUILDS, DSL.name("guilds_pkey"), new TableField[] { Guilds.GUILDS.GUILD_ID }, true);
     public static final UniqueKey<ReactiveMessagesRecord> REACTIVE_MESSAGES_PKEY = Internal.createUniqueKey(ReactiveMessages.REACTIVE_MESSAGES, DSL.name("reactive_messages_pkey"), new TableField[] { ReactiveMessages.REACTIVE_MESSAGES.MESSAGE_ID, ReactiveMessages.REACTIVE_MESSAGES.USER_ID, ReactiveMessages.REACTIVE_MESSAGES.GUILD_ID }, true);
     public static final UniqueKey<SelfAssignableRoleGroupsRecord> SELF_ASSIGNABLE_ROLE_GROUPS_PKEY = Internal.createUniqueKey(SelfAssignableRoleGroups.SELF_ASSIGNABLE_ROLE_GROUPS, DSL.name("self_assignable_role_groups_pkey"), new TableField[] { SelfAssignableRoleGroups.SELF_ASSIGNABLE_ROLE_GROUPS.GROUP_ID }, true);

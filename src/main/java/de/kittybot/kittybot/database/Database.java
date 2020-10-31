@@ -92,12 +92,12 @@ public class Database{
 	}
 
 
-	public static void addCommandStatistics(String guildId, String commandId, String userId, String command, YearToSecond processingTime){
+	public static void addCommandStatistics(String command, YearToSecond processingTime){
 		try(var con = getCon()){
-			getCtx(con).insertInto(COMMANDS).columns(COMMANDS.fields()).values(commandId, guildId, userId, command, processingTime, LocalDateTime.now()).execute();
+			getCtx(con).insertInto(COMMANDS).columns(COMMANDS.fields()).values(command, processingTime, LocalDateTime.now()).execute();
 		}
 		catch(SQLException e){
-			LOG.error("Error adding command statistics for message: {}", commandId, e);
+			LOG.error("Error adding command statistics for command: {}", command, e);
 		}
 	}
 
