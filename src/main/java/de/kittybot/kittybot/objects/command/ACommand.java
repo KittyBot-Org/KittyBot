@@ -49,18 +49,6 @@ public abstract class ACommand{
 		}
 	}
 
-	protected boolean checkCmd(String cmd){
-		if(cmd.equalsIgnoreCase(this.command)){
-			return true;
-		}
-		for(var a : this.aliases){
-			if(a.equalsIgnoreCase(cmd)){
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public String[] getAliases(){
 		return this.aliases;
 	}
