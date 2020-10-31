@@ -28,7 +28,7 @@ public class GuildCache{
 					.complete()
 					.stream()
 					.filter(guild -> guildIds.contains(guild.getId())) // only collect guilds which kitty is in as we get a list of all guilds the user is in
-					.filter(guild ->  guild.hasPermission(Permission.ADMINISTRATOR))
+					.filter(guild -> guild.hasPermission(Permission.ADMINISTRATOR))
 					.map(guild -> new GuildData(guild.getId(), guild.getName(), guild.getIconUrl()))
 					.sorted(Comparator.comparing(GuildData::getName, String.CASE_INSENSITIVE_ORDER))
 					.collect(Collectors.toList());
