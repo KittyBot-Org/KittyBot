@@ -21,7 +21,7 @@ public class SkipCommand extends ACommand{
 	public void run(CommandContext ctx){
 		var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
 		if(musicPlayer == null){
-			sendError(ctx, "No active music player found!");
+			sendError(ctx, "No active music player found");
 			return;
 		}
 		final var playing = musicPlayer.getPlayer().getPlayingTrack();
@@ -33,7 +33,7 @@ public class SkipCommand extends ACommand{
 			sendError(ctx, "You have to be the requester of the song to control it");
 			return;
 		}
-		sendAnswer(ctx, "Track skipped");
+		sendSuccess(ctx, "Track skipped");
 		musicPlayer.nextTrack();
 	}
 

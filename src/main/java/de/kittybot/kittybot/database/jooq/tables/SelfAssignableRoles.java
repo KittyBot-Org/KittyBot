@@ -22,6 +22,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -49,7 +50,7 @@ public class SelfAssignableRoles extends TableImpl<SelfAssignableRolesRecord> {
     /**
      * The column <code>public.self_assignable_roles.role_id</code>.
      */
-    public final TableField<SelfAssignableRolesRecord, String> ROLE_ID = createField(DSL.name("role_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
+    public final TableField<SelfAssignableRolesRecord, String> ROLE_ID = createField(DSL.name("role_id"), SQLDataType.VARCHAR(18).nullable(false), this, "");
 
     /**
      * The column <code>public.self_assignable_roles.group_id</code>.
@@ -59,18 +60,19 @@ public class SelfAssignableRoles extends TableImpl<SelfAssignableRolesRecord> {
     /**
      * The column <code>public.self_assignable_roles.guild_id</code>.
      */
-    public final TableField<SelfAssignableRolesRecord, String> GUILD_ID = createField(DSL.name("guild_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
+    public final TableField<SelfAssignableRolesRecord, String> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.VARCHAR(18).nullable(false), this, "");
 
     /**
      * The column <code>public.self_assignable_roles.emote_id</code>.
      */
-    public final TableField<SelfAssignableRolesRecord, String> EMOTE_ID = createField(DSL.name("emote_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
+    public final TableField<SelfAssignableRolesRecord, String> EMOTE_ID = createField(DSL.name("emote_id"), SQLDataType.VARCHAR(18).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.self_assignable_roles</code> table reference
-     */
-    public SelfAssignableRoles() {
-        this(DSL.name("self_assignable_roles"), null);
+    private SelfAssignableRoles(Name alias, Table<SelfAssignableRolesRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private SelfAssignableRoles(Name alias, Table<SelfAssignableRolesRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -87,12 +89,11 @@ public class SelfAssignableRoles extends TableImpl<SelfAssignableRolesRecord> {
         this(alias, SELF_ASSIGNABLE_ROLES);
     }
 
-    private SelfAssignableRoles(Name alias, Table<SelfAssignableRolesRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private SelfAssignableRoles(Name alias, Table<SelfAssignableRolesRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.self_assignable_roles</code> table reference
+     */
+    public SelfAssignableRoles() {
+        this(DSL.name("self_assignable_roles"), null);
     }
 
     public <O extends Record> SelfAssignableRoles(Table<O> child, ForeignKey<O, SelfAssignableRolesRecord> key) {

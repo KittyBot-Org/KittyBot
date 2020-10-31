@@ -3,10 +3,7 @@ package de.kittybot.kittybot.commands.utilities;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
-import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Message;
-
-import java.util.List;
 
 public class DownloadEmotesCommand extends ACommand{
 
@@ -22,21 +19,21 @@ public class DownloadEmotesCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		List<Emote> emotes = ctx.getMessage().getEmotes();
+		var emotes = ctx.getMessage().getEmotes();
 		if(emotes.isEmpty()){
 			sendUsage(ctx);
 			return;
 		}
-		StringBuilder links = new StringBuilder();
-		for(Emote emote : emotes){
-			String link = emote.getImageUrl();
+		var links = new StringBuilder();
+		for(var emote : emotes){
+			var link = emote.getImageUrl();
 			if(links.length() + (" -O " + link).length() > Message.MAX_CONTENT_LENGTH - 20){
-				sendAnswer(ctx, "Command: \ncurl" + links);
+				sendSuccess(ctx, "Command: \ncurl" + links);
 				links = new StringBuilder();
 			}
 			links.append(" -O ").append(link);
 		}
-		sendAnswer(ctx, "Command: \ncurl" + links);
+		sendSuccess(ctx, "Command: \ncurl" + links);
 	}
 
 }

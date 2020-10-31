@@ -7,22 +7,13 @@ package de.kittybot.kittybot.database.jooq.tables;
 import de.kittybot.kittybot.database.jooq.Keys;
 import de.kittybot.kittybot.database.jooq.Public;
 import de.kittybot.kittybot.database.jooq.tables.records.ReactiveMessagesRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
+import org.jooq.impl.TableImpl;
 
 import java.util.Arrays;
 import java.util.List;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Row7;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.TableOptions;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -31,7 +22,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReactiveMessages extends TableImpl<ReactiveMessagesRecord> {
 
-    private static final long serialVersionUID = -356953133;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.reactive_messages</code>
@@ -49,43 +40,44 @@ public class ReactiveMessages extends TableImpl<ReactiveMessagesRecord> {
     /**
      * The column <code>public.reactive_messages.channel_id</code>.
      */
-    public final TableField<ReactiveMessagesRecord, String> CHANNEL_ID = createField(DSL.name("channel_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
+    public final TableField<ReactiveMessagesRecord, String> CHANNEL_ID = createField(DSL.name("channel_id"), SQLDataType.VARCHAR(18).nullable(false), this, "");
 
     /**
      * The column <code>public.reactive_messages.message_id</code>.
      */
-    public final TableField<ReactiveMessagesRecord, String> MESSAGE_ID = createField(DSL.name("message_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
+    public final TableField<ReactiveMessagesRecord, String> MESSAGE_ID = createField(DSL.name("message_id"), SQLDataType.VARCHAR(18).nullable(false), this, "");
 
     /**
      * The column <code>public.reactive_messages.user_id</code>.
      */
-    public final TableField<ReactiveMessagesRecord, String> USER_ID = createField(DSL.name("user_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
+    public final TableField<ReactiveMessagesRecord, String> USER_ID = createField(DSL.name("user_id"), SQLDataType.VARCHAR(18).nullable(false), this, "");
 
     /**
      * The column <code>public.reactive_messages.guild_id</code>.
      */
-    public final TableField<ReactiveMessagesRecord, String> GUILD_ID = createField(DSL.name("guild_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
+    public final TableField<ReactiveMessagesRecord, String> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.VARCHAR(18).nullable(false), this, "");
 
     /**
      * The column <code>public.reactive_messages.command_id</code>.
      */
-    public final TableField<ReactiveMessagesRecord, String> COMMAND_ID = createField(DSL.name("command_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
+    public final TableField<ReactiveMessagesRecord, String> COMMAND_ID = createField(DSL.name("command_id"), SQLDataType.VARCHAR(18).nullable(false), this, "");
 
     /**
      * The column <code>public.reactive_messages.command</code>.
      */
-    public final TableField<ReactiveMessagesRecord, String> COMMAND = createField(DSL.name("command"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
+    public final TableField<ReactiveMessagesRecord, String> COMMAND = createField(DSL.name("command"), SQLDataType.VARCHAR(18).nullable(false), this, "");
 
     /**
      * The column <code>public.reactive_messages.allowed</code>.
      */
-    public final TableField<ReactiveMessagesRecord, String> ALLOWED = createField(DSL.name("allowed"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
+    public final TableField<ReactiveMessagesRecord, String> ALLOWED = createField(DSL.name("allowed"), SQLDataType.VARCHAR(18).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.reactive_messages</code> table reference
-     */
-    public ReactiveMessages() {
-        this(DSL.name("reactive_messages"), null);
+    private ReactiveMessages(Name alias, Table<ReactiveMessagesRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private ReactiveMessages(Name alias, Table<ReactiveMessagesRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -102,12 +94,11 @@ public class ReactiveMessages extends TableImpl<ReactiveMessagesRecord> {
         this(alias, REACTIVE_MESSAGES);
     }
 
-    private ReactiveMessages(Name alias, Table<ReactiveMessagesRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private ReactiveMessages(Name alias, Table<ReactiveMessagesRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.reactive_messages</code> table reference
+     */
+    public ReactiveMessages() {
+        this(DSL.name("reactive_messages"), null);
     }
 
     public <O extends Record> ReactiveMessages(Table<O> child, ForeignKey<O, ReactiveMessagesRecord> key) {

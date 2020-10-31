@@ -9,25 +9,15 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.utils.MiscUtil;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class Utils{
 
-	private static final String CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
 	private Utils(){}
-
-	public static String generate(int length){
-		StringBuilder sb = new StringBuilder(length);
-		for(var i = 0; i < length; i++){
-			sb.append(CHARS.charAt(ThreadLocalRandom.current().nextInt(CHARS.length())));
-		}
-		return sb.toString();
-	}
 
 	public static boolean isEnable(String string){
 		return string.equalsIgnoreCase("enable") || string.equalsIgnoreCase("true") || string.equalsIgnoreCase("on") || string.equalsIgnoreCase("an");
@@ -51,10 +41,30 @@ public class Utils{
 		).filter(Objects::nonNull).collect(Collectors.toSet());
 	}
 
+	public static boolean isSnowflake(String id){
+		try{
+			MiscUtil.parseSnowflake(id);
+			return true;
+		}
+		catch(NumberFormatException ignored){
+			return false;
+		}
+	}
+
 	public static String formatDuration(long length){
-		Duration duration = Duration.ofMillis(length);
+		var duration = Duration.ofMillis(length);
 		var seconds = duration.toSecondsPart();
 		return String.format("%d:%s", duration.toMinutes(), seconds > 9 ? seconds : "0" + seconds);
+	}
+
+	public static String formatDurationDHMS(long length){
+		Duration duration = Duration.ofMillis(length);
+		return String.format(
+				"%sd %s:%s:%s", duration.toDays(), fTime(duration.toHoursPart()), fTime(duration.toMinutesPart()), fTime(duration.toSecondsPart()));
+	}
+
+	public static String fTime(int time){
+		return time > 9 ? String.valueOf(time) : "0" + time;
 	}
 
 	public static String formatTrackTitle(AudioTrack track){

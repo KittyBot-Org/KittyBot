@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Sessions implements Serializable {
 
-    private static final long serialVersionUID = -1108799522;
+    private static final long serialVersionUID = 1L;
 
     private final String        userId;
     private final String        accessToken;
@@ -40,18 +40,30 @@ public class Sessions implements Serializable {
         this.expiration = expiration;
     }
 
+    /**
+     * Getter for <code>public.sessions.user_id</code>.
+     */
     public String getUserId() {
         return this.userId;
     }
 
+    /**
+     * Getter for <code>public.sessions.access_token</code>.
+     */
     public String getAccessToken() {
         return this.accessToken;
     }
 
+    /**
+     * Getter for <code>public.sessions.refresh_token</code>.
+     */
     public String getRefreshToken() {
         return this.refreshToken;
     }
 
+    /**
+     * Getter for <code>public.sessions.expiration</code>.
+     */
     public LocalDateTime getExpiration() {
         return this.expiration;
     }

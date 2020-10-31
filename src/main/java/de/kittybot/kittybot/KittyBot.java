@@ -16,7 +16,6 @@ import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.database.SQL;
 import de.kittybot.kittybot.events.*;
 import de.kittybot.kittybot.objects.Config;
-import de.kittybot.kittybot.objects.LavalinkNode;
 import de.kittybot.kittybot.objects.StatusManager;
 import de.kittybot.kittybot.objects.command.CommandManager;
 import de.kittybot.kittybot.objects.requests.Requester;
@@ -68,7 +67,7 @@ public class KittyBot{
 
 		try{
 			lavalink = new JdaLavalink(Config.BOT_ID, 1, this::fuckLavalink);
-			for(LavalinkNode node : Config.LAVALINK_NODES){
+			for(var node : Config.LAVALINK_NODES){
 				lavalink.addNode(new URI("ws://" + node.host + ":" + node.port), node.password);
 			}
 
@@ -107,10 +106,8 @@ public class KittyBot{
 							new OnGuildReadyEvent(),
 							new OnGuildVoiceEvent(),
 							new OnInviteEvent(),
-							new OnRawEvent(),
 							lavalink
 					)
-					.setRawEventsEnabled(true)
 					.setVoiceDispatchInterceptor(lavalink.getVoiceInterceptor())
 					.setActivity(Activity.playing("loading.."))
 					.setStatus(OnlineStatus.DO_NOT_DISTURB)
@@ -126,7 +123,7 @@ public class KittyBot{
 
 			Database.init(jda);
 
-			new WebService(6969);
+			new WebService(Config.BACKEND_PORT);
 
 			SCHEDULER.scheduleAtFixedRate(MessageCache::pruneCache, 1, 1, TimeUnit.HOURS);
 			SCHEDULER.scheduleAtFixedRate(StatusManager::newRandomStatus, 0, 2, TimeUnit.MINUTES);
@@ -151,14 +148,15 @@ public class KittyBot{
 			return;
 		}
 		var channel = guild.getTextChannelById(Config.LOG_CHANNEL_ID);
-		if(channel != null){
-			channel.sendMessage(new EmbedBuilder()
-					.setDescription(description)
-					.setColor(new Color(76, 80, 193))
-					.setFooter(jda.getSelfUser().getName(), jda.getSelfUser().getAvatarUrl())
-					.setTimestamp(Instant.now())
-					.build()).queue();
+		if(channel == null){
+			return;
 		}
+		channel.sendMessage(new EmbedBuilder()
+				.setDescription(description)
+				.setColor(new Color(76, 80, 193))
+				.setFooter(jda.getSelfUser().getName(), jda.getSelfUser().getAvatarUrl())
+				.setTimestamp(Instant.now())
+				.build()).queue();
 	}
 
 	public void close(){

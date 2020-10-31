@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.api.requests.RestAction;
 
 import java.awt.*;
 import java.util.*;
@@ -29,7 +30,7 @@ public class RolesCommand extends ACommand{
 	public static final String DESCRIPTION = "Used to manage your roles";
 	protected static final String[] ALIASES = {"r", "rollen"};
 	protected static final Category CATEGORY = Category.ROLES;
-	private static final String title = "Self-assignable roles:";
+	private static final String TITLE = "Self-assignable roles:";
 
 	public RolesCommand(){
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
@@ -109,6 +110,23 @@ public class RolesCommand extends ACommand{
 		else{
 			sendUsage(ctx);
 		}
+		if(ctx.getArgs()[0].equalsIgnoreCase("remove") && !roles.isEmpty()){
+			SelfAssignableRoleCache.removeSelfAssignableRoles(ctx.getGuild().getId(), Utils.toSet(roles));
+			sendSuccess(ctx, "Roles removed!");
+			return;
+		}
+		if(ctx.getArgs()[0].equalsIgnoreCase("list")){
+			var map = getRoleEmoteMap(ctx.getGuild());
+			if(map.isEmpty()){
+				sendSuccess(ctx, "There are no roles added!");
+				return;
+			}
+			var message = new StringBuilder();
+			map.keySet().forEach(role -> message.append(role.getAsMention()).append(", "));
+			sendSuccess(ctx, "Roles: " + message);
+			return;
+		}
+		sendError(ctx, "Please be sure to mention a role & a custom discord emote");
 	}
 
 	private Map<SelfAssignableRoleGroup, Set<SelfAssignableRole>> getSelfAssignableRoles(Guild guild){
@@ -169,7 +187,7 @@ public class RolesCommand extends ACommand{
 			if(roles.stream().filter(r -> r.getGroupId().equals(group.getId()) && memberRoles.stream().anyMatch(mr -> mr.getId().equals(r.getRoleId()))).count() < group.getMaxRoles()){
 				event.getGuild().addRoleToMember(event.getMember(), role).queue();
 			}
-		}
+		});
 	}
 
 }

@@ -2,7 +2,7 @@ package de.kittybot.kittybot.cache;
 
 import de.kittybot.kittybot.KittyBot;
 import de.kittybot.kittybot.WebService;
-import de.kittybot.kittybot.objects.guilds.GuildData;
+import de.kittybot.kittybot.objects.data.GuildData;
 import de.kittybot.kittybot.objects.session.DashboardSession;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;

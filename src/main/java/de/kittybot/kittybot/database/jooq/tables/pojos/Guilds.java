@@ -13,7 +13,7 @@ import java.io.Serializable;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Guilds implements Serializable {
 
-    private static final long serialVersionUID = 1697911251;
+    private static final long serialVersionUID = 1L;
 
     private final String  guildId;
     private final String  commandPrefix;
@@ -83,62 +83,107 @@ public class Guilds implements Serializable {
         this.inactiveRoleId = inactiveRoleId;
     }
 
+    /**
+     * Getter for <code>public.guilds.guild_id</code>.
+     */
     public String getGuildId() {
         return this.guildId;
     }
 
+    /**
+     * Getter for <code>public.guilds.command_prefix</code>.
+     */
     public String getCommandPrefix() {
         return this.commandPrefix;
     }
 
+    /**
+     * Getter for <code>public.guilds.request_channel_id</code>.
+     */
     public String getRequestChannelId() {
         return this.requestChannelId;
     }
 
+    /**
+     * Getter for <code>public.guilds.requests_enabled</code>.
+     */
     public Boolean getRequestsEnabled() {
         return this.requestsEnabled;
     }
 
+    /**
+     * Getter for <code>public.guilds.announcement_channel_id</code>.
+     */
     public String getAnnouncementChannelId() {
         return this.announcementChannelId;
     }
 
+    /**
+     * Getter for <code>public.guilds.join_messages</code>.
+     */
     public String getJoinMessages() {
         return this.joinMessages;
     }
 
+    /**
+     * Getter for <code>public.guilds.join_messages_enabled</code>.
+     */
     public Boolean getJoinMessagesEnabled() {
         return this.joinMessagesEnabled;
     }
 
+    /**
+     * Getter for <code>public.guilds.leave_messages</code>.
+     */
     public String getLeaveMessages() {
         return this.leaveMessages;
     }
 
+    /**
+     * Getter for <code>public.guilds.leave_messages_enabled</code>.
+     */
     public Boolean getLeaveMessagesEnabled() {
         return this.leaveMessagesEnabled;
     }
 
+    /**
+     * Getter for <code>public.guilds.boost_messages</code>.
+     */
     public String getBoostMessages() {
         return this.boostMessages;
     }
 
+    /**
+     * Getter for <code>public.guilds.boost_messages_enabled</code>.
+     */
     public Boolean getBoostMessagesEnabled() {
         return this.boostMessagesEnabled;
     }
 
+    /**
+     * Getter for <code>public.guilds.log_channel_id</code>.
+     */
     public String getLogChannelId() {
         return this.logChannelId;
     }
 
+    /**
+     * Getter for <code>public.guilds.log_messages_enabled</code>.
+     */
     public Boolean getLogMessagesEnabled() {
         return this.logMessagesEnabled;
     }
 
+    /**
+     * Getter for <code>public.guilds.nsfw_enabled</code>.
+     */
     public Boolean getNsfwEnabled() {
         return this.nsfwEnabled;
     }
 
+    /**
+     * Getter for <code>public.guilds.inactive_role_id</code>.
+     */
     public String getInactiveRoleId() {
         return this.inactiveRoleId;
     }

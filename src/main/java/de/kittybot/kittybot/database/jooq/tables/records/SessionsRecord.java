@@ -5,14 +5,13 @@ package de.kittybot.kittybot.database.jooq.tables.records;
 
 
 import de.kittybot.kittybot.database.jooq.tables.Sessions;
-
-import java.time.LocalDateTime;
-
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record4;
 import org.jooq.Row4;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import java.time.LocalDateTime;
 
 
 /**
@@ -21,7 +20,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SessionsRecord extends UpdatableRecordImpl<SessionsRecord> implements Record4<String, String, String, LocalDateTime> {
 
-    private static final long serialVersionUID = 1189376605;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.sessions.user_id</code>.
@@ -216,9 +215,9 @@ public class SessionsRecord extends UpdatableRecordImpl<SessionsRecord> implemen
     public SessionsRecord(String userId, String accessToken, String refreshToken, LocalDateTime expiration) {
         super(Sessions.SESSIONS);
 
-        set(0, userId);
-        set(1, accessToken);
-        set(2, refreshToken);
-        set(3, expiration);
+        setUserId(userId);
+        setAccessToken(accessToken);
+        setRefreshToken(refreshToken);
+        setExpiration(expiration);
     }
 }

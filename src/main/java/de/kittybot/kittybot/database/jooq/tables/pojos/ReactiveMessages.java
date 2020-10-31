@@ -13,7 +13,7 @@ import java.io.Serializable;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReactiveMessages implements Serializable {
 
-    private static final long serialVersionUID = -206711688;
+    private static final long serialVersionUID = 1L;
 
     private final String channelId;
     private final String messageId;
@@ -51,30 +51,51 @@ public class ReactiveMessages implements Serializable {
         this.allowed = allowed;
     }
 
+    /**
+     * Getter for <code>public.reactive_messages.channel_id</code>.
+     */
     public String getChannelId() {
         return this.channelId;
     }
 
+    /**
+     * Getter for <code>public.reactive_messages.message_id</code>.
+     */
     public String getMessageId() {
         return this.messageId;
     }
 
+    /**
+     * Getter for <code>public.reactive_messages.user_id</code>.
+     */
     public String getUserId() {
         return this.userId;
     }
 
+    /**
+     * Getter for <code>public.reactive_messages.guild_id</code>.
+     */
     public String getGuildId() {
         return this.guildId;
     }
 
+    /**
+     * Getter for <code>public.reactive_messages.command_id</code>.
+     */
     public String getCommandId() {
         return this.commandId;
     }
 
+    /**
+     * Getter for <code>public.reactive_messages.command</code>.
+     */
     public String getCommand() {
         return this.command;
     }
 
+    /**
+     * Getter for <code>public.reactive_messages.allowed</code>.
+     */
     public String getAllowed() {
         return this.allowed;
     }

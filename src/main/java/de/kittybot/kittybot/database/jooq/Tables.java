@@ -14,7 +14,7 @@ import de.kittybot.kittybot.database.jooq.tables.UserStatistics;
 
 
 /**
- * Convenience access to all tables in public
+ * Convenience access to all tables in public.
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {

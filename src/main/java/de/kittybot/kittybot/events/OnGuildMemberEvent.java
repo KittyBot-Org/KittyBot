@@ -1,136 +1,49 @@
 package de.kittybot.kittybot.events;
 
 import de.kittybot.kittybot.cache.GuildCache;
-import de.kittybot.kittybot.cache.GuildSettingsCache;
-import de.kittybot.kittybot.cache.InviteCache;
-import de.kittybot.kittybot.database.Database;
+import de.kittybot.kittybot.objects.data.GuildData;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Invite;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberUpdateEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateBoostTimeEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+import org.jetbrains.annotations.NotNull;
 
 public class OnGuildMemberEvent extends ListenerAdapter{
 
-	private static final List<String> JOIN_MESSAGES = MessageUtils.loadMessageFile("join");
-	private static final List<String> LEAVE_MESSAGES = MessageUtils.loadMessageFile("leave");
-	private static final List<String> BOOST_MESSAGES = MessageUtils.loadMessageFile("boost");
-
 	@Override
-	public void onGuildMemberRemove(GuildMemberRemoveEvent event){
-		var settings = GuildSettingsCache.getGuildSettings(event.getGuild().getId());
-		String announcementChannelId = settings.getAnnouncementChannelId();
-		if(!announcementChannelId.equals("-1") && settings.areLeaveMessagesEnabled()){
-			TextChannel channel = event.getGuild().getTextChannelById(announcementChannelId);
-			if(channel != null){
-				if(event.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE)){
-					channel.sendMessage(generateLeaveMessage(settings.getLeaveMessage(), event.getUser())).queue();
-				}
-				else{
-					event.getGuild()
-							.retrieveOwner()
-							.queue(member -> member.getUser()
-									.openPrivateChannel()
-									.queue(success -> success.sendMessage("I lack the permission to send leave messages to " + channel.getAsMention() + ".\n" + "You can disable them with `options leavemessage off` if you don't like them")
-											.queue()));
-				}
-			}
-		}
-
+	public void onGuildMemberRemove(@NotNull GuildMemberRemoveEvent event){
+		MessageUtils.sendAnnouncementMessage(event.getGuild(), event);
 		GuildCache.uncacheGuildForUser(event.getUser().getId(), event.getGuild().getId());
 	}
 
 	@Override
-	public void onGuildMemberJoin(GuildMemberJoinEvent event){
-		var settings = GuildSettingsCache.getGuildSettings(event.getGuild().getId());
-		String announcementChannelId = settings.getAnnouncementChannelId();
-		if(!announcementChannelId.equals("-1") && settings.areJoinMessagesEnabled()){
-			TextChannel channel = event.getGuild().getTextChannelById(announcementChannelId);
-			if(channel != null){
-				if(event.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE)){
-					channel.sendMessage(generateJoinMessage(settings.getJoinMessage(), event.getUser(), InviteCache.getUsedInvite(event.getGuild())))
-							.queue();
-				}
-				else{
-					event.getGuild()
-							.retrieveOwner()
-							.queue(member -> member.getUser()
-									.openPrivateChannel()
-									.queue(success -> success.sendMessage("I lack the permission to send join messages to " + channel.getAsMention() + ".\n" + "You can disable them with `options joinmessage off` if you don't like them")
-											.queue()));
-				}
-			}
-		}
+	public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event){
+		MessageUtils.sendAnnouncementMessage(event.getGuild(), event);
 	}
 
 	@Override
-	public void onGuildMemberUpdateBoostTime(GuildMemberUpdateBoostTimeEvent event){
-		var settings = GuildSettingsCache.getGuildSettings(event.getGuild().getId());
-		String announcementChannelId = settings.getAnnouncementChannelId();
-		if(!announcementChannelId.equals("-1") && settings.areLeaveMessagesEnabled()){
-			TextChannel channel = event.getGuild().getTextChannelById(announcementChannelId);
-			if(channel != null){
-				if(event.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE)){
-					channel.sendMessage(generateBoostMessage(Database.getBoostMessage(event.getGuild().getId()), event.getUser())).queue();
-				}
-				else{
-					event.getGuild()
-							.retrieveOwner()
-							.queue(member -> member.getUser()
-									.openPrivateChannel()
-									.queue(success -> success.sendMessage("I lack the permission to send boost messages to " + channel.getAsMention() + ".\n" + "You can disable them with `options boostmessages off` if you don't like them")
-											.queue()));
-				}
+	public void onGuildMemberUpdateBoostTime(@NotNull GuildMemberUpdateBoostTimeEvent event){
+		MessageUtils.sendAnnouncementMessage(event.getGuild(), event);
+	}
+
+	@Override
+	public void onGuildMemberUpdate(@NotNull GuildMemberUpdateEvent event){
+		final var guild = event.getGuild();
+		final var guildId = guild.getId();
+		final var userId = event.getUser().getId();
+
+		guild.retrieveMemberById(userId).queue(member -> {
+			if(member.hasPermission(Permission.ADMINISTRATOR)){
+				GuildCache.cacheGuild(guildId, new GuildData(guildId, guild.getName(), guild.getIconUrl()));
+				GuildCache.cacheGuildForUser(userId, guildId);
 			}
-		}
-	}
-
-	private String generateBoostMessage(String message, User user){
-		if(BOOST_MESSAGES != null && BOOST_MESSAGES.size() > 1){
-			String random = BOOST_MESSAGES.get(ThreadLocalRandom.current().nextInt(BOOST_MESSAGES.size() - 1));
-			message = message.replace("${random_boost_message}", random);
-		}
-		message = message.replace("${user}", user.getAsMention());
-		message = message.replace("${user_tag}", user.getAsTag());
-		message = message.replace("${name}", user.getName());
-		return message;
-	}
-
-	private String generateJoinMessage(String message, User user, Invite invite){
-		if(JOIN_MESSAGES != null && JOIN_MESSAGES.size() > 1){
-			String random = JOIN_MESSAGES.get(ThreadLocalRandom.current().nextInt(JOIN_MESSAGES.size() - 1));
-			message = message.replace("${random_join_message}", random);
-		}
-		if(invite != null){
-			if(invite.getInviter() != null){
-				message = message.replace("${inviter}", invite.getInviter().getAsMention());
+			else{
+				GuildCache.uncacheGuildForUser(userId, guildId);
 			}
-			message = message.replace("${invite_link}", invite.getUrl());
-			message = message.replace("${invite_code}", invite.getCode());
-			message = message.replace("${invite_uses}", String.valueOf(invite.getUses()));
-		}
-		message = message.replace("${user}", user.getAsMention());
-		message = message.replace("${user_tag}", user.getAsTag());
-		message = message.replace("${name}", user.getName());
-		return message;
-	}
-
-	private String generateLeaveMessage(String message, User user){
-		if(LEAVE_MESSAGES != null && LEAVE_MESSAGES.size() > 1){
-			String random = LEAVE_MESSAGES.get(ThreadLocalRandom.current().nextInt(LEAVE_MESSAGES.size() - 1));
-			message = message.replace("${random_leave_message}", random);
-		}
-		message = message.replace("${user}", user.getAsMention());
-		message = message.replace("${user_tag}", user.getAsTag());
-		message = message.replace("${name}", user.getName());
-		return message;
+		});
 	}
 
 }

@@ -23,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 import org.jooq.types.YearToSecond;
 
@@ -33,7 +34,7 @@ import org.jooq.types.YearToSecond;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Commands extends TableImpl<CommandsRecord> {
 
-    private static final long serialVersionUID = 146877277;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.commands</code>
@@ -51,38 +52,39 @@ public class Commands extends TableImpl<CommandsRecord> {
     /**
      * The column <code>public.commands.message_id</code>.
      */
-    public final TableField<CommandsRecord, String> MESSAGE_ID = createField(DSL.name("message_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
+    public final TableField<CommandsRecord, String> MESSAGE_ID = createField(DSL.name("message_id"), SQLDataType.VARCHAR(18).nullable(false), this, "");
 
     /**
      * The column <code>public.commands.guild_id</code>.
      */
-    public final TableField<CommandsRecord, String> GUILD_ID = createField(DSL.name("guild_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
+    public final TableField<CommandsRecord, String> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.VARCHAR(18).nullable(false), this, "");
 
     /**
      * The column <code>public.commands.user_id</code>.
      */
-    public final TableField<CommandsRecord, String> USER_ID = createField(DSL.name("user_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
+    public final TableField<CommandsRecord, String> USER_ID = createField(DSL.name("user_id"), SQLDataType.VARCHAR(18).nullable(false), this, "");
 
     /**
      * The column <code>public.commands.command</code>.
      */
-    public final TableField<CommandsRecord, String> COMMAND = createField(DSL.name("command"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
+    public final TableField<CommandsRecord, String> COMMAND = createField(DSL.name("command"), SQLDataType.VARCHAR(18).nullable(false), this, "");
 
     /**
      * The column <code>public.commands.processing_time</code>.
      */
-    public final TableField<CommandsRecord, YearToSecond> PROCESSING_TIME = createField(DSL.name("processing_time"), org.jooq.impl.SQLDataType.INTERVAL.nullable(false), this, "");
+    public final TableField<CommandsRecord, YearToSecond> PROCESSING_TIME = createField(DSL.name("processing_time"), SQLDataType.INTERVAL.nullable(false), this, "");
 
     /**
      * The column <code>public.commands.time</code>.
      */
-    public final TableField<CommandsRecord, LocalDateTime> TIME = createField(DSL.name("time"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false), this, "");
+    public final TableField<CommandsRecord, LocalDateTime> TIME = createField(DSL.name("time"), SQLDataType.LOCALDATETIME(6).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.commands</code> table reference
-     */
-    public Commands() {
-        this(DSL.name("commands"), null);
+    private Commands(Name alias, Table<CommandsRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Commands(Name alias, Table<CommandsRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -99,12 +101,11 @@ public class Commands extends TableImpl<CommandsRecord> {
         this(alias, COMMANDS);
     }
 
-    private Commands(Name alias, Table<CommandsRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Commands(Name alias, Table<CommandsRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.commands</code> table reference
+     */
+    public Commands() {
+        this(DSL.name("commands"), null);
     }
 
     public <O extends Record> Commands(Table<O> child, ForeignKey<O, CommandsRecord> key) {

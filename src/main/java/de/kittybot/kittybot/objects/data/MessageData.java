@@ -1,4 +1,4 @@
-package de.kittybot.kittybot.objects.messages;
+package de.kittybot.kittybot.objects.data;
 
 import net.dv8tion.jda.api.entities.Message;
 

@@ -64,15 +64,11 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		this.command = command;
 		this.ctx = ctx;
 		var argStr = String.join(" ", ctx.getArgs());
-		final String query = URL_PATTERN.matcher(argStr).matches() ? argStr : "ytsearch:" + argStr;
+		final var query = URL_PATTERN.matcher(argStr).matches() ? argStr : "ytsearch:" + argStr;
 		KittyBot.getAudioPlayerManager().loadItem(query, new AudioLoadResultHandler(){
 
 			@Override
 			public void trackLoaded(AudioTrack track){
-				if(!lengthCheck(track)){
-					sendError(ctx, "The maximum length of a track is 20 minutes");
-					return;
-				}
 				track.setUserData(ctx.getUser().getId());
 				queue(track);
 				if(!queue.isEmpty()){
@@ -89,25 +85,12 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				var queuedTracks = new ArrayList<AudioTrack>();
 				if(playlist.isSearchResult()){
 					var track = playlist.getTracks().get(0);
-					if(!lengthCheck(track)){
-						sendError(ctx, "The maximum length of a track is 20 minutes");
-						return;
-					}
 					track.setUserData(ctx.getUser().getId());
 					queuedTracks.add(track);
 					queue(track);
 				}
 				else{
 					for(var track : playlist.getTracks()){
-						if(!lengthCheck(track)){
-							if(playlist.getTracks().size() == 1){
-								sendError(ctx, "The maximum length of a track is 20 minutes");
-								return;
-							}
-							else{
-								continue;
-							}
-						}
 						track.setUserData(ctx.getUser().getId());
 						queuedTracks.add(track);
 						queue(track);
@@ -134,10 +117,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		});
 	}
 
-	public boolean lengthCheck(AudioTrack track){
-		return TimeUnit.MILLISECONDS.toMinutes(track.getDuration()) <= 20;
-	}
-
 	public void queue(AudioTrack track){
 		if(player.getPlayingTrack() == null){
 			player.playTrack(track);
@@ -150,7 +129,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	private void sendQueuedTracks(ACommand command, CommandContext ctx, List<AudioTrack> tracks){
 		var message = new StringBuilder("Queued **").append(tracks.size()).append("** ").append(pluralize("track", tracks)).append(".");
 		message.append("\n\nTo see the current queue, type `").append(GuildSettingsCache.getCommandPrefix(ctx.getGuild().getId())).append("queue`.");
-		command.sendAnswer(ctx, message.toString());
+		command.sendSuccess(ctx, message.toString());
 	}
 
 	public void connectToChannel(CommandContext ctx){

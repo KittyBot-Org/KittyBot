@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.objects;
 
+import de.kittybot.kittybot.objects.data.LavalinkNode;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ public class Config{
 	public static String ORIGIN_URL;
 	public static String HASTEBIN_URL;
 	public static String SIGNING_KEY;
+	public static int BACKEND_PORT;
 
 	public static String DISCORD_BOTS_TOKEN;
 	public static String TOP_GG_TOKEN;
@@ -55,6 +57,7 @@ public class Config{
 			ORIGIN_URL = json.getString("origin_url");
 			HASTEBIN_URL = json.getString("hastebin_url");
 			SIGNING_KEY = json.getString("signing_key");
+			BACKEND_PORT = json.getInt("backend_port");
 
 			DISCORD_BOTS_TOKEN = json.getString("discord_bots_token");
 			TOP_GG_TOKEN = json.getString("top_gg_token");

@@ -22,12 +22,13 @@ import de.kittybot.kittybot.database.jooq.tables.records.UserStatisticsRecord;
 import org.jooq.Identity;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
+import org.jooq.impl.DSL;
 import org.jooq.impl.Internal;
 
 
 /**
- * A class modelling foreign key relationships and constraints of tables of 
- * the <code>public</code> schema.
+ * A class modelling foreign key relationships and constraints of tables in 
+ * public.
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Keys {

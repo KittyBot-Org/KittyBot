@@ -64,8 +64,8 @@ public class SQL{
 	}
 
 	public static <T> T getProperty(String guildId, Field<T> field){
-		try(var con = getCon(); var ctx = getCtx(con)){
-			var res = ctx.select(field).from(GUILDS).where(GUILDS.GUILD_ID.eq(guildId)).fetchOne();
+		try(var con = getCon(); var selectStep = getCtx(con).select(field)){
+			var res = selectStep.from(GUILDS).where(GUILDS.GUILD_ID.eq(guildId)).fetchOne();
 			if(res != null){
 				return res.getValue(field);
 			}
@@ -81,8 +81,8 @@ public class SQL{
 	}
 
 	public static <T> void setProperty(String guildId, Field<T> field, T value){
-		try(var con = getCon(); var ctx = getCtx(con)){
-			ctx.update(GUILDS).set(field, value).where(GUILDS.GUILD_ID.eq(guildId)).execute();
+		try(var con = getCon()){
+			getCtx(con).update(GUILDS).set(field, value).where(GUILDS.GUILD_ID.eq(guildId)).execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error while setting key {} from guild {}", field.getName(), guildId, e);

@@ -32,8 +32,7 @@ public class Database{
 
 	private static final Logger LOG = LoggerFactory.getLogger(Database.class);
 
-	private Database(){
-	}
+	private Database(){}
 
 	public static void init(JDA jda){
 		createTable("guilds");
@@ -43,17 +42,18 @@ public class Database{
 		createTable("reactive_messages");
 		createTable("user_statistics");
 		createTable("sessions");
-		for(Guild guild : jda.getGuilds()){
+
+		jda.getGuildCache().forEach(guild -> {
 			LOG.debug("Loading Guild: {}...", guild.getName());
 			if(!isGuildRegistered(guild)){
 				registerGuild(guild);
 			}
-		}
+		});
 	}
 
 	private static boolean isGuildRegistered(Guild guild){
-		try(var con = getCon(); var ctx = getCtx(con)){
-			return ctx.selectFrom(GUILDS).where(GUILDS.GUILD_ID.eq(guild.getId())).fetch().isNotEmpty();
+		try(var con = getCon(); var selectStep = getCtx(con).selectFrom(GUILDS)){
+			return selectStep.where(GUILDS.GUILD_ID.eq(guild.getId())).fetch().isNotEmpty();
 		}
 		catch(SQLException e){
 			LOG.error("Error while checking if guild exists", e);
@@ -63,8 +63,8 @@ public class Database{
 
 	public static void registerGuild(Guild guild){
 		LOG.debug("Registering new guild: {}", guild.getId());
-		try(var con = getCon(); var ctx = getCtx(con)){
-			ctx.insertInto(GUILDS)
+		try(var con = getCon()){
+			getCtx(con).insertInto(GUILDS)
 					.columns(GUILDS.fields())
 					.values(
 							guild.getId(),
@@ -93,8 +93,8 @@ public class Database{
 
 
 	public static void addCommandStatistics(String guildId, String commandId, String userId, String command, YearToSecond processingTime){
-		try(var con = getCon(); var ctx = getCtx(con)){
-			ctx.insertInto(COMMANDS).columns(COMMANDS.fields()).values(commandId, guildId, userId, command, processingTime, LocalDateTime.now()).execute();
+		try(var con = getCon()){
+			getCtx(con).insertInto(COMMANDS).columns(COMMANDS.fields()).values(commandId, guildId, userId, command, processingTime, LocalDateTime.now()).execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error adding command statistics for message: {}", commandId, e);
@@ -114,8 +114,8 @@ public class Database{
 	} */
 
 	public static GuildSettings getGuildSettings(String guildId){
-		try(var con = getCon(); var ctx = getCtx(con)){
-			var res = ctx.selectFrom(GUILDS).where(GUILDS.GUILD_ID.eq(guildId)).fetchOne();
+		try(var con = getCon(); var selectStep = getCtx(con).selectFrom(GUILDS)){
+			var res = selectStep.where(GUILDS.GUILD_ID.eq(guildId)).fetchOne();
 			if(res == null){
 				return null;
 			}
@@ -212,15 +212,24 @@ public class Database{
 			if(!removeRoles.isEmpty()){
 				removeSelfAssignableRoles(guildId, removeRoles);
 			}
-			if(!addRoles.isEmpty()){
-				addSelfAssignableRoles(guildId, addRoles);
+		});
+		newRoles.forEach((key, value) -> {
+			if(roles.get(key) == null){
+				addRoles.put(key, value);
 			}
+		});
+
+		if(!removeRoles.isEmpty()){
+			removeSelfAssignableRoles(guildId, removeRoles);
+		}
+		if(!addRoles.isEmpty()){
+			addSelfAssignableRoles(guildId, addRoles);
 		}
 	}
 
 	public static boolean removeSelfAssignableRoles(String guildId, Set<String> roles){
-		try(var con = getCon(); var ctx = getCtx(con)){
-			return ctx.deleteFrom(SELF_ASSIGNABLE_ROLES).where(SELF_ASSIGNABLE_ROLES.GUILD_ID.eq(guildId).and(SELF_ASSIGNABLE_ROLES.ROLE_ID.in(roles))).execute() == roles.size();
+		try(var con = getCon(); var deleteStep = getCtx(con).deleteFrom(SELF_ASSIGNABLE_ROLES)){
+			return deleteStep.where(SELF_ASSIGNABLE_ROLES.GUILD_ID.eq(guildId).and(SELF_ASSIGNABLE_ROLES.ROLE_ID.in(roles))).execute() == roles.size();
 		}
 		catch(SQLException e){
 			LOG.error("Error removing self-assignable roles: {} guilds {}", roles, guildId, e);
@@ -326,8 +335,8 @@ public class Database{
 	}
 
 	public static ReactiveMessage getReactiveMessage(String guildId, String messageId){
-		try(var con = getCon(); var ctx = getCtx(con)){
-			var reactiveMsg = ctx.selectFrom(REACTIVE_MESSAGES).where(REACTIVE_MESSAGES.MESSAGE_ID.eq(messageId).and(REACTIVE_MESSAGES.GUILD_ID.eq(guildId))).fetchOne();
+		try(var con = getCon(); var selectStep = getCtx(con).selectFrom(REACTIVE_MESSAGES)){
+			var reactiveMsg = selectStep.where(REACTIVE_MESSAGES.MESSAGE_ID.eq(messageId).and(REACTIVE_MESSAGES.GUILD_ID.eq(guildId))).fetchOne();
 			if(reactiveMsg != null){
 				return new ReactiveMessage(reactiveMsg.getChannelId(), reactiveMsg.getMessageId(), reactiveMsg.getUserId(), reactiveMsg.getCommandId(), reactiveMsg.getCommand(), reactiveMsg.getAllowed());
 			}
@@ -339,8 +348,8 @@ public class Database{
 	}
 
 	public static void addReactiveMessage(String guildId, String userId, String channelId, String messageId, String commandId, String command, String allowed){
-		try(var con = getCon(); var ctx = getCtx(con)){
-			ctx.insertInto(REACTIVE_MESSAGES).columns(REACTIVE_MESSAGES.fields()).values(channelId, messageId, commandId, userId, guildId, command, allowed).execute();
+		try(var con = getCon()){
+			getCtx(con).insertInto(REACTIVE_MESSAGES).columns(REACTIVE_MESSAGES.fields()).values(channelId, messageId, commandId, userId, guildId, command, allowed).execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error creating reactive message", e);
@@ -348,8 +357,8 @@ public class Database{
 	}
 
 	public static void removeReactiveMessage(String guildId, String messageId){
-		try(var con = getCon(); var ctx = getCtx(con)){
-			ctx.deleteFrom(REACTIVE_MESSAGES).where(REACTIVE_MESSAGES.MESSAGE_ID.eq(messageId).and(REACTIVE_MESSAGES.GUILD_ID.eq(guildId))).execute();
+		try(var con = getCon(); var deleteStep = getCtx(con).deleteFrom(REACTIVE_MESSAGES)){
+			deleteStep.where(REACTIVE_MESSAGES.MESSAGE_ID.eq(messageId).and(REACTIVE_MESSAGES.GUILD_ID.eq(guildId))).execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error removing reactive message", e);
@@ -357,8 +366,8 @@ public class Database{
 	}
 
 	public static void addSession(DashboardSession session){
-		try(var con = getCon(); var ctx = getCtx(con)){
-			ctx.insertInto(SESSIONS).columns(SESSIONS.fields()).values(session.getUserId(), session.getAccessToken(), session.getRefreshToken(), session.getExpiration().toLocalDateTime()).onDuplicateKeyIgnore().execute();
+		try(var con = getCon()){
+			getCtx(con).insertInto(SESSIONS).columns(SESSIONS.fields()).values(session.getUserId(), session.getAccessToken(), session.getRefreshToken(), session.getExpiration().toLocalDateTime()).onDuplicateKeyIgnore().execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error adding session for user {}", session.getUserId(), e);
@@ -366,8 +375,8 @@ public class Database{
 	}
 
 	public static DashboardSession getSession(String userId){
-		try(var con = getCon(); var ctx = getCtx(con)){
-			var r = ctx.selectFrom(SESSIONS).where(SESSIONS.USER_ID.eq(userId)).fetchOne();
+		try(var con = getCon(); var selectStep = getCtx(con).selectFrom(SESSIONS)){
+			var r = selectStep.where(SESSIONS.USER_ID.eq(userId)).fetchOne();
 			if(r != null){
 				return new DashboardSession(new SessionData(userId, r.get(SESSIONS.ACCESS_TOKEN), r.get(SESSIONS.REFRESH_TOKEN), "Bearer", OffsetDateTime.of(r.get(SESSIONS.EXPIRATION), ZoneOffset.UTC), WebService.getScopes()));
 			}
@@ -379,8 +388,8 @@ public class Database{
 	}
 
 	public static boolean hasSession(String userId){
-		try(var con = getCon(); var ctx = getCtx(con)){
-			return ctx.selectFrom(SESSIONS).where(SESSIONS.USER_ID.eq(userId)).fetch().isNotEmpty();
+		try(var con = getCon(); var selectStep = getCtx(con).selectFrom(SESSIONS)){
+			return selectStep.where(SESSIONS.USER_ID.eq(userId)).fetch().isNotEmpty();
 		}
 		catch(SQLException e){
 			LOG.error("Error checking if user: {} has a session", userId, e);
@@ -389,8 +398,8 @@ public class Database{
 	}
 
 	public static void deleteSession(String userId){
-		try(var con = getCon(); var ctx = getCtx(con)){
-			ctx.deleteFrom(SESSIONS).where(SESSIONS.USER_ID.eq(userId)).execute();
+		try(var con = getCon(); var deleteStep = getCtx(con).deleteFrom(SESSIONS)){
+			deleteStep.where(SESSIONS.USER_ID.eq(userId)).execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error deleting session for user: {}", userId, e);

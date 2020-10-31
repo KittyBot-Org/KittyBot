@@ -27,7 +27,7 @@ public class VolumeCommand extends ACommand{
 		}
 		var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
 		if(musicPlayer == null){
-			sendError(ctx, "No active music player found!");
+			sendError(ctx, "No active music player found");
 			return;
 		}
 		var player = musicPlayer.getPlayer();

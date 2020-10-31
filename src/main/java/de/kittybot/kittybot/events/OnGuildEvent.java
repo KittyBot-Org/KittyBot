@@ -3,7 +3,7 @@ package de.kittybot.kittybot.events;
 import de.kittybot.kittybot.KittyBot;
 import de.kittybot.kittybot.cache.*;
 import de.kittybot.kittybot.database.Database;
-import de.kittybot.kittybot.objects.guilds.GuildData;
+import de.kittybot.kittybot.objects.data.GuildData;
 import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;

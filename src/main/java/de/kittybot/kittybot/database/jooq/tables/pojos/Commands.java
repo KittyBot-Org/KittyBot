@@ -4,10 +4,10 @@
 package de.kittybot.kittybot.database.jooq.tables.pojos;
 
 
+import org.jooq.types.YearToSecond;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
-
-import org.jooq.types.YearToSecond;
 
 
 /**
@@ -16,7 +16,7 @@ import org.jooq.types.YearToSecond;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Commands implements Serializable {
 
-    private static final long serialVersionUID = -1380580204;
+    private static final long serialVersionUID = 1L;
 
     private final String        messageId;
     private final String        guildId;
@@ -50,26 +50,44 @@ public class Commands implements Serializable {
         this.time = time;
     }
 
+    /**
+     * Getter for <code>public.commands.message_id</code>.
+     */
     public String getMessageId() {
         return this.messageId;
     }
 
+    /**
+     * Getter for <code>public.commands.guild_id</code>.
+     */
     public String getGuildId() {
         return this.guildId;
     }
 
+    /**
+     * Getter for <code>public.commands.user_id</code>.
+     */
     public String getUserId() {
         return this.userId;
     }
 
+    /**
+     * Getter for <code>public.commands.command</code>.
+     */
     public String getCommand() {
         return this.command;
     }
 
+    /**
+     * Getter for <code>public.commands.processing_time</code>.
+     */
     public YearToSecond getProcessingTime() {
         return this.processingTime;
     }
 
+    /**
+     * Getter for <code>public.commands.time</code>.
+     */
     public LocalDateTime getTime() {
         return this.time;
     }

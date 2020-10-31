@@ -23,7 +23,7 @@ public class CommandContext{
 	}
 
 	private String[] getCommandArguments(String message){
-		String[] args = message.split(" ");
+		var args = message.split(" ");
 		return Arrays.copyOfRange(args, 1, args.length);
 	}
 
