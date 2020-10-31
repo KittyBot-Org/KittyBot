@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SelfAssignableRolesRecord extends UpdatableRecordImpl<SelfAssignableRolesRecord> implements Record4<String, String, String, String> {
 
-    private static final long serialVersionUID = -248023519;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.self_assignable_roles.role_id</code>.
@@ -214,9 +214,9 @@ public class SelfAssignableRolesRecord extends UpdatableRecordImpl<SelfAssignabl
     public SelfAssignableRolesRecord(String roleId, String groupId, String guildId, String emoteId) {
         super(SelfAssignableRoles.SELF_ASSIGNABLE_ROLES);
 
-        set(0, roleId);
-        set(1, groupId);
-        set(2, guildId);
-        set(3, emoteId);
+        setRoleId(roleId);
+        setGroupId(groupId);
+        setGuildId(guildId);
+        setEmoteId(emoteId);
     }
 }

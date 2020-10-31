@@ -4,10 +4,10 @@
 package de.kittybot.kittybot.database.jooq.tables.pojos;
 
 
-import org.jooq.types.YearToSecond;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import org.jooq.types.YearToSecond;
 
 
 /**

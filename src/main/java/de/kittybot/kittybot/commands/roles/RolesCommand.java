@@ -4,7 +4,7 @@ import de.kittybot.kittybot.cache.ReactiveMessageCache;
 import de.kittybot.kittybot.cache.SelfAssignableRoleCache;
 import de.kittybot.kittybot.cache.SelfAssignableRoleGroupCache;
 import de.kittybot.kittybot.objects.Emojis;
-import de.kittybot.kittybot.objects.ReactiveMessage;
+import de.kittybot.kittybot.objects.data.ReactiveMessage;
 import de.kittybot.kittybot.objects.SelfAssignableRole;
 import de.kittybot.kittybot.objects.SelfAssignableRoleGroup;
 import de.kittybot.kittybot.objects.command.ACommand;
@@ -17,7 +17,6 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
-import net.dv8tion.jda.api.requests.RestAction;
 
 import java.awt.*;
 import java.util.*;
@@ -39,6 +38,8 @@ public class RolesCommand extends ACommand{
 	@Override
 	public void run(CommandContext ctx){
 		var args = ctx.getArgs();
+		var roles = ctx.getMessage().getMentionedRoles();
+		var emotes = ctx.getMessage().getEmotes();
 		if(args.length == 0){
 			var groups = getSelfAssignableRoles(ctx.getGuild());
 			if(groups.isEmpty()){
@@ -53,7 +54,7 @@ public class RolesCommand extends ACommand{
 				}
 				value.append("\n");
 			}
-			answer(ctx, new EmbedBuilder().setTitle(title)
+			answer(ctx, new EmbedBuilder().setTitle(TITLE)
 					.setDescription("To get/remove a role react to this message with the specific  emote\n\n")
 					.setColor(Color.MAGENTA)
 					.appendDescription(value)).queue(message -> {
@@ -80,8 +81,6 @@ public class RolesCommand extends ACommand{
 				sendError(ctx, "You need to be an administrator to use this command!");
 				return;
 			}
-			var roles = ctx.getMessage().getMentionedRoles();
-			var emotes = ctx.getMessage().getEmotes();
 			if(args.length < 4 || roles.isEmpty() || emotes.isEmpty()){
 				sendError(ctx, "Please be sure to mention a role & a custom discord emote");
 				return;
@@ -99,7 +98,6 @@ public class RolesCommand extends ACommand{
 				sendError(ctx, "You need to be an administrator to use this command!");
 				return;
 			}
-			var roles = ctx.getMessage().getMentionedRoles();
 			if(args.length < 2 || roles.isEmpty()){
 				sendError(ctx, "Please be sure to mention a role");
 				return;
@@ -116,13 +114,13 @@ public class RolesCommand extends ACommand{
 			return;
 		}
 		if(ctx.getArgs()[0].equalsIgnoreCase("list")){
-			var map = getRoleEmoteMap(ctx.getGuild());
+			var map = getSelfAssignableRoles(ctx.getGuild());
 			if(map.isEmpty()){
 				sendSuccess(ctx, "There are no roles added!");
 				return;
 			}
 			var message = new StringBuilder();
-			map.keySet().forEach(role -> message.append(role.getAsMention()).append(", "));
+			map.keySet().forEach(role -> message.append(MessageUtils.getRoleMention(role.getId())).append(", "));
 			sendSuccess(ctx, "Roles: " + message);
 			return;
 		}
@@ -187,7 +185,7 @@ public class RolesCommand extends ACommand{
 			if(roles.stream().filter(r -> r.getGroupId().equals(group.getId()) && memberRoles.stream().anyMatch(mr -> mr.getId().equals(r.getRoleId()))).count() < group.getMaxRoles()){
 				event.getGuild().addRoleToMember(event.getMember(), role).queue();
 			}
-		});
+		}
 	}
 
 }

@@ -23,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SelfAssignableRoleGroups extends TableImpl<SelfAssignableRoleGroupsRecord> {
 
-    private static final long serialVersionUID = -897961518;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.self_assignable_role_groups</code>
@@ -50,28 +51,29 @@ public class SelfAssignableRoleGroups extends TableImpl<SelfAssignableRoleGroups
     /**
      * The column <code>public.self_assignable_role_groups.group_id</code>.
      */
-    public final TableField<SelfAssignableRoleGroupsRecord, Integer> GROUP_ID = createField(DSL.name("group_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('self_assignable_role_groups_group_id_seq'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<SelfAssignableRoleGroupsRecord, Integer> GROUP_ID = createField(DSL.name("group_id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.self_assignable_role_groups.guild_id</code>.
      */
-    public final TableField<SelfAssignableRoleGroupsRecord, String> GUILD_ID = createField(DSL.name("guild_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
+    public final TableField<SelfAssignableRoleGroupsRecord, String> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.VARCHAR(18).nullable(false), this, "");
 
     /**
      * The column <code>public.self_assignable_role_groups.group_name</code>.
      */
-    public final TableField<SelfAssignableRoleGroupsRecord, String> GROUP_NAME = createField(DSL.name("group_name"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
+    public final TableField<SelfAssignableRoleGroupsRecord, String> GROUP_NAME = createField(DSL.name("group_name"), SQLDataType.VARCHAR(18).nullable(false), this, "");
 
     /**
      * The column <code>public.self_assignable_role_groups.max_roles</code>.
      */
-    public final TableField<SelfAssignableRoleGroupsRecord, Integer> MAX_ROLES = createField(DSL.name("max_roles"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<SelfAssignableRoleGroupsRecord, Integer> MAX_ROLES = createField(DSL.name("max_roles"), SQLDataType.INTEGER.nullable(false), this, "");
 
-    /**
-     * Create a <code>public.self_assignable_role_groups</code> table reference
-     */
-    public SelfAssignableRoleGroups() {
-        this(DSL.name("self_assignable_role_groups"), null);
+    private SelfAssignableRoleGroups(Name alias, Table<SelfAssignableRoleGroupsRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private SelfAssignableRoleGroups(Name alias, Table<SelfAssignableRoleGroupsRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -88,12 +90,11 @@ public class SelfAssignableRoleGroups extends TableImpl<SelfAssignableRoleGroups
         this(alias, SELF_ASSIGNABLE_ROLE_GROUPS);
     }
 
-    private SelfAssignableRoleGroups(Name alias, Table<SelfAssignableRoleGroupsRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private SelfAssignableRoleGroups(Name alias, Table<SelfAssignableRoleGroupsRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.self_assignable_role_groups</code> table reference
+     */
+    public SelfAssignableRoleGroups() {
+        this(DSL.name("self_assignable_role_groups"), null);
     }
 
     public <O extends Record> SelfAssignableRoleGroups(Table<O> child, ForeignKey<O, SelfAssignableRoleGroupsRecord> key) {
@@ -107,7 +108,7 @@ public class SelfAssignableRoleGroups extends TableImpl<SelfAssignableRoleGroups
 
     @Override
     public Identity<SelfAssignableRoleGroupsRecord, Integer> getIdentity() {
-        return Keys.IDENTITY_SELF_ASSIGNABLE_ROLE_GROUPS;
+        return (Identity<SelfAssignableRoleGroupsRecord, Integer>) super.getIdentity();
     }
 
     @Override

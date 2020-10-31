@@ -13,7 +13,7 @@ import java.io.Serializable;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SelfAssignableRoleGroups implements Serializable {
 
-    private static final long serialVersionUID = 480444427;
+    private static final long serialVersionUID = 1L;
 
     private final Integer groupId;
     private final String  guildId;
@@ -39,18 +39,30 @@ public class SelfAssignableRoleGroups implements Serializable {
         this.maxRoles = maxRoles;
     }
 
+    /**
+     * Getter for <code>public.self_assignable_role_groups.group_id</code>.
+     */
     public Integer getGroupId() {
         return this.groupId;
     }
 
+    /**
+     * Getter for <code>public.self_assignable_role_groups.guild_id</code>.
+     */
     public String getGuildId() {
         return this.guildId;
     }
 
+    /**
+     * Getter for <code>public.self_assignable_role_groups.group_name</code>.
+     */
     public String getGroupName() {
         return this.groupName;
     }
 
+    /**
+     * Getter for <code>public.self_assignable_role_groups.max_roles</code>.
+     */
     public Integer getMaxRoles() {
         return this.maxRoles;
     }

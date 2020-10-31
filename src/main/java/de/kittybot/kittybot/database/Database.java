@@ -5,8 +5,8 @@ import de.kittybot.kittybot.WebService;
 import de.kittybot.kittybot.cache.SelfAssignableRoleCache;
 import de.kittybot.kittybot.cache.SelfAssignableRoleGroupCache;
 import de.kittybot.kittybot.objects.Config;
-import de.kittybot.kittybot.objects.GuildSettings;
-import de.kittybot.kittybot.objects.ReactiveMessage;
+import de.kittybot.kittybot.objects.data.GuildSettings;
+import de.kittybot.kittybot.objects.data.ReactiveMessage;
 import de.kittybot.kittybot.objects.SelfAssignableRole;
 import de.kittybot.kittybot.objects.SelfAssignableRoleGroup;
 import de.kittybot.kittybot.objects.session.DashboardSession;
@@ -212,18 +212,18 @@ public class Database{
 			if(!removeRoles.isEmpty()){
 				removeSelfAssignableRoles(guildId, removeRoles);
 			}
-		});
-		newRoles.forEach((key, value) -> {
-			if(roles.get(key) == null){
-				addRoles.put(key, value);
-			}
-		});
+			newRoles.forEach(role -> {
+				if(roles.contains(role)){
+					addRoles.add(role);
+				}
+			});
 
-		if(!removeRoles.isEmpty()){
-			removeSelfAssignableRoles(guildId, removeRoles);
-		}
-		if(!addRoles.isEmpty()){
-			addSelfAssignableRoles(guildId, addRoles);
+			if(!removeRoles.isEmpty()){
+				removeSelfAssignableRoles(guildId, removeRoles);
+			}
+			if(!addRoles.isEmpty()){
+				addSelfAssignableRoles(guildId, addRoles);
+			}
 		}
 	}
 
@@ -238,8 +238,8 @@ public class Database{
 	}
 
 	public static void addSelfAssignableRoles(String guildId, Set<SelfAssignableRole> roles){
-		try(var con = getCon(); var ctx = getCtx(con)){
-			var col = ctx.insertInto(SELF_ASSIGNABLE_ROLES).columns(SELF_ASSIGNABLE_ROLES.fields());
+		try(var con = getCon()){
+			var col = getCtx(con).insertInto(SELF_ASSIGNABLE_ROLES).columns(SELF_ASSIGNABLE_ROLES.fields());
 			for(var role : roles){
 				col.values(role.getRoleId(), role.getGroupId(), guildId, role.getEmoteId());
 			}
@@ -280,8 +280,8 @@ public class Database{
 	}
 
 	public static boolean removeSelfAssignableRoleGroups(String guildId, Set<String> groups){
-		try(var con = getCon(); var ctx = getCtx(con)){
-			return ctx.deleteFrom(SELF_ASSIGNABLE_ROLE_GROUPS).where(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID.eq(guildId).and(SELF_ASSIGNABLE_ROLE_GROUPS.GROUP_ID.in(groups))).execute() == groups.size();
+		try(var con = getCon(); var deleteStep = getCtx(con).deleteFrom(SELF_ASSIGNABLE_ROLE_GROUPS)){
+			return deleteStep.where(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID.eq(guildId).and(SELF_ASSIGNABLE_ROLE_GROUPS.GROUP_ID.in(groups))).execute() == groups.size();
 		}
 		catch(SQLException e){
 			LOG.error("Error removing self-assignable role groups: " + groups.toString() + " from guild " + guildId, e);
@@ -290,8 +290,8 @@ public class Database{
 	}
 
 	public static Set<SelfAssignableRoleGroup> addSelfAssignableRoleGroups(String guildId, Set<SelfAssignableRoleGroup> groups){
-		try(var con = getCon(); var ctx = getCtx(con)){
-			var col = ctx.insertInto(SELF_ASSIGNABLE_ROLE_GROUPS).columns(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID, SELF_ASSIGNABLE_ROLE_GROUPS.GROUP_NAME, SELF_ASSIGNABLE_ROLE_GROUPS.MAX_ROLES);
+		try(var con = getCon()){
+			var col = getCtx(con).insertInto(SELF_ASSIGNABLE_ROLE_GROUPS).columns(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID, SELF_ASSIGNABLE_ROLE_GROUPS.GROUP_NAME, SELF_ASSIGNABLE_ROLE_GROUPS.MAX_ROLES);
 			for(var group : groups){
 				col.values(guildId, group.getName(), group.getMaxRoles());
 			}
@@ -309,8 +309,8 @@ public class Database{
 	}
 
 	public static Set<SelfAssignableRole> getSelfAssignableRoles(String guildId){
-		try(var con = getCon(); var ctx = getCtx(con)){
-			return ctx.selectFrom(SELF_ASSIGNABLE_ROLES).where(SELF_ASSIGNABLE_ROLES.GUILD_ID.eq(guildId)).fetch()
+		try(var con = getCon(); var selectStep = getCtx(con).selectFrom(SELF_ASSIGNABLE_ROLES)){
+			return selectStep.where(SELF_ASSIGNABLE_ROLES.GUILD_ID.eq(guildId)).fetch()
 					.stream()
 					.map(sar -> new SelfAssignableRole(sar.get(SELF_ASSIGNABLE_ROLES.GUILD_ID), sar.get(SELF_ASSIGNABLE_ROLES.GROUP_ID), sar.get(SELF_ASSIGNABLE_ROLES.ROLE_ID), sar.get(SELF_ASSIGNABLE_ROLES.EMOTE_ID)))
 					.collect(Collectors.toSet());
@@ -322,8 +322,8 @@ public class Database{
 	}
 
 	public static Set<SelfAssignableRoleGroup> getSelfAssignableRoleGroups(String guildId){
-		try(var con = getCon(); var ctx = getCtx(con)){
-			return ctx.selectFrom(SELF_ASSIGNABLE_ROLE_GROUPS).where(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID.eq(guildId)).fetch()
+		try(var con = getCon(); var selectStep = getCtx(con).selectFrom(SELF_ASSIGNABLE_ROLE_GROUPS)){
+			return selectStep.where(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID.eq(guildId)).fetch()
 					.stream()
 					.map(sar -> new SelfAssignableRoleGroup(sar.get(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID), String.valueOf(sar.get(SELF_ASSIGNABLE_ROLE_GROUPS.GROUP_ID)), sar.get(SELF_ASSIGNABLE_ROLE_GROUPS.GROUP_NAME), sar.get(SELF_ASSIGNABLE_ROLE_GROUPS.MAX_ROLES)))
 					.collect(Collectors.toSet());

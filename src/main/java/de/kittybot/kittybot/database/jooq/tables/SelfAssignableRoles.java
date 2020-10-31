@@ -32,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SelfAssignableRoles extends TableImpl<SelfAssignableRolesRecord> {
 
-    private static final long serialVersionUID = 1900902597;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.self_assignable_roles</code>
@@ -55,7 +55,7 @@ public class SelfAssignableRoles extends TableImpl<SelfAssignableRolesRecord> {
     /**
      * The column <code>public.self_assignable_roles.group_id</code>.
      */
-    public final TableField<SelfAssignableRolesRecord, String> GROUP_ID = createField(DSL.name("group_id"), org.jooq.impl.SQLDataType.VARCHAR(18).nullable(false), this, "");
+    public final TableField<SelfAssignableRolesRecord, String> GROUP_ID = createField(DSL.name("group_id"), SQLDataType.VARCHAR(18).nullable(false), this, "");
 
     /**
      * The column <code>public.self_assignable_roles.guild_id</code>.
