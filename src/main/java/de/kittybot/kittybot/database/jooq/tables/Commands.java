@@ -4,24 +4,20 @@
 package de.kittybot.kittybot.database.jooq.tables;
 
 
-import de.kittybot.kittybot.database.jooq.Keys;
 import de.kittybot.kittybot.database.jooq.Public;
 import de.kittybot.kittybot.database.jooq.tables.records.CommandsRecord;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row3;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
-import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
@@ -48,21 +44,6 @@ public class Commands extends TableImpl<CommandsRecord> {
     public Class<CommandsRecord> getRecordType() {
         return CommandsRecord.class;
     }
-
-    /**
-     * The column <code>public.commands.message_id</code>.
-     */
-    public final TableField<CommandsRecord, String> MESSAGE_ID = createField(DSL.name("message_id"), SQLDataType.VARCHAR(18).nullable(false), this, "");
-
-    /**
-     * The column <code>public.commands.guild_id</code>.
-     */
-    public final TableField<CommandsRecord, String> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.VARCHAR(18).nullable(false), this, "");
-
-    /**
-     * The column <code>public.commands.user_id</code>.
-     */
-    public final TableField<CommandsRecord, String> USER_ID = createField(DSL.name("user_id"), SQLDataType.VARCHAR(18).nullable(false), this, "");
 
     /**
      * The column <code>public.commands.command</code>.
@@ -118,16 +99,6 @@ public class Commands extends TableImpl<CommandsRecord> {
     }
 
     @Override
-    public UniqueKey<CommandsRecord> getPrimaryKey() {
-        return Keys.COMMANDS_PKEY;
-    }
-
-    @Override
-    public List<UniqueKey<CommandsRecord>> getKeys() {
-        return Arrays.<UniqueKey<CommandsRecord>>asList(Keys.COMMANDS_PKEY);
-    }
-
-    @Override
     public Commands as(String alias) {
         return new Commands(DSL.name(alias), this);
     }
@@ -154,11 +125,11 @@ public class Commands extends TableImpl<CommandsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row3 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<String, String, String, String, YearToSecond, LocalDateTime> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row3<String, YearToSecond, LocalDateTime> fieldsRow() {
+        return (Row3) super.fieldsRow();
     }
 }
