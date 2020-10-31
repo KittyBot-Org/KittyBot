@@ -35,6 +35,9 @@ public class Config{
 	public static String DB_DB;
 	public static String DB_USER;
 	public static String DB_PASSWORD;
+
+	public static final List<String> ADMIN_IDS = new ArrayList<>();
+
 	public static String DEFAULT_PREFIX = ".";
 
 	static{

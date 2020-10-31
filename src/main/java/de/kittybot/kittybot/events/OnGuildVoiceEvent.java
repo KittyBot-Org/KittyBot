@@ -22,7 +22,7 @@ public class OnGuildVoiceEvent extends ListenerAdapter{
 				return;
 			}
 			var channel = event.getChannelLeft();
-			var currentChannel = musicPlayer.getPlayer().getLink().getChannel();
+			var currentChannel = musicPlayer.getChannelId();
 			if(channel == null || !channel.getId().equals(currentChannel)){
 				return;
 			}
