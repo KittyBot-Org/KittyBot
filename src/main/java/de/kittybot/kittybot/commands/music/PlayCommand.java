@@ -1,9 +1,7 @@
 package de.kittybot.kittybot.commands.music;
 
-import de.kittybot.kittybot.KittyBot;
-import de.kittybot.kittybot.cache.MusicPlayerCache;
+import de.kittybot.kittybot.cache.MusicManagerCache;
 import de.kittybot.kittybot.objects.Emojis;
-import de.kittybot.kittybot.objects.MusicPlayer;
 import de.kittybot.kittybot.objects.ReactiveMessage;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
@@ -35,24 +33,17 @@ public class PlayCommand extends ACommand{
 			sendError(ctx, "I can't play music as " + connectionFailure.getReason());
 			return;
 		}
-		var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
-		if(musicPlayer == null){
-			var link = KittyBot.getLavalink().getLink(ctx.getGuild());
-			var player = link.getPlayer();
-			musicPlayer = new MusicPlayer(player);
-			player.addListener(musicPlayer);
-			MusicPlayerCache.addMusicPlayer(ctx.getGuild(), musicPlayer);
-		}
-		musicPlayer.loadItem(this, ctx);
+		final var musicManager = MusicManagerCache.getMusicManager(ctx.getGuild(), true);
+		musicManager.loadItem(this, ctx);
 	}
 
 	@Override
 	public void reactionAdd(ReactiveMessage reactiveMessage, GuildMessageReactionAddEvent event){
-		var musicPlayer = MusicPlayerCache.getMusicPlayer(event.getGuild());
-		if(musicPlayer == null){
+		var musicManager = MusicManagerCache.getMusicManager(event.getGuild());
+		if(musicManager == null){
 			return;
 		}
-		var requester = musicPlayer.getRequesterId();
+		var requester = musicManager.getRequesterId();
 		if(requester == null){
 			return;
 		}
@@ -64,30 +55,30 @@ public class PlayCommand extends ACommand{
 			var emoji = event.getReactionEmote().getEmoji();
 			switch(emoji){
 				case Emojis.BACK:
-					musicPlayer.previousTrack();
+					musicManager.previousTrack();
 					break;
 				case Emojis.FORWARD:
-					musicPlayer.nextTrack();
+					musicManager.nextTrack();
 					break;
 				case Emojis.SHUFFLE:
-					musicPlayer.shuffle();
+					musicManager.shuffle();
 					break;
 				case Emojis.VOLUME_DOWN:
-					musicPlayer.changeVolume(-VOLUME_STEP);
+					musicManager.changeVolume(-VOLUME_STEP);
 					break;
 				case Emojis.VOLUME_UP:
-					musicPlayer.changeVolume(VOLUME_STEP);
+					musicManager.changeVolume(VOLUME_STEP);
 					break;
 				case Emojis.X:
-					MusicPlayerCache.destroyMusicPlayer(event.getGuild());
+					MusicManagerCache.destroyMusicManager(event.getGuild());
 					break;
 				default:
 			}
 		}
 		else if(event.getReactionEmote().getId().equals("744945002416963634")){
-			musicPlayer.pause();
+			musicManager.pause();
 		}
-		musicPlayer.updateMusicControlMessage(event.getChannel());
+		musicManager.updateMusicControlMessage(event.getChannel());
 		event.getReaction().removeReaction(event.getUser()).queue();
 	}
 

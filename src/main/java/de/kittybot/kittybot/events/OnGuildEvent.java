@@ -75,7 +75,7 @@ public class OnGuildEvent extends ListenerAdapter{
 		Utils.updateStats(guildCount);
 		InviteCache.pruneCache(guild);
 		GuildSettingsCache.pruneCache(guild);
-		MusicPlayerCache.pruneCache(guild);
+		MusicManagerCache.pruneCache(guild);
 		ReactiveMessageCache.pruneCache(guild);
 		CommandResponseCache.pruneCache(guild);
 		SelfAssignableRoleCache.pruneCache(guild);

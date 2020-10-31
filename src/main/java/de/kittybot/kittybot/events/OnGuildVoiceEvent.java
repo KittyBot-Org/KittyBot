@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.events;
 
 import de.kittybot.kittybot.KittyBot;
-import de.kittybot.kittybot.cache.MusicPlayerCache;
+import de.kittybot.kittybot.cache.MusicManagerCache;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
@@ -17,7 +17,7 @@ public class OnGuildVoiceEvent extends ListenerAdapter{
 	public void onGuildVoiceUpdate(@NotNull final GuildVoiceUpdateEvent event){
 		if(event instanceof GuildVoiceMoveEvent || event instanceof GuildVoiceLeaveEvent){
 			var guild = event.getEntity().getGuild();
-			var musicPlayer = MusicPlayerCache.getMusicPlayer(guild);
+			var musicPlayer = MusicManagerCache.getMusicPlayer(guild);
 			if(musicPlayer == null){
 				return;
 			}
@@ -32,7 +32,7 @@ public class OnGuildVoiceEvent extends ListenerAdapter{
 			KittyBot.getWaiter().waitForEvent(GuildVoiceJoinEvent.class,
 					ev -> ev.getChannelJoined().getId().equals(currentChannel) && !ev.getEntity().getUser().isBot(),
 					ev -> {
-					}, 3, TimeUnit.MINUTES, () -> MusicPlayerCache.destroyMusicPlayer(guild));
+					}, 3, TimeUnit.MINUTES, () -> MusicManagerCache.destroyMusicPlayer(guild));
 		}
 	}
 

@@ -20,8 +20,6 @@ import de.kittybot.kittybot.objects.StatusManager;
 import de.kittybot.kittybot.objects.command.CommandManager;
 import de.kittybot.kittybot.objects.requests.Requester;
 import de.kittybot.kittybot.utils.Utils;
-import lavalink.client.io.Link;
-import lavalink.client.io.jda.JdaLavalink;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -34,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
-import java.net.URI;
 import java.time.Instant;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -46,7 +43,6 @@ public class KittyBot{
 	private static final AudioPlayerManager AUDIO_PLAYER_MANAGER = new DefaultAudioPlayerManager();
 	private static final ScheduledExecutorService SCHEDULER = Executors.newSingleThreadScheduledExecutor();
 	private static final EventWaiter WAITER = new EventWaiter();
-	private static JdaLavalink lavalink;
 	private static JDA jda;
 
 	public KittyBot(){
@@ -66,11 +62,6 @@ public class KittyBot{
 		LOG.info("Starting...");
 
 		try{
-			lavalink = new JdaLavalink(Config.BOT_ID, 1, this::fuckLavalink);
-			for(var node : Config.LAVALINK_NODES){
-				lavalink.addNode(new URI("ws://" + node.host + ":" + node.port), node.password);
-			}
-
 			AUDIO_PLAYER_MANAGER.registerSourceManager(new YoutubeAudioSourceManager());
 			AUDIO_PLAYER_MANAGER.registerSourceManager(new BandcampAudioSourceManager());
 			AUDIO_PLAYER_MANAGER.registerSourceManager(new VimeoAudioSourceManager());
@@ -105,10 +96,8 @@ public class KittyBot{
 							new OnGuildMessageEvent(),
 							new OnGuildReadyEvent(),
 							new OnGuildVoiceEvent(),
-							new OnInviteEvent(),
-							lavalink
+							new OnInviteEvent()
 					)
-					.setVoiceDispatchInterceptor(lavalink.getVoiceInterceptor())
 					.setActivity(Activity.playing("loading.."))
 					.setStatus(OnlineStatus.DO_NOT_DISTURB)
 					.setEventPool(ThreadingConfig.newScheduler(2, () -> "KittyBot", "Events"), true)
@@ -138,10 +127,6 @@ public class KittyBot{
 		}
 	}
 
-	private JDA fuckLavalink(int id){ // TODO maybe get rid of this fucking shit in our fork
-		return jda;
-	}
-
 	public static void sendToPublicLogChannel(String description){
 		var guild = jda.getGuildById(Config.SUPPORT_GUILD_ID);
 		if(guild == null){
@@ -160,7 +145,6 @@ public class KittyBot{
 	}
 
 	public void close(){
-		lavalink.getLinks().forEach(Link::destroy);
 		jda.shutdown();
 		SQL.close();
 		System.exit(0);
@@ -172,10 +156,6 @@ public class KittyBot{
 
 	public static AudioPlayerManager getAudioPlayerManager(){
 		return AUDIO_PLAYER_MANAGER;
-	}
-
-	public static JdaLavalink getLavalink(){
-		return lavalink;
 	}
 
 	public static JDA getJda(){

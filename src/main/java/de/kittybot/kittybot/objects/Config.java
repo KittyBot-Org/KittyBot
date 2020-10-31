@@ -12,7 +12,6 @@ import java.util.List;
 public class Config{
 
 	public static final List<String> ADMIN_IDS = new ArrayList<>();
-	public static final List<LavalinkNode> LAVALINK_NODES = new ArrayList<>();
 	private static final Logger LOG = LoggerFactory.getLogger(Config.class);
 	public static String BOT_TOKEN;
 	public static String BOT_SECRET;
@@ -69,12 +68,6 @@ public class Config{
 			DB_DB = db.getString("db");
 			DB_USER = db.getString("user");
 			DB_PASSWORD = db.getString("password");
-
-			var lavalinkNodes = json.getArray("lavalink_nodes");
-			for(var i = 0; i < lavalinkNodes.length(); i++){
-				var node = lavalinkNodes.getObject(i);
-				LAVALINK_NODES.add(new LavalinkNode(node.getString("host"), node.getString("port"), node.getString("password")));
-			}
 		}
 		catch(FileNotFoundException e){
 			LOG.error("Error while reading config file", e);

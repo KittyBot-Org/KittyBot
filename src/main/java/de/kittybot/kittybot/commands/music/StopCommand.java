@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.commands.music;
 
-import de.kittybot.kittybot.cache.MusicPlayerCache;
+import de.kittybot.kittybot.cache.MusicManagerCache;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
@@ -19,11 +19,11 @@ public class StopCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		if(MusicPlayerCache.getMusicPlayer(ctx.getGuild()) == null){
+		if(MusicManagerCache.getMusicPlayer(ctx.getGuild()) == null){
 			sendError(ctx, "No active music player found!");
 			return;
 		}
-		MusicPlayerCache.destroyMusicPlayer(ctx.getGuild());
+		MusicManagerCache.destroyMusicPlayer(ctx.getGuild());
 		sendAnswer(ctx, "Successfully disconnected");
 	}
 

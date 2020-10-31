@@ -21,13 +21,6 @@
         "user": "your database user",
         "password": "your database password"
     },
-    "lavalink_nodes": [
-        {
-            "host": "your lavalink host",
-            "port": "your lavalink port",
-            "password": "your lavalink password"
-        }
-    ],
     "admin_ids": [
         "multiple",
         "user",

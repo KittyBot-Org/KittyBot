@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.utils;
 
-import de.kittybot.kittybot.cache.MusicPlayerCache;
+import de.kittybot.kittybot.cache.MusicManagerCache;
 import de.kittybot.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.Permission;
 
@@ -16,26 +16,33 @@ public class MusicUtils{
 		if(voiceState == null){
 			return;
 		}
-		if(!voiceState.inVoiceChannel()){
+		final var voiceChannel = voiceState.getChannel();
+		if(voiceChannel == null){
 			sendError(ctx, "To use this command you need to be connected to a voice channel");
 			return;
 		}
-		final var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
-		if(musicPlayer == null){
+		final var guild = ctx.getGuild();
+		final var musicManager = MusicManagerCache.getMusicManager(guild);
+		if(musicManager == null){
 			sendError(ctx, "No active music player found!");
 			return;
 		}
-		final var player = musicPlayer.getPlayer();
-		if(!player.getLink().getChannel().equals(voiceState.getChannel().getId())){
+		final var connectedChannel = guild.getAudioManager().getConnectedChannel();
+		if(connectedChannel == null){ // someone disconnected the bot for some fucking reason
+			MusicManagerCache.destroyMusicManager(guild);
+			return;
+		}
+		if(!connectedChannel.getId().equals(voiceChannel.getId())){
 			sendError(ctx, "To use this command you need to be connected to the same voice channel as me");
 			return;
 		}
+		final var player = musicManager.getAudioPlayer();
 		final var playing = player.getPlayingTrack();
 		if(playing == null){
 			sendError(ctx, "There is currently no song playing");
 			return;
 		}
-		if(!musicPlayer.getRequesterId().equals(ctx.getUser().getId())){
+		if(!musicManager.getRequesterId().equals(ctx.getUser().getId())){
 			sendError(ctx, "You have to be the requester of the song to control it");
 			return;
 		}
@@ -54,36 +61,33 @@ public class MusicUtils{
 		}
 		toSeek *= 1000;
 		final var duration = playing.getDuration();
-		final var position = player.getTrackPosition();
+		final var position = playing.getPosition();
 		switch(ctx.getCommand()){
 			case "goto": // TODO this is a temp solution to also check aliases
 			case "seek":
-				if(toSeek >= duration && !musicPlayer.nextTrack()){
-					player.stopTrack();
+				if(toSeek >= duration){
+					musicManager.nextTrack();
+					return;
 				}
-				player.seekTo(toSeek);
+				playing.setPosition(toSeek);
 				break;
 			case "forward":
 				if(position + toSeek >= duration){
-					if(!musicPlayer.nextTrack()){
-						player.stopTrack();
-					}
+					musicManager.nextTrack();
 					break;
 				}
-				player.seekTo(position + toSeek);
+				playing.setPosition(position + toSeek);
 				break;
 			case "rewind":
 				if(position - toSeek <= 0){
-					if(!musicPlayer.previousTrack()){
-						player.stopTrack();
-					}
+					musicManager.previousTrack();
 					break;
 				}
-				player.seekTo(position - toSeek);
+				playing.setPosition(position - toSeek);
 				break;
 			default:
 		}
-		musicPlayer.updateMusicControlMessage(ctx.getChannel());
+		musicManager.updateMusicControlMessage(ctx.getChannel());
 	}
 
 	public static ConnectFailureReason checkVoiceChannel(final CommandContext ctx){
