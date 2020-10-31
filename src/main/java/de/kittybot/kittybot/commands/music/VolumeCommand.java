@@ -20,33 +20,24 @@ public class VolumeCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		var voiceState = ctx.getMember().getVoiceState();
-		if(voiceState == null || !voiceState.inVoiceChannel()){
-			sendError(ctx, "To use this command you need to be connected to a voice channel");
+		final var commandFailure = MusicUtils.checkUserChannelState(ctx);
+		if(commandFailure != null){
+			sendError(ctx, "You can't change the volume as " + commandFailure.getReason());
 			return;
 		}
-		var musicPlayer = MusicManagerCache.getMusicPlayer(ctx.getGuild());
-		if(musicPlayer == null){
-			sendError(ctx, "No active music player found");
-			return;
-		}
-		var player = musicPlayer.getPlayer();
-		var channel = player.getLink().getChannel();
-		if(channel == null || voiceState.getChannel() == null || !channel.equals(voiceState.getChannel().getId())){
-			sendError(ctx, "To use this command you need to be connected to the same voice channel as me");
-			return;
-		}
+		final var musicManager = MusicManagerCache.getMusicManager(ctx.getGuild());
 		var args = ctx.getArgs();
 		if(args.length == 0){
 			sendError(ctx, "Please provide the volume to set");
 			return;
 		}
+		final var channel = ctx.getChannel();
 		if(args[0].equalsIgnoreCase("reset")){
-			player.setVolume(100);
-			musicPlayer.updateMusicControlMessage(ctx.getChannel());
+			musicManager.setVolume(100);
+			musicManager.updateMusicControlMessage(channel);
 			return;
 		}
-		var oldVolume = player.getVolume();
+		var oldVolume = musicManager.getVolume();
 		var newVolume = 0;
 		try{
 			newVolume = MusicUtils.parseVolume(args[0], oldVolume);
@@ -58,8 +49,8 @@ public class VolumeCommand extends ACommand{
 		if(newVolume == oldVolume){
 			return;
 		}
-		player.setVolume(newVolume);
-		musicPlayer.updateMusicControlMessage(ctx.getChannel());
+		musicManager.setVolume(newVolume);
+		musicManager.updateMusicControlMessage(channel);
 	}
 
 }

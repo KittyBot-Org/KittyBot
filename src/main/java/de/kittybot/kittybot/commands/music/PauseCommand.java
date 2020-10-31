@@ -19,24 +19,20 @@ public class PauseCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		var musicPlayer = MusicManagerCache.getMusicPlayer(ctx.getGuild());
-		if(musicPlayer == null){
+		var musicManager = MusicManagerCache.getMusicManager(ctx.getGuild());
+		if(musicManager == null){
 			sendError(ctx, "No active music player found");
 			return;
 		}
-		var player = musicPlayer.getPlayer();
-		var playing = player.getPlayingTrack();
-		if(playing == null){
+		if(musicManager.getPlayingTrack() == null){
 			sendError(ctx, "There is currently no song playing");
 			return;
 		}
-		if(!musicPlayer.getRequesterId().equals(ctx.getUser().getId())){
+		if(!musicManager.getRequesterId().equals(ctx.getUser().getId())){
 			sendError(ctx, "You have to be the requester of the song to control it");
 			return;
 		}
-		var paused = !player.isPaused();
-		player.setPaused(paused);
-		sendSuccess(ctx, "Track " + (paused ? "paused" : "resumed"));
+		sendSuccess(ctx, "Track " + (musicManager.pause() ? "paused" : "resumed"));
 	}
 
 }

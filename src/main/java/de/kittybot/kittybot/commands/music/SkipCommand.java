@@ -4,7 +4,6 @@ import de.kittybot.kittybot.cache.MusicManagerCache;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
-import de.kittybot.kittybot.utils.AudioUtils;
 
 public class SkipCommand extends ACommand{
 
@@ -20,22 +19,21 @@ public class SkipCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		var musicPlayer = MusicManagerCache.getMusicPlayer(ctx.getGuild());
-		if(musicPlayer == null){
+		final var musicManager = MusicManagerCache.getMusicManager(ctx.getGuild());
+		if(musicManager == null){
 			sendError(ctx, "No active music player found!");
 			return;
 		}
-		final var playing = musicPlayer.getPlayer().getPlayingTrack();
+		final var playing = musicManager.getPlayingTrack();
 		if(playing == null){
 			sendError(ctx, "There is currently no song playing");
 			return;
 		}
-		if(!musicPlayer.getRequesterId().equals(ctx.getUser().getId())){
+		if(!musicManager.getRequesterId().equals(ctx.getUser().getId())){
 			sendError(ctx, "You have to be the requester of the song to control it");
 			return;
 		}
-		musicPlayer.nextTrack();
-		AudioUtils.reactSuccess(ctx);
+		musicManager.nextTrack();
 	}
 
 }

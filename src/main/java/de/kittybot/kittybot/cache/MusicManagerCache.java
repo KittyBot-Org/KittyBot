@@ -20,12 +20,11 @@ public class MusicManagerCache{
 		final var guildId = guild.getId();
 		var musicManager = MUSIC_MANAGERS.get(guildId);
 		if(musicManager == null && createIfAbsent){
-			final var newPlayer = new GuildMusicManager();
-			musicManager = newPlayer;
 			final var audioManager = guild.getAudioManager();
+			musicManager = new GuildMusicManager();
 			audioManager.setSendingHandler(musicManager.getSendHandler());
 			audioManager.setSelfDeafened(true);
-			MUSIC_MANAGERS.put(guildId, newPlayer);
+			MUSIC_MANAGERS.put(guildId, musicManager);
 		}
 		return musicManager;
 	}
@@ -35,7 +34,7 @@ public class MusicManagerCache{
 		if(musicManager == null){
 			return;
 		}
-		musicManager.getAudioPlayer().destroy();
+		musicManager.destroyPlayer();
 		ReactiveMessageCache.removeReactiveMessage(guild, musicManager.getControllerMessageId());
 		MUSIC_MANAGERS.remove(guild.getId());
 		guild.getAudioManager().closeAudioConnection();

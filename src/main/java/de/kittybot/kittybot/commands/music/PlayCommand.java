@@ -2,10 +2,11 @@ package de.kittybot.kittybot.commands.music;
 
 import de.kittybot.kittybot.cache.MusicManagerCache;
 import de.kittybot.kittybot.objects.Emojis;
-import de.kittybot.kittybot.objects.ReactiveMessage;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
+import de.kittybot.kittybot.objects.data.ReactiveMessage;
+import de.kittybot.kittybot.objects.music.AudioLoader;
 import de.kittybot.kittybot.utils.MusicUtils;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
@@ -24,7 +25,8 @@ public class PlayCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		if(ctx.getArgs().length == 0){
+		final var args = ctx.getArgs();
+		if(args.length == 0){
 			sendError(ctx, "Please provide a link or search term");
 			return;
 		}
@@ -33,8 +35,7 @@ public class PlayCommand extends ACommand{
 			sendError(ctx, "I can't play music as " + connectionFailure.getReason());
 			return;
 		}
-		final var musicManager = MusicManagerCache.getMusicManager(ctx.getGuild(), true);
-		musicManager.loadItem(this, ctx);
+		AudioLoader.loadQuery(String.join(" ", args), ctx.getUser().getId(), ctx.getGuild(), ctx.getChannel());
 	}
 
 	@Override
@@ -64,10 +65,10 @@ public class PlayCommand extends ACommand{
 					musicManager.shuffle();
 					break;
 				case Emojis.VOLUME_DOWN:
-					musicManager.changeVolume(-VOLUME_STEP);
+					musicManager.setVolume(-VOLUME_STEP);
 					break;
 				case Emojis.VOLUME_UP:
-					musicManager.changeVolume(VOLUME_STEP);
+					musicManager.setVolume(VOLUME_STEP);
 					break;
 				case Emojis.X:
 					MusicManagerCache.destroyMusicManager(event.getGuild());

@@ -5,6 +5,7 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import de.kittybot.kittybot.KittyBot;
+import de.kittybot.kittybot.utils.MusicUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,13 +47,28 @@ public class GuildMusicManager extends AudioEventAdapter{
 
 	// playback stuff
 
+	public boolean pause(){
+		final var paused = !audioPlayer.isPaused();
+		audioPlayer.setPaused(paused);
+		return paused;
+	}
+
+	public void setVolume(final int volume){
+		var oldVolume = getVolume();
+		var newVolume = MusicUtils.parseVolume(volume, oldVolume);
+		if(newVolume == oldVolume){
+			return;
+		}
+		audioPlayer.setVolume(newVolume);
+	}
+
 	public void nextTrack(){
 		final var nextTrack = queue.poll();
 		if(nextTrack == null){
 			audioPlayer.stopTrack();
 			return;
 		}
-		audioPlayer.startTrack(nextTrack, false);
+		audioPlayer.playTrack(nextTrack);
 	}
 
 	public void previousTrack(){
@@ -61,7 +77,7 @@ public class GuildMusicManager extends AudioEventAdapter{
 			audioPlayer.stopTrack();
 			return;
 		}
-		audioPlayer.startTrack(previousTrack, false);
+		audioPlayer.playTrack(previousTrack);
 	}
 
 	public void shuffle(){
@@ -91,19 +107,33 @@ public class GuildMusicManager extends AudioEventAdapter{
 		return this.controllerMessageId;
 	}
 
+	// AudioPlayer wrapper methods
+
+	public boolean startTrack(final AudioTrack track, final boolean noInterrupt){
+		return audioPlayer.startTrack(track, noInterrupt);
+	}
+
+	public AudioTrack getPlayingTrack(){
+		return audioPlayer.getPlayingTrack();
+	}
+
+	public int getVolume(){
+		return audioPlayer.getVolume();
+	}
+
+	public void destroyPlayer(){
+		audioPlayer.destroy();
+	}
+
 	// other methods
 
 	public String getRequesterId(){
-		final var playing = audioPlayer.getPlayingTrack();
+		final var playing = getPlayingTrack();
 		return playing == null ? null : playing.getUserData(String.class);
 	}
 
 	public void setControllerChannelId(final String channelId){
 		this.controllerChannelId = channelId;
-	}
-
-	public AudioPlayer getAudioPlayer(){
-		return this.audioPlayer;
 	}
 
 	public AudioPlayerSendHandler getSendHandler(){

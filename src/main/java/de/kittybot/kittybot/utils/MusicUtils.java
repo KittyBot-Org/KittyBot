@@ -12,32 +12,13 @@ public class MusicUtils{
 	private MusicUtils(){}
 
 	public static void seekTrack(final CommandContext ctx){
-		final var voiceState = ctx.getMember().getVoiceState();
-		if(voiceState == null){
+		final var commandFailure = checkUserChannelState(ctx);
+		if(commandFailure != null){
+			sendError(ctx, "You can't seek as " + commandFailure.getReason());
 			return;
 		}
-		final var voiceChannel = voiceState.getChannel();
-		if(voiceChannel == null){
-			sendError(ctx, "To use this command you need to be connected to a voice channel");
-			return;
-		}
-		final var guild = ctx.getGuild();
-		final var musicManager = MusicManagerCache.getMusicManager(guild);
-		if(musicManager == null){
-			sendError(ctx, "No active music player found!");
-			return;
-		}
-		final var connectedChannel = guild.getAudioManager().getConnectedChannel();
-		if(connectedChannel == null){ // someone disconnected the bot for some fucking reason
-			MusicManagerCache.destroyMusicManager(guild);
-			return;
-		}
-		if(!connectedChannel.getId().equals(voiceChannel.getId())){
-			sendError(ctx, "To use this command you need to be connected to the same voice channel as me");
-			return;
-		}
-		final var player = musicManager.getAudioPlayer();
-		final var playing = player.getPlayingTrack();
+		final var musicManager = MusicManagerCache.getMusicManager(ctx.getGuild());
+		final var playing = musicManager.getPlayingTrack();
 		if(playing == null){
 			sendError(ctx, "There is currently no song playing");
 			return;
@@ -113,6 +94,30 @@ public class MusicUtils{
 		return null;
 	}
 
+	public static AudioCommandFailureReason checkUserChannelState(final CommandContext ctx){
+		final var guild = ctx.getGuild();
+		if(MusicManagerCache.getMusicManager(guild) == null){
+			return AudioCommandFailureReason.NO_PLAYER;
+		}
+		final var connectedChannel = guild.getAudioManager().getConnectedChannel();
+		if(connectedChannel == null){ // someone disconnected the bot for some fucking reason
+			MusicManagerCache.destroyMusicManager(guild);
+			return AudioCommandFailureReason.NO_PLAYER;
+		}
+		final var voiceState = ctx.getMember().getVoiceState();
+		if(voiceState == null){
+			return AudioCommandFailureReason.NO_CHANNEL;
+		}
+		final var voiceChannel = voiceState.getChannel();
+		if(voiceChannel == null){
+			return AudioCommandFailureReason.NO_CHANNEL;
+		}
+		if(!connectedChannel.getId().equals(voiceChannel.getId())){
+			return AudioCommandFailureReason.DIFFERENT_CHANNEL;
+		}
+		return null;
+	}
+
 	public static int parseVolume(final int volume, final int oldVolume){
 		return volume < 0 ? Math.max(oldVolume + volume, 0) // a + (-b) = -
 				: Math.min(oldVolume + volume, 200);
@@ -140,6 +145,22 @@ public class MusicUtils{
 
 		public String getReason(){
 			return reason;
+		}
+	}
+
+	public enum AudioCommandFailureReason{
+		NO_CHANNEL("you're not connected to any channel"),
+		NO_PLAYER("no active music player was found"),
+		DIFFERENT_CHANNEL("to use this command you need to be connected to the same voice channel as me");
+
+		private final String reason;
+
+		AudioCommandFailureReason(final String reason){
+			this.reason = reason;
+		}
+
+		public String getReason(){
+			return this.reason;
 		}
 	}
 
