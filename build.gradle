@@ -28,7 +28,7 @@ repositories {
 dependencies {
     // discord/jda related
     implementation 'net.dv8tion:JDA:4.2.0_214'
-    implementation 'com.jagrosh:jda-utilities:3.0.4'
+    implementation 'com.jagrosh:jda-utilities:3.0.5'
 
     // audio
     implementation("com.github.KittyBot-Org:Lavalink-Client:f7842dfdb4") {
