@@ -23,7 +23,6 @@ public class GuildCache{
 		var userGuilds = USER_GUILD_CACHE.get(userId);
 		if(userGuilds == null || userGuilds.isEmpty()){
 			var guildIds = KittyBot.getJda().getGuildCache().applyStream(guildStream -> guildStream.map(Guild::getId).collect(Collectors.toList()));
-			//noinspection ConstantConditions shut the fuck up IJ
 			var retrievedGuilds = WebService.getOAuth2Client().getGuilds(dashboardSession)
 					.complete()
 					.stream()
