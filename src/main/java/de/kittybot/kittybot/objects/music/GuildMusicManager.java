@@ -15,16 +15,13 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class GuildMusicManager extends AudioEventAdapter{
+
 	// audio player that controls the playback
 	private final AudioPlayer audioPlayer;
 
 	// queue, history
 	private final Queue<AudioTrack> queue;
 	private final Deque<AudioTrack> history;
-
-	// controller channel and message id
-	private String controllerChannelId;
-	private String controllerMessageId;
 
 	public GuildMusicManager(){
 		this.audioPlayer = KittyBot.getAudioPlayerManager().createPlayer();
@@ -97,16 +94,6 @@ public class GuildMusicManager extends AudioEventAdapter{
 		return this.history;
 	}
 
-	// controller getters
-
-	public String getControllerChannelId(){
-		return this.controllerChannelId;
-	}
-
-	public String getControllerMessageId(){
-		return this.controllerMessageId;
-	}
-
 	// AudioPlayer wrapper methods
 
 	public boolean startTrack(final AudioTrack track, final boolean noInterrupt){
@@ -130,10 +117,6 @@ public class GuildMusicManager extends AudioEventAdapter{
 	public String getRequesterId(){
 		final var playing = getPlayingTrack();
 		return playing == null ? null : playing.getUserData(String.class);
-	}
-
-	public void setControllerChannelId(final String channelId){
-		this.controllerChannelId = channelId;
 	}
 
 	public AudioPlayerSendHandler getSendHandler(){

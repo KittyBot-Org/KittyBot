@@ -55,20 +55,19 @@ public class MusicUtils{
 			case "forward":
 				if(position + toSeek >= duration){
 					musicManager.nextTrack();
-					break;
+					return;
 				}
 				playing.setPosition(position + toSeek);
 				break;
 			case "rewind":
 				if(position - toSeek <= 0){
 					musicManager.previousTrack();
-					break;
+					return;
 				}
 				playing.setPosition(position - toSeek);
 				break;
 			default:
 		}
-		musicManager.updateMusicControlMessage(ctx.getChannel());
 	}
 
 	public static ConnectFailureReason checkVoiceChannel(final CommandContext ctx){

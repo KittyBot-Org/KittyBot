@@ -35,7 +35,6 @@ public class MusicManagerCache{
 			return;
 		}
 		musicManager.destroyPlayer();
-		ReactiveMessageCache.removeReactiveMessage(guild, musicManager.getControllerMessageId());
 		MUSIC_MANAGERS.remove(guild.getId());
 		guild.getAudioManager().closeAudioConnection();
 		guild.getAudioManager().setSendingHandler(null);

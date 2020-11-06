@@ -20,18 +20,13 @@ public class HistoryCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		var voiceState = ctx.getMember().getVoiceState();
-		if(voiceState != null && !voiceState.inVoiceChannel()){
-			sendError(ctx, "To use this command you need to be connected to a voice channel");
-			return;
-		}
-		var musicPlayer = MusicManagerCache.getMusicPlayer(ctx.getGuild());
-		if(musicPlayer == null){
+		var musicManager = MusicManagerCache.getMusicManager(ctx.getGuild());
+		if(musicManager == null){
 			sendError(ctx, "No active music player found");
 			return;
 		}
 		if(ctx.getArgs().length == 0){
-			var history = musicPlayer.getHistory();
+			var history = musicManager.getHistory();
 			if(history.isEmpty()){
 				sendSuccess(ctx, "There are currently no tracks in history");
 				return;

@@ -5,27 +5,28 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.kittybot.kittybot.KittyBot;
-import de.kittybot.kittybot.cache.GuildSettingsCache;
 import de.kittybot.kittybot.cache.MusicManagerCache;
-import de.kittybot.kittybot.utils.Utils;
-import net.dv8tion.jda.api.entities.Guild;
+import de.kittybot.kittybot.objects.command.CommandContext;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.concurrent.Future;
+import java.util.regex.Pattern;
 
 public class AudioLoader{
 
+	public static final Pattern YOUTUBE_URL_PATTERN = Pattern.compile("^(https?://)?((www|m)\\.)?youtu(\\.be|be\\.com)/(playlist\\?list=([a-zA-Z0-9-_]+))?((watch\\?v=)?([a-zA-Z0-9-_]{11})(&list=([a-zA-Z0-9-_]+))?)?");
+
 	private AudioLoader(){}
 
-	public static void loadQuery(final String query, final String requesterId, final Guild guild){
-		final var musicManager = MusicManagerCache.getMusicManager(guild, true);
+	public static Future<Void> loadQuery(final CommandContext ctx){
+		final var musicManager = MusicManagerCache.getMusicManager(ctx.getGuild(), true);
+		var query = String.join(" ", ctx.getArgs());
+		query = YOUTUBE_URL_PATTERN.matcher(query).matches() ? query : "ytsearch:" + query;
 
-		KittyBot.getAudioPlayerManager().loadItemOrdered(musicManager, query, new AudioLoadResultHandler(){
+		return KittyBot.getAudioPlayerManager().loadItemOrdered(musicManager, query, new AudioLoadResultHandler(){
 			@Override
 			public void trackLoaded(final AudioTrack track){
-				track.setUserData(requesterId);
+				track.setUserData(ctx.getUser().getId());
 				queue(track, musicManager);
-				sendQueuedTracks(Collections.singletonList(track), guild);
 			}
 
 			@Override
@@ -49,24 +50,5 @@ public class AudioLoader{
 		if(!musicManager.startTrack(track, true)){
 			musicManager.getQueue().offer(track);
 		}
-	}
-
-	private static void connectToVoiceChannel(final String requesterId, final Guild guild){
-		final var member =
-	}
-
-	private static void sendQueuedTracks(final List<AudioTrack> tracks, final Guild guild){
-		final var size = tracks.size();
-		final var text = "Queued " + (size == 1 ? Utils.formatTrackTitle(tracks.get(0)) : "**" + size + "** tracks.\n\nType `" + GuildSettingsCache.getCommandPrefix(guild.getId()) + "queue` to see the queue.");
-		final var musicManager = MusicManagerCache.getMusicManager(guild);
-		final var controllerChannelId = musicManager.getControllerChannelId();
-		if(controllerChannelId == null){
-			return;
-		}
-		final var channel = guild.getTextChannelById(controllerChannelId);
-		if(channel == null || !channel.canTalk()){
-			return;
-		}
-		channel.sendMessage(text).queue();
 	}
 }

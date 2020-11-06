@@ -34,7 +34,6 @@ public class VolumeCommand extends ACommand{
 		final var channel = ctx.getChannel();
 		if(args[0].equalsIgnoreCase("reset")){
 			musicManager.setVolume(100);
-			musicManager.updateMusicControlMessage(channel);
 			return;
 		}
 		var oldVolume = musicManager.getVolume();
@@ -50,7 +49,6 @@ public class VolumeCommand extends ACommand{
 			return;
 		}
 		musicManager.setVolume(newVolume);
-		musicManager.updateMusicControlMessage(channel);
 	}
 
 }
