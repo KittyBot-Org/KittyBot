@@ -34,7 +34,7 @@ public class HastebinCommand extends ACommand{
 		attachments.stream().filter(attachment -> !attachment.isImage() && !attachment.isVideo()).forEach(attachment -> {
 			attachment.retrieveInputStream().thenAcceptAsync(inputStream -> {
 				try(inputStream){
-					String text = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
+					var text = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
 					sendSuccess(ctx, maskLink("here is a hastebin", Requester.postToHastebin(text)));
 				}
 				catch(NullPointerException | IOException e){
