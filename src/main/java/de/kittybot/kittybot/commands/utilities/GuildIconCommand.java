@@ -7,9 +7,8 @@ import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.utils.MiscUtil;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 
 public class GuildIconCommand extends ACommand{
@@ -19,7 +18,7 @@ public class GuildIconCommand extends ACommand{
 	public static final String DESCRIPTION = "Gives some quicklinks to guild icons";
 	protected static final String[] ALIASES = {"gicon"};
 	protected static final Category CATEGORY = Category.UTILITIES;
-	private static final String[] sizes = {"128", "256", "512", "1024"};
+	private static final String[] SIZES = {"128", "256", "512", "1024"};
 
 	public GuildIconCommand(){
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
@@ -27,15 +26,14 @@ public class GuildIconCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		var guilds = new ArrayList<Guild>();
+		var guilds = new HashSet<Guild>();
 		for(var arg : ctx.getArgs()){
-			try{
-				var guild = ctx.getJDA().getGuildById(MiscUtil.parseSnowflake(arg));
-				if(guild != null && !guilds.contains(guild)){
-					guilds.add(guild);
-				}
+			if(!Utils.isSnowflake(arg)){
+				continue;
 			}
-			catch(NumberFormatException ignore){
+			var guild = ctx.getJDA().getGuildById(arg);
+			if(guild != null){
+				guilds.add(guild);
 			}
 		}
 		if(guilds.isEmpty()){
@@ -49,12 +47,12 @@ public class GuildIconCommand extends ACommand{
 				stringBuilder.append("No icon set");
 				continue;
 			}
-			for(var size : sizes){
+			for(var size : SIZES){
 				stringBuilder.append(MessageUtils.maskLink(size + "px", guild.getIconUrl() + "?size=" + size)).append(" ");
 			}
 			stringBuilder.append("\n\n");
 		}
-		sendAnswer(ctx, new EmbedBuilder().setTitle(Utils.pluralize("Guild Icon", guilds.size())).setDescription(stringBuilder.toString()));
+		sendSuccess(ctx, new EmbedBuilder().setTitle(Utils.pluralize("Guild Icon", guilds.size())).setDescription(stringBuilder.toString()));
 	}
 
 }

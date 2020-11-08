@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.cache;
 
-import de.kittybot.kittybot.objects.messages.MessageData;
+import de.kittybot.kittybot.objects.data.MessageData;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.time.OffsetDateTime;

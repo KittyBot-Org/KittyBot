@@ -22,11 +22,11 @@ public class MusicUtils{
 		}
 		final var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
 		if(musicPlayer == null){
-			sendError(ctx, "No active music player found!");
+			sendError(ctx, "No active music player found");
 			return;
 		}
 		final var player = musicPlayer.getPlayer();
-		if(!player.getLink().getChannel().equals(voiceState.getChannel().getId())){
+		if(player.getLink().getChannel() == null || voiceState.getChannel() == null || !player.getLink().getChannel().equals(voiceState.getChannel().getId())){
 			sendError(ctx, "To use this command you need to be connected to the same voice channel as me");
 			return;
 		}

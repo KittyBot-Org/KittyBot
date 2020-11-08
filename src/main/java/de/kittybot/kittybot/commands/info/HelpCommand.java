@@ -31,7 +31,7 @@ public class HelpCommand extends ACommand{
 				.addField(Emojis.INVITE + " Invite", Emojis.BLANK + " :small_blue_diamond: Do you want me on your server? Click " + maskLink("here", Config.INVITE_URL) + " to invite me!", false)
 				.addField(":gear: Settings", Emojis.BLANK + " :small_blue_diamond: You can manage all your settings in our " + maskLink("dashboard", Config.ORIGIN_URL + "/guilds") + "!", false)
 				.addField(Emojis.CONSOLE + " Commands", Emojis.BLANK + " :small_blue_diamond: I heard you'd like to see **all my available commands**?\n" + Emojis.BLANK + " " + Emojis.BLANK +
-						" Visit our " + maskLink("online command list", "https://kittybot.de/commands"), false)
+						" Visit our " + maskLink("online command list", Config.ORIGIN_URL + "/commands"), false)
 				.addField(":question: Help", Emojis.BLANK + " :small_blue_diamond: We'd be happy if you could **report bugs or suggest new features**!\n" + Emojis.BLANK + " " + Emojis.BLANK +
 						" Join my " + maskLink("support server", "https://discord.gg/sD3ABd5") + ", " + maskLink("create an issue", "https://github.com/KittyBot-Org/KittyBot/issues/new") +
 						" on my " + Emojis.GITHUB + " " + maskLink("GitHub repository", "https://github.com/KittyBot-Org/KittyBot") + " or message my owner on " + Emojis.TWITTER + " " +

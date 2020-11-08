@@ -4,7 +4,7 @@ import de.kittybot.kittybot.KittyBot;
 import de.kittybot.kittybot.cache.MusicPlayerCache;
 import de.kittybot.kittybot.objects.Emojis;
 import de.kittybot.kittybot.objects.MusicPlayer;
-import de.kittybot.kittybot.objects.ReactiveMessage;
+import de.kittybot.kittybot.objects.data.ReactiveMessage;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;

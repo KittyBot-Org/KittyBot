@@ -63,8 +63,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	public void loadItem(ACommand command, CommandContext ctx){
 		this.command = command;
 		this.ctx = ctx;
-		String argStr = String.join(" ", ctx.getArgs());
-		final String query = URL_PATTERN.matcher(argStr).matches() ? argStr : "ytsearch:" + argStr;
+		var argStr = String.join(" ", ctx.getArgs());
+		final var query = URL_PATTERN.matcher(argStr).matches() ? argStr : "ytsearch:" + argStr;
 		KittyBot.getAudioPlayerManager().loadItem(query, new AudioLoadResultHandler(){
 
 			@Override
@@ -90,7 +90,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 					queue(track);
 				}
 				else{
-					for(AudioTrack track : playlist.getTracks()){
+					for(var track : playlist.getTracks()){
 						track.setUserData(ctx.getUser().getId());
 						queuedTracks.add(track);
 						queue(track);
@@ -129,7 +129,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	private void sendQueuedTracks(ACommand command, CommandContext ctx, List<AudioTrack> tracks){
 		var message = new StringBuilder("Queued **").append(tracks.size()).append("** ").append(pluralize("track", tracks)).append(".");
 		message.append("\n\nTo see the current queue, type `").append(GuildSettingsCache.getCommandPrefix(ctx.getGuild().getId())).append("queue`.");
-		command.sendAnswer(ctx, message.toString());
+		command.sendSuccess(ctx, message.toString());
 	}
 
 	public void connectToChannel(CommandContext ctx){
@@ -254,7 +254,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	public boolean nextTrack(){
-		AudioTrack track = queue.poll();
+		var track = queue.poll();
 		var channel = KittyBot.getJda().getTextChannelById(channelId);
 		if(track != null){
 			player.playTrack(track);
@@ -287,7 +287,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	public boolean previousTrack(){
-		AudioTrack track = history.poll();
+		var track = history.poll();
 		if(track != null){
 			track.setPosition(0);
 			player.playTrack(track);

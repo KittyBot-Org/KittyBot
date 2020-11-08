@@ -21,7 +21,7 @@ public class PauseCommand extends ACommand{
 	public void run(CommandContext ctx){
 		var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
 		if(musicPlayer == null){
-			sendError(ctx, "No active music player found!");
+			sendError(ctx, "No active music player found");
 			return;
 		}
 		var player = musicPlayer.getPlayer();
@@ -36,7 +36,7 @@ public class PauseCommand extends ACommand{
 		}
 		var paused = !player.isPaused();
 		player.setPaused(paused);
-		sendAnswer(ctx, "Track " + (paused ? "paused" : "resumed"));
+		sendSuccess(ctx, "Track " + (paused ? "paused" : "resumed"));
 	}
 
 }

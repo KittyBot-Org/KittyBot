@@ -21,11 +21,13 @@ public class PingCommand extends ACommand{
 	@Override
 	public void run(CommandContext ctx){
 		var jda = ctx.getJDA();
-		sendAnswer(ctx, new EmbedBuilder()
-			                .setAuthor("KittyBot Ping", Config.ORIGIN_URL, jda.getSelfUser().getEffectiveAvatarUrl())
+		jda.getRestPing().queue(ping ->
+				sendSuccess(ctx, new EmbedBuilder()
+						.setAuthor("KittyBot Ping", Config.ORIGIN_URL, jda.getSelfUser().getEffectiveAvatarUrl())
 
-			                .addField("Gateway Ping:", jda.getGatewayPing() + "ms", false)
-			                .addField("Rest Ping:", jda.getRestPing().complete() + "ms", false)
+						.addField("Gateway Ping:", jda.getGatewayPing() + "ms", false)
+						.addField("Rest Ping:", ping + "ms", false)
+				)
 		);
 	}
 

@@ -1,6 +1,5 @@
 package de.kittybot.kittybot.commands.music;
 
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.kittybot.kittybot.cache.MusicPlayerCache;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
@@ -28,13 +27,13 @@ public class HistoryCommand extends ACommand{
 		}
 		var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
 		if(musicPlayer == null){
-			sendError(ctx, "No active music player found!");
+			sendError(ctx, "No active music player found");
 			return;
 		}
 		if(ctx.getArgs().length == 0){
 			var history = musicPlayer.getHistory();
 			if(history.isEmpty()){
-				sendAnswer(ctx, "There are currently no tracks in history");
+				sendSuccess(ctx, "There are currently no tracks in history");
 				return;
 			}
 			var message = new StringBuilder("Currently **").append(history.size())
@@ -43,10 +42,10 @@ public class HistoryCommand extends ACommand{
 					.append(" ")
 					.append(history.size() > 1 ? "are" : "is")
 					.append(" in the history:\n");
-			for(AudioTrack track : history){
+			for(var track : history){
 				message.append(Utils.formatTrackTitle(track)).append(" ").append(Utils.formatDuration(track.getDuration())).append("\n");
 			}
-			sendAnswer(ctx, message.toString());
+			sendSuccess(ctx, message.toString());
 		}
 	}
 

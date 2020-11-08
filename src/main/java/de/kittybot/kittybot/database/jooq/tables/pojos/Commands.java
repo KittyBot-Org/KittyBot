@@ -4,10 +4,10 @@
 package de.kittybot.kittybot.database.jooq.tables.pojos;
 
 
-import org.jooq.types.YearToSecond;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import org.jooq.types.YearToSecond;
 
 
 /**
@@ -18,57 +18,24 @@ public class Commands implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final String        messageId;
-    private final String        guildId;
-    private final String        userId;
     private final String        command;
     private final YearToSecond  processingTime;
     private final LocalDateTime time;
 
     public Commands(Commands value) {
-        this.messageId = value.messageId;
-        this.guildId = value.guildId;
-        this.userId = value.userId;
         this.command = value.command;
         this.processingTime = value.processingTime;
         this.time = value.time;
     }
 
     public Commands(
-        String        messageId,
-        String        guildId,
-        String        userId,
         String        command,
         YearToSecond  processingTime,
         LocalDateTime time
     ) {
-        this.messageId = messageId;
-        this.guildId = guildId;
-        this.userId = userId;
         this.command = command;
         this.processingTime = processingTime;
         this.time = time;
-    }
-
-    /**
-     * Getter for <code>public.commands.message_id</code>.
-     */
-    public String getMessageId() {
-        return this.messageId;
-    }
-
-    /**
-     * Getter for <code>public.commands.guild_id</code>.
-     */
-    public String getGuildId() {
-        return this.guildId;
-    }
-
-    /**
-     * Getter for <code>public.commands.user_id</code>.
-     */
-    public String getUserId() {
-        return this.userId;
     }
 
     /**
@@ -96,10 +63,7 @@ public class Commands implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("Commands (");
 
-        sb.append(messageId);
-        sb.append(", ").append(guildId);
-        sb.append(", ").append(userId);
-        sb.append(", ").append(command);
+        sb.append(command);
         sb.append(", ").append(processingTime);
         sb.append(", ").append(time);
 

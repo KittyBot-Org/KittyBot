@@ -24,10 +24,10 @@ public class UptimeCommand extends ACommand{
 	@Override
 	public void run(CommandContext ctx){
 		var jda = ctx.getJDA();
-		sendAnswer(ctx, new EmbedBuilder()
-			                .setAuthor("KittyBot Uptime", Config.ORIGIN_URL, jda.getSelfUser().getEffectiveAvatarUrl())
+		sendSuccess(ctx, new EmbedBuilder()
+				.setAuthor("KittyBot Uptime", Config.ORIGIN_URL, jda.getSelfUser().getEffectiveAvatarUrl())
 
-			                .addField("Uptime:", Utils.formatDurationDHMS(ManagementFactory.getRuntimeMXBean().getUptime()), false)
+				.addField("Uptime:", Utils.formatDurationDHMS(ManagementFactory.getRuntimeMXBean().getUptime()), false)
 		);
 	}
 

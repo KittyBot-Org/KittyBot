@@ -21,7 +21,7 @@ public class ShuffleCommand extends ACommand{
 	public void run(CommandContext ctx){
 		var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
 		if(musicPlayer == null){
-			sendError(ctx, "No active music player found!");
+			sendError(ctx, "No active music player found");
 			return;
 		}
 		if(musicPlayer.getQueue().isEmpty()){
@@ -29,7 +29,7 @@ public class ShuffleCommand extends ACommand{
 			return;
 		}
 		musicPlayer.shuffle();
-		sendAnswer(ctx, "Queue shuffled");
+		sendSuccess(ctx, "Queue shuffled");
 	}
 
 }

@@ -8,36 +8,26 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.utils.MiscUtil;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class Utils{
 
-	private static final String CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
 	private Utils(){}
 
-	public static String generate(int length){
-		StringBuilder sb = new StringBuilder(length);
-		for(var i = 0; i < length; i++){
-			sb.append(CHARS.charAt(ThreadLocalRandom.current().nextInt(CHARS.length())));
-		}
-		return sb.toString();
-	}
-
 	public static boolean isEnable(String string){
-		return string.equalsIgnoreCase("enable")||string.equalsIgnoreCase("true")||string.equalsIgnoreCase("on")||string.equalsIgnoreCase("an");
+		return string.equalsIgnoreCase("enable") || string.equalsIgnoreCase("true") || string.equalsIgnoreCase("on") || string.equalsIgnoreCase("an");
 	}
 
 	public static boolean isDisable(String string){
-		return string.equalsIgnoreCase("disable")||string.equalsIgnoreCase("false")||string.equalsIgnoreCase("off")||string.equalsIgnoreCase("aus");
+		return string.equalsIgnoreCase("disable") || string.equalsIgnoreCase("false") || string.equalsIgnoreCase("off") || string.equalsIgnoreCase("aus");
 	}
 
 	public static boolean isHelp(String string){
-		return string.equalsIgnoreCase("?")||string.equalsIgnoreCase("help")||string.equalsIgnoreCase("hilfe");
+		return string.equalsIgnoreCase("?") || string.equalsIgnoreCase("help") || string.equalsIgnoreCase("hilfe");
 	}
 
 	public static Set<String> toSet(List<Role> roles){
@@ -46,8 +36,8 @@ public class Utils{
 
 	public static Map<String, String> toMap(List<Role> roles, List<Emote> emotes){
 		Map<String, String> map = new HashMap<>();
-		int i = 0;
-		for(Role role : roles){
+		var i = 0;
+		for(var role : roles){
 			if(emotes.size() <= i){
 				break;
 			}
@@ -57,8 +47,18 @@ public class Utils{
 		return map;
 	}
 
+	public static boolean isSnowflake(String id){
+		try{
+			MiscUtil.parseSnowflake(id);
+			return true;
+		}
+		catch(NumberFormatException ignored){
+			return false;
+		}
+	}
+
 	public static String formatDuration(long length){
-		Duration duration = Duration.ofMillis(length);
+		var duration = Duration.ofMillis(length);
 		var seconds = duration.toSecondsPart();
 		return String.format("%d:%s", duration.toMinutes(), seconds > 9 ? seconds : "0" + seconds);
 	}
@@ -66,7 +66,7 @@ public class Utils{
 	public static String formatDurationDHMS(long length){
 		Duration duration = Duration.ofMillis(length);
 		return String.format(
-			"%sd %s:%s:%s", duration.toDays(), fTime(duration.toHoursPart()), fTime(duration.toMinutesPart()), fTime(duration.toSecondsPart()));
+				"%sd %s:%s:%s", duration.toDays(), fTime(duration.toHoursPart()), fTime(duration.toMinutesPart()), fTime(duration.toSecondsPart()));
 	}
 
 	public static String fTime(int time){

@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.commands.info;
 
+import de.kittybot.kittybot.objects.Config;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
@@ -18,7 +19,7 @@ public class PrivacyCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		sendAnswer(ctx, "You can find our privacy policy here: https://kittybot.de/privacy");
+		sendSuccess(ctx, "You can find our privacy policy here: " + Config.ORIGIN_URL + "/privacy");
 	}
 
 }

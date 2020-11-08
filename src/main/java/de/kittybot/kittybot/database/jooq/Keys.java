@@ -4,13 +4,11 @@
 package de.kittybot.kittybot.database.jooq;
 
 
-import de.kittybot.kittybot.database.jooq.tables.Commands;
 import de.kittybot.kittybot.database.jooq.tables.Guilds;
 import de.kittybot.kittybot.database.jooq.tables.ReactiveMessages;
 import de.kittybot.kittybot.database.jooq.tables.SelfAssignableRoles;
 import de.kittybot.kittybot.database.jooq.tables.Sessions;
 import de.kittybot.kittybot.database.jooq.tables.UserStatistics;
-import de.kittybot.kittybot.database.jooq.tables.records.CommandsRecord;
 import de.kittybot.kittybot.database.jooq.tables.records.GuildsRecord;
 import de.kittybot.kittybot.database.jooq.tables.records.ReactiveMessagesRecord;
 import de.kittybot.kittybot.database.jooq.tables.records.SelfAssignableRolesRecord;
@@ -34,7 +32,6 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<CommandsRecord> COMMANDS_PKEY = Internal.createUniqueKey(Commands.COMMANDS, DSL.name("commands_pkey"), new TableField[] { Commands.COMMANDS.MESSAGE_ID, Commands.COMMANDS.GUILD_ID }, true);
     public static final UniqueKey<GuildsRecord> GUILDS_PKEY = Internal.createUniqueKey(Guilds.GUILDS, DSL.name("guilds_pkey"), new TableField[] { Guilds.GUILDS.GUILD_ID }, true);
     public static final UniqueKey<ReactiveMessagesRecord> REACTIVE_MESSAGES_PKEY = Internal.createUniqueKey(ReactiveMessages.REACTIVE_MESSAGES, DSL.name("reactive_messages_pkey"), new TableField[] { ReactiveMessages.REACTIVE_MESSAGES.MESSAGE_ID, ReactiveMessages.REACTIVE_MESSAGES.USER_ID, ReactiveMessages.REACTIVE_MESSAGES.GUILD_ID }, true);
     public static final UniqueKey<SelfAssignableRolesRecord> SELF_ASSIGNABLE_ROLES_PKEY = Internal.createUniqueKey(SelfAssignableRoles.SELF_ASSIGNABLE_ROLES, DSL.name("self_assignable_roles_pkey"), new TableField[] { SelfAssignableRoles.SELF_ASSIGNABLE_ROLES.ROLE_ID, SelfAssignableRoles.SELF_ASSIGNABLE_ROLES.GUILD_ID }, true);

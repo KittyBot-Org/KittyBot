@@ -2,7 +2,7 @@ package de.kittybot.kittybot.cache;
 
 import de.kittybot.kittybot.KittyBot;
 import de.kittybot.kittybot.WebService;
-import de.kittybot.kittybot.objects.guilds.GuildData;
+import de.kittybot.kittybot.objects.data.GuildData;
 import de.kittybot.kittybot.objects.session.DashboardSession;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -23,12 +23,11 @@ public class GuildCache{
 		var userGuilds = USER_GUILD_CACHE.get(userId);
 		if(userGuilds == null || userGuilds.isEmpty()){
 			var guildIds = KittyBot.getJda().getGuildCache().applyStream(guildStream -> guildStream.map(Guild::getId).collect(Collectors.toList()));
-			//noinspection ConstantConditions shut the fuck up IJ
 			var retrievedGuilds = WebService.getOAuth2Client().getGuilds(dashboardSession)
 					.complete()
 					.stream()
 					.filter(guild -> guildIds.contains(guild.getId())) // only collect guilds which kitty is in as we get a list of all guilds the user is in
-					.filter(guild -> guild.isOwner() || guild.getPermissions().contains(Permission.ADMINISTRATOR))
+					.filter(guild -> guild.hasPermission(Permission.ADMINISTRATOR))
 					.map(guild -> new GuildData(guild.getId(), guild.getName(), guild.getIconUrl()))
 					.sorted(Comparator.comparing(GuildData::getName, String.CASE_INSENSITIVE_ORDER))
 					.collect(Collectors.toList());
