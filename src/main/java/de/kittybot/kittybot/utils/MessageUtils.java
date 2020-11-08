@@ -99,21 +99,21 @@ public class MessageUtils{
 			if(!settings.areJoinMessagesEnabled()){
 				return;
 			}
-			template = String.format(template, "join");
+			template = String.format(template, "join", "join");
 			message = generateJoinMessage(settings.getJoinMessage(), ((GenericGuildMemberEvent) event).getUser(), InviteCache.getUsedInvite(guild));
 		}
 		else if(event instanceof GuildMemberRemoveEvent){
 			if(!settings.areLeaveMessagesEnabled()){
 				return;
 			}
-			template = String.format(template, "leave");
+			template = String.format(template, "leave", "leave");
 			message = generateLeaveMessage(settings.getLeaveMessage(), ((GuildMemberRemoveEvent) event).getUser());
 		}
 		else{
 			if(!settings.areBoostMessagesEnabled()){
 				return;
 			}
-			template = String.format(template, "boost");
+			template = String.format(template, "boost", "boost");
 			message = generateBoostMessage(settings.getBoostMessage(), ((GenericGuildMemberEvent) event).getUser());
 		}
 
