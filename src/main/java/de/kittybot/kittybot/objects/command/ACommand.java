@@ -61,8 +61,12 @@ public abstract class ACommand{
 		return this.description;
 	}
 
-	protected String getUsage(){
+	public String getUsage(){
 		return this.usage;
+	}
+
+	public String getRawUsage(){
+		return this.usage.replaceFirst(this.command, "");
 	}
 
 	public Category getCategory(){

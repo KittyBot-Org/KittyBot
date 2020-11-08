@@ -214,7 +214,7 @@ public class WebService{
 			for(var cmd : commandSet){
 				var command = cmd.getValue();
 				if(cat == command.getCategory()){
-					commands.add(DataObject.empty().put("command", command.getCommand()).put("description", command.getDescription()));
+					commands.add(DataObject.empty().put("command", command.getCommand()).put("usage", command.getRawUsage()).put("description", command.getDescription()));
 				}
 			}
 			data.add(DataObject.empty().put("name", cat.getFriendlyName()).put("emote_url", cat.getEmoteUrl()).put("commands", commands));
