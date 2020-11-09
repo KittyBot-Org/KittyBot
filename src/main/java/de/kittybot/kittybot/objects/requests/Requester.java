@@ -1,7 +1,6 @@
 package de.kittybot.kittybot.objects.requests;
 
 import de.kittybot.kittybot.KittyBot;
-import kotlin.text.Charsets;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import okhttp3.MediaType;
