@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 public class Requester{
 
@@ -47,7 +47,7 @@ public class Requester{
 	}
 
 	public static String translateText(final String text, String language){
-		final var url = String.format(API.GOOGLE_TRANSLATE_API.getUrl(), "auto", language, URLEncoder.encode(text, Charset.defaultCharset()));
+		final var url = String.format(API.GOOGLE_TRANSLATE_API.getUrl(), "auto", language, URLEncoder.encode(text, StandardCharsets.UTF_8));
 		REQUEST_BUILDER.url(url);
 		final var json = DataArray.fromJson(executeRequest(REQUEST_BUILDER.build()));
 		return json.getArray(0).getArray(0).getString(0);
