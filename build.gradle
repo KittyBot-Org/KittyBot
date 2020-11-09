@@ -5,7 +5,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'de.kittybot.jooq:gradle-jooq-plugin:5.2.6'
+        classpath 'de.kittybot.jooq:gradle-jooq-plugin:5.2.7'
     }
 }
 
@@ -39,7 +39,7 @@ dependencies {
 
     // database
     implementation 'com.zaxxer:HikariCP:3.4.5'
-    implementation 'org.jooq:jooq:3.14.1'
+    implementation 'org.jooq:jooq:3.14.2'
 
     implementation 'org.postgresql:postgresql:42.2.18'
     jooqGenerator 'org.postgresql:postgresql:42.2.18'
