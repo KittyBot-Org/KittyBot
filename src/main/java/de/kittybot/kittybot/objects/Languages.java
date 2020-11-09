@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.objects;
 
-public enum  Languages{
+public enum Languages{
 
 	Afrikaans("af", "Afrikaans"),
 	Albanian("sq", "Albanian"),
