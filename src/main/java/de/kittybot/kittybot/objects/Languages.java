@@ -1,8 +1,5 @@
 package de.kittybot.kittybot.objects;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public enum  Languages{
 
 	Afrikaans("af", "Afrikaans"),
