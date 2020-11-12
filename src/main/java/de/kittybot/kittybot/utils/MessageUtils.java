@@ -92,18 +92,13 @@ public class MessageUtils{
 			return;
 		}
 		var channel = guild.getTextChannelById(announcementChannelId);
+		var canSend = true;
 		if(channel == null || !channel.canTalk()){
-			event.getJDA().openPrivateChannelById(event.getGuild().getOwnerId())
-					.flatMap(privateChannel -> privateChannel.sendMessage(channel == null ?
-							"Your selected announcement channel is deleted. Please set a new one." :
-							"I lack the permission to send messages to "
-									+ channel.getAsMention()
-									+ "\nYou can disable announcement messages with `options {join/leave/boost}messages off` if you don't like them."))
-					.queue();
-			return;
+			canSend = false;
 		}
 
 		var message = "";
+		var messageType = "";
 		Color color;
 		User user;
 		if(event instanceof GuildMemberJoinEvent){
@@ -112,6 +107,7 @@ public class MessageUtils{
 			}
 			user = ((GenericGuildMemberEvent) event).getUser();
 			message = generateJoinMessage(settings.getJoinMessage(), user, InviteCache.getUsedInvite(guild));
+			messageType = "join";
 			color = Color.GREEN;
 		}
 		else if(event instanceof GuildMemberRemoveEvent){
@@ -120,6 +116,7 @@ public class MessageUtils{
 			}
 			user = ((GuildMemberRemoveEvent) event).getUser();
 			message = generateLeaveMessage(settings.getLeaveMessage(), user);
+			messageType = "leave";
 			color = Color.RED;
 		}
 		else{
@@ -128,15 +125,27 @@ public class MessageUtils{
 			}
 			user = ((GenericGuildMemberEvent) event).getUser();
 			message = generateBoostMessage(settings.getBoostMessage(), user);
+			messageType = "boost";
 			color = Color.YELLOW;
 		}
-		channel.sendMessage(new EmbedBuilder()
-				.setColor(color)
-				.setDescription(message)
-				.setFooter(user.getName(), user.getEffectiveAvatarUrl())
-				.setTimestamp(Instant.now())
-				.build()
-		).queue();
+		if(canSend){
+			channel.sendMessage(new EmbedBuilder()
+					.setColor(color)
+					.setDescription(message)
+					.setFooter(user.getName(), user.getEffectiveAvatarUrl())
+					.setTimestamp(Instant.now())
+					.build()
+			).queue();
+			return;
+		}
+		final String finalMessageType = messageType;
+		event.getJDA().openPrivateChannelById(event.getGuild().getOwnerId())
+				.flatMap(privateChannel -> privateChannel.sendMessageFormat(channel == null ?
+						"Your selected announcement channel is deleted. Please set a new one." :
+						"I lack the permission to send %s messages to " + channel.getAsMention()
+								+ "\nYou can disable announcement messages with `settings %smessage off` if you don't like them.", finalMessageType, finalMessageType)
+				).queue();
+
 	}
 
 	private static String generateBoostMessage(String message, User user){
