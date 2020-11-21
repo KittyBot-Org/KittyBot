@@ -27,7 +27,7 @@ repositories {
 
 dependencies {
     // discord/jda related
-    implementation 'net.dv8tion:JDA:4.2.0_219'
+    implementation 'net.dv8tion:JDA:4.2.0_220'
     implementation 'com.jagrosh:jda-utilities:3.0.5'
 
     // audio
