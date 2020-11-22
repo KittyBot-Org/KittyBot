@@ -4,12 +4,8 @@
 package de.kittybot.kittybot.database.jooq.tables;
 
 
-import de.kittybot.kittybot.database.jooq.Keys;
 import de.kittybot.kittybot.database.jooq.Public;
 import de.kittybot.kittybot.database.jooq.tables.records.UserStatisticsRecord;
-
-import java.util.Arrays;
-import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
@@ -20,7 +16,6 @@ import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
-import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
@@ -128,16 +123,6 @@ public class UserStatistics extends TableImpl<UserStatisticsRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
-    }
-
-    @Override
-    public UniqueKey<UserStatisticsRecord> getPrimaryKey() {
-        return Keys.USER_STATISTICS_PKEY;
-    }
-
-    @Override
-    public List<UniqueKey<UserStatisticsRecord>> getKeys() {
-        return Arrays.<UniqueKey<UserStatisticsRecord>>asList(Keys.USER_STATISTICS_PKEY);
     }
 
     @Override

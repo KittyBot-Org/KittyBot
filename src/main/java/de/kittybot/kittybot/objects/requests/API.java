@@ -11,7 +11,8 @@ public enum API{
 
 	// other
 	NEKOS_LIFE("nekos life", "https://nekos.life/api/v2/img/%s"),
-	HASTEBIN("hastebin", Config.HASTEBIN_URL);
+	HASTEBIN("hastebin", Config.HASTEBIN_URL),
+	GOOGLE_TRANSLATE_API("google translate api", "https://translate.google.com/translate_a/single?client=gtx&sl=%s&tl=%s&dt=t&q=%s&ie=UTF-8&oe=UTF-8");
 
 	private final String name;
 	private final String key;

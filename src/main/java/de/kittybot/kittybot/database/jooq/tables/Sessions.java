@@ -4,27 +4,14 @@
 package de.kittybot.kittybot.database.jooq.tables;
 
 
-import de.kittybot.kittybot.database.jooq.Keys;
 import de.kittybot.kittybot.database.jooq.Public;
 import de.kittybot.kittybot.database.jooq.tables.records.SessionsRecord;
-
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Row4;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.TableOptions;
-import org.jooq.UniqueKey;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
+
+import java.time.LocalDateTime;
 
 
 /**
@@ -104,16 +91,6 @@ public class Sessions extends TableImpl<SessionsRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
-    }
-
-    @Override
-    public UniqueKey<SessionsRecord> getPrimaryKey() {
-        return Keys.SESSIONS_PKEY;
-    }
-
-    @Override
-    public List<UniqueKey<SessionsRecord>> getKeys() {
-        return Arrays.<UniqueKey<SessionsRecord>>asList(Keys.SESSIONS_PKEY);
     }
 
     @Override
