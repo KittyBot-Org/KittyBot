@@ -4,12 +4,8 @@
 package de.kittybot.kittybot.database.jooq.tables;
 
 
-import de.kittybot.kittybot.database.jooq.Keys;
 import de.kittybot.kittybot.database.jooq.Public;
 import de.kittybot.kittybot.database.jooq.tables.records.SelfAssignableRoleGroupsRecord;
-
-import java.util.Arrays;
-import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
@@ -21,7 +17,6 @@ import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
-import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
@@ -109,16 +104,6 @@ public class SelfAssignableRoleGroups extends TableImpl<SelfAssignableRoleGroups
     @Override
     public Identity<SelfAssignableRoleGroupsRecord, Integer> getIdentity() {
         return (Identity<SelfAssignableRoleGroupsRecord, Integer>) super.getIdentity();
-    }
-
-    @Override
-    public UniqueKey<SelfAssignableRoleGroupsRecord> getPrimaryKey() {
-        return Keys.SELF_ASSIGNABLE_ROLE_GROUPS_PKEY;
-    }
-
-    @Override
-    public List<UniqueKey<SelfAssignableRoleGroupsRecord>> getKeys() {
-        return Arrays.<UniqueKey<SelfAssignableRoleGroupsRecord>>asList(Keys.SELF_ASSIGNABLE_ROLE_GROUPS_PKEY);
     }
 
     @Override

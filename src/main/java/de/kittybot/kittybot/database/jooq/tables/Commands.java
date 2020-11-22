@@ -13,7 +13,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row3;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -44,6 +44,21 @@ public class Commands extends TableImpl<CommandsRecord> {
     public Class<CommandsRecord> getRecordType() {
         return CommandsRecord.class;
     }
+
+    /**
+     * The column <code>public.commands.message_id</code>.
+     */
+    public final TableField<CommandsRecord, String> MESSAGE_ID = createField(DSL.name("message_id"), SQLDataType.VARCHAR(18).nullable(false), this, "");
+
+    /**
+     * The column <code>public.commands.guild_id</code>.
+     */
+    public final TableField<CommandsRecord, String> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.VARCHAR(18).nullable(false), this, "");
+
+    /**
+     * The column <code>public.commands.user_id</code>.
+     */
+    public final TableField<CommandsRecord, String> USER_ID = createField(DSL.name("user_id"), SQLDataType.VARCHAR(18).nullable(false), this, "");
 
     /**
      * The column <code>public.commands.command</code>.
@@ -125,11 +140,11 @@ public class Commands extends TableImpl<CommandsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<String, YearToSecond, LocalDateTime> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row6<String, String, String, String, YearToSecond, LocalDateTime> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }
