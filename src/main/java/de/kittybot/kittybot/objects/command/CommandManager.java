@@ -41,7 +41,6 @@ public class CommandManager{
 	}
 
 	public static boolean checkCommands(GuildMessageReceivedEvent event){
-		var start = System.nanoTime();
 		var message = cutCommandPrefix(event.getGuild(), event.getMessage().getContentRaw());
 		if(message == null){
 			return false;
@@ -52,9 +51,7 @@ public class CommandManager{
 			return false;
 		}
 		//event.getChannel().sendTyping().queue(); answer is sending too fast and I don't want to block the thread lol
-		var ctx = new CommandContext(event, cmd.getCommand(), message);
-		cmd.run(ctx);
-		Database.addCommandStatistics(cmd.getCommand(), YearToSecond.valueOf(Duration.of(System.nanoTime() - start, ChronoUnit.NANOS)));
+		cmd.run(new CommandContext(event, cmd.getCommand(), message));
 		return true;
 	}
 

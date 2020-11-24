@@ -85,28 +85,6 @@ public class Database{
 		}
 	}
 
-
-	public static void addCommandStatistics(String command, YearToSecond processingTime){
-		try(var con = getCon()){
-			getCtx(con).insertInto(COMMANDS).columns(COMMANDS.fields()).values(command, processingTime, LocalDateTime.now()).execute();
-		}
-		catch(SQLException e){
-			LOG.error("Error adding command statistics for command: {}", command, e);
-		}
-	}
-
-/*	public static void getCommandStatistics(String guildId, String userId, String command){
-		try(var con = getCon(); var ctx = getCtx(con)){
-			var res = ctx.selectFrom(COMMANDS).where(COMMANDS.GUILD_ID.eq(guildId)).fetch();
-			for(var r : res){
-				r.get(COMMANDS.PROCESSING_TIME).
-			}
-		}
-		catch(SQLException e){
-			LOG.error("Error adding command statistics for message: " + commandId, e);
-		}
-	} */
-
 	public static GuildSettings getGuildSettings(String guildId){
 		try(var con = getCon(); var selectStep = getCtx(con).selectFrom(GUILDS)){
 			var res = selectStep.where(GUILDS.GUILD_ID.eq(guildId)).fetchOne();
