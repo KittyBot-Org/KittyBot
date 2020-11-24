@@ -70,15 +70,15 @@ public class RolesCommand extends ACommand{
 		else if(args[0].equalsIgnoreCase("list")){
 			var sRoles = SelfAssignableRoleCache.getSelfAssignableRoles(ctx.getGuild().getId());
 			if(sRoles == null || sRoles.isEmpty()){
-				sendAnswer(ctx, "There are no roles added!");
+				sendSuccess(ctx, "There are no roles added");
 			}
 			else{
-				sendAnswer(ctx, "Roles: \n" + sRoles.stream().map(sarg -> MessageUtils.getRoleMention(sarg.getRoleId())).collect(Collectors.joining("\n")));
+				sendSuccess(ctx, "Roles: \n" + sRoles.stream().map(sarg -> MessageUtils.getRoleMention(sarg.getRoleId())).collect(Collectors.joining("\n")));
 			}
 		}
 		else if(args[0].equalsIgnoreCase("add")){
 			if(!ctx.getMember().hasPermission(Permission.ADMINISTRATOR)){
-				sendError(ctx, "You need to be an administrator to use this command!");
+				sendError(ctx, "You need to be an administrator to use this command");
 				return;
 			}
 			if(args.length < 4 || roles.isEmpty() || emotes.isEmpty()){
@@ -91,7 +91,7 @@ public class RolesCommand extends ACommand{
 				return;
 			}
 			SelfAssignableRoleCache.addSelfAssignableRoles(ctx.getGuild().getId(), Utils.toSet(ctx.getGuild().getId(), groups.iterator().next().getId(), roles, emotes));
-			sendAnswer(ctx, "Roles added!");
+			sendSuccess(ctx, "Roles added!");
 		}
 		else if(args[0].equalsIgnoreCase("remove")){
 			if(!ctx.getMember().hasPermission(Permission.ADMINISTRATOR)){
@@ -103,17 +103,13 @@ public class RolesCommand extends ACommand{
 				return;
 			}
 			SelfAssignableRoleCache.removeSelfAssignableRoles(ctx.getGuild().getId(), roles.stream().map(Role::getId).collect(Collectors.toSet()));
-			sendAnswer(ctx, "Roles removed!");
+			sendSuccess(ctx, "Roles removed!");
 		}
-		else{
-			sendUsage(ctx);
-		}
-		if(ctx.getArgs()[0].equalsIgnoreCase("remove") && !roles.isEmpty()){
+		else if(ctx.getArgs()[0].equalsIgnoreCase("remove") && !roles.isEmpty()){
 			SelfAssignableRoleCache.removeSelfAssignableRoles(ctx.getGuild().getId(), Utils.toSet(roles));
 			sendSuccess(ctx, "Roles removed!");
-			return;
 		}
-		if(ctx.getArgs()[0].equalsIgnoreCase("list")){
+		else if(ctx.getArgs()[0].equalsIgnoreCase("list")){
 			var map = getSelfAssignableRoles(ctx.getGuild());
 			if(map.isEmpty()){
 				sendSuccess(ctx, "There are no roles added!");
@@ -122,9 +118,11 @@ public class RolesCommand extends ACommand{
 			var message = new StringBuilder();
 			map.keySet().forEach(role -> message.append(MessageUtils.getRoleMention(role.getId())).append(", "));
 			sendSuccess(ctx, "Roles: " + message);
-			return;
 		}
-		sendError(ctx, "Please be sure to mention a role & a custom discord emote");
+		else{
+			sendUsage(ctx);
+		}
+		//sendError(ctx, "Please be sure to mention a role & a custom discord emote");
 	}
 
 	private Map<SelfAssignableRoleGroup, Set<SelfAssignableRole>> getSelfAssignableRoles(Guild guild){
