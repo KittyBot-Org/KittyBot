@@ -54,7 +54,6 @@ public class Requester{
 	}
 
 	public static String getNeko(final boolean nsfw, final String type, final String imageType){
-		final var url = String.format(API.PURR_BOT.getUrl(), nsfw ? "nsfw": "sfw", type, imageType);
 		final var url = String.format(API.PURR_BOT.getUrl(), nsfw ? "nsfw" : "sfw", type, imageType);
 		REQUEST_BUILDER.url(url);
 		REQUEST_BUILDER.method("GET", null);
