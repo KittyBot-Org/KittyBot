@@ -22,7 +22,7 @@ public class PokeCommand extends ACommand{
 			sendUsage(ctx);
 			return;
 		}
-		sendReactionImage(ctx, "poke", "pokes");
+		sendReactionImage(ctx, false, "poke", "gif", "pokes");
 	}
 
 }

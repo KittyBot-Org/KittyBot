@@ -1,16 +1,12 @@
 package de.kittybot.kittybot.objects.command;
 
 import de.kittybot.kittybot.cache.GuildSettingsCache;
-import de.kittybot.kittybot.database.Database;
 import io.github.classgraph.ClassGraph;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import org.jooq.types.YearToSecond;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 

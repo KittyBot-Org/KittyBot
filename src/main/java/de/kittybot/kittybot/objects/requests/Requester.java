@@ -53,12 +53,13 @@ public class Requester{
 		return json.getArray(0).getArray(0).getString(0);
 	}
 
-	public static String getNeko(final String type){
-		final var url = String.format(API.NEKOS_LIFE.getUrl(), type);
+	public static String getNeko(final boolean nsfw, final String type, final String imageType){
+		final var url = String.format(API.PURR_BOT.getUrl(), nsfw ? "nsfw": "sfw", type, imageType);
+		final var url = String.format(API.PURR_BOT.getUrl(), nsfw ? "nsfw" : "sfw", type, imageType);
 		REQUEST_BUILDER.url(url);
 		REQUEST_BUILDER.method("GET", null);
 		final var json = DataObject.fromJson(executeRequest(REQUEST_BUILDER.build()));
-		return json.getString("url");
+		return json.getString("link");
 	}
 
 	public static String postToHastebin(final String content){

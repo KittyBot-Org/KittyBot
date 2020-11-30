@@ -22,7 +22,7 @@ public class SlapCommand extends ACommand{
 			sendUsage(ctx);
 			return;
 		}
-		sendReactionImage(ctx, "slap", "slaps");
+		sendReactionImage(ctx, false, "slap", "gif", "slaps");
 	}
 
 }

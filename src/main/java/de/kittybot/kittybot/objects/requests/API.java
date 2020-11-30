@@ -10,7 +10,7 @@ public enum API{
 	DISCORD_BOATS("discord.boats", Config.DISCORD_BOATS_TOKEN, "https://discord.boats/api/bot/%s", "server_count"),
 
 	// other
-	NEKOS_LIFE("nekos life", "https://nekos.life/api/v2/img/%s"),
+	PURR_BOT("purr bot", "https://purrbot.site/api/img/%s/%s/%s"),
 	HASTEBIN("hastebin", Config.HASTEBIN_URL),
 	GOOGLE_TRANSLATE_API("google translate api", "https://translate.google.com/translate_a/single?client=gtx&sl=%s&tl=%s&dt=t&q=%s&ie=UTF-8&oe=UTF-8");
 

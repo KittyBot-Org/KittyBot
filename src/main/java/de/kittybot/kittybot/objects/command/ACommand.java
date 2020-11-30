@@ -89,18 +89,18 @@ public abstract class ACommand{
 		message.addReaction(emote).queue(success -> message.getTextChannel().removeReactionById(message.getId(), emote).queueAfter(5, TimeUnit.SECONDS));
 	}
 
-	public static void queue(MessageAction messageAction, CommandContext ctx){
+	public static void queue(CommandContext ctx, MessageAction messageAction){
 		if(messageAction != null){
 			messageAction.queue(success -> CommandResponseCache.addCommandResponse(ctx.getMessage(), success), null);
 		}
 	}
 
 	public static void sendNoPerms(CommandContext ctx){
-		queue(error(ctx, "You don't have the permission to use this command"), ctx);
+		queue(ctx, error(ctx, "You don't have the permission to use this command"));
 	}
 
 	public static void sendError(CommandContext ctx, String error){
-		queue(error(ctx, error), ctx);
+		queue(ctx, error(ctx, error));
 	}
 
 	public static MessageAction error(CommandContext ctx, String error){
@@ -109,11 +109,11 @@ public abstract class ACommand{
 	}
 
 	public static void sendSuccess(CommandContext ctx, String answer){
-		queue(success(ctx, answer), ctx);
+		queue(ctx, success(ctx, answer));
 	}
 
 	public static void sendSuccess(CommandContext ctx, EmbedBuilder embed){
-		queue(success(ctx, embed), ctx);
+		queue(ctx, success(ctx, embed));
 	}
 
 	public static MessageAction success(CommandContext ctx, String answer){
@@ -126,11 +126,11 @@ public abstract class ACommand{
 	}
 
 	public static void sendAnswer(CommandContext ctx, String answer){
-		queue(answer(ctx, answer), ctx);
+		queue(ctx, answer(ctx, answer));
 	}
 
 	public static void sendAnswer(CommandContext ctx, EmbedBuilder answer){
-		queue(answer(ctx, answer), ctx);
+		queue(ctx, answer(ctx, answer));
 	}
 
 	public static void sendAnswer(TextChannel channel, Member member, EmbedBuilder answer){
@@ -145,11 +145,11 @@ public abstract class ACommand{
 	}
 
 	public void sendUsage(CommandContext ctx){
-		queue(usage(ctx, this.usage), ctx);
+		queue(ctx, usage(ctx, this.usage));
 	}
 
 	public static void sendUsage(CommandContext ctx, String usage){
-		queue(usage(ctx, usage), ctx);
+		queue(ctx, usage(ctx, usage));
 	}
 
 	public static MessageAction usage(CommandContext ctx, String usage){
@@ -166,16 +166,19 @@ public abstract class ACommand{
 			return null;
 		}
 		return channel.sendMessage(answer.setFooter(member.getEffectiveName(), member.getUser().getEffectiveAvatarUrl())
-			.setTimestamp(Instant.now())
-			.build()
+				.setTimestamp(Instant.now())
+				.build()
 		);
 	}
 
-	protected void sendReactionImage(CommandContext ctx, String type, String text){
-		queue(reactionImage(ctx, type, text), ctx);
+	protected void sendReactionImage(CommandContext ctx, boolean nsfw, String type, String imageType, String text){
+		queue(ctx, reactionImage(ctx, nsfw, type, imageType, text));
 	}
 
-	protected MessageAction reactionImage(CommandContext ctx, String type, String text){
+	protected MessageAction reactionImage(CommandContext ctx, boolean nsfw, String type, String imageType, String text){
+		if(nsfw && !ctx.getChannel().isNSFW()){
+			return error(ctx, "This image command is NSFW channel only");
+		}
 		var users = ctx.getMentionedUsers();
 
 		var message = new StringBuilder();
@@ -204,15 +207,11 @@ public abstract class ACommand{
 				message.deleteCharAt(message.lastIndexOf(","));
 			}
 		}
-		var url = getNeko(type);
-		if(url == null){
+		var url = Requester.getNeko(nsfw, type, imageType);
+		if(url.equals("")){
 			return error(ctx, "Unknown error occurred while getting image for `" + type + "`");
 		}
 		return success(ctx, new EmbedBuilder().setDescription(message).setImage(url));
-	}
-
-	protected String getNeko(String type){
-		return Requester.getNeko(type);
 	}
 
 	protected MessageAction image(CommandContext ctx, String url){
