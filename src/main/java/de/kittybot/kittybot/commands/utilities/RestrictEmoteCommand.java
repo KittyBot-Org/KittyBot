@@ -23,7 +23,7 @@ public class RestrictEmoteCommand extends ACommand{
 	@Override
 	public void run(CommandContext ctx){
 		var emotes = ctx.getMessage().getEmotes();
-		var roles = new HashSet<>(ctx.getMentionedRolesBag());
+		var roles = ctx.getMentionedRoles();
 		if(emotes.isEmpty() || roles.isEmpty()){
 			sendUsage(ctx);
 			return;
@@ -33,7 +33,7 @@ public class RestrictEmoteCommand extends ACommand{
 			return;
 		}
 		var emote = emotes.get(0);
-		emote.getManager().setRoles(roles).queue(success -> sendSuccess(ctx, "Successfully set roles"), error -> sendError(ctx, "Failed to set roles.\nPlease try again or report this in our discord"));
+		emote.getManager().setRoles(new HashSet<>(roles)).queue(success -> sendSuccess(ctx, "Successfully set roles"), error -> sendError(ctx, "Failed to set roles.\nPlease try again or report this in our discord"));
 	}
 
 }
