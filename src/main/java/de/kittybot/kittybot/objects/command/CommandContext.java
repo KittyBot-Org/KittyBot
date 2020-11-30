@@ -22,7 +22,7 @@ public class CommandContext{
 	}
 
 	private String[] getCommandArguments(String message){
-		var args = message.split(" ");
+		var args = message.split("\\s+");
 		return Arrays.copyOfRange(args, 1, args.length);
 	}
 

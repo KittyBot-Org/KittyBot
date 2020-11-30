@@ -6,6 +6,7 @@ import de.kittybot.kittybot.objects.command.CommandContext;
 import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 
 
 public class AvatarCommand extends ACommand{
@@ -28,10 +29,13 @@ public class AvatarCommand extends ACommand{
 			if(!Utils.isSnowflake(arg)){
 				continue;
 			}
-			var user = ctx.getJDA().retrieveUserById(arg).complete();
-			if(user != null && !users.contains(user)){
-				users.add(user);
+			try {
+				var user = ctx.getJDA().retrieveUserById(arg).complete();
+				if(!users.contains(user)){
+					users.add(user);
+				}
 			}
+			catch(ErrorResponseException ignored){}
 		}
 		if(users.isEmpty()){
 			users.add(ctx.getUser());

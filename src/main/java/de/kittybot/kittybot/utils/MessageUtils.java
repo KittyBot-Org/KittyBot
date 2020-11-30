@@ -2,6 +2,7 @@ package de.kittybot.kittybot.utils;
 
 import de.kittybot.kittybot.cache.GuildSettingsCache;
 import de.kittybot.kittybot.cache.InviteCache;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.User;
@@ -12,10 +13,12 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -89,42 +92,60 @@ public class MessageUtils{
 			return;
 		}
 		var channel = guild.getTextChannelById(announcementChannelId);
+		var canSend = true;
 		if(channel == null || !channel.canTalk()){
-			return;
+			canSend = false;
 		}
-		var template = "I lack the permission to send %s messages to " + channel.getAsMention() + ".\n" + "You can disable them with `options %smessages off` if you don't like them.";
-		var message = "";
 
+		var message = "";
+		var messageType = "";
+		Color color;
+		User user;
 		if(event instanceof GuildMemberJoinEvent){
 			if(!settings.areJoinMessagesEnabled()){
 				return;
 			}
-			template = String.format(template, "join", "join");
-			message = generateJoinMessage(settings.getJoinMessage(), ((GenericGuildMemberEvent) event).getUser(), InviteCache.getUsedInvite(guild));
+			user = ((GenericGuildMemberEvent) event).getUser();
+			message = generateJoinMessage(settings.getJoinMessage(), user, InviteCache.getUsedInvite(guild));
+			messageType = "join";
+			color = Color.GREEN;
 		}
 		else if(event instanceof GuildMemberRemoveEvent){
 			if(!settings.areLeaveMessagesEnabled()){
 				return;
 			}
-			template = String.format(template, "leave", "leave");
-			message = generateLeaveMessage(settings.getLeaveMessage(), ((GuildMemberRemoveEvent) event).getUser());
+			user = ((GuildMemberRemoveEvent) event).getUser();
+			message = generateLeaveMessage(settings.getLeaveMessage(), user);
+			messageType = "leave";
+			color = Color.RED;
 		}
 		else{
 			if(!settings.areBoostMessagesEnabled()){
 				return;
 			}
-			template = String.format(template, "boost", "boost");
-			message = generateBoostMessage(settings.getBoostMessage(), ((GenericGuildMemberEvent) event).getUser());
+			user = ((GenericGuildMemberEvent) event).getUser();
+			message = generateBoostMessage(settings.getBoostMessage(), user);
+			messageType = "boost";
+			color = Color.YELLOW;
 		}
+		if(canSend){
+			channel.sendMessage(new EmbedBuilder()
+					.setColor(color)
+					.setDescription(message)
+					.setFooter(user.getName(), user.getEffectiveAvatarUrl())
+					.setTimestamp(Instant.now())
+					.build()
+			).queue();
+			return;
+		}
+		final String finalMessageType = messageType;
+		event.getJDA().openPrivateChannelById(event.getGuild().getOwnerId())
+				.flatMap(privateChannel -> privateChannel.sendMessageFormat(channel == null ?
+						"Your selected announcement channel is deleted. Please set a new one." :
+						"I lack the permission to send %s messages to " + channel.getAsMention()
+								+ "\nYou can disable announcement messages with `settings %smessage off` if you don't like them.", finalMessageType, finalMessageType)
+				).queue();
 
-		// java :)
-		final var finalTemplate = template;
-		final var finalMessage = message;
-		event.getJDA()
-				.openPrivateChannelById(event.getGuild().getOwnerId())
-				.flatMap(privateChannel -> privateChannel.sendMessage(finalTemplate))
-				.flatMap(ignored -> channel.sendMessage(finalMessage))
-				.queue();
 	}
 
 	private static String generateBoostMessage(String message, User user){
