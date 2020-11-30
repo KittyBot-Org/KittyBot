@@ -6,6 +6,7 @@ import de.kittybot.kittybot.objects.data.GuildData;
 import de.kittybot.kittybot.objects.session.DashboardSession;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.exceptions.HttpException;
 
 import java.io.IOException;
 import java.util.*;
@@ -18,7 +19,7 @@ public class GuildCache{
 
 	private GuildCache(){}
 
-	public static List<GuildData> getGuilds(final DashboardSession dashboardSession) throws IOException{
+	public static List<GuildData> getGuilds(final DashboardSession dashboardSession) throws IOException, HttpException{
 		var userId = dashboardSession.getUserId();
 		var userGuilds = USER_GUILD_CACHE.get(userId);
 		if(userGuilds == null || userGuilds.isEmpty()){
