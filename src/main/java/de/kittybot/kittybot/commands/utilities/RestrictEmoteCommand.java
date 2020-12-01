@@ -22,6 +22,10 @@ public class RestrictEmoteCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
+		if(!ctx.getMember().hasPermission(Permission.MANAGE_EMOTES, Permission.MANAGE_ROLES)){
+			sendNoPerms(ctx);
+			return;
+		}
 		var emotes = ctx.getMessage().getEmotes();
 		var roles = ctx.getMentionedRoles();
 		if(emotes.isEmpty() || roles.isEmpty()){
