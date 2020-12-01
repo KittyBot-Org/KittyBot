@@ -7,9 +7,9 @@ import de.kittybot.kittybot.objects.requests.Requester;
 
 public class SenkoCommand extends ACommand{
 
-	public static final String COMMAND = "kitsune";
-	public static final String USAGE = "kitsune";
-	public static final String DESCRIPTION = "Sends a Kitsune";
+	public static final String COMMAND = "senko";
+	public static final String USAGE = "senko";
+	public static final String DESCRIPTION = "Sends a Senko";
 	protected static final String[] ALIASES = {};
 	protected static final Category CATEGORY = Category.NEKO;
 
