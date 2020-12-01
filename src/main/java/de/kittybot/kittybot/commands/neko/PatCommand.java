@@ -22,7 +22,7 @@ public class PatCommand extends ACommand{
 			sendUsage(ctx);
 			return;
 		}
-		sendReactionImage(ctx, "pat", "pats");
+		sendReactionImage(ctx, false, "pat", "gif", "pats");
 	}
 
 }

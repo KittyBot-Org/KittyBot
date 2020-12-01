@@ -22,7 +22,7 @@ public class CuddleCommand extends ACommand{
 			sendUsage(ctx);
 			return;
 		}
-		sendReactionImage(ctx, "cuddle", "cuddles");
+		sendReactionImage(ctx, false, "cuddle", "gif", "cuddles");
 	}
 
 }

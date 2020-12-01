@@ -4,15 +4,15 @@ import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
 
-public class BakaCommand extends ACommand{
+public class BiteCommand extends ACommand{
 
-	public static final String COMMAND = "baka";
-	public static final String USAGE = "baka <@user, ...>";
-	public static final String DESCRIPTION = "Says baka to a user";
-	protected static final String[] ALIASES = {"dummy", "dummi"};
+	public static final String COMMAND = "bite";
+	public static final String USAGE = "bite <@user, ...>";
+	public static final String DESCRIPTION = "Bites a user";
+	protected static final String[] ALIASES = {"beiß"};
 	protected static final Category CATEGORY = Category.NEKO;
 
-	public BakaCommand(){
+	public BiteCommand(){
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
 	}
 
@@ -22,7 +22,7 @@ public class BakaCommand extends ACommand{
 			sendUsage(ctx);
 			return;
 		}
-		sendReactionImage(ctx, "baka", "said baka to");
+		sendReactionImage(ctx, false, "bite", "gif", "bites");
 	}
 
 }

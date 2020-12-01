@@ -22,7 +22,7 @@ public class FeedCommand extends ACommand{
 			sendUsage(ctx);
 			return;
 		}
-		sendReactionImage(ctx, "feed", "feeds");
+		sendReactionImage(ctx, false, "feed", "gif", "feeds");
 	}
 
 }

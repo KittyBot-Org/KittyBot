@@ -22,7 +22,7 @@ public class KissCommand extends ACommand{
 			sendUsage(ctx);
 			return;
 		}
-		sendReactionImage(ctx, "kiss", "kisses");
+		sendReactionImage(ctx, false, "kiss", "gif", "kisses");
 	}
 
 }

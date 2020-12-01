@@ -22,7 +22,7 @@ public class HugCommand extends ACommand{
 			sendUsage(ctx);
 			return;
 		}
-		sendReactionImage(ctx, "hug", "hugs");
+		sendReactionImage(ctx, false, "hug", "gif", "hugs");
 	}
 
 }

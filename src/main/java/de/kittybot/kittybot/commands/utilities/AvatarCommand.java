@@ -29,13 +29,14 @@ public class AvatarCommand extends ACommand{
 			if(!Utils.isSnowflake(arg)){
 				continue;
 			}
-			try {
+			try{
 				var user = ctx.getJDA().retrieveUserById(arg).complete();
 				if(!users.contains(user)){
 					users.add(user);
 				}
 			}
-			catch(ErrorResponseException ignored){}
+			catch(ErrorResponseException ignored){
+			}
 		}
 		if(users.isEmpty()){
 			users.add(ctx.getUser());

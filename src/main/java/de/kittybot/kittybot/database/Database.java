@@ -9,12 +9,10 @@ import de.kittybot.kittybot.objects.data.ReactiveMessage;
 import de.kittybot.kittybot.objects.session.DashboardSession;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
-import org.jooq.types.YearToSecond;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
@@ -84,28 +82,6 @@ public class Database{
 			LOG.error("Error registering guild: {}", guild.getId(), e);
 		}
 	}
-
-
-	public static void addCommandStatistics(String command, YearToSecond processingTime){
-		try(var con = getCon()){
-			getCtx(con).insertInto(COMMANDS).columns(COMMANDS.fields()).values(command, processingTime, LocalDateTime.now()).execute();
-		}
-		catch(SQLException e){
-			LOG.error("Error adding command statistics for command: {}", command, e);
-		}
-	}
-
-/*	public static void getCommandStatistics(String guildId, String userId, String command){
-		try(var con = getCon(); var ctx = getCtx(con)){
-			var res = ctx.selectFrom(COMMANDS).where(COMMANDS.GUILD_ID.eq(guildId)).fetch();
-			for(var r : res){
-				r.get(COMMANDS.PROCESSING_TIME).
-			}
-		}
-		catch(SQLException e){
-			LOG.error("Error adding command statistics for message: " + commandId, e);
-		}
-	} */
 
 	public static GuildSettings getGuildSettings(String guildId){
 		try(var con = getCon(); var selectStep = getCtx(con).selectFrom(GUILDS)){

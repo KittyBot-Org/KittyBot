@@ -22,7 +22,7 @@ public class TickleCommand extends ACommand{
 			sendUsage(ctx);
 			return;
 		}
-		sendReactionImage(ctx, "tickle", "tickles");
+		sendReactionImage(ctx, false, "tickle", "gif", "tickles");
 	}
 
 }
