@@ -4,6 +4,7 @@ import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.managers.EmoteManager;
 
 import java.util.HashSet;
 
@@ -28,7 +29,17 @@ public class RestrictEmoteCommand extends ACommand{
 		}
 		var emotes = ctx.getMessage().getEmotes();
 		var roles = ctx.getMentionedRoles();
-		if(emotes.isEmpty() || roles.isEmpty()){
+		if(emotes.isEmpty()){
+			sendUsage(ctx);
+			return;
+		}
+		var emote = emotes.get(0);
+		if(roles.isEmpty()){
+			if(ctx.getArgs().length > 0 && ctx.getArgs()[0].equalsIgnoreCase("reset")){
+				emote.getManager().reset(EmoteManager.ROLES).queue();
+				sendSuccess(ctx, "Roles reset");
+				return;
+			}
 			sendUsage(ctx);
 			return;
 		}
@@ -36,8 +47,11 @@ public class RestrictEmoteCommand extends ACommand{
 			sendError(ctx, "I can't manage emotes due to lack of permissions. Please give me the `MANAGE_EMOTES` permission to use this command.");
 			return;
 		}
-		var emote = emotes.get(0);
-		emote.getManager().setRoles(new HashSet<>(roles)).queue(success -> sendSuccess(ctx, "Successfully set roles"), error -> sendError(ctx, "Failed to set roles.\nPlease try again or report this in our discord"));
+		emote.getManager().setRoles(new HashSet<>(roles))
+		.queue(
+			success -> sendSuccess(ctx, "Successfully set roles"),
+			error -> sendError(ctx, "Failed to set roles.\nPlease try again or report this in our discord")
+		);
 	}
 
 }
