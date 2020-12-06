@@ -10,7 +10,7 @@
 
 [![KittyBot Support Guild](https://discordapp.com/api/guilds/608506410803658753/embed.png?style=banner2)](https://discord.gg/sD3ABd5)
 
-[CI Server](https://ci.anteiku.de/project/KittyBot_Bot?guest=1)
+[CI Server](https://ci.kittybot.de/project/KittyBot_Bot?guest=1)
 [Docker Hub](https://hub.docker.com/repository/docker/topisenpai/kittybot)
 
 [Website Project](https://github.com/KittyBot-Org/KittyBot-Website)
