@@ -18,10 +18,6 @@ public class TickleCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
-		if(ctx.getArgs().length == 0){
-			sendUsage(ctx);
-			return;
-		}
 		sendReactionImage(ctx, false, "tickle", "gif", "tickles");
 	}
 

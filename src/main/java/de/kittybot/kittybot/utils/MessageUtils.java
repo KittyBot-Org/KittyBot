@@ -2,6 +2,7 @@ package de.kittybot.kittybot.utils;
 
 import de.kittybot.kittybot.cache.GuildSettingsCache;
 import de.kittybot.kittybot.cache.InviteCache;
+import de.kittybot.kittybot.objects.Emojis;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
@@ -51,6 +52,10 @@ public class MessageUtils{
 			LOG.error("Error reading message file", e);
 		}
 		return set;
+	}
+
+	public static String getBoolEmote(boolean bool) {
+		return bool ? Emojis.CHECK : Emojis.X;
 	}
 
 	public static String maskLink(String title, String url){
