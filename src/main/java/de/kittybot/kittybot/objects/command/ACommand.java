@@ -179,6 +179,9 @@ public abstract class ACommand{
 		if(nsfw && !ctx.getChannel().isNSFW()){
 			return error(ctx, "This image command is NSFW channel only");
 		}
+		if(!ctx.getSelfMember().hasPermission(ctx.getChannel(), Permission.MESSAGE_EMBED_LINKS)){
+			return error(ctx, "I don't have the MESSAGE_EMBED_LINKS permission to add images here");
+		}
 		var users = ctx.getMentionedUsers();
 
 		var message = new StringBuilder();
