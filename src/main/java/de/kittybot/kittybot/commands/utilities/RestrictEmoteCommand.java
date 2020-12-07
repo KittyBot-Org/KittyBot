@@ -4,7 +4,6 @@ import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.managers.EmoteManager;
 
 import java.util.HashSet;
 
@@ -36,7 +35,8 @@ public class RestrictEmoteCommand extends ACommand{
 		var emote = emotes.get(0);
 		if(roles.isEmpty()){
 			if(ctx.getArgs().length > 0 && ctx.getArgs()[0].equalsIgnoreCase("reset")){
-				emote.getManager().reset(EmoteManager.ROLES).queue();
+				//emote.getManager().reset(EmoteManager.ROLES).queue();
+				emote.getManager().setRoles(new HashSet<>()).queue();
 				sendSuccess(ctx, "Roles reset");
 				return;
 			}
