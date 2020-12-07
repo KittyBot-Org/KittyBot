@@ -1,8 +1,11 @@
 package de.kittybot.kittybot.commands.neko;
 
+import de.kittybot.kittybot.cache.GuildSettingsCache;
+import de.kittybot.kittybot.database.Database;
 import de.kittybot.kittybot.objects.command.ACommand;
 import de.kittybot.kittybot.objects.command.Category;
 import de.kittybot.kittybot.objects.command.CommandContext;
+import de.kittybot.kittybot.objects.data.GuildSettings;
 import de.kittybot.kittybot.objects.requests.Requester;
 
 import java.util.Arrays;
@@ -23,6 +26,10 @@ public class NekoCommand extends ACommand{
 
 	@Override
 	public void run(CommandContext ctx){
+		if(!GuildSettingsCache.isNSFWEnabled(ctx.getGuild().getId())){
+			sendError(ctx, "NSFW commands are disabled in this guild");
+			return;
+		}
 		if(!ctx.getChannel().isNSFW()){
 			sendError(ctx, "This command is NSFW channel only");
 			return;

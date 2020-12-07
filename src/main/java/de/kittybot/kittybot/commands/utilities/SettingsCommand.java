@@ -35,6 +35,7 @@ public class SettingsCommand extends ACommand{
 					.setTitle("Guild settings:")
 					.addField("Command Prefix:", settings.getCommandPrefix(), false)
 					.addField("Announcement Channel:", settings.getAnnouncementChannel(), false)
+					.addField("NSFW Enabled: " + (settings.isNSFWEnabled() ? Emojis.CHECK : Emojis.X), "", false)
 
 					//.addField("Join Messages Enabled:", String.valueOf(settings.areJoinMessagesEnabled()), true)
 					.addField("Join Messages: " + (settings.areJoinMessagesEnabled() ? Emojis.CHECK : Emojis.X), settings.getJoinMessage(), false)
@@ -44,8 +45,6 @@ public class SettingsCommand extends ACommand{
 
 					//.addField("Boost Messages Enabled:", String.valueOf(settings.areBoostMessagesEnabled()), true)
 					.addField("Boost Messages: " + (settings.areBoostMessagesEnabled() ? Emojis.CHECK : Emojis.X), settings.getBoostMessage(), false)
-
-					.addField("NSFW Enabled: " + (settings.isNSFWEnabled() ? Emojis.CHECK : Emojis.X), "", false)
 			);
 		}
 		else{
