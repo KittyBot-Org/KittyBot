@@ -11,7 +11,7 @@ import java.util.HashSet;
 public class RestrictEmoteCommand extends ACommand{
 
 	public static final String COMMAND = "restrictemote";
-	public static final String USAGE = "restrictemote <:Emote:, @Role, ...>";
+	public static final String USAGE = "restrictemote <:Emote:> <@Role, .../reset>";
 	public static final String DESCRIPTION = "Restricts a given emote to one or more roles";
 	protected static final String[] ALIASES = {"restricte", "remote", "re"};
 	protected static final Category CATEGORY = Category.UTILITIES;
@@ -34,8 +34,8 @@ public class RestrictEmoteCommand extends ACommand{
 		}
 		var emote = emotes.get(0);
 		if(roles.isEmpty()){
-			if(ctx.getArgs().length > 0 && ctx.getArgs()[0].equalsIgnoreCase("reset")){
-				//emote.getManager().reset(EmoteManager.ROLES).queue();
+			if((ctx.getArgs().length > 0 && ctx.getArgs()[0].equalsIgnoreCase("reset")) ||
+					ctx.getArgs().length > 1 && ctx.getArgs()[1].equalsIgnoreCase("reset")){
 				emote.getManager().setRoles(new HashSet<>()).queue();
 				sendSuccess(ctx, "Roles reset");
 				return;
@@ -47,10 +47,9 @@ public class RestrictEmoteCommand extends ACommand{
 			sendError(ctx, "I can't manage emotes due to lack of permissions. Please give me the `MANAGE_EMOTES` permission to use this command.");
 			return;
 		}
-		emote.getManager().setRoles(new HashSet<>(roles))
-		.queue(
-			success -> sendSuccess(ctx, "Successfully set roles"),
-			error -> sendError(ctx, "Failed to set roles.\nPlease try again or report this in our discord")
+		emote.getManager().setRoles(new HashSet<>(roles)).queue(
+				success -> sendSuccess(ctx, "Successfully set roles"),
+				error -> sendError(ctx, "Failed to set roles.\nPlease try again or report this in our discord")
 		);
 	}
 
