@@ -9,6 +9,7 @@
 [![KittyBot License](https://img.shields.io/github/license/TopISenpai/KittyBot)](LICENSE)
 
 [CI Server](https://ci.kittybot.de/project/KittyBot_Bot?guest=1)
+
 [Docker Hub](https://hub.docker.com/repository/docker/topisenpai/kittybot)
 
 [Website Project](https://github.com/KittyBot-Org/KittyBot-Website)
