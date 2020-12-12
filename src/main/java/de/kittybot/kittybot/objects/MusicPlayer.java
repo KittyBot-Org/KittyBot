@@ -35,7 +35,7 @@ import static de.kittybot.kittybot.utils.Utils.pluralize;
 
 public class MusicPlayer extends PlayerEventListenerAdapter{
 
-	public static final Pattern URL_PATTERN = Pattern.compile("^(https?://)?((www|m)\\.)?youtu(\\.be|be\\.com)/(playlist\\?list=([a-zA-Z0-9-_]+))?((watch\\?v=)?([a-zA-Z0-9-_]{11})(&list=([a-zA-Z0-9-_]+))?)?");
+	public static final Pattern URL_PATTERN = Pattern.compile("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]?");
 	private static final Logger LOG = LoggerFactory.getLogger(MusicPlayer.class);
 	private final LavalinkPlayer player;
 	private final Queue<AudioTrack> queue;
