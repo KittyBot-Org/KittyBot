@@ -18,7 +18,7 @@ public class NekoCommand extends ACommand{
 	protected static final Category CATEGORY = Category.NEKO;
 	private static final String[] TYPES = {"neko", "anal", "blowjob", "cum", "fuck", "pussylick", "solo", "threesome_fff", "threesome_ffm", "threesome_mmf", "yaoi", "yuri"};
 	private static final String TYPE_STRING = String.join("/", TYPES);
-	public static final String USAGE = "neko <" + TYPE_STRING + "> <img/gif>";
+	public static final String USAGE = "neko <" + TYPE_STRING + ">";
 
 	public NekoCommand(){
 		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
@@ -35,6 +35,10 @@ public class NekoCommand extends ACommand{
 			return;
 		}
 		var args = ctx.getArgs();
+		if(args.length > 0 && (args[0].equals("?") || args[0].equalsIgnoreCase("help"))){
+			sendUsage(ctx);
+			return;
+		}
 		var type = "neko";
 		if(args.length > 0 && Arrays.stream(TYPES).anyMatch(args[0]::equalsIgnoreCase)){
 			type = args[0].toLowerCase();
