@@ -86,10 +86,13 @@ public class WebService{
 	}
 
 	private void discordLogin(Context ctx){
-		if(!DashboardSessionCache.hasSession(getUserId(ctx))){
-			ctx.redirect(Config.REDIRECT_URL);
-			return;
+		try{
+			if(!DashboardSessionCache.hasSession(getUserId(ctx))){
+				ctx.redirect(Config.REDIRECT_URL);
+				return;
+			}
 		}
+		catch(UnauthorizedResponse | ForbiddenResponse ignored){}
 		ctx.redirect(O_AUTH_2_CLIENT.generateAuthorizationURL(Config.REDIRECT_URL, SCOPES));
 	}
 
