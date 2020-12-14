@@ -16,7 +16,7 @@ import de.kittybot.kittybot.objects.session.DashboardSession;
 import de.kittybot.kittybot.objects.session.DashboardSessionController;
 import de.kittybot.kittybot.utils.Utils;
 import io.javalin.Javalin;
-import io.javalin.http.Context;
+import io.javalin.http.*;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -25,6 +25,7 @@ import io.jsonwebtoken.security.Keys;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.exceptions.HttpException;
+import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
 
@@ -85,8 +86,7 @@ public class WebService{
 	}
 
 	private void discordLogin(Context ctx){
-		var userId = getUserId(ctx);
-		if(userId != null && !DashboardSessionCache.hasSession(userId)){
+		if(!DashboardSessionCache.hasSession(getUserId(ctx))){
 			ctx.redirect(Config.REDIRECT_URL);
 			return;
 		}
@@ -98,29 +98,25 @@ public class WebService{
 		var code = json.getString("code", null);
 		var state = json.getString("state", null);
 		if(code == null || code.isBlank() || state == null || state.isBlank()){
-			error(ctx, 401, "State or code is invalid");
-			return;
+			throw new UnauthorizedResponse("State or code is invalid");
 		}
 		try{
 			var session = (DashboardSession) O_AUTH_2_CLIENT.startSession(code, state, "", SCOPES).complete();
 			created(ctx, DataObject.empty().put("token", Jwts.builder().setIssuedAt(new Date()).setSubject(session.getUserId()).signWith(KEY).compact()));
 		}
 		catch(HttpException e){
-			error(ctx, 429, "Don't spam login");
+			throw new BadRequestResponse("Don't spam login");
 		}
 		catch(InvalidStateException e){
-			error(ctx, 401, "State invalid/expired. Please try again");
+			throw new UnauthorizedResponse("State invalid/expired. Please try again");
 		}
 		catch(IOException e){
-			error(ctx, 403, "Could not login");
+			throw new ForbiddenResponse("Could not login");
 		}
 	}
 
 	private void logout(Context ctx){
-		var userId = getUserId(ctx);
-		if(userId != null){
-			DashboardSessionCache.deleteSession(userId);
-		}
+		DashboardSessionCache.deleteSession(getUserId(ctx));
 	}
 
 	private void checkDiscordLogin(Context ctx){
@@ -128,36 +124,27 @@ public class WebService{
 			return;
 		}
 		var userId = getUserId(ctx);
-		if(userId == null){
-			return;
-		}
 		if(!DashboardSessionCache.hasSession(userId)){
-			error(ctx, 401, "Invalid token");
+			throw new UnauthorizedResponse("Invalid token");
 		}
 	}
 
 	private void getUserInfo(Context ctx){
 		var userId = getUserId(ctx);
-		if(userId == null){
-			return;
-		}
 		var session = DashboardSessionCache.getSession(userId);
 		if(session == null){
-			error(ctx, 404, "Session not found");
-			return;
+			throw new NotFoundResponse("Session not found");
 		}
 		var user = KittyBot.getJda().retrieveUserById(userId).complete();
 		if(user == null){
-			error(ctx, 404, "User not found");
-			return;
+			throw new NotFoundResponse("User not found");
 		}
 		List<GuildData> guilds;
 		try{
 			guilds = GuildCache.getGuilds(session);
 		}
 		catch(IOException ex){
-			error(ctx, 400, "There was a problem while login. Please try again");
-			return;
+			throw new InternalServerErrorResponse("There was a problem while login. Please try again");
 		}
 		var guildData = DataArray.empty();
 		guilds.forEach(guild -> guildData.add(DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl())));
@@ -166,12 +153,8 @@ public class WebService{
 
 	private void getAllGuilds(Context ctx){
 		var userId = getUserId(ctx);
-		if(userId == null){
-			return;
-		}
 		if(!Config.ADMIN_IDS.contains(userId)){
-			error(ctx, 403, "Only admins have access to this!");
-			return;
+			throw new ForbiddenResponse("Only admins have access to this!");
 		}
 		var data = DataArray.empty();
 		KittyBot.getJda().getGuildCache().forEach(guild -> {
@@ -190,23 +173,16 @@ public class WebService{
 			return;
 		}
 		var guild = getGuild(ctx);
-		if(guild == null){
-			return;
-		}
 		var userId = getUserId(ctx);
-		if(userId == null){
-			return;
-		}
 		if(Config.ADMIN_IDS.contains(userId)){
 			return;
 		}
 		var member = guild.retrieveMemberById(userId).complete();
 		if(member == null){
-			error(ctx, 404, "I could not find you in that guild");
-			return;
+			throw new NotFoundResponse("I could not find you in that guild");
 		}
 		if(!member.hasPermission(Permission.ADMINISTRATOR)){
-			error(ctx, 401, "You have no permission for this guild");
+			throw new ForbiddenResponse("You have no permission for this guild");
 		}
 	}
 
@@ -229,9 +205,6 @@ public class WebService{
 
 	private void getRoles(Context ctx){
 		var guild = getGuild(ctx);
-		if(guild == null){
-			return;
-		}
 		var data = DataArray.empty();
 		guild.getRoleCache().forEach(role -> {
 			if(!role.isPublicRole()){
@@ -244,9 +217,6 @@ public class WebService{
 
 	private void getChannels(Context ctx){
 		var guild = getGuild(ctx);
-		if(guild == null){
-			return;
-		}
 		var data = DataArray.empty();
 		guild.getTextChannelCache().forEach(channel -> data.add(DataObject.empty().put("name", channel.getName()).put("id", channel.getId())));
 		ok(ctx, DataObject.empty().put("channels", data));
@@ -254,9 +224,6 @@ public class WebService{
 
 	private void getEmotes(Context ctx){
 		var guild = getGuild(ctx);
-		if(guild == null){
-			return;
-		}
 		var data = DataArray.empty();
 		guild.getEmoteCache().forEach(emote -> data.add(DataObject.empty().put("name", emote.getName()).put("id", emote.getId()).put("url", emote.getImageUrl())));
 		ok(ctx, DataObject.empty().put("emotes", data));
@@ -264,9 +231,6 @@ public class WebService{
 
 	private void getGuildSettings(Context ctx){
 		var guild = getGuild(ctx);
-		if(guild == null){
-			return;
-		}
 		var guildId = guild.getId();
 		var data = DataArray.empty();
 		SelfAssignableRoleCache.getSelfAssignableRoles(guildId).forEach((key, value) -> data.add(DataObject.empty().put("role", key).put("emote", value)));
@@ -286,9 +250,6 @@ public class WebService{
 
 	private void setGuildSettings(Context ctx){
 		var guild = getGuild(ctx);
-		if(guild == null){
-			return;
-		}
 		var guildId = guild.getId();
 		var json = DataObject.fromJson(ctx.body());
 		if(json.hasKey("prefix")){
@@ -332,17 +293,12 @@ public class WebService{
 
 	private Guild getGuild(final Context ctx){
 		var guildId = ctx.pathParam(":guildId");
-		if(guildId.isBlank()){
-			error(ctx, 400, "Please provide a valid guild id");
-			return null;
-		}
-		if(!Utils.isSnowflake(guildId)){
-			error(ctx, 400, "Please provide a valid guild id");
-			return null;
+		if(guildId.isBlank() || !Utils.isSnowflake(guildId)){
+			throw new BadRequestResponse("Please provide a valid guild id");
 		}
 		var guild = KittyBot.getJda().getGuildById(guildId);
 		if(guild == null){
-			error(ctx, 404, "Guild not found");
+			throw new NotFoundResponse("Guild not found");
 		}
 		return guild;
 	}
@@ -350,12 +306,11 @@ public class WebService{
 	private String getUserId(final Context ctx){
 		var token = ctx.header("Authorization");
 		if(token == null || token.isBlank()){
-			error(ctx, 401, "No token provided");
-			return null;
+			throw new UnauthorizedResponse("No token provided");
 		}
 		var userId = getUserId(token);
 		if(userId == null){
-			error(ctx, 401, "Invalid token");
+			throw new ForbiddenResponse("Invalid token");
 		}
 		return userId;
 	}
@@ -374,9 +329,6 @@ public class WebService{
 		}
 	}
 
-	private void error(Context ctx, int code, String error){
-		result(ctx, code, DataObject.empty().put("error", error));
-	}
 
 	private void result(Context ctx, int code, DataObject data){
 		ctx.header("Content-Type", "application/json");
