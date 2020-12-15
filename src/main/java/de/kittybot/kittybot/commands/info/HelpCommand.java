@@ -30,7 +30,7 @@ public class HelpCommand extends Command{
 					.forEach(cmd -> response.append("\n• **").append(prefix).append(cmd.getCommand()).append("** - *").append(cmd.getDescription()).append("*"));
 		}
 		ctx.sendSuccess(new EmbedBuilder()
-				.setAuthor("Commands", this.main.getConfig().getString("origin_url") + "/commands", Category.NEKO.getEmoteUrl())
+				.setAuthor("Commands", this.main.getConfig().getString("origin_url") + "/commands", ctx.getSelfUser().getEffectiveAvatarUrl())
 				.setDescription(response.toString())
 				.appendDescription("\n\n*Commands can also be found " + MessageUtils.maskLink("here", this.main.getConfig().getString("origin_url") + "/commands") + "*")
 		);

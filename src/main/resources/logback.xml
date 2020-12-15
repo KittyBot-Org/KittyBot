@@ -18,6 +18,8 @@
         </encoder>
     </appender>
 
+    <logger name="com.github.twitch4j" level="INFO"/>
+
     <logger name="spark.http.matching.MatcherFilter" level="info"/>
 
     <root level="INFO">

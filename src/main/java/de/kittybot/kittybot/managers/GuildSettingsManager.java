@@ -3,10 +3,13 @@ package de.kittybot.kittybot.managers;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
+import de.kittybot.kittybot.jooq.tables.records.BotDisabledChannelsRecord;
+import de.kittybot.kittybot.jooq.tables.records.SnipeDisabledChannelsRecord;
 import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.objects.GuildSettings;
 import net.dv8tion.jda.api.entities.Guild;
 import org.jooq.Field;
+import org.jooq.Table;
 import org.jooq.types.YearToSecond;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +17,9 @@ import org.slf4j.LoggerFactory;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
-import static de.kittybot.kittybot.jooq.Tables.GUILDS;
+import static de.kittybot.kittybot.jooq.Tables.*;
 
 public class GuildSettingsManager{
 
@@ -34,10 +38,18 @@ public class GuildSettingsManager{
 
 	public GuildSettings retrieveGuildSettings(long guildId){
 		var dbManager = this.main.getDatabaseManager();
-		try(var con = dbManager.getCon(); var ctx = dbManager.getCtx(con).selectFrom(GUILDS)){
-			var res = ctx.where(GUILDS.GUILD_ID.eq(guildId)).fetchOne();
+		try(var con = dbManager.getCon();
+		    var ctxSettings = dbManager.getCtx(con).selectFrom(GUILDS);
+		    var ctxSnipeDisabledChannels = dbManager.getCtx(con).selectFrom(SNIPE_DISABLED_CHANNELS);
+		    var ctxBotDisabledChannels = dbManager.getCtx(con).selectFrom(BOT_DISABLED_CHANNELS)
+		){
+			var res = ctxSettings.where(GUILDS.GUILD_ID.eq(guildId)).fetchOne();
 			if(res != null){
-				return new GuildSettings(res);
+				return new GuildSettings(
+						res,
+						ctxSnipeDisabledChannels.where(GUILDS.GUILD_ID.eq(guildId)).fetch().stream().map(SnipeDisabledChannelsRecord::getChannelId).collect(Collectors.toSet()),
+						ctxBotDisabledChannels.where(GUILDS.GUILD_ID.eq(guildId)).fetch().stream().map(BotDisabledChannelsRecord::getChannelId).collect(Collectors.toSet())
+				);
 			}
 		}
 		catch(SQLException e){
@@ -123,6 +135,46 @@ public class GuildSettingsManager{
 		}
 		catch(SQLException e){
 			LOG.error("Error updating guild: {}", guildId, e);
+		}
+	}
+
+	public void insertBotDisabledChannel(long guildId, long channelId){
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon()){
+			dbManager.getCtx(con).insertInto(BOT_DISABLED_CHANNELS).values(guildId, channelId).execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error inserting bot disabled channels: {}", guildId, e);
+		}
+	}
+
+	public void deleteBotDisabledChannel(long guildId, long channelId){
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon()){
+			dbManager.getCtx(con).deleteFrom(BOT_DISABLED_CHANNELS).where(BOT_DISABLED_CHANNELS.GUILD_ID.eq(guildId).and(BOT_DISABLED_CHANNELS.CHANNEL_ID.eq(channelId))).execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error deleting bot disabled channels: {}", guildId, e);
+		}
+	}
+
+	public void insertSnipeDisabledChannel(long guildId, long channelId){
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon()){
+			dbManager.getCtx(con).insertInto(SNIPE_DISABLED_CHANNELS).values(guildId, channelId).execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error inserting bot disabled channels: {}", guildId, e);
+		}
+	}
+
+	public void deleteSnipeDisabledChannel(long guildId, long channelId){
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon()){
+			dbManager.getCtx(con).deleteFrom(SNIPE_DISABLED_CHANNELS).where(SNIPE_DISABLED_CHANNELS.GUILD_ID.eq(guildId).and(SNIPE_DISABLED_CHANNELS.CHANNEL_ID.eq(channelId))).execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error deleting bot disabled channels: {}", guildId, e);
 		}
 	}
 
@@ -284,6 +336,42 @@ public class GuildSettingsManager{
 		if(settings != null){
 			settings.setDjRoleId(roleId);
 		}
+	}
+
+	public boolean areSnipesEnabled(long guildId){
+		return this.getSettings(guildId).areSnipesEnabled();
+	}
+
+	public void setSnipesEnabled(long guildId, boolean enabled){
+		updateGuildSetting(guildId, GUILDS.SNIPES_ENABLED, enabled);
+		var settings = getSettingsIfPresent(guildId);
+		if(settings != null){
+			settings.setSnipesEnabled(enabled);
+		}
+	}
+
+	public boolean areSnipesDisabledInChannel(long guildId, long channelId){
+		return getSettings(guildId).areSnipesDisabledInChannel(channelId);
+	}
+
+	public void setSnipesDisabledInChannel(long guildId, long channelId, boolean disable){
+		if(disable){
+			insertSnipeDisabledChannel(guildId, channelId);
+			return;
+		}
+		deleteSnipeDisabledChannel(guildId, channelId);
+	}
+
+	public boolean isBotDisabledInChannel(long guildId, long channelId){
+		return getSettings(guildId).areSnipesDisabledInChannel(channelId);
+	}
+
+	public void setBotDisabledInChannel(long guildId, long channelId, boolean disable){
+		if(disable){
+			insertBotDisabledChannel(guildId, channelId);
+			return;
+		}
+		deleteBotDisabledChannel(guildId, channelId);
 	}
 
 }

@@ -2,6 +2,7 @@ package de.kittybot.kittybot.command.ctx;
 
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.managers.CommandManager;
+import de.kittybot.kittybot.managers.GuildSettingsManager;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
@@ -42,6 +43,10 @@ public class CommandContext{
 
 	public CommandManager getCommandManager(){
 		return this.commandManager;
+	}
+
+	public GuildSettingsManager getSettingsManager(){
+		return this.commandManager.getGuildSettingsManager();
 	}
 
 	public JDA getJDA(){

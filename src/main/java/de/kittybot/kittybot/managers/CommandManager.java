@@ -23,7 +23,7 @@ import java.util.*;
 public class CommandManager extends ListenerAdapter{
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommandManager.class);
-	private static final String ARGUMENT_REGEX = "\\s+";
+	public static final String ARGUMENT_REGEX = "\\s+";
 
 	private final Map<String, Command> commands;
 	private final Map<String, Command> allCommands;
@@ -69,6 +69,9 @@ public class CommandManager extends ListenerAdapter{
 
 	@Override
 	public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event){
+		if(this.guildSettingsManager.isBotDisabledInChannel(event.getGuild().getIdLong(), event.getChannel().getIdLong())){
+			return;
+		}
 		var message = trimPrefix(event);
 		if(message == null){
 			return;

@@ -29,10 +29,10 @@ public class StatsCommand extends Command{
 				.addField("Guild Settings Cache:", this.main.getCommandManager().getGuildSettingsManager().getStats().toString(), false)
 				.addField("Reactive Messages Cache:", this.main.getCommandManager().getReactiveMessageManager().getStats().toString(), false)
 				.addField("Dashboard Session Cache:", this.main.getDashboardSessionManager().getStats().toString(), false)
-				.addField("Dashboard Session Cache:", this.main.getMessageManager().getStats1().toString(), false)
-				.addField("Dashboard Session Cache:", this.main.getMessageManager().getStats2().toString(), false)
-				.addField("Dashboard Session Cache:", this.main.getMessageManager().getStats3().toString(), false)
-				.addField("Dashboard Session Cache:", this.main.getMessageManager().getStats4().toString(), false)
+				.addField("Message Cache 1:", this.main.getMessageManager().getStats1().toString(), false)
+				.addField("Message Cache 2:", this.main.getMessageManager().getStats2().toString(), false)
+				.addField("Message Cache 3:", this.main.getMessageManager().getStats3().toString(), false)
+				.addField("Message Cache 4:", this.main.getMessageManager().getStats4().toString(), false)
 		);
 	}
 

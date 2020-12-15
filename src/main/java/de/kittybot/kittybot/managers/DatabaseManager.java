@@ -30,6 +30,8 @@ public class DatabaseManager{
 		initTable("reactive_messages");
 		initTable("self_assignable_roles");
 		initTable("self_assignable_role_groups");
+		initTable("bot_disabled_channels");
+		initTable("snipe_disabled_channels");
 		//initTable("requests");
 		initTable("sessions");
 		//initTable("user_statistics");

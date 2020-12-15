@@ -1,9 +1,14 @@
 package de.kittybot.kittybot.objects;
 
+import de.kittybot.kittybot.jooq.tables.SnipeDisabledChannels;
+import de.kittybot.kittybot.jooq.tables.records.BotDisabledChannelsRecord;
 import de.kittybot.kittybot.jooq.tables.records.GuildsRecord;
+import de.kittybot.kittybot.jooq.tables.records.SnipeDisabledChannelsRecord;
 import de.kittybot.kittybot.utils.MessageUtils;
+import org.jooq.Result;
 
 import java.time.Duration;
+import java.util.Set;
 
 public class GuildSettings{
 
@@ -22,8 +27,11 @@ public class GuildSettings{
 	private long inactiveRoleId;
 	private Duration inactiveDuration;
 	private long djRoleId;
+	private boolean snipesEnabled;
+	private final Set<Long> snipeDisabledChannels;
+	private final Set<Long> botDisabledChannels;
 
-	public GuildSettings(GuildsRecord record){
+	public GuildSettings(GuildsRecord record, Set<Long> snipeDisabledChannels, Set<Long> botDisabledChannels){
 		this.guildId = record.getGuildId();
 		this.commandPrefix = record.getCommandPrefix();
 		this.announcementChannelId = record.getAnnouncementChannelId();
@@ -39,6 +47,9 @@ public class GuildSettings{
 		this.inactiveRoleId = record.getInactiveRoleId();
 		this.inactiveDuration = record.getInactiveDuration().toDuration();
 		this.djRoleId = record.getDjRoleId();
+		this.snipesEnabled = record.getSnipesEnabled();
+		this.snipeDisabledChannels = snipeDisabledChannels;
+		this.botDisabledChannels = botDisabledChannels;
 	}
 
 	public long getGuildId(){
@@ -174,7 +185,19 @@ public class GuildSettings{
 	}
 
 	public String getDjRole(){
-		return MessageUtils.getRoleMention(djRoleId);
+		return MessageUtils.getRoleMention(this.djRoleId);
+	}
+
+	public void setSnipesEnabled(boolean enabled){
+		this.snipesEnabled = enabled;
+	}
+
+	public boolean areSnipesEnabled(){
+		return this.snipesEnabled;
+	}
+
+	public boolean areSnipesDisabledInChannel(long channelId){
+		return this.snipeDisabledChannels.contains(channelId);
 	}
 
 }

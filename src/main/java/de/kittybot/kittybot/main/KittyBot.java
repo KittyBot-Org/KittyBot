@@ -1,6 +1,8 @@
 package de.kittybot.kittybot.main;
 
 import de.kittybot.kittybot.events.OnGuildEvent;
+import de.kittybot.kittybot.events.OnGuildMemberEvent;
+import de.kittybot.kittybot.events.OnGuildVoiceEvent;
 import de.kittybot.kittybot.exceptions.MissingConfigValuesException;
 import de.kittybot.kittybot.managers.*;
 import de.kittybot.kittybot.utils.Config;
@@ -20,6 +22,7 @@ import okhttp3.OkHttpClient;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
+import java.net.http.HttpClient;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -36,6 +39,7 @@ public class KittyBot{
 	private final MessageManager messageManager;
 	private final BotListsManager botListManager;
 	private final RequestManager requestManager;
+	private final StreamNotificationManager streamNotificationManager;
 	private final DashboardSessionManager dashboardSessionManager;
 	private final WebService webService;
 	private final ScheduledExecutorService scheduler;
@@ -86,9 +90,9 @@ public class KittyBot{
 						this.statusManager,
 						this.messageManager,
 						this.botListManager,
-						new OnGuildEvent(this)
-						//new OnGuildMemberEvent(this),
-						//new OnGuildVoiceEvent(this)
+						new OnGuildEvent(this),
+						new OnGuildMemberEvent(this),
+						new OnGuildVoiceEvent(this)
 				)
 				.setHttpClient(this.httpClient)
 				.setVoiceDispatchInterceptor(this.lavalinkManager.getLavalink().getVoiceInterceptor())
@@ -100,6 +104,7 @@ public class KittyBot{
 				.build()
 				.awaitReady();
 
+		this.streamNotificationManager = new StreamNotificationManager(this);
 		this.lavalinkManager.connect(jda.getSelfUser().getId());
 		this.dashboardSessionManager.init(jda.getSelfUser().getIdLong());
 	}

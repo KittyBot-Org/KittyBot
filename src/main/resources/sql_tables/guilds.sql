@@ -14,5 +14,6 @@ CREATE TABLE IF NOT EXISTS guilds(
   inactive_role_id        bigint NOT NULL default(-1),
   inactive_duration       interval NOT NULL,
   dj_role_id              bigint NOT NULL default(-1),
+  snipes_enabled          boolean NOT NULL default(true),
 PRIMARY KEY(guild_id)
 );

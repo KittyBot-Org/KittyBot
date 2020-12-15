@@ -3,6 +3,7 @@ package de.kittybot.kittybot.utils;
 import de.kittybot.kittybot.objects.Emoji;
 
 import java.time.Duration;
+import java.util.Collection;
 
 public class MessageUtils{
 
@@ -27,6 +28,14 @@ public class MessageUtils{
 
 	public static String fTime(int time){
 		return time > 9 ? String.valueOf(time) : "0" + time;
+	}
+
+	public static <T> String pluralize(String text, Collection<T> collection){
+		return pluralize(text, collection.size());
+	}
+
+	public static String pluralize(String text, int count){
+		return count == 1 ? text : text + "s";
 	}
 
 	public static String getUserMention(long userId){

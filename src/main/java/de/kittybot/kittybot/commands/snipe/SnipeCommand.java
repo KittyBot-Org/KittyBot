@@ -24,6 +24,9 @@ public class SnipeCommand extends Command{
 		if(!ctx.getChannel().canTalk()){
 			return;
 		}
+		if(!ctx.getSettingsManager().areSnipesEnabled(ctx.getGuild().getIdLong())){
+			ctx.error("Snipes are disabled for this guild");
+		}
 		var lastDeletedMessage = this.main.getMessageManager().getLastDeletedMessage(ctx.getMessage().getTextChannel().getIdLong());
 		if(lastDeletedMessage == null){
 			ctx.sendError("There's no deleted message to snipe");
