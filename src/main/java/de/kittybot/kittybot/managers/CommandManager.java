@@ -22,9 +22,8 @@ import java.util.*;
 
 public class CommandManager extends ListenerAdapter{
 
-	private static final Logger LOG = LoggerFactory.getLogger(CommandManager.class);
 	public static final String ARGUMENT_REGEX = "\\s+";
-
+	private static final Logger LOG = LoggerFactory.getLogger(CommandManager.class);
 	private final Map<String, Command> commands;
 	private final Map<String, Command> allCommands;
 	private final Set<Long> adminIds;

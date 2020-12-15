@@ -12,10 +12,10 @@ public class Stream{
 	private final String userName, streamTitle, thumbnailUrl;
 	private final long streamId, userId;
 	private final int gameId;
-	private Game game;
 	private final int viewerCount;
 	private final Instant startedAt;
 	private final Language language;
+	private Game game;
 
 	public Stream(long streamId, String streamTitle, String thumbnailUrl, long userId, String userName, int gameId, Game game, int viewerCount, Instant startedAt, Language language){
 		this.streamId = streamId;
@@ -28,6 +28,21 @@ public class Stream{
 		this.viewerCount = viewerCount;
 		this.startedAt = startedAt;
 		this.language = language;
+	}
+
+	public static Stream fromTwitchJSON(DataObject json){
+		return new Stream(
+				json.getLong("id"),
+				json.getString("title"),
+				json.getString("thumbnail_url"),
+				json.getLong("user_id"),
+				json.getString("user_name"),
+				json.getInt("game_id"),
+				new Game(json.getInt("game_id"), json.getString("game_name"), ""),
+				json.getInt("viewer_count"),
+				Instant.parse(json.getString("started_at")),
+				Arrays.stream(Language.values()).filter(l -> l.getShortname().equalsIgnoreCase(json.getString("language"))).findFirst().get()
+		);
 	}
 
 	public String getUserName(){
@@ -72,21 +87,6 @@ public class Stream{
 
 	public Language getLanguage(){
 		return this.language;
-	}
-
-	public static Stream fromTwitchJSON(DataObject json){
-		return new Stream(
-				json.getLong("id"),
-				json.getString("title"),
-				json.getString("thumbnail_url"),
-				json.getLong("user_id"),
-				json.getString("user_name"),
-				json.getInt("game_id"),
-				new Game(json.getInt("game_id"), json.getString("game_name"), ""),
-				json.getInt("viewer_count"),
-				Instant.parse(json.getString("started_at")),
-				Arrays.stream(Language.values()).filter(l -> l.getShortname().equalsIgnoreCase(json.getString("language"))).findFirst().get()
-		);
 	}
 
 }

@@ -22,7 +22,6 @@ import okhttp3.OkHttpClient;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
-import java.net.http.HttpClient;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 

@@ -1,11 +1,7 @@
 package de.kittybot.kittybot.objects;
 
-import de.kittybot.kittybot.jooq.tables.SnipeDisabledChannels;
-import de.kittybot.kittybot.jooq.tables.records.BotDisabledChannelsRecord;
 import de.kittybot.kittybot.jooq.tables.records.GuildsRecord;
-import de.kittybot.kittybot.jooq.tables.records.SnipeDisabledChannelsRecord;
 import de.kittybot.kittybot.utils.MessageUtils;
-import org.jooq.Result;
 
 import java.time.Duration;
 import java.util.Set;
@@ -13,6 +9,8 @@ import java.util.Set;
 public class GuildSettings{
 
 	private final long guildId;
+	private final Set<Long> snipeDisabledChannels;
+	private final Set<Long> botDisabledChannels;
 	private String commandPrefix;
 	private long announcementChannelId;
 	private long requestChannelId;
@@ -28,8 +26,6 @@ public class GuildSettings{
 	private Duration inactiveDuration;
 	private long djRoleId;
 	private boolean snipesEnabled;
-	private final Set<Long> snipeDisabledChannels;
-	private final Set<Long> botDisabledChannels;
 
 	public GuildSettings(GuildsRecord record, Set<Long> snipeDisabledChannels, Set<Long> botDisabledChannels){
 		this.guildId = record.getGuildId();

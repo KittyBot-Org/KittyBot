@@ -14,6 +14,14 @@ public class Game{
 		this.thumbnailUrl = thumbnailUrl;
 	}
 
+	public static Game getUnknown(){
+		return new Game(0, "unknown", "");
+	}
+
+	public static Game fromTwitchJSON(DataObject json){
+		return new Game(json.getInt("id"), json.getString("name"), json.getString("box_art_url"));
+	}
+
 	public int getId(){
 		return this.id;
 	}
@@ -26,11 +34,4 @@ public class Game{
 		return this.thumbnailUrl;
 	}
 
-	public static Game getUnknown(){
-		return new Game(0, "unknown", "");
-	}
-
-	public static Game fromTwitchJSON(DataObject json){
-		return new Game(json.getInt("id"), json.getString("name"), json.getString("box_art_url"));
-	}
 }

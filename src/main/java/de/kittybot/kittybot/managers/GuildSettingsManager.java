@@ -9,7 +9,6 @@ import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.objects.GuildSettings;
 import net.dv8tion.jda.api.entities.Guild;
 import org.jooq.Field;
-import org.jooq.Table;
 import org.jooq.types.YearToSecond;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -135,46 +134,6 @@ public class GuildSettingsManager{
 		}
 		catch(SQLException e){
 			LOG.error("Error updating guild: {}", guildId, e);
-		}
-	}
-
-	public void insertBotDisabledChannel(long guildId, long channelId){
-		var dbManager = this.main.getDatabaseManager();
-		try(var con = dbManager.getCon()){
-			dbManager.getCtx(con).insertInto(BOT_DISABLED_CHANNELS).values(guildId, channelId).execute();
-		}
-		catch(SQLException e){
-			LOG.error("Error inserting bot disabled channels: {}", guildId, e);
-		}
-	}
-
-	public void deleteBotDisabledChannel(long guildId, long channelId){
-		var dbManager = this.main.getDatabaseManager();
-		try(var con = dbManager.getCon()){
-			dbManager.getCtx(con).deleteFrom(BOT_DISABLED_CHANNELS).where(BOT_DISABLED_CHANNELS.GUILD_ID.eq(guildId).and(BOT_DISABLED_CHANNELS.CHANNEL_ID.eq(channelId))).execute();
-		}
-		catch(SQLException e){
-			LOG.error("Error deleting bot disabled channels: {}", guildId, e);
-		}
-	}
-
-	public void insertSnipeDisabledChannel(long guildId, long channelId){
-		var dbManager = this.main.getDatabaseManager();
-		try(var con = dbManager.getCon()){
-			dbManager.getCtx(con).insertInto(SNIPE_DISABLED_CHANNELS).values(guildId, channelId).execute();
-		}
-		catch(SQLException e){
-			LOG.error("Error inserting bot disabled channels: {}", guildId, e);
-		}
-	}
-
-	public void deleteSnipeDisabledChannel(long guildId, long channelId){
-		var dbManager = this.main.getDatabaseManager();
-		try(var con = dbManager.getCon()){
-			dbManager.getCtx(con).deleteFrom(SNIPE_DISABLED_CHANNELS).where(SNIPE_DISABLED_CHANNELS.GUILD_ID.eq(guildId).and(SNIPE_DISABLED_CHANNELS.CHANNEL_ID.eq(channelId))).execute();
-		}
-		catch(SQLException e){
-			LOG.error("Error deleting bot disabled channels: {}", guildId, e);
 		}
 	}
 
@@ -362,6 +321,26 @@ public class GuildSettingsManager{
 		deleteSnipeDisabledChannel(guildId, channelId);
 	}
 
+	public void insertSnipeDisabledChannel(long guildId, long channelId){
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon()){
+			dbManager.getCtx(con).insertInto(SNIPE_DISABLED_CHANNELS).values(guildId, channelId).execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error inserting bot disabled channels: {}", guildId, e);
+		}
+	}
+
+	public void deleteSnipeDisabledChannel(long guildId, long channelId){
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon()){
+			dbManager.getCtx(con).deleteFrom(SNIPE_DISABLED_CHANNELS).where(SNIPE_DISABLED_CHANNELS.GUILD_ID.eq(guildId).and(SNIPE_DISABLED_CHANNELS.CHANNEL_ID.eq(channelId))).execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error deleting bot disabled channels: {}", guildId, e);
+		}
+	}
+
 	public boolean isBotDisabledInChannel(long guildId, long channelId){
 		return getSettings(guildId).areSnipesDisabledInChannel(channelId);
 	}
@@ -372,6 +351,26 @@ public class GuildSettingsManager{
 			return;
 		}
 		deleteBotDisabledChannel(guildId, channelId);
+	}
+
+	public void insertBotDisabledChannel(long guildId, long channelId){
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon()){
+			dbManager.getCtx(con).insertInto(BOT_DISABLED_CHANNELS).values(guildId, channelId).execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error inserting bot disabled channels: {}", guildId, e);
+		}
+	}
+
+	public void deleteBotDisabledChannel(long guildId, long channelId){
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon()){
+			dbManager.getCtx(con).deleteFrom(BOT_DISABLED_CHANNELS).where(BOT_DISABLED_CHANNELS.GUILD_ID.eq(guildId).and(BOT_DISABLED_CHANNELS.CHANNEL_ID.eq(channelId))).execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error deleting bot disabled channels: {}", guildId, e);
+		}
 	}
 
 }
