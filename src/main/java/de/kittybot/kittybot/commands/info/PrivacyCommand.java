@@ -1,25 +1,25 @@
 package de.kittybot.kittybot.commands.info;
 
-import de.kittybot.kittybot.objects.Config;
-import de.kittybot.kittybot.objects.command.ACommand;
-import de.kittybot.kittybot.objects.command.Category;
-import de.kittybot.kittybot.objects.command.CommandContext;
+import de.kittybot.kittybot.command.Category;
+import de.kittybot.kittybot.command.Command;
+import de.kittybot.kittybot.command.ctx.CommandContext;
+import de.kittybot.kittybot.main.KittyBot;
+import de.kittybot.kittybot.utils.MessageUtils;
 
-public class PrivacyCommand extends ACommand{
+import java.util.List;
 
-	public static final String COMMAND = "privacy";
-	public static final String USAGE = "privacy";
-	public static final String DESCRIPTION = "Gives you a link to our privacy policy";
-	protected static final String[] ALIASES = {};
-	protected static final Category CATEGORY = Category.INFORMATIVE;
+public class PrivacyCommand extends Command{
 
-	public PrivacyCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
+	private final KittyBot main;
+
+	public PrivacyCommand(KittyBot main){
+		super("privacy", "Gives you a link to our privacy policy", Category.INFORMATION);
+		this.main = main;
 	}
 
 	@Override
-	public void run(CommandContext ctx){
-		sendSuccess(ctx, "You can find our privacy policy here: " + Config.ORIGIN_URL + "/privacy");
+	public void run(List<String> args, CommandContext ctx){
+		ctx.sendSuccess("You can find our privacy policy " + MessageUtils.maskLink("here", this.main.getConfig().getString("origin_url") + "/privacy"));
 	}
 
 }

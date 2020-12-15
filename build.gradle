@@ -18,7 +18,7 @@ plugins {
 apply plugin: 'de.kittybot.jooq'
 
 group 'de.kittybot'
-mainClassName = 'de.kittybot.kittybot.KittyBot'
+mainClassName = 'de.kittybot.kittybot.main.Main'
 
 repositories {
     jcenter()
@@ -59,6 +59,7 @@ dependencies {
     // other
     implementation 'io.javalin:javalin:3.12.0'
     implementation 'io.github.classgraph:classgraph:4.8.90'
+    implementation 'com.github.ben-manes.caffeine:caffeine:2.8.8'
 }
 
 jooq {
@@ -89,7 +90,7 @@ jooq {
                         fluentSetters = true
                     }
                     target {
-                        packageName = 'de.kittybot.kittybot.database.jooq'
+                        packageName = 'de.kittybot.kittybot.jooq'
                         directory = "${projectDir}/src/main/java"
                         clean = true
                     }

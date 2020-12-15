@@ -1,29 +1,28 @@
 package de.kittybot.kittybot.commands.info;
 
-import de.kittybot.kittybot.objects.Config;
-import de.kittybot.kittybot.objects.command.ACommand;
-import de.kittybot.kittybot.objects.command.Category;
-import de.kittybot.kittybot.objects.command.CommandContext;
+import de.kittybot.kittybot.command.Category;
+import de.kittybot.kittybot.command.Command;
+import de.kittybot.kittybot.command.ctx.CommandContext;
+import de.kittybot.kittybot.main.KittyBot;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-public class PingCommand extends ACommand{
+import java.util.List;
 
-	public static final String COMMAND = "ping";
-	public static final String USAGE = "ping";
-	public static final String DESCRIPTION = "Shows the bots ping";
-	protected static final String[] ALIASES = {};
-	protected static final Category CATEGORY = Category.INFORMATIVE;
+public class PingCommand extends Command{
 
-	public PingCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
+	private final KittyBot main;
+
+	public PingCommand(KittyBot main){
+		super("ping", "Shows the bots ping", Category.INFORMATION);
+		this.main = main;
 	}
 
 	@Override
-	public void run(CommandContext ctx){
+	public void run(List<String> args, CommandContext ctx){
 		var jda = ctx.getJDA();
 		jda.getRestPing().queue(ping ->
-				sendSuccess(ctx, new EmbedBuilder()
-						.setAuthor("KittyBot Ping", Config.ORIGIN_URL, jda.getSelfUser().getEffectiveAvatarUrl())
+				ctx.sendSuccess(new EmbedBuilder()
+						.setAuthor("KittyBot Ping", this.main.getConfig().getString("origin_url"), jda.getSelfUser().getEffectiveAvatarUrl())
 
 						.addField("Gateway Ping:", jda.getGatewayPing() + "ms", false)
 						.addField("Rest Ping:", ping + "ms", false)

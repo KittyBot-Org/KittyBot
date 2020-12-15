@@ -1,12 +1,7 @@
 package de.kittybot.kittybot.events;
 
-import de.kittybot.kittybot.KittyBot;
-import de.kittybot.kittybot.cache.*;
-import de.kittybot.kittybot.database.Database;
-import de.kittybot.kittybot.objects.data.GuildData;
-import de.kittybot.kittybot.utils.Utils;
+import de.kittybot.kittybot.main.KittyBot;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.audit.ActionType;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
@@ -15,25 +10,29 @@ import net.dv8tion.jda.api.events.guild.update.GuildUpdateNameEvent;
 import net.dv8tion.jda.api.events.role.update.RoleUpdatePermissionsEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import javax.annotation.Nonnull;
 import java.awt.*;
 import java.time.Instant;
 
 public class OnGuildEvent extends ListenerAdapter{
 
+	private final KittyBot main;
+
+	public OnGuildEvent(KittyBot main){
+		this.main = main;
+	}
+
 	@Override
-	public void onGuildJoin(GuildJoinEvent event){
-		var guildCount = (int) event.getJDA().getGuildCache().size();
+	public void onGuildJoin(@Nonnull GuildJoinEvent event){
 		var guild = event.getGuild();
-		Utils.updateStats(guildCount);
-		Database.registerGuild(guild);
-		InviteCache.initCaching(guild);
+		var guildCount = (int) event.getJDA().getGuildCache().size();
 		var owner = guild.getOwner();
-		KittyBot.sendToPublicLogChannel(String.format("Hellowo I joined the guild: ``%s``%s``%d`` members!%nCurrently I'm in %d guilds!", guild.getName(), owner == null ? " " : " with owner: ``" + owner
-				.getUser()
-				.getAsTag() + "`` and ", guild.getMemberCount(), guildCount));
-		if(!event.getGuild().getSelfMember().hasPermission(Permission.VIEW_AUDIT_LOGS)){
-			return;
-		}
+		sendToLogChannel(String.format("Hellowo I joined the guild: `%s`%s`%d` members!%nCurrently I'm in %d guilds!",
+				guild.getName(),
+				owner == null ? " " : " with owner: `" + owner.getUser().getAsTag() + "` and ",
+				guild.getMemberCount(),
+				guildCount
+		));
 		guild.retrieveAuditLogs().type(ActionType.BOT_ADD).limit(1).cache(false).queue(entries -> {
 			var entry = entries.get(0);
 			if(!entry.getTargetId().equals(event.getJDA().getSelfUser().getId())){
@@ -43,7 +42,8 @@ public class OnGuildEvent extends ListenerAdapter{
 			if(user == null){
 				return;
 			}
-			var embed = new EmbedBuilder().setTitle("Hellowo and thank your for adding me to your Discord Server!")
+			var embed = new EmbedBuilder()
+					.setTitle("Hellowo and thank your for adding me to your Discord Server!")
 					.setDescription("To get started you maybe want to set up some self assignable roles. This can be done with `.roles add @role :emote:`. You will need a emote for each role and they should be from your server!\n\n"
 							+ "If you want to know my other commands just type ``.commands``.\n"
 							+ "To change my prefix use ``.options prefix <your wished prefix>``.\n" + "In case you forgot any command just type ``.cmds`` to get a full list of all my commands!\n"
@@ -54,76 +54,45 @@ public class OnGuildEvent extends ListenerAdapter{
 					.setFooter(guild.getName(), guild.getIconUrl())
 					.setTimestamp(Instant.now())
 					.build();
-			var defaultChannel = guild.getDefaultChannel();
 			var messageRestAction = user.openPrivateChannel().flatMap(channel -> channel.sendMessage(embed));
+			var defaultChannel = guild.getDefaultChannel();
 			if(defaultChannel != null && defaultChannel.canTalk()){
 				messageRestAction = messageRestAction.onErrorFlatMap(ignored -> defaultChannel.sendMessage(embed));
 			}
 			messageRestAction.queue();
 		});
-
-		var guildId = guild.getId();
-		GuildCache.cacheGuild(guildId, new GuildData(guildId, guild.getName(), guild.getIconUrl()));
-		guild.findMembers(member -> member.hasPermission(Permission.ADMINISTRATOR))
-				.onSuccess(members -> members.forEach(member -> GuildCache.cacheGuildForUser(member.getId(), guildId)));
 	}
 
 	@Override
-	public void onGuildLeave(GuildLeaveEvent event){
-		var guildCount = (int) event.getJDA().getGuildCache().size();
-		var guild = event.getGuild();
-		Utils.updateStats(guildCount);
-		InviteCache.pruneCache(guild);
-		GuildSettingsCache.pruneCache(guild);
-		MusicPlayerCache.pruneCache(guild);
-		ReactiveMessageCache.pruneCache(guild);
-		CommandResponseCache.pruneCache(guild);
-		SelfAssignableRoleCache.pruneCache(guild);
-		MessageCache.pruneCache(guild);
-		GuildCache.uncacheGuild(guild);
-		KittyBot.sendToPublicLogChannel(String.format("Helluwu I got kicked from the guild: ``%s``%nCurrently I'm in %d guilds!", guild.getName(), guildCount));
+	public void onGuildUpdateIcon(@Nonnull GuildUpdateIconEvent event){
+
 	}
 
 	@Override
-	public void onGuildUpdateIcon(final GuildUpdateIconEvent event){
-		var guild = event.getGuild();
-		var guildId = guild.getId();
-		GuildCache.cacheGuild(guildId, new GuildData(guildId, guild.getName(), event.getNewIconUrl()), false);
+	public void onGuildUpdateName(@Nonnull GuildUpdateNameEvent event){
+
 	}
 
 	@Override
-	public void onGuildUpdateName(final GuildUpdateNameEvent event){
-		var guild = event.getGuild();
-		var guildId = guild.getId();
-		GuildCache.cacheGuild(guildId, new GuildData(guildId, event.getNewName(), guild.getIconUrl()), false);
+	public void onRoleUpdatePermissions(@Nonnull RoleUpdatePermissionsEvent event){
+
 	}
 
-	@Override
-	public void onRoleUpdatePermissions(final RoleUpdatePermissionsEvent event){
-		var add = event.getNewPermissions().contains(Permission.ADMINISTRATOR) && !event.getOldPermissions().contains(Permission.ADMINISTRATOR);
-		var remove = !event.getNewPermissions().contains(Permission.ADMINISTRATOR) && event.getOldPermissions().contains(Permission.ADMINISTRATOR);
-		if(!add && !remove){
+	private void sendToLogChannel(String message){
+		var config = this.main.getConfig();
+		if(config.getLong("log_guild_id") == 0 || config.getLong("log_channel_id") == 0){
 			return;
 		}
-		final var guild = event.getGuild();
-		final var guildId = guild.getId();
-		guild.findMembers(member -> {
-			final var userId = member.getId();
-			final var hasRole = member.getRoles().contains(event.getRole());
-			if(add){
-				return !GuildCache.isGuildCachedForUser(guildId, userId) && DashboardSessionCache.hasSession(userId) && hasRole;
-			}
-			return GuildCache.isGuildCachedForUser(guildId, userId) && DashboardSessionCache.hasSession(userId) && hasRole;
-		})
-				.onSuccess(members -> members.forEach(member -> {
-					final var userId = member.getId();
-					if(add){
-						GuildCache.cacheGuildForUser(userId, guildId);
-					}
-					else{
-						GuildCache.uncacheGuildForUser(userId, guildId);
-					}
-				}));
+		var jda = this.main.getJDA();
+		var guild = jda.getGuildById(config.getLong("log_guild_id"));
+		if(guild == null){
+			return;
+		}
+		var channel = guild.getTextChannelById(config.getLong("log_channel_id"));
+		if(channel == null || !channel.canTalk()){
+			return;
+		}
+		channel.sendMessage(new EmbedBuilder().setColor(new Color(76, 80, 193)).setDescription(message).build()).queue();
 	}
 
 }

@@ -1,10 +1,9 @@
 CREATE TABLE IF NOT EXISTS reactive_messages(
-  channel_id varchar(18) NOT NULL,
-  message_id varchar(18) NOT NULL,
-  user_id    varchar(18) NOT NULL,
-  guild_id   varchar(18) NOT NULL,
-  command_id varchar(18) NOT NULL,
-  command    varchar(18) NOT NULL,
-  allowed    varchar(18) NOT NULL,
-PRIMARY KEY(message_id, user_id, guild_id)
+  guild_id     bigint NOT NULL,
+  channel_id   bigint NOT NULL,
+  message_id   bigint NOT NULL,
+  user_id      bigint NOT NULL,
+  command_path varchar(255) NOT NULL,
+  allowed      bigint NOT NULL,
+PRIMARY KEY(guild_id, channel_id, message_id, user_id)
 );
