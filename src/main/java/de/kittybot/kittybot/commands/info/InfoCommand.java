@@ -4,7 +4,6 @@ import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
 import de.kittybot.kittybot.main.KittyBot;
-import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDAInfo;

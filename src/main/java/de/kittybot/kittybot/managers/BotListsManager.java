@@ -5,7 +5,6 @@ import de.kittybot.kittybot.objects.API;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
-import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,17 +18,17 @@ public class BotListsManager extends ListenerAdapter{
 
 	@Override
 	public void onReady(@NotNull ReadyEvent event){
-		updateStats((int)event.getJDA().getGuildCache().size());
+		updateStats((int) event.getJDA().getGuildCache().size());
 	}
 
 	@Override
 	public void onGuildJoin(@NotNull GuildJoinEvent event){
-		updateStats((int)this.main.getJDA().getGuildCache().size());
+		updateStats((int) this.main.getJDA().getGuildCache().size());
 	}
 
 	@Override
 	public void onGuildLeave(@NotNull GuildLeaveEvent event){
-		updateStats((int)this.main.getJDA().getGuildCache().size());
+		updateStats((int) this.main.getJDA().getGuildCache().size());
 	}
 
 	private void updateStats(int guildCount){

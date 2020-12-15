@@ -24,7 +24,8 @@ public class LeaveMessagesCommand extends Command{
 			settingsManager.setLeaveMessagesEnabled(guild, false);
 			ctx.sendSuccess("Disabled leave messages here");
 			return;
-		} else if(!args.isEmpty()){
+		}
+		else if(!args.isEmpty()){
 			settingsManager.setLeaveMessage(guild, ctx.getRawMessage());
 			settingsManager.setLeaveMessagesEnabled(guild, true);
 			ctx.sendSuccess("Leave message enabled & set to:\n" + ctx.getRawMessage());

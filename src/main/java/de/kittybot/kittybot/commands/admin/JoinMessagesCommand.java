@@ -24,7 +24,8 @@ public class JoinMessagesCommand extends Command{
 			settingsManager.setJoinMessagesEnabled(guild, false);
 			ctx.sendSuccess("Disabled join messages here");
 			return;
-		} else if(!args.isEmpty()){
+		}
+		else if(!args.isEmpty()){
 			settingsManager.setJoinMessage(guild, ctx.getRawMessage());
 			settingsManager.setJoinMessagesEnabled(guild, true);
 			ctx.sendSuccess("Join message enabled & set to:\n" + ctx.getRawMessage());

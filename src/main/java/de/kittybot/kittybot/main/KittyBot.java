@@ -1,9 +1,6 @@
 package de.kittybot.kittybot.main;
 
-import de.kittybot.kittybot.command.ctx.CommandContext;
 import de.kittybot.kittybot.events.OnGuildEvent;
-import de.kittybot.kittybot.events.OnGuildMemberEvent;
-import de.kittybot.kittybot.events.OnGuildVoiceEvent;
 import de.kittybot.kittybot.exceptions.MissingConfigValuesException;
 import de.kittybot.kittybot.managers.*;
 import de.kittybot.kittybot.utils.Config;
@@ -20,8 +17,6 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.dv8tion.jda.internal.utils.config.ThreadingConfig;
 import okhttp3.OkHttpClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
@@ -91,9 +86,9 @@ public class KittyBot{
 						this.statusManager,
 						this.messageManager,
 						this.botListManager,
-						new OnGuildEvent(this),
-						new OnGuildMemberEvent(this),
-						new OnGuildVoiceEvent(this)
+						new OnGuildEvent(this)
+						//new OnGuildMemberEvent(this),
+						//new OnGuildVoiceEvent(this)
 				)
 				.setHttpClient(this.httpClient)
 				.setVoiceDispatchInterceptor(this.lavalinkManager.getLavalink().getVoiceInterceptor())

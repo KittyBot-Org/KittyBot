@@ -5,7 +5,6 @@ import com.jagrosh.jdautilities.oauth2.session.Session;
 import com.jagrosh.jdautilities.oauth2.session.SessionData;
 import de.kittybot.kittybot.jooq.tables.records.SessionsRecord;
 import de.kittybot.kittybot.managers.DashboardSessionManager;
-import de.kittybot.kittybot.web.WebService;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;

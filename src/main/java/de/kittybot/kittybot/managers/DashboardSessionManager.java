@@ -59,6 +59,10 @@ public class DashboardSessionManager extends ListenerAdapter{
 		return null;
 	}
 
+	public static Scope[] getScopes(){
+		return SCOPES;
+	}
+
 	public void init(long userId){
 		this.oAuth2Client = new OAuth2Client.Builder()
 				.setClientId(userId)
@@ -122,10 +126,6 @@ public class DashboardSessionManager extends ListenerAdapter{
 
 	public OAuth2Client getOAuth2Client(){
 		return this.oAuth2Client;
-	}
-
-	public static Scope[] getScopes(){
-		return SCOPES;
 	}
 
 	public SecretKey getSecretKey(){

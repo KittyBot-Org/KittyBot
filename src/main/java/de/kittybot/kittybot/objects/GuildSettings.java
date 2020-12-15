@@ -57,24 +57,24 @@ public class GuildSettings{
 		return this.announcementChannelId;
 	}
 
-	public String getAnnouncementChannel(){
-		return MessageUtils.getChannelMention(announcementChannelId);
-	}
-
 	public void setAnnouncementChannelId(long announcementChannelId){
 		this.announcementChannelId = announcementChannelId;
+	}
+
+	public String getAnnouncementChannel(){
+		return MessageUtils.getChannelMention(announcementChannelId);
 	}
 
 	public long getRequestChannelId(){
 		return this.requestChannelId;
 	}
 
-	public String getRequestChannel(){
-		return MessageUtils.getChannelMention(requestChannelId);
-	}
-
 	public void setRequestChannelId(long requestChannelId){
 		this.requestChannelId = requestChannelId;
+	}
+
+	public String getRequestChannel(){
+		return MessageUtils.getChannelMention(requestChannelId);
 	}
 
 	public boolean areRequestsEnabled(){
@@ -121,12 +121,12 @@ public class GuildSettings{
 		return this.logChannelId;
 	}
 
-	public String getLogChannel(){
-		return MessageUtils.getChannelMention(logChannelId);
-	}
-
 	public void setLogChannelId(long logChannelId){
 		this.logChannelId = logChannelId;
+	}
+
+	public String getLogChannel(){
+		return MessageUtils.getChannelMention(logChannelId);
 	}
 
 	public boolean areLogMessagesEnabled(){
@@ -149,12 +149,12 @@ public class GuildSettings{
 		return this.inactiveRoleId;
 	}
 
-	public String getInactiveRole(){
-		return MessageUtils.getRoleMention(inactiveRoleId);
-	}
-
 	public void setInactiveRoleId(long inactiveRoleId){
 		this.inactiveRoleId = inactiveRoleId;
+	}
+
+	public String getInactiveRole(){
+		return MessageUtils.getRoleMention(inactiveRoleId);
 	}
 
 	public Duration getInactiveDuration(){
@@ -169,12 +169,12 @@ public class GuildSettings{
 		return this.djRoleId;
 	}
 
-	public String getDjRole(){
-		return MessageUtils.getRoleMention(djRoleId);
-	}
-
 	public void setDjRoleId(long djRoleId){
 		this.djRoleId = djRoleId;
+	}
+
+	public String getDjRole(){
+		return MessageUtils.getRoleMention(djRoleId);
 	}
 
 }

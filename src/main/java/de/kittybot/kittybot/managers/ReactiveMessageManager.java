@@ -2,13 +2,10 @@ package de.kittybot.kittybot.managers;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
 import de.kittybot.kittybot.command.ReactiveMessage;
 import de.kittybot.kittybot.command.ctx.CommandContext;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class ReactiveMessageManager{

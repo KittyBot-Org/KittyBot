@@ -26,6 +26,13 @@ public class RequestManager{
 		this.httpClient = main.getHttpClient();
 	}
 
+	public String translateText(String text, String language){
+		var url = String.format(API.GOOGLE_TRANSLATE_API.getUrl(), "auto", language, URLEncoder.encode(text, StandardCharsets.UTF_8));
+		requestBuilder.url(url);
+		var json = DataArray.fromJson(executeRequest(requestBuilder.build()));
+		return json.getArray(0).getArray(0).getString(0);
+	}
+
 	public String executeRequest(Request request){
 		return executeRequest(request, null);
 	}
@@ -49,13 +56,6 @@ public class RequestManager{
 			LOG.error("There was an error while sending a request to {}", requestUrl, ex);
 		}
 		return "";
-	}
-
-	public String translateText(String text, String language){
-		var url = String.format(API.GOOGLE_TRANSLATE_API.getUrl(), "auto", language, URLEncoder.encode(text, StandardCharsets.UTF_8));
-		requestBuilder.url(url);
-		var json = DataArray.fromJson(executeRequest(requestBuilder.build()));
-		return json.getArray(0).getArray(0).getString(0);
 	}
 
 	public String getNeko(boolean nsfw, String type, String imageType){

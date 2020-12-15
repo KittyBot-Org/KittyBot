@@ -41,7 +41,8 @@ public class Config{
 		try{
 			return !this.config.getString(key).isBlank();
 		}
-		catch(ParsingException ignored){}
+		catch(ParsingException ignored){
+		}
 		return false;
 	}
 

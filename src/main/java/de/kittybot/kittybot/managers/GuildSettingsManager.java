@@ -32,6 +32,20 @@ public class GuildSettingsManager{
 				.build(this::retrieveGuildSettings);
 	}
 
+	public GuildSettings retrieveGuildSettings(long guildId){
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon(); var ctx = dbManager.getCtx(con).selectFrom(GUILDS)){
+			var res = ctx.where(GUILDS.GUILD_ID.eq(guildId)).fetchOne();
+			if(res != null){
+				return new GuildSettings(res);
+			}
+		}
+		catch(SQLException e){
+			LOG.error("Error while retrieving guild settings for guild: " + guildId, e);
+		}
+		return null;
+	}
+
 	public void insertGuildSettingsIfNotExists(Guild guild){
 		var dbManager = this.main.getDatabaseManager();
 		var insert = true;
@@ -71,30 +85,6 @@ public class GuildSettingsManager{
 		}
 	}
 
-	public <T> void updateGuildSetting(long guildId, Field<T> field, T value){
-		var dbManager = this.main.getDatabaseManager();
-		try(var con = dbManager.getCon()){
-			dbManager.getCtx(con).update(GUILDS).set(field, value).where(GUILDS.GUILD_ID.eq(guildId)).execute();
-		}
-		catch(SQLException e){
-			LOG.error("Error updating guild: {}", guildId, e);
-		}
-	}
-
-	public GuildSettings retrieveGuildSettings(long guildId){
-		var dbManager = this.main.getDatabaseManager();
-		try(var con = dbManager.getCon(); var ctx = dbManager.getCtx(con).selectFrom(GUILDS)){
-			var res = ctx.where(GUILDS.GUILD_ID.eq(guildId)).fetchOne();
-			if(res != null){
-				return new GuildSettings(res);
-			}
-		}
-		catch(SQLException e){
-			LOG.error("Error while retrieving guild settings for guild: " + guildId, e);
-		}
-		return null;
-	}
-
 	public void deleteGuildSettings(long guildId){
 		LOG.debug("Deleting old guild: {}", guildId);
 		var dbManager = this.main.getDatabaseManager();
@@ -110,16 +100,12 @@ public class GuildSettingsManager{
 		return this.guildSettings.stats();
 	}
 
-	public GuildSettings getSettings(long guildId){
-		return this.guildSettings.get(guildId);
-	}
-
-	public GuildSettings getSettingsIfPresent(long guildId){
-		return this.guildSettings.getIfPresent(guildId);
-	}
-
 	public String getPrefix(long guildId){
 		return this.getSettings(guildId).getCommandPrefix();
+	}
+
+	public GuildSettings getSettings(long guildId){
+		return this.guildSettings.get(guildId);
 	}
 
 	public void setPrefix(long guildId, String prefix){
@@ -128,6 +114,20 @@ public class GuildSettingsManager{
 		if(settings != null){
 			settings.setCommandPrefix(prefix);
 		}
+	}
+
+	public <T> void updateGuildSetting(long guildId, Field<T> field, T value){
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon()){
+			dbManager.getCtx(con).update(GUILDS).set(field, value).where(GUILDS.GUILD_ID.eq(guildId)).execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error updating guild: {}", guildId, e);
+		}
+	}
+
+	public GuildSettings getSettingsIfPresent(long guildId){
+		return this.guildSettings.getIfPresent(guildId);
 	}
 
 	public long getAnnouncementChannelId(long guildId){

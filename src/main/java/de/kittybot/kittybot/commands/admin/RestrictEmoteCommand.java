@@ -29,7 +29,7 @@ public class RestrictEmoteCommand extends Command{
 		var emote = emotes.get(0);
 		if(roles.isEmpty()){
 			if((args.size() > 0 && args.get(0).equalsIgnoreCase("reset")) ||
-				   args.size() > 1 && args.get(1).equalsIgnoreCase("reset")){
+					args.size() > 1 && args.get(1).equalsIgnoreCase("reset")){
 				emote.getManager().setRoles(new HashSet<>()).queue();
 				ctx.sendSuccess("Roles reset");
 				return;
@@ -42,8 +42,8 @@ public class RestrictEmoteCommand extends Command{
 			return;
 		}
 		emote.getManager().setRoles(new HashSet<>(roles)).queue(
-			success -> ctx.sendSuccess("Successfully set roles"),
-			error -> ctx.sendError("Failed to set roles.\nPlease try again or report this in our discord")
+				success -> ctx.sendSuccess("Successfully set roles"),
+				error -> ctx.sendError("Failed to set roles.\nPlease try again or report this in our discord")
 		);
 	}
 
