@@ -52,6 +52,7 @@ public class WebService{
 	public WebService(int port){
 		Javalin.create(config -> config.enableCorsForOrigin(Config.ORIGIN_URL)).routes(() -> {
 			get("/discord_login", this::discordLogin);
+			get("/twitch", this::twitch);
 			get("/health_check", ctx -> ctx.result("alive"));
 			get("/commands/get", this::getCommands);
 			post("/login", this::login);
@@ -94,6 +95,10 @@ public class WebService{
 		}
 		catch(UnauthorizedResponse | ForbiddenResponse ignored){}
 		ctx.redirect(O_AUTH_2_CLIENT.generateAuthorizationURL(Config.REDIRECT_URL, SCOPES));
+	}
+
+	private void twitch(Context ctx){
+		System.out.println("Twitch Request: " + ctx.body());
 	}
 
 	private void login(Context ctx){
