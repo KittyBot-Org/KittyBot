@@ -52,7 +52,7 @@ public class WebService{
 	public WebService(int port){
 		Javalin.create(config -> config.enableCorsForOrigin(Config.ORIGIN_URL)).routes(() -> {
 			get("/discord_login", this::discordLogin);
-			get("/twitch", this::twitch);
+			post("/twitch", this::twitch);
 			get("/health_check", ctx -> ctx.result("alive"));
 			get("/commands/get", this::getCommands);
 			post("/login", this::login);
