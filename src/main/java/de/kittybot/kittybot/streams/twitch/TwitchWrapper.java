@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TwitchWrapper{
@@ -68,28 +69,32 @@ public class TwitchWrapper{
 		return Game.getUnknown();
 	} */
 
-	public List<Stream> getStreams(String userName){
-		try(var resp = newRequest("streams?user_login=%s", userName).execute()){
-			var body = resp.body();
-			if(body == null){
-				return null;
+	public List<Stream> getStreams(List<String> userNames){
+		int i = 0;
+		int ii = 0;
+		for(var name : userNames){
+			try(var resp = newRequest("streams?" + userNames.stream().map(user -> "user_login=" + user).collect(Collectors.joining("&"))).execute()){
+				var body = resp.body();
+				if(body == null){
+					return null;
+				}
+				var data = DataObject.fromJson(body.string()).getArray("data");
+				if(data.isEmpty()){
+					return new ArrayList<>();
+				}
+				var streams = new ArrayList<Stream>();
+				for(var o = 0; o < data.length(); o++){
+					streams.add(Stream.fromTwitchJSON(data.getObject(o)));
+				}
+				return streams;
 			}
-			var data = DataObject.fromJson(body.string()).getArray("data");
-			if(data.isEmpty()){
-				return new ArrayList<>();
+			catch(IOException e){
+				LOG.error("Error while unpacking request body", e);
 			}
-			// does not work
-			LOG.info("TEST");
-			var streams = data.toList().stream().map(o -> Stream.fromTwitchJSON((DataObject) o)).collect(Collectors.toList());
-			// works
-			/*var streams = new ArrayList<Stream>();
-			for(var i = 0; i < data.length(); i++){
-				streams.add(Stream.fromTwitchJSON(data.getObject(i)));
-			}*/
-			return streams;
-		}
-		catch(IOException e){
-			LOG.error("Error while unpacking request body", e);
+			i++;
+			if(i >= 99){
+
+			}
 		}
 		return new ArrayList<>();
 	}
