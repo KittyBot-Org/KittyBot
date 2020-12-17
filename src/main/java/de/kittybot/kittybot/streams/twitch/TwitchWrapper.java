@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -70,36 +71,31 @@ public class TwitchWrapper{
 	} */
 
 	public List<Stream> getStreams(List<String> userNames){
-		int i = 0;
-		int ii = 0;
-		for(var name : userNames){
-			try(var resp = newRequest("streams?" + userNames.stream().map(user -> "user_login=" + user).collect(Collectors.joining("&"))).execute()){
+		var streams = new ArrayList<Stream>();
+		do{
+			var users = userNames.subList(0, Math.min(userNames.size(), 100));
+			var query = users.stream().map(user -> "user_login=" + user).collect(Collectors.joining("&"));
+ 			users.clear();
+			try(var resp = newRequest("streams?" + query).execute()){
 				var body = resp.body();
 				if(body == null){
-					return null;
+					continue;
 				}
 				var data = DataObject.fromJson(body.string()).getArray("data");
-				if(data.isEmpty()){
-					return new ArrayList<>();
-				}
-				var streams = new ArrayList<Stream>();
 				for(var o = 0; o < data.length(); o++){
 					streams.add(Stream.fromTwitchJSON(data.getObject(o)));
 				}
-				return streams;
 			}
 			catch(IOException e){
 				LOG.error("Error while unpacking request body", e);
 			}
-			i++;
-			if(i >= 99){
-
-			}
 		}
-		return new ArrayList<>();
+		while(!userNames.isEmpty());
+		return streams;
 	}
 
 	private Call newRequest(String url, Object... params){
+		LOG.info("Request to: " + url);
 		if(this.bearerToken.isExpired()){
 			this.bearerToken = requestBearerToken();
 			LOG.info("New Bearer Token retrieved");

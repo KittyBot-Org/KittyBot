@@ -46,8 +46,12 @@ public class GuildSettingsManager{
 			if(res != null){
 				return new GuildSettings(
 						res,
-						ctxSnipeDisabledChannels.where(GUILDS.GUILD_ID.eq(guildId)).fetch().stream().map(SnipeDisabledChannelsRecord::getChannelId).collect(Collectors.toSet()),
-						ctxBotDisabledChannels.where(GUILDS.GUILD_ID.eq(guildId)).fetch().stream().map(BotDisabledChannelsRecord::getChannelId).collect(Collectors.toSet())
+						ctxSnipeDisabledChannels.where(SNIPE_DISABLED_CHANNELS.GUILD_ID.eq(guildId)).fetch().stream().map(
+							SnipeDisabledChannelsRecord::getChannelId).collect(Collectors.toSet()
+						),
+						ctxBotDisabledChannels.where(BOT_DISABLED_CHANNELS.GUILD_ID.eq(guildId)).fetch().stream().map(
+							BotDisabledChannelsRecord::getChannelId).collect(Collectors.toSet()
+						)
 				);
 			}
 		}

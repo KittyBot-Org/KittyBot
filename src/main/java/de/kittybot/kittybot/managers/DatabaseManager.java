@@ -27,14 +27,26 @@ public class DatabaseManager{
 		this.config = main.getConfig();
 		this.dataSource = initDataSource();
 		initTable("guilds");
-		initTable("reactive_messages");
+
+		initTable("guild_invites");
+		initTable("guild_invite_roles");
+
 		initTable("self_assignable_roles");
 		initTable("self_assignable_role_groups");
+
 		initTable("bot_disabled_channels");
 		initTable("snipe_disabled_channels");
-		//initTable("requests");
+
+		initTable("stream_users");
+		initTable("stream_user_events");
+
+		initTable("reactive_messages");
+
+		initTable("user_statistics");
+
+		initTable("requests");
+
 		initTable("sessions");
-		//initTable("user_statistics");
 	}
 
 	private HikariDataSource initDataSource(){

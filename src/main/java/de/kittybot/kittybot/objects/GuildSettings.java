@@ -4,6 +4,7 @@ import de.kittybot.kittybot.jooq.tables.records.GuildsRecord;
 import de.kittybot.kittybot.utils.MessageUtils;
 
 import java.time.Duration;
+import java.util.HashSet;
 import java.util.Set;
 
 public class GuildSettings{
@@ -44,8 +45,8 @@ public class GuildSettings{
 		this.inactiveDuration = record.getInactiveDuration().toDuration();
 		this.djRoleId = record.getDjRoleId();
 		this.snipesEnabled = record.getSnipesEnabled();
-		this.snipeDisabledChannels = snipeDisabledChannels;
-		this.botDisabledChannels = botDisabledChannels;
+		this.snipeDisabledChannels = snipeDisabledChannels == null ? new HashSet<>() : snipeDisabledChannels;
+		this.botDisabledChannels = botDisabledChannels == null ? new HashSet<>() : botDisabledChannels;
 	}
 
 	public long getGuildId(){

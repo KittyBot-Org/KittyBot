@@ -5,12 +5,18 @@ import de.kittybot.kittybot.objects.StreamAnnouncement;
 import de.kittybot.kittybot.streams.StreamType;
 import de.kittybot.kittybot.streams.twitch.TwitchWrapper;
 import net.dv8tion.jda.api.EmbedBuilder;
+import org.jooq.types.YearToSecond;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.SQLException;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import static de.kittybot.kittybot.jooq.Tables.GUILDS;
+import static de.kittybot.kittybot.jooq.Tables.STREAM_USERS;
 
 public class StreamNotificationManager{
 
@@ -25,10 +31,21 @@ public class StreamNotificationManager{
 		this.main = main;
 		var config = this.main.getConfig();
 		this.twitchWrapper = new TwitchWrapper(config.getString("twitch_client_id"), config.getString("twitch_client_secret"), this.main.getHttpClient());
-		this.streamAnnouncements = new ArrayList<>();
+		this.streamAnnouncements = loadStreamAnnouncements();
 		this.streamAnnouncements.add(new StreamAnnouncement("Topi_Senpai", 608506410803658753L, StreamType.TWITCH));
 		this.activeStreams = new HashSet<>();
 		this.main.getScheduler().scheduleAtFixedRate(this::checkStreams, 0, 60, TimeUnit.SECONDS);
+	}
+
+	private List<StreamAnnouncement> loadStreamAnnouncements(){
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon(); var ctx = dbManager.getCtx(con).selectFrom(STREAM_USERS)){
+			return ctx.fetch().stream().map(StreamAnnouncement::new).collect(Collectors.toList());
+		}
+		catch(SQLException e){
+			LOG.error("Error loading stream announcements", e);
+		}
+		return new ArrayList<>();
 	}
 
 	private void checkStreams(){
@@ -36,7 +53,6 @@ public class StreamNotificationManager{
 		checkTwitch();
 		checkYouTube();
 		LOG.info("Finished checking streams...");
-
 	}
 
 	private void checkTwitch(){

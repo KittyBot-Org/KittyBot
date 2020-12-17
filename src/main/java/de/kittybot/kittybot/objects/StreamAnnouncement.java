@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.objects;
 
+import de.kittybot.kittybot.jooq.tables.records.StreamUsersRecord;
 import de.kittybot.kittybot.streams.StreamType;
 
 public class StreamAnnouncement{
@@ -12,6 +13,12 @@ public class StreamAnnouncement{
 		this.userName = userName;
 		this.guildId = guildId;
 		this.streamType = streamType;
+	}
+
+	public StreamAnnouncement(StreamUsersRecord record){
+		this.userName = record.getUserName();
+		this.guildId = record.getGuildId();
+		this.streamType = StreamType.byId(record.getServiceId());
 	}
 
 	public String getUserName(){
