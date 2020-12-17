@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.time.Duration;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -35,24 +36,49 @@ public class GuildSettingsManager{
 				.build(this::retrieveGuildSettings);
 	}
 
+	public static class InviteRole{
+
+		private final String code;
+		private final long roleId;
+
+		public InviteRole(String code, long roleId){
+			this.code = code;
+			this.roleId = roleId;
+		}
+
+		public String getCode(){
+			return this.code;
+		}
+
+		public long getRoleId(){
+			return this.roleId;
+		}
+
+	}
+
 	public GuildSettings retrieveGuildSettings(long guildId){
 		var dbManager = this.main.getDatabaseManager();
 		try(var con = dbManager.getCon();
 		    var ctxSettings = dbManager.getCtx(con).selectFrom(GUILDS);
 		    var ctxSnipeDisabledChannels = dbManager.getCtx(con).selectFrom(SNIPE_DISABLED_CHANNELS);
-		    var ctxBotDisabledChannels = dbManager.getCtx(con).selectFrom(BOT_DISABLED_CHANNELS)
+		    var ctxBotDisabledChannels = dbManager.getCtx(con).selectFrom(BOT_DISABLED_CHANNELS);
+		    var ctxGuildInviteRoles = dbManager.getCtx(con).select()
 		){
 			var res = ctxSettings.where(GUILDS.GUILD_ID.eq(guildId)).fetchOne();
 			if(res != null){
 				return new GuildSettings(
 						res,
 						ctxSnipeDisabledChannels.where(SNIPE_DISABLED_CHANNELS.GUILD_ID.eq(guildId)).fetch().stream().map(
-							SnipeDisabledChannelsRecord::getChannelId).collect(Collectors.toSet()
+								SnipeDisabledChannelsRecord::getChannelId).collect(Collectors.toSet()
 						),
 						ctxBotDisabledChannels.where(BOT_DISABLED_CHANNELS.GUILD_ID.eq(guildId)).fetch().stream().map(
-							BotDisabledChannelsRecord::getChannelId).collect(Collectors.toSet()
-						)
+								BotDisabledChannelsRecord::getChannelId).collect(Collectors.toSet()
+						),
+						ctxGuildInviteRoles.from(GUILD_INVITES).join(GUILD_INVITE_ROLES).on(GUILD_INVITES.GUILD_INVITE_ID.eq(GUILD_INVITE_ROLES.GUILD_INVITE_ID)).where(GUILD_INVITES.GUILD_ID.eq(guildId)).fetch().stream()
+								.map(record -> new InviteRole(record.get(GUILD_INVITES.CODE), record.get(GUILD_INVITE_ROLES.ROLE_ID)))
+								.collect(Collectors.groupingBy(InviteRole::getCode, Collectors.mapping(InviteRole::getRoleId, Collectors.toSet())))
 				);
+
 			}
 		}
 		catch(SQLException e){
@@ -346,7 +372,7 @@ public class GuildSettingsManager{
 	}
 
 	public boolean isBotDisabledInChannel(long guildId, long channelId){
-		return getSettings(guildId).areSnipesDisabledInChannel(channelId);
+		return getSettings(guildId).isBotDisabledInChannel(channelId);
 	}
 
 	public void setBotDisabledInChannel(long guildId, long channelId, boolean disable){

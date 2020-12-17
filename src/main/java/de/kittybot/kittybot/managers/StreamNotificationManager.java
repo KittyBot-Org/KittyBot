@@ -5,17 +5,17 @@ import de.kittybot.kittybot.objects.StreamAnnouncement;
 import de.kittybot.kittybot.streams.StreamType;
 import de.kittybot.kittybot.streams.twitch.TwitchWrapper;
 import net.dv8tion.jda.api.EmbedBuilder;
-import org.jooq.types.YearToSecond;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
-import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static de.kittybot.kittybot.jooq.Tables.GUILDS;
 import static de.kittybot.kittybot.jooq.Tables.STREAM_USERS;
 
 public class StreamNotificationManager{

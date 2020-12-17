@@ -4,7 +4,9 @@ import de.kittybot.kittybot.jooq.tables.records.GuildsRecord;
 import de.kittybot.kittybot.utils.MessageUtils;
 
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class GuildSettings{
@@ -12,6 +14,7 @@ public class GuildSettings{
 	private final long guildId;
 	private final Set<Long> snipeDisabledChannels;
 	private final Set<Long> botDisabledChannels;
+	private final Map<String, Set<Long>> guildInviteRoles;
 	private String commandPrefix;
 	private long announcementChannelId;
 	private long requestChannelId;
@@ -28,7 +31,7 @@ public class GuildSettings{
 	private long djRoleId;
 	private boolean snipesEnabled;
 
-	public GuildSettings(GuildsRecord record, Set<Long> snipeDisabledChannels, Set<Long> botDisabledChannels){
+	public GuildSettings(GuildsRecord record, Set<Long> snipeDisabledChannels, Set<Long> botDisabledChannels, Map<String, Set<Long>> guildInviteRoles){
 		this.guildId = record.getGuildId();
 		this.commandPrefix = record.getCommandPrefix();
 		this.announcementChannelId = record.getAnnouncementChannelId();
@@ -47,6 +50,7 @@ public class GuildSettings{
 		this.snipesEnabled = record.getSnipesEnabled();
 		this.snipeDisabledChannels = snipeDisabledChannels == null ? new HashSet<>() : snipeDisabledChannels;
 		this.botDisabledChannels = botDisabledChannels == null ? new HashSet<>() : botDisabledChannels;
+		this.guildInviteRoles = guildInviteRoles == null ? new HashMap<>() : guildInviteRoles;
 	}
 
 	public long getGuildId(){
@@ -195,6 +199,10 @@ public class GuildSettings{
 
 	public boolean areSnipesDisabledInChannel(long channelId){
 		return this.snipeDisabledChannels.contains(channelId);
+	}
+
+	public boolean isBotDisabledInChannel(long channelId){
+		return this.botDisabledChannels.contains(channelId);
 	}
 
 }

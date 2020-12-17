@@ -11,10 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TwitchWrapper{
@@ -75,7 +73,7 @@ public class TwitchWrapper{
 		do{
 			var users = userNames.subList(0, Math.min(userNames.size(), 100));
 			var query = users.stream().map(user -> "user_login=" + user).collect(Collectors.joining("&"));
- 			users.clear();
+			users.clear();
 			try(var resp = newRequest("streams?" + query).execute()){
 				var body = resp.body();
 				if(body == null){

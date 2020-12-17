@@ -15,15 +15,15 @@ public enum StreamType{
 		this.name = name;
 	}
 
+	public static StreamType byId(int id){
+		return Arrays.stream(values()).filter(streamType -> streamType.getId() == id).findFirst().orElse(null);
+	}
+
 	public int getId(){
 		return this.id;
 	}
 
 	public String getName(){
 		return this.name;
-	}
-
-	public static StreamType byId(int id){
-		return Arrays.stream(values()).filter(streamType -> streamType.getId() == id).findFirst().orElse(null);
 	}
 }
