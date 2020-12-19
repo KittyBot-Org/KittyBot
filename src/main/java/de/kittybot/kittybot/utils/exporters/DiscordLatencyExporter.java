@@ -9,16 +9,14 @@ import java.util.concurrent.TimeUnit;
 public class DiscordLatencyExporter{
 
 	// ty Natan 👀 https://github.com/Mantaro/MantaroBot/blob/master/src/main/java/net/kodehawa/mantarobot/utils/exporters/DiscordLatencyExports.java
-	private static final double MILLISECONDS_PER_SECOND = 1000;
 
-	private static final Gauge GATEWAY_LATENCY = Gauge.build()
-			.name("kittybot_bot_latency")
-			.help("Gateway latency in seconds")
-			.labelNames("bot")
+	private static final Gauge GATEWAY_PING = Gauge.build()
+			.name("kittybot_gateway_ping")
+			.help("Gateway latency in ms")
 			.create();
-	private static final Gauge REST_LATENCY = Gauge.build()
-			.name("kittybot_rest_latency")
-			.help("Rest latency in seconds")
+	private static final Gauge REST_PING = Gauge.build()
+			.name("kittybot_rest_ping")
+			.help("Rest latency in ms")
 			.create();
 
 	private final KittyBot main;
@@ -28,16 +26,16 @@ public class DiscordLatencyExporter{
 	}
 
 	public void register() {
-		GATEWAY_LATENCY.register();
-		REST_LATENCY.register();
+		GATEWAY_PING.register();
+		REST_PING.register();
 
 		this.main.getScheduler().scheduleAtFixedRate(() -> {
 			var jda = this.main.getJDA();
 			var ping = jda.getGatewayPing();
 			if (ping >= 0) {
-				GATEWAY_LATENCY.set(ping / MILLISECONDS_PER_SECOND);
+				GATEWAY_PING.set(ping);
 			}
-			jda.getRestPing().queue(restPing -> REST_LATENCY.set(restPing / MILLISECONDS_PER_SECOND));
+			jda.getRestPing().queue(REST_PING::set);
 		}, 0, PrometheusManager.UPDATE_PERIOD.toMillis(), TimeUnit.MILLISECONDS);
 	}
 }

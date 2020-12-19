@@ -11,6 +11,7 @@ import io.prometheus.client.hotspot.BufferPoolsExports;
 import io.prometheus.client.hotspot.MemoryPoolsExports;
 import io.prometheus.client.hotspot.StandardExports;
 import net.dv8tion.jda.api.events.DisconnectEvent;
+import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.ResumedEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
@@ -54,6 +55,12 @@ public class PrometheusManager extends ListenerAdapter{
 			Metrics.HTTP_429_REQUESTS.inc();
 		}
 		Metrics.HTTP_REQUESTS.inc();
+	}
+
+	@Override
+	public void onReady(@Nonnull ReadyEvent event){
+		Metrics.GUILD_COUNT.set(event.getJDA().getGuildCache().size());
+		Metrics.USER_COUNT.set(Utils.getUserCount(event.getJDA()));
 	}
 
 	@Override
