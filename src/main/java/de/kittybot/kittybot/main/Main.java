@@ -14,19 +14,19 @@ public class Main{
 	public static void main(String... args){
 		try{
 			LOG.info("Starting KittyBot...");
-			LOG.info("""
-					
-					         _   ___ _   _        ______       _
-					        | | / (_) | | |       | ___ \\     | |
-					        | |/ / _| |_| |_ _   _| |_/ / ___ | |_
-					        |    \\| | __| __| | | | ___ \\/ _ \\| __|
-					        | |\\  \\ | |_| |_| |_| | |_/ / (_) | |_ 
-					        \\_| \\_/_|\\__|\\__|\\__, \\____/ \\___/ \\__|
-					                          __/ |
-					                         |___/
-					
-					         https://github.com/KittyBot-Org/KittyBot
-			""");
+			LOG.info("\n" +
+					"\n" +
+					"         _   ___ _   _        ______       _   \n" +
+					"        | | / (_) | | |       | ___ \\     | |  \n" +
+					"        | |/ / _| |_| |_ _   _| |_/ / ___ | |_ \n" +
+					"        |    \\| | __| __| | | | ___ \\/ _ \\| __|\n" +
+					"        | |\\  \\ | |_| |_| |_| | |_/ / (_) | |_ \n" +
+					"        \\_| \\_/_|\\__|\\__|\\__, \\____/ \\___/ \\__|\n" +
+					"                          __/ |                \n" +
+					"                         |___/                 \n" +
+					"\n" +
+					"         https://github.com/KittyBot-Org/KittyBot" +
+					"\n");
 			new KittyBot();
 		}
 		catch(LoginException | InterruptedException | IOException | MissingConfigValuesException e){
