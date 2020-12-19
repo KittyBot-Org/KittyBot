@@ -90,12 +90,17 @@ public class MemoryUsageExports {
 
 	private long parse(String line) {
 		var parts = SPLIT_PATTERN.split(line.strip());
-		return Long.parseLong(parts[1]) * switch(parts[2]) {
-			case "B" -> 1;
-			case "kB" -> 1024;
-			case "mB" -> 1024 * 1024;
-			case "gB" -> 1024 * 1024 * 1024;
-			default -> -1;
+		var multiplier = -1;
+		switch(parts[2]) {
+			case "B":
+				multiplier = 1;
+			case "kB":
+				multiplier = 1024;
+			case "mB":
+				multiplier = 1024 * 1024;
+			case "gB":
+				multiplier = 1024 * 1024 * 1024;
 		};
+		return Long.parseLong(parts[1]) * multiplier;
 	}
 }
