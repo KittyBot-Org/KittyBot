@@ -82,12 +82,11 @@ public class CommandManager extends ListenerAdapter{
 		for(var command : this.commands.values()){
 			if(command.check(args.get(0))){
 				command.process(new CommandContext(event, this.main, command.getPath(), args, message));
+				Metrics.COMMAND_COUNTER.labels(args.get(0)).inc();
+				Metrics.COMMAND_LATENCY.observe(System.currentTimeMillis() - start);
 				return;
 			}
 		}
-		Metrics.COMMAND_COUNTER.labels(args.get(0)).inc();
-		Metrics.COMMAND_COUNTER.labels("all").inc();
-		Metrics.COMMAND_LATENCY.observe(System.currentTimeMillis() - start);
 
 	}
 
