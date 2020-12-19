@@ -95,6 +95,7 @@ public class KittyBot{
 						this.messageManager,
 						this.botListManager,
 						this.commandResponseManager,
+						this.prometheusManager,
 						new OnGuildEvent(this),
 						new OnGuildMemberEvent(this),
 						new OnGuildVoiceEvent(this)

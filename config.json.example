@@ -6,6 +6,7 @@
         170939974227591168
     ],
     "backend_port": 6969,
+    "prometheus_port": 8080,
     "origin_url": "",
     "redirect_url": "",
     "signing_key": "",

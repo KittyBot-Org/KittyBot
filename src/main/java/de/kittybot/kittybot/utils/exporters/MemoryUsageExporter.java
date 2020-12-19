@@ -1,4 +1,4 @@
-package de.kittybot.kittybot.utils;
+package de.kittybot.kittybot.utils.exporters;
 
 import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.managers.PrometheusManager;
@@ -13,10 +13,10 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
-public class MemoryUsageExports {
+public class MemoryUsageExporter{
 
 	// ty Natan 👀 https://github.com/Mantaro/MantaroBot/blob/master/src/main/java/net/kodehawa/mantarobot/utils/exporters/MemoryUsageExports.java
-	private static final Logger log = LoggerFactory.getLogger(MemoryUsageExports.class);
+	private static final Logger log = LoggerFactory.getLogger(MemoryUsageExporter.class);
 	private static final Pattern SPLIT_PATTERN = Pattern.compile("\\s+");
 	private static final Path SMAPS_ROLLUP = Path.of("/proc/self/smaps_rollup");
 
@@ -32,7 +32,7 @@ public class MemoryUsageExports {
 
 	private final KittyBot main;
 
-	public MemoryUsageExports(KittyBot main){
+	public MemoryUsageExporter(KittyBot main){
 		this.main = main;
 	}
 

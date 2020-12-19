@@ -4,6 +4,7 @@ import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
 import de.kittybot.kittybot.command.ctx.ReactionContext;
 import de.kittybot.kittybot.main.KittyBot;
+import de.kittybot.kittybot.utils.exporters.Metrics;
 import io.github.classgraph.ClassGraph;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
@@ -68,6 +69,8 @@ public class CommandManager extends ListenerAdapter{
 
 	@Override
 	public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event){
+		var start = System.currentTimeMillis();
+
 		if(this.main.getGuildSettingsManager().isBotDisabledInChannel(event.getGuild().getIdLong(), event.getChannel().getIdLong())){
 			return;
 		}
@@ -82,6 +85,10 @@ public class CommandManager extends ListenerAdapter{
 				return;
 			}
 		}
+		Metrics.COMMAND_COUNTER.labels(args.get(0)).inc();
+		Metrics.COMMAND_COUNTER.labels("all").inc();
+		Metrics.COMMAND_LATENCY.observe(System.currentTimeMillis() - start);
+
 	}
 
 	@Override

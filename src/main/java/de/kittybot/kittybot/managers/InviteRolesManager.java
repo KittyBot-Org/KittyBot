@@ -21,7 +21,7 @@ public class InviteRolesManager extends ListenerAdapter{
 
 	@Override
 	public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event){
-
+		//MetricsExporter.ACTIONS.labels("invite_roles").inc();
 	}
 
 }

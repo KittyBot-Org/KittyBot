@@ -8,6 +8,7 @@ import com.jagrosh.jdautilities.oauth2.Scope;
 import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.objects.DashboardSession;
 import de.kittybot.kittybot.objects.DashboardSessionController;
+import de.kittybot.kittybot.utils.exporters.Metrics;
 import io.jsonwebtoken.security.Keys;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -90,6 +91,7 @@ public class DashboardSessionManager extends ListenerAdapter{
 	}*/
 
 	public void add(DashboardSession session){
+		Metrics.DASHBOARD_ACTIONS.labels("create").inc();
 		saveDashboardSession(session);
 		this.sessionCache.put(session.getUserId(), session);
 		this.userSessionCache.put(session.getUserId(), true);
@@ -116,6 +118,7 @@ public class DashboardSessionManager extends ListenerAdapter{
 	}
 
 	public void delete(long userId){
+		Metrics.DASHBOARD_ACTIONS.labels("delete").inc();
 		//GuildCache.uncacheUser(userId);
 		this.deleteDashboardSession(userId);
 		this.sessionCache.invalidate(userId);
