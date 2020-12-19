@@ -1,36 +1,36 @@
 {
-    "bot_token": "your discord bot token",
-    "bot_id": "your discord bot id",
-    "bot_secret": "your discord bot secret",
-    "support_guild_id": "your support discord guild id",
-    "log_channel_id": "your support discord channel id",
-    "invite_url": "your support discord invite url",
-    "redirect_url": "your frontend redirect url",
-    "origin_url": "your frontend origin url",
-    "hastebin_url": "a hastebin url",
-    "discord_bots_token": "your https://discord.bots.gg token",
-    "top_gg_token": "your https://top.gg token",
-    "discord_extreme_list_token": "your https://discordextremelist.xyz token",
-    "discord_boats_token": "your https://discord.boats token",
-    "signing_key": "the signing key which should be used to create token for the frontend",
-    "backend_port": "the port on which the rest backend should run",
-    "db": {
-        "host": "your database host",
-        "port": "your database port",
-        "db": "your database database",
-        "user": "your database user",
-        "password": "your database password"
-    },
+    "default_prefix": ".",
+    "bot_token": "",
+    "bot_secret": "",
+    "owner_ids": [
+        170939974227591168
+    ],
+    "backend_port": 6969,
+    "origin_url": "",
+    "redirect_url": "",
+    "signing_key": "",
+    
+    "discord_bots_token": "",
+    "top_gg_token": "",
+    "discord_extreme_list_token": "",
+    "discord_boats_token": "",
+    "botlist_space": "",
+    "bots_for_discord_token": "",
+    
+    "twitch_client_id": "",
+    "twitch_client_secret": "",
+    
+    "db_host": "",
+    "db_port": "",
+    "db_database": "",
+    "db_user": "",
+    "db_password": "",
+    
     "lavalink_nodes": [
         {
-            "host": "your lavalink host",
-            "port": "your lavalink port",
-            "password": "your lavalink password"
+            "host": "",
+            "port": "",
+            "password": ""
         }
-    ],
-    "admin_ids": [
-        "multiple",
-        "user",
-        "ids"
     ]
 }
