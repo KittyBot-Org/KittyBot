@@ -14,23 +14,21 @@ public class DiscordLatencyExporter{
 			.name("kittybot_gateway_ping")
 			.help("Gateway latency in ms")
 			.create();
+
 	private static final Gauge REST_PING = Gauge.build()
 			.name("kittybot_rest_ping")
 			.help("Rest latency in ms")
 			.create();
 
-	private final KittyBot main;
-
-	public DiscordLatencyExporter(KittyBot main){
-		this.main = main;
-	}
-
 	public void register() {
 		GATEWAY_PING.register();
 		REST_PING.register();
+	}
 
-		this.main.getScheduler().scheduleAtFixedRate(() -> {
-			var jda = this.main.getJDA();
+	public static void start(KittyBot main){
+		main.getScheduler().scheduleAtFixedRate(() -> {
+			System.out.println("Writing ping");
+			var jda = main.getJDA();
 			var ping = jda.getGatewayPing();
 			if (ping >= 0) {
 				GATEWAY_PING.set(ping);
@@ -38,4 +36,5 @@ public class DiscordLatencyExporter{
 			jda.getRestPing().queue(REST_PING::set);
 		}, 0, PrometheusManager.UPDATE_PERIOD.toMillis(), TimeUnit.MILLISECONDS);
 	}
+
 }

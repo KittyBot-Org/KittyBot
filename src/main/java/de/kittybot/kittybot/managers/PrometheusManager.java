@@ -33,12 +33,14 @@ public class PrometheusManager extends ListenerAdapter{
 	public static final Duration UPDATE_PERIOD = Duration.ofSeconds(5);
 
 	private volatile HTTPServer server;
+	private final KittyBot main;
 
 	public PrometheusManager(KittyBot main){
+		this.main = main;
 		new StandardExports().register();
 		new MemoryPoolsExports().register();
 		new BufferPoolsExports().register();
-		new DiscordLatencyExporter(main).register();
+		new DiscordLatencyExporter().register();
 		new MemoryUsageExporter(main).register();
 		try{
 			this.server = new HTTPServer(main.getConfig().getInt("prometheus_port"));
@@ -61,6 +63,7 @@ public class PrometheusManager extends ListenerAdapter{
 	public void onReady(@Nonnull ReadyEvent event){
 		Metrics.GUILD_COUNT.set(event.getJDA().getGuildCache().size());
 		Metrics.USER_COUNT.set(Utils.getUserCount(event.getJDA()));
+		DiscordLatencyExporter.start(this.main);
 	}
 
 	@Override
