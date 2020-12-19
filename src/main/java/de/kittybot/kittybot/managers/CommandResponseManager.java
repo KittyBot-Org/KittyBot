@@ -27,17 +27,17 @@ public class CommandResponseManager extends ListenerAdapter{
 		}
 	}
 
-	public void add(long commandId, long responseId){
-		this.commandResponses.put(commandId, responseId);
+	public long get(long commandId){
+		var res = this.commandResponses.getIfPresent(commandId);
+		return res == null ? -1 : res;
 	}
 
 	public void remove(long commandId){
 		this.commandResponses.invalidate(commandId);
 	}
 
-	public long get(long commandId){
-		var res = this.commandResponses.getIfPresent(commandId);
-		return res == null ? -1 : res;
+	public void add(long commandId, long responseId){
+		this.commandResponses.put(commandId, responseId);
 	}
 
 	public CacheStats getStats(){

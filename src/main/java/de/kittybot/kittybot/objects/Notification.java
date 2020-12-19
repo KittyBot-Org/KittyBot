@@ -1,6 +1,5 @@
 package de.kittybot.kittybot.objects;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 public class Notification{

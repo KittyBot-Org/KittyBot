@@ -1,12 +1,9 @@
 package de.kittybot.kittybot.events;
 
 import de.kittybot.kittybot.main.KittyBot;
-import de.kittybot.kittybot.utils.Utils;
-import de.kittybot.kittybot.utils.exporters.Metrics;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.audit.ActionType;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
-import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.update.GuildUpdateIconEvent;
 import net.dv8tion.jda.api.events.guild.update.GuildUpdateNameEvent;
 import net.dv8tion.jda.api.events.role.update.RoleUpdatePermissionsEvent;

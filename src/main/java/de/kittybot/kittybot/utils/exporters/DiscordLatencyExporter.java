@@ -20,21 +20,20 @@ public class DiscordLatencyExporter{
 			.help("Rest latency in ms")
 			.create();
 
-	public void register() {
-		GATEWAY_PING.register();
-		REST_PING.register();
-	}
-
 	public static void start(KittyBot main){
 		main.getScheduler().scheduleAtFixedRate(() -> {
-			System.out.println("Writing ping");
 			var jda = main.getJDA();
 			var ping = jda.getGatewayPing();
-			if (ping >= 0) {
+			if(ping >= 0){
 				GATEWAY_PING.set(ping);
 			}
 			jda.getRestPing().queue(REST_PING::set);
 		}, 0, PrometheusManager.UPDATE_PERIOD.toMillis(), TimeUnit.MILLISECONDS);
+	}
+
+	public void register(){
+		GATEWAY_PING.register();
+		REST_PING.register();
 	}
 
 }

@@ -1,7 +1,6 @@
 package de.kittybot.kittybot.managers;
 
 import de.kittybot.kittybot.main.KittyBot;
-import de.kittybot.kittybot.objects.MessageData;
 import de.kittybot.kittybot.utils.Utils;
 import de.kittybot.kittybot.utils.exporters.DiscordLatencyExporter;
 import de.kittybot.kittybot.utils.exporters.MemoryUsageExporter;
@@ -28,12 +27,11 @@ import java.time.Duration;
 
 public class PrometheusManager extends ListenerAdapter{
 
+	public static final Duration UPDATE_PERIOD = Duration.ofSeconds(5);
 	// ty Natan 👀 https://github.com/Mantaro/MantaroBot/blob/master/src/main/java/net/kodehawa/mantarobot/utils/Prometheus.java
 	private static final Logger LOG = LoggerFactory.getLogger(PrometheusManager.class);
-	public static final Duration UPDATE_PERIOD = Duration.ofSeconds(5);
-
-	private volatile HTTPServer server;
 	private final KittyBot main;
+	private volatile HTTPServer server;
 
 	public PrometheusManager(KittyBot main){
 		this.main = main;
@@ -51,15 +49,6 @@ public class PrometheusManager extends ListenerAdapter{
 	}
 
 	@Override
-	public void onHttpRequest(@NotNull HttpRequestEvent event){
-		if (event.isRateLimit()) {
-			LOG.error("Reached 429 on: {}", event.getRoute());
-			Metrics.HTTP_429_REQUESTS.inc();
-		}
-		Metrics.HTTP_REQUESTS.inc();
-	}
-
-	@Override
 	public void onReady(@Nonnull ReadyEvent event){
 		Metrics.GUILD_COUNT.set(event.getJDA().getGuildCache().size());
 		Metrics.USER_COUNT.set(Utils.getUserCount(event.getJDA()));
@@ -67,10 +56,18 @@ public class PrometheusManager extends ListenerAdapter{
 	}
 
 	@Override
-	public void onGuildLeave(@Nonnull GuildLeaveEvent event){
-		Metrics.GUILD_COUNT.set(event.getJDA().getGuildCache().size());
-		Metrics.USER_COUNT.set(Utils.getUserCount(event.getJDA()));
-		Metrics.GUILD_ACTIONS.labels("leave").inc();
+	public void onResume(@Nonnull ResumedEvent event){
+		Metrics.BOT_EVENTS.labels("resume").inc();
+	}
+
+	@Override
+	public void onDisconnect(@Nonnull DisconnectEvent event){
+		Metrics.BOT_EVENTS.labels("disconnect").inc();
+	}
+
+	@Override
+	public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event){
+		Metrics.RECEIVED_MESSAGES.inc();
 	}
 
 	@Override
@@ -81,18 +78,19 @@ public class PrometheusManager extends ListenerAdapter{
 	}
 
 	@Override
-	public void onDisconnect(@Nonnull DisconnectEvent event){
-		Metrics.BOT_EVENTS.labels("disconnect").inc();
+	public void onGuildLeave(@Nonnull GuildLeaveEvent event){
+		Metrics.GUILD_COUNT.set(event.getJDA().getGuildCache().size());
+		Metrics.USER_COUNT.set(Utils.getUserCount(event.getJDA()));
+		Metrics.GUILD_ACTIONS.labels("leave").inc();
 	}
 
 	@Override
-	public void onResume(@Nonnull ResumedEvent event){
-		Metrics.BOT_EVENTS.labels("resume").inc();
-	}
-
-	@Override
-	public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event){
-		Metrics.RECEIVED_MESSAGES.inc();
+	public void onHttpRequest(@NotNull HttpRequestEvent event){
+		if(event.isRateLimit()){
+			LOG.error("Reached 429 on: {}", event.getRoute());
+			Metrics.HTTP_429_REQUESTS.inc();
+		}
+		Metrics.HTTP_REQUESTS.inc();
 	}
 
 }

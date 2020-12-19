@@ -3,7 +3,6 @@ package de.kittybot.kittybot.commands.admin;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
-import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.utils.Utils;
 
 import java.util.List;

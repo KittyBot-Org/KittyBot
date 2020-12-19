@@ -44,9 +44,9 @@ public class KittyBot{
 	private final DashboardSessionManager dashboardSessionManager;
 	private final WebService webService;
 	private final ScheduledExecutorService scheduler;
-	private GuildSettingsManager guildSettingsManager;
-	private CommandResponseManager commandResponseManager;
-	private ReactiveMessageManager reactiveMessageManager;
+	private final GuildSettingsManager guildSettingsManager;
+	private final CommandResponseManager commandResponseManager;
+	private final ReactiveMessageManager reactiveMessageManager;
 
 	public KittyBot() throws IOException, MissingConfigValuesException, LoginException, InterruptedException{
 		this.config = new Config("./config.json");

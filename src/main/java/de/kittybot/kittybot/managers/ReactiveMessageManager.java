@@ -5,8 +5,6 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
 import de.kittybot.kittybot.command.ReactiveMessage;
 import de.kittybot.kittybot.command.ctx.CommandContext;
-import de.kittybot.kittybot.main.KittyBot;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.concurrent.TimeUnit;
 

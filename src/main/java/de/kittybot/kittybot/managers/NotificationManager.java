@@ -4,10 +4,7 @@ import de.kittybot.kittybot.jooq.tables.records.NotificationsRecord;
 import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.objects.Notification;
 import de.kittybot.kittybot.utils.MessageUtils;
-import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.utils.MiscUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,13 +12,14 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static de.kittybot.kittybot.jooq.Tables.*;
+import static de.kittybot.kittybot.jooq.Tables.NOTIFICATIONS;
 
 public class NotificationManager{
 
@@ -35,14 +33,6 @@ public class NotificationManager{
 		this.notifications = new HashMap<>();
 		this.main.getScheduler().scheduleAtFixedRate(this::update, 0, 30, TimeUnit.MINUTES);
 		this.main.getScheduler().scheduleAtFixedRate(this::scheduleNext, 0, 5, TimeUnit.MINUTES);
-	}
-
-	public void add(Notification notification){
-		this.notifications.put(notification.getGuildId(), notification);
-	}
-
-	public void remove(Notification notification){
-		this.notifications.remove(notification.getId());
 	}
 
 	private void update(){
@@ -79,14 +69,6 @@ public class NotificationManager{
 		}
 	}
 
-	private Set<Notification> getAndRemoveNext(LocalDateTime from, LocalDateTime to){
-		var notifications = this.notifications.values().stream().filter(
-				notification -> notification.getNotificationTime().isAfter(from) && notification.getNotificationTime().isBefore(to)
-		).collect(Collectors.toSet());
-		this.notifications.entrySet().removeIf(entry -> notifications.stream().anyMatch(notification -> notification.getId() == entry.getValue().getId()));
-		return notifications;
-	}
-
 	private Map<Long, Notification> retrieveNotifications(LocalDateTime from, LocalDateTime to){
 		var dbManager = this.main.getDatabaseManager();
 		try(var con = dbManager.getCon(); var ctx = dbManager.getCtx(con).selectFrom(NOTIFICATIONS)){
@@ -101,6 +83,22 @@ public class NotificationManager{
 			LOG.error("Error while retrieving notifications", e);
 		}
 		return Collections.emptyMap();
+	}
+
+	private Set<Notification> getAndRemoveNext(LocalDateTime from, LocalDateTime to){
+		var notifications = this.notifications.values().stream().filter(
+				notification -> notification.getNotificationTime().isAfter(from) && notification.getNotificationTime().isBefore(to)
+		).collect(Collectors.toSet());
+		this.notifications.entrySet().removeIf(entry -> notifications.stream().anyMatch(notification -> notification.getId() == entry.getValue().getId()));
+		return notifications;
+	}
+
+	public void add(Notification notification){
+		this.notifications.put(notification.getGuildId(), notification);
+	}
+
+	public void remove(Notification notification){
+		this.notifications.remove(notification.getId());
 	}
 
 }

@@ -36,10 +36,10 @@ public class MemoryUsageExporter{
 		this.main = main;
 	}
 
-	public void register() {
+	public void register(){
 		MEMORY_USAGE.register();
 
-		if (!Files.exists(SMAPS_ROLLUP)) {
+		if(!Files.exists(SMAPS_ROLLUP)){
 			PSS.set(-1);
 			RSS.set(-1);
 			return;
@@ -71,16 +71,18 @@ public class MemoryUsageExporter{
 	 * SwapPss:               0 kB
 	 * Locked:                0 kB
 	 */
-	private void collect() {
-		try(var stream = Files.lines(SMAPS_ROLLUP)) {
+	private void collect(){
+		try(var stream = Files.lines(SMAPS_ROLLUP)){
 			stream.forEach(line -> {
-				if (line.startsWith("Rss:")) {
+				if(line.startsWith("Rss:")){
 					RSS.set(parse(line));
-				} else if (line.startsWith("Pss:")) {
+				}
+				else if(line.startsWith("Pss:")){
 					PSS.set(parse(line));
 				}
 			});
-		} catch (IOException e) {
+		}
+		catch(IOException e){
 			RSS.set(-1);
 			PSS.set(-1);
 			log.error("Error reading smaps_rollup", e);
@@ -88,10 +90,10 @@ public class MemoryUsageExporter{
 		}
 	}
 
-	private long parse(String line) {
+	private long parse(String line){
 		var parts = SPLIT_PATTERN.split(line.strip());
 		var multiplier = -1;
-		switch(parts[2]) {
+		switch(parts[2]){
 			case "B":
 				multiplier = 1;
 			case "kB":
@@ -100,7 +102,8 @@ public class MemoryUsageExporter{
 				multiplier = 1024 * 1024;
 			case "gB":
 				multiplier = 1024 * 1024 * 1024;
-		};
+		}
 		return Long.parseLong(parts[1]) * multiplier;
 	}
+
 }

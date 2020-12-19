@@ -2,7 +2,6 @@ package de.kittybot.kittybot.command.ctx;
 
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.main.KittyBot;
-import de.kittybot.kittybot.main.Main;
 import de.kittybot.kittybot.managers.*;
 import de.kittybot.kittybot.utils.Config;
 import net.dv8tion.jda.api.EmbedBuilder;
