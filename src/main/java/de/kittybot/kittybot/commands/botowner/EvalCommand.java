@@ -14,16 +14,14 @@ import java.util.List;
 
 public class EvalCommand extends Command{
 
-	private final KittyBot main;
 	private final ScriptEngine scriptEngine;
 	private final List<String> defaultImports;
 
-	public EvalCommand(KittyBot main){
+	public EvalCommand(){
 		super("eval", "Evals some Java Code", Category.BOT_OWNER);
 		addAliases("e");
 		setUsage("<code>");
 		setBotOwnerOnly();
-		this.main = main;
 		this.scriptEngine = new ScriptEngineManager().getEngineByName("groovy");
 		this.defaultImports = Arrays.asList("net.dv8tion.jda.api.entities.impl", "net.dv8tion.jda.api.managers", "net.dv8tion.jda.api.entities", "net.dv8tion.jda.api",
 				"java.io", "java.math", "java.util", "java.util.concurrent", "java.time", "java.util.stream"
@@ -39,7 +37,7 @@ public class EvalCommand extends Command{
 		scriptEngine.put("message", ctx.getMessage());
 		scriptEngine.put("channel", ctx.getChannel());
 		scriptEngine.put("args", ctx.getArgs());
-		scriptEngine.put("scheduler", this.main.getScheduler());
+		scriptEngine.put("scheduler", ctx.getMain().getScheduler());
 		scriptEngine.put("api", ctx.getJDA());
 		scriptEngine.put("jda", ctx.getJDA());
 		scriptEngine.put("guild", ctx.getGuild());

@@ -44,12 +44,12 @@ public abstract class Command{
 		if(event.getReactionEmote().getName().equals(Emoji.WASTEBASKET.getAsMention()) && (event.getUserIdLong() == reactiveMessage.getUserId() || event.getMember().hasPermission(Permission.MESSAGE_MANAGE))){
 			event.getChannel().deleteMessageById(event.getMessageId()).queue();
 			event.getChannel().deleteMessageById(reactiveMessage.getMessageId()).queue();
-			ctx.getCommandManager().getReactiveMessageManager().removeReactiveMessage(event.getMessageIdLong());
+			ctx.getReactiveMessageManager().removeReactiveMessage(event.getMessageIdLong());
 		}
 	}
 
 	public void process(CommandContext ctx){
-		if(isBotOwnerOnly() && !ctx.getCommandManager().getAdminIds().contains(ctx.getMember().getIdLong())){
+		if(isBotOwnerOnly() && !ctx.getCommandManager().getOwnerIds().contains(ctx.getMember().getIdLong())){
 			ctx.sendNoAdminPermissions();
 			return;
 		}

@@ -35,7 +35,11 @@ public class UserInfoRoute implements Handler{
 		try{
 			var guilds = this.main.getDashboardSessionManager().getOAuth2Client().getGuilds(session).complete();
 			var guildData = DataArray.fromCollection(
-					guilds.stream().map(guild -> DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl())).collect(Collectors.toSet())
+					guilds.stream().filter(
+							guild -> this.main.getJDA().getGuildCache().stream().anyMatch(g -> g.getIdLong() == guild.getIdLong())
+					).map(
+							guild -> DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl())
+					).collect(Collectors.toSet())
 			);
 			WebService.ok(ctx, DataObject.empty().put("name", user.getName()).put("id", userId).put("icon", user.getEffectiveAvatarUrl()).put("guilds", guildData));
 		}

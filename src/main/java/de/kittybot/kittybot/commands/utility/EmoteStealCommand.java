@@ -21,7 +21,7 @@ public class EmoteStealCommand extends Command{
 	private static final Logger LOG = LoggerFactory.getLogger(EmoteStealCommand.class);
 	private static final int MAX_EMOTE_SIZE = 256000;
 
-	public EmoteStealCommand(KittyBot main){
+	public EmoteStealCommand(){
 		super("steal", "Steals some emotes", Category.UTILITIES);
 		setUsage("<Emote, Emote, ...> or <url> <name> or <id> <name> (<animated true | false>)");
 		addAliases("grab", "klau", "st");

@@ -3,15 +3,28 @@ package de.kittybot.kittybot.managers;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
 
-public class CommandResponseManager{
+public class CommandResponseManager extends ListenerAdapter{
 
 	private final Cache<Long, Long> commandResponses;
 
 	public CommandResponseManager(){
 		this.commandResponses = Caffeine.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).recordStats().build();
+	}
+
+	@Override
+	public void onGuildMessageDelete(@NotNull GuildMessageDeleteEvent event){
+		var commandResponse = get(event.getMessageIdLong());
+		if(commandResponse != -1 && event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)){
+			remove(event.getMessageIdLong());
+			event.getChannel().deleteMessageById(commandResponse).reason("deleted due to command deletion").queue();
+		}
 	}
 
 	public void add(long commandId, long responseId){

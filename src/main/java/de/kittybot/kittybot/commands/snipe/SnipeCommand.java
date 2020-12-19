@@ -11,11 +11,8 @@ import java.util.List;
 
 public class SnipeCommand extends Command{
 
-	private final KittyBot main;
-
-	public SnipeCommand(KittyBot main){
+	public SnipeCommand(){
 		super("snipe", "Snipes a deleted message", Category.SNIPE);
-		this.main = main;
 		addAliases("s");
 	}
 
@@ -24,10 +21,10 @@ public class SnipeCommand extends Command{
 		if(!ctx.getChannel().canTalk()){
 			return;
 		}
-		if(!ctx.getSettingsManager().areSnipesEnabled(ctx.getGuild().getIdLong())){
+		if(!ctx.getGuildSettingsManager().areSnipesEnabled(ctx.getGuild().getIdLong())){
 			ctx.error("Snipes are disabled for this guild");
 		}
-		var lastDeletedMessage = this.main.getMessageManager().getLastDeletedMessage(ctx.getMessage().getTextChannel().getIdLong());
+		var lastDeletedMessage = ctx.getMessageManager().getLastDeletedMessage(ctx.getMessage().getTextChannel().getIdLong());
 		if(lastDeletedMessage == null){
 			ctx.sendError("There's no deleted message to snipe");
 			return;

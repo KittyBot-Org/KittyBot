@@ -42,6 +42,7 @@ public class DatabaseManager{
 
 		initTable("reactive_messages");
 
+		initTable("notifications");
 		initTable("user_statistics");
 
 		initTable("requests");

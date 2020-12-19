@@ -8,6 +8,7 @@ import de.kittybot.kittybot.jooq.tables.BotDisabledChannels;
 import de.kittybot.kittybot.jooq.tables.GuildInviteRoles;
 import de.kittybot.kittybot.jooq.tables.GuildInvites;
 import de.kittybot.kittybot.jooq.tables.Guilds;
+import de.kittybot.kittybot.jooq.tables.Notifications;
 import de.kittybot.kittybot.jooq.tables.ReactiveMessages;
 import de.kittybot.kittybot.jooq.tables.Requests;
 import de.kittybot.kittybot.jooq.tables.SelfAssignableRoleGroups;
@@ -59,6 +60,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.guilds</code>.
      */
     public final Guilds GUILDS = Guilds.GUILDS;
+
+    /**
+     * The table <code>public.notifications</code>.
+     */
+    public final Notifications NOTIFICATIONS = Notifications.NOTIFICATIONS;
 
     /**
      * The table <code>public.reactive_messages</code>.
@@ -124,6 +130,7 @@ public class Public extends SchemaImpl {
             Sequences.BOT_DISABLED_CHANNELS_BOT_DISABLED_CHANNEL_ID_SEQ,
             Sequences.GUILD_INVITE_ROLES_GUILD_INVITE_ROLE_ID_SEQ,
             Sequences.GUILD_INVITES_GUILD_INVITE_ID_SEQ,
+            Sequences.NOTIFICATIONS_NOTIFICATION_ID_SEQ,
             Sequences.REACTIVE_MESSAGES_REACTIVE_MESSAGE_ID_SEQ,
             Sequences.REQUESTS_REQUEST_ID_SEQ,
             Sequences.SELF_ASSIGNABLE_ROLE_GROUPS_SELF_ASSIGNABLE_ROLE_GROUP_ID_SEQ,
@@ -141,6 +148,7 @@ public class Public extends SchemaImpl {
             GuildInviteRoles.GUILD_INVITE_ROLES,
             GuildInvites.GUILD_INVITES,
             Guilds.GUILDS,
+            Notifications.NOTIFICATIONS,
             ReactiveMessages.REACTIVE_MESSAGES,
             Requests.REQUESTS,
             SelfAssignableRoleGroups.SELF_ASSIGNABLE_ROLE_GROUPS,

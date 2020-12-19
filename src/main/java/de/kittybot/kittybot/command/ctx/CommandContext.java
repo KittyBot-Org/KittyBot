@@ -1,8 +1,10 @@
 package de.kittybot.kittybot.command.ctx;
 
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.managers.CommandManager;
-import de.kittybot.kittybot.managers.GuildSettingsManager;
+import de.kittybot.kittybot.main.KittyBot;
+import de.kittybot.kittybot.main.Main;
+import de.kittybot.kittybot.managers.*;
+import de.kittybot.kittybot.utils.Config;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
@@ -22,15 +24,15 @@ import java.util.stream.Collectors;
 public class CommandContext{
 
 	private final GuildMessageReceivedEvent event;
-	private final CommandManager commandManager;
+	private final KittyBot main;
 	private final String command;
 	private final String fullPath;
 	private final List<String> args;
 	private final String rawMessage;
 
-	public CommandContext(GuildMessageReceivedEvent event, CommandManager commandManager, String fullPath, List<String> args, String rawMessage){
+	public CommandContext(GuildMessageReceivedEvent event, KittyBot main, String fullPath, List<String> args, String rawMessage){
 		this.event = event;
-		this.commandManager = commandManager;
+		this.main = main;
 		this.command = args.get(0);
 		this.fullPath = fullPath;
 		this.args = args.subList(1, args.size());
@@ -38,15 +40,43 @@ public class CommandContext{
 	}
 
 	public CommandContext getChildContext(String fullPath){
-		return new CommandContext(this.event, this.commandManager, fullPath, this.args, rawMessage);
+		return new CommandContext(this.event, this.main, fullPath, this.args, rawMessage);
+	}
+
+	public KittyBot getMain(){
+		return this.main;
 	}
 
 	public CommandManager getCommandManager(){
-		return this.commandManager;
+		return this.main.getCommandManager();
 	}
 
-	public GuildSettingsManager getSettingsManager(){
-		return this.commandManager.getGuildSettingsManager();
+	public GuildSettingsManager getGuildSettingsManager(){
+		return this.main.getGuildSettingsManager();
+	}
+
+	public ReactiveMessageManager getReactiveMessageManager(){
+		return this.main.getReactiveMessageManager();
+	}
+
+	public DashboardSessionManager getDashboardSessionManager(){
+		return this.main.getDashboardSessionManager();
+	}
+
+	public CommandResponseManager getCommandResponseManager(){
+		return this.main.getCommandResponseManager();
+	}
+
+	public MessageManager getMessageManager(){
+		return this.main.getMessageManager();
+	}
+
+	public RequestManager getRequestManager(){
+		return this.main.getRequestManager();
+	}
+
+	public Config getConfig(){
+		return this.main.getConfig();
 	}
 
 	public JDA getJDA(){
@@ -165,7 +195,7 @@ public class CommandContext{
 
 	public void queue(MessageAction messageAction){
 		if(messageAction != null){
-			messageAction.queue(message -> this.commandManager.getCommandResponseManager().add(getMessage().getIdLong(), message.getIdLong()), null);
+			messageAction.queue(message -> this.main.getCommandResponseManager().add(getMessage().getIdLong(), message.getIdLong()), null);
 		}
 	}
 

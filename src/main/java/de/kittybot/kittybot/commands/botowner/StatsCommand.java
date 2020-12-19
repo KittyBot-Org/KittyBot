@@ -10,12 +10,10 @@ import java.util.List;
 
 public class StatsCommand extends Command{
 
-	private final KittyBot main;
 
-	public StatsCommand(KittyBot main){
+	public StatsCommand(){
 		super("stats", "Shows some internal stats", Category.BOT_OWNER);
 		setBotOwnerOnly();
-		this.main = main;
 	}
 
 	@Override
@@ -23,16 +21,16 @@ public class StatsCommand extends Command{
 		var jda = ctx.getJDA();
 
 		ctx.sendSuccess(new EmbedBuilder()
-				.setAuthor("KittyBot Internal Cache Stats", this.main.getConfig().getString("origin_url"), jda.getSelfUser().getEffectiveAvatarUrl())
+				.setAuthor("KittyBot Internal Cache Stats", ctx.getConfig().getString("origin_url"), jda.getSelfUser().getEffectiveAvatarUrl())
 
-				.addField("Command Response Cache:", this.main.getCommandManager().getCommandResponseManager().getStats().toString(), false)
-				.addField("Guild Settings Cache:", this.main.getCommandManager().getGuildSettingsManager().getStats().toString(), false)
-				.addField("Reactive Messages Cache:", this.main.getCommandManager().getReactiveMessageManager().getStats().toString(), false)
-				.addField("Dashboard Session Cache:", this.main.getDashboardSessionManager().getStats().toString(), false)
-				.addField("Message Cache 1:", this.main.getMessageManager().getStats1().toString(), false)
-				.addField("Message Cache 2:", this.main.getMessageManager().getStats2().toString(), false)
-				.addField("Message Cache 3:", this.main.getMessageManager().getStats3().toString(), false)
-				.addField("Message Cache 4:", this.main.getMessageManager().getStats4().toString(), false)
+				.addField("Command Response Cache:", ctx.getCommandResponseManager().getStats().toString(), false)
+				.addField("Guild Settings Cache:", ctx.getGuildSettingsManager().getStats().toString(), false)
+				.addField("Reactive Messages Cache:", ctx.getReactiveMessageManager().getStats().toString(), false)
+				.addField("Dashboard Session Cache:", ctx.getDashboardSessionManager().getStats().toString(), false)
+				.addField("Message Cache 1:", ctx.getMessageManager().getStats1().toString(), false)
+				.addField("Message Cache 2:", ctx.getMessageManager().getStats2().toString(), false)
+				.addField("Message Cache 3:", ctx.getMessageManager().getStats3().toString(), false)
+				.addField("Message Cache 4:", ctx.getMessageManager().getStats4().toString(), false)
 		);
 	}
 

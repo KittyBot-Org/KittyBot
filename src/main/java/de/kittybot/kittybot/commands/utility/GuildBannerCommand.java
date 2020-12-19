@@ -16,7 +16,7 @@ public class GuildBannerCommand extends Command{
 
 	private static final String[] SIZES = {"128", "256", "512", "1024"};
 
-	public GuildBannerCommand(KittyBot main){
+	public GuildBannerCommand(){
 		super("guildbanner", "Gives some quicklinks to guild banners", Category.UTILITIES);
 		setUsage("<GuildId, ...>");
 		addAliases("gbanner");

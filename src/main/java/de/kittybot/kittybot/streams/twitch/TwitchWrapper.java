@@ -19,6 +19,7 @@ public class TwitchWrapper{
 
 	private static final Logger LOG = LoggerFactory.getLogger(TwitchWrapper.class);
 	private static final String BASE_URL = "https://api.twitch.tv/helix/";
+	private static final String OAUTH2_URL = "https://id.twitch.tv/oauth2/token";
 
 	private final String clientId;
 	private final String clientSecret;
@@ -36,7 +37,7 @@ public class TwitchWrapper{
 	private BearerToken requestBearerToken(){
 		var formBody = new FormBody.Builder().add("client_id", this.clientId).add("client_secret", this.clientSecret).add("grant_type", "client_credentials");
 		var request = new Request.Builder()
-				.url("https://id.twitch.tv/oauth2/token")
+				.url(OAUTH2_URL)
 				.method("POST", formBody.build())
 				.build();
 		try(var resp = this.httpClient.newCall(request).execute()){

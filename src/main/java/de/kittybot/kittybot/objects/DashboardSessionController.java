@@ -37,5 +37,4 @@ public class DashboardSessionController implements SessionController<DashboardSe
 		return null;
 	}
 
-
 }

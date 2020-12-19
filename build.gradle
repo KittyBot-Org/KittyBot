@@ -56,6 +56,11 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
 
+    // Prometheus
+    implementation 'io.prometheus:simpleclient:0.9.0'
+    implementation 'io.prometheus:simpleclient_hotspot:0.9.0'
+    implementation 'io.prometheus:simpleclient_httpserver:0.9.0'
+
     // other
     implementation 'io.javalin:javalin:3.12.0'
     implementation 'io.github.classgraph:classgraph:4.8.90'
@@ -105,4 +110,5 @@ ext {
     moduleName = 'KittyBot'
 }
 
+sourceCompatibility = 1.15
 compileJava.options.encoding = 'UTF-8'

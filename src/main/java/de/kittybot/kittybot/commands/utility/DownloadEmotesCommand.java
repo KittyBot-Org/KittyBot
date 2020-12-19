@@ -10,7 +10,7 @@ import java.util.List;
 
 public class DownloadEmotesCommand extends Command{
 
-	public DownloadEmotesCommand(KittyBot main){
+	public DownloadEmotesCommand(){
 		super("downloademotes", "Prints a ssh command to download the given emotes", Category.UTILITIES);
 		setUsage("<Emote, Emote, ...>");
 		addAliases("dle", "dlemotes");

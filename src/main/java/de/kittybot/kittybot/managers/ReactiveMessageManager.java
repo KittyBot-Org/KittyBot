@@ -5,16 +5,16 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
 import de.kittybot.kittybot.command.ReactiveMessage;
 import de.kittybot.kittybot.command.ctx.CommandContext;
+import de.kittybot.kittybot.main.KittyBot;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.concurrent.TimeUnit;
 
 public class ReactiveMessageManager{
 
-	private final DatabaseManager databaseManager;
 	private final Cache<Long, ReactiveMessage> reactiveMessages;
 
-	public ReactiveMessageManager(DatabaseManager databaseManager){
-		this.databaseManager = databaseManager;
+	public ReactiveMessageManager(){
 		this.reactiveMessages = Caffeine.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).recordStats().build();
 	}
 

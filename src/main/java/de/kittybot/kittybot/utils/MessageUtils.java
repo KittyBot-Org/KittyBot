@@ -66,4 +66,8 @@ public class MessageUtils{
 		return "<:i:" + emoteId + ">";
 	}
 
+	public static String getMessageLink(long guildId, long channelId, long messageId){
+		return String.format("https://discord.com/channels/%d/%d/%d", guildId, channelId, messageId);
+	}
+
 }

@@ -17,7 +17,7 @@ public class DashboardSession implements Session{
 	private long userId;
 
 	public DashboardSession(SessionData sessionData){
-		this.userId = Long.parseLong(sessionData.getIdentifier());
+		this.userId = -1;
 		this.accessToken = sessionData.getAccessToken();
 		this.refreshToken = sessionData.getRefreshToken();
 		this.tokenType = sessionData.getTokenType();

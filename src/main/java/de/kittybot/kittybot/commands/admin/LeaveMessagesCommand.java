@@ -10,7 +10,7 @@ import java.util.List;
 
 public class LeaveMessagesCommand extends Command{
 
-	public LeaveMessagesCommand(KittyBot main){
+	public LeaveMessagesCommand(){
 		super("leavemessages", "Enables or sets leave messages for the current channel", Category.ADMIN);
 		addAliases("leave", "leavem", "lmessages");
 		setUsage(".../<false>/<message>");
@@ -19,7 +19,7 @@ public class LeaveMessagesCommand extends Command{
 	@Override
 	protected void run(List<String> args, CommandContext ctx){
 		var guild = ctx.getGuild().getIdLong();
-		var settingsManager = ctx.getCommandManager().getGuildSettingsManager();
+		var settingsManager = ctx.getGuildSettingsManager();
 		if(!args.isEmpty() && Utils.isDisable(args.get(0))){
 			settingsManager.setLeaveMessagesEnabled(guild, false);
 			ctx.sendSuccess("Disabled leave messages here");

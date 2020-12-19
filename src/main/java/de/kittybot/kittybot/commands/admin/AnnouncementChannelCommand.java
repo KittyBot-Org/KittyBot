@@ -10,7 +10,7 @@ import java.util.List;
 
 public class AnnouncementChannelCommand extends Command{
 
-	public AnnouncementChannelCommand(KittyBot main){
+	public AnnouncementChannelCommand(){
 		super("announcementchannel", "Set's the current channel as announcement channel", Category.ADMIN);
 		addAliases("announce", "achannel");
 		setUsage(".../<false>");
@@ -19,7 +19,7 @@ public class AnnouncementChannelCommand extends Command{
 	@Override
 	protected void run(List<String> args, CommandContext ctx){
 		var guild = ctx.getGuild().getIdLong();
-		var settingsManager = ctx.getCommandManager().getGuildSettingsManager();
+		var settingsManager = ctx.getGuildSettingsManager();
 		if(!args.isEmpty() && Utils.isDisable(args.get(0))){
 			settingsManager.setAnnouncementChannelId(guild, -1L);
 			ctx.sendSuccess("Disabled announcements here");

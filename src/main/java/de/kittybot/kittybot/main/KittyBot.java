@@ -31,6 +31,7 @@ public class KittyBot{
 	private final OkHttpClient httpClient;
 	private final JDA jda;
 	private final LavalinkManager lavalinkManager;
+	private final PrometheusManager prometheusManager;
 	private final CommandManager commandManager;
 	private final DatabaseManager databaseManager;
 	private final InviteManager inviteManager;
@@ -39,30 +40,34 @@ public class KittyBot{
 	private final BotListsManager botListManager;
 	private final RequestManager requestManager;
 	private final StreamNotificationManager streamNotificationManager;
+	private final NotificationManager notificationManager;
 	private final DashboardSessionManager dashboardSessionManager;
 	private final WebService webService;
 	private final ScheduledExecutorService scheduler;
+	private GuildSettingsManager guildSettingsManager;
+	private CommandResponseManager commandResponseManager;
+	private ReactiveMessageManager reactiveMessageManager;
 
 	public KittyBot() throws IOException, MissingConfigValuesException, LoginException, InterruptedException{
 		this.config = new Config("./config.json");
 		this.config.checkMandatoryValues("bot_token", "default_prefix", "owner_ids", "db_host", "db_port", "db_database", "db_user", "db_password", "signing_key", "backend_port", "origin_url", "redirect_url");
 		this.scheduler = Executors.newSingleThreadScheduledExecutor();
+		this.prometheusManager = new PrometheusManager(this);
 		this.httpClient = new OkHttpClient();
 		this.lavalinkManager = new LavalinkManager(this);
 		this.databaseManager = new DatabaseManager(this);
-		this.commandManager = new CommandManager.Builder("de.kittybot.kittybot.commands")
-				.addBotOwnerIds(this.config.getLongSet("owner_ids"))
-				.setInitArgs(this)
-				.setGuildSettingsManager(new GuildSettingsManager(this))
-				.setCommandResponseManager(new CommandResponseManager())
-				.setReactiveMessageManager(new ReactiveMessageManager(this.databaseManager))
-				.build();
+		this.commandManager = new CommandManager(this);
+		this.commandResponseManager = new CommandResponseManager();
+		this.reactiveMessageManager = new ReactiveMessageManager();
+		this.guildSettingsManager = new GuildSettingsManager(this);
 		this.inviteManager = new InviteManager();
 		this.statusManager = new StatusManager(this);
 		this.messageManager = new MessageManager();
 		this.botListManager = new BotListsManager(this);
 		this.requestManager = new RequestManager(this);
 		this.dashboardSessionManager = new DashboardSessionManager(this);
+		this.notificationManager = new NotificationManager(this);
+		this.streamNotificationManager = new StreamNotificationManager(this);
 		this.webService = new WebService(this);
 
 		RestAction.setDefaultFailure(null);
@@ -89,6 +94,7 @@ public class KittyBot{
 						this.statusManager,
 						this.messageManager,
 						this.botListManager,
+						this.commandResponseManager,
 						new OnGuildEvent(this),
 						new OnGuildMemberEvent(this),
 						new OnGuildVoiceEvent(this)
@@ -103,7 +109,6 @@ public class KittyBot{
 				.build()
 				.awaitReady();
 
-		this.streamNotificationManager = new StreamNotificationManager(this);
 		this.lavalinkManager.connect(jda.getSelfUser().getId());
 		this.dashboardSessionManager.init(jda.getSelfUser().getIdLong());
 	}
@@ -150,6 +155,18 @@ public class KittyBot{
 
 	public WebService getWebService(){
 		return this.webService;
+	}
+
+	public GuildSettingsManager getGuildSettingsManager(){
+		return this.guildSettingsManager;
+	}
+
+	public ReactiveMessageManager getReactiveMessageManager(){
+		return this.reactiveMessageManager;
+	}
+
+	public CommandResponseManager getCommandResponseManager(){
+		return this.commandResponseManager;
 	}
 
 }

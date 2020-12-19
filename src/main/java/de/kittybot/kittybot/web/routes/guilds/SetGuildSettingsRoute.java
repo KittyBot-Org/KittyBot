@@ -19,7 +19,7 @@ public class SetGuildSettingsRoute implements Handler{
 	public void handle(@NotNull Context ctx){
 		var guildId = this.main.getWebService().getGuild(ctx).getIdLong();
 		var json = DataObject.fromJson(ctx.body());
-		var settings = this.main.getCommandManager().getGuildSettingsManager();
+		var settings = this.main.getGuildSettingsManager();
 		if(json.hasKey("prefix")){
 			settings.setPrefix(guildId, json.getString("prefix"));
 		}

@@ -10,7 +10,7 @@ import java.util.List;
 
 public class JoinMessagesCommand extends Command{
 
-	public JoinMessagesCommand(KittyBot main){
+	public JoinMessagesCommand(){
 		super("joinmessages", "Enables or sets join messages for the current channel", Category.ADMIN);
 		addAliases("join", "joinm", "jmessages");
 		setUsage(".../<false>/<message>");
@@ -19,7 +19,7 @@ public class JoinMessagesCommand extends Command{
 	@Override
 	protected void run(List<String> args, CommandContext ctx){
 		var guild = ctx.getGuild().getIdLong();
-		var settingsManager = ctx.getCommandManager().getGuildSettingsManager();
+		var settingsManager = ctx.getGuildSettingsManager();
 		if(!args.isEmpty() && Utils.isDisable(args.get(0))){
 			settingsManager.setJoinMessagesEnabled(guild, false);
 			ctx.sendSuccess("Disabled join messages here");

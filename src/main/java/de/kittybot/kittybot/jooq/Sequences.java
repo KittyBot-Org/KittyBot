@@ -31,6 +31,11 @@ public class Sequences {
     public static final Sequence<Long> GUILD_INVITES_GUILD_INVITE_ID_SEQ = Internal.createSequence("guild_invites_guild_invite_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.notifications_notification_id_seq</code>
+     */
+    public static final Sequence<Long> NOTIFICATIONS_NOTIFICATION_ID_SEQ = Internal.createSequence("notifications_notification_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.reactive_messages_reactive_message_id_seq</code>
      */
     public static final Sequence<Long> REACTIVE_MESSAGES_REACTIVE_MESSAGE_ID_SEQ = Internal.createSequence("reactive_messages_reactive_message_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);

@@ -21,7 +21,7 @@ public class GetGuildSettingsRoute implements Handler{
 		var guildId = this.main.getWebService().getGuild(ctx).getIdLong();
 		var selfAssignableRole = DataArray.empty();
 		//SelfAssignableRoleCache.getSelfAssignableRoles(guildId).forEach((key, value) -> data.add(DataObject.empty().put("role", key).put("emote", value)));
-		var settings = this.main.getCommandManager().getGuildSettingsManager().getSettings(guildId);
+		var settings = this.main.getGuildSettingsManager().getSettings(guildId);
 		WebService.ok(ctx, DataObject.empty()
 				.put("prefix", settings.getCommandPrefix())
 				.put("join_messages_enabled", settings.areJoinMessagesEnabled())

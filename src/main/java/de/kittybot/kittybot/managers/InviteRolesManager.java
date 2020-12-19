@@ -3,7 +3,6 @@ package de.kittybot.kittybot.managers;
 import de.kittybot.kittybot.main.KittyBot;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
-import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,12 +15,12 @@ public class InviteRolesManager extends ListenerAdapter{
 	}
 
 	@Override
-	public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event){
+	public void onGuildMemberRemove(@NotNull GuildMemberRemoveEvent event){
 
 	}
 
 	@Override
-	public void onGuildMemberRemove(@NotNull GuildMemberRemoveEvent event){
+	public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event){
 
 	}
 

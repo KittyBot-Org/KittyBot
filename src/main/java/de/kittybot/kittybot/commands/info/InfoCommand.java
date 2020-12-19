@@ -13,11 +13,9 @@ import java.util.List;
 
 public class InfoCommand extends Command{
 
-	private final KittyBot main;
 
-	public InfoCommand(KittyBot main){
+	public InfoCommand(){
 		super("info", "Shows some bot info", Category.INFORMATION);
-		this.main = main;
 	}
 
 	@Override
@@ -25,7 +23,7 @@ public class InfoCommand extends Command{
 		var jda = ctx.getJDA();
 		var runtime = Runtime.getRuntime();
 		ctx.sendSuccess(new EmbedBuilder()
-				.setAuthor("KittyBot Information", this.main.getConfig().getString("origin_url"), jda.getSelfUser().getEffectiveAvatarUrl())
+				.setAuthor("KittyBot Information", ctx.getConfig().getString("origin_url"), jda.getSelfUser().getEffectiveAvatarUrl())
 
 				.addField("JVM Version:", System.getProperty("java.version"), true)
 				.addField("JDA Version:", JDAInfo.VERSION, true)

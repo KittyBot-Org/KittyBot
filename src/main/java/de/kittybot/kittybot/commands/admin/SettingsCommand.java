@@ -13,13 +13,10 @@ import java.util.List;
 
 public class SettingsCommand extends Command{
 
-	private final KittyBot main;
-
-	public SettingsCommand(KittyBot main){
+	public SettingsCommand(){
 		super("settings", "Used to set guild specified settings", Category.ADMIN);
 		setUsage("<prefix/announcementchannel/joinmessage/leavemessage/boostmessage/nsfw> <value>");
 		addAliases("opts", "opt", "set", "sett");
-		this.main = main;
 	}
 
 	@Override
@@ -29,11 +26,11 @@ public class SettingsCommand extends Command{
 			return;
 		}
 		var guildId = ctx.getGuild().getIdLong();
-		var settingsManager = ctx.getCommandManager().getGuildSettingsManager();
+		var settingsManager = ctx.getGuildSettingsManager();
 		if(args.isEmpty()){
 			var settings = settingsManager.getSettings(ctx.getGuild().getIdLong());
 			ctx.sendSuccess(new EmbedBuilder()
-					.setAuthor("Guild settings:", this.main.getConfig().getString("origin_url") + "/guilds/" + guildId + "/dashboard", "https://cdn.discordapp.com/emojis/787994539105320970.png")
+					.setAuthor("Guild settings:", ctx.getConfig().getString("origin_url") + "/guilds/" + guildId + "/dashboard", "https://cdn.discordapp.com/emojis/787994539105320970.png")
 					.addField("Command Prefix: ", "`" + settings.getCommandPrefix() + "`", false)
 					.addField("Announcement Channel: ", settings.getAnnouncementChannel(), false)
 					.addField("DJ Role: ", settings.getDjRole(), false)

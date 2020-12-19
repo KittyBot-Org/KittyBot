@@ -12,18 +12,15 @@ import java.util.List;
 
 public class UptimeCommand extends Command{
 
-	private final KittyBot main;
-
-	public UptimeCommand(KittyBot main){
+	public UptimeCommand(){
 		super("uptime", "Shows the bots uptime", Category.INFORMATION);
-		this.main = main;
 	}
 
 	@Override
 	public void run(List<String> args, CommandContext ctx){
 		var jda = ctx.getJDA();
 		ctx.sendSuccess(new EmbedBuilder()
-				.setAuthor("KittyBot Uptime", this.main.getConfig().getString("origin_url"), jda.getSelfUser().getEffectiveAvatarUrl())
+				.setAuthor("KittyBot Uptime", ctx.getConfig().getString("origin_url"), jda.getSelfUser().getEffectiveAvatarUrl())
 
 				.addField("Uptime:", MessageUtils.formatDurationDHMS(ManagementFactory.getRuntimeMXBean().getUptime()), false)
 		);

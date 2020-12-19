@@ -10,7 +10,7 @@ import java.util.List;
 
 public class LogMessagesCommand extends Command{
 
-	public LogMessagesCommand(KittyBot main){
+	public LogMessagesCommand(){
 		super("logmessages", "Set's the current channel for log messages", Category.ADMIN);
 		addAliases("logs", "logmsgs");
 		setUsage(".../<false>");
@@ -19,7 +19,7 @@ public class LogMessagesCommand extends Command{
 	@Override
 	protected void run(List<String> args, CommandContext ctx){
 		var guild = ctx.getGuild().getIdLong();
-		var settingsManager = ctx.getCommandManager().getGuildSettingsManager();
+		var settingsManager = ctx.getGuildSettingsManager();
 		if(!args.isEmpty() && Utils.isDisable(args.get(0))){
 			settingsManager.setLogMessagesEnabled(guild, false);
 			ctx.sendSuccess("Disabled log messages here");

@@ -11,11 +11,8 @@ import java.util.List;
 
 public class EditSnipeCommand extends Command{
 
-	private final KittyBot main;
-
-	public EditSnipeCommand(KittyBot main){
+	public EditSnipeCommand(){
 		super("editsnipe", "Snipes a edited message", Category.SNIPE);
-		this.main = main;
 		addAliases("es");
 	}
 
@@ -24,13 +21,13 @@ public class EditSnipeCommand extends Command{
 		if(!ctx.getChannel().canTalk()){
 			return;
 		}
-		if(!ctx.getSettingsManager().areSnipesEnabled(ctx.getGuild().getIdLong())){
+		if(!ctx.getGuildSettingsManager().areSnipesEnabled(ctx.getGuild().getIdLong())){
 			ctx.error("Edit Snipes are disabled for this guild");
 		}
-		if(ctx.getSettingsManager().areSnipesDisabledInChannel(ctx.getGuild().getIdLong(), ctx.getChannel().getIdLong())){
+		if(ctx.getGuildSettingsManager().areSnipesDisabledInChannel(ctx.getGuild().getIdLong(), ctx.getChannel().getIdLong())){
 			ctx.error("Snipes are disabled for this guild");
 		}
-		var lastEditedMessage = this.main.getMessageManager().getLastEditedMessage(ctx.getMessage().getTextChannel().getIdLong());
+		var lastEditedMessage = ctx.getMessageManager().getLastEditedMessage(ctx.getMessage().getTextChannel().getIdLong());
 		if(lastEditedMessage == null){
 			ctx.sendError("There's no edited message to snipe");
 			return;

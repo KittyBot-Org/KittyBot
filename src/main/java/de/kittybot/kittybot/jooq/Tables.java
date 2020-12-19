@@ -8,6 +8,7 @@ import de.kittybot.kittybot.jooq.tables.BotDisabledChannels;
 import de.kittybot.kittybot.jooq.tables.GuildInviteRoles;
 import de.kittybot.kittybot.jooq.tables.GuildInvites;
 import de.kittybot.kittybot.jooq.tables.Guilds;
+import de.kittybot.kittybot.jooq.tables.Notifications;
 import de.kittybot.kittybot.jooq.tables.ReactiveMessages;
 import de.kittybot.kittybot.jooq.tables.Requests;
 import de.kittybot.kittybot.jooq.tables.SelfAssignableRoleGroups;
@@ -44,6 +45,11 @@ public class Tables {
      * The table <code>public.guilds</code>.
      */
     public static final Guilds GUILDS = Guilds.GUILDS;
+
+    /**
+     * The table <code>public.notifications</code>.
+     */
+    public static final Notifications NOTIFICATIONS = Notifications.NOTIFICATIONS;
 
     /**
      * The table <code>public.reactive_messages</code>.

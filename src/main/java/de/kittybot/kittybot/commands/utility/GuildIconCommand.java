@@ -16,7 +16,7 @@ public class GuildIconCommand extends Command{
 
 	private static final String[] SIZES = {"128", "256", "512", "1024"};
 
-	public GuildIconCommand(KittyBot main){
+	public GuildIconCommand(){
 		super("guildicon", "Gives some quicklinks to guild icons", Category.UTILITIES);
 		setUsage("<GuildId, ...>");
 		addAliases("gicon");

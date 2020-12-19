@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.time.Duration;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -34,26 +33,6 @@ public class GuildSettingsManager{
 				.expireAfterAccess(30, TimeUnit.MINUTES)
 				.recordStats()
 				.build(this::retrieveGuildSettings);
-	}
-
-	public static class InviteRole{
-
-		private final String code;
-		private final long roleId;
-
-		public InviteRole(String code, long roleId){
-			this.code = code;
-			this.roleId = roleId;
-		}
-
-		public String getCode(){
-			return this.code;
-		}
-
-		public long getRoleId(){
-			return this.roleId;
-		}
-
 	}
 
 	public GuildSettings retrieveGuildSettings(long guildId){
@@ -401,6 +380,26 @@ public class GuildSettingsManager{
 		catch(SQLException e){
 			LOG.error("Error deleting bot disabled channels: {}", guildId, e);
 		}
+	}
+
+	public static class InviteRole{
+
+		private final String code;
+		private final long roleId;
+
+		public InviteRole(String code, long roleId){
+			this.code = code;
+			this.roleId = roleId;
+		}
+
+		public String getCode(){
+			return this.code;
+		}
+
+		public long getRoleId(){
+			return this.roleId;
+		}
+
 	}
 
 }

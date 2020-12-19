@@ -15,12 +15,9 @@ import static de.kittybot.kittybot.utils.MessageUtils.maskLink;
 
 public class HastebinCommand extends Command{
 
-	private final KittyBot main;
-
-	public HastebinCommand(KittyBot main){
+	public HastebinCommand(){
 		super("hastebin", "Creates a hastebin from the newly provided or last file in this channel", Category.UTILITIES);
 		setUsage("<file>");
-		this.main = main;
 	}
 
 	@Override
@@ -45,7 +42,7 @@ public class HastebinCommand extends Command{
 			attachment.retrieveInputStream().thenAcceptAsync(inputStream -> {
 				try(inputStream){
 					var text = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
-					ctx.sendSuccess(maskLink("here is a hastebin", this.main.getRequestManager().postToHastebin(text)));
+					ctx.sendSuccess(maskLink("here is a hastebin", ctx.getMain().getRequestManager().postToHastebin(text)));
 				}
 				catch(NullPointerException | IOException e){
 					ctx.sendError("Error while creating hastebin\nError: " + e.getMessage());

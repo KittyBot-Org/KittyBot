@@ -10,7 +10,7 @@ import java.util.List;
 
 public class StreamAnnouncementCommand extends Command{
 
-	public StreamAnnouncementCommand(KittyBot main){
+	public StreamAnnouncementCommand(){
 		super("streamannouncement", "Enables or sets join messages for the current channel", Category.ADMIN);
 		addAliases("streamannounce", "streamannouncement");
 		setUsage("<twitch/youtube> <username> <>");
@@ -19,7 +19,7 @@ public class StreamAnnouncementCommand extends Command{
 	@Override
 	protected void run(List<String> args, CommandContext ctx){
 		var guild = ctx.getGuild().getIdLong();
-		var settingsManager = ctx.getCommandManager().getGuildSettingsManager();
+		var settingsManager = ctx.getGuildSettingsManager();
 		if(args.isEmpty()){
 			ctx.sendUsage(this);
 			return;

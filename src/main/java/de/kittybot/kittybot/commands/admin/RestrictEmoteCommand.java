@@ -11,7 +11,7 @@ import java.util.List;
 
 public class RestrictEmoteCommand extends Command{
 
-	public RestrictEmoteCommand(KittyBot main){
+	public RestrictEmoteCommand(){
 		super("restrictemote", "Restricts a given emote to one or more roles", Category.UTILITIES);
 		setUsage("<:Emote:> <, @Role, .../reset>");
 		addAliases("restricte", "remote", "re");

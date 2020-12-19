@@ -9,7 +9,7 @@ import java.util.List;
 
 public class TestCommand extends Command{
 
-	public TestCommand(KittyBot main){
+	public TestCommand(){
 		super("test", "Only for testing weird stuff", Category.BOT_OWNER);
 		this.setBotOwnerOnly();
 	}

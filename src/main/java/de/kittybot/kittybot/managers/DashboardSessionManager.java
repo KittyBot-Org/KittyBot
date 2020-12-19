@@ -19,6 +19,7 @@ import javax.crypto.SecretKey;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static de.kittybot.kittybot.jooq.Tables.SESSIONS;
@@ -33,6 +34,7 @@ public class DashboardSessionManager extends ListenerAdapter{
 	private final SecretKey secretKey;
 	private final LoadingCache<Long, DashboardSession> sessionCache;
 	private final Map<Long, Boolean> userSessionCache;
+	private final Map<Long, Set<Long>> userGuilds;
 	private OAuth2Client oAuth2Client;
 
 	public DashboardSessionManager(KittyBot main){
@@ -43,6 +45,7 @@ public class DashboardSessionManager extends ListenerAdapter{
 				.recordStats()
 				.build(this::retrieveDashboardSession);
 		this.userSessionCache = new HashMap<>();
+		this.userGuilds = new HashMap<>();
 	}
 
 	private DashboardSession retrieveDashboardSession(long userId){
@@ -77,6 +80,15 @@ public class DashboardSessionManager extends ListenerAdapter{
 
 	}
 
+	/*
+	public List<GuildData> getGuilds(long userId){
+		var guilds = this.userGuilds.get(userId);
+		if(guilds == null){
+			var session = get(userId);
+			oAuth2Client.getGuilds(session).complete();
+		}
+	}*/
+
 	public void add(DashboardSession session){
 		saveDashboardSession(session);
 		this.sessionCache.put(session.getUserId(), session);
@@ -86,7 +98,7 @@ public class DashboardSessionManager extends ListenerAdapter{
 	private void saveDashboardSession(DashboardSession session){
 		var dbManager = this.main.getDatabaseManager();
 		try(var con = dbManager.getCon()){
-			dbManager.getCtx(con).insertInto(SESSIONS).columns(SESSIONS.fields()).values(session.getUserId(), session.getAccessToken(), session.getRefreshToken(), session.getExpiration()).execute();
+			dbManager.getCtx(con).insertInto(SESSIONS).columns(SESSIONS.fields()).values(session.getUserId(), session.getAccessToken(), session.getRefreshToken(), session.getExpiration()).onDuplicateKeyIgnore().execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error while inserting Dashboard session", e);

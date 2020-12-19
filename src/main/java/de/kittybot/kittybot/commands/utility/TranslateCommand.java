@@ -15,13 +15,10 @@ import java.util.stream.Collectors;
 
 public class TranslateCommand extends Command{
 
-	private final KittyBot main;
-
-	public TranslateCommand(KittyBot main){
+	public TranslateCommand(){
 		super("translate", "Translates text to a given language", Category.UTILITIES);
 		addAliases("tran", "t", "trans");
 		setUsage("<language> <text>");
-		this.main = main;
 	}
 
 	@Override
@@ -45,7 +42,7 @@ public class TranslateCommand extends Command{
 			ctx.sendError("Please provide text to translate");
 			return;
 		}
-		var translatedText = this.main.getRequestManager().translateText(text, lang.get().getShortname());
+		var translatedText = ctx.getRequestManager().translateText(text, lang.get().getShortname());
 
 		ctx.sendSuccess(new EmbedBuilder().setDescription("Translated text:\n```\n" + translatedText + "\n```"));
 	}
