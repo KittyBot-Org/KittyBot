@@ -18,8 +18,8 @@ public class NotificationCommand extends Command{
 	}
 
 	@Override
-	protected void run(List<String> args, CommandContext ctx){
-		ctx.sendUsage(this);
+	public void run(List<String> args, CommandContext ctx){
+		ctx.sendUsage(this.getUsage() + " " + this.getRawUsage());
 	}
 
 }

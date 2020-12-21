@@ -15,7 +15,7 @@ public class NotificationDeleteCommand extends Command{
 	}
 
 	@Override
-	protected void run(List<String> args, CommandContext ctx){
+	public void run(List<String> args, CommandContext ctx){
 		if(args.isEmpty()){
 			ctx.sendUsage(this);
 			return;

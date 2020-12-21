@@ -10,10 +10,12 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.sql.SQLException;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -44,6 +46,22 @@ public class NotificationManager{
 
 	private void scheduleNext(){
 		schedule(getAndRemoveNext(LocalDateTime.now().plus(5, ChronoUnit.MINUTES)));
+	}
+
+	private Map<Long, Notification> retrieveNotifications(LocalDateTime to){
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon(); var ctx = dbManager.getCtx(con).selectFrom(NOTIFICATIONS)){
+			return ctx.where(NOTIFICATIONS.NOTIFICATION_TIME.lessOrEqual(to)).fetch().stream().collect(
+					Collectors.toMap(
+							NotificationsRecord::getNotificationId,
+							record -> new Notification(record.getNotificationId(), record.getGuildId(), record.getChannelId(), record.getMessageId(), record.getUserId(), record.getContent(), record.getCreationTime(), record.getNotificationTime())
+					)
+			);
+		}
+		catch(SQLException e){
+			LOG.error("Error while retrieving notifications", e);
+		}
+		return Collections.emptyMap();
 	}
 
 	private void schedule(Set<Notification> notifs){
@@ -81,28 +99,28 @@ public class NotificationManager{
 		}
 	}
 
-	private Map<Long, Notification> retrieveNotifications(LocalDateTime to){
-		var dbManager = this.main.getDatabaseManager();
-		try(var con = dbManager.getCon(); var ctx = dbManager.getCtx(con).selectFrom(NOTIFICATIONS)){
-			return ctx.where(NOTIFICATIONS.NOTIFICATION_TIME.lessOrEqual(to)).fetch().stream().collect(
-					Collectors.toMap(
-							NotificationsRecord::getNotificationId,
-							record -> new Notification(record.getNotificationId(), record.getGuildId(), record.getChannelId(), record.getMessageId(), record.getUserId(), record.getContent(), record.getCreationTime(), record.getNotificationTime())
-					)
-			);
-		}
-		catch(SQLException e){
-			LOG.error("Error while retrieving notifications", e);
-		}
-		return Collections.emptyMap();
-	}
-
 	private Set<Notification> getAndRemoveNext(LocalDateTime to){
 		var notifications = this.notifications.values().stream().filter(
 				notification -> notification.getNotificationTime().isBefore(to)
 		).collect(Collectors.toSet());
 		this.notifications.entrySet().removeIf(entry -> notifications.stream().anyMatch(notification -> notification.getId() == entry.getValue().getId()));
 		return notifications;
+	}
+
+	public boolean delete(long id, long userId){
+		this.notifications.entrySet().removeIf(entry -> entry.getValue().getId() == id && entry.getValue().getUserId() == userId);
+		return deleteNotifications(id, userId);
+	}
+
+	private boolean deleteNotifications(long id, long userId){
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon()){
+			return dbManager.getCtx(con).deleteFrom(NOTIFICATIONS).where(NOTIFICATIONS.NOTIFICATION_ID.eq(id).and((NOTIFICATIONS.USER_ID.eq(userId)))).execute() == 1;
+		}
+		catch(SQLException e){
+			LOG.error("Error while retrieving notifications", e);
+		}
+		return false;
 	}
 
 	public Notification create(long guildId, long channelId, long messageId, long userId, String content, LocalDateTime notificationTime){
@@ -147,22 +165,6 @@ public class NotificationManager{
 			LOG.error("Error while retrieving notifications", e);
 		}
 		return null;
-	}
-
-	public boolean delete(long id, long userId){
-		this.notifications.entrySet().removeIf(entry -> entry.getValue().getId() == id && entry.getValue().getUserId() == userId);
-		return deleteNotifications(id, userId);
-	}
-
-	private boolean deleteNotifications(long id, long userId){
-		var dbManager = this.main.getDatabaseManager();
-		try(var con = dbManager.getCon()){
-			return dbManager.getCtx(con).deleteFrom(NOTIFICATIONS).where(NOTIFICATIONS.NOTIFICATION_ID.eq(id).and((NOTIFICATIONS.USER_ID.eq(userId)))).execute() == 1;
-		}
-		catch(SQLException e){
-			LOG.error("Error while retrieving notifications", e);
-		}
-		return false;
 	}
 
 	public Set<Notification> get(long userId){

@@ -19,7 +19,7 @@ public class NotificationListCommand extends Command{
 	}
 
 	@Override
-	protected void run(List<String> args, CommandContext ctx){
+	public void run(List<String> args, CommandContext ctx){
 		Set<Notification> notifs;
 		if(args.isEmpty()){
 			notifs = ctx.getNotificationManager().get(ctx.getUser().getIdLong());

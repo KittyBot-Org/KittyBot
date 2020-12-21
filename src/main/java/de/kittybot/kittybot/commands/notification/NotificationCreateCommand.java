@@ -4,7 +4,6 @@ import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
 import de.kittybot.kittybot.utils.TimeUtils;
-import org.eclipse.jetty.util.log.Log;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +17,7 @@ public class NotificationCreateCommand extends Command{
 	}
 
 	@Override
-	protected void run(List<String> args, CommandContext ctx){
+	public void run(List<String> args, CommandContext ctx){
 		if(args.size() < 2){
 			ctx.sendUsage(this);
 			return;
