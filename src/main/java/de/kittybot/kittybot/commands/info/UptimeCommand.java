@@ -3,7 +3,7 @@ package de.kittybot.kittybot.commands.info;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
-import de.kittybot.kittybot.utils.MessageUtils;
+import de.kittybot.kittybot.utils.TimeUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.lang.management.ManagementFactory;
@@ -21,7 +21,7 @@ public class UptimeCommand extends Command{
 		ctx.sendSuccess(new EmbedBuilder()
 				.setAuthor("KittyBot Uptime", ctx.getConfig().getString("origin_url"), jda.getSelfUser().getEffectiveAvatarUrl())
 
-				.addField("Uptime:", MessageUtils.formatDurationDHMS(ManagementFactory.getRuntimeMXBean().getUptime()), false)
+				.addField("Uptime:", TimeUtils.formatDurationDHMS(ManagementFactory.getRuntimeMXBean().getUptime()), false)
 		);
 	}
 

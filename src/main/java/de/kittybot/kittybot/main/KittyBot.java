@@ -110,6 +110,7 @@ public class KittyBot{
 				.build()
 				.awaitReady();
 
+		this.notificationManager.init();
 		this.lavalinkManager.connect(jda.getSelfUser().getId());
 		this.dashboardSessionManager.init(jda.getSelfUser().getIdLong());
 	}
@@ -168,6 +169,10 @@ public class KittyBot{
 
 	public CommandResponseManager getCommandResponseManager(){
 		return this.commandResponseManager;
+	}
+
+	public NotificationManager getNotificationManager(){
+		return this.notificationManager;
 	}
 
 }

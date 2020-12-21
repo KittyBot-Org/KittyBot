@@ -2,7 +2,6 @@ package de.kittybot.kittybot.utils;
 
 import de.kittybot.kittybot.objects.Emoji;
 
-import java.time.Duration;
 import java.util.Collection;
 
 public class MessageUtils{
@@ -15,19 +14,6 @@ public class MessageUtils{
 
 	public static String maskLink(String title, String url){
 		return "[" + title + "](" + url + ")";
-	}
-
-	public static String formatDurationDHMS(long length){
-		return formatDurationDHMS(Duration.ofMillis(length));
-	}
-
-	public static String formatDurationDHMS(Duration duration){
-		return String.format(
-				"%sd %s:%s:%s", duration.toDays(), fTime(duration.toHoursPart()), fTime(duration.toMinutesPart()), fTime(duration.toSecondsPart()));
-	}
-
-	public static String fTime(int time){
-		return time > 9 ? String.valueOf(time) : "0" + time;
 	}
 
 	public static <T> String pluralize(String text, Collection<T> collection){

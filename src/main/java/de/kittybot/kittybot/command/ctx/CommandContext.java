@@ -54,6 +54,10 @@ public class CommandContext{
 		return this.main.getGuildSettingsManager();
 	}
 
+	public NotificationManager getNotificationManager(){
+		return this.main.getNotificationManager();
+	}
+
 	public ReactiveMessageManager getReactiveMessageManager(){
 		return this.main.getReactiveMessageManager();
 	}
@@ -100,6 +104,20 @@ public class CommandContext{
 
 	public String getRawMessage(){
 		return this.rawMessage;
+	}
+
+	public String getRawMessage(int toArg){
+		var msg = this.rawMessage;
+		var i = 0;
+		for(var arg : this.args){
+			if(i > args.size() || i > toArg - 1){
+				i++;
+				continue;
+			}
+			msg = msg.replaceFirst(arg, "").trim();
+			i++;
+		}
+		return msg;
 	}
 
 	public User getUser(){
