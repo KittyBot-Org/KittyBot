@@ -35,6 +35,7 @@ public class KittyBot{
 	private final CommandManager commandManager;
 	private final DatabaseManager databaseManager;
 	private final InviteManager inviteManager;
+	private final InviteRolesManager inviteRolesManager;
 	private final StatusManager statusManager;
 	private final MessageManager messageManager;
 	private final BotListsManager botListManager;
@@ -61,6 +62,7 @@ public class KittyBot{
 		this.reactiveMessageManager = new ReactiveMessageManager();
 		this.guildSettingsManager = new GuildSettingsManager(this);
 		this.inviteManager = new InviteManager();
+		this.inviteRolesManager = new InviteRolesManager(this);
 		this.statusManager = new StatusManager(this);
 		this.messageManager = new MessageManager();
 		this.botListManager = new BotListsManager(this);
@@ -96,6 +98,7 @@ public class KittyBot{
 						this.botListManager,
 						this.commandResponseManager,
 						this.prometheusManager,
+						this.inviteRolesManager,
 						new OnGuildEvent(this),
 						new OnGuildMemberEvent(this),
 						new OnGuildVoiceEvent(this)
@@ -173,6 +176,10 @@ public class KittyBot{
 
 	public NotificationManager getNotificationManager(){
 		return this.notificationManager;
+	}
+
+	public InviteManager getInviteManager(){
+		return this.inviteManager;
 	}
 
 }

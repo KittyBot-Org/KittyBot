@@ -7,6 +7,7 @@ import de.kittybot.kittybot.jooq.tables.records.BotDisabledChannelsRecord;
 import de.kittybot.kittybot.jooq.tables.records.SnipeDisabledChannelsRecord;
 import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.objects.GuildSettings;
+import de.kittybot.kittybot.objects.InviteRole;
 import net.dv8tion.jda.api.entities.Guild;
 import org.jooq.Field;
 import org.jooq.types.YearToSecond;
@@ -15,6 +16,8 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.time.Duration;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -382,24 +385,13 @@ public class GuildSettingsManager{
 		}
 	}
 
-	public static class InviteRole{
-
-		private final String code;
-		private final long roleId;
-
-		public InviteRole(String code, long roleId){
-			this.code = code;
-			this.roleId = roleId;
-		}
-
-		public String getCode(){
-			return this.code;
-		}
-
-		public long getRoleId(){
-			return this.roleId;
-		}
-
+	public Map<String, Set<Long>> getInviteRoles(long guildId){
+		return getSettings(guildId).getInviteRoles();
 	}
+
+	public Set<Long> getInviteRoles(long guildId, String code){
+		return getSettings(guildId).getInviteRoles(code);
+	}
+
 
 }

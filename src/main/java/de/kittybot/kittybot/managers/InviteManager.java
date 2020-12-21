@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteCreateEvent;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteDeleteEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,25 +22,39 @@ public class InviteManager extends ListenerAdapter{
 
 	private static final Logger LOG = LoggerFactory.getLogger(InviteManager.class);
 
-	private final Map<String, Map<String, InviteData>> invites;
+	private final Map<Long, Map<String, InviteData>> invites;
+	private final Map<Long, Map<Long, InviteData>> usedInvites;
 
 	public InviteManager(){
 		this.invites = new HashMap<>();
+		this.usedInvites = new HashMap<>();
 	}
 
 	@Override
 	public void onGuildReady(@Nonnull GuildReadyEvent event){
-		initGuildCache(event.getGuild());
+		init(event.getGuild());
 	}
 
 	@Override
 	public void onGuildJoin(@Nonnull GuildJoinEvent event){
-		initGuildCache(event.getGuild());
+		init(event.getGuild());
+	}
+
+	@Override
+	public void onGuildMemberJoin(@Nonnull GuildMemberJoinEvent event){
+		var guild = event.getGuild();
+		var guildId = guild.getIdLong();
+		var invite = retrieveUsedInvite(guild);
+		if(invite == null){
+			return;
+		}
+		this.usedInvites.computeIfAbsent(guildId, k -> new HashMap<>());
+		this.usedInvites.get(guildId).put(event.getUser().getIdLong(), new InviteData(invite));
 	}
 
 	@Override
 	public void onGuildLeave(@Nonnull GuildLeaveEvent event){
-		pruneGuildCache(event.getGuild());
+		prune(event.getGuild().getIdLong());
 	}
 
 	@Override
@@ -49,31 +64,59 @@ public class InviteManager extends ListenerAdapter{
 
 	@Override
 	public void onGuildInviteDelete(@Nonnull GuildInviteDeleteEvent event){
-		uncache(event.getGuild().getId(), event.getCode());
+		uncache(event.getGuild().getIdLong(), event.getCode());
 	}
 
-	public void uncache(String guild, String code){
-		if(invites.get(guild) != null){
-			invites.get(guild).remove(code);
+	public InviteData getUsedInvite(long guildId, long userId){
+		return this.usedInvites.get(guildId).get(userId);
+	}
+
+	private Invite retrieveUsedInvite(Guild guild){
+		if(!guild.getSelfMember().hasPermission(Permission.MANAGE_SERVER)){
+			return null;
+		}
+		var guildId = guild.getIdLong();
+		var value = this.invites.get(guildId);
+		if(value == null){ // how?
+			init(guild);
+			return null;
+		}
+		for(var invite : guild.retrieveInvites().complete()){
+			var oldInvite = value.get(invite.getCode());
+			if(oldInvite == null){
+				continue;
+			}
+			if(invite.getUses() > oldInvite.getUses()){
+				oldInvite.used();
+				return invite;
+			}
+		}
+		return null;
+	}
+
+	public void uncache(long guildId, String code){
+		if(invites.get(guildId) != null){
+			invites.get(guildId).remove(code);
 		}
 	}
 
-	public void pruneGuildCache(Guild guild){
-		LOG.info("Pruning invite cache for guild: {} ({})", guild.getName(), guild.getId());
-		invites.remove(guild.getId());
+	public void prune(long guildId){
+		LOG.info("Pruning invite cache for guild: {}", guildId);
+		invites.remove(guildId);
+		this.usedInvites.remove(guildId);
 	}
 
-	public void initGuildCache(Guild guild){
+	public void init(Guild guild){
 		if(!guild.getSelfMember().hasPermission(Permission.MANAGE_SERVER)){
 			return;
 		}
-		LOG.info("Initializing invite cache for guild: {} ({})", guild.getName(), guild.getId());
+		LOG.info("Initializing invite cache for guild: {}", guild.getId());
 		guild.retrieveInvites().queue(invites -> invites.forEach(this::cache));
 	}
 
 	public void cache(Invite invite){
 		if(invite.getGuild() != null){
-			var guildId = invite.getGuild().getId();
+			var guildId = invite.getGuild().getIdLong();
 			invites.computeIfAbsent(guildId, k -> new HashMap<>());
 			invites.get(guildId).put(invite.getCode(), new InviteData(invite));
 		}

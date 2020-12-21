@@ -205,4 +205,12 @@ public class GuildSettings{
 		return this.botDisabledChannels.contains(channelId);
 	}
 
+	public Map<String, Set<Long>> getInviteRoles(){
+		return this.guildInviteRoles;
+	}
+
+	public Set<Long> getInviteRoles(String code){
+		return this.guildInviteRoles.get(code);
+	}
+
 }
