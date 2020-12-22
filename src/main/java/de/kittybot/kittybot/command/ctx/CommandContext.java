@@ -66,6 +66,10 @@ public class CommandContext{
 		return this.main.getDashboardSessionManager();
 	}
 
+	public InviteManager getInviteManager(){
+		return this.main.getInviteManager();
+	}
+
 	public CommandResponseManager getCommandResponseManager(){
 		return this.main.getCommandResponseManager();
 	}

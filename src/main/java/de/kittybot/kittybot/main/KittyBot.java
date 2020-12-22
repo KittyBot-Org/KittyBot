@@ -90,9 +90,9 @@ public class KittyBot{
 				.setMemberCachePolicy(MemberCachePolicy.VOICE)
 				.setChunkingFilter(ChunkingFilter.NONE)
 				.addEventListeners(
+						this.inviteManager,
 						this.lavalinkManager.getLavalink(),
 						this.commandManager,
-						this.inviteManager,
 						this.statusManager,
 						this.messageManager,
 						this.botListManager,
@@ -107,7 +107,7 @@ public class KittyBot{
 				.setVoiceDispatchInterceptor(this.lavalinkManager.getLavalink().getVoiceInterceptor())
 				.setActivity(Activity.playing("loading..."))
 				.setStatus(OnlineStatus.DO_NOT_DISTURB)
-				.setEventPool(ThreadingConfig.newScheduler(2, () -> "KittyBot", "Events"), true)
+				.setEventPool(ThreadingConfig.newScheduler(1, () -> "KittyBot", "Events"), true)
 				.setGatewayEncoding(GatewayEncoding.ETF)
 				.setBulkDeleteSplittingEnabled(false)
 				.build()

@@ -201,8 +201,24 @@ public class GuildSettings{
 		return this.snipeDisabledChannels.contains(channelId);
 	}
 
+	public void setSnipesDisabledInChannel(long channelId, boolean disable){
+		if(disable){
+			this.snipeDisabledChannels.add(channelId);
+			return;
+		}
+		this.snipeDisabledChannels.remove(channelId);
+	}
+
 	public boolean isBotDisabledInChannel(long channelId){
 		return this.botDisabledChannels.contains(channelId);
+	}
+
+	public void setBotDisabledInChannel(long channelId, boolean enabled){
+		if(enabled){
+			this.botDisabledChannels.add(channelId);
+			return;
+		}
+		this.botDisabledChannels.remove(channelId);
 	}
 
 	public Map<String, Set<Long>> getInviteRoles(){
@@ -211,6 +227,14 @@ public class GuildSettings{
 
 	public Set<Long> getInviteRoles(String code){
 		return this.guildInviteRoles.get(code);
+	}
+
+	public void setInviteRoles(String code, Set<Long> roles){
+		if(roles.isEmpty()){
+			this.guildInviteRoles.remove(code);
+			return;
+		}
+		this.guildInviteRoles.put(code, roles);
 	}
 
 }

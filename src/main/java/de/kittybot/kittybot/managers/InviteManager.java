@@ -15,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -120,6 +122,10 @@ public class InviteManager extends ListenerAdapter{
 			invites.computeIfAbsent(guildId, k -> new HashMap<>());
 			invites.get(guildId).put(invite.getCode(), new InviteData(invite));
 		}
+	}
+
+	public Map<String, InviteData> getGuildInvites(long guildId){
+		return this.invites.get(guildId);
 	}
 
 }

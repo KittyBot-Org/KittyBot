@@ -9,19 +9,24 @@ import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.objects.GuildSettings;
 import de.kittybot.kittybot.objects.InviteRole;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Role;
+import org.jooq.DSLContext;
 import org.jooq.Field;
+import org.jooq.InsertReturningStep;
 import org.jooq.types.YearToSecond;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static de.kittybot.kittybot.jooq.Tables.*;
+import static org.jooq.impl.DSL.*;
 
 public class GuildSettingsManager{
 
@@ -50,14 +55,15 @@ public class GuildSettingsManager{
 			if(res != null){
 				return new GuildSettings(
 						res,
-						ctxSnipeDisabledChannels.where(SNIPE_DISABLED_CHANNELS.GUILD_ID.eq(guildId)).fetch().stream().map(
+						ctxSnipeDisabledChannels.where(SNIPE_DISABLED_CHANNELS.GUILD_ID.eq(guildId)).fetch().parallelStream().map(
 								SnipeDisabledChannelsRecord::getChannelId).collect(Collectors.toSet()
 						),
-						ctxBotDisabledChannels.where(BOT_DISABLED_CHANNELS.GUILD_ID.eq(guildId)).fetch().stream().map(
+						ctxBotDisabledChannels.where(BOT_DISABLED_CHANNELS.GUILD_ID.eq(guildId)).fetch().parallelStream().map(
 								BotDisabledChannelsRecord::getChannelId).collect(Collectors.toSet()
 						),
-						ctxGuildInviteRoles.from(GUILD_INVITES).join(GUILD_INVITE_ROLES).on(GUILD_INVITES.GUILD_INVITE_ID.eq(GUILD_INVITE_ROLES.GUILD_INVITE_ID)).where(GUILD_INVITES.GUILD_ID.eq(guildId)).fetch().stream()
-								.map(record -> new InviteRole(record.get(GUILD_INVITES.CODE), record.get(GUILD_INVITE_ROLES.ROLE_ID)))
+						ctxGuildInviteRoles.from(GUILD_INVITES).join(GUILD_INVITE_ROLES).on(GUILD_INVITES.GUILD_INVITE_ID.eq(GUILD_INVITE_ROLES.GUILD_INVITE_ID))
+								.where(GUILD_INVITES.GUILD_ID.eq(guildId)).fetch().parallelStream()
+								.map(InviteRole::new)
 								.collect(Collectors.groupingBy(InviteRole::getCode, Collectors.mapping(InviteRole::getRoleId, Collectors.toSet())))
 				);
 
@@ -326,6 +332,10 @@ public class GuildSettingsManager{
 	}
 
 	public void setSnipesDisabledInChannel(long guildId, long channelId, boolean disable){
+		var settings = getSettings(guildId);
+		if(settings != null){
+			settings.setSnipesDisabledInChannel(channelId, disable);
+		}
 		if(disable){
 			insertSnipeDisabledChannel(guildId, channelId);
 			return;
@@ -358,6 +368,10 @@ public class GuildSettingsManager{
 	}
 
 	public void setBotDisabledInChannel(long guildId, long channelId, boolean disable){
+		var settings = getSettings(guildId);
+		if(settings != null){
+			settings.setBotDisabledInChannel(channelId, disable);
+		}
 		if(disable){
 			insertBotDisabledChannel(guildId, channelId);
 			return;
@@ -393,5 +407,89 @@ public class GuildSettingsManager{
 		return getSettings(guildId).getInviteRoles(code);
 	}
 
+	public void setInviteRoles(long guildId, String code, Set<Long> roles){
+		var settings = getSettings(guildId);
+		if(settings != null){
+			settings.setInviteRoles(code, roles);
+		}
+		if(roles.isEmpty()){
+			deleteInviteRole(guildId, code);
+			return;
+		}
+		deleteInviteRoles(guildId, code);
+		insertInviteRoles(guildId, code, roles);
+	}
+
+	public void removeInviteRole(long guildId, long roleId){
+		var settings = this.main.getGuildSettingsManager().getSettingsIfPresent(guildId);
+		if(settings != null){
+			settings.getInviteRoles().forEach((key, value) -> value.removeIf(r -> r == roleId));
+		}
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon()){
+			dbManager.getCtx(con).deleteFrom(GUILD_INVITE_ROLES).where(GUILD_INVITE_ROLES.ROLE_ID.eq(roleId)).execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error deleting invite role: {}", roleId, e);
+		}
+	}
+
+
+	private void insertInviteRoles(long guildId, String code, Set<Long> roles){
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon(); var selectCtx = dbManager.getCtx(con).selectFrom(GUILD_INVITES)){
+			var res = selectCtx.where(GUILD_INVITES.GUILD_ID.eq(guildId).and(GUILD_INVITES.CODE.eq(code))).fetchOne();
+			var inviteRoleId = 0L;
+			if(res == null){
+				var res2 = dbManager.getCtx(con).insertInto(GUILD_INVITES).columns(GUILD_INVITES.GUILD_ID, GUILD_INVITES.CODE).values(guildId, code).returningResult(GUILD_INVITES.GUILD_INVITE_ID).fetchOne();
+				if(res2 == null){
+					LOG.error("Cane we have a problem! Tickle Topi!");
+					return;
+				}
+				inviteRoleId = res2.get(GUILD_INVITES.GUILD_INVITE_ID);
+			}
+			else{
+				inviteRoleId = res.getGuildInviteId();
+			}
+			var ctx = dbManager.getCtx(con).insertInto(GUILD_INVITE_ROLES).columns(GUILD_INVITE_ROLES.ROLE_ID, GUILD_INVITE_ROLES.GUILD_INVITE_ID);
+			for(var role : roles){
+				ctx = ctx.values(role, inviteRoleId);
+			}
+			ctx.execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error inserting invite role", e);
+		}
+	}
+
+	private void deleteInviteRoles(long guildId, String code){
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon()){
+			var res = dbManager.getCtx(con).selectFrom(GUILD_INVITES).where(GUILD_INVITES.GUILD_ID.eq(guildId).and(GUILD_INVITES.CODE.eq(code))).fetchOne();
+			if(res == null){
+				return;
+			}
+			var guildInviteId = res.get(GUILD_INVITES.GUILD_INVITE_ID);
+			dbManager.getCtx(con).deleteFrom(GUILD_INVITE_ROLES).where(GUILD_INVITE_ROLES.GUILD_INVITE_ID.eq(guildInviteId)).execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error deleting invite roles for code: {}", guildId, e);
+		}
+	}
+
+	private void deleteInviteRole(long guildId, String code){
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon()){
+			var res = dbManager.getCtx(con).deleteFrom(GUILD_INVITES).where(GUILD_INVITES.GUILD_ID.eq(guildId).and(GUILD_INVITES.CODE.eq(code))).returningResult(GUILD_INVITES.GUILD_INVITE_ID).fetchOne();
+			if(res == null){
+				return;
+			}
+			var guildInviteId = res.get(GUILD_INVITES.GUILD_INVITE_ID);
+			dbManager.getCtx(con).deleteFrom(GUILD_INVITE_ROLES).where(GUILD_INVITE_ROLES.GUILD_INVITE_ID.eq(guildInviteId)).execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error deleting invite roles for code: {}", guildId, e);
+		}
+	}
 
 }

@@ -2,10 +2,14 @@ package de.kittybot.kittybot.managers;
 
 import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.utils.exporters.Metrics;
+import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
+import net.dv8tion.jda.api.events.role.RoleDeleteEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class InviteRolesManager extends ListenerAdapter{
 
@@ -31,6 +35,11 @@ public class InviteRolesManager extends ListenerAdapter{
 			}
 			event.getGuild().addRoleToMember(userId, role).queue();
 		}
+	}
+
+	@Override
+	public void onRoleDelete(@NotNull RoleDeleteEvent event){
+		this.main.getGuildSettingsManager().removeInviteRole(event.getGuild().getIdLong(), event.getRole().getIdLong());
 	}
 
 }

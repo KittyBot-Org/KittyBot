@@ -102,6 +102,9 @@ public abstract class Command{
 
 	public String getUsage(){
 		if(this.parent == null){
+			if(this.children.isEmpty()){
+				return this.command + " " + this.usage;
+			}
 			return this.command;
 		}
 		return this.parent.getUsage() + " " + this.command + " " + this.usage;
