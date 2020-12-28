@@ -21,6 +21,7 @@ group 'de.kittybot'
 mainClassName = 'de.kittybot.kittybot.KittyBot'
 
 repositories {
+    mavenCentral() // this is to receive updates from mvnrepository repos that are not synced with jcenter
     jcenter()
     maven { url 'https://jitpack.io' }
 }
@@ -58,7 +59,7 @@ dependencies {
 
     // other
     implementation 'io.javalin:javalin:3.12.0'
-    implementation 'io.github.classgraph:classgraph:4.8.90'
+    implementation 'io.github.classgraph:classgraph:4.8.98'
 }
 
 jooq {
