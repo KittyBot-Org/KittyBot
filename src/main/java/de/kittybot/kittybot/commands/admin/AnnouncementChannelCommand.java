@@ -4,6 +4,7 @@ import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
 import de.kittybot.kittybot.utils.Utils;
+import net.dv8tion.jda.api.Permission;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ public class AnnouncementChannelCommand extends Command{
 		super("announcementchannel", "Set's the current channel as announcement channel", Category.ADMIN);
 		addAliases("announce", "achannel");
 		setUsage(".../<false>");
+		addPermissions(Permission.ADMINISTRATOR);
 	}
 
 	@Override

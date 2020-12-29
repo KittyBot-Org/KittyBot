@@ -7,7 +7,7 @@ package de.kittybot.kittybot.jooq.tables.records;
 import de.kittybot.kittybot.jooq.tables.BotDisabledChannels;
 
 import org.jooq.Field;
-import org.jooq.Record2;
+import org.jooq.Record1;
 import org.jooq.Record3;
 import org.jooq.Row3;
 import org.jooq.impl.UpdatableRecordImpl;
@@ -71,8 +71,8 @@ public class BotDisabledChannelsRecord extends UpdatableRecordImpl<BotDisabledCh
     // -------------------------------------------------------------------------
 
     @Override
-    public Record2<Long, Long> key() {
-        return (Record2) super.key();
+    public Record1<Long> key() {
+        return (Record1) super.key();
     }
 
     // -------------------------------------------------------------------------

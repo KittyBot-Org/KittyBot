@@ -21,6 +21,11 @@ public class Sequences {
     public static final Sequence<Long> BOT_DISABLED_CHANNELS_BOT_DISABLED_CHANNEL_ID_SEQ = Internal.createSequence("bot_disabled_channels_bot_disabled_channel_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.bot_ignored_users_bot_ignored_user_id_seq</code>
+     */
+    public static final Sequence<Long> BOT_IGNORED_USERS_BOT_IGNORED_USER_ID_SEQ = Internal.createSequence("bot_ignored_users_bot_ignored_user_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.guild_invite_roles_guild_invite_role_id_seq</code>
      */
     public static final Sequence<Long> GUILD_INVITE_ROLES_GUILD_INVITE_ROLE_ID_SEQ = Internal.createSequence("guild_invite_roles_guild_invite_role_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -29,6 +34,11 @@ public class Sequences {
      * The sequence <code>public.guild_invites_guild_invite_id_seq</code>
      */
     public static final Sequence<Long> GUILD_INVITES_GUILD_INVITE_ID_SEQ = Internal.createSequence("guild_invites_guild_invite_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.guild_tags_tag_id_seq</code>
+     */
+    public static final Sequence<Long> GUILD_TAGS_TAG_ID_SEQ = Internal.createSequence("guild_tags_tag_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.notifications_notification_id_seq</code>

@@ -18,25 +18,25 @@ public class StreamUsers implements Serializable {
     private final Long    streamUserId;
     private final Long    guildId;
     private final String  userName;
-    private final Integer serviceId;
+    private final Integer streamType;
 
     public StreamUsers(StreamUsers value) {
         this.streamUserId = value.streamUserId;
         this.guildId = value.guildId;
         this.userName = value.userName;
-        this.serviceId = value.serviceId;
+        this.streamType = value.streamType;
     }
 
     public StreamUsers(
         Long    streamUserId,
         Long    guildId,
         String  userName,
-        Integer serviceId
+        Integer streamType
     ) {
         this.streamUserId = streamUserId;
         this.guildId = guildId;
         this.userName = userName;
-        this.serviceId = serviceId;
+        this.streamType = streamType;
     }
 
     /**
@@ -61,10 +61,10 @@ public class StreamUsers implements Serializable {
     }
 
     /**
-     * Getter for <code>public.stream_users.service_id</code>.
+     * Getter for <code>public.stream_users.stream_type</code>.
      */
-    public Integer getServiceId() {
-        return this.serviceId;
+    public Integer getStreamType() {
+        return this.streamType;
     }
 
     @Override
@@ -74,7 +74,7 @@ public class StreamUsers implements Serializable {
         sb.append(streamUserId);
         sb.append(", ").append(guildId);
         sb.append(", ").append(userName);
-        sb.append(", ").append(serviceId);
+        sb.append(", ").append(streamType);
 
         sb.append(")");
         return sb.toString();

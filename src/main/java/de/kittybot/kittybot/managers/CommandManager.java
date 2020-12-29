@@ -68,14 +68,20 @@ public class CommandManager extends ListenerAdapter{
 	@Override
 	public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event){
 		var start = System.currentTimeMillis();
+		var settings = this.main.getGuildSettingsManager().getSettings(event.getGuild().getIdLong());
 
-		if(this.main.getGuildSettingsManager().isBotDisabledInChannel(event.getGuild().getIdLong(), event.getChannel().getIdLong())){
+		if(settings.isBotDisabledInChannel(event.getChannel().getIdLong())){
 			return;
 		}
+		if(settings.isBotIgnoredUser(event.getAuthor().getIdLong())){
+			return;
+		}
+
 		var message = trimPrefix(event);
 		if(message == null){
 			return;
 		}
+
 		var args = Arrays.asList(message.split(ARGUMENT_REGEX));
 		for(var command : this.commands.values()){
 			if(command.check(args.get(0))){
@@ -93,6 +99,14 @@ public class CommandManager extends ListenerAdapter{
 		if(event.getMember().getUser().isBot()){
 			return;
 		}
+		var settings = this.main.getGuildSettingsManager().getSettings(event.getGuild().getIdLong());
+		if(settings.isBotDisabledInChannel(event.getChannel().getIdLong())){
+			return;
+		}
+		if(settings.isBotIgnoredUser(event.getUserIdLong())){
+			return;
+		}
+
 		var reactiveMessage = this.main.getReactiveMessageManager().getReactiveMessage(event.getMessageIdLong());
 		if(reactiveMessage == null){
 			return;
@@ -102,22 +116,6 @@ public class CommandManager extends ListenerAdapter{
 			return;
 		}
 		event.getReaction().removeReaction(event.getUser()).queue();
-	}
-
-	@Override
-	public void onGuildReady(@NotNull GuildReadyEvent event){
-		this.main.getGuildSettingsManager().insertGuildSettingsIfNotExists(event.getGuild());
-	}
-
-	@Override
-	public void onGuildJoin(@Nonnull GuildJoinEvent event){
-		this.main.getGuildSettingsManager().insertGuildSettings(event.getGuild());
-	}
-
-	@Override
-	public void onGuildLeave(@Nonnull GuildLeaveEvent event){
-		var guildId = event.getGuild().getIdLong();
-		this.main.getGuildSettingsManager().deleteGuildSettings(guildId);
 	}
 
 	private String trimPrefix(GuildMessageReceivedEvent event){

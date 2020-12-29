@@ -18,7 +18,7 @@ public class StreamAnnouncement{
 	public StreamAnnouncement(StreamUsersRecord record){
 		this.userName = record.getUserName();
 		this.guildId = record.getGuildId();
-		this.streamType = StreamType.byId(record.getServiceId());
+		this.streamType = StreamType.byId(record.getStreamType());
 	}
 
 	public String getUserName(){

@@ -4,6 +4,7 @@ import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
 import de.kittybot.kittybot.utils.Utils;
+import net.dv8tion.jda.api.Permission;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ public class JoinMessagesCommand extends Command{
 		super("joinmessages", "Enables or sets join messages for the current channel", Category.ADMIN);
 		addAliases("join", "joinm", "jmessages");
 		setUsage(".../<false>/<message>");
+		addPermissions(Permission.ADMINISTRATOR);
 	}
 
 	@Override

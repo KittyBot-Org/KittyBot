@@ -17,14 +17,11 @@ public class SettingsCommand extends Command{
 		super("settings", "Used to set guild specified settings", Category.ADMIN);
 		setUsage("<prefix/announcementchannel/joinmessage/leavemessage/boostmessage/nsfw> <value>");
 		addAliases("opts", "opt", "set", "sett");
+		addPermissions(Permission.ADMINISTRATOR);
 	}
 
 	@Override
 	public void run(List<String> args, CommandContext ctx){
-		if(!ctx.getMember().hasPermission(Permission.ADMINISTRATOR)){
-			ctx.sendError("You need to be an administrator to use this command!");
-			return;
-		}
 		var guildId = ctx.getGuild().getIdLong();
 		var settingsManager = ctx.getGuildSettingsManager();
 		if(args.isEmpty()){

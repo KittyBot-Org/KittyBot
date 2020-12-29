@@ -4,31 +4,33 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
 import de.kittybot.kittybot.jooq.tables.records.BotDisabledChannelsRecord;
+import de.kittybot.kittybot.jooq.tables.records.BotIgnoredUsersRecord;
 import de.kittybot.kittybot.jooq.tables.records.SnipeDisabledChannelsRecord;
 import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.objects.GuildSettings;
 import de.kittybot.kittybot.objects.InviteRole;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Role;
-import org.jooq.DSLContext;
+import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
+import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 import org.jooq.Field;
-import org.jooq.InsertReturningStep;
 import org.jooq.types.YearToSecond;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.sql.SQLException;
 import java.time.Duration;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static de.kittybot.kittybot.jooq.Tables.*;
-import static org.jooq.impl.DSL.*;
 
-public class GuildSettingsManager{
+public class GuildSettingsManager extends ListenerAdapter{
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommandManager.class);
 
@@ -43,12 +45,28 @@ public class GuildSettingsManager{
 				.build(this::retrieveGuildSettings);
 	}
 
+	@Override
+	public void onGuildReady(@NotNull GuildReadyEvent event){
+		insertGuildSettingsIfNotExists(event.getGuild());
+	}
+
+	@Override
+	public void onGuildJoin(@Nonnull GuildJoinEvent event){
+		insertGuildSettings(event.getGuild());
+	}
+
+	@Override
+	public void onGuildLeave(@Nonnull GuildLeaveEvent event){
+		cleanupAllGuildSettings(event.getGuild().getIdLong());
+	}
+
 	public GuildSettings retrieveGuildSettings(long guildId){
 		var dbManager = this.main.getDatabaseManager();
 		try(var con = dbManager.getCon();
 		    var ctxSettings = dbManager.getCtx(con).selectFrom(GUILDS);
 		    var ctxSnipeDisabledChannels = dbManager.getCtx(con).selectFrom(SNIPE_DISABLED_CHANNELS);
 		    var ctxBotDisabledChannels = dbManager.getCtx(con).selectFrom(BOT_DISABLED_CHANNELS);
+		    var ctxBotIgnoredUsers = dbManager.getCtx(con).selectFrom(BOT_IGNORED_USERS);
 		    var ctxGuildInviteRoles = dbManager.getCtx(con).select()
 		){
 			var res = ctxSettings.where(GUILDS.GUILD_ID.eq(guildId)).fetchOne();
@@ -60,6 +78,9 @@ public class GuildSettingsManager{
 						),
 						ctxBotDisabledChannels.where(BOT_DISABLED_CHANNELS.GUILD_ID.eq(guildId)).fetch().parallelStream().map(
 								BotDisabledChannelsRecord::getChannelId).collect(Collectors.toSet()
+						),
+						ctxBotIgnoredUsers.where(BOT_IGNORED_USERS.GUILD_ID.eq(guildId)).fetch().parallelStream().map(
+								BotIgnoredUsersRecord::getUserId).collect(Collectors.toSet()
 						),
 						ctxGuildInviteRoles.from(GUILD_INVITES).join(GUILD_INVITE_ROLES).on(GUILD_INVITES.GUILD_INVITE_ID.eq(GUILD_INVITE_ROLES.GUILD_INVITE_ID))
 								.where(GUILD_INVITES.GUILD_ID.eq(guildId)).fetch().parallelStream()
@@ -90,7 +111,7 @@ public class GuildSettingsManager{
 	}
 
 	public void insertGuildSettings(Guild guild){
-		LOG.debug("Registering new guild: {}", guild.getId());
+		LOG.info("Registering new guild: {}", guild.getId());
 		var dbManager = this.main.getDatabaseManager();
 		try(var con = dbManager.getCon()){
 			dbManager.getCtx(con).insertInto(GUILDS)
@@ -114,14 +135,14 @@ public class GuildSettingsManager{
 		}
 	}
 
-	public void deleteGuildSettings(long guildId){
-		LOG.debug("Deleting old guild: {}", guildId);
+	public void cleanupAllGuildSettings(long guildId){
+		LOG.info("Cleaning up guild: {}", guildId);
 		var dbManager = this.main.getDatabaseManager();
 		try(var con = dbManager.getCon()){
 			dbManager.getCtx(con).deleteFrom(GUILDS).where(GUILDS.GUILD_ID.eq(guildId)).execute();
 		}
 		catch(SQLException e){
-			LOG.error("Error deleting guild: {}", guildId, e);
+			LOG.error("Error cleaning up guild: {}", guildId, e);
 		}
 	}
 
@@ -420,20 +441,35 @@ public class GuildSettingsManager{
 		insertInviteRoles(guildId, code, roles);
 	}
 
-	public void removeInviteRole(long guildId, long roleId){
-		var settings = this.main.getGuildSettingsManager().getSettingsIfPresent(guildId);
-		if(settings != null){
-			settings.getInviteRoles().forEach((key, value) -> value.removeIf(r -> r == roleId));
-		}
+	private void deleteInviteRole(long guildId, String code){
 		var dbManager = this.main.getDatabaseManager();
 		try(var con = dbManager.getCon()){
-			dbManager.getCtx(con).deleteFrom(GUILD_INVITE_ROLES).where(GUILD_INVITE_ROLES.ROLE_ID.eq(roleId)).execute();
+			var res = dbManager.getCtx(con).deleteFrom(GUILD_INVITES).where(GUILD_INVITES.GUILD_ID.eq(guildId).and(GUILD_INVITES.CODE.eq(code))).returningResult(GUILD_INVITES.GUILD_INVITE_ID).fetchOne();
+			if(res == null){
+				return;
+			}
+			var guildInviteId = res.get(GUILD_INVITES.GUILD_INVITE_ID);
+			dbManager.getCtx(con).deleteFrom(GUILD_INVITE_ROLES).where(GUILD_INVITE_ROLES.GUILD_INVITE_ID.eq(guildInviteId)).execute();
 		}
 		catch(SQLException e){
-			LOG.error("Error deleting invite role: {}", roleId, e);
+			LOG.error("Error deleting invite roles for code: {}", guildId, e);
 		}
 	}
 
+	private void deleteInviteRoles(long guildId, String code){
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon()){
+			var res = dbManager.getCtx(con).selectFrom(GUILD_INVITES).where(GUILD_INVITES.GUILD_ID.eq(guildId).and(GUILD_INVITES.CODE.eq(code))).fetchOne();
+			if(res == null){
+				return;
+			}
+			var guildInviteId = res.get(GUILD_INVITES.GUILD_INVITE_ID);
+			dbManager.getCtx(con).deleteFrom(GUILD_INVITE_ROLES).where(GUILD_INVITE_ROLES.GUILD_INVITE_ID.eq(guildInviteId)).execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error deleting invite roles for code: {}", guildId, e);
+		}
+	}
 
 	private void insertInviteRoles(long guildId, String code, Set<Long> roles){
 		var dbManager = this.main.getDatabaseManager();
@@ -462,33 +498,57 @@ public class GuildSettingsManager{
 		}
 	}
 
-	private void deleteInviteRoles(long guildId, String code){
+	public void removeInviteRole(long guildId, long roleId){
+		var settings = getSettingsIfPresent(guildId);
+		if(settings != null){
+			settings.getInviteRoles().forEach((key, value) -> value.removeIf(r -> r == roleId));
+		}
 		var dbManager = this.main.getDatabaseManager();
 		try(var con = dbManager.getCon()){
-			var res = dbManager.getCtx(con).selectFrom(GUILD_INVITES).where(GUILD_INVITES.GUILD_ID.eq(guildId).and(GUILD_INVITES.CODE.eq(code))).fetchOne();
-			if(res == null){
-				return;
-			}
-			var guildInviteId = res.get(GUILD_INVITES.GUILD_INVITE_ID);
-			dbManager.getCtx(con).deleteFrom(GUILD_INVITE_ROLES).where(GUILD_INVITE_ROLES.GUILD_INVITE_ID.eq(guildInviteId)).execute();
+			dbManager.getCtx(con).deleteFrom(GUILD_INVITE_ROLES).where(GUILD_INVITE_ROLES.ROLE_ID.eq(roleId)).execute();
 		}
 		catch(SQLException e){
-			LOG.error("Error deleting invite roles for code: {}", guildId, e);
+			LOG.error("Error deleting invite role: {}", roleId, e);
 		}
 	}
 
-	private void deleteInviteRole(long guildId, String code){
+	public void addBotIgnoredUsers(long guildId, Set<Long> users){
+		var settings = getSettingsIfPresent(guildId);
+		if(settings != null){
+			settings.setBotIgnoredUsers(users, true);
+		}
+		insertIgnoredUsers(guildId, users);
+	}
+
+	public void deleteBotIgnoredUsers(long guildId, Set<Long> users){
+		var settings = getSettingsIfPresent(guildId);
+		if(settings != null){
+			settings.setBotIgnoredUsers(users, false);
+		}
+		removeIgnoredUsers(guildId, users);
+	}
+
+	private void insertIgnoredUsers(long guildId, Set<Long> users){
 		var dbManager = this.main.getDatabaseManager();
 		try(var con = dbManager.getCon()){
-			var res = dbManager.getCtx(con).deleteFrom(GUILD_INVITES).where(GUILD_INVITES.GUILD_ID.eq(guildId).and(GUILD_INVITES.CODE.eq(code))).returningResult(GUILD_INVITES.GUILD_INVITE_ID).fetchOne();
-			if(res == null){
-				return;
+			var ctx = dbManager.getCtx(con).insertInto(BOT_IGNORED_USERS).columns(BOT_IGNORED_USERS.GUILD_ID, BOT_IGNORED_USERS.USER_ID);
+			for(var user : users){
+				ctx = ctx.values(guildId, user);
 			}
-			var guildInviteId = res.get(GUILD_INVITES.GUILD_INVITE_ID);
-			dbManager.getCtx(con).deleteFrom(GUILD_INVITE_ROLES).where(GUILD_INVITE_ROLES.GUILD_INVITE_ID.eq(guildInviteId)).execute();
+			ctx.execute();
 		}
 		catch(SQLException e){
-			LOG.error("Error deleting invite roles for code: {}", guildId, e);
+			LOG.error("Error inserting ignored users", e);
+		}
+	}
+
+	private void removeIgnoredUsers(long guildId, Set<Long> users){
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon()){
+			dbManager.getCtx(con).deleteFrom(BOT_IGNORED_USERS).where(BOT_IGNORED_USERS.GUILD_ID.eq(guildId).and(BOT_IGNORED_USERS.USER_ID.in(users))).execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error inserting ignored users", e);
 		}
 	}
 

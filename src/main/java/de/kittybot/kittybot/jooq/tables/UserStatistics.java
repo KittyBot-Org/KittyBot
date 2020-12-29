@@ -153,6 +153,15 @@ public class UserStatistics extends TableImpl<UserStatisticsRecord> {
     }
 
     @Override
+    public List<ForeignKey<UserStatisticsRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<UserStatisticsRecord, ?>>asList(Keys.USER_STATISTICS__USER_STATISTICS_GUILD_ID_FKEY);
+    }
+
+    public Guilds guilds() {
+        return new Guilds(this, Keys.USER_STATISTICS__USER_STATISTICS_GUILD_ID_FKEY);
+    }
+
+    @Override
     public UserStatistics as(String alias) {
         return new UserStatistics(DSL.name(alias), this);
     }

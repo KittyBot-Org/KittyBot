@@ -43,6 +43,7 @@ public class TwitchWrapper{
 		try(var resp = this.httpClient.newCall(request).execute()){
 			var body = resp.body();
 			if(!resp.isSuccessful() || body == null){
+				LOG.error("Url: {} Code: {} Body: {}", resp.request().url(), resp.code(), body == null ? "null" : body.string());
 				return null;
 			}
 			var json = DataObject.fromJson(body.string());
@@ -77,7 +78,8 @@ public class TwitchWrapper{
 			users.clear();
 			try(var resp = newRequest("streams?" + query).execute()){
 				var body = resp.body();
-				if(body == null){
+				if(!resp.isSuccessful() || body == null){
+					LOG.error("Url: {} Code: {} Body: {}", resp.request().url(), resp.code(), body == null ? "null" : body.string());
 					continue;
 				}
 				var data = DataObject.fromJson(body.string()).getArray("data");
@@ -94,7 +96,6 @@ public class TwitchWrapper{
 	}
 
 	private Call newRequest(String url, Object... params){
-		LOG.info("Request to: " + url);
 		if(this.bearerToken.isExpired()){
 			this.bearerToken = requestBearerToken();
 			LOG.info("New Bearer Token retrieved");

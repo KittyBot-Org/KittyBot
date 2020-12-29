@@ -137,6 +137,15 @@ public class ReactiveMessages extends TableImpl<ReactiveMessagesRecord> {
     }
 
     @Override
+    public List<ForeignKey<ReactiveMessagesRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<ReactiveMessagesRecord, ?>>asList(Keys.REACTIVE_MESSAGES__REACTIVE_MESSAGES_GUILD_ID_FKEY);
+    }
+
+    public Guilds guilds() {
+        return new Guilds(this, Keys.REACTIVE_MESSAGES__REACTIVE_MESSAGES_GUILD_ID_FKEY);
+    }
+
+    @Override
     public ReactiveMessages as(String alias) {
         return new ReactiveMessages(DSL.name(alias), this);
     }

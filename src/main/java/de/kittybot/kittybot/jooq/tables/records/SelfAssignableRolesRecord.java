@@ -37,17 +37,17 @@ public class SelfAssignableRolesRecord extends UpdatableRecordImpl<SelfAssignabl
     }
 
     /**
-     * Setter for <code>public.self_assignable_roles.role_id</code>.
+     * Setter for <code>public.self_assignable_roles.group_id</code>.
      */
-    public SelfAssignableRolesRecord setRoleId(Long value) {
+    public SelfAssignableRolesRecord setGroupId(Long value) {
         set(1, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.self_assignable_roles.role_id</code>.
+     * Getter for <code>public.self_assignable_roles.group_id</code>.
      */
-    public Long getRoleId() {
+    public Long getGroupId() {
         return (Long) get(1);
     }
 
@@ -67,10 +67,25 @@ public class SelfAssignableRolesRecord extends UpdatableRecordImpl<SelfAssignabl
     }
 
     /**
+     * Setter for <code>public.self_assignable_roles.role_id</code>.
+     */
+    public SelfAssignableRolesRecord setRoleId(Long value) {
+        set(3, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>public.self_assignable_roles.role_id</code>.
+     */
+    public Long getRoleId() {
+        return (Long) get(3);
+    }
+
+    /**
      * Setter for <code>public.self_assignable_roles.emote_id</code>.
      */
     public SelfAssignableRolesRecord setEmoteId(Long value) {
-        set(3, value);
+        set(4, value);
         return this;
     }
 
@@ -78,21 +93,6 @@ public class SelfAssignableRolesRecord extends UpdatableRecordImpl<SelfAssignabl
      * Getter for <code>public.self_assignable_roles.emote_id</code>.
      */
     public Long getEmoteId() {
-        return (Long) get(3);
-    }
-
-    /**
-     * Setter for <code>public.self_assignable_roles.group_id</code>.
-     */
-    public SelfAssignableRolesRecord setGroupId(Long value) {
-        set(4, value);
-        return this;
-    }
-
-    /**
-     * Getter for <code>public.self_assignable_roles.group_id</code>.
-     */
-    public Long getGroupId() {
         return (Long) get(4);
     }
 
@@ -126,7 +126,7 @@ public class SelfAssignableRolesRecord extends UpdatableRecordImpl<SelfAssignabl
 
     @Override
     public Field<Long> field2() {
-        return SelfAssignableRoles.SELF_ASSIGNABLE_ROLES.ROLE_ID;
+        return SelfAssignableRoles.SELF_ASSIGNABLE_ROLES.GROUP_ID;
     }
 
     @Override
@@ -136,12 +136,12 @@ public class SelfAssignableRolesRecord extends UpdatableRecordImpl<SelfAssignabl
 
     @Override
     public Field<Long> field4() {
-        return SelfAssignableRoles.SELF_ASSIGNABLE_ROLES.EMOTE_ID;
+        return SelfAssignableRoles.SELF_ASSIGNABLE_ROLES.ROLE_ID;
     }
 
     @Override
     public Field<Long> field5() {
-        return SelfAssignableRoles.SELF_ASSIGNABLE_ROLES.GROUP_ID;
+        return SelfAssignableRoles.SELF_ASSIGNABLE_ROLES.EMOTE_ID;
     }
 
     @Override
@@ -151,7 +151,7 @@ public class SelfAssignableRolesRecord extends UpdatableRecordImpl<SelfAssignabl
 
     @Override
     public Long component2() {
-        return getRoleId();
+        return getGroupId();
     }
 
     @Override
@@ -161,12 +161,12 @@ public class SelfAssignableRolesRecord extends UpdatableRecordImpl<SelfAssignabl
 
     @Override
     public Long component4() {
-        return getEmoteId();
+        return getRoleId();
     }
 
     @Override
     public Long component5() {
-        return getGroupId();
+        return getEmoteId();
     }
 
     @Override
@@ -176,7 +176,7 @@ public class SelfAssignableRolesRecord extends UpdatableRecordImpl<SelfAssignabl
 
     @Override
     public Long value2() {
-        return getRoleId();
+        return getGroupId();
     }
 
     @Override
@@ -186,12 +186,12 @@ public class SelfAssignableRolesRecord extends UpdatableRecordImpl<SelfAssignabl
 
     @Override
     public Long value4() {
-        return getEmoteId();
+        return getRoleId();
     }
 
     @Override
     public Long value5() {
-        return getGroupId();
+        return getEmoteId();
     }
 
     @Override
@@ -202,7 +202,7 @@ public class SelfAssignableRolesRecord extends UpdatableRecordImpl<SelfAssignabl
 
     @Override
     public SelfAssignableRolesRecord value2(Long value) {
-        setRoleId(value);
+        setGroupId(value);
         return this;
     }
 
@@ -214,13 +214,13 @@ public class SelfAssignableRolesRecord extends UpdatableRecordImpl<SelfAssignabl
 
     @Override
     public SelfAssignableRolesRecord value4(Long value) {
-        setEmoteId(value);
+        setRoleId(value);
         return this;
     }
 
     @Override
     public SelfAssignableRolesRecord value5(Long value) {
-        setGroupId(value);
+        setEmoteId(value);
         return this;
     }
 
@@ -248,13 +248,13 @@ public class SelfAssignableRolesRecord extends UpdatableRecordImpl<SelfAssignabl
     /**
      * Create a detached, initialised SelfAssignableRolesRecord
      */
-    public SelfAssignableRolesRecord(Long selfAssignableRoleId, Long roleId, Long guildId, Long emoteId, Long groupId) {
+    public SelfAssignableRolesRecord(Long selfAssignableRoleId, Long groupId, Long guildId, Long roleId, Long emoteId) {
         super(SelfAssignableRoles.SELF_ASSIGNABLE_ROLES);
 
         setSelfAssignableRoleId(selfAssignableRoleId);
-        setRoleId(roleId);
-        setGuildId(guildId);
-        setEmoteId(emoteId);
         setGroupId(groupId);
+        setGuildId(guildId);
+        setRoleId(roleId);
+        setEmoteId(emoteId);
     }
 }

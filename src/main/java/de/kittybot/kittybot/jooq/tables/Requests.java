@@ -143,6 +143,15 @@ public class Requests extends TableImpl<RequestsRecord> {
     }
 
     @Override
+    public List<ForeignKey<RequestsRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<RequestsRecord, ?>>asList(Keys.REQUESTS__REQUESTS_GUILD_ID_FKEY);
+    }
+
+    public Guilds guilds() {
+        return new Guilds(this, Keys.REQUESTS__REQUESTS_GUILD_ID_FKEY);
+    }
+
+    @Override
     public Requests as(String alias) {
         return new Requests(DSL.name(alias), this);
     }

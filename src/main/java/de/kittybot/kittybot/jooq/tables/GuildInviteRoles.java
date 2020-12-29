@@ -117,6 +117,15 @@ public class GuildInviteRoles extends TableImpl<GuildInviteRolesRecord> {
     }
 
     @Override
+    public List<ForeignKey<GuildInviteRolesRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<GuildInviteRolesRecord, ?>>asList(Keys.GUILD_INVITE_ROLES__GUILD_INVITE_ROLES_GUILD_INVITE_ID_FKEY);
+    }
+
+    public GuildInvites guildInvites() {
+        return new GuildInvites(this, Keys.GUILD_INVITE_ROLES__GUILD_INVITE_ROLES_GUILD_INVITE_ID_FKEY);
+    }
+
+    @Override
     public GuildInviteRoles as(String alias) {
         return new GuildInviteRoles(DSL.name(alias), this);
     }

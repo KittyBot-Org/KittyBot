@@ -117,6 +117,15 @@ public class SelfAssignableRoleGroups extends TableImpl<SelfAssignableRoleGroups
     }
 
     @Override
+    public List<ForeignKey<SelfAssignableRoleGroupsRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<SelfAssignableRoleGroupsRecord, ?>>asList(Keys.SELF_ASSIGNABLE_ROLE_GROUPS__SELF_ASSIGNABLE_ROLE_GROUPS_GUILD_ID_FKEY);
+    }
+
+    public Guilds guilds() {
+        return new Guilds(this, Keys.SELF_ASSIGNABLE_ROLE_GROUPS__SELF_ASSIGNABLE_ROLE_GROUPS_GUILD_ID_FKEY);
+    }
+
+    @Override
     public SelfAssignableRoleGroups as(String alias) {
         return new SelfAssignableRoleGroups(DSL.name(alias), this);
     }

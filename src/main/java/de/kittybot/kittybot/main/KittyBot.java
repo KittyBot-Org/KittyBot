@@ -40,7 +40,7 @@ public class KittyBot{
 	private final MessageManager messageManager;
 	private final BotListsManager botListManager;
 	private final RequestManager requestManager;
-	private final StreamNotificationManager streamNotificationManager;
+	private final StreamAnnouncementManager streamAnnouncementManager;
 	private final NotificationManager notificationManager;
 	private final DashboardSessionManager dashboardSessionManager;
 	private final WebService webService;
@@ -48,28 +48,30 @@ public class KittyBot{
 	private final GuildSettingsManager guildSettingsManager;
 	private final CommandResponseManager commandResponseManager;
 	private final ReactiveMessageManager reactiveMessageManager;
+	private final TagManager tagManager;
 
 	public KittyBot() throws IOException, MissingConfigValuesException, LoginException, InterruptedException{
 		this.config = new Config("./config.json");
 		this.config.checkMandatoryValues("bot_token", "default_prefix", "owner_ids", "db_host", "db_port", "db_database", "db_user", "db_password", "signing_key", "backend_port", "origin_url", "redirect_url");
-		this.scheduler = Executors.newSingleThreadScheduledExecutor();
+		this.scheduler = ThreadingConfig.newScheduler(2, () -> "KittyBot", "Scheduler");
 		this.prometheusManager = new PrometheusManager(this);
 		this.httpClient = new OkHttpClient();
 		this.lavalinkManager = new LavalinkManager(this);
 		this.databaseManager = new DatabaseManager(this);
+		this.guildSettingsManager = new GuildSettingsManager(this);
 		this.commandManager = new CommandManager(this);
 		this.commandResponseManager = new CommandResponseManager();
 		this.reactiveMessageManager = new ReactiveMessageManager();
-		this.guildSettingsManager = new GuildSettingsManager(this);
 		this.inviteManager = new InviteManager();
 		this.inviteRolesManager = new InviteRolesManager(this);
 		this.statusManager = new StatusManager(this);
 		this.messageManager = new MessageManager();
 		this.botListManager = new BotListsManager(this);
 		this.requestManager = new RequestManager(this);
+		this.tagManager = new TagManager(this);
 		this.dashboardSessionManager = new DashboardSessionManager(this);
 		this.notificationManager = new NotificationManager(this);
-		this.streamNotificationManager = new StreamNotificationManager(this);
+		this.streamAnnouncementManager = new StreamAnnouncementManager(this);
 		this.webService = new WebService(this);
 
 		RestAction.setDefaultFailure(null);
@@ -90,6 +92,7 @@ public class KittyBot{
 				.setMemberCachePolicy(MemberCachePolicy.VOICE)
 				.setChunkingFilter(ChunkingFilter.NONE)
 				.addEventListeners(
+						this.guildSettingsManager,
 						this.inviteManager,
 						this.lavalinkManager.getLavalink(),
 						this.commandManager,
@@ -180,6 +183,10 @@ public class KittyBot{
 
 	public InviteManager getInviteManager(){
 		return this.inviteManager;
+	}
+
+	public TagManager getTagManager(){
+		return this.tagManager;
 	}
 
 }

@@ -4,6 +4,7 @@ import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
 import de.kittybot.kittybot.utils.Utils;
+import net.dv8tion.jda.api.Permission;
 
 import java.util.List;
 
@@ -12,7 +13,8 @@ public class StreamAnnouncementCommand extends Command{
 	public StreamAnnouncementCommand(){
 		super("streamannouncement", "Enables or sets join messages for the current channel", Category.ADMIN);
 		addAliases("streamannounce", "streamannouncement");
-		setUsage("<twitch/youtube> <username> <>");
+		setUsage("<twitch/youtube> <username>");
+		addPermissions(Permission.ADMINISTRATOR);
 	}
 
 	@Override

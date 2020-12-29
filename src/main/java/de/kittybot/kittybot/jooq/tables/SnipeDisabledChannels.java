@@ -117,6 +117,15 @@ public class SnipeDisabledChannels extends TableImpl<SnipeDisabledChannelsRecord
     }
 
     @Override
+    public List<ForeignKey<SnipeDisabledChannelsRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<SnipeDisabledChannelsRecord, ?>>asList(Keys.SNIPE_DISABLED_CHANNELS__SNIPE_DISABLED_CHANNELS_GUILD_ID_FKEY);
+    }
+
+    public Guilds guilds() {
+        return new Guilds(this, Keys.SNIPE_DISABLED_CHANNELS__SNIPE_DISABLED_CHANNELS_GUILD_ID_FKEY);
+    }
+
+    @Override
     public SnipeDisabledChannels as(String alias) {
         return new SnipeDisabledChannels(DSL.name(alias), this);
     }

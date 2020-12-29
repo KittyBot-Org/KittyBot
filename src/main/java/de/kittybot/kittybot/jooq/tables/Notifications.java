@@ -143,6 +143,15 @@ public class Notifications extends TableImpl<NotificationsRecord> {
     }
 
     @Override
+    public List<ForeignKey<NotificationsRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<NotificationsRecord, ?>>asList(Keys.NOTIFICATIONS__NOTIFICATIONS_GUILD_ID_FKEY);
+    }
+
+    public Guilds guilds() {
+        return new Guilds(this, Keys.NOTIFICATIONS__NOTIFICATIONS_GUILD_ID_FKEY);
+    }
+
+    @Override
     public Notifications as(String alias) {
         return new Notifications(DSL.name(alias), this);
     }

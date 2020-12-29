@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS guilds(
-  guild_id                       bigint NOT NULL,
+  guild_id                       bigint PRIMARY KEY NOT NULL,
   command_prefix                 varchar(4) NOT NULL,
   announcement_channel_id        bigint NOT NULL default(-1),
   join_message                   text NOT NULL default('Welcome ${user}!'),
@@ -17,6 +17,5 @@ CREATE TABLE IF NOT EXISTS guilds(
   inactive_duration              interval NOT NULL,
   inactive_role_enabled          boolean NOT NULL default(false),
   dj_role_id                     bigint NOT NULL default(-1),
-  snipes_enabled                 boolean NOT NULL default(true),
-PRIMARY KEY(guild_id)
+  snipes_enabled                 boolean NOT NULL default(true)
 );

@@ -117,6 +117,15 @@ public class BotDisabledChannels extends TableImpl<BotDisabledChannelsRecord> {
     }
 
     @Override
+    public List<ForeignKey<BotDisabledChannelsRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<BotDisabledChannelsRecord, ?>>asList(Keys.BOT_DISABLED_CHANNELS__BOT_DISABLED_CHANNELS_GUILD_ID_FKEY);
+    }
+
+    public Guilds guilds() {
+        return new Guilds(this, Keys.BOT_DISABLED_CHANNELS__BOT_DISABLED_CHANNELS_GUILD_ID_FKEY);
+    }
+
+    @Override
     public BotDisabledChannels as(String alias) {
         return new BotDisabledChannels(DSL.name(alias), this);
     }

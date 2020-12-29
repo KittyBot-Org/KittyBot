@@ -18,23 +18,23 @@ import java.util.stream.Collectors;
 
 import static de.kittybot.kittybot.jooq.Tables.STREAM_USERS;
 
-public class StreamNotificationManager{
+public class StreamAnnouncementManager{
 
-	private static final Logger LOG = LoggerFactory.getLogger(StreamNotificationManager.class);
+	private static final Logger LOG = LoggerFactory.getLogger(StreamAnnouncementManager.class);
 
 	private final KittyBot main;
 	private final TwitchWrapper twitchWrapper;
 	private final List<StreamAnnouncement> streamAnnouncements;
 	private final Set<String> activeStreams;
 
-	public StreamNotificationManager(KittyBot main){
+	public StreamAnnouncementManager(KittyBot main){
 		this.main = main;
 		var config = this.main.getConfig();
 		this.twitchWrapper = new TwitchWrapper(config.getString("twitch_client_id"), config.getString("twitch_client_secret"), this.main.getHttpClient());
 		this.streamAnnouncements = loadStreamAnnouncements();
 		this.streamAnnouncements.add(new StreamAnnouncement("Topi_Senpai", 608506410803658753L, StreamType.TWITCH));
 		this.activeStreams = new HashSet<>();
-		this.main.getScheduler().scheduleAtFixedRate(this::checkStreams, 0, 60, TimeUnit.SECONDS);
+		this.main.getScheduler().scheduleAtFixedRate(this::checkStreams, 0, 1, TimeUnit.MINUTES);
 	}
 
 	private List<StreamAnnouncement> loadStreamAnnouncements(){
@@ -49,10 +49,8 @@ public class StreamNotificationManager{
 	}
 
 	private void checkStreams(){
-		LOG.info("Starting checking streams...");
 		checkTwitch();
 		checkYouTube();
-		LOG.info("Finished checking streams...");
 	}
 
 	private void checkTwitch(){

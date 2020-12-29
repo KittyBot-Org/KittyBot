@@ -14,6 +14,7 @@ public class GuildSettings{
 	private final long guildId;
 	private final Set<Long> snipeDisabledChannels;
 	private final Set<Long> botDisabledChannels;
+	private final Set<Long> botIgnoredUsers;
 	private final Map<String, Set<Long>> guildInviteRoles;
 	private String commandPrefix;
 	private long announcementChannelId;
@@ -31,7 +32,7 @@ public class GuildSettings{
 	private long djRoleId;
 	private boolean snipesEnabled;
 
-	public GuildSettings(GuildsRecord record, Set<Long> snipeDisabledChannels, Set<Long> botDisabledChannels, Map<String, Set<Long>> guildInviteRoles){
+	public GuildSettings(GuildsRecord record, Set<Long> snipeDisabledChannels, Set<Long> botDisabledChannels, Set<Long> botIgnoredUsers, Map<String, Set<Long>> guildInviteRoles){
 		this.guildId = record.getGuildId();
 		this.commandPrefix = record.getCommandPrefix();
 		this.announcementChannelId = record.getAnnouncementChannelId();
@@ -50,6 +51,7 @@ public class GuildSettings{
 		this.snipesEnabled = record.getSnipesEnabled();
 		this.snipeDisabledChannels = snipeDisabledChannels == null ? new HashSet<>() : snipeDisabledChannels;
 		this.botDisabledChannels = botDisabledChannels == null ? new HashSet<>() : botDisabledChannels;
+		this.botIgnoredUsers = botIgnoredUsers == null ? new HashSet<>() : botIgnoredUsers;
 		this.guildInviteRoles = guildInviteRoles == null ? new HashMap<>() : guildInviteRoles;
 	}
 
@@ -219,6 +221,18 @@ public class GuildSettings{
 			return;
 		}
 		this.botDisabledChannels.remove(channelId);
+	}
+
+	public boolean isBotIgnoredUser(long userId){
+		return this.botIgnoredUsers.contains(userId);
+	}
+
+	public void setBotIgnoredUsers(Set<Long> userIds, boolean ignored){
+		if(ignored){
+			this.botIgnoredUsers.addAll(userIds);
+			return;
+		}
+		this.botIgnoredUsers.removeAll(userIds);
 	}
 
 	public Map<String, Set<Long>> getInviteRoles(){

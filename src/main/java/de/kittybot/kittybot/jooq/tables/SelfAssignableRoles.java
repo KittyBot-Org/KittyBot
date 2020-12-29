@@ -54,9 +54,9 @@ public class SelfAssignableRoles extends TableImpl<SelfAssignableRolesRecord> {
     public final TableField<SelfAssignableRolesRecord, Long> SELF_ASSIGNABLE_ROLE_ID = createField(DSL.name("self_assignable_role_id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>public.self_assignable_roles.role_id</code>.
+     * The column <code>public.self_assignable_roles.group_id</code>.
      */
-    public final TableField<SelfAssignableRolesRecord, Long> ROLE_ID = createField(DSL.name("role_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<SelfAssignableRolesRecord, Long> GROUP_ID = createField(DSL.name("group_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.self_assignable_roles.guild_id</code>.
@@ -64,14 +64,14 @@ public class SelfAssignableRoles extends TableImpl<SelfAssignableRolesRecord> {
     public final TableField<SelfAssignableRolesRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
+     * The column <code>public.self_assignable_roles.role_id</code>.
+     */
+    public final TableField<SelfAssignableRolesRecord, Long> ROLE_ID = createField(DSL.name("role_id"), SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
      * The column <code>public.self_assignable_roles.emote_id</code>.
      */
     public final TableField<SelfAssignableRolesRecord, Long> EMOTE_ID = createField(DSL.name("emote_id"), SQLDataType.BIGINT.nullable(false), this, "");
-
-    /**
-     * The column <code>public.self_assignable_roles.group_id</code>.
-     */
-    public final TableField<SelfAssignableRolesRecord, Long> GROUP_ID = createField(DSL.name("group_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     private SelfAssignableRoles(Name alias, Table<SelfAssignableRolesRecord> aliased) {
         this(alias, aliased, null);
@@ -124,6 +124,19 @@ public class SelfAssignableRoles extends TableImpl<SelfAssignableRolesRecord> {
     @Override
     public List<UniqueKey<SelfAssignableRolesRecord>> getKeys() {
         return Arrays.<UniqueKey<SelfAssignableRolesRecord>>asList(Keys.SELF_ASSIGNABLE_ROLES_PKEY);
+    }
+
+    @Override
+    public List<ForeignKey<SelfAssignableRolesRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<SelfAssignableRolesRecord, ?>>asList(Keys.SELF_ASSIGNABLE_ROLES__SELF_ASSIGNABLE_ROLES_GROUP_ID_FKEY, Keys.SELF_ASSIGNABLE_ROLES__SELF_ASSIGNABLE_ROLES_GUILD_ID_FKEY);
+    }
+
+    public SelfAssignableRoleGroups selfAssignableRoleGroups() {
+        return new SelfAssignableRoleGroups(this, Keys.SELF_ASSIGNABLE_ROLES__SELF_ASSIGNABLE_ROLES_GROUP_ID_FKEY);
+    }
+
+    public Guilds guilds() {
+        return new Guilds(this, Keys.SELF_ASSIGNABLE_ROLES__SELF_ASSIGNABLE_ROLES_GUILD_ID_FKEY);
     }
 
     @Override

@@ -2,6 +2,7 @@ package de.kittybot.kittybot.command;
 
 import de.kittybot.kittybot.command.ctx.CommandContext;
 import de.kittybot.kittybot.command.ctx.ReactionContext;
+import de.kittybot.kittybot.exceptions.CommandException;
 import de.kittybot.kittybot.objects.Emoji;
 import net.dv8tion.jda.api.Permission;
 
@@ -36,7 +37,7 @@ public abstract class Command{
 		this.permissions = new HashSet<>();
 	}
 
-	protected abstract void run(List<String> args, CommandContext ctx);
+	protected abstract void run(List<String> args, CommandContext ctx) throws CommandException;
 
 	public void onReactionAdd(ReactionContext ctx){
 		var event = ctx.getEvent();
@@ -58,18 +59,23 @@ public abstract class Command{
 			ctx.sendNoPermissions(missingPerms);
 			return;
 		}
-		if(this.children.isEmpty() || ctx.getArgs().isEmpty()){
-			run(ctx.getArgs(), ctx);
-			return;
-		}
-		var newCtx = ctx.getChildContext(this.getPath());
-		for(var child : this.children){
-			if(child.check(newCtx.getCommand())){
-				child.process(newCtx);
+		try{
+			if(this.children.isEmpty() || ctx.getArgs().isEmpty()){
+				run(ctx.getArgs(), ctx);
 				return;
 			}
+			var newCtx = ctx.getChildContext(this.getPath());
+			for(var child : this.children){
+				if(child.check(newCtx.getCommand())){
+					child.process(newCtx);
+					return;
+				}
+			}
+			run(ctx.getArgs(), ctx);
 		}
-		run(ctx.getArgs(), ctx);
+		catch(CommandException e){
+			ctx.sendError(e.getMessage());
+		}
 	}
 
 	public boolean check(String command){

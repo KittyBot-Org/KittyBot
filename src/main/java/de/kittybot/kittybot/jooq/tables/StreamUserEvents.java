@@ -117,6 +117,15 @@ public class StreamUserEvents extends TableImpl<StreamUserEventsRecord> {
     }
 
     @Override
+    public List<ForeignKey<StreamUserEventsRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<StreamUserEventsRecord, ?>>asList(Keys.STREAM_USER_EVENTS__STREAM_USER_EVENTS_STREAM_USER_ID_FKEY);
+    }
+
+    public StreamUsers streamUsers() {
+        return new StreamUsers(this, Keys.STREAM_USER_EVENTS__STREAM_USER_EVENTS_STREAM_USER_ID_FKEY);
+    }
+
+    @Override
     public StreamUserEvents as(String alias) {
         return new StreamUserEvents(DSL.name(alias), this);
     }

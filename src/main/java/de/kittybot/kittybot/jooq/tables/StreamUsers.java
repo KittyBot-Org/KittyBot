@@ -64,9 +64,9 @@ public class StreamUsers extends TableImpl<StreamUsersRecord> {
     public final TableField<StreamUsersRecord, String> USER_NAME = createField(DSL.name("user_name"), SQLDataType.VARCHAR(32).nullable(false), this, "");
 
     /**
-     * The column <code>public.stream_users.service_id</code>.
+     * The column <code>public.stream_users.stream_type</code>.
      */
-    public final TableField<StreamUsersRecord, Integer> SERVICE_ID = createField(DSL.name("service_id"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<StreamUsersRecord, Integer> STREAM_TYPE = createField(DSL.name("stream_type"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private StreamUsers(Name alias, Table<StreamUsersRecord> aliased) {
         this(alias, aliased, null);
@@ -119,6 +119,15 @@ public class StreamUsers extends TableImpl<StreamUsersRecord> {
     @Override
     public List<UniqueKey<StreamUsersRecord>> getKeys() {
         return Arrays.<UniqueKey<StreamUsersRecord>>asList(Keys.STREAM_USERS_PKEY);
+    }
+
+    @Override
+    public List<ForeignKey<StreamUsersRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<StreamUsersRecord, ?>>asList(Keys.STREAM_USERS__STREAM_USERS_GUILD_ID_FKEY);
+    }
+
+    public Guilds guilds() {
+        return new Guilds(this, Keys.STREAM_USERS__STREAM_USERS_GUILD_ID_FKEY);
     }
 
     @Override

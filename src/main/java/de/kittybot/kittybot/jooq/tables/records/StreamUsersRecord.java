@@ -67,17 +67,17 @@ public class StreamUsersRecord extends UpdatableRecordImpl<StreamUsersRecord> im
     }
 
     /**
-     * Setter for <code>public.stream_users.service_id</code>.
+     * Setter for <code>public.stream_users.stream_type</code>.
      */
-    public StreamUsersRecord setServiceId(Integer value) {
+    public StreamUsersRecord setStreamType(Integer value) {
         set(3, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.stream_users.service_id</code>.
+     * Getter for <code>public.stream_users.stream_type</code>.
      */
-    public Integer getServiceId() {
+    public Integer getStreamType() {
         return (Integer) get(3);
     }
 
@@ -121,7 +121,7 @@ public class StreamUsersRecord extends UpdatableRecordImpl<StreamUsersRecord> im
 
     @Override
     public Field<Integer> field4() {
-        return StreamUsers.STREAM_USERS.SERVICE_ID;
+        return StreamUsers.STREAM_USERS.STREAM_TYPE;
     }
 
     @Override
@@ -141,7 +141,7 @@ public class StreamUsersRecord extends UpdatableRecordImpl<StreamUsersRecord> im
 
     @Override
     public Integer component4() {
-        return getServiceId();
+        return getStreamType();
     }
 
     @Override
@@ -161,7 +161,7 @@ public class StreamUsersRecord extends UpdatableRecordImpl<StreamUsersRecord> im
 
     @Override
     public Integer value4() {
-        return getServiceId();
+        return getStreamType();
     }
 
     @Override
@@ -184,7 +184,7 @@ public class StreamUsersRecord extends UpdatableRecordImpl<StreamUsersRecord> im
 
     @Override
     public StreamUsersRecord value4(Integer value) {
-        setServiceId(value);
+        setStreamType(value);
         return this;
     }
 
@@ -211,12 +211,12 @@ public class StreamUsersRecord extends UpdatableRecordImpl<StreamUsersRecord> im
     /**
      * Create a detached, initialised StreamUsersRecord
      */
-    public StreamUsersRecord(Long streamUserId, Long guildId, String userName, Integer serviceId) {
+    public StreamUsersRecord(Long streamUserId, Long guildId, String userName, Integer streamType) {
         super(StreamUsers.STREAM_USERS);
 
         setStreamUserId(streamUserId);
         setGuildId(guildId);
         setUserName(userName);
-        setServiceId(serviceId);
+        setStreamType(streamType);
     }
 }

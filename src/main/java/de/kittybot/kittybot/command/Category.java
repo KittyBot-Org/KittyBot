@@ -12,6 +12,7 @@ public enum Category{
 	NEKO(Emoji.NEKO, "Neko"),
 	ADMIN(Emoji.ADMIN, "Admin"),
 	NOTIFICATION(Emoji.ADMIN, "Notification"),
+	TAGS(Emoji.TAGS, "Tags"),
 	BOT_OWNER(Emoji.BOT_OWNER, "Bot Owner");
 
 	private final Emoji emoji;

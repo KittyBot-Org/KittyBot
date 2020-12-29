@@ -31,11 +31,12 @@ public class DatabaseManager{
 		initTable("guild_invites");
 		initTable("guild_invite_roles");
 
-		initTable("self_assignable_roles");
 		initTable("self_assignable_role_groups");
+		initTable("self_assignable_roles");
 
 		initTable("bot_disabled_channels");
 		initTable("snipe_disabled_channels");
+		initTable("bot_ignored_users");
 
 		initTable("stream_users");
 		initTable("stream_user_events");

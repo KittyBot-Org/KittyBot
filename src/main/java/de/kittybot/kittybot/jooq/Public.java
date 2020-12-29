@@ -5,8 +5,10 @@ package de.kittybot.kittybot.jooq;
 
 
 import de.kittybot.kittybot.jooq.tables.BotDisabledChannels;
+import de.kittybot.kittybot.jooq.tables.BotIgnoredUsers;
 import de.kittybot.kittybot.jooq.tables.GuildInviteRoles;
 import de.kittybot.kittybot.jooq.tables.GuildInvites;
+import de.kittybot.kittybot.jooq.tables.GuildTags;
 import de.kittybot.kittybot.jooq.tables.Guilds;
 import de.kittybot.kittybot.jooq.tables.Notifications;
 import de.kittybot.kittybot.jooq.tables.ReactiveMessages;
@@ -47,6 +49,11 @@ public class Public extends SchemaImpl {
     public final BotDisabledChannels BOT_DISABLED_CHANNELS = BotDisabledChannels.BOT_DISABLED_CHANNELS;
 
     /**
+     * The table <code>public.bot_ignored_users</code>.
+     */
+    public final BotIgnoredUsers BOT_IGNORED_USERS = BotIgnoredUsers.BOT_IGNORED_USERS;
+
+    /**
      * The table <code>public.guild_invite_roles</code>.
      */
     public final GuildInviteRoles GUILD_INVITE_ROLES = GuildInviteRoles.GUILD_INVITE_ROLES;
@@ -55,6 +62,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.guild_invites</code>.
      */
     public final GuildInvites GUILD_INVITES = GuildInvites.GUILD_INVITES;
+
+    /**
+     * The table <code>public.guild_tags</code>.
+     */
+    public final GuildTags GUILD_TAGS = GuildTags.GUILD_TAGS;
 
     /**
      * The table <code>public.guilds</code>.
@@ -128,8 +140,10 @@ public class Public extends SchemaImpl {
     public final List<Sequence<?>> getSequences() {
         return Arrays.<Sequence<?>>asList(
             Sequences.BOT_DISABLED_CHANNELS_BOT_DISABLED_CHANNEL_ID_SEQ,
+            Sequences.BOT_IGNORED_USERS_BOT_IGNORED_USER_ID_SEQ,
             Sequences.GUILD_INVITE_ROLES_GUILD_INVITE_ROLE_ID_SEQ,
             Sequences.GUILD_INVITES_GUILD_INVITE_ID_SEQ,
+            Sequences.GUILD_TAGS_TAG_ID_SEQ,
             Sequences.NOTIFICATIONS_NOTIFICATION_ID_SEQ,
             Sequences.REACTIVE_MESSAGES_REACTIVE_MESSAGE_ID_SEQ,
             Sequences.REQUESTS_REQUEST_ID_SEQ,
@@ -145,8 +159,10 @@ public class Public extends SchemaImpl {
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
             BotDisabledChannels.BOT_DISABLED_CHANNELS,
+            BotIgnoredUsers.BOT_IGNORED_USERS,
             GuildInviteRoles.GUILD_INVITE_ROLES,
             GuildInvites.GUILD_INVITES,
+            GuildTags.GUILD_TAGS,
             Guilds.GUILDS,
             Notifications.NOTIFICATIONS,
             ReactiveMessages.REACTIVE_MESSAGES,

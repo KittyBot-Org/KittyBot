@@ -4,6 +4,7 @@ import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
 import de.kittybot.kittybot.utils.Utils;
+import net.dv8tion.jda.api.Permission;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ public class LogMessagesCommand extends Command{
 		super("logmessages", "Set's the current channel for log messages", Category.ADMIN);
 		addAliases("logs", "logmsgs");
 		setUsage(".../<false>");
+		addPermissions(Permission.ADMINISTRATOR);
 	}
 
 	@Override

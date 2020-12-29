@@ -113,7 +113,16 @@ public class GuildInvites extends TableImpl<GuildInvitesRecord> {
 
     @Override
     public List<UniqueKey<GuildInvitesRecord>> getKeys() {
-        return Arrays.<UniqueKey<GuildInvitesRecord>>asList(Keys.GUILD_INVITES_PKEY);
+        return Arrays.<UniqueKey<GuildInvitesRecord>>asList(Keys.GUILD_INVITES_PKEY, Keys.GUILD_INVITES_CODE_KEY);
+    }
+
+    @Override
+    public List<ForeignKey<GuildInvitesRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<GuildInvitesRecord, ?>>asList(Keys.GUILD_INVITES__GUILD_INVITES_GUILD_ID_FKEY);
+    }
+
+    public Guilds guilds() {
+        return new Guilds(this, Keys.GUILD_INVITES__GUILD_INVITES_GUILD_ID_FKEY);
     }
 
     @Override

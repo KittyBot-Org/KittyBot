@@ -16,31 +16,31 @@ public class SelfAssignableRoles implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Long selfAssignableRoleId;
-    private final Long roleId;
-    private final Long guildId;
-    private final Long emoteId;
     private final Long groupId;
+    private final Long guildId;
+    private final Long roleId;
+    private final Long emoteId;
 
     public SelfAssignableRoles(SelfAssignableRoles value) {
         this.selfAssignableRoleId = value.selfAssignableRoleId;
-        this.roleId = value.roleId;
-        this.guildId = value.guildId;
-        this.emoteId = value.emoteId;
         this.groupId = value.groupId;
+        this.guildId = value.guildId;
+        this.roleId = value.roleId;
+        this.emoteId = value.emoteId;
     }
 
     public SelfAssignableRoles(
         Long selfAssignableRoleId,
-        Long roleId,
+        Long groupId,
         Long guildId,
-        Long emoteId,
-        Long groupId
+        Long roleId,
+        Long emoteId
     ) {
         this.selfAssignableRoleId = selfAssignableRoleId;
-        this.roleId = roleId;
-        this.guildId = guildId;
-        this.emoteId = emoteId;
         this.groupId = groupId;
+        this.guildId = guildId;
+        this.roleId = roleId;
+        this.emoteId = emoteId;
     }
 
     /**
@@ -51,10 +51,10 @@ public class SelfAssignableRoles implements Serializable {
     }
 
     /**
-     * Getter for <code>public.self_assignable_roles.role_id</code>.
+     * Getter for <code>public.self_assignable_roles.group_id</code>.
      */
-    public Long getRoleId() {
-        return this.roleId;
+    public Long getGroupId() {
+        return this.groupId;
     }
 
     /**
@@ -65,17 +65,17 @@ public class SelfAssignableRoles implements Serializable {
     }
 
     /**
+     * Getter for <code>public.self_assignable_roles.role_id</code>.
+     */
+    public Long getRoleId() {
+        return this.roleId;
+    }
+
+    /**
      * Getter for <code>public.self_assignable_roles.emote_id</code>.
      */
     public Long getEmoteId() {
         return this.emoteId;
-    }
-
-    /**
-     * Getter for <code>public.self_assignable_roles.group_id</code>.
-     */
-    public Long getGroupId() {
-        return this.groupId;
     }
 
     @Override
@@ -83,10 +83,10 @@ public class SelfAssignableRoles implements Serializable {
         StringBuilder sb = new StringBuilder("SelfAssignableRoles (");
 
         sb.append(selfAssignableRoleId);
-        sb.append(", ").append(roleId);
-        sb.append(", ").append(guildId);
-        sb.append(", ").append(emoteId);
         sb.append(", ").append(groupId);
+        sb.append(", ").append(guildId);
+        sb.append(", ").append(roleId);
+        sb.append(", ").append(emoteId);
 
         sb.append(")");
         return sb.toString();

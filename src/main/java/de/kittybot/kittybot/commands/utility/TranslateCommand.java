@@ -16,7 +16,7 @@ public class TranslateCommand extends Command{
 
 	public TranslateCommand(){
 		super("translate", "Translates text to a given language", Category.UTILITIES);
-		addAliases("tran", "t", "trans");
+		addAliases("tran", "tr", "trans");
 		setUsage("<language> <text>");
 	}
 

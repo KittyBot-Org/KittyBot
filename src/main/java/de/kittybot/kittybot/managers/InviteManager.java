@@ -15,8 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,18 +41,6 @@ public class InviteManager extends ListenerAdapter{
 	}
 
 	@Override
-	public void onGuildMemberJoin(@Nonnull GuildMemberJoinEvent event){
-		var guild = event.getGuild();
-		var guildId = guild.getIdLong();
-		var invite = retrieveUsedInvite(guild);
-		if(invite == null){
-			return;
-		}
-		this.usedInvites.computeIfAbsent(guildId, k -> new HashMap<>());
-		this.usedInvites.get(guildId).put(event.getUser().getIdLong(), new InviteData(invite));
-	}
-
-	@Override
 	public void onGuildLeave(@Nonnull GuildLeaveEvent event){
 		prune(event.getGuild().getIdLong());
 	}
@@ -69,8 +55,16 @@ public class InviteManager extends ListenerAdapter{
 		uncache(event.getGuild().getIdLong(), event.getCode());
 	}
 
-	public InviteData getUsedInvite(long guildId, long userId){
-		return this.usedInvites.get(guildId).get(userId);
+	@Override
+	public void onGuildMemberJoin(@Nonnull GuildMemberJoinEvent event){
+		var guild = event.getGuild();
+		var guildId = guild.getIdLong();
+		var invite = retrieveUsedInvite(guild);
+		if(invite == null){
+			return;
+		}
+		this.usedInvites.computeIfAbsent(guildId, k -> new HashMap<>());
+		this.usedInvites.get(guildId).put(event.getUser().getIdLong(), new InviteData(invite));
 	}
 
 	private Invite retrieveUsedInvite(Guild guild){
@@ -122,6 +116,10 @@ public class InviteManager extends ListenerAdapter{
 			invites.computeIfAbsent(guildId, k -> new HashMap<>());
 			invites.get(guildId).put(invite.getCode(), new InviteData(invite));
 		}
+	}
+
+	public InviteData getUsedInvite(long guildId, long userId){
+		return this.usedInvites.get(guildId).get(userId);
 	}
 
 	public Map<String, InviteData> getGuildInvites(long guildId){

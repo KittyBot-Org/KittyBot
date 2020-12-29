@@ -66,6 +66,10 @@ public class CommandContext{
 		return this.main.getDashboardSessionManager();
 	}
 
+	public TagManager getTagManager(){
+		return this.main.getTagManager();
+	}
+
 	public InviteManager getInviteManager(){
 		return this.main.getInviteManager();
 	}
@@ -266,6 +270,11 @@ public class CommandContext{
 	public MessageAction success(EmbedBuilder answer){
 		addStatus(getMessage(), Status.OK);
 		return answer(answer.setColor(Color.GREEN));
+	}
+
+	public void sendBlankSuccess(String msg){
+		addStatus(getMessage(), Status.OK);
+		queue(getChannel().sendMessage(msg));
 	}
 
 	public void sendSuccess(EmbedBuilder embed){

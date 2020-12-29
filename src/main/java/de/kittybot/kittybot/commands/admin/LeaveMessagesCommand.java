@@ -4,6 +4,7 @@ import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
 import de.kittybot.kittybot.utils.Utils;
+import net.dv8tion.jda.api.Permission;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ public class LeaveMessagesCommand extends Command{
 		super("leavemessages", "Enables or sets leave messages for the current channel", Category.ADMIN);
 		addAliases("leave", "leavem", "lmessages");
 		setUsage(".../<false>/<message>");
+		addPermissions(Permission.ADMINISTRATOR);
 	}
 
 	@Override

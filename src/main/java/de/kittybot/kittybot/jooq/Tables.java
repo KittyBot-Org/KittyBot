@@ -5,8 +5,10 @@ package de.kittybot.kittybot.jooq;
 
 
 import de.kittybot.kittybot.jooq.tables.BotDisabledChannels;
+import de.kittybot.kittybot.jooq.tables.BotIgnoredUsers;
 import de.kittybot.kittybot.jooq.tables.GuildInviteRoles;
 import de.kittybot.kittybot.jooq.tables.GuildInvites;
+import de.kittybot.kittybot.jooq.tables.GuildTags;
 import de.kittybot.kittybot.jooq.tables.Guilds;
 import de.kittybot.kittybot.jooq.tables.Notifications;
 import de.kittybot.kittybot.jooq.tables.ReactiveMessages;
@@ -32,6 +34,11 @@ public class Tables {
     public static final BotDisabledChannels BOT_DISABLED_CHANNELS = BotDisabledChannels.BOT_DISABLED_CHANNELS;
 
     /**
+     * The table <code>public.bot_ignored_users</code>.
+     */
+    public static final BotIgnoredUsers BOT_IGNORED_USERS = BotIgnoredUsers.BOT_IGNORED_USERS;
+
+    /**
      * The table <code>public.guild_invite_roles</code>.
      */
     public static final GuildInviteRoles GUILD_INVITE_ROLES = GuildInviteRoles.GUILD_INVITE_ROLES;
@@ -40,6 +47,11 @@ public class Tables {
      * The table <code>public.guild_invites</code>.
      */
     public static final GuildInvites GUILD_INVITES = GuildInvites.GUILD_INVITES;
+
+    /**
+     * The table <code>public.guild_tags</code>.
+     */
+    public static final GuildTags GUILD_TAGS = GuildTags.GUILD_TAGS;
 
     /**
      * The table <code>public.guilds</code>.
