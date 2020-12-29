@@ -54,6 +54,10 @@ public class CommandContext{
 		return this.main.getGuildSettingsManager();
 	}
 
+	public StreamAnnouncementManager getStreamAnnouncementManager(){
+		return this.main.getStreamAnnouncementManager();
+	}
+
 	public NotificationManager getNotificationManager(){
 		return this.main.getNotificationManager();
 	}

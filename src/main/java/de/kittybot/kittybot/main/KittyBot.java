@@ -22,7 +22,6 @@ import okhttp3.OkHttpClient;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 public class KittyBot{
@@ -187,6 +186,10 @@ public class KittyBot{
 
 	public TagManager getTagManager(){
 		return this.tagManager;
+	}
+
+	public StreamAnnouncementManager getStreamAnnouncementManager(){
+		return this.streamAnnouncementManager;
 	}
 
 }

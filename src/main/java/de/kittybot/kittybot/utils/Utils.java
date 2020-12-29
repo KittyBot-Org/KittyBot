@@ -11,15 +11,15 @@ public class Utils{
 		return jda.getGuildCache().applyStream(guildStream -> guildStream.mapToInt(Guild::getMemberCount).sum());
 	}
 
-public static boolean isSnowflake(String id){
-	try{
-		MiscUtil.parseSnowflake(id);
-		return true;
+	public static boolean isSnowflake(String id){
+		try{
+			MiscUtil.parseSnowflake(id);
+			return true;
+		}
+		catch(NumberFormatException ignored){
+			return false;
+		}
 	}
-	catch(NumberFormatException ignored){
-		return false;
-	}
-}
 
 	public static boolean isEnable(String string){
 		return string.equalsIgnoreCase("enable") || string.equalsIgnoreCase("true") || string.equalsIgnoreCase("on") || string.equalsIgnoreCase("an");

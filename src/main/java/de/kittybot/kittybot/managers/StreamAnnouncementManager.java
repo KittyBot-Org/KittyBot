@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.managers;
 
+import de.kittybot.kittybot.exceptions.CommandException;
 import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.objects.StreamAnnouncement;
 import de.kittybot.kittybot.streams.StreamType;
@@ -32,7 +33,6 @@ public class StreamAnnouncementManager{
 		var config = this.main.getConfig();
 		this.twitchWrapper = new TwitchWrapper(config.getString("twitch_client_id"), config.getString("twitch_client_secret"), this.main.getHttpClient());
 		this.streamAnnouncements = loadStreamAnnouncements();
-		this.streamAnnouncements.add(new StreamAnnouncement("Topi_Senpai", 608506410803658753L, StreamType.TWITCH));
 		this.activeStreams = new HashSet<>();
 		this.main.getScheduler().scheduleAtFixedRate(this::checkStreams, 0, 1, TimeUnit.MINUTES);
 	}
@@ -86,6 +86,41 @@ public class StreamAnnouncementManager{
 			return;
 		}
 		channel.sendMessage(embedBuilder.build()).queue();
+	}
+
+	public void add(String name, long guildId, StreamType type) throws CommandException{
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon()){
+			var rows = dbManager.getCtx(con).insertInto(STREAM_USERS)
+					.columns(STREAM_USERS.GUILD_ID, STREAM_USERS.USER_NAME, STREAM_USERS.STREAM_TYPE)
+					.values(guildId, name, type.getId())
+					.execute();
+			if(rows != 1){
+				throw new CommandException("Stream already exists");
+			}
+		}
+		catch(SQLException e){
+			LOG.error("Error adding stream announcement", e);
+		}
+		this.streamAnnouncements.add(new StreamAnnouncement(name, guildId, type));
+	}
+
+	public List<StreamAnnouncement> get(long guildId){
+		return this.streamAnnouncements.parallelStream().filter(stream -> stream.getGuildId() == guildId).collect(Collectors.toList());
+	}
+
+	public void delete(String name, long guildId, StreamType type) throws CommandException{
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon()){
+			var rows = dbManager.getCtx(con).deleteFrom(STREAM_USERS).where(STREAM_USERS.USER_NAME.eq(name).and(STREAM_USERS.GUILD_ID.eq(guildId)).and(STREAM_USERS.STREAM_TYPE.eq(type.getId()))).execute();
+			if(rows != 1){
+				throw new CommandException("No stream found");
+			}
+		}
+		catch(SQLException e){
+			LOG.error("Error adding stream announcement", e);
+		}
+		this.streamAnnouncements.removeIf(stream -> stream.getUserName().equals(name) && stream.getStreamType() == type && stream.getGuildId() == guildId);
 	}
 
 }

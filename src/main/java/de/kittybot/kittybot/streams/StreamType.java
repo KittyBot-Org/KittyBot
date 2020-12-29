@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 public enum StreamType{
 
-	TWITCH(1, "Twitch.tv"),
-	YOUTUBE(2, "YouTube.com");
+	TWITCH(1, "Twitch"),
+	YOUTUBE(2, "YouTube");
 
 	private final int id;
 	private final String name;
@@ -17,6 +17,10 @@ public enum StreamType{
 
 	public static StreamType byId(int id){
 		return Arrays.stream(values()).filter(streamType -> streamType.getId() == id).findFirst().orElse(null);
+	}
+
+	public static StreamType byName(String name){
+		return Arrays.stream(values()).filter(streamType -> streamType.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
 	}
 
 	public int getId(){

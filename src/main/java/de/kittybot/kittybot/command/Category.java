@@ -11,7 +11,8 @@ public enum Category{
 	MUSIC(Emoji.MUSIC, "Music"),
 	NEKO(Emoji.NEKO, "Neko"),
 	ADMIN(Emoji.ADMIN, "Admin"),
-	NOTIFICATION(Emoji.ADMIN, "Notification"),
+	NOTIFICATION(Emoji.NOTIFICATION, "Notification"),
+	ANNOUNCEMENT(Emoji.NOTIFICATION, "Announcement"),
 	TAGS(Emoji.TAGS, "Tags"),
 	BOT_OWNER(Emoji.BOT_OWNER, "Bot Owner");
 

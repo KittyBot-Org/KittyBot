@@ -45,21 +45,6 @@ public class GuildSettingsManager extends ListenerAdapter{
 				.build(this::retrieveGuildSettings);
 	}
 
-	@Override
-	public void onGuildReady(@NotNull GuildReadyEvent event){
-		insertGuildSettingsIfNotExists(event.getGuild());
-	}
-
-	@Override
-	public void onGuildJoin(@Nonnull GuildJoinEvent event){
-		insertGuildSettings(event.getGuild());
-	}
-
-	@Override
-	public void onGuildLeave(@Nonnull GuildLeaveEvent event){
-		cleanupAllGuildSettings(event.getGuild().getIdLong());
-	}
-
 	public GuildSettings retrieveGuildSettings(long guildId){
 		var dbManager = this.main.getDatabaseManager();
 		try(var con = dbManager.getCon();
@@ -94,6 +79,32 @@ public class GuildSettingsManager extends ListenerAdapter{
 			LOG.error("Error while retrieving guild settings for guild: " + guildId, e);
 		}
 		return null;
+	}
+
+	@Override
+	public void onGuildReady(@NotNull GuildReadyEvent event){
+		insertGuildSettingsIfNotExists(event.getGuild());
+	}
+
+	@Override
+	public void onGuildJoin(@Nonnull GuildJoinEvent event){
+		insertGuildSettings(event.getGuild());
+	}
+
+	@Override
+	public void onGuildLeave(@Nonnull GuildLeaveEvent event){
+		cleanupAllGuildSettings(event.getGuild().getIdLong());
+	}
+
+	public void cleanupAllGuildSettings(long guildId){
+		LOG.info("Cleaning up guild: {}", guildId);
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon()){
+			dbManager.getCtx(con).deleteFrom(GUILDS).where(GUILDS.GUILD_ID.eq(guildId)).execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error cleaning up guild: {}", guildId, e);
+		}
 	}
 
 	public void insertGuildSettingsIfNotExists(Guild guild){
@@ -132,17 +143,6 @@ public class GuildSettingsManager extends ListenerAdapter{
 		}
 		catch(SQLException e){
 			LOG.error("Error registering guild: {}", guild.getId(), e);
-		}
-	}
-
-	public void cleanupAllGuildSettings(long guildId){
-		LOG.info("Cleaning up guild: {}", guildId);
-		var dbManager = this.main.getDatabaseManager();
-		try(var con = dbManager.getCon()){
-			dbManager.getCtx(con).deleteFrom(GUILDS).where(GUILDS.GUILD_ID.eq(guildId)).execute();
-		}
-		catch(SQLException e){
-			LOG.error("Error cleaning up guild: {}", guildId, e);
 		}
 	}
 
@@ -520,14 +520,6 @@ public class GuildSettingsManager extends ListenerAdapter{
 		insertIgnoredUsers(guildId, users);
 	}
 
-	public void deleteBotIgnoredUsers(long guildId, Set<Long> users){
-		var settings = getSettingsIfPresent(guildId);
-		if(settings != null){
-			settings.setBotIgnoredUsers(users, false);
-		}
-		removeIgnoredUsers(guildId, users);
-	}
-
 	private void insertIgnoredUsers(long guildId, Set<Long> users){
 		var dbManager = this.main.getDatabaseManager();
 		try(var con = dbManager.getCon()){
@@ -540,6 +532,14 @@ public class GuildSettingsManager extends ListenerAdapter{
 		catch(SQLException e){
 			LOG.error("Error inserting ignored users", e);
 		}
+	}
+
+	public void deleteBotIgnoredUsers(long guildId, Set<Long> users){
+		var settings = getSettingsIfPresent(guildId);
+		if(settings != null){
+			settings.setBotIgnoredUsers(users, false);
+		}
+		removeIgnoredUsers(guildId, users);
 	}
 
 	private void removeIgnoredUsers(long guildId, Set<Long> users){

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.kittybot.kittybot.jooq.Tables.*;
+import static de.kittybot.kittybot.jooq.Tables.GUILD_TAGS;
 
 public class TagManager{
 
