@@ -116,6 +116,7 @@ public class KittyBot{
 				.awaitReady();
 
 		this.notificationManager.init();
+		this.streamAnnouncementManager.init();
 		this.lavalinkManager.connect(jda.getSelfUser().getId());
 		this.dashboardSessionManager.init(jda.getSelfUser().getIdLong());
 	}

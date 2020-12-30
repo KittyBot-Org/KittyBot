@@ -16,8 +16,9 @@ public class Stream{
 	private final Instant startedAt;
 	private final Language language;
 	private Game game;
+	private StreamType type;
 
-	public Stream(long streamId, String streamTitle, String thumbnailUrl, long userId, String userName, int gameId, Game game, int viewerCount, Instant startedAt, Language language){
+	public Stream(long streamId, String streamTitle, String thumbnailUrl, long userId, String userName, int gameId, Game game, int viewerCount, Instant startedAt, Language language, StreamType type){
 		this.streamId = streamId;
 		this.streamTitle = streamTitle;
 		this.thumbnailUrl = thumbnailUrl;
@@ -28,6 +29,7 @@ public class Stream{
 		this.viewerCount = viewerCount;
 		this.startedAt = startedAt;
 		this.language = language;
+		this.type = type;
 	}
 
 	public static Stream fromTwitchJSON(DataObject json){
@@ -38,10 +40,11 @@ public class Stream{
 				json.getLong("user_id"),
 				json.getString("user_name"),
 				json.getInt("game_id"),
-				new Game(json.getInt("game_id"), json.getString("game_name"), ""),
+				new Game(json.getInt("game_id"), json.getString("game_name")),
 				json.getInt("viewer_count"),
 				Instant.parse(json.getString("started_at")),
-				Arrays.stream(Language.values()).filter(l -> l.getShortname().equalsIgnoreCase(json.getString("language"))).findFirst().get()
+				Arrays.stream(Language.values()).filter(l -> l.getShortname().equalsIgnoreCase(json.getString("language"))).findFirst().get(),
+				StreamType.TWITCH
 		);
 	}
 
@@ -53,8 +56,8 @@ public class Stream{
 		return this.streamTitle;
 	}
 
-	public String getThumbnailUrl(){
-		return this.thumbnailUrl;
+	public String getThumbnailUrl(int width, int height){
+		return this.thumbnailUrl.replace("{width}", String.valueOf(width)).replace("{height}", String.valueOf(height));
 	}
 
 	public long getStreamId(){

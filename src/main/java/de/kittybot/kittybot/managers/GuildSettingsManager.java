@@ -180,6 +180,18 @@ public class GuildSettingsManager extends ListenerAdapter{
 		return this.guildSettings.getIfPresent(guildId);
 	}
 
+	public long getStreamAnnouncementChannelId(long guildId){
+		return this.getSettings(guildId).getStreamAnnouncementChannelId();
+	}
+
+	public void setStreamAnnouncementChannelId(long guildId, long channelId){
+		updateGuildSetting(guildId, GUILDS.STREAM_ANNOUNCEMENT_CHANNEL_ID, channelId);
+		var settings = getSettingsIfPresent(guildId);
+		if(settings != null){
+			settings.setStreamAnnouncementChannelId(channelId);
+		}
+	}
+
 	public long getAnnouncementChannelId(long guildId){
 		return this.getSettings(guildId).getAnnouncementChannelId();
 	}

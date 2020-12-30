@@ -4,15 +4,16 @@ import java.util.Arrays;
 
 public enum StreamType{
 
-	TWITCH(1, "Twitch"),
-	YOUTUBE(2, "YouTube");
+	TWITCH(1, "Twitch", "twitch.tv"),
+	YOUTUBE(2, "YouTube", "youtube.com");
 
 	private final int id;
-	private final String name;
+	private final String name, baseUrl;
 
-	StreamType(int id, String name){
+	StreamType(int id, String name, String baseUrl){
 		this.id = id;
 		this.name = name;
+		this.baseUrl = baseUrl;
 	}
 
 	public static StreamType byId(int id){
@@ -30,4 +31,9 @@ public enum StreamType{
 	public String getName(){
 		return this.name;
 	}
+
+	public String getBaseUrl(){
+		return "https://" + this.baseUrl + "/";
+	}
+
 }

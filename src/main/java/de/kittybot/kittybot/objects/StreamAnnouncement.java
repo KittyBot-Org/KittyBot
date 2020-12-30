@@ -33,4 +33,14 @@ public class StreamAnnouncement{
 		return streamType;
 	}
 
+	public String getStreamUrl(){
+		if(this.streamType == StreamType.TWITCH){
+			return this.streamType.getBaseUrl() + this.userName;
+		}
+		if(this.streamType == StreamType.YOUTUBE){
+			return this.streamType.getBaseUrl() + "c/" + this.userName;
+		}
+		return null;
+	}
+
 }

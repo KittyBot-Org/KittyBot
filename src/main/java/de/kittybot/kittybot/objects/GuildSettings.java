@@ -17,6 +17,8 @@ public class GuildSettings{
 	private final Set<Long> botIgnoredUsers;
 	private final Map<String, Set<Long>> guildInviteRoles;
 	private String commandPrefix;
+	private long streamAnnouncementChannelId;
+	private String streamAnnouncementMessage;
 	private long announcementChannelId;
 	private long requestChannelId;
 	private boolean requestsEnabled;
@@ -35,6 +37,8 @@ public class GuildSettings{
 	public GuildSettings(GuildsRecord record, Set<Long> snipeDisabledChannels, Set<Long> botDisabledChannels, Set<Long> botIgnoredUsers, Map<String, Set<Long>> guildInviteRoles){
 		this.guildId = record.getGuildId();
 		this.commandPrefix = record.getCommandPrefix();
+		this.streamAnnouncementChannelId = record.getStreamAnnouncementChannelId();
+		this.streamAnnouncementMessage = record.getStreamAnnouncementMessage();
 		this.announcementChannelId = record.getAnnouncementChannelId();
 		this.requestChannelId = record.getRequestChannelId();
 		this.requestsEnabled = record.getRequestsEnabled();
@@ -67,16 +71,36 @@ public class GuildSettings{
 		this.commandPrefix = commandPrefix;
 	}
 
+	public long getStreamAnnouncementChannelId(){
+		return this.streamAnnouncementChannelId;
+	}
+
+	public String getStreamAnnouncementChannel(){
+		return MessageUtils.getChannelMention(streamAnnouncementChannelId);
+	}
+
+	public void setStreamAnnouncementChannelId(long streamAnnouncementChannelId){
+		this.streamAnnouncementChannelId = streamAnnouncementChannelId;
+	}
+
+	public String getStreamAnnouncementMessage(){
+		return this.streamAnnouncementMessage;
+	}
+
+	public void setStreamAnnouncementMessage(String streamAnnouncementMessage){
+		this.streamAnnouncementMessage = streamAnnouncementMessage;
+	}
+
 	public long getAnnouncementChannelId(){
 		return this.announcementChannelId;
 	}
 
-	public void setAnnouncementChannelId(long announcementChannelId){
-		this.announcementChannelId = announcementChannelId;
-	}
-
 	public String getAnnouncementChannel(){
 		return MessageUtils.getChannelMention(announcementChannelId);
+	}
+
+	public void setAnnouncementChannelId(long announcementChannelId){
+		this.announcementChannelId = announcementChannelId;
 	}
 
 	public long getRequestChannelId(){
