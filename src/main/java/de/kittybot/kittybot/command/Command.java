@@ -4,6 +4,7 @@ import de.kittybot.kittybot.command.ctx.CommandContext;
 import de.kittybot.kittybot.command.ctx.ReactionContext;
 import de.kittybot.kittybot.exceptions.CommandException;
 import de.kittybot.kittybot.objects.Emoji;
+import de.kittybot.kittybot.utils.Config;
 import net.dv8tion.jda.api.Permission;
 
 import java.util.*;
@@ -37,7 +38,7 @@ public abstract class Command{
 		this.permissions = new HashSet<>();
 	}
 
-	protected abstract void run(List<String> args, CommandContext ctx) throws CommandException;
+	protected abstract void run(Args args, CommandContext ctx) throws CommandException;
 
 	public void onReactionAdd(ReactionContext ctx){
 		var event = ctx.getEvent();
@@ -50,7 +51,7 @@ public abstract class Command{
 	}
 
 	public void process(CommandContext ctx){
-		if(isBotOwnerOnly() && !ctx.getCommandManager().getOwnerIds().contains(ctx.getMember().getIdLong())){
+		if(isBotOwnerOnly() && !Config.OWNER_IDS.contains(ctx.getMember().getIdLong())){
 			ctx.sendNoAdminPermissions();
 			return;
 		}

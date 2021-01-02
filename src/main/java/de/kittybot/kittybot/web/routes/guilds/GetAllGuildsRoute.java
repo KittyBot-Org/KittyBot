@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.web.routes.guilds;
 
 import de.kittybot.kittybot.main.KittyBot;
+import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.web.WebService;
 import io.javalin.http.Context;
 import io.javalin.http.ForbiddenResponse;
@@ -11,18 +12,18 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.Collectors;
 
-public class AllGuildsRoute implements Handler{
+public class GetAllGuildsRoute implements Handler{
 
 	private final KittyBot main;
 
-	public AllGuildsRoute(KittyBot main){
+	public GetAllGuildsRoute(KittyBot main){
 		this.main = main;
 	}
 
 	@Override
 	public void handle(@NotNull Context ctx){
 		var userId = this.main.getWebService().getUserId(ctx);
-		if(!this.main.getConfig().getLongSet("owner_ids").contains(userId)){
+		if(!Config.OWNER_IDS.contains(userId)){
 			throw new ForbiddenResponse("Only bot owners have access to this");
 		}
 		var data = DataArray.fromCollection(

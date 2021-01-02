@@ -5,11 +5,11 @@ import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import org.jetbrains.annotations.NotNull;
 
-public class LogoutRoute implements Handler{
+public class DeleteLoginRoute implements Handler{
 
 	private final KittyBot main;
 
-	public LogoutRoute(KittyBot main){
+	public DeleteLoginRoute(KittyBot main){
 		this.main = main;
 	}
 

@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.commands.admin;
 
+import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
@@ -18,15 +19,15 @@ public class LogMessagesCommand extends Command{
 	}
 
 	@Override
-	protected void run(List<String> args, CommandContext ctx){
-		var guild = ctx.getGuild().getIdLong();
+	protected void run(Args args, CommandContext ctx){
+		var guild = ctx.getGuildId();
 		var settingsManager = ctx.getGuildSettingsManager();
-		if(!args.isEmpty() && Utils.isDisable(args.get(0))){
+		if(!args.isEmpty() && args.isDisable(0)){
 			settingsManager.setLogMessagesEnabled(guild, false);
 			ctx.sendSuccess("Disabled log messages here");
 			return;
 		}
-		settingsManager.setLogChannelId(guild, ctx.getChannel().getIdLong());
+		settingsManager.setLogChannelId(guild, ctx.getChannelId());
 		settingsManager.setLogMessagesEnabled(guild, true);
 		ctx.sendSuccess("Enabled log messages here");
 	}

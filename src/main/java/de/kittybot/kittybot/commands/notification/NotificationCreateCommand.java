@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.commands.notification;
 
+import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
@@ -17,7 +18,7 @@ public class NotificationCreateCommand extends Command{
 	}
 
 	@Override
-	public void run(List<String> args, CommandContext ctx){
+	public void run(Args args, CommandContext ctx){
 		if(args.size() < 2){
 			ctx.sendUsage(this);
 			return;
@@ -33,9 +34,9 @@ public class NotificationCreateCommand extends Command{
 			return;
 		}
 		var notif = ctx.getNotificationManager().create(
-				ctx.getGuild().getIdLong(),
-				ctx.getChannel().getIdLong(),
-				ctx.getMessage().getIdLong(),
+				ctx.getGuildId(),
+				ctx.getChannelId(),
+				ctx.getMessageId(),
 				ctx.getUser().getIdLong(),
 				message,
 				time

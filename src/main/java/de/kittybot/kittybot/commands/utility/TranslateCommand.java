@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.commands.utility;
 
+import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
@@ -21,12 +22,12 @@ public class TranslateCommand extends Command{
 	}
 
 	@Override
-	public void run(List<String> args, CommandContext ctx){
+	public void run(Args args, CommandContext ctx){
 		if(args.isEmpty()){
 			ctx.sendUsage(this);
 			return;
 		}
-		if(Utils.isHelp(args.get(0)) || args.get(0).equalsIgnoreCase("languages")){
+		if(args.isHelp(0) || args.is(0, "languages")){
 			var langs = Arrays.stream(Language.values()).map(Language::getShortname).collect(Collectors.joining(", "));
 			ctx.sendSuccess("Following languages are supported:\n```\n" + langs + "\n```");
 			return;

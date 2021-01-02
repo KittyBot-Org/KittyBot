@@ -12,9 +12,9 @@ public enum Category{
 	NEKO(Emoji.NEKO, "Neko"),
 	ADMIN(Emoji.ADMIN, "Admin"),
 	NOTIFICATION(Emoji.NOTIFICATION, "Notification"),
-	ANNOUNCEMENT(Emoji.NOTIFICATION, "Announcement"),
+	ANNOUNCEMENT(Emoji.ANNOUNCEMENT, "Announcement"),
 	TAGS(Emoji.TAGS, "Tags"),
-	BOT_OWNER(Emoji.BOT_OWNER, "Bot Owner");
+	BOT_OWNER(Emoji.OWNER, "Bot Owner");
 
 	private final Emoji emoji;
 	private final String name;
@@ -34,5 +34,9 @@ public enum Category{
 
 	public String getName(){
 		return this.name;
+	}
+
+	public String getUrl(){
+		return "http://localhost/commands#" + this.name.toLowerCase();
 	}
 }

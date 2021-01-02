@@ -20,11 +20,9 @@ public class DatabaseManager{
 
 	private static final Logger LOG = LoggerFactory.getLogger(DatabaseManager.class);
 
-	private final Config config;
 	private final HikariDataSource dataSource;
 
-	public DatabaseManager(KittyBot main){
-		this.config = main.getConfig();
+	public DatabaseManager(){
 		this.dataSource = initDataSource();
 		initTable("guilds");
 
@@ -52,11 +50,15 @@ public class DatabaseManager{
 	}
 
 	private HikariDataSource initDataSource(){
+		if(Config.DB_HOST.isBlank() || Config.DB_PORT.isBlank() || Config.DB_DATABASE.isBlank() || Config.DB_USER.isBlank() || Config.DB_PASSWORD.isBlank()){
+			LOG.error("Please check your db host/port/database/user/password");
+			return null;
+		}
 		var config = new HikariConfig();
 		config.setDriverClassName("org.postgresql.Driver");
-		config.setJdbcUrl("jdbc:postgresql://" + this.config.getString("db_host") + ":" + this.config.getString("db_port") + "/" + this.config.getString("db_database"));
-		config.setUsername(this.config.getString("db_user"));
-		config.setPassword(this.config.getString("db_password"));
+		config.setJdbcUrl("jdbc:postgresql://" + Config.DB_HOST + ":" + Config.DB_PORT + "/" + Config.DB_DATABASE);
+		config.setUsername(Config.DB_USER);
+		config.setPassword(Config.DB_PASSWORD);
 
 		config.setMinimumIdle(80);
 		config.setMaximumPoolSize(90);

@@ -1,8 +1,10 @@
 package de.kittybot.kittybot.commands.info;
 
+import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
+import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDAInfo;
@@ -18,11 +20,11 @@ public class InfoCommand extends Command{
 	}
 
 	@Override
-	public void run(List<String> args, CommandContext ctx){
+	public void run(Args args, CommandContext ctx){
 		var jda = ctx.getJDA();
 		var runtime = Runtime.getRuntime();
 		ctx.sendSuccess(new EmbedBuilder()
-				.setAuthor("KittyBot Information", ctx.getConfig().getString("origin_url"), jda.getSelfUser().getEffectiveAvatarUrl())
+				.setAuthor("KittyBot Information", Config.ORIGIN_URL, Category.INFORMATION.getEmoteUrl())
 
 				.addField("JVM Version:", System.getProperty("java.version"), true)
 				.addField("JDA Version:", JDAInfo.VERSION, true)

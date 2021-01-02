@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.commands.admin;
 
+import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
@@ -18,7 +19,7 @@ public class RestrictEmoteCommand extends Command{
 	}
 
 	@Override
-	public void run(List<String> args, CommandContext ctx){
+	public void run(Args args, CommandContext ctx){
 		var emotes = ctx.getMessage().getEmotes();
 		var roles = ctx.getMentionedRoles();
 		if(emotes.isEmpty()){

@@ -14,11 +14,11 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.Date;
 
-public class LoginRoute implements Handler{
+public class PostLoginRoute implements Handler{
 
 	private final KittyBot main;
 
-	public LoginRoute(KittyBot main){
+	public PostLoginRoute(KittyBot main){
 		this.main = main;
 	}
 
@@ -33,7 +33,7 @@ public class LoginRoute implements Handler{
 		try{
 			var sessionManager = this.main.getDashboardSessionManager();
 			var session = (DashboardSession) sessionManager.getOAuth2Client().startSession(code, state, "", DashboardSessionManager.getScopes()).complete();
-			WebService.created(ctx, DataObject.empty().put("token", Jwts.builder().setIssuedAt(new Date()).setSubject(String.valueOf(session.getUserId())).signWith(sessionManager.getSecretKey()).compact()));
+			WebService.accepted(ctx, DataObject.empty().put("token", Jwts.builder().setIssuedAt(new Date()).setSubject(String.valueOf(session.getUserId())).signWith(sessionManager.getSecretKey()).compact()));
 		}
 		catch(HttpException e){
 			throw new BadRequestResponse("Don't spam login");

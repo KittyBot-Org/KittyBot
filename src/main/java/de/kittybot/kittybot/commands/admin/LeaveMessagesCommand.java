@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.commands.admin;
 
+import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
@@ -18,10 +19,10 @@ public class LeaveMessagesCommand extends Command{
 	}
 
 	@Override
-	protected void run(List<String> args, CommandContext ctx){
-		var guild = ctx.getGuild().getIdLong();
+	protected void run(Args args, CommandContext ctx){
+		var guild = ctx.getGuildId();
 		var settingsManager = ctx.getGuildSettingsManager();
-		if(!args.isEmpty() && Utils.isDisable(args.get(0))){
+		if(!args.isEmpty() && args.isDisable(0)){
 			settingsManager.setLeaveMessagesEnabled(guild, false);
 			ctx.sendSuccess("Disabled leave messages here");
 			return;
@@ -32,7 +33,7 @@ public class LeaveMessagesCommand extends Command{
 			ctx.sendSuccess("Leave message enabled & set to:\n" + ctx.getRawMessage());
 			return;
 		}
-		settingsManager.setAnnouncementChannelId(guild, ctx.getChannel().getIdLong());
+		settingsManager.setAnnouncementChannelId(guild, ctx.getChannelId());
 		settingsManager.setLeaveMessagesEnabled(guild, true);
 		ctx.sendSuccess("Enabled leave messages here");
 	}

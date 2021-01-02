@@ -1,8 +1,10 @@
 package de.kittybot.kittybot.commands.roles;
 
+import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
+import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -22,7 +24,7 @@ public class InviteRolesCommand extends Command{
 	}
 
 	@Override
-	public void run(List<String> args, CommandContext ctx){
+	public void run(Args args, CommandContext ctx){
 		if(!ctx.getSelfMember().hasPermission(Permission.MANAGE_SERVER)){
 			ctx.sendNoPermissions("For this feature to work I need the MANAGE_SERVER permission!");
 			return;
@@ -32,7 +34,7 @@ public class InviteRolesCommand extends Command{
 			ctx.sendUsage(this);
 			return;
 		}
-		var guildId = ctx.getGuild().getIdLong();
+		var guildId = ctx.getGuildId();
 		if(args.get(0).equalsIgnoreCase("list")){
 			var message = new StringBuilder();
 			var inviteRoles = ctx.getGuildSettingsManager().getInviteRoles(guildId).entrySet();
@@ -48,7 +50,7 @@ public class InviteRolesCommand extends Command{
 					message.append("\n");
 				}
 			}
-			ctx.sendSuccess(new EmbedBuilder().setAuthor("Invite Roles", ctx.getConfig().getString("origin_url"), ctx.getSelfUser().getEffectiveAvatarUrl()).setDescription(message.toString()));
+			ctx.sendSuccess(new EmbedBuilder().setAuthor("Invite Roles", Config.ORIGIN_URL, ctx.getSelfUser().getEffectiveAvatarUrl()).setDescription(message.toString()));
 			return;
 		}
 		var invites = ctx.getInviteManager().getGuildInvites(guildId);
@@ -69,7 +71,7 @@ public class InviteRolesCommand extends Command{
 			ctx.sendUsage(this);
 			return;
 		}
-		ctx.getGuildSettingsManager().setInviteRoles(guildId, args.get(0), roles.parallelStream().map(Role::getIdLong).collect(Collectors.toSet()));
+		ctx.getGuildSettingsManager().setInviteRoles(guildId, args.get(0), roles.stream().map(Role::getIdLong).collect(Collectors.toSet()));
 		ctx.sendSuccess("Added roles " + roles.stream().map(Role::getAsMention).collect(Collectors.joining(", ")) + " to invite with code '" + args.get(0) + "'");
 	}
 

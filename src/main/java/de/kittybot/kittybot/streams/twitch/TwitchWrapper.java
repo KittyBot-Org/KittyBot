@@ -31,6 +31,10 @@ public class TwitchWrapper{
 		this.clientSecret = clientSecret;
 		this.httpClient = httpClient;
 		this.bearerToken = requestBearerToken();
+		if(this.bearerToken == null){
+			LOG.error("Could not retrieve Bearer Token. Please check your twitch client id & token");
+			return;
+		}
 		LOG.info("Bearer Token retrieved");
 	}
 

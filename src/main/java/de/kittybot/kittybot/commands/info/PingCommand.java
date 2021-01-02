@@ -1,8 +1,10 @@
 package de.kittybot.kittybot.commands.info;
 
+import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
+import de.kittybot.kittybot.utils.Config;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.List;
@@ -14,11 +16,11 @@ public class PingCommand extends Command{
 	}
 
 	@Override
-	public void run(List<String> args, CommandContext ctx){
+	public void run(Args args, CommandContext ctx){
 		var jda = ctx.getJDA();
 		jda.getRestPing().queue(ping ->
 				ctx.sendSuccess(new EmbedBuilder()
-						.setAuthor("KittyBot Ping", ctx.getConfig().getString("origin_url"), jda.getSelfUser().getEffectiveAvatarUrl())
+						.setAuthor("KittyBot Ping", Config.ORIGIN_URL, jda.getSelfUser().getEffectiveAvatarUrl())
 
 						.addField("Gateway Ping:", jda.getGatewayPing() + "ms", false)
 						.addField("Rest Ping:", ping + "ms", false)

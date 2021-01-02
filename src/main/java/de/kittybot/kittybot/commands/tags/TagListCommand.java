@@ -1,11 +1,13 @@
 package de.kittybot.kittybot.commands.tags;
 
+import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
 import de.kittybot.kittybot.exceptions.CommandException;
 import de.kittybot.kittybot.objects.Tag;
 import de.kittybot.kittybot.utils.Utils;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 
 import java.util.List;
@@ -20,10 +22,14 @@ public class TagListCommand extends Command{
 	}
 
 	@Override
-	protected void run(List<String> args, CommandContext ctx) throws CommandException{
-		var guildId = ctx.getGuild().getIdLong();
+	protected void run(Args args, CommandContext ctx) throws CommandException{
+		var guildId = ctx.getGuildId();
 		if(args.isEmpty()){
-			ctx.sendSuccess("This guild has " + ctx.getTagManager().get(guildId).size() + "tags");
+			var tags = ctx.getTagManager().get(guildId);
+			ctx.sendSuccess(new EmbedBuilder()
+					.setAuthor("Tags", Category.TAGS.getUrl(), Category.TAGS.getEmoteUrl())
+					.setDescription("This guild has " + tags.size() + " tags:\n" + tags.stream().map(Tag::getName).collect(Collectors.joining("\n")))
+			);
 			return;
 		}
 		var users = ctx.getMentionedUsers();
@@ -37,7 +43,7 @@ public class TagListCommand extends Command{
 			return;
 		}
 		var tags = ctx.getTagManager().get(users.get(0).getIdLong(), guildId);
-		ctx.sendSuccess(users.get(0).getAsMention() + " owns following tags:\n" + tags.parallelStream().map(Tag::getName).collect(Collectors.joining("\n")));
+		ctx.sendSuccess(users.get(0).getAsMention() + " owns following tags:\n" + tags.stream().map(Tag::getName).collect(Collectors.joining("\n")));
 	}
 
 }

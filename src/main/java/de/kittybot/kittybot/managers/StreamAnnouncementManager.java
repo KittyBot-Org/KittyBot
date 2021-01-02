@@ -7,6 +7,7 @@ import de.kittybot.kittybot.objects.StreamAnnouncement;
 import de.kittybot.kittybot.streams.Stream;
 import de.kittybot.kittybot.streams.StreamType;
 import de.kittybot.kittybot.streams.twitch.TwitchWrapper;
+import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
@@ -31,21 +32,24 @@ public class StreamAnnouncementManager{
 	private static final Logger LOG = LoggerFactory.getLogger(StreamAnnouncementManager.class);
 
 	private final KittyBot main;
-	private final TwitchWrapper twitchWrapper;
+	private TwitchWrapper twitchWrapper;
 	private final List<StreamAnnouncement> streamAnnouncements;
 	private final Set<String> activeStreams;
 
 	public StreamAnnouncementManager(KittyBot main){
 		this.main = main;
-		var config = this.main.getConfig();
-		this.twitchWrapper = new TwitchWrapper(config.getString("twitch_client_id"), config.getString("twitch_client_secret"), this.main.getHttpClient());
+		if(Config.TWITCH_CLIENT_ID.isBlank() || Config.TWITCH_CLIENT_SECRET.isBlank()){
+			LOG.error("Twitch disabled because twitch_client_id and twitch_client_secret are missing");
+		}
+		else{
+			this.twitchWrapper = new TwitchWrapper(Config.TWITCH_CLIENT_ID, Config.TWITCH_CLIENT_SECRET, this.main.getHttpClient());
+		}
 		this.streamAnnouncements = loadStreamAnnouncements();
 		this.activeStreams = new HashSet<>();
 	}
 
 	public void init(){
-		checkStreams();
-		//this.main.getScheduler().scheduleAtFixedRate(this::checkStreams, 0, 1, TimeUnit.MINUTES);
+		this.main.getScheduler().scheduleAtFixedRate(this::checkStreams, 0, 1, TimeUnit.MINUTES);
 	}
 
 	private List<StreamAnnouncement> loadStreamAnnouncements(){
@@ -137,7 +141,7 @@ public class StreamAnnouncementManager{
 	}
 
 	public List<StreamAnnouncement> get(long guildId){
-		return this.streamAnnouncements.parallelStream().filter(stream -> stream.getGuildId() == guildId).collect(Collectors.toList());
+		return this.streamAnnouncements.stream().filter(stream -> stream.getGuildId() == guildId).collect(Collectors.toList());
 	}
 
 	public void delete(String name, long guildId, StreamType type) throws CommandException{

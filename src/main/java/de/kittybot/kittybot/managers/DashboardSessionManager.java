@@ -8,6 +8,7 @@ import com.jagrosh.jdautilities.oauth2.Scope;
 import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.objects.DashboardSession;
 import de.kittybot.kittybot.objects.DashboardSessionController;
+import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.exporters.Metrics;
 import io.jsonwebtoken.security.Keys;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberUpdateEvent;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +42,7 @@ public class DashboardSessionManager extends ListenerAdapter{
 
 	public DashboardSessionManager(KittyBot main){
 		this.main = main;
-		this.secretKey = Keys.hmacShaKeyFor(main.getConfig().getBytes("signing_key"));
+		this.secretKey = Keys.hmacShaKeyFor(Config.SIGNING_KEY.getBytes(StandardCharsets.UTF_8));
 		this.sessionCache = Caffeine.newBuilder()
 				.expireAfterAccess(15, TimeUnit.MINUTES)
 				.recordStats()
@@ -68,9 +70,13 @@ public class DashboardSessionManager extends ListenerAdapter{
 	}
 
 	public void init(long userId){
+		if(Config.BOT_SECRET.isBlank()){
+			LOG.error("OAuth2 disabled because secret is missing");
+			return;
+		}
 		this.oAuth2Client = new OAuth2Client.Builder()
 				.setClientId(userId)
-				.setClientSecret(this.main.getConfig().getString("bot_secret"))
+				.setClientSecret(Config.BOT_SECRET)
 				.setOkHttpClient(this.main.getHttpClient())
 				.setSessionController(new DashboardSessionController(this))
 				.build();

@@ -1,11 +1,13 @@
 package de.kittybot.kittybot.web.routes.user;
 
 import de.kittybot.kittybot.main.KittyBot;
+import de.kittybot.kittybot.exceptions.TooManyRequestResponse;
 import de.kittybot.kittybot.web.WebService;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import io.javalin.http.InternalServerErrorResponse;
 import io.javalin.http.NotFoundResponse;
+import net.dv8tion.jda.api.exceptions.HttpException;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.jetbrains.annotations.NotNull;
@@ -13,11 +15,11 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-public class UserInfoRoute implements Handler{
+public class GetUserInfoRoute implements Handler{
 
 	private final KittyBot main;
 
-	public UserInfoRoute(KittyBot main){
+	public GetUserInfoRoute(KittyBot main){
 		this.main = main;
 	}
 
@@ -43,8 +45,11 @@ public class UserInfoRoute implements Handler{
 			);
 			WebService.ok(ctx, DataObject.empty().put("name", user.getName()).put("id", userId).put("icon", user.getEffectiveAvatarUrl()).put("guilds", guildData));
 		}
-		catch(IOException ex){
+		catch(IOException e){
 			throw new InternalServerErrorResponse("There was a problem while login. Please try again");
+		}
+		catch(HttpException e){
+			throw new TooManyRequestResponse("Discord ratelimits us please wait with your request");
 		}
 	}
 

@@ -21,16 +21,4 @@ public class Utils{
 		}
 	}
 
-	public static boolean isEnable(String string){
-		return string.equalsIgnoreCase("enable") || string.equalsIgnoreCase("true") || string.equalsIgnoreCase("on") || string.equalsIgnoreCase("an");
-	}
-
-	public static boolean isDisable(String string){
-		return string.equalsIgnoreCase("disable") || string.equalsIgnoreCase("false") || string.equalsIgnoreCase("off") || string.equalsIgnoreCase("aus");
-	}
-
-	public static boolean isHelp(String string){
-		return string.equalsIgnoreCase("?") || string.equalsIgnoreCase("help") || string.equalsIgnoreCase("hilfe");
-	}
-
 }

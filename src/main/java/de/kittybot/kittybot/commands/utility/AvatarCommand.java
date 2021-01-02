@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.commands.utility;
 
+import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
@@ -7,8 +8,6 @@ import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
-
-import java.util.List;
 
 public class AvatarCommand extends Command{
 
@@ -21,9 +20,9 @@ public class AvatarCommand extends Command{
 	}
 
 	@Override
-	public void run(List<String> args, CommandContext ctx){
+	public void run(Args args, CommandContext ctx){
 		var users = ctx.getMentionedUsers();
-		for(var arg : ctx.getArgs()){
+		for(var arg : args.getList()){
 			if(!Utils.isSnowflake(arg)){
 				continue;
 			}

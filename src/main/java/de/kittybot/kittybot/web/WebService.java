@@ -1,13 +1,19 @@
 package de.kittybot.kittybot.web;
 
 import de.kittybot.kittybot.main.KittyBot;
+import de.kittybot.kittybot.objects.Tag;
+import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.Utils;
-import de.kittybot.kittybot.web.routes.CommandsRoute;
-import de.kittybot.kittybot.web.routes.DiscordLoginRoute;
+import de.kittybot.kittybot.web.routes.commands.GetCommandsRoute;
+import de.kittybot.kittybot.web.routes.GetDiscordLoginRoute;
 import de.kittybot.kittybot.web.routes.guilds.*;
-import de.kittybot.kittybot.web.routes.login.LoginRoute;
-import de.kittybot.kittybot.web.routes.login.LogoutRoute;
-import de.kittybot.kittybot.web.routes.user.UserInfoRoute;
+import de.kittybot.kittybot.web.routes.guilds.guild.*;
+import de.kittybot.kittybot.web.routes.guilds.guild.tags.GetTagsRoute;
+import de.kittybot.kittybot.web.routes.guilds.guild.tags.tag.DeleteTagRoute;
+import de.kittybot.kittybot.web.routes.guilds.guild.tags.tag.PostTagRoute;
+import de.kittybot.kittybot.web.routes.login.PostLoginRoute;
+import de.kittybot.kittybot.web.routes.login.DeleteLoginRoute;
+import de.kittybot.kittybot.web.routes.user.GetUserInfoRoute;
 import io.javalin.Javalin;
 import io.javalin.http.*;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -29,8 +35,12 @@ public class WebService{
 		initBackend();
 	}
 
-	public static void created(Context ctx, DataObject data){
+	public static void accepted(Context ctx, DataObject data){
 		result(ctx, 202, data);
+	}
+
+	public static void accepted(Context ctx){
+		accepted(ctx, DataObject.empty());
 	}
 
 	public static void result(Context ctx, int code, DataObject data){
@@ -48,49 +58,65 @@ public class WebService{
 	}
 
 	private void initBackend(){
-		Javalin.create(
-				config -> config.enableCorsForOrigin(this.main.getConfig().getString("origin_url"))
-		).routes(() -> {
+		if(Config.BACKEND_PORT == -1){
+			return;
+		}
+		Javalin.create(config -> {
+			if(Config.ORIGIN_URL.isBlank()){
+				config.enableCorsForOrigin(Config.ORIGIN_URL);
+			}
+			else{
+				config.enableCorsForAllOrigins();
+			}
+		}).routes(() -> {
 			path("/discord_login", () -> {
-				get(new DiscordLoginRoute(this.main));
+				get(new GetDiscordLoginRoute(this.main));
 			});
 			path("/health_check", () -> {
 				get(ctx -> ctx.result("alive"));
 			});
 			path("/commands", () -> {
-				get(new CommandsRoute(this.main));
+				get(new GetCommandsRoute(this.main));
 			});
 			path("/login", () -> {
-				post(new LoginRoute(this.main));
-				delete(new LogoutRoute(this.main));
+				post(new PostLoginRoute(this.main));
+				delete(new DeleteLoginRoute(this.main));
 			});
 			path("/user/me", () -> {
 				before("/*", this::checkDiscordLogin);
-				get(new UserInfoRoute(this.main));
+				get(new GetUserInfoRoute(this.main));
 			});
 			path("/guilds", () -> {
 				before("/*", this::checkDiscordLogin);
-				path("/all", () -> {
-					get(new AllGuildsRoute(this.main));
-				});
+				get(new GetAllGuildsRoute(this.main));
 				path("/:guildId", () -> {
 					before("/*", this::checkGuildPerms);
 					path("/roles", () -> {
-						get(new RolesRoute(this.main));
+						get(new GetRolesRoute(this.main));
 					});
 					path("/channels", () -> {
-						get(new ChannelsRoute(this.main));
+						get(new GetChannelsRoute(this.main));
 					});
 					path("/emotes", () -> {
-						get(new EmotesRoute(this.main));
+						get(new GetEmotesRoute(this.main));
+					});
+					path("/invites", () -> {
+						get(new GetInvitesRoute(this.main));
+					});
+					path("/tags", () -> {
+						get(new GetTagsRoute(this.main));
+						path("/:tagId", () -> {
+							post(new PostTagRoute(this.main));
+							delete(new DeleteTagRoute(this.main));
+						});
 					});
 					path("/settings", () -> {
 						get(new GetGuildSettingsRoute(this.main));
-						post(new SetGuildSettingsRoute(this.main));
+						post(new PostGuildSettingsRoute(this.main));
 					});
 				});
 			});
-		}).start(this.main.getConfig().getInt("backend_port"));
+		}).start(Config.BACKEND_PORT);
 	}
 
 	private void checkDiscordLogin(Context ctx){
@@ -109,7 +135,7 @@ public class WebService{
 		}
 		var guild = getGuild(ctx);
 		var userId = getUserId(ctx);
-		if(this.main.getConfig().getLongSet("owner_ids").contains(userId)){
+		if(Config.OWNER_IDS.contains(userId)){
 			return;
 		}
 		var member = guild.retrieveMemberById(userId).complete();
@@ -121,7 +147,7 @@ public class WebService{
 		}
 	}
 
-	public long getUserId(final Context ctx){
+	public long getUserId(Context ctx){
 		var token = ctx.header("Authorization");
 		if(token == null || token.isBlank()){
 			throw new UnauthorizedResponse("No token provided");
@@ -148,7 +174,7 @@ public class WebService{
 		}
 	}
 
-	public Guild getGuild(final Context ctx){
+	public Guild getGuild(Context ctx){
 		var guildId = ctx.pathParam(":guildId");
 		if(guildId.isBlank() || !Utils.isSnowflake(guildId)){
 			throw new BadRequestResponse("Please provide a valid guild id");
@@ -158,6 +184,16 @@ public class WebService{
 			throw new NotFoundResponse("Guild not found");
 		}
 		return guild;
+	}
+
+	public long getTagId(Context ctx){
+		var tagId = ctx.pathParam(":tagId");
+		try{
+			return Long.parseLong(tagId);
+		}
+		catch(NumberFormatException e){
+			throw new NotFoundResponse("Invalid tag id");
+		}
 	}
 
 }

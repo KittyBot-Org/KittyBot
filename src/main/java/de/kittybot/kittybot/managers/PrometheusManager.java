@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.managers;
 
 import de.kittybot.kittybot.main.KittyBot;
+import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.Utils;
 import de.kittybot.kittybot.utils.exporters.DiscordLatencyExporter;
 import de.kittybot.kittybot.utils.exporters.MemoryUsageExporter;
@@ -31,7 +32,6 @@ public class PrometheusManager extends ListenerAdapter{
 	// ty Natan 👀 https://github.com/Mantaro/MantaroBot/blob/master/src/main/java/net/kodehawa/mantarobot/utils/Prometheus.java
 	private static final Logger LOG = LoggerFactory.getLogger(PrometheusManager.class);
 	private final KittyBot main;
-	private volatile HTTPServer server;
 
 	public PrometheusManager(KittyBot main){
 		this.main = main;
@@ -41,7 +41,7 @@ public class PrometheusManager extends ListenerAdapter{
 		new DiscordLatencyExporter().register();
 		new MemoryUsageExporter(main).register();
 		try{
-			this.server = new HTTPServer(main.getConfig().getInt("prometheus_port"));
+			new HTTPServer(Config.PROMETHEUS_PORT);
 		}
 		catch(IOException e){
 			LOG.error("Error while initializing prometheus endpoint", e);

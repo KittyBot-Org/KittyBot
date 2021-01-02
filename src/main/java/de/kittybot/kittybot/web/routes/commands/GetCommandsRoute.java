@@ -1,7 +1,8 @@
-package de.kittybot.kittybot.web.routes;
+package de.kittybot.kittybot.web.routes.commands;
 
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.main.KittyBot;
+import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.web.WebService;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -12,11 +13,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class CommandsRoute implements Handler{
+public class GetCommandsRoute implements Handler{
 
 	private final KittyBot main;
 
-	public CommandsRoute(KittyBot main){
+	public GetCommandsRoute(KittyBot main){
 		this.main = main;
 	}
 
@@ -32,7 +33,7 @@ public class CommandsRoute implements Handler{
 						))
 				).collect(Collectors.toSet())
 		);
-		WebService.ok(ctx, DataObject.empty().put("prefix", this.main.getConfig().getString("default_prefix")).put("categories", categories));
+		WebService.ok(ctx, DataObject.empty().put("prefix", Config.DEFAULT_PREFIX).put("categories", categories));
 	}
 
 

@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.objects;
 
 public enum API{
+
 	// stats APIs
 	DISCORD_BOTS("discord.bots.gg", "https://discord.bots.gg/api/v1/bots/%s/stats", "guildCount"),
 	TOP_GG("top.gg", "https://top.gg/api/bots/%s/stats", "server_count"),

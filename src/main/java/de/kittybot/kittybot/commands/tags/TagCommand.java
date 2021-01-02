@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.commands.tags;
 
+import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
@@ -23,12 +24,12 @@ public class TagCommand extends Command{
 	}
 
 	@Override
-	protected void run(List<String> args, CommandContext ctx) throws CommandException{
+	protected void run(Args args, CommandContext ctx) throws CommandException{
 		if(args.isEmpty()){
 			ctx.sendUsage(this.getUsage() + " " + this.getRawUsage());
 			return;
 		}
-		ctx.sendBlankSuccess(ctx.getTagManager().get(args.get(0), ctx.getGuild().getIdLong()).getContent());
+		ctx.sendBlankSuccess(ctx.getTagManager().get(args.get(0), ctx.getGuildId()).getContent());
 	}
 
 }

@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.main;
 
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import de.kittybot.kittybot.events.OnGuildEvent;
 import de.kittybot.kittybot.events.OnGuildMemberEvent;
 import de.kittybot.kittybot.events.OnGuildVoiceEvent;
@@ -19,14 +20,19 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.dv8tion.jda.internal.utils.config.ThreadingConfig;
 import okhttp3.OkHttpClient;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
+import javax.servlet.SingleThreadModel;
 import java.io.IOException;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.*;
 
 public class KittyBot{
 
-	private final Config config;
+	private static final Logger LOG = LoggerFactory.getLogger(KittyBot.class);
+
 	private final OkHttpClient httpClient;
 	private final JDA jda;
 	private final LavalinkManager lavalinkManager;
@@ -48,15 +54,22 @@ public class KittyBot{
 	private final CommandResponseManager commandResponseManager;
 	private final ReactiveMessageManager reactiveMessageManager;
 	private final TagManager tagManager;
+	private final MusicManager musicManager;
+	private final EventWaiter eventWaiter;
 
 	public KittyBot() throws IOException, MissingConfigValuesException, LoginException, InterruptedException{
-		this.config = new Config("./config.json");
-		this.config.checkMandatoryValues("bot_token", "default_prefix", "owner_ids", "db_host", "db_port", "db_database", "db_user", "db_password", "signing_key", "backend_port", "origin_url", "redirect_url");
-		this.scheduler = ThreadingConfig.newScheduler(2, () -> "KittyBot", "Scheduler");
+		Config.init("./config.json");
+		this.scheduler = new ScheduledThreadPoolExecutor(2, r -> {
+			var thread = new Thread(r, "KittyBot Scheduler");
+			thread.setDaemon(true);
+			thread.setUncaughtExceptionHandler((t, e) -> LOG.error("Caught an unexpected Exception in scheduler", e));
+			return thread;
+		});
+		this.eventWaiter = new EventWaiter();
 		this.prometheusManager = new PrometheusManager(this);
 		this.httpClient = new OkHttpClient();
 		this.lavalinkManager = new LavalinkManager(this);
-		this.databaseManager = new DatabaseManager(this);
+		this.databaseManager = new DatabaseManager();
 		this.guildSettingsManager = new GuildSettingsManager(this);
 		this.commandManager = new CommandManager(this);
 		this.commandResponseManager = new CommandResponseManager();
@@ -68,6 +81,7 @@ public class KittyBot{
 		this.botListManager = new BotListsManager(this);
 		this.requestManager = new RequestManager(this);
 		this.tagManager = new TagManager(this);
+		this.musicManager = new MusicManager(this);
 		this.dashboardSessionManager = new DashboardSessionManager(this);
 		this.notificationManager = new NotificationManager(this);
 		this.streamAnnouncementManager = new StreamAnnouncementManager(this);
@@ -75,7 +89,7 @@ public class KittyBot{
 
 		RestAction.setDefaultFailure(null);
 		jda = JDABuilder.create(
-				this.config.getString("bot_token"),
+				Config.BOT_TOKEN,
 				GatewayIntent.GUILD_MEMBERS,
 				GatewayIntent.GUILD_VOICE_STATES,
 				GatewayIntent.GUILD_MESSAGES,
@@ -92,6 +106,7 @@ public class KittyBot{
 				.setChunkingFilter(ChunkingFilter.NONE)
 				.addEventListeners(
 						this.guildSettingsManager,
+						this.eventWaiter,
 						this.inviteManager,
 						this.lavalinkManager.getLavalink(),
 						this.commandManager,
@@ -101,6 +116,7 @@ public class KittyBot{
 						this.commandResponseManager,
 						this.prometheusManager,
 						this.inviteRolesManager,
+						//this.musicManager,
 						new OnGuildEvent(this),
 						new OnGuildMemberEvent(this),
 						new OnGuildVoiceEvent(this)
@@ -119,10 +135,6 @@ public class KittyBot{
 		this.streamAnnouncementManager.init();
 		this.lavalinkManager.connect(jda.getSelfUser().getId());
 		this.dashboardSessionManager.init(jda.getSelfUser().getIdLong());
-	}
-
-	public Config getConfig(){
-		return this.config;
 	}
 
 	public OkHttpClient getHttpClient(){
@@ -189,8 +201,16 @@ public class KittyBot{
 		return this.tagManager;
 	}
 
+	public MusicManager getMusicManager(){
+		return this.musicManager;
+	}
+
 	public StreamAnnouncementManager getStreamAnnouncementManager(){
 		return this.streamAnnouncementManager;
+	}
+
+	public EventWaiter getEventWaiter(){
+		return this.eventWaiter;
 	}
 
 }

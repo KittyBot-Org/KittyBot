@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.command.ctx;
 
+import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.managers.*;
@@ -26,15 +27,15 @@ public class CommandContext{
 	private final KittyBot main;
 	private final String command;
 	private final String fullPath;
-	private final List<String> args;
+	private final Args args;
 	private final String rawMessage;
 
-	public CommandContext(GuildMessageReceivedEvent event, KittyBot main, String fullPath, List<String> args, String rawMessage){
+	public CommandContext(GuildMessageReceivedEvent event, KittyBot main, String fullPath, Args args, String rawMessage){
 		this.event = event;
 		this.main = main;
 		this.command = args.get(0);
 		this.fullPath = fullPath;
-		this.args = args.subList(1, args.size());
+		this.args = args.subArgs();
 		this.rawMessage = rawMessage.replaceFirst(args.get(0), "").trim();
 	}
 
@@ -90,10 +91,6 @@ public class CommandContext{
 		return this.main.getRequestManager();
 	}
 
-	public Config getConfig(){
-		return this.main.getConfig();
-	}
-
 	public JDA getJDA(){
 		return this.event.getJDA();
 	}
@@ -110,7 +107,7 @@ public class CommandContext{
 		return this.fullPath;
 	}
 
-	public List<String> getArgs(){
+	public Args getArgs(){
 		return this.args;
 	}
 
@@ -121,7 +118,7 @@ public class CommandContext{
 	public String getRawMessage(int toArg){
 		var msg = this.rawMessage;
 		var i = 0;
-		for(var arg : this.args){
+		for(var arg : this.args.getList()){
 			if(i > args.size() || i > toArg - 1){
 				i++;
 				continue;
@@ -150,6 +147,10 @@ public class CommandContext{
 
 	public Message getMessage(){
 		return this.event.getMessage();
+	}
+
+	public long getMessageId(){
+		return this.event.getMessage().getIdLong();
 	}
 
 	public User getSelfUser(){
@@ -191,6 +192,10 @@ public class CommandContext{
 
 	public Guild getGuild(){
 		return this.event.getGuild();
+	}
+
+	public long getGuildId(){
+		return this.event.getGuild().getIdLong();
 	}
 
 	public List<TextChannel> getMentionedChannels(){
@@ -244,6 +249,10 @@ public class CommandContext{
 
 	public TextChannel getChannel(){
 		return this.event.getChannel();
+	}
+
+	public long getChannelId(){
+		return this.event.getChannel().getIdLong();
 	}
 
 	public Member getMember(){

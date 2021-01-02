@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row3;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -62,6 +62,11 @@ public class SelfAssignableRoleGroups extends TableImpl<SelfAssignableRoleGroups
      * The column <code>public.self_assignable_role_groups.group_name</code>.
      */
     public final TableField<SelfAssignableRoleGroupsRecord, String> GROUP_NAME = createField(DSL.name("group_name"), SQLDataType.VARCHAR(255).nullable(false), this, "");
+
+    /**
+     * The column <code>public.self_assignable_role_groups.max_roles</code>.
+     */
+    public final TableField<SelfAssignableRoleGroupsRecord, Integer> MAX_ROLES = createField(DSL.name("max_roles"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("'-1'::integer", SQLDataType.INTEGER)), this, "");
 
     private SelfAssignableRoleGroups(Name alias, Table<SelfAssignableRoleGroupsRecord> aliased) {
         this(alias, aliased, null);
@@ -152,11 +157,11 @@ public class SelfAssignableRoleGroups extends TableImpl<SelfAssignableRoleGroups
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<Long, Long, String> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row4<Long, Long, String, Integer> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 }

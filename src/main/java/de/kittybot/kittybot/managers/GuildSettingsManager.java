@@ -3,12 +3,16 @@ package de.kittybot.kittybot.managers;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
+import de.kittybot.kittybot.exceptions.CommandException;
 import de.kittybot.kittybot.jooq.tables.records.BotDisabledChannelsRecord;
 import de.kittybot.kittybot.jooq.tables.records.BotIgnoredUsersRecord;
 import de.kittybot.kittybot.jooq.tables.records.SnipeDisabledChannelsRecord;
 import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.objects.GuildSettings;
 import de.kittybot.kittybot.objects.InviteRole;
+import de.kittybot.kittybot.objects.SelfAssignableRole;
+import de.kittybot.kittybot.objects.SelfAssignableRoleGroup;
+import de.kittybot.kittybot.utils.Config;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
@@ -52,23 +56,31 @@ public class GuildSettingsManager extends ListenerAdapter{
 		    var ctxSnipeDisabledChannels = dbManager.getCtx(con).selectFrom(SNIPE_DISABLED_CHANNELS);
 		    var ctxBotDisabledChannels = dbManager.getCtx(con).selectFrom(BOT_DISABLED_CHANNELS);
 		    var ctxBotIgnoredUsers = dbManager.getCtx(con).selectFrom(BOT_IGNORED_USERS);
+		    var ctxSelfAssignableRoles = dbManager.getCtx(con).selectFrom(SELF_ASSIGNABLE_ROLES);
+		    var ctxSelfAssignableRoleGroups = dbManager.getCtx(con).selectFrom(SELF_ASSIGNABLE_ROLE_GROUPS);
 		    var ctxGuildInviteRoles = dbManager.getCtx(con).select()
 		){
 			var res = ctxSettings.where(GUILDS.GUILD_ID.eq(guildId)).fetchOne();
 			if(res != null){
 				return new GuildSettings(
 						res,
-						ctxSnipeDisabledChannels.where(SNIPE_DISABLED_CHANNELS.GUILD_ID.eq(guildId)).fetch().parallelStream().map(
+						ctxSnipeDisabledChannels.where(SNIPE_DISABLED_CHANNELS.GUILD_ID.eq(guildId)).fetch().stream().map(
 								SnipeDisabledChannelsRecord::getChannelId).collect(Collectors.toSet()
 						),
-						ctxBotDisabledChannels.where(BOT_DISABLED_CHANNELS.GUILD_ID.eq(guildId)).fetch().parallelStream().map(
+						ctxBotDisabledChannels.where(BOT_DISABLED_CHANNELS.GUILD_ID.eq(guildId)).fetch().stream().map(
 								BotDisabledChannelsRecord::getChannelId).collect(Collectors.toSet()
 						),
-						ctxBotIgnoredUsers.where(BOT_IGNORED_USERS.GUILD_ID.eq(guildId)).fetch().parallelStream().map(
+						ctxBotIgnoredUsers.where(BOT_IGNORED_USERS.GUILD_ID.eq(guildId)).fetch().stream().map(
 								BotIgnoredUsersRecord::getUserId).collect(Collectors.toSet()
 						),
+						ctxSelfAssignableRoles.where(SELF_ASSIGNABLE_ROLES.GUILD_ID.eq(guildId)).fetch().stream().map(
+								SelfAssignableRole::new).collect(Collectors.toSet()
+						),
+						ctxSelfAssignableRoleGroups.where(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID.eq(guildId)).fetch().stream().map(
+								SelfAssignableRoleGroup::new).collect(Collectors.toSet()
+						),
 						ctxGuildInviteRoles.from(GUILD_INVITES).join(GUILD_INVITE_ROLES).on(GUILD_INVITES.GUILD_INVITE_ID.eq(GUILD_INVITE_ROLES.GUILD_INVITE_ID))
-								.where(GUILD_INVITES.GUILD_ID.eq(guildId)).fetch().parallelStream()
+								.where(GUILD_INVITES.GUILD_ID.eq(guildId)).fetch().stream()
 								.map(InviteRole::new)
 								.collect(Collectors.groupingBy(InviteRole::getCode, Collectors.mapping(InviteRole::getRoleId, Collectors.toSet())))
 				);
@@ -134,7 +146,7 @@ public class GuildSettingsManager extends ListenerAdapter{
 					)
 					.values(
 							guild.getIdLong(),
-							this.main.getConfig().getString("default_prefix"),
+							Config.DEFAULT_PREFIX,
 							guild.getDefaultChannel() == null ? -1 : guild.getDefaultChannel().getIdLong(),
 							YearToSecond.valueOf(Duration.ofDays(3))
 					)
@@ -432,6 +444,103 @@ public class GuildSettingsManager extends ListenerAdapter{
 		}
 	}
 
+	public Set<SelfAssignableRole> getSelfAssignableRoles(long guildId){
+		return getSettings(guildId).getSelfAssignableRoles();
+	}
+
+	public void addSelfAssignableRoles(long guildId, Set<SelfAssignableRole> roles){
+		var settings = getSettings(guildId);
+		if(settings != null){
+			settings.addSelfAssignableRoles(roles);
+		}
+		insertSelfAssignableRoles(guildId, roles);
+	}
+
+	private void insertSelfAssignableRoles(long guildId, Set<SelfAssignableRole> roles){
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon()){
+			var ctx = dbManager.getCtx(con).insertInto(SELF_ASSIGNABLE_ROLE_GROUPS)
+					.columns(SELF_ASSIGNABLE_ROLES.GROUP_ID, SELF_ASSIGNABLE_ROLES.GUILD_ID, SELF_ASSIGNABLE_ROLES.ROLE_ID, SELF_ASSIGNABLE_ROLES.EMOTE_ID);
+			for(var role : roles){
+				ctx.values(role.getGroupId(), role.getGuildId(), role.getRoleId(), role.getEmoteId());
+			}
+			ctx.execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error inserting self-assignable roles", e);
+		}
+	}
+
+	public void removeSelfAssignableRoles(long guildId, Set<Long> roles){
+		var settings = getSettings(guildId);
+		if(settings != null){
+			settings.removeSelfAssignableRoles(roles);
+		}
+		deleteSelfAssignableRoles(guildId, roles);
+	}
+
+	private void deleteSelfAssignableRoles(long guildId, Set<Long> roles){
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon()){
+			dbManager.getCtx(con).deleteFrom(SELF_ASSIGNABLE_ROLES).where(SELF_ASSIGNABLE_ROLES.GUILD_ID.eq(guildId).and(SELF_ASSIGNABLE_ROLES.SELF_ASSIGNABLE_ROLE_ID.in(roles))).execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error deleting self-assignable roles", e);
+		}
+	}
+
+	public Set<SelfAssignableRoleGroup> getSelfAssignableRoleGroups(long guildId){
+		return getSettings(guildId).getSelfAssignableRoleGroups();
+	}
+
+	public void addSelfAssignableRoleGroups(long guildId, Set<SelfAssignableRoleGroup> groups){
+		groups = insertSelfAssignableRoleGroups(guildId, groups);
+		var settings = getSettings(guildId);
+		if(settings != null){
+			settings.addSelfAssignableRoleGroups(groups);
+		}
+	}
+
+	private Set<SelfAssignableRoleGroup> insertSelfAssignableRoleGroups(long guildId, Set<SelfAssignableRoleGroup> groups){
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon()){
+			var ctx = dbManager.getCtx(con).insertInto(SELF_ASSIGNABLE_ROLE_GROUPS)
+					.columns(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID, SELF_ASSIGNABLE_ROLE_GROUPS.GROUP_NAME, SELF_ASSIGNABLE_ROLE_GROUPS.MAX_ROLES);
+			for(var group : groups){
+				ctx.values(group.getGuildId(), group.getName(), group.getMaxRoles());
+			}
+			var res = ctx.returningResult(SELF_ASSIGNABLE_ROLE_GROUPS.SELF_ASSIGNABLE_ROLE_GROUP_ID).fetch();
+			res.forEach(group ->
+					groups.stream().filter(g ->
+							g.getId() == group.get(SELF_ASSIGNABLE_ROLE_GROUPS.SELF_ASSIGNABLE_ROLE_GROUP_ID)
+					).findFirst().ifPresent(grp -> grp.setId(group.get(SELF_ASSIGNABLE_ROLE_GROUPS.SELF_ASSIGNABLE_ROLE_GROUP_ID)))
+			);
+			return groups;
+		}
+		catch(SQLException e){
+			LOG.error("Error inserting self-assignable role groups", e);
+		}
+		return null;
+	}
+
+	public void removeSelfAssignableRoleGroups(long guildId, Set<Long> groups){
+		deleteSelfAssignableRoleGroups(guildId, groups);
+		var settings = getSettings(guildId);
+		if(settings != null){
+			settings.removeSelfAssignableRoleGroups(groups);
+		}
+	}
+
+	private void deleteSelfAssignableRoleGroups(long guildId, Set<Long> groups){
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon()){
+			dbManager.getCtx(con).deleteFrom(SELF_ASSIGNABLE_ROLE_GROUPS).where(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID.eq(guildId).and(SELF_ASSIGNABLE_ROLE_GROUPS.SELF_ASSIGNABLE_ROLE_GROUP_ID.in(groups))).execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error deleting self-assignable roles groups", e);
+		}
+	}
+
 	public Map<String, Set<Long>> getInviteRoles(long guildId){
 		return getSettings(guildId).getInviteRoles();
 	}
@@ -521,6 +630,20 @@ public class GuildSettingsManager extends ListenerAdapter{
 		}
 		catch(SQLException e){
 			LOG.error("Error deleting invite role: {}", roleId, e);
+		}
+	}
+
+	public void removeInviteRoles(long guildId, String code){
+		var settings = getSettingsIfPresent(guildId);
+		if(settings != null){
+			settings.getInviteRoles().remove(code);
+		}
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon()){
+			dbManager.getCtx(con).deleteFrom(GUILD_INVITES).where(GUILD_INVITES.CODE.eq(code)).execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error deleting invite roles for code: {}", code, e);
 		}
 	}
 

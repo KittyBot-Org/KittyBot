@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.commands.botowner;
 
+import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
@@ -28,7 +29,7 @@ public class EvalCommand extends Command{
 	}
 
 	@Override
-	public void run(List<String> args, CommandContext ctx){
+	public void run(Args args, CommandContext ctx){
 		Object out;
 		var color = Color.GREEN;
 		var status = "Success";
@@ -44,7 +45,7 @@ public class EvalCommand extends Command{
 
 		var imports = new StringBuilder();
 		defaultImports.forEach(imp -> imports.append("import ").append(imp).append(".*; "));
-		var code = String.join(" ", ctx.getArgs());
+		var code = ctx.getRawMessage();
 		long start = System.currentTimeMillis();
 		try{
 			out = scriptEngine.eval(imports + code);

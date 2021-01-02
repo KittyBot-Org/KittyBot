@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.commands.tags;
 
+import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
@@ -16,12 +17,12 @@ public class TagCreateCommand extends Command{
 	}
 
 	@Override
-	protected void run(List<String> args, CommandContext ctx) throws CommandException{
+	protected void run(Args args, CommandContext ctx) throws CommandException{
 		if(args.size() < 2){
 			ctx.sendUsage(this);
 			return;
 		}
-		ctx.getTagManager().create(args.get(0), ctx.getRawMessage(1), ctx.getGuild().getIdLong(), ctx.getUser().getIdLong());
+		ctx.getTagManager().create(args.get(0), ctx.getRawMessage(1), ctx.getGuildId(), ctx.getUser().getIdLong());
 		ctx.sendSuccess("Created tag");
 	}
 

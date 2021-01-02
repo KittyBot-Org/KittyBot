@@ -21,7 +21,7 @@ public class ReactiveMessageManager{
 	}
 
 	public void addReactiveMessage(CommandContext ctx, long responseId, long allowed){
-		reactiveMessages.put(responseId, new ReactiveMessage(ctx.getGuild().getIdLong(), ctx.getChannel().getIdLong(), ctx.getMessage().getIdLong(), responseId, ctx.getUser().getIdLong(), ctx.getFullPath(), allowed));
+		reactiveMessages.put(responseId, new ReactiveMessage(ctx.getGuildId(), ctx.getChannelId(), ctx.getMessageId(), responseId, ctx.getUser().getIdLong(), ctx.getFullPath(), allowed));
 	}
 
 	public ReactiveMessage getReactiveMessage(long responseId){

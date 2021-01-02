@@ -2,6 +2,7 @@ package de.kittybot.kittybot.managers;
 
 import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.objects.API;
+import de.kittybot.kittybot.utils.Config;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
@@ -33,24 +34,23 @@ public class BotListsManager extends ListenerAdapter{
 
 	private void updateStats(int guildCount){
 		var requestManager = this.main.getRequestManager();
-		var config = this.main.getConfig();
-		if(config.hasKey("discord_bots_token")){
-			requestManager.updateStats(API.DISCORD_BOTS, guildCount, config.getString("discord_bots_token"));
+		if(!Config.DISCORD_BOTS_TOKEN.isBlank()){
+			requestManager.updateStats(API.DISCORD_BOTS, guildCount, Config.DISCORD_BOTS_TOKEN);
 		}
-		if(config.hasKey("top_gg_token")){
-			requestManager.updateStats(API.TOP_GG, guildCount, config.getString("top_gg_token"));
+		if(!Config.TOP_GG_TOKEN.isBlank()){
+			requestManager.updateStats(API.TOP_GG, guildCount, Config.TOP_GG_TOKEN);
 		}
-		if(config.hasKey("discord_extreme_list_token")){
-			requestManager.updateStats(API.DISCORD_EXTREME_LIST, guildCount, config.getString("discord_extreme_list_token"));
+		if(!Config.DISCORD_EXTREME_LIST_TOKEN.isBlank()){
+			requestManager.updateStats(API.DISCORD_EXTREME_LIST, guildCount, Config.DISCORD_EXTREME_LIST_TOKEN);
 		}
-		if(config.hasKey("discord_boats_token")){
-			requestManager.updateStats(API.DISCORD_BOATS, guildCount, config.getString("discord_boats_token"));
+		if(!Config.DISCORD_BOATS_TOKEN.isBlank()){
+			requestManager.updateStats(API.DISCORD_BOATS, guildCount, Config.DISCORD_BOATS_TOKEN);
 		}
-		if(config.hasKey("botlist_space")){
-			requestManager.updateStats(API.BOTLIST_SPACE, guildCount, config.getString("botlist_space"));
+		if(!Config.BOTLIST_SPACE_TOKEN.isBlank()){
+			requestManager.updateStats(API.BOTLIST_SPACE, guildCount, Config.BOTLIST_SPACE_TOKEN);
 		}
-		if(config.hasKey("bots_for_discord_token")){
-			requestManager.updateStats(API.BOTS_FOR_DISCORD, guildCount, config.getString("bots_for_discord_token"));
+		if(!Config.BOTS_FOR_DISCORD_TOKEN.isBlank()){
+			requestManager.updateStats(API.BOTS_FOR_DISCORD, guildCount, Config.BOTS_FOR_DISCORD_TOKEN);
 		}
 	}
 

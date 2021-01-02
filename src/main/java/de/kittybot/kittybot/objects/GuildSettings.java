@@ -15,6 +15,8 @@ public class GuildSettings{
 	private final Set<Long> snipeDisabledChannels;
 	private final Set<Long> botDisabledChannels;
 	private final Set<Long> botIgnoredUsers;
+	private final Set<SelfAssignableRole> selfAssignableRoles;
+	private final Set<SelfAssignableRoleGroup> selfAssignableRoleGroups;
 	private final Map<String, Set<Long>> guildInviteRoles;
 	private String commandPrefix;
 	private long streamAnnouncementChannelId;
@@ -34,7 +36,7 @@ public class GuildSettings{
 	private long djRoleId;
 	private boolean snipesEnabled;
 
-	public GuildSettings(GuildsRecord record, Set<Long> snipeDisabledChannels, Set<Long> botDisabledChannels, Set<Long> botIgnoredUsers, Map<String, Set<Long>> guildInviteRoles){
+	public GuildSettings(GuildsRecord record, Set<Long> snipeDisabledChannels, Set<Long> botDisabledChannels, Set<Long> botIgnoredUsers, Set<SelfAssignableRole> selfAssignableRoles, Set<SelfAssignableRoleGroup> selfAssignableRoleGroups, Map<String, Set<Long>> guildInviteRoles){
 		this.guildId = record.getGuildId();
 		this.commandPrefix = record.getCommandPrefix();
 		this.streamAnnouncementChannelId = record.getStreamAnnouncementChannelId();
@@ -56,6 +58,8 @@ public class GuildSettings{
 		this.snipeDisabledChannels = snipeDisabledChannels == null ? new HashSet<>() : snipeDisabledChannels;
 		this.botDisabledChannels = botDisabledChannels == null ? new HashSet<>() : botDisabledChannels;
 		this.botIgnoredUsers = botIgnoredUsers == null ? new HashSet<>() : botIgnoredUsers;
+		this.selfAssignableRoles = selfAssignableRoles == null ? new HashSet<>() : selfAssignableRoles;
+		this.selfAssignableRoleGroups = selfAssignableRoleGroups == null ? new HashSet<>() : selfAssignableRoleGroups;
 		this.guildInviteRoles = guildInviteRoles == null ? new HashMap<>() : guildInviteRoles;
 	}
 
@@ -235,6 +239,10 @@ public class GuildSettings{
 		this.snipeDisabledChannels.remove(channelId);
 	}
 
+	public Set<Long> getSnipeDisabledChannels(){
+		return this.snipeDisabledChannels;
+	}
+
 	public boolean isBotDisabledInChannel(long channelId){
 		return this.botDisabledChannels.contains(channelId);
 	}
@@ -245,6 +253,10 @@ public class GuildSettings{
 			return;
 		}
 		this.botDisabledChannels.remove(channelId);
+	}
+
+	public Set<Long> getBotDisabledChannels(){
+		return this.botDisabledChannels;
 	}
 
 	public boolean isBotIgnoredUser(long userId){
@@ -259,12 +271,36 @@ public class GuildSettings{
 		this.botIgnoredUsers.removeAll(userIds);
 	}
 
-	public Map<String, Set<Long>> getInviteRoles(){
-		return this.guildInviteRoles;
+	public Set<Long> getBotIgnoredUsers(){
+		return botIgnoredUsers;
 	}
 
-	public Set<Long> getInviteRoles(String code){
-		return this.guildInviteRoles.get(code);
+	public Set<SelfAssignableRole> getSelfAssignableRoles(){
+		return this.selfAssignableRoles;
+	}
+
+	public void addSelfAssignableRoles(Set<SelfAssignableRole> roles){
+		this.selfAssignableRoles.addAll(roles);
+	}
+
+	public void removeSelfAssignableRoles(Set<Long> roles){
+		this.selfAssignableRoles.removeIf(role -> roles.contains(role.getRoleId()));
+	}
+
+	public Set<SelfAssignableRoleGroup> getSelfAssignableRoleGroups(){
+		return this.selfAssignableRoleGroups;
+	}
+
+	public void addSelfAssignableRoleGroups(Set<SelfAssignableRoleGroup> groups){
+		this.selfAssignableRoleGroups.addAll(groups);
+	}
+
+	public void removeSelfAssignableRoleGroups(Set<Long> groups){
+		this.selfAssignableRoleGroups.removeIf(group -> groups.contains(group.getId()));
+	}
+
+	public Map<String, Set<Long>> getInviteRoles(){
+		return this.guildInviteRoles;
 	}
 
 	public void setInviteRoles(String code, Set<Long> roles){
@@ -273,6 +309,10 @@ public class GuildSettings{
 			return;
 		}
 		this.guildInviteRoles.put(code, roles);
+	}
+
+	public Set<Long> getInviteRoles(String code){
+		return this.guildInviteRoles.get(code);
 	}
 
 }

@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.managers;
 
+import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
 import de.kittybot.kittybot.command.ctx.ReactionContext;
@@ -26,13 +27,11 @@ public class CommandManager extends ListenerAdapter{
 	private final KittyBot main;
 	private final Map<String, Command> commands;
 	private final Map<String, Command> allCommands;
-	private final Set<Long> ownerIds;
 
 	public CommandManager(KittyBot main){
 		this.main = main;
 		this.commands = new HashMap<>();
 		this.allCommands = new HashMap<>();
-		this.ownerIds = this.main.getConfig().getLongSet("owner_ids");
 		try(var result = new ClassGraph().acceptPackages(COMMAND_PACKAGE).scan()){
 			for(var cls : result.getAllClasses()){
 				var constructors = cls.loadClass().getDeclaredConstructors();
@@ -79,7 +78,7 @@ public class CommandManager extends ListenerAdapter{
 			return;
 		}
 
-		var args = Arrays.asList(message.split(ARGUMENT_REGEX));
+		var args = new Args(Arrays.asList(message.split(CommandManager.ARGUMENT_REGEX)));
 		for(var command : this.commands.values()){
 			if(command.check(args.get(0))){
 				command.process(new CommandContext(event, this.main, command.getPath(), args, message));
@@ -128,10 +127,6 @@ public class CommandManager extends ListenerAdapter{
 
 	public Collection<Command> getCommands(){
 		return this.commands.values();
-	}
-
-	public Set<Long> getOwnerIds(){
-		return this.ownerIds;
 	}
 
 }

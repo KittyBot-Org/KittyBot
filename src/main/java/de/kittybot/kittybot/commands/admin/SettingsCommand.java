@@ -1,15 +1,14 @@
 package de.kittybot.kittybot.commands.admin;
 
+import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
+import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.TimeUtils;
-import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-
-import java.util.List;
 
 public class SettingsCommand extends Command{
 
@@ -21,13 +20,13 @@ public class SettingsCommand extends Command{
 	}
 
 	@Override
-	public void run(List<String> args, CommandContext ctx){
-		var guildId = ctx.getGuild().getIdLong();
+	public void run(Args args, CommandContext ctx){
+		var guildId = ctx.getGuildId();
 		var settingsManager = ctx.getGuildSettingsManager();
 		if(args.isEmpty()){
-			var settings = settingsManager.getSettings(ctx.getGuild().getIdLong());
+			var settings = settingsManager.getSettings(ctx.getGuildId());
 			ctx.sendSuccess(new EmbedBuilder()
-					.setAuthor("Guild settings:", ctx.getConfig().getString("origin_url") + "/guilds/" + guildId + "/dashboard", "https://cdn.discordapp.com/emojis/787994539105320970.png")
+					.setAuthor("Guild settings:", Config.ORIGIN_URL + "/guilds/" + guildId + "/dashboard", "https://cdn.discordapp.com/emojis/787994539105320970.png")
 					.addField("Command Prefix: ", "`" + settings.getCommandPrefix() + "`", false)
 					.addField("Announcement Channel: ", settings.getAnnouncementChannel(), false)
 					.addField("DJ Role: ", settings.getDjRole(), false)
@@ -39,18 +38,18 @@ public class SettingsCommand extends Command{
 			);
 		}
 		else{
-			var joined = String.join(" ", args.subList(1, args.size()));
+			var joined = ctx.getRawMessage(1);
 			if(args.get(0).equalsIgnoreCase("prefix") && args.size() == 2){
 				settingsManager.setPrefix(guildId, args.get(1));
 				ctx.sendSuccess("Prefix set to: `" + args.get(1) + "`");
 			}
 			else if(args.get(0).equalsIgnoreCase("nsfw")){
 				if(args.size() >= 2){
-					if(Utils.isEnable(args.get(1))){
+					if(args.isEnable(1)){
 						settingsManager.setNsfwEnabled(guildId, true);
 						ctx.sendSuccess("NSFW `activated`");
 					}
-					else if(Utils.isDisable(args.get(1))){
+					else if(args.isEnable(1)){
 						settingsManager.setNsfwEnabled(guildId, false);
 						ctx.sendSuccess("NSFW `deactivated`");
 					}
@@ -59,7 +58,7 @@ public class SettingsCommand extends Command{
 					}
 				}
 				else{
-					var state = settingsManager.isNsfwEnabled(ctx.getGuild().getIdLong());
+					var state = settingsManager.isNsfwEnabled(ctx.getGuildId());
 					settingsManager.setNsfwEnabled(guildId, !state);
 					ctx.sendSuccess("NSFW set to: `" + (state ? "deactivated" : "activated") + "`");
 				}
@@ -79,14 +78,14 @@ public class SettingsCommand extends Command{
 					settingsManager.setJoinMessage(guildId, joined);
 					ctx.sendSuccess("Join message set to: " + joined);
 				}
-				else if(Utils.isHelp(args.get(1))){
+				else if(args.isHelp(1)){
 					ctx.sendUsage("options joinmessage <message>");
 				}
-				else if(Utils.isEnable(args.get(1))){
+				else if(args.isEnable(1)){
 					settingsManager.setJoinMessagesEnabled(guildId, true);
 					ctx.sendSuccess("Join messages enabled!");
 				}
-				else if(Utils.isDisable(args.get(1))){
+				else if(args.isDisable(1)){
 					settingsManager.setJoinMessagesEnabled(guildId, false);
 					ctx.sendSuccess("Join messages disabled!");
 				}
@@ -96,14 +95,14 @@ public class SettingsCommand extends Command{
 					settingsManager.setLeaveMessage(guildId, joined);
 					ctx.sendSuccess("Leave message set to: " + joined);
 				}
-				else if(Utils.isHelp(args.get(1))){
+				else if(args.isHelp(1)){
 					ctx.sendUsage("options leavemessage <message>");
 				}
-				else if(Utils.isEnable(args.get(1))){
+				else if(args.isEnable(1)){
 					settingsManager.setLeaveMessagesEnabled(guildId, true);
 					ctx.sendSuccess("Leave messages enabled!");
 				}
-				else if(Utils.isDisable(args.get(1))){
+				else if(args.isDisable(1)){
 					settingsManager.setLeaveMessagesEnabled(guildId, false);
 					ctx.sendSuccess("Leave messages disabled!");
 				}

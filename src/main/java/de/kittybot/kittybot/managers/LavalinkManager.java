@@ -9,7 +9,10 @@ import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceMan
 import com.sedmelluq.discord.lavaplayer.source.vimeo.VimeoAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import de.kittybot.kittybot.main.KittyBot;
+import de.kittybot.kittybot.utils.Config;
 import lavalink.client.io.jda.JdaLavalink;
+import lavalink.client.io.jda.JdaLink;
+import net.dv8tion.jda.api.entities.Guild;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,12 +23,10 @@ public class LavalinkManager{
 
 	private static final Logger LOG = LoggerFactory.getLogger(KittyBot.class);
 
-	private final KittyBot main;
 	private final AudioPlayerManager audioPlayerManager = new DefaultAudioPlayerManager();
 	private final JdaLavalink lavalink;
 
 	public LavalinkManager(KittyBot main){
-		this.main = main;
 		this.lavalink = new JdaLavalink(1, guildId -> main.getJDA());
 
 		audioPlayerManager.registerSourceManager(new YoutubeAudioSourceManager());
@@ -38,10 +39,9 @@ public class LavalinkManager{
 
 	public void connect(String userId){
 		this.lavalink.setUserId(userId);
-		var config = main.getConfig();
 		try{
-			for(var node : config.getArray("lavalink_nodes")){
-				lavalink.addNode(new URI("ws://" + node.getString("host") + ":" + node.getString("port")), node.getString("password"));
+			for(var node : Config.LAVALINK_NODES){
+				lavalink.addNode(new URI("ws://" + node.getHost() + ":" + node.getPort()), node.getPassword());
 			}
 		}
 		catch(URISyntaxException e){
@@ -49,6 +49,9 @@ public class LavalinkManager{
 		}
 	}
 
+	public JdaLink getLink(Guild guild){
+		return this.lavalink.getLink(guild.getId());
+	}
 
 	public JdaLavalink getLavalink(){
 		return this.lavalink;

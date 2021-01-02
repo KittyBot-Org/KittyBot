@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.events;
 
 import de.kittybot.kittybot.main.KittyBot;
+import de.kittybot.kittybot.utils.Config;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.audit.ActionType;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
@@ -78,16 +79,15 @@ public class OnGuildEvent extends ListenerAdapter{
 	}
 
 	private void sendToLogChannel(String message){
-		var config = this.main.getConfig();
-		if(config.getLong("log_guild_id") == 0 || config.getLong("log_channel_id") == 0){
+		if(Config.LOG_GUILD_ID == -1 || Config.LOG_CHANNEL_ID == -1){
 			return;
 		}
 		var jda = this.main.getJDA();
-		var guild = jda.getGuildById(config.getLong("log_guild_id"));
+		var guild = jda.getGuildById(Config.LOG_GUILD_ID);
 		if(guild == null){
 			return;
 		}
-		var channel = guild.getTextChannelById(config.getLong("log_channel_id"));
+		var channel = guild.getTextChannelById(Config.LOG_CHANNEL_ID);
 		if(channel == null || !channel.canTalk()){
 			return;
 		}

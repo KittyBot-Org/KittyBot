@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.commands.streamannouncement;
 
+import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
@@ -20,7 +21,7 @@ public class StreamAnnouncementCommand extends Command{
 	}
 
 	@Override
-	protected void run(List<String> args, CommandContext ctx){
+	protected void run(Args args, CommandContext ctx){
 		ctx.sendUsage(this.getUsage() + this.getRawUsage());
 	}
 

@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.commands.tags;
 
+import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
@@ -18,13 +19,13 @@ public class TagSearchCommand extends Command{
 	}
 
 	@Override
-	protected void run(List<String> args, CommandContext ctx) throws CommandException{
+	protected void run(Args args, CommandContext ctx) throws CommandException{
 		if(args.isEmpty()){
 			ctx.sendUsage(this);
 			return;
 		}
-		var tags = ctx.getTagManager().search(args.get(0), ctx.getGuild().getIdLong());
-		ctx.sendSuccess("Tags found:\n" + tags.parallelStream().map(Tag::getName).collect(Collectors.joining("\n")));
+		var tags = ctx.getTagManager().search(args.get(0), ctx.getGuildId());
+		ctx.sendSuccess("Tags found:\n" + tags.stream().map(Tag::getName).collect(Collectors.joining("\n")));
 	}
 
 }

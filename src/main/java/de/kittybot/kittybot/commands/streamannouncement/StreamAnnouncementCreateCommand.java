@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.commands.streamannouncement;
 
+import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
@@ -19,7 +20,7 @@ public class StreamAnnouncementCreateCommand extends Command{
 	}
 
 	@Override
-	protected void run(List<String> args, CommandContext ctx) throws CommandException{
+	protected void run(Args args, CommandContext ctx) throws CommandException{
 		if(args.size() < 2){
 			ctx.sendUsage(this);
 			return;
@@ -29,7 +30,7 @@ public class StreamAnnouncementCreateCommand extends Command{
 			ctx.sendError("'"  + args.get(0) + "' is not a valid stream type. Use twitch or youtube");
 			return;
 		}
-		ctx.getStreamAnnouncementManager().add(args.get(1), ctx.getGuild().getIdLong(), type);
+		ctx.getStreamAnnouncementManager().add(args.get(1), ctx.getGuildId(), type);
 		ctx.sendSuccess("Stream announcement added");
 	}
 

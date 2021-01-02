@@ -1,9 +1,11 @@
 package de.kittybot.kittybot.commands.notification;
 
+import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
 import de.kittybot.kittybot.objects.Notification;
+import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.TimeUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -19,12 +21,12 @@ public class NotificationListCommand extends Command{
 	}
 
 	@Override
-	public void run(List<String> args, CommandContext ctx){
+	public void run(Args args, CommandContext ctx){
 		Set<Notification> notifs;
 		if(args.isEmpty()){
 			notifs = ctx.getNotificationManager().get(ctx.getUser().getIdLong());
 		}
-		else if(ctx.getCommandManager().getOwnerIds().contains(ctx.getUser().getIdLong())){
+		else if(Config.OWNER_IDS.contains(ctx.getUser().getIdLong())){
 			notifs = ctx.getNotificationManager().get(Long.parseLong(args.get(0)));
 		}
 		else{
@@ -39,7 +41,7 @@ public class NotificationListCommand extends Command{
 		for(var notif : notifs){
 			message.append("**").append(notif.getId()).append("**").append(" scheduled for `").append(TimeUtils.format(notif.getNotificationTime())).append("`").append("\n");
 		}
-		ctx.sendSuccess(new EmbedBuilder().setAuthor("Your Notifications", ctx.getConfig().getString("origin_url"), ctx.getSelfUser().getEffectiveAvatarUrl()).setDescription(message.toString()));
+		ctx.sendSuccess(new EmbedBuilder().setAuthor("Your Notifications", Config.ORIGIN_URL, ctx.getSelfUser().getEffectiveAvatarUrl()).setDescription(message.toString()));
 	}
 
 }

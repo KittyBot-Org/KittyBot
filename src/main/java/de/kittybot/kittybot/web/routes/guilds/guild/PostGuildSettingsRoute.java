@@ -1,4 +1,4 @@
-package de.kittybot.kittybot.web.routes.guilds;
+package de.kittybot.kittybot.web.routes.guilds.guild;
 
 import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.web.WebService;
@@ -7,11 +7,11 @@ import io.javalin.http.Handler;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.jetbrains.annotations.NotNull;
 
-public class SetGuildSettingsRoute implements Handler{
+public class PostGuildSettingsRoute implements Handler{
 
 	private final KittyBot main;
 
-	public SetGuildSettingsRoute(KittyBot main){
+	public PostGuildSettingsRoute(KittyBot main){
 		this.main = main;
 	}
 
@@ -44,7 +44,7 @@ public class SetGuildSettingsRoute implements Handler{
 		if(json.hasKey("self_assignable_roles")){
 
 		}
-		WebService.ok(ctx);
+		WebService.accepted(ctx);
 	}
 
 }

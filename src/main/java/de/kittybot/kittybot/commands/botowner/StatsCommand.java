@@ -1,8 +1,10 @@
 package de.kittybot.kittybot.commands.botowner;
 
+import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
+import de.kittybot.kittybot.utils.Config;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.List;
@@ -16,11 +18,11 @@ public class StatsCommand extends Command{
 	}
 
 	@Override
-	public void run(List<String> args, CommandContext ctx){
+	public void run(Args args, CommandContext ctx){
 		var jda = ctx.getJDA();
 
 		ctx.sendSuccess(new EmbedBuilder()
-				.setAuthor("KittyBot Internal Cache Stats", ctx.getConfig().getString("origin_url"), jda.getSelfUser().getEffectiveAvatarUrl())
+				.setAuthor("KittyBot Internal Cache Stats", Config.ORIGIN_URL, jda.getSelfUser().getEffectiveAvatarUrl())
 
 				.addField("Command Response Cache:", ctx.getCommandResponseManager().getStats().toString(), false)
 				.addField("Guild Settings Cache:", ctx.getGuildSettingsManager().getStats().toString(), false)

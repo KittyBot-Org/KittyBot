@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.commands.utility;
 
+import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.ctx.CommandContext;
@@ -22,9 +23,9 @@ public class GuildBannerCommand extends Command{
 	}
 
 	@Override
-	public void run(List<String> args, CommandContext ctx){
+	public void run(Args args, CommandContext ctx){
 		var guilds = new ArrayList<Guild>();
-		for(var arg : args){
+		for(var arg : args.getList()){
 			if(!Utils.isSnowflake(arg)){
 				continue;
 			}
