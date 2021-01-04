@@ -50,7 +50,7 @@ public class PrometheusManager extends ListenerAdapter{
 	}
 
 	public void initLavalinkCollector(){
-		new LavalinkCollector(main.getLavalinkManager().getLavalink());
+		new LavalinkCollector(main.getLavalinkManager().getLavalink()).register();
 
 	}
 
