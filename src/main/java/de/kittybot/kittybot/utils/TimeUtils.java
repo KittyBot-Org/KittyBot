@@ -60,6 +60,15 @@ public class TimeUtils{
 		return String.format("%sd %s:%s:%s", duration.toDays(), fTime(duration.toHoursPart()), fTime(duration.toMinutesPart()), fTime(duration.toSecondsPart()));
 	}
 
+	public static String formatDuration(long length){
+		var duration = Duration.ofMillis(length);
+		var hours = duration.toHours();
+		if(hours > 0){
+			return String.format("%s:%s:%s", fTime((int) hours), fTime(duration.toMinutesPart()), fTime(duration.toSecondsPart()));
+		}
+		return String.format("%s:%s", fTime((int) duration.toMinutes()), fTime(duration.toSecondsPart()));
+	}
+
 	public static String fTime(int time){
 		return time > 9 ? String.valueOf(time) : "0" + time;
 	}

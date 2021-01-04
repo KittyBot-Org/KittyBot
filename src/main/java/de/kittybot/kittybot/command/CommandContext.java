@@ -1,24 +1,25 @@
-package de.kittybot.kittybot.command.ctx;
+package de.kittybot.kittybot.command;
 
-import de.kittybot.kittybot.command.Args;
-import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.managers.*;
-import de.kittybot.kittybot.utils.Config;
+import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import org.apache.commons.collections4.Bag;
 
 import java.awt.*;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class CommandContext{
@@ -91,6 +92,10 @@ public class CommandContext{
 		return this.main.getRequestManager();
 	}
 
+	public MusicManager getMusicManager(){
+		return this.main.getMusicManager();
+	}
+
 	public JDA getJDA(){
 		return this.event.getJDA();
 	}
@@ -157,10 +162,45 @@ public class CommandContext{
 		return this.event.getJDA().getSelfUser();
 	}
 
-	private boolean isMentionCommand(){
+	public boolean isMentionCommand(){
 		var content = this.getMessage().getContentRaw();
 		var botId = this.getSelfUser().getId();
 		return content.startsWith("<@" + botId + ">") || content.startsWith("<@!" + botId + ">");
+	}
+
+	public void collectMentionedUsers(Consumer<Set<User>> success, Consumer<Throwable> error){
+		var mentionedUsers = new HashSet<>(getMentionedUsers());
+		var actions = this.getArgs().stream()
+				.filter(Utils::isSnowflake)
+				.map(s -> this.event.getJDA().retrieveUserById(s))
+				.collect(Collectors.toList());
+		if(!actions.isEmpty()){
+			RestAction.allOf(
+					actions
+			).queue(users -> {
+				mentionedUsers.addAll(users);
+				success.accept(mentionedUsers);
+			}, error);
+			return;
+		}
+		success.accept(mentionedUsers);
+	}
+
+	public void collectMentionedMembers(Consumer<Set<Member>> success, Consumer<Throwable> error){
+		var mentionedMembers = new HashSet<>(getMentionedMembers());
+		var actions = this.getArgs().stream()
+				.filter(Utils::isSnowflake)
+				.map(s -> this.event.getGuild().retrieveMemberById(s))
+				.collect(Collectors.toList());
+		if(!actions.isEmpty()){
+			RestAction.allOf(
+					actions
+			).queue(members -> {
+				mentionedMembers.addAll(members);
+				success.accept(mentionedMembers);
+			}, error);
+		}
+		success.accept(mentionedMembers);
 	}
 
 	public Bag<User> getMentionedUsersBag(){

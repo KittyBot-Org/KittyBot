@@ -1,7 +1,5 @@
 package de.kittybot.kittybot.command;
 
-import de.kittybot.kittybot.command.ctx.CommandContext;
-import de.kittybot.kittybot.command.ctx.ReactionContext;
 import de.kittybot.kittybot.exceptions.CommandException;
 import de.kittybot.kittybot.objects.Emoji;
 import de.kittybot.kittybot.utils.Config;

@@ -1,4 +1,4 @@
-package de.kittybot.kittybot.command.ctx;
+package de.kittybot.kittybot.command;
 
 import de.kittybot.kittybot.command.ReactiveMessage;
 import de.kittybot.kittybot.managers.CommandManager;

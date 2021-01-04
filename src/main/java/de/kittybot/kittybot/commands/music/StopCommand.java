@@ -6,12 +6,11 @@ import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
 import de.kittybot.kittybot.utils.MusicUtils;
 
-public class PlayCommand extends Command{
+public class StopCommand extends Command{
 
-	public PlayCommand(){
-		super("play", "Used to play music", Category.MUSIC);
-		addAliases("p");
-		setUsage("<link/search term>");
+	public StopCommand(){
+		super("stop", "Used to stop music", Category.MUSIC);
+		addAliases("stfu");
 	}
 
 	@Override
@@ -19,7 +18,8 @@ public class PlayCommand extends Command{
 		if(!MusicUtils.checkVoiceRequirements(ctx)){
 			return;
 		}
-		ctx.getMusicManager().create(ctx).loadItem(ctx);
+		ctx.getMusicManager().destroy(ctx.getGuildId());
+		ctx.sendSuccess("Toggled pause");
 	}
 
 }

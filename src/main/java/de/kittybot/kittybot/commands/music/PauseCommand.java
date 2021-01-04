@@ -4,14 +4,15 @@ import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.utils.Colors;
+import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.MusicUtils;
+import net.dv8tion.jda.api.EmbedBuilder;
 
-public class PlayCommand extends Command{
+public class PauseCommand extends Command{
 
-	public PlayCommand(){
-		super("play", "Used to play music", Category.MUSIC);
-		addAliases("p");
-		setUsage("<link/search term>");
+	public PauseCommand(){
+		super("pause", "Used to pause music", Category.MUSIC);;
 	}
 
 	@Override
@@ -19,7 +20,8 @@ public class PlayCommand extends Command{
 		if(!MusicUtils.checkVoiceRequirements(ctx)){
 			return;
 		}
-		ctx.getMusicManager().create(ctx).loadItem(ctx);
+		ctx.getMusicManager().get(ctx.getGuildId()).pause();
+		ctx.sendSuccess("Toggled pause");
 	}
 
 }

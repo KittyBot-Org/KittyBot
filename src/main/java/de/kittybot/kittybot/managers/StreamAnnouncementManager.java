@@ -7,6 +7,7 @@ import de.kittybot.kittybot.objects.StreamAnnouncement;
 import de.kittybot.kittybot.streams.Stream;
 import de.kittybot.kittybot.streams.StreamType;
 import de.kittybot.kittybot.streams.twitch.TwitchWrapper;
+import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -118,7 +119,7 @@ public class StreamAnnouncementManager{
 		}
 		channel.sendMessage(settings.getStreamAnnouncementMessage()).embed(embed
 				.setTimestamp(Instant.now())
-				.setColor(new Color(89, 54, 149))
+				.setColor(Colors.TWITCH_PURPLE)
 				.build()
 		).queue();
 	}

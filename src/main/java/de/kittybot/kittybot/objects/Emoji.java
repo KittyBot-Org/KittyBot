@@ -27,6 +27,7 @@ public enum Emoji{
 	ARROW_LEFT("\u2B05\uFE0F"),
 	ARROW_RIGHT("\u27A1\uFE0F"),
 	BACK("\u25C0"),
+	PLAY_PAUSE(""),
 	FORWARD("\u25B6"),
 	WASTEBASKET("\uD83D\uDDD1\uFE0F"),
 	SHUFFLE("\uD83D\uDD00"),

@@ -2,7 +2,6 @@ package de.kittybot.kittybot.managers;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.utils.Config;
 import org.apache.commons.io.IOUtils;
 import org.jooq.DSLContext;

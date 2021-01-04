@@ -3,14 +3,13 @@ package de.kittybot.kittybot.commands.utility;
 import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.command.ctx.CommandContext;
+import de.kittybot.kittybot.command.CommandContext;
 import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.util.HashSet;
-import java.util.List;
 
 public class GuildIconCommand extends Command{
 

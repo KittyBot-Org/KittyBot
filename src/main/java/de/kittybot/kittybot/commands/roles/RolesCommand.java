@@ -3,7 +3,7 @@ package de.kittybot.kittybot.commands.roles;
 import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.command.ctx.CommandContext;
+import de.kittybot.kittybot.command.CommandContext;
 import de.kittybot.kittybot.exceptions.CommandException;
 import de.kittybot.kittybot.objects.Emoji;
 import de.kittybot.kittybot.objects.SelfAssignableRole;

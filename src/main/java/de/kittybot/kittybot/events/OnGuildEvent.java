@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.events;
 
 import de.kittybot.kittybot.main.KittyBot;
+import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.Config;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.audit.ActionType;
@@ -49,7 +50,7 @@ public class OnGuildEvent extends ListenerAdapter{
 							+ "To change my prefix use ``.options prefix <your wished prefix>``.\n" + "In case you forgot any command just type ``.cmds`` to get a full list of all my commands!\n"
 							+ "You can also setup all this stuff via the webinterface at https://kittybot.de\n\n"
 							+ "To report bugs/suggest features either join my [Support Server](https://discord.gg/sD3ABd5), add me on Discord ``toπ#3141`` or message me on [Twitter](https://twitter.com/TopiSenpai)")
-					.setColor(new Color(76, 80, 193))
+					.setColor(Colors.KITTYBOT_BLUE)
 					.setThumbnail(event.getJDA().getSelfUser().getEffectiveAvatarUrl())
 					.setFooter(guild.getName(), guild.getIconUrl())
 					.setTimestamp(Instant.now())
@@ -91,7 +92,7 @@ public class OnGuildEvent extends ListenerAdapter{
 		if(channel == null || !channel.canTalk()){
 			return;
 		}
-		channel.sendMessage(new EmbedBuilder().setColor(new Color(76, 80, 193)).setDescription(message).build()).queue();
+		channel.sendMessage(new EmbedBuilder().setColor(Colors.KITTYBOT_BLUE).setDescription(message).build()).queue();
 	}
 
 }

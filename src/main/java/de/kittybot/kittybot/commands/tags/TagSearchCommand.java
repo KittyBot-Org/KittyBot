@@ -3,11 +3,10 @@ package de.kittybot.kittybot.commands.tags;
 import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.command.ctx.CommandContext;
+import de.kittybot.kittybot.command.CommandContext;
 import de.kittybot.kittybot.exceptions.CommandException;
 import de.kittybot.kittybot.objects.Tag;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class TagSearchCommand extends Command{

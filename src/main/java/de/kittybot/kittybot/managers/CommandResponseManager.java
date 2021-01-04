@@ -37,6 +37,9 @@ public class CommandResponseManager extends ListenerAdapter{
 	}
 
 	public void add(long commandId, long responseId){
+		if(commandId == -1 || responseId == -1){
+			return;
+		}
 		this.commandResponses.put(commandId, responseId);
 	}
 

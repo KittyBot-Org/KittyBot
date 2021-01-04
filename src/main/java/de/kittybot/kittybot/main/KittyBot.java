@@ -100,7 +100,8 @@ public class KittyBot{
 				.disableCache(
 						CacheFlag.MEMBER_OVERRIDES,
 						CacheFlag.ACTIVITY,
-						CacheFlag.CLIENT_STATUS
+						CacheFlag.CLIENT_STATUS,
+						CacheFlag.ROLE_TAGS
 				)
 				.setMemberCachePolicy(MemberCachePolicy.VOICE)
 				.setChunkingFilter(ChunkingFilter.NONE)
@@ -116,7 +117,7 @@ public class KittyBot{
 						this.commandResponseManager,
 						this.prometheusManager,
 						this.inviteRolesManager,
-						//this.musicManager,
+						this.musicManager,
 						new OnGuildEvent(this),
 						new OnGuildMemberEvent(this),
 						new OnGuildVoiceEvent(this)
@@ -135,6 +136,7 @@ public class KittyBot{
 		this.streamAnnouncementManager.init();
 		this.lavalinkManager.connect(jda.getSelfUser().getId());
 		this.dashboardSessionManager.init(jda.getSelfUser().getIdLong());
+		this.prometheusManager.initLavalinkCollector();
 	}
 
 	public OkHttpClient getHttpClient(){

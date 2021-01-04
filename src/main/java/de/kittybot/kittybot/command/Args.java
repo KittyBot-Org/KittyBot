@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.command;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class Args{
 
@@ -48,6 +49,10 @@ public class Args{
 
 	public List<String> subList(int from, int to){
 		return this.args.subList(from, to);
+	}
+
+	public Stream<String> stream(){
+		return this.args.stream();
 	}
 
 }

@@ -3,11 +3,12 @@ package de.kittybot.kittybot.commands.utility;
 import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.command.ctx.CommandContext;
+import de.kittybot.kittybot.command.CommandContext;
 import de.kittybot.kittybot.utils.MessageUtils;
-import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.exceptions.ErrorResponseException;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class AvatarCommand extends Command{
 
@@ -21,34 +22,21 @@ public class AvatarCommand extends Command{
 
 	@Override
 	public void run(Args args, CommandContext ctx){
-		var users = ctx.getMentionedUsers();
-		for(var arg : args.getList()){
-			if(!Utils.isSnowflake(arg)){
-				continue;
-			}
-			try{
-				var user = ctx.getJDA().retrieveUserById(arg).complete();
-				if(!users.contains(user)){
-					users.add(user);
-				}
-			}
-			catch(ErrorResponseException ignored){
-			}
-		}
-		if(users.isEmpty()){
-			users.add(ctx.getUser());
-		}
-		var stringBuilder = new StringBuilder();
-		var imageUrl = "";
-		for(var user : users){
-			imageUrl = user.getEffectiveAvatarUrl();
-			stringBuilder.append(user.getAsTag()).append(": ");
-			for(var size : SIZES){
-				stringBuilder.append(MessageUtils.maskLink(size + "px", user.getEffectiveAvatarUrl() + "?size=" + size)).append(" ");
-			}
-			stringBuilder.append("\n\n");
-		}
-		ctx.sendSuccess(new EmbedBuilder().setTitle(MessageUtils.pluralize("User Avatar", users)).setImage(imageUrl).setDescription(stringBuilder.toString()));
+		ctx.collectMentionedUsers(users -> {
+					if(users.isEmpty()){
+						ctx.sendError("No users found");
+						return;
+					}
+					ctx.sendSuccess(new EmbedBuilder()
+							.setTitle(MessageUtils.pluralize("User Avatar", users))
+							.setDescription(users.stream().map(
+									user -> "**" + user.getAsTag() + "**: " + Arrays.stream(SIZES).map(size -> MessageUtils.maskLink(size + "px", user.getEffectiveAvatarUrl() + "?size=" + size)).collect(Collectors.joining(" "))
+									).collect(Collectors.joining("\n\n"))
+							)
+					);
+				},
+				error -> ctx.sendError("Error while retrieving users:\n" + error.getMessage())
+		);
 	}
 
 }

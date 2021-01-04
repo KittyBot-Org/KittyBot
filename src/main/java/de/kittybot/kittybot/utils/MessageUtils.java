@@ -16,6 +16,10 @@ public class MessageUtils{
 
 	private MessageUtils(){}
 
+	public static String trimIfTooLong(String message){
+		return message.length() > 2048 ? message.substring(0, 2045) + "...": message;
+	}
+
 	public static String getBoolEmote(boolean bool){
 		return bool ? Emoji.CHECK.getAsMention() : Emoji.X.getAsMention();
 	}

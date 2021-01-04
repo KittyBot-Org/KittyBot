@@ -1,0 +1,10 @@
+package de.kittybot.kittybot.utils;
+
+import java.awt.Color;
+
+public class Colors{
+
+	public static final Color KITTYBOT_BLUE = new Color(76, 80, 193);
+	public static final Color TWITCH_PURPLE = new Color(89, 54, 149);
+
+}

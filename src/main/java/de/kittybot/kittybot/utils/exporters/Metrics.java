@@ -12,11 +12,6 @@ public class Metrics{
 			.labelNames("type")
 			.register();
 
-	public static final Gauge MUSIC_PLAYER = Gauge.build()
-			.name("kittybot_active_music_players")
-			.help("Active Music Player Count")
-			.register();
-
 	public static final Histogram COMMAND_LATENCY = Histogram.build()
 			.name("kittybot_command_latency")
 			.help("Time it takes for a command to process.")

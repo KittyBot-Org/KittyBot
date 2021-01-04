@@ -10,6 +10,7 @@ import io.prometheus.client.exporter.HTTPServer;
 import io.prometheus.client.hotspot.BufferPoolsExports;
 import io.prometheus.client.hotspot.MemoryPoolsExports;
 import io.prometheus.client.hotspot.StandardExports;
+import lavalink.client.io.metrics.LavalinkCollector;
 import net.dv8tion.jda.api.events.DisconnectEvent;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.ResumedEvent;
@@ -46,6 +47,11 @@ public class PrometheusManager extends ListenerAdapter{
 		catch(IOException e){
 			LOG.error("Error while initializing prometheus endpoint", e);
 		}
+	}
+
+	public void initLavalinkCollector(){
+		new LavalinkCollector(main.getLavalinkManager().getLavalink());
+
 	}
 
 	@Override

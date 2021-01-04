@@ -3,11 +3,8 @@ package de.kittybot.kittybot.commands.admin;
 import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.command.ctx.CommandContext;
-import de.kittybot.kittybot.utils.Utils;
+import de.kittybot.kittybot.command.CommandContext;
 import net.dv8tion.jda.api.Permission;
-
-import java.util.List;
 
 public class LeaveMessagesCommand extends Command{
 

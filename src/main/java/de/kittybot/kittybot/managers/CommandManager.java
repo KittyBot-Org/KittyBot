@@ -2,8 +2,8 @@ package de.kittybot.kittybot.managers;
 
 import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.command.ctx.CommandContext;
-import de.kittybot.kittybot.command.ctx.ReactionContext;
+import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.command.ReactionContext;
 import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.utils.exporters.Metrics;
 import io.github.classgraph.ClassGraph;
