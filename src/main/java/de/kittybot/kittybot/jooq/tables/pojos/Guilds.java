@@ -18,7 +18,6 @@ public class Guilds implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Long         guildId;
-    private final String       commandPrefix;
     private final Long         announcementChannelId;
     private final String       joinMessage;
     private final Boolean      joinMessagesEnabled;
@@ -39,7 +38,6 @@ public class Guilds implements Serializable {
 
     public Guilds(Guilds value) {
         this.guildId = value.guildId;
-        this.commandPrefix = value.commandPrefix;
         this.announcementChannelId = value.announcementChannelId;
         this.joinMessage = value.joinMessage;
         this.joinMessagesEnabled = value.joinMessagesEnabled;
@@ -61,7 +59,6 @@ public class Guilds implements Serializable {
 
     public Guilds(
         Long         guildId,
-        String       commandPrefix,
         Long         announcementChannelId,
         String       joinMessage,
         Boolean      joinMessagesEnabled,
@@ -81,7 +78,6 @@ public class Guilds implements Serializable {
         Boolean      snipesEnabled
     ) {
         this.guildId = guildId;
-        this.commandPrefix = commandPrefix;
         this.announcementChannelId = announcementChannelId;
         this.joinMessage = joinMessage;
         this.joinMessagesEnabled = joinMessagesEnabled;
@@ -106,13 +102,6 @@ public class Guilds implements Serializable {
      */
     public Long getGuildId() {
         return this.guildId;
-    }
-
-    /**
-     * Getter for <code>public.guilds.command_prefix</code>.
-     */
-    public String getCommandPrefix() {
-        return this.commandPrefix;
     }
 
     /**
@@ -239,7 +228,6 @@ public class Guilds implements Serializable {
         StringBuilder sb = new StringBuilder("Guilds (");
 
         sb.append(guildId);
-        sb.append(", ").append(commandPrefix);
         sb.append(", ").append(announcementChannelId);
         sb.append(", ").append(joinMessage);
         sb.append(", ").append(joinMessagesEnabled);

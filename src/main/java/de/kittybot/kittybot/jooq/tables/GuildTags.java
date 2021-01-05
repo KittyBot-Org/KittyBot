@@ -57,7 +57,7 @@ public class GuildTags extends TableImpl<GuildTagsRecord> {
     /**
      * The column <code>public.guild_tags.name</code>.
      */
-    public final TableField<GuildTagsRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(64), this, "");
+    public final TableField<GuildTagsRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(64).nullable(false), this, "");
 
     /**
      * The column <code>public.guild_tags.guild_id</code>.
@@ -129,7 +129,7 @@ public class GuildTags extends TableImpl<GuildTagsRecord> {
 
     @Override
     public List<UniqueKey<GuildTagsRecord>> getKeys() {
-        return Arrays.<UniqueKey<GuildTagsRecord>>asList(Keys.GUILD_TAGS_PKEY, Keys.GUILD_TAGS_NAME_GUILD_ID_KEY);
+        return Arrays.<UniqueKey<GuildTagsRecord>>asList(Keys.GUILD_TAGS_PKEY, Keys.GUILD_TAGS_NAME_KEY, Keys.GUILD_TAGS_GUILD_ID_KEY);
     }
 
     @Override

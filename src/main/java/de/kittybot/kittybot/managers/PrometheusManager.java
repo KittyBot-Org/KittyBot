@@ -29,9 +29,9 @@ import java.time.Duration;
 
 public class PrometheusManager extends ListenerAdapter{
 
-	public static final Duration UPDATE_PERIOD = Duration.ofSeconds(5);
 	// ty Natan 👀 https://github.com/Mantaro/MantaroBot/blob/master/src/main/java/net/kodehawa/mantarobot/utils/Prometheus.java
 	private static final Logger LOG = LoggerFactory.getLogger(PrometheusManager.class);
+	public static final Duration UPDATE_PERIOD = Duration.ofSeconds(5);
 	private final KittyBot main;
 
 	public PrometheusManager(KittyBot main){
@@ -41,17 +41,13 @@ public class PrometheusManager extends ListenerAdapter{
 		new BufferPoolsExports().register();
 		new DiscordLatencyExporter().register();
 		new MemoryUsageExporter(main).register();
+		new LavalinkCollector(main.getLavalinkManager().getLavalink()).register();
 		try{
 			new HTTPServer(Config.PROMETHEUS_PORT);
 		}
 		catch(IOException e){
 			LOG.error("Error while initializing prometheus endpoint", e);
 		}
-	}
-
-	public void initLavalinkCollector(){
-		new LavalinkCollector(main.getLavalinkManager().getLavalink()).register();
-
 	}
 
 	@Override

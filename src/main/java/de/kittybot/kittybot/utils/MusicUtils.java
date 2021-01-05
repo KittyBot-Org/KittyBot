@@ -2,6 +2,7 @@ package de.kittybot.kittybot.utils;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.kittybot.kittybot.command.CommandContext;
+import net.dv8tion.jda.api.Permission;
 
 import java.util.Collection;
 
@@ -30,7 +31,11 @@ public class MusicUtils{
 	}
 
 	public static boolean checkVoiceRequirements(CommandContext ctx){
-		var voiceState = ctx.getMember().getVoiceState();
+		var member = ctx.getMember();
+		if(member.hasPermission(Permission.ADMINISTRATOR) || ctx.getGuildSettingsManager().hasDJRole(member)){
+			return true;
+		}
+		var voiceState = member.getVoiceState();
 		if(voiceState == null || voiceState.getChannel() == null){
 			ctx.sendError("Please connect to a voice channel to use music commands");
 			return false;

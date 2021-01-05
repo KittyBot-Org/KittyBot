@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Base64;
 
 public class LavalinkManager{
 
@@ -17,11 +18,7 @@ public class LavalinkManager{
 	private final JdaLavalink lavalink;
 
 	public LavalinkManager(KittyBot main){
-		this.lavalink = new JdaLavalink(1, guildId -> main.getJDA());
-	}
-
-	public void connect(String userId){
-		this.lavalink.setUserId(userId);
+		this.lavalink = new JdaLavalink(String.valueOf(Config.BOT_ID), 1, guildId -> main.getJDA());
 		try{
 			for(var node : Config.LAVALINK_NODES){
 				lavalink.addNode(new URI("ws://" + node.getHost() + ":" + node.getPort()), node.getPassword());

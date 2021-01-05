@@ -12,7 +12,7 @@ public class HelpCommand extends Command{
 
 	public HelpCommand(){
 		super("help", "Shows all commands", Category.INFORMATION);
-		addAliases("?", "hilfe", "cmds");
+		addAliases("?", "hilfe", "cmds", "commands");
 	}
 
 	@Override

@@ -33,7 +33,7 @@ public class GroupsCommand extends Command{
 				return;
 			}
 			if(groups.isEmpty()){
-				ctx.sendAnswer("There are not groups defined.\nYou can add them with " + settings.getCommandPrefix() + "`roles groups add <group name> <only one role>`");
+				ctx.sendAnswer("There are not groups defined.\nYou can add them with " + settings.getPrefix() + "`roles groups add <group name> <only one role>`");
 				return;
 			}
 			var table = new TableBuilder<SelfAssignableRoleGroup>()

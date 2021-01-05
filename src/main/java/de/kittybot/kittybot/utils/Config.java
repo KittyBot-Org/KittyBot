@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.utils.data.DataObject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,6 +15,7 @@ public class Config{
 
 	public static String DEFAULT_PREFIX;
 	public static String BOT_TOKEN;
+	public static long BOT_ID;
 	public static String BOT_SECRET;
 	public static Set<Long> OWNER_IDS;
 
@@ -24,8 +26,7 @@ public class Config{
 	public static String ORIGIN_URL;
 	public static String REDIRECT_URL;
 
-	public static long LOG_GUILD_ID;
-	public static long LOG_CHANNEL_ID;
+	public static String LOG_WEBHOOK_URL;
 
 	public static String SUPPORT_GUILD_INVITE_URL;
 	public static String BOT_INVITE_URL;
@@ -63,6 +64,12 @@ public class Config{
 		DEFAULT_PREFIX = json.getString("default_prefix", ".");
 
 		BOT_TOKEN = json.getString("bot_token", "");
+		if(BOT_TOKEN.isBlank()){
+			BOT_ID = -1;
+		}
+		else{
+			BOT_ID = getIdFromToken();
+		}
 		BOT_SECRET = json.getString("bot_secret", "");
 
 		var ownerIds = json.optArray("owner_ids");
@@ -81,8 +88,7 @@ public class Config{
 		ORIGIN_URL = json.getString("origin_url", "");
 		HASTEBIN_URL = json.getString("hastebin_url", "");
 
-		LOG_GUILD_ID = json.getLong("support_guild_id", -1);
-		LOG_CHANNEL_ID = json.getLong("log_channel_id", -1);
+		LOG_WEBHOOK_URL = json.getString("log_webhook_url", "");
 
 		SUPPORT_GUILD_INVITE_URL = json.getString("support_guild_invite_url", "");
 		BOT_INVITE_URL = json.getString("bot_invite_url", "");
@@ -115,7 +121,7 @@ public class Config{
 		}
 	}
 
-	public static void checkMandatoryValues(DataObject config, String... keys) throws MissingConfigValuesException{
+	private static void checkMandatoryValues(DataObject config, String... keys) throws MissingConfigValuesException{
 		var missingKeys = new HashSet<String>();
 		for(var key : keys){
 			if(!config.hasKey(key)){
@@ -125,6 +131,16 @@ public class Config{
 		if(!missingKeys.isEmpty()){
 			throw new MissingConfigValuesException(missingKeys);
 		}
+	}
+
+	private static long getIdFromToken() {
+		return Long.parseLong(
+			new String(
+				Base64.getDecoder().decode(
+					BOT_TOKEN.split("\\.")[0]
+				)
+			)
+		);
 	}
 
 

@@ -12,6 +12,9 @@ import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +31,7 @@ import java.util.stream.Collectors;
 
 import static de.kittybot.kittybot.jooq.Tables.STREAM_USERS;
 
-public class StreamAnnouncementManager{
+public class StreamAnnouncementManager extends ListenerAdapter{
 
 	private static final Logger LOG = LoggerFactory.getLogger(StreamAnnouncementManager.class);
 
@@ -49,7 +52,8 @@ public class StreamAnnouncementManager{
 		this.activeStreams = new HashSet<>();
 	}
 
-	public void init(){
+	@Override
+	public void onReady(@NotNull ReadyEvent event){
 		this.main.getScheduler().scheduleAtFixedRate(this::checkStreams, 0, 1, TimeUnit.MINUTES);
 	}
 

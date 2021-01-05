@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class GuildSettings{
+public class Settings{
 
 	private final long guildId;
 	private final Set<Long> snipeDisabledChannels;
@@ -18,7 +18,7 @@ public class GuildSettings{
 	private final Set<SelfAssignableRole> selfAssignableRoles;
 	private final Set<SelfAssignableRoleGroup> selfAssignableRoleGroups;
 	private final Map<String, Set<Long>> guildInviteRoles;
-	private String commandPrefix;
+	private final Set<String> prefixes;
 	private long streamAnnouncementChannelId;
 	private String streamAnnouncementMessage;
 	private long announcementChannelId;
@@ -36,9 +36,8 @@ public class GuildSettings{
 	private long djRoleId;
 	private boolean snipesEnabled;
 
-	public GuildSettings(GuildsRecord record, Set<Long> snipeDisabledChannels, Set<Long> botDisabledChannels, Set<Long> botIgnoredUsers, Set<SelfAssignableRole> selfAssignableRoles, Set<SelfAssignableRoleGroup> selfAssignableRoleGroups, Map<String, Set<Long>> guildInviteRoles){
+	public Settings(GuildsRecord record, Set<String> prefixes, Set<Long> snipeDisabledChannels, Set<Long> botDisabledChannels, Set<Long> botIgnoredUsers, Set<SelfAssignableRole> selfAssignableRoles, Set<SelfAssignableRoleGroup> selfAssignableRoleGroups, Map<String, Set<Long>> guildInviteRoles){
 		this.guildId = record.getGuildId();
-		this.commandPrefix = record.getCommandPrefix();
 		this.streamAnnouncementChannelId = record.getStreamAnnouncementChannelId();
 		this.streamAnnouncementMessage = record.getStreamAnnouncementMessage();
 		this.announcementChannelId = record.getAnnouncementChannelId();
@@ -55,6 +54,7 @@ public class GuildSettings{
 		this.inactiveDuration = record.getInactiveDuration().toDuration();
 		this.djRoleId = record.getDjRoleId();
 		this.snipesEnabled = record.getSnipesEnabled();
+		this.prefixes = prefixes == null ? new HashSet<>() : prefixes;
 		this.snipeDisabledChannels = snipeDisabledChannels == null ? new HashSet<>() : snipeDisabledChannels;
 		this.botDisabledChannels = botDisabledChannels == null ? new HashSet<>() : botDisabledChannels;
 		this.botIgnoredUsers = botIgnoredUsers == null ? new HashSet<>() : botIgnoredUsers;
@@ -67,12 +67,20 @@ public class GuildSettings{
 		return this.guildId;
 	}
 
-	public String getCommandPrefix(){
-		return this.commandPrefix;
+	public Set<String> getPrefixes(){
+		return this.prefixes;
 	}
 
-	public void setCommandPrefix(String commandPrefix){
-		this.commandPrefix = commandPrefix;
+	public void addPrefixes(Set<String> prefixes){
+		this.prefixes.addAll(prefixes);
+	}
+
+	public String getPrefix(){
+		return this.prefixes.stream().findFirst().orElse(null);
+	}
+
+	public void removePrefixes(Set<String> prefixes){
+		this.prefixes.removeAll(prefixes);
 	}
 
 	public long getStreamAnnouncementChannelId(){

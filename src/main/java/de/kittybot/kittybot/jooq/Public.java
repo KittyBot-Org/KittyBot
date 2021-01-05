@@ -8,6 +8,7 @@ import de.kittybot.kittybot.jooq.tables.BotDisabledChannels;
 import de.kittybot.kittybot.jooq.tables.BotIgnoredUsers;
 import de.kittybot.kittybot.jooq.tables.GuildInviteRoles;
 import de.kittybot.kittybot.jooq.tables.GuildInvites;
+import de.kittybot.kittybot.jooq.tables.GuildPrefixes;
 import de.kittybot.kittybot.jooq.tables.GuildTags;
 import de.kittybot.kittybot.jooq.tables.Guilds;
 import de.kittybot.kittybot.jooq.tables.Notifications;
@@ -62,6 +63,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.guild_invites</code>.
      */
     public final GuildInvites GUILD_INVITES = GuildInvites.GUILD_INVITES;
+
+    /**
+     * The table <code>public.guild_prefixes</code>.
+     */
+    public final GuildPrefixes GUILD_PREFIXES = GuildPrefixes.GUILD_PREFIXES;
 
     /**
      * The table <code>public.guild_tags</code>.
@@ -143,6 +149,7 @@ public class Public extends SchemaImpl {
             Sequences.BOT_IGNORED_USERS_BOT_IGNORED_USER_ID_SEQ,
             Sequences.GUILD_INVITE_ROLES_GUILD_INVITE_ROLE_ID_SEQ,
             Sequences.GUILD_INVITES_GUILD_INVITE_ID_SEQ,
+            Sequences.GUILD_PREFIXES_GUILD_PREFIX_ID_SEQ,
             Sequences.GUILD_TAGS_TAG_ID_SEQ,
             Sequences.NOTIFICATIONS_NOTIFICATION_ID_SEQ,
             Sequences.REACTIVE_MESSAGES_REACTIVE_MESSAGE_ID_SEQ,
@@ -162,6 +169,7 @@ public class Public extends SchemaImpl {
             BotIgnoredUsers.BOT_IGNORED_USERS,
             GuildInviteRoles.GUILD_INVITE_ROLES,
             GuildInvites.GUILD_INVITES,
+            GuildPrefixes.GUILD_PREFIXES,
             GuildTags.GUILD_TAGS,
             Guilds.GUILDS,
             Notifications.NOTIFICATIONS,

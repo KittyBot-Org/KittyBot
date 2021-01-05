@@ -5,6 +5,9 @@ import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.objects.Notification;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +24,7 @@ import java.util.stream.Collectors;
 
 import static de.kittybot.kittybot.jooq.Tables.NOTIFICATIONS;
 
-public class NotificationManager{
+public class NotificationManager extends ListenerAdapter{
 
 	private static final Logger LOG = LoggerFactory.getLogger(NotificationManager.class);
 
@@ -31,13 +34,12 @@ public class NotificationManager{
 	public NotificationManager(KittyBot main){
 		this.main = main;
 		this.notifications = new HashMap<>();
+		this.main.getScheduler().scheduleAtFixedRate(this::update, 0, 30, TimeUnit.MINUTES);
 	}
 
-	public void init(){
-		this.main.getScheduler().scheduleAtFixedRate(this::update, 30, 30, TimeUnit.MINUTES);
-		this.main.getScheduler().scheduleAtFixedRate(this::scheduleNext, 5, 5, TimeUnit.MINUTES);
-		this.update();
-		this.scheduleNext();
+	@Override
+	public void onReady(@NotNull ReadyEvent event){
+		this.main.getScheduler().scheduleAtFixedRate(this::scheduleNext, 0, 5, TimeUnit.MINUTES);
 	}
 
 	private void update(){

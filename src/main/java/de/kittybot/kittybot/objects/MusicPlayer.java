@@ -5,6 +5,7 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import de.kittybot.kittybot.command.CommandContext;
 import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.utils.Colors;
@@ -18,12 +19,16 @@ import lavalink.client.player.event.PlayerEventListenerAdapter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.requests.RestAction;
 
+import javax.annotation.Nonnull;
 import java.awt.*;
 import java.time.Instant;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public class MusicPlayer extends PlayerEventListenerAdapter{
@@ -38,6 +43,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	private final long guildId;
 	private final long channelId;
 	private long controllerMessageId;
+	private ScheduledFuture<?> future;
 
 	public MusicPlayer(KittyBot main, JdaLink link, long guildId, long channelId){
 		this.main = main;
@@ -49,6 +55,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		this.queue = new LinkedList<>();
 		this.history = new LinkedList<>();
 		this.controllerMessageId = -1;
+		this.future = null;
 	}
 
 	public void loadItem(CommandContext ctx){
@@ -115,38 +122,85 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		sendMusicController();
 	}
 
-	public void destroy(){
-		this.link.destroy();
+	@Override
+	public void onTrackEnd(IPlayer player, AudioTrack track, AudioTrackEndReason endReason){
+		this.history.push(track);
+		if(!endReason.mayStartNext){
+			updateMusicController();
+			return;
+		}
+		next();
 	}
+
+	public void next(){
+		var next = this.queue.poll();
+		if(next == null){
+			updateMusicController();
+			planDestroy();
+			return;
+		}
+		this.player.playTrack(next);
+	}
+
+	public void planDestroy(){
+		if(this.future != null){
+			return;
+		}
+		this.future = this.main.getScheduler().schedule(() -> {
+			this.main.getMusicManager().destroy(this.guildId);
+		}, 3, TimeUnit.MINUTES);
+	}
+
+	public void cancelDestroy(){
+		if(this.future == null){
+			return;
+		}
+		this.future.cancel(true);
+		this.future = null;
+	}
+
+	/*public void planDestroy(long currentChannel){
+		player.setPaused(true);
+		this.main.getEventWaiter().waitForEvent(
+			GuildVoiceJoinEvent.class,
+			event -> event.getChannelJoined().getIdLong() == currentChannel && !event.getEntity().getUser().isBot(),
+			event -> this.player.setPaused(false),
+			3,
+			TimeUnit.MINUTES,
+			this.main.getMusicManager().destroy(this.guildId)
+		);
+	}*/
 
 	public void sendMusicController(){
 		messageToChannel(buildMusicController()).queue(message -> controllerMessageId = message.getIdLong());
 	}
 
 	public EmbedBuilder buildMusicController(){
-		var track = this.player.getPlayingTrack();
 		var embed = new EmbedBuilder();
+		var track = this.player.getPlayingTrack();
 		if(track == null){
-			embed.addField("Now playing", "Queue is empty", true)
-					.setColor(Color.RED);
+			embed.setColor(Color.RED)
+				.addField("Waiting", "The queue is empty", true)
+				.addField("Author", "", true)
+				.addField("Length", "", true)
+				.addField("Requested by", "", true);
 		}
 		else{
 			var info = track.getInfo();
 			if(this.player.isPaused()){
-				embed.addField("Pausing", Emoji.FORWARD.getAsMention() + " " + MusicUtils.formatTrack(track), false);
+				embed.setColor(Color.ORANGE)
+				     .addField("Pausing", Emoji.FORWARD.getAsMention() + " " + MusicUtils.formatTrack(track), false);
 			}
 			else{
-				embed.addField("Playing", Emoji.FORWARD.getAsMention() + " " + MusicUtils.formatTrack(track), false);
+				embed.setColor(Color.GREEN)
+				     .addField("Playing", Emoji.FORWARD.getAsMention() + " " + MusicUtils.formatTrack(track), false);
 			}
-			embed.setColor(Colors.KITTYBOT_BLUE)
-					.setThumbnail(getThumbnail(track.getIdentifier(), track.getSourceManager()))
-
-					.addField("Author", info.author, true)
-					.addField("Length", TimeUtils.formatDuration(track.getDuration()), true)
-					.addField("Volume", (int)(this.player.getFilters().getVolume() * 100) + "%", true)
-					.addField("Requested by", MessageUtils.getUserMention(track.getUserData(Long.class)), true);
+			embed.setThumbnail(getThumbnail(track.getIdentifier(), track.getSourceManager()))
+			     .addField("Author", info.author, true)
+			     .addField("Length", TimeUtils.formatDuration(track.getDuration()), true)
+			     .addField("Requested by", MessageUtils.getUserMention(getRequesterId(track)), true);
 		}
-		return embed;
+		return embed.addField("Volume", (int)(this.player.getFilters().getVolume() * 100) + "%", true);
 	}
 
 	public void updateMusicController(){
@@ -169,10 +223,19 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 			return "";
 		}
 		var sourceName = source.getSourceName();
-		if(sourceName.equals("youtube")){
-			return "https://i.ytimg.com/vi/" + identifier + "/hqdefault.jpg";
+		String thumbnail;
+		switch(sourceName){
+			case "youtube":
+				thumbnail = "https://i.ytimg.com/vi/" + identifier + "/hqdefault.jpg";
+				break;
+			case "twitch":
+				thumbnail = "https://static-cdn.jtvnw.net/previews-ttv/live_user_" + identifier + "-440x248.jpg";
+				break;
+			default:
+				thumbnail = "";
+				break;
 		}
-		return "";
+		return thumbnail;
 	}
 
 	public void queue(List<AudioTrack> tracks){
@@ -212,6 +275,14 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	public void pause(){
 		player.setPaused(!player.isPaused());
+	}
+
+	public boolean shuffle(){
+		if(queue.isEmpty()){
+			return false;
+		}
+		Collections.shuffle((List<?>) this.queue);
+		return true;
 	}
 
 	public void setPaused(boolean paused){

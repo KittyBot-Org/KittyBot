@@ -3,17 +3,18 @@ package de.kittybot.kittybot.managers;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
-import de.kittybot.kittybot.exceptions.CommandException;
 import de.kittybot.kittybot.jooq.tables.records.BotDisabledChannelsRecord;
 import de.kittybot.kittybot.jooq.tables.records.BotIgnoredUsersRecord;
+import de.kittybot.kittybot.jooq.tables.records.GuildPrefixesRecord;
 import de.kittybot.kittybot.jooq.tables.records.SnipeDisabledChannelsRecord;
 import de.kittybot.kittybot.main.KittyBot;
-import de.kittybot.kittybot.objects.GuildSettings;
+import de.kittybot.kittybot.objects.Settings;
 import de.kittybot.kittybot.objects.InviteRole;
 import de.kittybot.kittybot.objects.SelfAssignableRole;
 import de.kittybot.kittybot.objects.SelfAssignableRoleGroup;
 import de.kittybot.kittybot.utils.Config;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
@@ -34,14 +35,14 @@ import java.util.stream.Collectors;
 
 import static de.kittybot.kittybot.jooq.Tables.*;
 
-public class GuildSettingsManager extends ListenerAdapter{
+public class SettingsManager extends ListenerAdapter{
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommandManager.class);
 
 	private final KittyBot main;
-	private final LoadingCache<Long, GuildSettings> guildSettings;
+	private final LoadingCache<Long, Settings> guildSettings;
 
-	public GuildSettingsManager(KittyBot main){
+	public SettingsManager(KittyBot main){
 		this.main = main;
 		this.guildSettings = Caffeine.newBuilder()
 				.expireAfterAccess(30, TimeUnit.MINUTES)
@@ -49,10 +50,11 @@ public class GuildSettingsManager extends ListenerAdapter{
 				.build(this::retrieveGuildSettings);
 	}
 
-	public GuildSettings retrieveGuildSettings(long guildId){
+	public Settings retrieveGuildSettings(long guildId){
 		var dbManager = this.main.getDatabaseManager();
 		try(var con = dbManager.getCon();
 		    var ctxSettings = dbManager.getCtx(con).selectFrom(GUILDS);
+		    var ctxPrefixes = dbManager.getCtx(con).selectFrom(GUILD_PREFIXES);
 		    var ctxSnipeDisabledChannels = dbManager.getCtx(con).selectFrom(SNIPE_DISABLED_CHANNELS);
 		    var ctxBotDisabledChannels = dbManager.getCtx(con).selectFrom(BOT_DISABLED_CHANNELS);
 		    var ctxBotIgnoredUsers = dbManager.getCtx(con).selectFrom(BOT_IGNORED_USERS);
@@ -62,8 +64,11 @@ public class GuildSettingsManager extends ListenerAdapter{
 		){
 			var res = ctxSettings.where(GUILDS.GUILD_ID.eq(guildId)).fetchOne();
 			if(res != null){
-				return new GuildSettings(
+				return new Settings(
 						res,
+						ctxPrefixes.where(GUILD_PREFIXES.GUILD_ID.eq(guildId)).fetch().stream().map(
+								GuildPrefixesRecord::getPrefix).collect(Collectors.toSet()
+						),
 						ctxSnipeDisabledChannels.where(SNIPE_DISABLED_CHANNELS.GUILD_ID.eq(guildId)).fetch().stream().map(
 								SnipeDisabledChannelsRecord::getChannelId).collect(Collectors.toSet()
 						),
@@ -95,20 +100,20 @@ public class GuildSettingsManager extends ListenerAdapter{
 
 	@Override
 	public void onGuildReady(@NotNull GuildReadyEvent event){
-		insertGuildSettingsIfNotExists(event.getGuild());
+		insertSettingsIfNotExists(event.getGuild());
 	}
 
 	@Override
 	public void onGuildJoin(@Nonnull GuildJoinEvent event){
-		insertGuildSettings(event.getGuild());
+		insertSettings(event.getGuild());
 	}
 
 	@Override
 	public void onGuildLeave(@Nonnull GuildLeaveEvent event){
-		cleanupAllGuildSettings(event.getGuild().getIdLong());
+		cleanupAllSettings(event.getGuild().getIdLong());
 	}
 
-	public void cleanupAllGuildSettings(long guildId){
+	public void cleanupAllSettings(long guildId){
 		LOG.info("Cleaning up guild: {}", guildId);
 		var dbManager = this.main.getDatabaseManager();
 		try(var con = dbManager.getCon()){
@@ -119,7 +124,7 @@ public class GuildSettingsManager extends ListenerAdapter{
 		}
 	}
 
-	public void insertGuildSettingsIfNotExists(Guild guild){
+	public void insertSettingsIfNotExists(Guild guild){
 		var dbManager = this.main.getDatabaseManager();
 		var insert = true;
 		try(var con = dbManager.getCon(); var ctx = dbManager.getCtx(con).selectFrom(GUILDS)){
@@ -129,28 +134,30 @@ public class GuildSettingsManager extends ListenerAdapter{
 			LOG.error("Error while checking if guild exists for guild: " + guild.getIdLong(), e);
 		}
 		if(insert){
-			insertGuildSettings(guild);
+			insertSettings(guild);
 		}
 	}
 
-	public void insertGuildSettings(Guild guild){
+	public void insertSettings(Guild guild){
 		LOG.info("Registering new guild: {}", guild.getId());
 		var dbManager = this.main.getDatabaseManager();
 		try(var con = dbManager.getCon()){
 			dbManager.getCtx(con).insertInto(GUILDS)
 					.columns(
 							GUILDS.GUILD_ID,
-							GUILDS.COMMAND_PREFIX,
 							GUILDS.ANNOUNCEMENT_CHANNEL_ID,
 							GUILDS.INACTIVE_DURATION
 					)
 					.values(
 							guild.getIdLong(),
-							Config.DEFAULT_PREFIX,
 							guild.getDefaultChannel() == null ? -1 : guild.getDefaultChannel().getIdLong(),
 							YearToSecond.valueOf(Duration.ofDays(3))
 					)
 					.onDuplicateKeyIgnore()
+					.execute();
+			dbManager.getCtx(con).insertInto(GUILD_PREFIXES)
+					.columns(GUILD_PREFIXES.GUILD_ID, GUILD_PREFIXES.PREFIX)
+					.values(guild.getIdLong(), Config.DEFAULT_PREFIX)
 					.execute();
 		}
 		catch(SQLException e){
@@ -162,23 +169,63 @@ public class GuildSettingsManager extends ListenerAdapter{
 		return this.guildSettings.stats();
 	}
 
-	public String getPrefix(long guildId){
-		return this.getSettings(guildId).getCommandPrefix();
+	public Set<String> getPrefixes(long guildId){
+		return this.getSettings(guildId).getPrefixes();
 	}
 
-	public GuildSettings getSettings(long guildId){
+	public String getPrefix(long guildId){
+		return this.getSettings(guildId).getPrefixes().stream().findFirst().orElse(null);
+	}
+
+	public Settings getSettings(long guildId){
 		return this.guildSettings.get(guildId);
 	}
 
-	public void setPrefix(long guildId, String prefix){
-		updateGuildSetting(guildId, GUILDS.COMMAND_PREFIX, prefix);
-		var settings = getSettingsIfPresent(guildId);
+	public void addPrefixes(long guildId, Set<String> prefixes){
+		var settings = getSettings(guildId);
 		if(settings != null){
-			settings.setCommandPrefix(prefix);
+			settings.addPrefixes(prefixes);
+		}
+		insertPrefixes(guildId, prefixes);
+	}
+
+	public void insertPrefixes(long guildId, Set<String> prefixes){
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon()){
+			var ctx = dbManager.getCtx(con).insertInto(GUILD_PREFIXES).columns(GUILD_PREFIXES.GUILD_ID, GUILD_PREFIXES.PREFIX);
+			for(var prefix : prefixes){
+				ctx.values(guildId, prefix);
+			}
+			ctx.execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error inserting prefixes: {}", guildId, e);
 		}
 	}
 
-	public <T> void updateGuildSetting(long guildId, Field<T> field, T value){
+	public void removePrefixes(long guildId, Set<String> prefixes){
+		var settings = getSettings(guildId);
+		if(settings != null){
+			settings.removePrefixes(prefixes);
+		}
+		deletePrefixes(guildId, prefixes);
+	}
+
+	public void deletePrefixes(long guildId, Set<String> prefixes){
+		var dbManager = this.main.getDatabaseManager();
+		try(var con = dbManager.getCon()){
+			var ctx = dbManager.getCtx(con).insertInto(GUILD_PREFIXES).columns(GUILD_PREFIXES.GUILD_ID, GUILD_PREFIXES.PREFIX);
+			for(var prefix : prefixes){
+				ctx.values(guildId, prefix);
+			}
+			ctx.execute();
+		}
+		catch(SQLException e){
+			LOG.error("Error deleting prefixes: {}", guildId, e);
+		}
+	}
+
+	public <T> void updateSetting(long guildId, Field<T> field, T value){
 		var dbManager = this.main.getDatabaseManager();
 		try(var con = dbManager.getCon()){
 			dbManager.getCtx(con).update(GUILDS).set(field, value).where(GUILDS.GUILD_ID.eq(guildId)).execute();
@@ -188,7 +235,7 @@ public class GuildSettingsManager extends ListenerAdapter{
 		}
 	}
 
-	public GuildSettings getSettingsIfPresent(long guildId){
+	public Settings getSettingsIfPresent(long guildId){
 		return this.guildSettings.getIfPresent(guildId);
 	}
 
@@ -197,7 +244,7 @@ public class GuildSettingsManager extends ListenerAdapter{
 	}
 
 	public void setStreamAnnouncementChannelId(long guildId, long channelId){
-		updateGuildSetting(guildId, GUILDS.STREAM_ANNOUNCEMENT_CHANNEL_ID, channelId);
+		updateSetting(guildId, GUILDS.STREAM_ANNOUNCEMENT_CHANNEL_ID, channelId);
 		var settings = getSettingsIfPresent(guildId);
 		if(settings != null){
 			settings.setStreamAnnouncementChannelId(channelId);
@@ -209,7 +256,7 @@ public class GuildSettingsManager extends ListenerAdapter{
 	}
 
 	public void setAnnouncementChannelId(long guildId, long channelId){
-		updateGuildSetting(guildId, GUILDS.ANNOUNCEMENT_CHANNEL_ID, channelId);
+		updateSetting(guildId, GUILDS.ANNOUNCEMENT_CHANNEL_ID, channelId);
 		var settings = getSettingsIfPresent(guildId);
 		if(settings != null){
 			settings.setAnnouncementChannelId(channelId);
@@ -221,7 +268,7 @@ public class GuildSettingsManager extends ListenerAdapter{
 	}
 
 	public void setRequestChannelId(long guildId, long channelId){
-		updateGuildSetting(guildId, GUILDS.REQUEST_CHANNEL_ID, channelId);
+		updateSetting(guildId, GUILDS.REQUEST_CHANNEL_ID, channelId);
 		var settings = getSettingsIfPresent(guildId);
 		if(settings != null){
 			settings.setRequestChannelId(channelId);
@@ -233,7 +280,7 @@ public class GuildSettingsManager extends ListenerAdapter{
 	}
 
 	public void setRequestsEnabled(long guildId, boolean enabled){
-		updateGuildSetting(guildId, GUILDS.REQUESTS_ENABLED, enabled);
+		updateSetting(guildId, GUILDS.REQUESTS_ENABLED, enabled);
 		var settings = getSettingsIfPresent(guildId);
 		if(settings != null){
 			settings.setRequestsEnabled(enabled);
@@ -245,7 +292,7 @@ public class GuildSettingsManager extends ListenerAdapter{
 	}
 
 	public void setJoinMessage(long guildId, String message){
-		updateGuildSetting(guildId, GUILDS.JOIN_MESSAGE, message);
+		updateSetting(guildId, GUILDS.JOIN_MESSAGE, message);
 		var settings = getSettingsIfPresent(guildId);
 		if(settings != null){
 			settings.setJoinMessage(message);
@@ -257,7 +304,7 @@ public class GuildSettingsManager extends ListenerAdapter{
 	}
 
 	public void setJoinMessagesEnabled(long guildId, boolean enabled){
-		updateGuildSetting(guildId, GUILDS.JOIN_MESSAGES_ENABLED, enabled);
+		updateSetting(guildId, GUILDS.JOIN_MESSAGES_ENABLED, enabled);
 		var settings = getSettingsIfPresent(guildId);
 		if(settings != null){
 			settings.setJoinMessagesEnabled(enabled);
@@ -269,7 +316,7 @@ public class GuildSettingsManager extends ListenerAdapter{
 	}
 
 	public void setLeaveMessage(long guildId, String message){
-		updateGuildSetting(guildId, GUILDS.LEAVE_MESSAGE, message);
+		updateSetting(guildId, GUILDS.LEAVE_MESSAGE, message);
 		var settings = getSettingsIfPresent(guildId);
 		if(settings != null){
 			settings.setLeaveMessage(message);
@@ -281,7 +328,7 @@ public class GuildSettingsManager extends ListenerAdapter{
 	}
 
 	public void setLeaveMessagesEnabled(long guildId, boolean enabled){
-		updateGuildSetting(guildId, GUILDS.LEAVE_MESSAGES_ENABLED, enabled);
+		updateSetting(guildId, GUILDS.LEAVE_MESSAGES_ENABLED, enabled);
 		var settings = getSettingsIfPresent(guildId);
 		if(settings != null){
 			settings.setLeaveMessagesEnabled(enabled);
@@ -293,7 +340,7 @@ public class GuildSettingsManager extends ListenerAdapter{
 	}
 
 	public void setLogChannelId(long guildId, long channelId){
-		updateGuildSetting(guildId, GUILDS.LOG_CHANNEL_ID, channelId);
+		updateSetting(guildId, GUILDS.LOG_CHANNEL_ID, channelId);
 		var settings = getSettingsIfPresent(guildId);
 		if(settings != null){
 			settings.setLogChannelId(channelId);
@@ -305,7 +352,7 @@ public class GuildSettingsManager extends ListenerAdapter{
 	}
 
 	public void setLogMessagesEnabled(long guildId, boolean enabled){
-		updateGuildSetting(guildId, GUILDS.LOG_MESSAGES_ENABLED, enabled);
+		updateSetting(guildId, GUILDS.LOG_MESSAGES_ENABLED, enabled);
 		var settings = getSettingsIfPresent(guildId);
 		if(settings != null){
 			settings.setLogMessagesEnabled(enabled);
@@ -317,7 +364,7 @@ public class GuildSettingsManager extends ListenerAdapter{
 	}
 
 	public void setNsfwEnabled(long guildId, boolean enabled){
-		updateGuildSetting(guildId, GUILDS.NSFW_ENABLED, enabled);
+		updateSetting(guildId, GUILDS.NSFW_ENABLED, enabled);
 		var settings = getSettingsIfPresent(guildId);
 		if(settings != null){
 			settings.setNsfwEnabled(enabled);
@@ -329,7 +376,7 @@ public class GuildSettingsManager extends ListenerAdapter{
 	}
 
 	public void setInactiveRoleId(long guildId, long roleId){
-		updateGuildSetting(guildId, GUILDS.INACTIVE_ROLE_ID, roleId);
+		updateSetting(guildId, GUILDS.INACTIVE_ROLE_ID, roleId);
 		var settings = getSettingsIfPresent(guildId);
 		if(settings != null){
 			settings.setInactiveRoleId(roleId);
@@ -341,7 +388,7 @@ public class GuildSettingsManager extends ListenerAdapter{
 	}
 
 	public void setInactiveDuration(long guildId, Duration duration){
-		updateGuildSetting(guildId, GUILDS.INACTIVE_DURATION, YearToSecond.valueOf(duration));
+		updateSetting(guildId, GUILDS.INACTIVE_DURATION, YearToSecond.valueOf(duration));
 		var settings = getSettingsIfPresent(guildId);
 		if(settings != null){
 			settings.setInactiveDuration(duration);
@@ -352,8 +399,13 @@ public class GuildSettingsManager extends ListenerAdapter{
 		return this.getSettings(guildId).getDjRoleId();
 	}
 
+	public boolean hasDJRole(Member member){
+		var djRole = this.getSettings(member.getIdLong()).getDjRoleId();
+		return member.getRoles().stream().anyMatch(role -> role.getIdLong() == djRole);
+	}
+
 	public void setDjRoleId(long guildId, long roleId){
-		updateGuildSetting(guildId, GUILDS.DJ_ROLE_ID, roleId);
+		updateSetting(guildId, GUILDS.DJ_ROLE_ID, roleId);
 		var settings = getSettingsIfPresent(guildId);
 		if(settings != null){
 			settings.setDjRoleId(roleId);
@@ -365,7 +417,7 @@ public class GuildSettingsManager extends ListenerAdapter{
 	}
 
 	public void setSnipesEnabled(long guildId, boolean enabled){
-		updateGuildSetting(guildId, GUILDS.SNIPES_ENABLED, enabled);
+		updateSetting(guildId, GUILDS.SNIPES_ENABLED, enabled);
 		var settings = getSettingsIfPresent(guildId);
 		if(settings != null){
 			settings.setSnipesEnabled(enabled);
@@ -462,7 +514,7 @@ public class GuildSettingsManager extends ListenerAdapter{
 			var ctx = dbManager.getCtx(con).insertInto(SELF_ASSIGNABLE_ROLE_GROUPS)
 					.columns(SELF_ASSIGNABLE_ROLES.GROUP_ID, SELF_ASSIGNABLE_ROLES.GUILD_ID, SELF_ASSIGNABLE_ROLES.ROLE_ID, SELF_ASSIGNABLE_ROLES.EMOTE_ID);
 			for(var role : roles){
-				ctx.values(role.getGroupId(), role.getGuildId(), role.getRoleId(), role.getEmoteId());
+				ctx.values(role.getGroupId(), guildId, role.getRoleId(), role.getEmoteId());
 			}
 			ctx.execute();
 		}

@@ -15,7 +15,7 @@ public class AvatarCommand extends Command{
 	private static final String[] SIZES = {"128", "256", "512", "1024"};
 
 	public AvatarCommand(){
-		super("avatar", "Gives some quicklinks to the users avatars", Category.UTILITIES);
+		super("avatar", "Gives avatar links from provided users", Category.UTILITIES);
 		setUsage("<@User, UserId, ...>");
 		addAliases("ava");
 	}

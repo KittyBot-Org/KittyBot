@@ -49,6 +49,7 @@ public class DashboardSessionManager extends ListenerAdapter{
 				.build(this::retrieveDashboardSession);
 		this.userSessionCache = new HashMap<>();
 		this.userGuilds = new HashMap<>();
+		init();
 	}
 
 	private DashboardSession retrieveDashboardSession(long userId){
@@ -69,13 +70,13 @@ public class DashboardSessionManager extends ListenerAdapter{
 		return SCOPES;
 	}
 
-	public void init(long userId){
-		if(Config.BOT_SECRET.isBlank()){
-			LOG.error("OAuth2 disabled because secret is missing");
+	private void init(){
+		if(Config.BOT_SECRET.isBlank() || Config.BOT_ID == -1){
+			LOG.error("OAuth2 disabled because secret or id is missing");
 			return;
 		}
 		this.oAuth2Client = new OAuth2Client.Builder()
-				.setClientId(userId)
+				.setClientId(Config.BOT_ID)
 				.setClientSecret(Config.BOT_SECRET)
 				.setOkHttpClient(this.main.getHttpClient())
 				.setSessionController(new DashboardSessionController(this))

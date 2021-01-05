@@ -3,7 +3,6 @@ package de.kittybot.kittybot.managers;
 import de.kittybot.kittybot.command.CommandContext;
 import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.objects.MusicPlayer;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
@@ -12,11 +11,8 @@ import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class MusicManager extends ListenerAdapter{
 
@@ -43,7 +39,14 @@ public class MusicManager extends ListenerAdapter{
 			if(channel.getMembers().stream().anyMatch(member -> !member.getUser().isBot())){
 				return;
 			}
-			planDestroy(player, currentChannel);
+			player.planDestroy();
+		}
+		else if(event instanceof GuildVoiceJoinEvent){
+			var player = get(event.getEntity().getGuild().getIdLong());
+			if(player == null){
+				return;
+			}
+			player.cancelDestroy();
 		}
 	}
 
@@ -56,36 +59,21 @@ public class MusicManager extends ListenerAdapter{
 		var guildId = ctx.getGuildId();
 		var link = this.main.getLavalinkManager().getLink(guildId);
 		var player = new MusicPlayer(this.main, link, guildId, ctx.getChannelId());
-		musicPlayers.put(guildId, player);
+		this.musicPlayers.put(guildId, player);
 		return player;
 	}
 
-	public void planDestroy(@Nonnull MusicPlayer player, long currentChannel){
-		player.setPaused(true);
-		this.main.getEventWaiter().waitForEvent(GuildVoiceJoinEvent.class,
-				event -> event.getChannelJoined().getIdLong() == currentChannel && !event.getEntity().getUser().isBot(),
-				event -> player.setPaused(false),
-				3,
-				TimeUnit.MINUTES,
-				player::destroy
-		);
-	}
-
 	public void destroy(long guildId){
-
-		var musicPlayer = musicPlayers.remove(guildId);
-		if(musicPlayer != null){
-			musicPlayer.destroy();
-			return;
-		}
 		var link = this.main.getLavalinkManager().getLavalink().getExistingLink(guildId);
 		if(link != null){
 			link.destroy();
 		}
+		var player = this.musicPlayers.remove(guildId);
+		player.updateMusicController();
 	}
 
 	public MusicPlayer get(long guildId){
-		return musicPlayers.get(guildId);
+		return this.musicPlayers.get(guildId);
 	}
 
 }

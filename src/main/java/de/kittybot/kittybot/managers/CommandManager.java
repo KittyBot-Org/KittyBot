@@ -5,8 +5,10 @@ import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
 import de.kittybot.kittybot.command.ReactionContext;
 import de.kittybot.kittybot.main.KittyBot;
+import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.exporters.Metrics;
 import io.github.classgraph.ClassGraph;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -17,12 +19,15 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CommandManager extends ListenerAdapter{
 
 	public static final String ARGUMENT_REGEX = "\\s+";
 	private static final Logger LOG = LoggerFactory.getLogger(CommandManager.class);
 	private static final String COMMAND_PACKAGE = "de.kittybot.kittybot.commands";
+	private static final Pattern BOT_MENTION = Pattern.compile("<@!?" + Config.BOT_ID + ">");
 
 	private final KittyBot main;
 	private final Map<String, Command> commands;
@@ -116,11 +121,15 @@ public class CommandManager extends ListenerAdapter{
 
 	private String trimPrefix(GuildMessageReceivedEvent event){
 		var message = event.getMessage().getContentRaw();
-		var guild = event.getGuild();
-		var botId = guild.getSelfMember().getId();
-		var prefix = this.main.getGuildSettingsManager().getPrefix(event.getGuild().getIdLong());
-		if(message.startsWith(prefix) || message.startsWith(prefix = "<@!" + botId + ">") || message.startsWith(prefix = "<@" + botId + ">")){
-			return message.substring(prefix.length()).trim();
+		var prefixes = this.main.getGuildSettingsManager().getPrefixes(event.getGuild().getIdLong());
+		for(var prefix : prefixes){
+			if(message.startsWith(prefix)){
+				return message.substring(prefix.length()).trim();
+			}
+		}
+		var matcher = BOT_MENTION.matcher(message);
+		if(matcher.find()){
+			return message.substring(matcher.regionEnd()).trim();
 		}
 		return null;
 	}

@@ -52,7 +52,7 @@ public class CommandContext{
 		return this.main.getCommandManager();
 	}
 
-	public GuildSettingsManager getGuildSettingsManager(){
+	public SettingsManager getGuildSettingsManager(){
 		return this.main.getGuildSettingsManager();
 	}
 

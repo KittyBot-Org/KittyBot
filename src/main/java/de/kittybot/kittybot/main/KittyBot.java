@@ -1,12 +1,10 @@
 package de.kittybot.kittybot.main;
 
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
-import de.kittybot.kittybot.events.OnGuildEvent;
-import de.kittybot.kittybot.events.OnGuildMemberEvent;
-import de.kittybot.kittybot.events.OnGuildVoiceEvent;
 import de.kittybot.kittybot.exceptions.MissingConfigValuesException;
 import de.kittybot.kittybot.managers.*;
 import de.kittybot.kittybot.utils.Config;
+import de.kittybot.kittybot.utils.ThreadFactoryHelper;
 import de.kittybot.kittybot.web.WebService;
 import net.dv8tion.jda.api.GatewayEncoding;
 import net.dv8tion.jda.api.JDA;
@@ -20,18 +18,12 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.dv8tion.jda.internal.utils.config.ThreadingConfig;
 import okhttp3.OkHttpClient;
-import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
-import javax.servlet.SingleThreadModel;
 import java.io.IOException;
 import java.util.concurrent.*;
 
 public class KittyBot{
-
-	private static final Logger LOG = LoggerFactory.getLogger(KittyBot.class);
 
 	private final OkHttpClient httpClient;
 	private final JDA jda;
@@ -50,30 +42,24 @@ public class KittyBot{
 	private final DashboardSessionManager dashboardSessionManager;
 	private final WebService webService;
 	private final ScheduledExecutorService scheduler;
-	private final GuildSettingsManager guildSettingsManager;
+	private final SettingsManager settingsManager;
 	private final CommandResponseManager commandResponseManager;
 	private final ReactiveMessageManager reactiveMessageManager;
 	private final TagManager tagManager;
 	private final MusicManager musicManager;
-	private final EventWaiter eventWaiter;
+	private final JoinManager joinManager;
 
 	public KittyBot() throws IOException, MissingConfigValuesException, LoginException, InterruptedException{
 		Config.init("./config.json");
-		this.scheduler = new ScheduledThreadPoolExecutor(2, r -> {
-			var thread = new Thread(r, "KittyBot Scheduler");
-			thread.setDaemon(true);
-			thread.setUncaughtExceptionHandler((t, e) -> LOG.error("Caught an unexpected Exception in scheduler", e));
-			return thread;
-		});
-		this.eventWaiter = new EventWaiter();
-		this.prometheusManager = new PrometheusManager(this);
+		this.scheduler = new ScheduledThreadPoolExecutor(2, new ThreadFactoryHelper());
 		this.httpClient = new OkHttpClient();
 		this.lavalinkManager = new LavalinkManager(this);
 		this.databaseManager = new DatabaseManager();
-		this.guildSettingsManager = new GuildSettingsManager(this);
+		this.settingsManager = new SettingsManager(this);
 		this.commandManager = new CommandManager(this);
 		this.commandResponseManager = new CommandResponseManager();
 		this.reactiveMessageManager = new ReactiveMessageManager();
+		this.joinManager = new JoinManager();
 		this.inviteManager = new InviteManager();
 		this.inviteRolesManager = new InviteRolesManager(this);
 		this.statusManager = new StatusManager(this);
@@ -85,6 +71,7 @@ public class KittyBot{
 		this.dashboardSessionManager = new DashboardSessionManager(this);
 		this.notificationManager = new NotificationManager(this);
 		this.streamAnnouncementManager = new StreamAnnouncementManager(this);
+		this.prometheusManager = new PrometheusManager(this);
 		this.webService = new WebService(this);
 
 		RestAction.setDefaultFailure(null);
@@ -106,8 +93,8 @@ public class KittyBot{
 				.setMemberCachePolicy(MemberCachePolicy.VOICE)
 				.setChunkingFilter(ChunkingFilter.NONE)
 				.addEventListeners(
-						this.guildSettingsManager,
-						this.eventWaiter,
+						this.joinManager,
+						this.settingsManager,
 						this.inviteManager,
 						this.lavalinkManager.getLavalink(),
 						this.commandManager,
@@ -118,9 +105,8 @@ public class KittyBot{
 						this.prometheusManager,
 						this.inviteRolesManager,
 						this.musicManager,
-						new OnGuildEvent(this),
-						new OnGuildMemberEvent(this),
-						new OnGuildVoiceEvent(this)
+						this.notificationManager,
+						this.streamAnnouncementManager
 				)
 				.setHttpClient(this.httpClient)
 				.setVoiceDispatchInterceptor(this.lavalinkManager.getLavalink().getVoiceInterceptor())
@@ -129,14 +115,7 @@ public class KittyBot{
 				.setEventPool(ThreadingConfig.newScheduler(1, () -> "KittyBot", "Events"), true)
 				.setGatewayEncoding(GatewayEncoding.ETF)
 				.setBulkDeleteSplittingEnabled(false)
-				.build()
-				.awaitReady();
-
-		this.notificationManager.init();
-		this.streamAnnouncementManager.init();
-		this.lavalinkManager.connect(jda.getSelfUser().getId());
-		this.dashboardSessionManager.init(jda.getSelfUser().getIdLong());
-		this.prometheusManager.initLavalinkCollector();
+				.build();
 	}
 
 	public OkHttpClient getHttpClient(){
@@ -179,8 +158,8 @@ public class KittyBot{
 		return this.webService;
 	}
 
-	public GuildSettingsManager getGuildSettingsManager(){
-		return this.guildSettingsManager;
+	public SettingsManager getGuildSettingsManager(){
+		return this.settingsManager;
 	}
 
 	public ReactiveMessageManager getReactiveMessageManager(){
@@ -209,10 +188,6 @@ public class KittyBot{
 
 	public StreamAnnouncementManager getStreamAnnouncementManager(){
 		return this.streamAnnouncementManager;
-	}
-
-	public EventWaiter getEventWaiter(){
-		return this.eventWaiter;
 	}
 
 }

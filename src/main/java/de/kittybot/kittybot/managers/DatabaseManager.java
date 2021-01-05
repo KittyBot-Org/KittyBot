@@ -59,7 +59,7 @@ public class DatabaseManager{
 		config.setUsername(Config.DB_USER);
 		config.setPassword(Config.DB_PASSWORD);
 
-		config.setMinimumIdle(80);
+		config.setMinimumIdle(10);
 		config.setMaximumPoolSize(90);
 		config.setConnectionTimeout(10000);
 		config.setIdleTimeout(600000);

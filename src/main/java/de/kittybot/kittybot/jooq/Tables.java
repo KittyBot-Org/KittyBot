@@ -8,6 +8,7 @@ import de.kittybot.kittybot.jooq.tables.BotDisabledChannels;
 import de.kittybot.kittybot.jooq.tables.BotIgnoredUsers;
 import de.kittybot.kittybot.jooq.tables.GuildInviteRoles;
 import de.kittybot.kittybot.jooq.tables.GuildInvites;
+import de.kittybot.kittybot.jooq.tables.GuildPrefixes;
 import de.kittybot.kittybot.jooq.tables.GuildTags;
 import de.kittybot.kittybot.jooq.tables.Guilds;
 import de.kittybot.kittybot.jooq.tables.Notifications;
@@ -47,6 +48,11 @@ public class Tables {
      * The table <code>public.guild_invites</code>.
      */
     public static final GuildInvites GUILD_INVITES = GuildInvites.GUILD_INVITES;
+
+    /**
+     * The table <code>public.guild_prefixes</code>.
+     */
+    public static final GuildPrefixes GUILD_PREFIXES = GuildPrefixes.GUILD_PREFIXES;
 
     /**
      * The table <code>public.guild_tags</code>.

@@ -32,7 +32,7 @@ public class WebService{
 
 	public WebService(KittyBot main){
 		this.main = main;
-		initBackend();
+		initJavalin();
 	}
 
 	public static void accepted(Context ctx, DataObject data){
@@ -57,7 +57,7 @@ public class WebService{
 		result(ctx, 200, DataObject.empty());
 	}
 
-	private void initBackend(){
+	private void initJavalin(){
 		if(Config.BACKEND_PORT == -1){
 			return;
 		}

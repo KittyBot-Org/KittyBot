@@ -6,11 +6,10 @@ import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
 import de.kittybot.kittybot.utils.MusicUtils;
 
-public class StopCommand extends Command{
+public class ShuffleCommand extends Command{
 
-	public StopCommand(){
-		super("stop", "Used to stop music", Category.MUSIC);
-		addAliases("stfu");
+	public ShuffleCommand(){
+		super("shuffle", "Used to shuffle the queue", Category.MUSIC);
 	}
 
 	@Override
@@ -18,11 +17,11 @@ public class StopCommand extends Command{
 		if(!MusicUtils.checkVoiceRequirements(ctx)){
 			return;
 		}
-		ctx.getMusicManager().destroy(ctx.getGuildId());
-		if(ctx.getCommand().equalsIgnoreCase("stfu")){
-			ctx.sendSuccess("Okowo");
+		if(ctx.getMusicManager().get(ctx.getGuildId()).shuffle()){
+			ctx.sendSuccess("Queue shuffled");
+			return;
 		}
-		ctx.sendSuccess("Disconnected me");
+		ctx.sendError("Queue is empty. Nothing to shuffle");
 	}
 
 }
