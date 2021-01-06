@@ -17,7 +17,8 @@ public class Guilds implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Long         guildId;
+    private final Long         id;
+    private final String       prefix;
     private final Long         announcementChannelId;
     private final String       joinMessage;
     private final Boolean      joinMessagesEnabled;
@@ -37,7 +38,8 @@ public class Guilds implements Serializable {
     private final Boolean      snipesEnabled;
 
     public Guilds(Guilds value) {
-        this.guildId = value.guildId;
+        this.id = value.id;
+        this.prefix = value.prefix;
         this.announcementChannelId = value.announcementChannelId;
         this.joinMessage = value.joinMessage;
         this.joinMessagesEnabled = value.joinMessagesEnabled;
@@ -58,7 +60,8 @@ public class Guilds implements Serializable {
     }
 
     public Guilds(
-        Long         guildId,
+        Long         id,
+        String       prefix,
         Long         announcementChannelId,
         String       joinMessage,
         Boolean      joinMessagesEnabled,
@@ -77,7 +80,8 @@ public class Guilds implements Serializable {
         Long         djRoleId,
         Boolean      snipesEnabled
     ) {
-        this.guildId = guildId;
+        this.id = id;
+        this.prefix = prefix;
         this.announcementChannelId = announcementChannelId;
         this.joinMessage = joinMessage;
         this.joinMessagesEnabled = joinMessagesEnabled;
@@ -98,10 +102,17 @@ public class Guilds implements Serializable {
     }
 
     /**
-     * Getter for <code>public.guilds.guild_id</code>.
+     * Getter for <code>public.guilds.id</code>.
      */
-    public Long getGuildId() {
-        return this.guildId;
+    public Long getId() {
+        return this.id;
+    }
+
+    /**
+     * Getter for <code>public.guilds.prefix</code>.
+     */
+    public String getPrefix() {
+        return this.prefix;
     }
 
     /**
@@ -227,7 +238,8 @@ public class Guilds implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("Guilds (");
 
-        sb.append(guildId);
+        sb.append(id);
+        sb.append(", ").append(prefix);
         sb.append(", ").append(announcementChannelId);
         sb.append(", ").append(joinMessage);
         sb.append(", ").append(joinMessagesEnabled);

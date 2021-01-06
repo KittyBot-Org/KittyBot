@@ -15,31 +15,31 @@ public class BotDisabledChannels implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Long botDisabledChannelId;
+    private final Long id;
     private final Long guildId;
     private final Long channelId;
 
     public BotDisabledChannels(BotDisabledChannels value) {
-        this.botDisabledChannelId = value.botDisabledChannelId;
+        this.id = value.id;
         this.guildId = value.guildId;
         this.channelId = value.channelId;
     }
 
     public BotDisabledChannels(
-        Long botDisabledChannelId,
+        Long id,
         Long guildId,
         Long channelId
     ) {
-        this.botDisabledChannelId = botDisabledChannelId;
+        this.id = id;
         this.guildId = guildId;
         this.channelId = channelId;
     }
 
     /**
-     * Getter for <code>public.bot_disabled_channels.bot_disabled_channel_id</code>.
+     * Getter for <code>public.bot_disabled_channels.id</code>.
      */
-    public Long getBotDisabledChannelId() {
-        return this.botDisabledChannelId;
+    public Long getId() {
+        return this.id;
     }
 
     /**
@@ -60,7 +60,7 @@ public class BotDisabledChannels implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("BotDisabledChannels (");
 
-        sb.append(botDisabledChannelId);
+        sb.append(id);
         sb.append(", ").append(guildId);
         sb.append(", ").append(channelId);
 

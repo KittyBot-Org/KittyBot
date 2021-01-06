@@ -19,7 +19,7 @@ public class PlayCommand extends Command{
 		if(!MusicUtils.checkVoiceRequirements(ctx)){
 			return;
 		}
-		ctx.getMusicManager().create(ctx).loadItem(ctx);
+		ctx.getMusicModule().create(ctx).loadItem(ctx);
 	}
 
 }

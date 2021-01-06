@@ -40,7 +40,7 @@ public class IgnoreCommand extends Command{
 		if(users.isEmpty()){
 			ctx.sendError("Please provide a user");
 		}
-		ctx.getGuildSettingsManager().addBotIgnoredUsers(ctx.getGuildId(), users.stream().map(User::getIdLong).collect(Collectors.toSet()));
+		ctx.getGuildSettingsModule().addBotIgnoredUsers(ctx.getGuildId(), users.stream().map(User::getIdLong).collect(Collectors.toSet()));
 		ctx.sendSuccess(new EmbedBuilder().setDescription("Ignoring following users: " + users.stream().map(User::getAsMention).collect(Collectors.joining(", "))));
 	}
 

@@ -25,10 +25,10 @@ public class StreamAnnouncementDeleteCommand extends Command{
 		}
 		var type = StreamType.byName(args.get(0));
 		if(type == null){
-			ctx.sendError("'"  + args.get(0) + "' is not a valid stream type. Use twitch or youtube");
+			ctx.sendError("'" + args.get(0) + "' is not a valid stream type. Use twitch or youtube");
 			return;
 		}
-		ctx.getStreamAnnouncementManager().delete(args.get(1), ctx.getGuildId(), type);
+		ctx.getStreamAnnouncementModule().delete(args.get(1), ctx.getGuildId(), type);
 		ctx.sendSuccess("Stream announcement deleted");
 	}
 

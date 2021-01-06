@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.web.routes.guilds.guild.tags.tag;
 
-import de.kittybot.kittybot.main.KittyBot;
+import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.web.WebService;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
@@ -11,15 +11,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class PostTagRoute implements Handler{
 
-	private final KittyBot main;
+	private final Modules modules;
 
-	public PostTagRoute(KittyBot main){
-		this.main = main;
+	public PostTagRoute(Modules modules){
+		this.modules = modules;
 	}
 
 	@Override
 	public void handle(@NotNull Context ctx){
-		var tagId = this.main.getWebService().getTagId(ctx);
+		var tagId = this.modules.getWebService().getTagId(ctx);
 		var json = DataObject.fromJson(ctx.body());
 		var name = json.getString("name", "");
 		var content = json.getString("content", "");
@@ -27,7 +27,7 @@ public class PostTagRoute implements Handler{
 		if(name.isBlank() || content.isBlank() || userId == -1){
 			throw new BadRequestResponse("Please provide a valid name, content or userId");
 		}
-		if(!this.main.getTagManager().edit(tagId, name, content, userId)){
+		if(!this.modules.getTagModule().edit(tagId, name, content, userId)){
 			throw new InternalServerErrorResponse("Error while updating tag");
 		}
 		WebService.accepted(ctx);

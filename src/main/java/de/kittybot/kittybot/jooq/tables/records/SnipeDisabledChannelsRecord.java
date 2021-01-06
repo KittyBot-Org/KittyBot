@@ -22,17 +22,17 @@ public class SnipeDisabledChannelsRecord extends UpdatableRecordImpl<SnipeDisabl
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.snipe_disabled_channels.snipe_disabled_channel_id</code>.
+     * Setter for <code>public.snipe_disabled_channels.id</code>.
      */
-    public SnipeDisabledChannelsRecord setSnipeDisabledChannelId(Long value) {
+    public SnipeDisabledChannelsRecord setId(Long value) {
         set(0, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.snipe_disabled_channels.snipe_disabled_channel_id</code>.
+     * Getter for <code>public.snipe_disabled_channels.id</code>.
      */
-    public Long getSnipeDisabledChannelId() {
+    public Long getId() {
         return (Long) get(0);
     }
 
@@ -91,7 +91,7 @@ public class SnipeDisabledChannelsRecord extends UpdatableRecordImpl<SnipeDisabl
 
     @Override
     public Field<Long> field1() {
-        return SnipeDisabledChannels.SNIPE_DISABLED_CHANNELS.SNIPE_DISABLED_CHANNEL_ID;
+        return SnipeDisabledChannels.SNIPE_DISABLED_CHANNELS.ID;
     }
 
     @Override
@@ -106,7 +106,7 @@ public class SnipeDisabledChannelsRecord extends UpdatableRecordImpl<SnipeDisabl
 
     @Override
     public Long component1() {
-        return getSnipeDisabledChannelId();
+        return getId();
     }
 
     @Override
@@ -121,7 +121,7 @@ public class SnipeDisabledChannelsRecord extends UpdatableRecordImpl<SnipeDisabl
 
     @Override
     public Long value1() {
-        return getSnipeDisabledChannelId();
+        return getId();
     }
 
     @Override
@@ -136,7 +136,7 @@ public class SnipeDisabledChannelsRecord extends UpdatableRecordImpl<SnipeDisabl
 
     @Override
     public SnipeDisabledChannelsRecord value1(Long value) {
-        setSnipeDisabledChannelId(value);
+        setId(value);
         return this;
     }
 
@@ -174,10 +174,10 @@ public class SnipeDisabledChannelsRecord extends UpdatableRecordImpl<SnipeDisabl
     /**
      * Create a detached, initialised SnipeDisabledChannelsRecord
      */
-    public SnipeDisabledChannelsRecord(Long snipeDisabledChannelId, Long guildId, Long channelId) {
+    public SnipeDisabledChannelsRecord(Long id, Long guildId, Long channelId) {
         super(SnipeDisabledChannels.SNIPE_DISABLED_CHANNELS);
 
-        setSnipeDisabledChannelId(snipeDisabledChannelId);
+        setId(id);
         setGuildId(guildId);
         setChannelId(channelId);
     }

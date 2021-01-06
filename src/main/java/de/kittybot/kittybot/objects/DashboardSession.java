@@ -4,7 +4,7 @@ import com.jagrosh.jdautilities.oauth2.Scope;
 import com.jagrosh.jdautilities.oauth2.session.Session;
 import com.jagrosh.jdautilities.oauth2.session.SessionData;
 import de.kittybot.kittybot.jooq.tables.records.SessionsRecord;
-import de.kittybot.kittybot.managers.DashboardSessionManager;
+import de.kittybot.kittybot.modules.DashboardSessionModule;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -31,7 +31,7 @@ public class DashboardSession implements Session{
 		this.refreshToken = record.getRefreshToken();
 		this.tokenType = "Bearer";
 		this.expiration = OffsetDateTime.of(record.getExpiration(), ZoneOffset.UTC);
-		this.scopes = DashboardSessionManager.getScopes();
+		this.scopes = DashboardSessionModule.getScopes();
 	}
 
 	public long getUserId(){

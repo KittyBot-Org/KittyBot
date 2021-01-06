@@ -8,16 +8,6 @@ import java.util.Collection;
 
 public class MusicUtils{
 
-	public static String formatTrackWithInfo(AudioTrack track){
-		var info = track.getInfo();
-		return formatTrack(track) + " - " + TimeUtils.formatDuration(info.length) + "[" + MessageUtils.getUserMention(track.getUserData(Long.class)) + "]";
-	}
-
-	public static String formatTrack(AudioTrack track){
-		var info = track.getInfo();
-		return MessageUtils.maskLink("`" + info.title + "`", info.uri);
-	}
-
 	public static String formatTracks(String message, Collection<AudioTrack> tracks){
 		var trackMessage = new StringBuilder(message).append("\n");
 		for(var track : tracks){
@@ -30,9 +20,19 @@ public class MusicUtils{
 		return trackMessage.toString();
 	}
 
+	public static String formatTrackWithInfo(AudioTrack track){
+		var info = track.getInfo();
+		return formatTrack(track) + " - " + TimeUtils.formatDuration(info.length) + "[" + MessageUtils.getUserMention(track.getUserData(Long.class)) + "]";
+	}
+
+	public static String formatTrack(AudioTrack track){
+		var info = track.getInfo();
+		return MessageUtils.maskLink("`" + info.title + "`", info.uri);
+	}
+
 	public static boolean checkVoiceRequirements(CommandContext ctx){
 		var member = ctx.getMember();
-		if(member.hasPermission(Permission.ADMINISTRATOR) || ctx.getGuildSettingsManager().hasDJRole(member)){
+		if(member.hasPermission(Permission.ADMINISTRATOR) || ctx.getGuildSettingsModule().hasDJRole(member)){
 			return true;
 		}
 		var voiceState = member.getVoiceState();

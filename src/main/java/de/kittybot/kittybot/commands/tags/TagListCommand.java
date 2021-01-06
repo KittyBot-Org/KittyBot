@@ -24,7 +24,7 @@ public class TagListCommand extends Command{
 	protected void run(Args args, CommandContext ctx) throws CommandException{
 		var guildId = ctx.getGuildId();
 		if(args.isEmpty()){
-			var tags = ctx.getTagManager().get(guildId);
+			var tags = ctx.getTagModule().get(guildId);
 			ctx.sendSuccess(new EmbedBuilder()
 					.setAuthor("Tags", Category.TAGS.getUrl(), Category.TAGS.getEmoteUrl())
 					.setDescription("This guild has " + tags.size() + " tags:\n" + tags.stream().map(Tag::getName).collect(Collectors.joining("\n")))
@@ -41,7 +41,7 @@ public class TagListCommand extends Command{
 			ctx.sendUsage(this);
 			return;
 		}
-		var tags = ctx.getTagManager().get(users.get(0).getIdLong(), guildId);
+		var tags = ctx.getTagModule().get(users.get(0).getIdLong(), guildId);
 		ctx.sendSuccess(users.get(0).getAsMention() + " owns following tags:\n" + tags.stream().map(Tag::getName).collect(Collectors.joining("\n")));
 	}
 

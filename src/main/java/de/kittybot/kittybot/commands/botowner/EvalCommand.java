@@ -37,7 +37,7 @@ public class EvalCommand extends Command{
 		scriptEngine.put("message", ctx.getMessage());
 		scriptEngine.put("channel", ctx.getChannel());
 		scriptEngine.put("args", ctx.getArgs());
-		scriptEngine.put("scheduler", ctx.getMain().getScheduler());
+		scriptEngine.put("scheduler", ctx.getModules().getScheduler());
 		scriptEngine.put("api", ctx.getJDA());
 		scriptEngine.put("jda", ctx.getJDA());
 		scriptEngine.put("guild", ctx.getGuild());

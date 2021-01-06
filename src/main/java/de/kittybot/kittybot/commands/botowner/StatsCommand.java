@@ -22,14 +22,14 @@ public class StatsCommand extends Command{
 		ctx.sendSuccess(new EmbedBuilder()
 				.setAuthor("KittyBot Internal Cache Stats", Config.ORIGIN_URL, jda.getSelfUser().getEffectiveAvatarUrl())
 
-				.addField("Command Response Cache:", ctx.getCommandResponseManager().getStats().toString(), false)
-				.addField("Guild Settings Cache:", ctx.getGuildSettingsManager().getStats().toString(), false)
-				.addField("Reactive Messages Cache:", ctx.getReactiveMessageManager().getStats().toString(), false)
-				.addField("Dashboard Session Cache:", ctx.getDashboardSessionManager().getStats().toString(), false)
-				.addField("Message Cache 1:", ctx.getMessageManager().getStats1().toString(), false)
-				.addField("Message Cache 2:", ctx.getMessageManager().getStats2().toString(), false)
-				.addField("Message Cache 3:", ctx.getMessageManager().getStats3().toString(), false)
-				.addField("Message Cache 4:", ctx.getMessageManager().getStats4().toString(), false)
+				.addField("Command Response Cache:", ctx.getCommandResponseModule().getStats().toString(), false)
+				.addField("Guild Settings Cache:", ctx.getGuildSettingsModule().getStats().toString(), false)
+				.addField("Reactive Messages Cache:", ctx.getReactiveMessageModule().getStats().toString(), false)
+				.addField("Dashboard Session Cache:", ctx.getDashboardSessionModule().getStats().toString(), false)
+				.addField("Message Cache 1:", ctx.getMessageModule().getStats1().toString(), false)
+				.addField("Message Cache 2:", ctx.getMessageModule().getStats2().toString(), false)
+				.addField("Message Cache 3:", ctx.getMessageModule().getStats3().toString(), false)
+				.addField("Message Cache 4:", ctx.getMessageModule().getStats4().toString(), false)
 		);
 	}
 

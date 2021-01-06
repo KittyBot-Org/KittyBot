@@ -22,17 +22,17 @@ public class GuildInviteRolesRecord extends UpdatableRecordImpl<GuildInviteRoles
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.guild_invite_roles.guild_invite_role_id</code>.
+     * Setter for <code>public.guild_invite_roles.id</code>.
      */
-    public GuildInviteRolesRecord setGuildInviteRoleId(Long value) {
+    public GuildInviteRolesRecord setId(Long value) {
         set(0, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.guild_invite_roles.guild_invite_role_id</code>.
+     * Getter for <code>public.guild_invite_roles.id</code>.
      */
-    public Long getGuildInviteRoleId() {
+    public Long getId() {
         return (Long) get(0);
     }
 
@@ -91,7 +91,7 @@ public class GuildInviteRolesRecord extends UpdatableRecordImpl<GuildInviteRoles
 
     @Override
     public Field<Long> field1() {
-        return GuildInviteRoles.GUILD_INVITE_ROLES.GUILD_INVITE_ROLE_ID;
+        return GuildInviteRoles.GUILD_INVITE_ROLES.ID;
     }
 
     @Override
@@ -106,7 +106,7 @@ public class GuildInviteRolesRecord extends UpdatableRecordImpl<GuildInviteRoles
 
     @Override
     public Long component1() {
-        return getGuildInviteRoleId();
+        return getId();
     }
 
     @Override
@@ -121,7 +121,7 @@ public class GuildInviteRolesRecord extends UpdatableRecordImpl<GuildInviteRoles
 
     @Override
     public Long value1() {
-        return getGuildInviteRoleId();
+        return getId();
     }
 
     @Override
@@ -136,7 +136,7 @@ public class GuildInviteRolesRecord extends UpdatableRecordImpl<GuildInviteRoles
 
     @Override
     public GuildInviteRolesRecord value1(Long value) {
-        setGuildInviteRoleId(value);
+        setId(value);
         return this;
     }
 
@@ -174,10 +174,10 @@ public class GuildInviteRolesRecord extends UpdatableRecordImpl<GuildInviteRoles
     /**
      * Create a detached, initialised GuildInviteRolesRecord
      */
-    public GuildInviteRolesRecord(Long guildInviteRoleId, Long guildInviteId, Long roleId) {
+    public GuildInviteRolesRecord(Long id, Long guildInviteId, Long roleId) {
         super(GuildInviteRoles.GUILD_INVITE_ROLES);
 
-        setGuildInviteRoleId(guildInviteRoleId);
+        setId(id);
         setGuildInviteId(guildInviteId);
         setRoleId(roleId);
     }

@@ -18,7 +18,7 @@ public class LeaveMessagesCommand extends Command{
 	@Override
 	protected void run(Args args, CommandContext ctx){
 		var guild = ctx.getGuildId();
-		var settingsManager = ctx.getGuildSettingsManager();
+		var settingsManager = ctx.getGuildSettingsModule();
 		if(!args.isEmpty() && args.isDisable(0)){
 			settingsManager.setLeaveMessagesEnabled(guild, false);
 			ctx.sendSuccess("Disabled leave messages here");

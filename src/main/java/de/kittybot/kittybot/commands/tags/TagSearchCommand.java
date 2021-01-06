@@ -23,7 +23,7 @@ public class TagSearchCommand extends Command{
 			ctx.sendUsage(this);
 			return;
 		}
-		var tags = ctx.getTagManager().search(args.get(0), ctx.getGuildId());
+		var tags = ctx.getTagModule().search(args.get(0), ctx.getGuildId());
 		ctx.sendSuccess("Tags found:\n" + tags.stream().map(Tag::getName).collect(Collectors.joining("\n")));
 	}
 

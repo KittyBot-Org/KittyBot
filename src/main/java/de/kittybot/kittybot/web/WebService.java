@@ -1,18 +1,17 @@
 package de.kittybot.kittybot.web;
 
-import de.kittybot.kittybot.main.KittyBot;
-import de.kittybot.kittybot.objects.Tag;
+import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.Utils;
-import de.kittybot.kittybot.web.routes.commands.GetCommandsRoute;
 import de.kittybot.kittybot.web.routes.GetDiscordLoginRoute;
-import de.kittybot.kittybot.web.routes.guilds.*;
+import de.kittybot.kittybot.web.routes.commands.GetCommandsRoute;
+import de.kittybot.kittybot.web.routes.guilds.GetAllGuildsRoute;
 import de.kittybot.kittybot.web.routes.guilds.guild.*;
 import de.kittybot.kittybot.web.routes.guilds.guild.tags.GetTagsRoute;
 import de.kittybot.kittybot.web.routes.guilds.guild.tags.tag.DeleteTagRoute;
 import de.kittybot.kittybot.web.routes.guilds.guild.tags.tag.PostTagRoute;
-import de.kittybot.kittybot.web.routes.login.PostLoginRoute;
 import de.kittybot.kittybot.web.routes.login.DeleteLoginRoute;
+import de.kittybot.kittybot.web.routes.login.PostLoginRoute;
 import de.kittybot.kittybot.web.routes.user.GetUserInfoRoute;
 import io.javalin.Javalin;
 import io.javalin.http.*;
@@ -28,19 +27,19 @@ import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class WebService{
 
-	private final KittyBot main;
+	private final Modules modules;
 
-	public WebService(KittyBot main){
-		this.main = main;
+	public WebService(Modules modules){
+		this.modules = modules;
 		initJavalin();
-	}
-
-	public static void accepted(Context ctx, DataObject data){
-		result(ctx, 202, data);
 	}
 
 	public static void accepted(Context ctx){
 		accepted(ctx, DataObject.empty());
+	}
+
+	public static void accepted(Context ctx, DataObject data){
+		result(ctx, 202, data);
 	}
 
 	public static void result(Context ctx, int code, DataObject data){
@@ -70,49 +69,49 @@ public class WebService{
 			}
 		}).routes(() -> {
 			path("/discord_login", () -> {
-				get(new GetDiscordLoginRoute(this.main));
+				get(new GetDiscordLoginRoute(this.modules));
 			});
 			path("/health_check", () -> {
 				get(ctx -> ctx.result("alive"));
 			});
 			path("/commands", () -> {
-				get(new GetCommandsRoute(this.main));
+				get(new GetCommandsRoute(this.modules));
 			});
 			path("/login", () -> {
-				post(new PostLoginRoute(this.main));
-				delete(new DeleteLoginRoute(this.main));
+				post(new PostLoginRoute(this.modules));
+				delete(new DeleteLoginRoute(this.modules));
 			});
 			path("/user/me", () -> {
 				before("/*", this::checkDiscordLogin);
-				get(new GetUserInfoRoute(this.main));
+				get(new GetUserInfoRoute(this.modules));
 			});
 			path("/guilds", () -> {
 				before("/*", this::checkDiscordLogin);
-				get(new GetAllGuildsRoute(this.main));
+				get(new GetAllGuildsRoute(this.modules));
 				path("/:guildId", () -> {
 					before("/*", this::checkGuildPerms);
 					path("/roles", () -> {
-						get(new GetRolesRoute(this.main));
+						get(new GetRolesRoute(this.modules));
 					});
 					path("/channels", () -> {
-						get(new GetChannelsRoute(this.main));
+						get(new GetChannelsRoute(this.modules));
 					});
 					path("/emotes", () -> {
-						get(new GetEmotesRoute(this.main));
+						get(new GetEmotesRoute(this.modules));
 					});
 					path("/invites", () -> {
-						get(new GetInvitesRoute(this.main));
+						get(new GetInvitesRoute(this.modules));
 					});
 					path("/tags", () -> {
-						get(new GetTagsRoute(this.main));
+						get(new GetTagsRoute(this.modules));
 						path("/:tagId", () -> {
-							post(new PostTagRoute(this.main));
-							delete(new DeleteTagRoute(this.main));
+							post(new PostTagRoute(this.modules));
+							delete(new DeleteTagRoute(this.modules));
 						});
 					});
 					path("/settings", () -> {
-						get(new GetGuildSettingsRoute(this.main));
-						post(new PostGuildSettingsRoute(this.main));
+						get(new GetGuildSettingsRoute(this.modules));
+						post(new PostGuildSettingsRoute(this.modules));
 					});
 				});
 			});
@@ -124,7 +123,7 @@ public class WebService{
 			return;
 		}
 		var userId = getUserId(ctx);
-		if(!this.main.getDashboardSessionManager().has(userId)){
+		if(!this.modules.getDashboardSessionModule().has(userId)){
 			throw new UnauthorizedResponse("Invalid token");
 		}
 	}
@@ -162,7 +161,7 @@ public class WebService{
 	public long getUserId(String token){
 		try{
 			return Long.parseLong(Jwts.parserBuilder()
-					.setSigningKey(this.main.getDashboardSessionManager().getSecretKey())
+					.setSigningKey(this.modules.getDashboardSessionModule().getSecretKey())
 					.build()
 					.parseClaimsJws(token)
 					.getBody()
@@ -179,7 +178,7 @@ public class WebService{
 		if(guildId.isBlank() || !Utils.isSnowflake(guildId)){
 			throw new BadRequestResponse("Please provide a valid guild id");
 		}
-		var guild = this.main.getJDA().getGuildById(guildId);
+		var guild = this.modules.getJDA().getGuildById(guildId);
 		if(guild == null){
 			throw new NotFoundResponse("Guild not found");
 		}

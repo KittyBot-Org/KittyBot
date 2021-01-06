@@ -22,17 +22,17 @@ public class BotDisabledChannelsRecord extends UpdatableRecordImpl<BotDisabledCh
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.bot_disabled_channels.bot_disabled_channel_id</code>.
+     * Setter for <code>public.bot_disabled_channels.id</code>.
      */
-    public BotDisabledChannelsRecord setBotDisabledChannelId(Long value) {
+    public BotDisabledChannelsRecord setId(Long value) {
         set(0, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.bot_disabled_channels.bot_disabled_channel_id</code>.
+     * Getter for <code>public.bot_disabled_channels.id</code>.
      */
-    public Long getBotDisabledChannelId() {
+    public Long getId() {
         return (Long) get(0);
     }
 
@@ -91,7 +91,7 @@ public class BotDisabledChannelsRecord extends UpdatableRecordImpl<BotDisabledCh
 
     @Override
     public Field<Long> field1() {
-        return BotDisabledChannels.BOT_DISABLED_CHANNELS.BOT_DISABLED_CHANNEL_ID;
+        return BotDisabledChannels.BOT_DISABLED_CHANNELS.ID;
     }
 
     @Override
@@ -106,7 +106,7 @@ public class BotDisabledChannelsRecord extends UpdatableRecordImpl<BotDisabledCh
 
     @Override
     public Long component1() {
-        return getBotDisabledChannelId();
+        return getId();
     }
 
     @Override
@@ -121,7 +121,7 @@ public class BotDisabledChannelsRecord extends UpdatableRecordImpl<BotDisabledCh
 
     @Override
     public Long value1() {
-        return getBotDisabledChannelId();
+        return getId();
     }
 
     @Override
@@ -136,7 +136,7 @@ public class BotDisabledChannelsRecord extends UpdatableRecordImpl<BotDisabledCh
 
     @Override
     public BotDisabledChannelsRecord value1(Long value) {
-        setBotDisabledChannelId(value);
+        setId(value);
         return this;
     }
 
@@ -174,10 +174,10 @@ public class BotDisabledChannelsRecord extends UpdatableRecordImpl<BotDisabledCh
     /**
      * Create a detached, initialised BotDisabledChannelsRecord
      */
-    public BotDisabledChannelsRecord(Long botDisabledChannelId, Long guildId, Long channelId) {
+    public BotDisabledChannelsRecord(Long id, Long guildId, Long channelId) {
         super(BotDisabledChannels.BOT_DISABLED_CHANNELS);
 
-        setBotDisabledChannelId(botDisabledChannelId);
+        setId(id);
         setGuildId(guildId);
         setChannelId(channelId);
     }

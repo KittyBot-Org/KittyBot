@@ -25,7 +25,7 @@ public class GroupsCommand extends Command{
 
 	@Override
 	public void run(Args args, CommandContext ctx){
-		var settings = ctx.getGuildSettingsManager().getSettings(ctx.getGuildId());
+		var settings = ctx.getGuildSettingsModule().getSettings(ctx.getGuildId());
 		if(args.isEmpty() || args.get(0).equalsIgnoreCase("list")){
 			var groups = settings.getSelfAssignableRoleGroups();
 			if(groups == null){

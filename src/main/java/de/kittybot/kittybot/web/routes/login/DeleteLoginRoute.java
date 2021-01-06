@@ -1,21 +1,21 @@
 package de.kittybot.kittybot.web.routes.login;
 
-import de.kittybot.kittybot.main.KittyBot;
+import de.kittybot.kittybot.module.Modules;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import org.jetbrains.annotations.NotNull;
 
 public class DeleteLoginRoute implements Handler{
 
-	private final KittyBot main;
+	private final Modules modules;
 
-	public DeleteLoginRoute(KittyBot main){
-		this.main = main;
+	public DeleteLoginRoute(Modules modules){
+		this.modules = modules;
 	}
 
 	@Override
 	public void handle(@NotNull Context ctx){
-		this.main.getDashboardSessionManager().delete(this.main.getWebService().getUserId(ctx));
+		this.modules.getDashboardSessionModule().delete(this.modules.getWebService().getUserId(ctx));
 	}
 
 }

@@ -49,9 +49,9 @@ public class SnipeDisabledChannels extends TableImpl<SnipeDisabledChannelsRecord
     }
 
     /**
-     * The column <code>public.snipe_disabled_channels.snipe_disabled_channel_id</code>.
+     * The column <code>public.snipe_disabled_channels.id</code>.
      */
-    public final TableField<SnipeDisabledChannelsRecord, Long> SNIPE_DISABLED_CHANNEL_ID = createField(DSL.name("snipe_disabled_channel_id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+    public final TableField<SnipeDisabledChannelsRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.snipe_disabled_channels.guild_id</code>.

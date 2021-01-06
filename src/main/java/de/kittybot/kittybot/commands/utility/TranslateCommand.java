@@ -4,7 +4,7 @@ import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
-import de.kittybot.kittybot.managers.CommandManager;
+import de.kittybot.kittybot.modules.CommandModule;
 import de.kittybot.kittybot.objects.Language;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -35,12 +35,12 @@ public class TranslateCommand extends Command{
 			ctx.sendError("I couldn't find a language named '``" + args.get(0) + "``'");
 			return;
 		}
-		var text = ctx.getRawMessage().split(CommandManager.ARGUMENT_REGEX, 2)[1];
+		var text = ctx.getRawMessage().split(CommandModule.ARGUMENT_REGEX, 2)[1];
 		if(text.isBlank()){
 			ctx.sendError("Please provide text to translate");
 			return;
 		}
-		var translatedText = ctx.getRequestManager().translateText(text, lang.get().getShortname());
+		var translatedText = ctx.getRequestModule().translateText(text, lang.get().getShortname());
 
 		ctx.sendSuccess(new EmbedBuilder().setDescription("Translated text:\n```\n" + translatedText + "\n```"));
 	}

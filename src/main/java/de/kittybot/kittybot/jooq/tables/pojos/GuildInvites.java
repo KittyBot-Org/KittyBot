@@ -15,31 +15,31 @@ public class GuildInvites implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Long   guildInviteId;
+    private final Long   id;
     private final Long   guildId;
     private final String code;
 
     public GuildInvites(GuildInvites value) {
-        this.guildInviteId = value.guildInviteId;
+        this.id = value.id;
         this.guildId = value.guildId;
         this.code = value.code;
     }
 
     public GuildInvites(
-        Long   guildInviteId,
+        Long   id,
         Long   guildId,
         String code
     ) {
-        this.guildInviteId = guildInviteId;
+        this.id = id;
         this.guildId = guildId;
         this.code = code;
     }
 
     /**
-     * Getter for <code>public.guild_invites.guild_invite_id</code>.
+     * Getter for <code>public.guild_invites.id</code>.
      */
-    public Long getGuildInviteId() {
-        return this.guildInviteId;
+    public Long getId() {
+        return this.id;
     }
 
     /**
@@ -60,7 +60,7 @@ public class GuildInvites implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("GuildInvites (");
 
-        sb.append(guildInviteId);
+        sb.append(id);
         sb.append(", ").append(guildId);
         sb.append(", ").append(code);
 

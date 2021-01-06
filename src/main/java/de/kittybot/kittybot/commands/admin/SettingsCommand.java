@@ -10,9 +10,6 @@ import de.kittybot.kittybot.utils.TimeUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 
-import java.util.Collections;
-import java.util.stream.Collectors;
-
 public class SettingsCommand extends Command{
 
 	public SettingsCommand(){
@@ -25,12 +22,12 @@ public class SettingsCommand extends Command{
 	@Override
 	public void run(Args args, CommandContext ctx){
 		var guildId = ctx.getGuildId();
-		var settingsManager = ctx.getGuildSettingsManager();
+		var settingsManager = ctx.getGuildSettingsModule();
 		if(args.isEmpty()){
 			var settings = settingsManager.getSettings(ctx.getGuildId());
 			ctx.sendSuccess(new EmbedBuilder()
 					.setAuthor("Guild settings:", Config.ORIGIN_URL + "/guilds/" + guildId + "/dashboard", "https://cdn.discordapp.com/emojis/787994539105320970.png")
-					.addField("Prefixes: ", "`" + settings.getPrefixes().stream().map(prefix -> "`" + prefix + "`").collect(Collectors.joining(", ")) + "`", false)
+					.addField("Command Prefix: ", "`" + settings.getPrefix() + "`", false)
 					.addField("Announcement Channel: ", settings.getAnnouncementChannel(), false)
 					.addField("DJ Role: ", settings.getDjRole(), false)
 					.addField("NSFW Enabled: ", MessageUtils.getBoolEmote(settings.isNsfwEnabled()), false)
@@ -43,7 +40,7 @@ public class SettingsCommand extends Command{
 		else{
 			var joined = ctx.getRawMessage(1);
 			if(args.get(0).equalsIgnoreCase("prefix") && args.size() == 2){
-				settingsManager.addPrefixes(guildId, Collections.singleton(args.get(1)));
+				settingsManager.setPrefix(guildId, args.get(1));
 				ctx.sendSuccess("Prefix set to: `" + args.get(1) + "`");
 			}
 			else if(args.get(0).equalsIgnoreCase("nsfw")){

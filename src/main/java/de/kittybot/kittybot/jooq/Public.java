@@ -5,12 +5,13 @@ package de.kittybot.kittybot.jooq;
 
 
 import de.kittybot.kittybot.jooq.tables.BotDisabledChannels;
-import de.kittybot.kittybot.jooq.tables.BotIgnoredUsers;
+import de.kittybot.kittybot.jooq.tables.BotIgnoredMembers;
 import de.kittybot.kittybot.jooq.tables.GuildInviteRoles;
 import de.kittybot.kittybot.jooq.tables.GuildInvites;
-import de.kittybot.kittybot.jooq.tables.GuildPrefixes;
 import de.kittybot.kittybot.jooq.tables.GuildTags;
 import de.kittybot.kittybot.jooq.tables.Guilds;
+import de.kittybot.kittybot.jooq.tables.MemberRoles;
+import de.kittybot.kittybot.jooq.tables.Members;
 import de.kittybot.kittybot.jooq.tables.Notifications;
 import de.kittybot.kittybot.jooq.tables.ReactiveMessages;
 import de.kittybot.kittybot.jooq.tables.Requests;
@@ -21,6 +22,7 @@ import de.kittybot.kittybot.jooq.tables.SnipeDisabledChannels;
 import de.kittybot.kittybot.jooq.tables.StreamUserEvents;
 import de.kittybot.kittybot.jooq.tables.StreamUsers;
 import de.kittybot.kittybot.jooq.tables.UserStatistics;
+import de.kittybot.kittybot.jooq.tables.Users;
 
 import java.util.Arrays;
 import java.util.List;
@@ -50,9 +52,9 @@ public class Public extends SchemaImpl {
     public final BotDisabledChannels BOT_DISABLED_CHANNELS = BotDisabledChannels.BOT_DISABLED_CHANNELS;
 
     /**
-     * The table <code>public.bot_ignored_users</code>.
+     * The table <code>public.bot_ignored_members</code>.
      */
-    public final BotIgnoredUsers BOT_IGNORED_USERS = BotIgnoredUsers.BOT_IGNORED_USERS;
+    public final BotIgnoredMembers BOT_IGNORED_MEMBERS = BotIgnoredMembers.BOT_IGNORED_MEMBERS;
 
     /**
      * The table <code>public.guild_invite_roles</code>.
@@ -65,11 +67,6 @@ public class Public extends SchemaImpl {
     public final GuildInvites GUILD_INVITES = GuildInvites.GUILD_INVITES;
 
     /**
-     * The table <code>public.guild_prefixes</code>.
-     */
-    public final GuildPrefixes GUILD_PREFIXES = GuildPrefixes.GUILD_PREFIXES;
-
-    /**
      * The table <code>public.guild_tags</code>.
      */
     public final GuildTags GUILD_TAGS = GuildTags.GUILD_TAGS;
@@ -78,6 +75,16 @@ public class Public extends SchemaImpl {
      * The table <code>public.guilds</code>.
      */
     public final Guilds GUILDS = Guilds.GUILDS;
+
+    /**
+     * The table <code>public.member_roles</code>.
+     */
+    public final MemberRoles MEMBER_ROLES = MemberRoles.MEMBER_ROLES;
+
+    /**
+     * The table <code>public.members</code>.
+     */
+    public final Members MEMBERS = Members.MEMBERS;
 
     /**
      * The table <code>public.notifications</code>.
@@ -130,6 +137,11 @@ public class Public extends SchemaImpl {
     public final UserStatistics USER_STATISTICS = UserStatistics.USER_STATISTICS;
 
     /**
+     * The table <code>public.users</code>.
+     */
+    public final Users USERS = Users.USERS;
+
+    /**
      * No further instances allowed
      */
     private Public() {
@@ -145,33 +157,37 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Sequence<?>> getSequences() {
         return Arrays.<Sequence<?>>asList(
-            Sequences.BOT_DISABLED_CHANNELS_BOT_DISABLED_CHANNEL_ID_SEQ,
-            Sequences.BOT_IGNORED_USERS_BOT_IGNORED_USER_ID_SEQ,
-            Sequences.GUILD_INVITE_ROLES_GUILD_INVITE_ROLE_ID_SEQ,
-            Sequences.GUILD_INVITES_GUILD_INVITE_ID_SEQ,
-            Sequences.GUILD_PREFIXES_GUILD_PREFIX_ID_SEQ,
-            Sequences.GUILD_TAGS_TAG_ID_SEQ,
-            Sequences.NOTIFICATIONS_NOTIFICATION_ID_SEQ,
-            Sequences.REACTIVE_MESSAGES_REACTIVE_MESSAGE_ID_SEQ,
-            Sequences.REQUESTS_REQUEST_ID_SEQ,
-            Sequences.SELF_ASSIGNABLE_ROLE_GROUPS_SELF_ASSIGNABLE_ROLE_GROUP_ID_SEQ,
-            Sequences.SELF_ASSIGNABLE_ROLES_SELF_ASSIGNABLE_ROLE_ID_SEQ,
-            Sequences.SNIPE_DISABLED_CHANNELS_SNIPE_DISABLED_CHANNEL_ID_SEQ,
-            Sequences.STREAM_USER_EVENTS_STEAM_USER_EVENT_ID_SEQ,
-            Sequences.STREAM_USERS_STREAM_USER_ID_SEQ,
-            Sequences.USER_STATISTICS_USER_STATISTIC_ID_SEQ);
+            Sequences.BOT_DISABLED_CHANNELS_ID_SEQ,
+            Sequences.BOT_IGNORED_MEMBERS_ID_SEQ,
+            Sequences.GUILD_INVITE_ROLES_ID_SEQ,
+            Sequences.GUILD_INVITES_ID_SEQ,
+            Sequences.GUILD_TAGS_ID_SEQ,
+            Sequences.MEMBER_ROLES_ID_SEQ,
+            Sequences.MEMBERS_ID_SEQ,
+            Sequences.NOTIFICATIONS_ID_SEQ,
+            Sequences.REACTIVE_MESSAGES_ID_SEQ,
+            Sequences.REQUESTS_ID_SEQ,
+            Sequences.SELF_ASSIGNABLE_ROLE_GROUPS_ID_SEQ,
+            Sequences.SELF_ASSIGNABLE_ROLES_ID_SEQ,
+            Sequences.SESSIONS_ID_SEQ,
+            Sequences.SNIPE_DISABLED_CHANNELS_ID_SEQ,
+            Sequences.STREAM_USER_EVENTS_ID_SEQ,
+            Sequences.STREAM_USERS_ID_SEQ,
+            Sequences.USER_STATISTICS_ID_SEQ,
+            Sequences.USERS_ID_SEQ);
     }
 
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
             BotDisabledChannels.BOT_DISABLED_CHANNELS,
-            BotIgnoredUsers.BOT_IGNORED_USERS,
+            BotIgnoredMembers.BOT_IGNORED_MEMBERS,
             GuildInviteRoles.GUILD_INVITE_ROLES,
             GuildInvites.GUILD_INVITES,
-            GuildPrefixes.GUILD_PREFIXES,
             GuildTags.GUILD_TAGS,
             Guilds.GUILDS,
+            MemberRoles.MEMBER_ROLES,
+            Members.MEMBERS,
             Notifications.NOTIFICATIONS,
             ReactiveMessages.REACTIVE_MESSAGES,
             Requests.REQUESTS,
@@ -181,6 +197,7 @@ public class Public extends SchemaImpl {
             SnipeDisabledChannels.SNIPE_DISABLED_CHANNELS,
             StreamUserEvents.STREAM_USER_EVENTS,
             StreamUsers.STREAM_USERS,
-            UserStatistics.USER_STATISTICS);
+            UserStatistics.USER_STATISTICS,
+            Users.USERS);
     }
 }

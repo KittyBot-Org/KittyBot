@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.command;
 
-import java.util.*;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class Args{
@@ -9,10 +9,6 @@ public class Args{
 
 	public Args(List<String> args){
 		this.args = args;
-	}
-
-	public boolean is(int i, String arg){
-		return this.args.get(i).equalsIgnoreCase(arg);
 	}
 
 	public int size(){
@@ -25,6 +21,10 @@ public class Args{
 
 	public boolean isEnable(int i){
 		return is(i, "enable") || is(i, "true") || is(i, "on") || is(i, "an");
+	}
+
+	public boolean is(int i, String arg){
+		return this.args.get(i).equalsIgnoreCase(arg);
 	}
 
 	public boolean isDisable(int i){

@@ -49,9 +49,9 @@ public class StreamUsers extends TableImpl<StreamUsersRecord> {
     }
 
     /**
-     * The column <code>public.stream_users.stream_user_id</code>.
+     * The column <code>public.stream_users.id</code>.
      */
-    public final TableField<StreamUsersRecord, Long> STREAM_USER_ID = createField(DSL.name("stream_user_id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+    public final TableField<StreamUsersRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.stream_users.guild_id</code>.

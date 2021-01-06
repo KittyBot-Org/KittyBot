@@ -1,10 +1,9 @@
 CREATE TABLE IF NOT EXISTS notifications(
-  notification_id   bigserial PRIMARY KEY NOT NULL,
-  guild_id          bigint NOT NULL references guilds(guild_id) ON DELETE CASCADE,
-  channel_id        bigint NOT NULL,
-  message_id        bigint NOT NULL,
-  user_id           bigint NOT NULL,
-  content           text NOT NULL,
-  creation_time     timestamp NOT NULL,
-  notification_time timestamp NOT NULL
+  id                BIGSERIAL PRIMARY KEY NOT NULL,
+  member_id         BIGINT NOT NULL REFERENCES members(id) ON DELETE CASCADE,
+  channel_id        BIGINT NOT NULL,
+  message_id        BIGINT NOT NULL,
+  content           TEXT NOT NULL,
+  created_at        TIMESTAMP NOT NULL DEFAULT(current_timestamp),
+  notification_time TIMESTAMP NOT NULL
 );

@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -50,19 +50,14 @@ public class Requests extends TableImpl<RequestsRecord> {
     }
 
     /**
-     * The column <code>public.requests.request_id</code>.
+     * The column <code>public.requests.id</code>.
      */
-    public final TableField<RequestsRecord, Long> REQUEST_ID = createField(DSL.name("request_id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+    public final TableField<RequestsRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>public.requests.user_id</code>.
+     * The column <code>public.requests.member_id</code>.
      */
-    public final TableField<RequestsRecord, Long> USER_ID = createField(DSL.name("user_id"), SQLDataType.BIGINT.nullable(false), this, "");
-
-    /**
-     * The column <code>public.requests.guild_id</code>.
-     */
-    public final TableField<RequestsRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<RequestsRecord, Long> MEMBER_ID = createField(DSL.name("member_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.requests.title</code>.
@@ -85,9 +80,9 @@ public class Requests extends TableImpl<RequestsRecord> {
     public final TableField<RequestsRecord, Boolean> ACCEPTED = createField(DSL.name("accepted"), SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
-     * The column <code>public.requests.creation_time</code>.
+     * The column <code>public.requests.creation_at</code>.
      */
-    public final TableField<RequestsRecord, LocalDateTime> CREATION_TIME = createField(DSL.name("creation_time"), SQLDataType.LOCALDATETIME(6).nullable(false), this, "");
+    public final TableField<RequestsRecord, LocalDateTime> CREATION_AT = createField(DSL.name("creation_at"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", SQLDataType.LOCALDATETIME)), this, "");
 
     private Requests(Name alias, Table<RequestsRecord> aliased) {
         this(alias, aliased, null);
@@ -144,11 +139,11 @@ public class Requests extends TableImpl<RequestsRecord> {
 
     @Override
     public List<ForeignKey<RequestsRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<RequestsRecord, ?>>asList(Keys.REQUESTS__REQUESTS_GUILD_ID_FKEY);
+        return Arrays.<ForeignKey<RequestsRecord, ?>>asList(Keys.REQUESTS__REQUESTS_MEMBER_ID_FKEY);
     }
 
-    public Guilds guilds() {
-        return new Guilds(this, Keys.REQUESTS__REQUESTS_GUILD_ID_FKEY);
+    public Members members() {
+        return new Members(this, Keys.REQUESTS__REQUESTS_MEMBER_ID_FKEY);
     }
 
     @Override
@@ -178,11 +173,11 @@ public class Requests extends TableImpl<RequestsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Long, Long, Long, String, String, Boolean, Boolean, LocalDateTime> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row7<Long, Long, String, String, Boolean, Boolean, LocalDateTime> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

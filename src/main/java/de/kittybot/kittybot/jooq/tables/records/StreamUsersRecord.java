@@ -22,17 +22,17 @@ public class StreamUsersRecord extends UpdatableRecordImpl<StreamUsersRecord> im
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.stream_users.stream_user_id</code>.
+     * Setter for <code>public.stream_users.id</code>.
      */
-    public StreamUsersRecord setStreamUserId(Long value) {
+    public StreamUsersRecord setId(Long value) {
         set(0, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.stream_users.stream_user_id</code>.
+     * Getter for <code>public.stream_users.id</code>.
      */
-    public Long getStreamUserId() {
+    public Long getId() {
         return (Long) get(0);
     }
 
@@ -106,7 +106,7 @@ public class StreamUsersRecord extends UpdatableRecordImpl<StreamUsersRecord> im
 
     @Override
     public Field<Long> field1() {
-        return StreamUsers.STREAM_USERS.STREAM_USER_ID;
+        return StreamUsers.STREAM_USERS.ID;
     }
 
     @Override
@@ -126,7 +126,7 @@ public class StreamUsersRecord extends UpdatableRecordImpl<StreamUsersRecord> im
 
     @Override
     public Long component1() {
-        return getStreamUserId();
+        return getId();
     }
 
     @Override
@@ -146,7 +146,7 @@ public class StreamUsersRecord extends UpdatableRecordImpl<StreamUsersRecord> im
 
     @Override
     public Long value1() {
-        return getStreamUserId();
+        return getId();
     }
 
     @Override
@@ -166,7 +166,7 @@ public class StreamUsersRecord extends UpdatableRecordImpl<StreamUsersRecord> im
 
     @Override
     public StreamUsersRecord value1(Long value) {
-        setStreamUserId(value);
+        setId(value);
         return this;
     }
 
@@ -211,10 +211,10 @@ public class StreamUsersRecord extends UpdatableRecordImpl<StreamUsersRecord> im
     /**
      * Create a detached, initialised StreamUsersRecord
      */
-    public StreamUsersRecord(Long streamUserId, Long guildId, String userName, Integer streamType) {
+    public StreamUsersRecord(Long id, Long guildId, String userName, Integer streamType) {
         super(StreamUsers.STREAM_USERS);
 
-        setStreamUserId(streamUserId);
+        setId(id);
         setGuildId(guildId);
         setUserName(userName);
         setStreamType(streamType);

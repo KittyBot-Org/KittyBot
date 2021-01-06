@@ -42,7 +42,7 @@ public class HastebinCommand extends Command{
 			attachment.retrieveInputStream().thenAcceptAsync(inputStream -> {
 				try(inputStream){
 					var text = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
-					ctx.sendSuccess(maskLink("here is a hastebin", ctx.getMain().getRequestManager().postToHastebin(text)));
+					ctx.sendSuccess(maskLink("here is a hastebin", ctx.getModules().getRequestModule().postToHastebin(text)));
 				}
 				catch(NullPointerException | IOException e){
 					ctx.sendError("Error while creating hastebin\nError: " + e.getMessage());

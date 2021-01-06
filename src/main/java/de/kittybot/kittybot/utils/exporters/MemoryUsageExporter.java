@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.utils.exporters;
 
-import de.kittybot.kittybot.main.KittyBot;
-import de.kittybot.kittybot.managers.PrometheusManager;
+import de.kittybot.kittybot.module.Modules;
+import de.kittybot.kittybot.modules.PrometheusModule;
 import io.prometheus.client.Gauge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,10 +30,10 @@ public class MemoryUsageExporter{
 	private static final Gauge.Child RSS = MEMORY_USAGE.labels("RSS");
 	private static volatile ScheduledFuture<?> task;
 
-	private final KittyBot main;
+	private final Modules modules;
 
-	public MemoryUsageExporter(KittyBot main){
-		this.main = main;
+	public MemoryUsageExporter(Modules modules){
+		this.modules = modules;
 	}
 
 	public void register(){
@@ -45,9 +45,9 @@ public class MemoryUsageExporter{
 			return;
 		}
 
-		task = this.main.getScheduler().scheduleAtFixedRate(
+		task = this.modules.getScheduler().scheduleAtFixedRate(
 				this::collect, 0,
-				PrometheusManager.UPDATE_PERIOD.toMillis(), TimeUnit.MILLISECONDS
+				PrometheusModule.UPDATE_PERIOD.toMillis(), TimeUnit.MILLISECONDS
 		);
 	}
 

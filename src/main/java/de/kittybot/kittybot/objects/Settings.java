@@ -18,7 +18,7 @@ public class Settings{
 	private final Set<SelfAssignableRole> selfAssignableRoles;
 	private final Set<SelfAssignableRoleGroup> selfAssignableRoleGroups;
 	private final Map<String, Set<Long>> guildInviteRoles;
-	private final Set<String> prefixes;
+	private String prefix;
 	private long streamAnnouncementChannelId;
 	private String streamAnnouncementMessage;
 	private long announcementChannelId;
@@ -36,8 +36,9 @@ public class Settings{
 	private long djRoleId;
 	private boolean snipesEnabled;
 
-	public Settings(GuildsRecord record, Set<String> prefixes, Set<Long> snipeDisabledChannels, Set<Long> botDisabledChannels, Set<Long> botIgnoredUsers, Set<SelfAssignableRole> selfAssignableRoles, Set<SelfAssignableRoleGroup> selfAssignableRoleGroups, Map<String, Set<Long>> guildInviteRoles){
+	public Settings(GuildsRecord record, Set<Long> snipeDisabledChannels, Set<Long> botDisabledChannels, Set<Long> botIgnoredUsers, Set<SelfAssignableRole> selfAssignableRoles, Set<SelfAssignableRoleGroup> selfAssignableRoleGroups, Map<String, Set<Long>> guildInviteRoles){
 		this.guildId = record.getGuildId();
+		this.prefix = record.getPrefix();
 		this.streamAnnouncementChannelId = record.getStreamAnnouncementChannelId();
 		this.streamAnnouncementMessage = record.getStreamAnnouncementMessage();
 		this.announcementChannelId = record.getAnnouncementChannelId();
@@ -54,7 +55,6 @@ public class Settings{
 		this.inactiveDuration = record.getInactiveDuration().toDuration();
 		this.djRoleId = record.getDjRoleId();
 		this.snipesEnabled = record.getSnipesEnabled();
-		this.prefixes = prefixes == null ? new HashSet<>() : prefixes;
 		this.snipeDisabledChannels = snipeDisabledChannels == null ? new HashSet<>() : snipeDisabledChannels;
 		this.botDisabledChannels = botDisabledChannels == null ? new HashSet<>() : botDisabledChannels;
 		this.botIgnoredUsers = botIgnoredUsers == null ? new HashSet<>() : botIgnoredUsers;
@@ -67,32 +67,24 @@ public class Settings{
 		return this.guildId;
 	}
 
-	public Set<String> getPrefixes(){
-		return this.prefixes;
-	}
-
-	public void addPrefixes(Set<String> prefixes){
-		this.prefixes.addAll(prefixes);
-	}
-
 	public String getPrefix(){
-		return this.prefixes.stream().findFirst().orElse(null);
+		return this.prefix;
 	}
 
-	public void removePrefixes(Set<String> prefixes){
-		this.prefixes.removeAll(prefixes);
+	public void setPrefix(String prefix){
+		this.prefix = prefix;
 	}
 
 	public long getStreamAnnouncementChannelId(){
 		return this.streamAnnouncementChannelId;
 	}
 
-	public String getStreamAnnouncementChannel(){
-		return MessageUtils.getChannelMention(streamAnnouncementChannelId);
-	}
-
 	public void setStreamAnnouncementChannelId(long streamAnnouncementChannelId){
 		this.streamAnnouncementChannelId = streamAnnouncementChannelId;
+	}
+
+	public String getStreamAnnouncementChannel(){
+		return MessageUtils.getChannelMention(streamAnnouncementChannelId);
 	}
 
 	public String getStreamAnnouncementMessage(){
@@ -107,12 +99,12 @@ public class Settings{
 		return this.announcementChannelId;
 	}
 
-	public String getAnnouncementChannel(){
-		return MessageUtils.getChannelMention(announcementChannelId);
-	}
-
 	public void setAnnouncementChannelId(long announcementChannelId){
 		this.announcementChannelId = announcementChannelId;
+	}
+
+	public String getAnnouncementChannel(){
+		return MessageUtils.getChannelMention(announcementChannelId);
 	}
 
 	public long getRequestChannelId(){

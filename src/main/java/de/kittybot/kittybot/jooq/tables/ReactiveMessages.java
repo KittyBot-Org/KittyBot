@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -49,14 +49,14 @@ public class ReactiveMessages extends TableImpl<ReactiveMessagesRecord> {
     }
 
     /**
-     * The column <code>public.reactive_messages.reactive_message_id</code>.
+     * The column <code>public.reactive_messages.id</code>.
      */
-    public final TableField<ReactiveMessagesRecord, Long> REACTIVE_MESSAGE_ID = createField(DSL.name("reactive_message_id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+    public final TableField<ReactiveMessagesRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>public.reactive_messages.guild_id</code>.
+     * The column <code>public.reactive_messages.member_id</code>.
      */
-    public final TableField<ReactiveMessagesRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<ReactiveMessagesRecord, Long> MEMBER_ID = createField(DSL.name("member_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.reactive_messages.channel_id</code>.
@@ -67,11 +67,6 @@ public class ReactiveMessages extends TableImpl<ReactiveMessagesRecord> {
      * The column <code>public.reactive_messages.message_id</code>.
      */
     public final TableField<ReactiveMessagesRecord, Long> MESSAGE_ID = createField(DSL.name("message_id"), SQLDataType.BIGINT.nullable(false), this, "");
-
-    /**
-     * The column <code>public.reactive_messages.user_id</code>.
-     */
-    public final TableField<ReactiveMessagesRecord, Long> USER_ID = createField(DSL.name("user_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.reactive_messages.command_path</code>.
@@ -138,11 +133,11 @@ public class ReactiveMessages extends TableImpl<ReactiveMessagesRecord> {
 
     @Override
     public List<ForeignKey<ReactiveMessagesRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ReactiveMessagesRecord, ?>>asList(Keys.REACTIVE_MESSAGES__REACTIVE_MESSAGES_GUILD_ID_FKEY);
+        return Arrays.<ForeignKey<ReactiveMessagesRecord, ?>>asList(Keys.REACTIVE_MESSAGES__REACTIVE_MESSAGES_MEMBER_ID_FKEY);
     }
 
-    public Guilds guilds() {
-        return new Guilds(this, Keys.REACTIVE_MESSAGES__REACTIVE_MESSAGES_GUILD_ID_FKEY);
+    public Members members() {
+        return new Members(this, Keys.REACTIVE_MESSAGES__REACTIVE_MESSAGES_MEMBER_ID_FKEY);
     }
 
     @Override
@@ -172,11 +167,11 @@ public class ReactiveMessages extends TableImpl<ReactiveMessagesRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Long, Long, Long, Long, Long, String, Long> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row6<Long, Long, Long, Long, String, Long> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

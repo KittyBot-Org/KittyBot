@@ -49,9 +49,9 @@ public class GuildInviteRoles extends TableImpl<GuildInviteRolesRecord> {
     }
 
     /**
-     * The column <code>public.guild_invite_roles.guild_invite_role_id</code>.
+     * The column <code>public.guild_invite_roles.id</code>.
      */
-    public final TableField<GuildInviteRolesRecord, Long> GUILD_INVITE_ROLE_ID = createField(DSL.name("guild_invite_role_id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+    public final TableField<GuildInviteRolesRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.guild_invite_roles.guild_invite_id</code>.

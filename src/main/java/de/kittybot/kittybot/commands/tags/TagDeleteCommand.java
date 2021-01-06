@@ -20,7 +20,7 @@ public class TagDeleteCommand extends Command{
 			ctx.sendUsage(this);
 			return;
 		}
-		ctx.getTagManager().delete(args.get(0), ctx.getUser().getIdLong(), ctx.getGuildId());
+		ctx.getTagModule().delete(args.get(0), ctx.getUser().getIdLong(), ctx.getGuildId());
 		ctx.sendSuccess("Deleted tag");
 	}
 

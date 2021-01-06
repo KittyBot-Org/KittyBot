@@ -49,9 +49,9 @@ public class BotDisabledChannels extends TableImpl<BotDisabledChannelsRecord> {
     }
 
     /**
-     * The column <code>public.bot_disabled_channels.bot_disabled_channel_id</code>.
+     * The column <code>public.bot_disabled_channels.id</code>.
      */
-    public final TableField<BotDisabledChannelsRecord, Long> BOT_DISABLED_CHANNEL_ID = createField(DSL.name("bot_disabled_channel_id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+    public final TableField<BotDisabledChannelsRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.bot_disabled_channels.guild_id</code>.

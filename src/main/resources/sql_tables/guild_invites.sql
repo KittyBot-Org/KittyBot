@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS guild_invites(
-  guild_invite_id bigserial PRIMARY KEY NOT NULL,
-  guild_id        bigint NOT NULL references guilds(guild_id) ON DELETE CASCADE,
-  code            varchar(8) NOT NULL UNIQUE
+  id       BIGSERIAL PRIMARY KEY NOT NULL,
+  guild_id BIGINT NOT NULL REFERENCES guilds(id) ON DELETE CASCADE,
+  code     VARCHAR(8) NOT NULL UNIQUE
 );

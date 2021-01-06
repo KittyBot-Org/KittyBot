@@ -1,8 +1,8 @@
 package de.kittybot.kittybot.web.routes.login;
 
 import com.jagrosh.jdautilities.oauth2.exceptions.InvalidStateException;
-import de.kittybot.kittybot.main.KittyBot;
-import de.kittybot.kittybot.managers.DashboardSessionManager;
+import de.kittybot.kittybot.module.Modules;
+import de.kittybot.kittybot.modules.DashboardSessionModule;
 import de.kittybot.kittybot.objects.DashboardSession;
 import de.kittybot.kittybot.web.WebService;
 import io.javalin.http.*;
@@ -16,10 +16,10 @@ import java.util.Date;
 
 public class PostLoginRoute implements Handler{
 
-	private final KittyBot main;
+	private final Modules modules;
 
-	public PostLoginRoute(KittyBot main){
-		this.main = main;
+	public PostLoginRoute(Modules modules){
+		this.modules = modules;
 	}
 
 	@Override
@@ -31,8 +31,8 @@ public class PostLoginRoute implements Handler{
 			throw new UnauthorizedResponse("State or code is invalid");
 		}
 		try{
-			var sessionManager = this.main.getDashboardSessionManager();
-			var session = (DashboardSession) sessionManager.getOAuth2Client().startSession(code, state, "", DashboardSessionManager.getScopes()).complete();
+			var sessionManager = this.modules.getDashboardSessionModule();
+			var session = (DashboardSession) sessionManager.getOAuth2Client().startSession(code, state, "", DashboardSessionModule.getScopes()).complete();
 			WebService.accepted(ctx, DataObject.empty().put("token", Jwts.builder().setIssuedAt(new Date()).setSubject(String.valueOf(session.getUserId())).signWith(sessionManager.getSecretKey()).compact()));
 		}
 		catch(HttpException e){

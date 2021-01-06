@@ -22,17 +22,17 @@ public class SelfAssignableRoleGroupsRecord extends UpdatableRecordImpl<SelfAssi
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.self_assignable_role_groups.self_assignable_role_group_id</code>.
+     * Setter for <code>public.self_assignable_role_groups.id</code>.
      */
-    public SelfAssignableRoleGroupsRecord setSelfAssignableRoleGroupId(Long value) {
+    public SelfAssignableRoleGroupsRecord setId(Long value) {
         set(0, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.self_assignable_role_groups.self_assignable_role_group_id</code>.
+     * Getter for <code>public.self_assignable_role_groups.id</code>.
      */
-    public Long getSelfAssignableRoleGroupId() {
+    public Long getId() {
         return (Long) get(0);
     }
 
@@ -106,7 +106,7 @@ public class SelfAssignableRoleGroupsRecord extends UpdatableRecordImpl<SelfAssi
 
     @Override
     public Field<Long> field1() {
-        return SelfAssignableRoleGroups.SELF_ASSIGNABLE_ROLE_GROUPS.SELF_ASSIGNABLE_ROLE_GROUP_ID;
+        return SelfAssignableRoleGroups.SELF_ASSIGNABLE_ROLE_GROUPS.ID;
     }
 
     @Override
@@ -126,7 +126,7 @@ public class SelfAssignableRoleGroupsRecord extends UpdatableRecordImpl<SelfAssi
 
     @Override
     public Long component1() {
-        return getSelfAssignableRoleGroupId();
+        return getId();
     }
 
     @Override
@@ -146,7 +146,7 @@ public class SelfAssignableRoleGroupsRecord extends UpdatableRecordImpl<SelfAssi
 
     @Override
     public Long value1() {
-        return getSelfAssignableRoleGroupId();
+        return getId();
     }
 
     @Override
@@ -166,7 +166,7 @@ public class SelfAssignableRoleGroupsRecord extends UpdatableRecordImpl<SelfAssi
 
     @Override
     public SelfAssignableRoleGroupsRecord value1(Long value) {
-        setSelfAssignableRoleGroupId(value);
+        setId(value);
         return this;
     }
 
@@ -211,10 +211,10 @@ public class SelfAssignableRoleGroupsRecord extends UpdatableRecordImpl<SelfAssi
     /**
      * Create a detached, initialised SelfAssignableRoleGroupsRecord
      */
-    public SelfAssignableRoleGroupsRecord(Long selfAssignableRoleGroupId, Long guildId, String groupName, Integer maxRoles) {
+    public SelfAssignableRoleGroupsRecord(Long id, Long guildId, String groupName, Integer maxRoles) {
         super(SelfAssignableRoleGroups.SELF_ASSIGNABLE_ROLE_GROUPS);
 
-        setSelfAssignableRoleGroupId(selfAssignableRoleGroupId);
+        setId(id);
         setGuildId(guildId);
         setGroupName(groupName);
         setMaxRoles(maxRoles);

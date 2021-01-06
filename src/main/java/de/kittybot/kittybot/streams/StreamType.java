@@ -20,12 +20,12 @@ public enum StreamType{
 		return Arrays.stream(values()).filter(streamType -> streamType.getId() == id).findFirst().orElse(null);
 	}
 
-	public static StreamType byName(String name){
-		return Arrays.stream(values()).filter(streamType -> streamType.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
-	}
-
 	public int getId(){
 		return this.id;
+	}
+
+	public static StreamType byName(String name){
+		return Arrays.stream(values()).filter(streamType -> streamType.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
 	}
 
 	public String getName(){

@@ -25,10 +25,10 @@ public class StreamAnnouncementCreateCommand extends Command{
 		}
 		var type = StreamType.byName(args.get(0));
 		if(type == null){
-			ctx.sendError("'"  + args.get(0) + "' is not a valid stream type. Use twitch or youtube");
+			ctx.sendError("'" + args.get(0) + "' is not a valid stream type. Use twitch or youtube");
 			return;
 		}
-		ctx.getStreamAnnouncementManager().add(args.get(1), ctx.getGuildId(), type);
+		ctx.getStreamAnnouncementModule().add(args.get(1), ctx.getGuildId(), type);
 		ctx.sendSuccess("Stream announcement added");
 	}
 

@@ -2,7 +2,7 @@ package de.kittybot.kittybot.objects;
 
 import com.jagrosh.jdautilities.oauth2.session.SessionController;
 import com.jagrosh.jdautilities.oauth2.session.SessionData;
-import de.kittybot.kittybot.managers.DashboardSessionManager;
+import de.kittybot.kittybot.modules.DashboardSessionModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,23 +12,23 @@ public class DashboardSessionController implements SessionController<DashboardSe
 
 	private static final Logger LOG = LoggerFactory.getLogger(DashboardSessionController.class);
 
-	private final DashboardSessionManager dashboardSessionManager;
+	private final DashboardSessionModule dashboardSessionModule;
 
-	public DashboardSessionController(DashboardSessionManager dashboardSessionManager){
-		this.dashboardSessionManager = dashboardSessionManager;
+	public DashboardSessionController(DashboardSessionModule dashboardSessionModule){
+		this.dashboardSessionModule = dashboardSessionModule;
 	}
 
 	@Override
 	public DashboardSession getSession(String userId){
-		return this.dashboardSessionManager.get(Long.parseLong(userId));
+		return this.dashboardSessionModule.get(Long.parseLong(userId));
 	}
 
 	@Override
 	public DashboardSession createSession(final SessionData sessionData){
 		var session = new DashboardSession(sessionData);
 		try{
-			session.setUserId(this.dashboardSessionManager.getOAuth2Client().getUser(session).complete().getIdLong());
-			this.dashboardSessionManager.add(session);
+			session.setUserId(this.dashboardSessionModule.getOAuth2Client().getUser(session).complete().getIdLong());
+			this.dashboardSessionModule.add(session);
 			return session;
 		}
 		catch(IOException e){

@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row10;
+import org.jooq.Row9;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -50,19 +50,14 @@ public class UserStatistics extends TableImpl<UserStatisticsRecord> {
     }
 
     /**
-     * The column <code>public.user_statistics.user_statistic_id</code>.
+     * The column <code>public.user_statistics.id</code>.
      */
-    public final TableField<UserStatisticsRecord, Long> USER_STATISTIC_ID = createField(DSL.name("user_statistic_id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+    public final TableField<UserStatisticsRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>public.user_statistics.user_id</code>.
+     * The column <code>public.user_statistics.member_id</code>.
      */
-    public final TableField<UserStatisticsRecord, Long> USER_ID = createField(DSL.name("user_id"), SQLDataType.BIGINT.nullable(false), this, "");
-
-    /**
-     * The column <code>public.user_statistics.guild_id</code>.
-     */
-    public final TableField<UserStatisticsRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<UserStatisticsRecord, Long> MEMBER_ID = createField(DSL.name("member_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.user_statistics.xp</code>.
@@ -97,7 +92,7 @@ public class UserStatistics extends TableImpl<UserStatisticsRecord> {
     /**
      * The column <code>public.user_statistics.last_active</code>.
      */
-    public final TableField<UserStatisticsRecord, LocalDateTime> LAST_ACTIVE = createField(DSL.name("last_active"), SQLDataType.LOCALDATETIME(6).nullable(false), this, "");
+    public final TableField<UserStatisticsRecord, LocalDateTime> LAST_ACTIVE = createField(DSL.name("last_active"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", SQLDataType.LOCALDATETIME)), this, "");
 
     private UserStatistics(Name alias, Table<UserStatisticsRecord> aliased) {
         this(alias, aliased, null);
@@ -149,16 +144,16 @@ public class UserStatistics extends TableImpl<UserStatisticsRecord> {
 
     @Override
     public List<UniqueKey<UserStatisticsRecord>> getKeys() {
-        return Arrays.<UniqueKey<UserStatisticsRecord>>asList(Keys.USER_STATISTICS_PKEY);
+        return Arrays.<UniqueKey<UserStatisticsRecord>>asList(Keys.USER_STATISTICS_PKEY, Keys.USER_STATISTICS_MEMBER_ID_KEY);
     }
 
     @Override
     public List<ForeignKey<UserStatisticsRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<UserStatisticsRecord, ?>>asList(Keys.USER_STATISTICS__USER_STATISTICS_GUILD_ID_FKEY);
+        return Arrays.<ForeignKey<UserStatisticsRecord, ?>>asList(Keys.USER_STATISTICS__USER_STATISTICS_MEMBER_ID_FKEY);
     }
 
-    public Guilds guilds() {
-        return new Guilds(this, Keys.USER_STATISTICS__USER_STATISTICS_GUILD_ID_FKEY);
+    public Members members() {
+        return new Members(this, Keys.USER_STATISTICS__USER_STATISTICS_MEMBER_ID_FKEY);
     }
 
     @Override
@@ -188,11 +183,11 @@ public class UserStatistics extends TableImpl<UserStatisticsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row10 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Long, Long, Long, Integer, Integer, Integer, Integer, Integer, Integer, LocalDateTime> fieldsRow() {
-        return (Row10) super.fieldsRow();
+    public Row9<Long, Long, Integer, Integer, Integer, Integer, Integer, Integer, LocalDateTime> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 }

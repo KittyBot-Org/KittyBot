@@ -4,7 +4,7 @@ import de.kittybot.kittybot.jooq.tables.records.SelfAssignableRolesRecord;
 
 public class SelfAssignableRole{
 
-	private final long guildId, groupId,  roleId, emoteId;
+	private final long guildId, groupId, roleId, emoteId;
 
 	public SelfAssignableRole(long guildId, long groupId, long roleId, long emoteId){
 		this.guildId = guildId;

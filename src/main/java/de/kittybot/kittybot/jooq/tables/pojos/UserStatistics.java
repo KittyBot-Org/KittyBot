@@ -16,9 +16,8 @@ public class UserStatistics implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Long          userStatisticId;
-    private final Long          userId;
-    private final Long          guildId;
+    private final Long          id;
+    private final Long          memberId;
     private final Integer       xp;
     private final Integer       level;
     private final Integer       botCalls;
@@ -28,9 +27,8 @@ public class UserStatistics implements Serializable {
     private final LocalDateTime lastActive;
 
     public UserStatistics(UserStatistics value) {
-        this.userStatisticId = value.userStatisticId;
-        this.userId = value.userId;
-        this.guildId = value.guildId;
+        this.id = value.id;
+        this.memberId = value.memberId;
         this.xp = value.xp;
         this.level = value.level;
         this.botCalls = value.botCalls;
@@ -41,9 +39,8 @@ public class UserStatistics implements Serializable {
     }
 
     public UserStatistics(
-        Long          userStatisticId,
-        Long          userId,
-        Long          guildId,
+        Long          id,
+        Long          memberId,
         Integer       xp,
         Integer       level,
         Integer       botCalls,
@@ -52,9 +49,8 @@ public class UserStatistics implements Serializable {
         Integer       emoteCount,
         LocalDateTime lastActive
     ) {
-        this.userStatisticId = userStatisticId;
-        this.userId = userId;
-        this.guildId = guildId;
+        this.id = id;
+        this.memberId = memberId;
         this.xp = xp;
         this.level = level;
         this.botCalls = botCalls;
@@ -65,24 +61,17 @@ public class UserStatistics implements Serializable {
     }
 
     /**
-     * Getter for <code>public.user_statistics.user_statistic_id</code>.
+     * Getter for <code>public.user_statistics.id</code>.
      */
-    public Long getUserStatisticId() {
-        return this.userStatisticId;
+    public Long getId() {
+        return this.id;
     }
 
     /**
-     * Getter for <code>public.user_statistics.user_id</code>.
+     * Getter for <code>public.user_statistics.member_id</code>.
      */
-    public Long getUserId() {
-        return this.userId;
-    }
-
-    /**
-     * Getter for <code>public.user_statistics.guild_id</code>.
-     */
-    public Long getGuildId() {
-        return this.guildId;
+    public Long getMemberId() {
+        return this.memberId;
     }
 
     /**
@@ -138,9 +127,8 @@ public class UserStatistics implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("UserStatistics (");
 
-        sb.append(userStatisticId);
-        sb.append(", ").append(userId);
-        sb.append(", ").append(guildId);
+        sb.append(id);
+        sb.append(", ").append(memberId);
         sb.append(", ").append(xp);
         sb.append(", ").append(level);
         sb.append(", ").append(botCalls);

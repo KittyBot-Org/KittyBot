@@ -15,35 +15,35 @@ public class SelfAssignableRoleGroups implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Long    selfAssignableRoleGroupId;
+    private final Long    id;
     private final Long    guildId;
     private final String  groupName;
     private final Integer maxRoles;
 
     public SelfAssignableRoleGroups(SelfAssignableRoleGroups value) {
-        this.selfAssignableRoleGroupId = value.selfAssignableRoleGroupId;
+        this.id = value.id;
         this.guildId = value.guildId;
         this.groupName = value.groupName;
         this.maxRoles = value.maxRoles;
     }
 
     public SelfAssignableRoleGroups(
-        Long    selfAssignableRoleGroupId,
+        Long    id,
         Long    guildId,
         String  groupName,
         Integer maxRoles
     ) {
-        this.selfAssignableRoleGroupId = selfAssignableRoleGroupId;
+        this.id = id;
         this.guildId = guildId;
         this.groupName = groupName;
         this.maxRoles = maxRoles;
     }
 
     /**
-     * Getter for <code>public.self_assignable_role_groups.self_assignable_role_group_id</code>.
+     * Getter for <code>public.self_assignable_role_groups.id</code>.
      */
-    public Long getSelfAssignableRoleGroupId() {
-        return this.selfAssignableRoleGroupId;
+    public Long getId() {
+        return this.id;
     }
 
     /**
@@ -71,7 +71,7 @@ public class SelfAssignableRoleGroups implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("SelfAssignableRoleGroups (");
 
-        sb.append(selfAssignableRoleGroupId);
+        sb.append(id);
         sb.append(", ").append(guildId);
         sb.append(", ").append(groupName);
         sb.append(", ").append(maxRoles);

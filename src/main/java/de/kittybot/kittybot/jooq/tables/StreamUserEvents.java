@@ -49,9 +49,9 @@ public class StreamUserEvents extends TableImpl<StreamUserEventsRecord> {
     }
 
     /**
-     * The column <code>public.stream_user_events.steam_user_event_id</code>.
+     * The column <code>public.stream_user_events.id</code>.
      */
-    public final TableField<StreamUserEventsRecord, Long> STEAM_USER_EVENT_ID = createField(DSL.name("steam_user_event_id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+    public final TableField<StreamUserEventsRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.stream_user_events.stream_user_id</code>.

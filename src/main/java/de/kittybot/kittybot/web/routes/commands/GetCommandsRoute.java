@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.web.routes.commands;
 
 import de.kittybot.kittybot.command.Category;
-import de.kittybot.kittybot.main.KittyBot;
+import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.web.WebService;
 import io.javalin.http.Context;
@@ -15,15 +15,15 @@ import java.util.stream.Collectors;
 
 public class GetCommandsRoute implements Handler{
 
-	private final KittyBot main;
+	private final Modules modules;
 
-	public GetCommandsRoute(KittyBot main){
-		this.main = main;
+	public GetCommandsRoute(Modules modules){
+		this.modules = modules;
 	}
 
 	@Override
 	public void handle(@NotNull Context ctx){
-		var commandSet = this.main.getCommandManager().getCommands();
+		var commandSet = this.modules.getCommandModule().getCommands();
 		var categories = DataArray.fromCollection(
 				Arrays.stream(Category.values()).map(category ->
 						DataObject.empty().put("name", category.getName()).put("emote_url", category.getEmoteUrl()).put("commands", DataArray.fromCollection(

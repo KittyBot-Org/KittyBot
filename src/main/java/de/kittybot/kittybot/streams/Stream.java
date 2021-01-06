@@ -16,7 +16,7 @@ public class Stream{
 	private final Instant startedAt;
 	private final Language language;
 	private Game game;
-	private StreamType type;
+	private final StreamType type;
 
 	public Stream(long streamId, String streamTitle, String thumbnailUrl, long userId, String userName, int gameId, Game game, int viewerCount, Instant startedAt, Language language, StreamType type){
 		this.streamId = streamId;

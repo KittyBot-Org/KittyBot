@@ -23,10 +23,10 @@ public class NotificationListCommand extends Command{
 	public void run(Args args, CommandContext ctx){
 		Set<Notification> notifs;
 		if(args.isEmpty()){
-			notifs = ctx.getNotificationManager().get(ctx.getUser().getIdLong());
+			notifs = ctx.getNotificationModule().get(ctx.getUser().getIdLong());
 		}
 		else if(Config.OWNER_IDS.contains(ctx.getUser().getIdLong())){
-			notifs = ctx.getNotificationManager().get(Long.parseLong(args.get(0)));
+			notifs = ctx.getNotificationModule().get(Long.parseLong(args.get(0)));
 		}
 		else{
 			ctx.sendError("Error while retrieving notifications");

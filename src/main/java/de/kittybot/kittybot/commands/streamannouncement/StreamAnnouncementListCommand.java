@@ -19,7 +19,7 @@ public class StreamAnnouncementListCommand extends Command{
 
 	@Override
 	protected void run(Args args, CommandContext ctx) throws CommandException{
-		var streams = ctx.getStreamAnnouncementManager().get(ctx.getGuildId());
+		var streams = ctx.getStreamAnnouncementModule().get(ctx.getGuildId());
 		ctx.sendSuccess("Following stream announcements are enabled:\n" + streams.stream().map(stream -> stream.getUserName() + ": " + stream.getStreamType()).collect(Collectors.joining("\n")));
 	}
 

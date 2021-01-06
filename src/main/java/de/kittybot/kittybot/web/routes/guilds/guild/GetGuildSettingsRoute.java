@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.web.routes.guilds.guild;
 
-import de.kittybot.kittybot.main.KittyBot;
+import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.web.WebService;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -12,16 +12,16 @@ import java.util.stream.Collectors;
 
 public class GetGuildSettingsRoute implements Handler{
 
-	private final KittyBot main;
+	private final Modules modules;
 
-	public GetGuildSettingsRoute(KittyBot main){
-		this.main = main;
+	public GetGuildSettingsRoute(Modules modules){
+		this.modules = modules;
 	}
 
 	@Override
 	public void handle(@NotNull Context ctx){
-		var guildId = this.main.getWebService().getGuild(ctx).getIdLong();
-		var settings = this.main.getGuildSettingsManager().getSettings(guildId);
+		var guildId = this.modules.getWebService().getGuild(ctx).getIdLong();
+		var settings = this.modules.getGuildSettingsModule().getSettings(guildId);
 		var selfAssignableRoles = DataArray.empty();
 		//SelfAssignableRoleCache.getSelfAssignableRoles(guildId).forEach((key, value) -> data.add(DataObject.empty().put("role", key).put("emote", value)));
 		var selfAssignableRoleGroups = DataArray.empty();

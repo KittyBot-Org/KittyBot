@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS member_roles(
+  id        BIGSERIAL PRIMARY KEY NOT NULL,
+  member_id BIGINT NOT NULL UNIQUE REFERENCES members(id),
+  role_id   BIGINT NOT NULL UNIQUE
+);

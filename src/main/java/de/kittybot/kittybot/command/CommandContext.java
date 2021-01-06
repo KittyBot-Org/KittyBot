@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.command;
 
-import de.kittybot.kittybot.main.KittyBot;
-import de.kittybot.kittybot.managers.*;
+import de.kittybot.kittybot.module.Modules;
+import de.kittybot.kittybot.modules.*;
 import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -25,15 +25,15 @@ import java.util.stream.Collectors;
 public class CommandContext{
 
 	private final GuildMessageReceivedEvent event;
-	private final KittyBot main;
+	private final Modules modules;
 	private final String command;
 	private final String fullPath;
 	private final Args args;
 	private final String rawMessage;
 
-	public CommandContext(GuildMessageReceivedEvent event, KittyBot main, String fullPath, Args args, String rawMessage){
+	public CommandContext(GuildMessageReceivedEvent event, Modules modules, String fullPath, Args args, String rawMessage){
 		this.event = event;
-		this.main = main;
+		this.modules = modules;
 		this.command = args.get(0);
 		this.fullPath = fullPath;
 		this.args = args.subArgs();
@@ -41,59 +41,59 @@ public class CommandContext{
 	}
 
 	public CommandContext getChildContext(String fullPath){
-		return new CommandContext(this.event, this.main, fullPath, this.args, rawMessage);
+		return new CommandContext(this.event, this.modules, fullPath, this.args, rawMessage);
 	}
 
-	public KittyBot getMain(){
-		return this.main;
+	public Modules getModules(){
+		return this.modules;
 	}
 
-	public CommandManager getCommandManager(){
-		return this.main.getCommandManager();
+	public CommandModule getCommandModule(){
+		return this.modules.getCommandModule();
 	}
 
-	public SettingsManager getGuildSettingsManager(){
-		return this.main.getGuildSettingsManager();
+	public SettingsModule getGuildSettingsModule(){
+		return this.modules.getGuildSettingsModule();
 	}
 
-	public StreamAnnouncementManager getStreamAnnouncementManager(){
-		return this.main.getStreamAnnouncementManager();
+	public StreamAnnouncementModule getStreamAnnouncementModule(){
+		return this.modules.getStreamAnnouncementModule();
 	}
 
-	public NotificationManager getNotificationManager(){
-		return this.main.getNotificationManager();
+	public NotificationModule getNotificationModule(){
+		return this.modules.getNotificationModule();
 	}
 
-	public ReactiveMessageManager getReactiveMessageManager(){
-		return this.main.getReactiveMessageManager();
+	public ReactiveMessageModule getReactiveMessageModule(){
+		return this.modules.getReactiveMessageModule();
 	}
 
-	public DashboardSessionManager getDashboardSessionManager(){
-		return this.main.getDashboardSessionManager();
+	public DashboardSessionModule getDashboardSessionModule(){
+		return this.modules.getDashboardSessionModule();
 	}
 
-	public TagManager getTagManager(){
-		return this.main.getTagManager();
+	public TagModule getTagModule(){
+		return this.modules.getTagModule();
 	}
 
-	public InviteManager getInviteManager(){
-		return this.main.getInviteManager();
+	public InviteModule getInviteModule(){
+		return this.modules.getInviteModule();
 	}
 
-	public CommandResponseManager getCommandResponseManager(){
-		return this.main.getCommandResponseManager();
+	public CommandResponseModule getCommandResponseModule(){
+		return this.modules.getCommandResponseModule();
 	}
 
-	public MessageManager getMessageManager(){
-		return this.main.getMessageManager();
+	public MessageModule getMessageModule(){
+		return this.modules.getMessageModule();
 	}
 
-	public RequestManager getRequestManager(){
-		return this.main.getRequestManager();
+	public RequestModule getRequestModule(){
+		return this.modules.getRequestModule();
 	}
 
-	public MusicManager getMusicManager(){
-		return this.main.getMusicManager();
+	public MusicModule getMusicModule(){
+		return this.modules.getMusicModule();
 	}
 
 	public JDA getJDA(){
@@ -110,10 +110,6 @@ public class CommandContext{
 
 	public String getFullPath(){
 		return this.fullPath;
-	}
-
-	public Args getArgs(){
-		return this.args;
 	}
 
 	public String getRawMessage(){
@@ -138,34 +134,8 @@ public class CommandContext{
 		return this.event.getAuthor();
 	}
 
-	public List<User> getMentionedUsers(){
-		var users = new ArrayList<>(this.getMessage().getMentionedUsers());
-		var selfUser = this.getSelfUser();
-
-		if(this.isMentionCommand()){
-			if(this.getMessage().getMentionedUsersBag().getCount(selfUser) == 1){
-				users.remove(selfUser);
-			}
-		}
-		return users;
-	}
-
-	public Message getMessage(){
-		return this.event.getMessage();
-	}
-
 	public long getMessageId(){
 		return this.event.getMessage().getIdLong();
-	}
-
-	public User getSelfUser(){
-		return this.event.getJDA().getSelfUser();
-	}
-
-	public boolean isMentionCommand(){
-		var content = this.getMessage().getContentRaw();
-		var botId = this.getSelfUser().getId();
-		return content.startsWith("<@" + botId + ">") || content.startsWith("<@!" + botId + ">");
 	}
 
 	public void collectMentionedUsers(Consumer<Set<User>> success, Consumer<Throwable> error){
@@ -186,6 +156,36 @@ public class CommandContext{
 		success.accept(mentionedUsers);
 	}
 
+	public List<User> getMentionedUsers(){
+		var users = new ArrayList<>(this.getMessage().getMentionedUsers());
+		var selfUser = this.getSelfUser();
+
+		if(this.isMentionCommand()){
+			if(this.getMessage().getMentionedUsersBag().getCount(selfUser) == 1){
+				users.remove(selfUser);
+			}
+		}
+		return users;
+	}
+
+	public Args getArgs(){
+		return this.args;
+	}
+
+	public Message getMessage(){
+		return this.event.getMessage();
+	}
+
+	public User getSelfUser(){
+		return this.event.getJDA().getSelfUser();
+	}
+
+	public boolean isMentionCommand(){
+		var content = this.getMessage().getContentRaw();
+		var botId = this.getSelfUser().getId();
+		return content.startsWith("<@" + botId + ">") || content.startsWith("<@!" + botId + ">");
+	}
+
 	public void collectMentionedMembers(Consumer<Set<Member>> success, Consumer<Throwable> error){
 		var mentionedMembers = new HashSet<>(getMentionedMembers());
 		var actions = this.getArgs().stream()
@@ -201,17 +201,6 @@ public class CommandContext{
 			}, error);
 		}
 		success.accept(mentionedMembers);
-	}
-
-	public Bag<User> getMentionedUsersBag(){
-		var users = this.getMessage().getMentionedUsersBag();
-		var selfUser = this.getSelfUser();
-
-		if(this.isMentionCommand()){
-			var occurrences = users.getCount(selfUser);
-			users.remove(selfUser, occurrences == 1 ? 1 : occurrences - 1);
-		}
-		return users;
 	}
 
 	public List<Member> getMentionedMembers(){
@@ -232,6 +221,17 @@ public class CommandContext{
 
 	public Guild getGuild(){
 		return this.event.getGuild();
+	}
+
+	public Bag<User> getMentionedUsersBag(){
+		var users = this.getMessage().getMentionedUsersBag();
+		var selfUser = this.getSelfUser();
+
+		if(this.isMentionCommand()){
+			var occurrences = users.getCount(selfUser);
+			users.remove(selfUser, occurrences == 1 ? 1 : occurrences - 1);
+		}
+		return users;
 	}
 
 	public long getGuildId(){
@@ -269,7 +269,7 @@ public class CommandContext{
 
 	public void queue(MessageAction messageAction){
 		if(messageAction != null){
-			messageAction.queue(message -> this.main.getCommandResponseManager().add(getMessage().getIdLong(), message.getIdLong()), null);
+			messageAction.queue(message -> this.modules.getCommandResponseModule().add(getMessage().getIdLong(), message.getIdLong()), null);
 		}
 	}
 
@@ -291,12 +291,12 @@ public class CommandContext{
 		return this.event.getChannel();
 	}
 
-	public long getChannelId(){
-		return this.event.getChannel().getIdLong();
-	}
-
 	public Member getMember(){
 		return this.event.getMember();
+	}
+
+	public long getChannelId(){
+		return this.event.getChannel().getIdLong();
 	}
 
 	public void sendNoAdminPermissions(){

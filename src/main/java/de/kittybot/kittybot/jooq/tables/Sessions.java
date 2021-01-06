@@ -14,9 +14,10 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row4;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -47,6 +48,11 @@ public class Sessions extends TableImpl<SessionsRecord> {
     public Class<SessionsRecord> getRecordType() {
         return SessionsRecord.class;
     }
+
+    /**
+     * The column <code>public.sessions.id</code>.
+     */
+    public final TableField<SessionsRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.sessions.user_id</code>.
@@ -107,13 +113,18 @@ public class Sessions extends TableImpl<SessionsRecord> {
     }
 
     @Override
+    public Identity<SessionsRecord, Long> getIdentity() {
+        return (Identity<SessionsRecord, Long>) super.getIdentity();
+    }
+
+    @Override
     public UniqueKey<SessionsRecord> getPrimaryKey() {
         return Keys.SESSIONS_PKEY;
     }
 
     @Override
     public List<UniqueKey<SessionsRecord>> getKeys() {
-        return Arrays.<UniqueKey<SessionsRecord>>asList(Keys.SESSIONS_PKEY);
+        return Arrays.<UniqueKey<SessionsRecord>>asList(Keys.SESSIONS_PKEY, Keys.SESSIONS_USER_ID_KEY);
     }
 
     @Override
@@ -143,11 +154,11 @@ public class Sessions extends TableImpl<SessionsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Long, String, String, LocalDateTime> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row5<Long, Long, String, String, LocalDateTime> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }

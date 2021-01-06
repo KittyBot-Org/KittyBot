@@ -5,9 +5,9 @@ import de.kittybot.kittybot.jooq.tables.records.SelfAssignableRoleGroupsRecord;
 public class SelfAssignableRoleGroup{
 
 	private final long guildId;
-	private long id;
 	private final String groupName;
 	private final int maxRoles;
+	private long id;
 
 	public SelfAssignableRoleGroup(long guildId, long id, String groupName, int maxRoles){
 		this.guildId = guildId;
@@ -31,16 +31,16 @@ public class SelfAssignableRoleGroup{
 		return this.id;
 	}
 
+	public void setId(long id){
+		this.id = id;
+	}
+
 	public String getName(){
 		return this.groupName;
 	}
 
 	public int getMaxRoles(){
 		return this.maxRoles;
-	}
-
-	public void setId(long id){
-		this.id = id;
 	}
 
 }

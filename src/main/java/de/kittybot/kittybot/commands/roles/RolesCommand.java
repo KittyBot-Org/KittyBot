@@ -49,7 +49,7 @@ public class RolesCommand extends Command{
 					.setDescription("To get/remove a role react to this message with the specific  emote\n\n")
 					.setColor(Color.MAGENTA)
 					.appendDescription(value)).queue(message -> {
-				ctx.getReactiveMessageManager().addReactiveMessage(ctx, message.getIdLong(), ctx.getUser().getIdLong());
+				ctx.getReactiveMessageModule().addReactiveMessage(ctx, message.getIdLong(), ctx.getUser().getIdLong());
 				for(var group : groups.entrySet()){
 					for(var role : group.getValue()){
 						message.addReaction(":i:" + role.getEmoteId()).queue();
@@ -59,7 +59,7 @@ public class RolesCommand extends Command{
 			});
 		}
 		else if(args.get(0).equalsIgnoreCase("list")){
-			var sRoles = ctx.getGuildSettingsManager().getSelfAssignableRoles(ctx.getGuildId());
+			var sRoles = ctx.getGuildSettingsModule().getSelfAssignableRoles(ctx.getGuildId());
 			if(sRoles == null || sRoles.isEmpty()){
 				ctx.sendSuccess("There are no roles added");
 			}
@@ -81,7 +81,7 @@ public class RolesCommand extends Command{
 				ctx.sendError("Role Group with name `" + args.get(1) + "` not found");
 				return;
 			}
-			ctx.getGuildSettingsManager().addSelfAssignableRoles(ctx.getGuildId(), toSet(ctx.getGuildId(), groups.iterator().next().getId(), roles, emotes));
+			ctx.getGuildSettingsModule().addSelfAssignableRoles(ctx.getGuildId(), toSet(ctx.getGuildId(), groups.iterator().next().getId(), roles, emotes));
 			ctx.sendSuccess("Roles added!");
 		}
 		else if(args.get(0).equalsIgnoreCase("remove")){
@@ -93,11 +93,11 @@ public class RolesCommand extends Command{
 				ctx.sendError("Please be sure to mention a role");
 				return;
 			}
-			ctx.getGuildSettingsManager().removeSelfAssignableRoles(ctx.getGuildId(), roles.stream().map(Role::getIdLong).collect(Collectors.toSet()));
+			ctx.getGuildSettingsModule().removeSelfAssignableRoles(ctx.getGuildId(), roles.stream().map(Role::getIdLong).collect(Collectors.toSet()));
 			ctx.sendSuccess("Roles removed!");
 		}
 		else if(args.get(0).equalsIgnoreCase("remove") && !roles.isEmpty()){
-			ctx.getGuildSettingsManager().removeSelfAssignableRoles(ctx.getGuildId(), toSet(roles));
+			ctx.getGuildSettingsModule().removeSelfAssignableRoles(ctx.getGuildId(), toSet(roles));
 			ctx.sendSuccess("Roles removed!");
 		}
 		else{
@@ -105,23 +105,9 @@ public class RolesCommand extends Command{
 		}
 	}
 
-	public Set<Long> toSet(List<Role> roles){
-		return roles.stream().map(Role::getIdLong).collect(Collectors.toSet());
-	}
-
-	public Set<SelfAssignableRole> toSet(long guildId, long groupId, List<Role> roles, List<Emote> emotes){
-		return roles.stream().map(role ->
-				emotes.get(roles.indexOf(role)) == null ? null : new SelfAssignableRole(guildId, groupId, role.getIdLong(), emotes.get(roles.indexOf(role)).getIdLong())
-		).filter(Objects::nonNull).collect(Collectors.toSet());
-	}
-
-	private Set<SelfAssignableRoleGroup> getSelfAssignableRoleGroupsByName(CommandContext ctx, String groupName){
-		return ctx.getGuildSettingsManager().getSelfAssignableRoleGroups(ctx.getGuildId()).stream().filter(group -> group.getName().equalsIgnoreCase(groupName)).collect(Collectors.toSet());
-	}
-
 	private Map<SelfAssignableRoleGroup, Set<SelfAssignableRole>> getSelfAssignableRoles(CommandContext ctx){
 		var guildId = ctx.getGuildId();
-		var settings = ctx.getGuildSettingsManager().getSettings(guildId);
+		var settings = ctx.getGuildSettingsModule().getSettings(guildId);
 		var roles = settings.getSelfAssignableRoles();
 		var groups = settings.getSelfAssignableRoleGroups();
 		if(roles == null || roles.isEmpty() || groups == null || groups.isEmpty()){
@@ -141,6 +127,20 @@ public class RolesCommand extends Command{
 			map.get(group).add(role);
 		}
 		return map;
+	}
+
+	private Set<SelfAssignableRoleGroup> getSelfAssignableRoleGroupsByName(CommandContext ctx, String groupName){
+		return ctx.getGuildSettingsModule().getSelfAssignableRoleGroups(ctx.getGuildId()).stream().filter(group -> group.getName().equalsIgnoreCase(groupName)).collect(Collectors.toSet());
+	}
+
+	public Set<SelfAssignableRole> toSet(long guildId, long groupId, List<Role> roles, List<Emote> emotes){
+		return roles.stream().map(role ->
+				emotes.get(roles.indexOf(role)) == null ? null : new SelfAssignableRole(guildId, groupId, role.getIdLong(), emotes.get(roles.indexOf(role)).getIdLong())
+		).filter(Objects::nonNull).collect(Collectors.toSet());
+	}
+
+	public Set<Long> toSet(List<Role> roles){
+		return roles.stream().map(Role::getIdLong).collect(Collectors.toSet());
 	}
 
 	

@@ -22,17 +22,17 @@ public class GuildInvitesRecord extends UpdatableRecordImpl<GuildInvitesRecord> 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.guild_invites.guild_invite_id</code>.
+     * Setter for <code>public.guild_invites.id</code>.
      */
-    public GuildInvitesRecord setGuildInviteId(Long value) {
+    public GuildInvitesRecord setId(Long value) {
         set(0, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.guild_invites.guild_invite_id</code>.
+     * Getter for <code>public.guild_invites.id</code>.
      */
-    public Long getGuildInviteId() {
+    public Long getId() {
         return (Long) get(0);
     }
 
@@ -91,7 +91,7 @@ public class GuildInvitesRecord extends UpdatableRecordImpl<GuildInvitesRecord> 
 
     @Override
     public Field<Long> field1() {
-        return GuildInvites.GUILD_INVITES.GUILD_INVITE_ID;
+        return GuildInvites.GUILD_INVITES.ID;
     }
 
     @Override
@@ -106,7 +106,7 @@ public class GuildInvitesRecord extends UpdatableRecordImpl<GuildInvitesRecord> 
 
     @Override
     public Long component1() {
-        return getGuildInviteId();
+        return getId();
     }
 
     @Override
@@ -121,7 +121,7 @@ public class GuildInvitesRecord extends UpdatableRecordImpl<GuildInvitesRecord> 
 
     @Override
     public Long value1() {
-        return getGuildInviteId();
+        return getId();
     }
 
     @Override
@@ -136,7 +136,7 @@ public class GuildInvitesRecord extends UpdatableRecordImpl<GuildInvitesRecord> 
 
     @Override
     public GuildInvitesRecord value1(Long value) {
-        setGuildInviteId(value);
+        setId(value);
         return this;
     }
 
@@ -174,10 +174,10 @@ public class GuildInvitesRecord extends UpdatableRecordImpl<GuildInvitesRecord> 
     /**
      * Create a detached, initialised GuildInvitesRecord
      */
-    public GuildInvitesRecord(Long guildInviteId, Long guildId, String code) {
+    public GuildInvitesRecord(Long id, Long guildId, String code) {
         super(GuildInvites.GUILD_INVITES);
 
-        setGuildInviteId(guildInviteId);
+        setId(id);
         setGuildId(guildId);
         setCode(code);
     }

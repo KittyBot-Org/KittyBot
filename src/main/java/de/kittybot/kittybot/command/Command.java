@@ -44,7 +44,7 @@ public abstract class Command{
 		if(event.getReactionEmote().getName().equals(Emoji.WASTEBASKET.getAsMention()) && (event.getUserIdLong() == reactiveMessage.getUserId() || event.getMember().hasPermission(Permission.MESSAGE_MANAGE))){
 			event.getChannel().deleteMessageById(event.getMessageId()).queue();
 			event.getChannel().deleteMessageById(reactiveMessage.getMessageId()).queue();
-			ctx.getReactiveMessageManager().removeReactiveMessage(event.getMessageIdLong());
+			ctx.getReactiveMessageModule().removeReactiveMessage(event.getMessageIdLong());
 		}
 	}
 

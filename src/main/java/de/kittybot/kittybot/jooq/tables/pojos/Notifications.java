@@ -16,58 +16,54 @@ public class Notifications implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Long          notificationId;
-    private final Long          guildId;
+    private final Long          id;
+    private final Long          memberId;
     private final Long          channelId;
     private final Long          messageId;
-    private final Long          userId;
     private final String        content;
-    private final LocalDateTime creationTime;
+    private final LocalDateTime createdAt;
     private final LocalDateTime notificationTime;
 
     public Notifications(Notifications value) {
-        this.notificationId = value.notificationId;
-        this.guildId = value.guildId;
+        this.id = value.id;
+        this.memberId = value.memberId;
         this.channelId = value.channelId;
         this.messageId = value.messageId;
-        this.userId = value.userId;
         this.content = value.content;
-        this.creationTime = value.creationTime;
+        this.createdAt = value.createdAt;
         this.notificationTime = value.notificationTime;
     }
 
     public Notifications(
-        Long          notificationId,
-        Long          guildId,
+        Long          id,
+        Long          memberId,
         Long          channelId,
         Long          messageId,
-        Long          userId,
         String        content,
-        LocalDateTime creationTime,
+        LocalDateTime createdAt,
         LocalDateTime notificationTime
     ) {
-        this.notificationId = notificationId;
-        this.guildId = guildId;
+        this.id = id;
+        this.memberId = memberId;
         this.channelId = channelId;
         this.messageId = messageId;
-        this.userId = userId;
         this.content = content;
-        this.creationTime = creationTime;
+        this.createdAt = createdAt;
         this.notificationTime = notificationTime;
     }
 
     /**
-     * Getter for <code>public.notifications.notification_id</code>.
+     * Getter for <code>public.notifications.id</code>.
      */
-    public Long getNotificationId() {
-        return this.notificationId;
+    public Long getId() {
+        return this.id;
     }
 
     /**
-     * Getter for <code>public.notifications.guild_id</code>.
+     * Getter for <code>public.notifications.member_id</code>.
      */
-    public Long getGuildId() {
-        return this.guildId;
+    public Long getMemberId() {
+        return this.memberId;
     }
 
     /**
@@ -85,13 +81,6 @@ public class Notifications implements Serializable {
     }
 
     /**
-     * Getter for <code>public.notifications.user_id</code>.
-     */
-    public Long getUserId() {
-        return this.userId;
-    }
-
-    /**
      * Getter for <code>public.notifications.content</code>.
      */
     public String getContent() {
@@ -99,10 +88,10 @@ public class Notifications implements Serializable {
     }
 
     /**
-     * Getter for <code>public.notifications.creation_time</code>.
+     * Getter for <code>public.notifications.created_at</code>.
      */
-    public LocalDateTime getCreationTime() {
-        return this.creationTime;
+    public LocalDateTime getCreatedAt() {
+        return this.createdAt;
     }
 
     /**
@@ -116,13 +105,12 @@ public class Notifications implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("Notifications (");
 
-        sb.append(notificationId);
-        sb.append(", ").append(guildId);
+        sb.append(id);
+        sb.append(", ").append(memberId);
         sb.append(", ").append(channelId);
         sb.append(", ").append(messageId);
-        sb.append(", ").append(userId);
         sb.append(", ").append(content);
-        sb.append(", ").append(creationTime);
+        sb.append(", ").append(createdAt);
         sb.append(", ").append(notificationTime);
 
         sb.append(")");

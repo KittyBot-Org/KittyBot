@@ -39,7 +39,7 @@ public class UnignoreCommand extends Command{
 		if(users.isEmpty()){
 			ctx.sendError("Please provide a user");
 		}
-		ctx.getGuildSettingsManager().deleteBotIgnoredUsers(ctx.getGuildId(), users.stream().map(User::getIdLong).collect(Collectors.toSet()));
+		ctx.getGuildSettingsModule().deleteBotIgnoredUsers(ctx.getGuildId(), users.stream().map(User::getIdLong).collect(Collectors.toSet()));
 		ctx.sendSuccess(new EmbedBuilder().setDescription("Unignoring following users: " + users.stream().map(User::getAsMention).collect(Collectors.joining(", "))));
 	}
 

@@ -27,7 +27,7 @@ public class AssignCommand extends Command{
 			return;
 		}
 		var role = roles.get(0);
-		var settings = ctx.getGuildSettingsManager().getSettings(ctx.getGuildId());
+		var settings = ctx.getGuildSettingsModule().getSettings(ctx.getGuildId());
 		var selfAssignableRoles = settings.getSelfAssignableRoles();
 		if(selfAssignableRoles == null){
 			ctx.sendError("No self assignable roles found");

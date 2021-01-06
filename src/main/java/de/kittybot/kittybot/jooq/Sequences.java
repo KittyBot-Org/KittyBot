@@ -16,77 +16,92 @@ import org.jooq.impl.SQLDataType;
 public class Sequences {
 
     /**
-     * The sequence <code>public.bot_disabled_channels_bot_disabled_channel_id_seq</code>
+     * The sequence <code>public.bot_disabled_channels_id_seq</code>
      */
-    public static final Sequence<Long> BOT_DISABLED_CHANNELS_BOT_DISABLED_CHANNEL_ID_SEQ = Internal.createSequence("bot_disabled_channels_bot_disabled_channel_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+    public static final Sequence<Long> BOT_DISABLED_CHANNELS_ID_SEQ = Internal.createSequence("bot_disabled_channels_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.bot_ignored_users_bot_ignored_user_id_seq</code>
+     * The sequence <code>public.bot_ignored_members_id_seq</code>
      */
-    public static final Sequence<Long> BOT_IGNORED_USERS_BOT_IGNORED_USER_ID_SEQ = Internal.createSequence("bot_ignored_users_bot_ignored_user_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+    public static final Sequence<Long> BOT_IGNORED_MEMBERS_ID_SEQ = Internal.createSequence("bot_ignored_members_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.guild_invite_roles_guild_invite_role_id_seq</code>
+     * The sequence <code>public.guild_invite_roles_id_seq</code>
      */
-    public static final Sequence<Long> GUILD_INVITE_ROLES_GUILD_INVITE_ROLE_ID_SEQ = Internal.createSequence("guild_invite_roles_guild_invite_role_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+    public static final Sequence<Long> GUILD_INVITE_ROLES_ID_SEQ = Internal.createSequence("guild_invite_roles_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.guild_invites_guild_invite_id_seq</code>
+     * The sequence <code>public.guild_invites_id_seq</code>
      */
-    public static final Sequence<Long> GUILD_INVITES_GUILD_INVITE_ID_SEQ = Internal.createSequence("guild_invites_guild_invite_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+    public static final Sequence<Long> GUILD_INVITES_ID_SEQ = Internal.createSequence("guild_invites_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.guild_prefixes_guild_prefix_id_seq</code>
+     * The sequence <code>public.guild_tags_id_seq</code>
      */
-    public static final Sequence<Long> GUILD_PREFIXES_GUILD_PREFIX_ID_SEQ = Internal.createSequence("guild_prefixes_guild_prefix_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+    public static final Sequence<Long> GUILD_TAGS_ID_SEQ = Internal.createSequence("guild_tags_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.guild_tags_tag_id_seq</code>
+     * The sequence <code>public.member_roles_id_seq</code>
      */
-    public static final Sequence<Long> GUILD_TAGS_TAG_ID_SEQ = Internal.createSequence("guild_tags_tag_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+    public static final Sequence<Long> MEMBER_ROLES_ID_SEQ = Internal.createSequence("member_roles_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.notifications_notification_id_seq</code>
+     * The sequence <code>public.members_id_seq</code>
      */
-    public static final Sequence<Long> NOTIFICATIONS_NOTIFICATION_ID_SEQ = Internal.createSequence("notifications_notification_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+    public static final Sequence<Long> MEMBERS_ID_SEQ = Internal.createSequence("members_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.reactive_messages_reactive_message_id_seq</code>
+     * The sequence <code>public.notifications_id_seq</code>
      */
-    public static final Sequence<Long> REACTIVE_MESSAGES_REACTIVE_MESSAGE_ID_SEQ = Internal.createSequence("reactive_messages_reactive_message_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+    public static final Sequence<Long> NOTIFICATIONS_ID_SEQ = Internal.createSequence("notifications_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.requests_request_id_seq</code>
+     * The sequence <code>public.reactive_messages_id_seq</code>
      */
-    public static final Sequence<Long> REQUESTS_REQUEST_ID_SEQ = Internal.createSequence("requests_request_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+    public static final Sequence<Long> REACTIVE_MESSAGES_ID_SEQ = Internal.createSequence("reactive_messages_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.self_assignable_role_groups_self_assignable_role_group_id_seq</code>
+     * The sequence <code>public.requests_id_seq</code>
      */
-    public static final Sequence<Long> SELF_ASSIGNABLE_ROLE_GROUPS_SELF_ASSIGNABLE_ROLE_GROUP_ID_SEQ = Internal.createSequence("self_assignable_role_groups_self_assignable_role_group_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+    public static final Sequence<Long> REQUESTS_ID_SEQ = Internal.createSequence("requests_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.self_assignable_roles_self_assignable_role_id_seq</code>
+     * The sequence <code>public.self_assignable_role_groups_id_seq</code>
      */
-    public static final Sequence<Long> SELF_ASSIGNABLE_ROLES_SELF_ASSIGNABLE_ROLE_ID_SEQ = Internal.createSequence("self_assignable_roles_self_assignable_role_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+    public static final Sequence<Long> SELF_ASSIGNABLE_ROLE_GROUPS_ID_SEQ = Internal.createSequence("self_assignable_role_groups_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.snipe_disabled_channels_snipe_disabled_channel_id_seq</code>
+     * The sequence <code>public.self_assignable_roles_id_seq</code>
      */
-    public static final Sequence<Long> SNIPE_DISABLED_CHANNELS_SNIPE_DISABLED_CHANNEL_ID_SEQ = Internal.createSequence("snipe_disabled_channels_snipe_disabled_channel_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+    public static final Sequence<Long> SELF_ASSIGNABLE_ROLES_ID_SEQ = Internal.createSequence("self_assignable_roles_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.stream_user_events_steam_user_event_id_seq</code>
+     * The sequence <code>public.sessions_id_seq</code>
      */
-    public static final Sequence<Long> STREAM_USER_EVENTS_STEAM_USER_EVENT_ID_SEQ = Internal.createSequence("stream_user_events_steam_user_event_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+    public static final Sequence<Long> SESSIONS_ID_SEQ = Internal.createSequence("sessions_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.stream_users_stream_user_id_seq</code>
+     * The sequence <code>public.snipe_disabled_channels_id_seq</code>
      */
-    public static final Sequence<Long> STREAM_USERS_STREAM_USER_ID_SEQ = Internal.createSequence("stream_users_stream_user_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+    public static final Sequence<Long> SNIPE_DISABLED_CHANNELS_ID_SEQ = Internal.createSequence("snipe_disabled_channels_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.user_statistics_user_statistic_id_seq</code>
+     * The sequence <code>public.stream_user_events_id_seq</code>
      */
-    public static final Sequence<Long> USER_STATISTICS_USER_STATISTIC_ID_SEQ = Internal.createSequence("user_statistics_user_statistic_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+    public static final Sequence<Long> STREAM_USER_EVENTS_ID_SEQ = Internal.createSequence("stream_user_events_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.stream_users_id_seq</code>
+     */
+    public static final Sequence<Long> STREAM_USERS_ID_SEQ = Internal.createSequence("stream_users_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.user_statistics_id_seq</code>
+     */
+    public static final Sequence<Long> USER_STATISTICS_ID_SEQ = Internal.createSequence("user_statistics_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.users_id_seq</code>
+     */
+    public static final Sequence<Long> USERS_ID_SEQ = Internal.createSequence("users_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 }

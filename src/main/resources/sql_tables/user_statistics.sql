@@ -1,12 +1,12 @@
 CREATE TABLE IF NOT EXISTS user_statistics(
-  user_statistic_id bigserial PRIMARY KEY NOT NULL,
-  user_id           bigint NOT NULL,
-  guild_id          bigint NOT NULL references guilds(guild_id) ON DELETE CASCADE,
-  xp                int NOT NULL default(0),
-  level             int NOT NULL default(0),
-  bot_calls         int NOT NULL default(0),
-  voice_time        int NOT NULL default(0),
-  message_count     int NOT NULL default(0),
-  emote_count       int NOT NULL default(0),
-  last_active       timestamp NOT NULL
+  id            BIGSERIAL PRIMARY KEY NOT NULL,
+  member_id     BIGINT NOT NULL UNIQUE REFERENCES members(id) ON DELETE CASCADE,
+  xp            INT NOT NULL DEFAULT(0),
+  level         INT NOT NULL DEFAULT(0),
+  bot_calls     INT NOT NULL DEFAULT(0),
+  voice_time    INT NOT NULL DEFAULT(0),
+  message_count INT NOT NULL DEFAULT(0),
+  emote_count   INT NOT NULL DEFAULT(0),
+  last_active   TIMESTAMP NOT NULL DEFAULT(current_timestamp)
 );
+

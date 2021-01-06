@@ -22,17 +22,17 @@ public class StreamUserEventsRecord extends UpdatableRecordImpl<StreamUserEvents
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.stream_user_events.steam_user_event_id</code>.
+     * Setter for <code>public.stream_user_events.id</code>.
      */
-    public StreamUserEventsRecord setSteamUserEventId(Long value) {
+    public StreamUserEventsRecord setId(Long value) {
         set(0, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.stream_user_events.steam_user_event_id</code>.
+     * Getter for <code>public.stream_user_events.id</code>.
      */
-    public Long getSteamUserEventId() {
+    public Long getId() {
         return (Long) get(0);
     }
 
@@ -91,7 +91,7 @@ public class StreamUserEventsRecord extends UpdatableRecordImpl<StreamUserEvents
 
     @Override
     public Field<Long> field1() {
-        return StreamUserEvents.STREAM_USER_EVENTS.STEAM_USER_EVENT_ID;
+        return StreamUserEvents.STREAM_USER_EVENTS.ID;
     }
 
     @Override
@@ -106,7 +106,7 @@ public class StreamUserEventsRecord extends UpdatableRecordImpl<StreamUserEvents
 
     @Override
     public Long component1() {
-        return getSteamUserEventId();
+        return getId();
     }
 
     @Override
@@ -121,7 +121,7 @@ public class StreamUserEventsRecord extends UpdatableRecordImpl<StreamUserEvents
 
     @Override
     public Long value1() {
-        return getSteamUserEventId();
+        return getId();
     }
 
     @Override
@@ -136,7 +136,7 @@ public class StreamUserEventsRecord extends UpdatableRecordImpl<StreamUserEvents
 
     @Override
     public StreamUserEventsRecord value1(Long value) {
-        setSteamUserEventId(value);
+        setId(value);
         return this;
     }
 
@@ -174,10 +174,10 @@ public class StreamUserEventsRecord extends UpdatableRecordImpl<StreamUserEvents
     /**
      * Create a detached, initialised StreamUserEventsRecord
      */
-    public StreamUserEventsRecord(Long steamUserEventId, Long streamUserId, Integer event) {
+    public StreamUserEventsRecord(Long id, Long streamUserId, Integer event) {
         super(StreamUserEvents.STREAM_USER_EVENTS);
 
-        setSteamUserEventId(steamUserEventId);
+        setId(id);
         setStreamUserId(streamUserId);
         setEvent(event);
     }

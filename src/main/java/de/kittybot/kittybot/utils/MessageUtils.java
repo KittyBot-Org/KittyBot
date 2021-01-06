@@ -2,22 +2,18 @@ package de.kittybot.kittybot.utils;
 
 import de.kittybot.kittybot.objects.Emoji;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.utils.MiscUtil;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.regex.Matcher;
 
 public class MessageUtils{
 
 	private MessageUtils(){}
 
 	public static String trimIfTooLong(String message){
-		return message.length() > 2048 ? message.substring(0, 2045) + "...": message;
+		return message.length() > 2048 ? message.substring(0, 2045) + "..." : message;
 	}
 
 	public static String getBoolEmote(boolean bool){
@@ -39,21 +35,23 @@ public class MessageUtils{
 	public static Set<String> getMentions(String message){
 		var mentions = new HashSet<String>();
 		var userMatcher = Message.MentionType.USER.getPattern().matcher(message);
-		while (userMatcher.find()){
+		while(userMatcher.find()){
 			try{
 				MiscUtil.parseSnowflake(userMatcher.group(1));
 				mentions.add(userMatcher.group());
 			}
-			catch (NumberFormatException ignored) {}
+			catch(NumberFormatException ignored){
+			}
 		}
 
 		var roleMatcher = Message.MentionType.ROLE.getPattern().matcher(message);
-		while (roleMatcher.find()){
+		while(roleMatcher.find()){
 			try{
 				MiscUtil.parseSnowflake(roleMatcher.group(1));
 				mentions.add(roleMatcher.group());
 			}
-			catch (NumberFormatException ignored) {}
+			catch(NumberFormatException ignored){
+			}
 		}
 
 		if(Message.MentionType.EVERYONE.getPattern().matcher(message).find()){

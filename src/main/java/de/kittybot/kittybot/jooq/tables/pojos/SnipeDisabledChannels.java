@@ -15,31 +15,31 @@ public class SnipeDisabledChannels implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Long snipeDisabledChannelId;
+    private final Long id;
     private final Long guildId;
     private final Long channelId;
 
     public SnipeDisabledChannels(SnipeDisabledChannels value) {
-        this.snipeDisabledChannelId = value.snipeDisabledChannelId;
+        this.id = value.id;
         this.guildId = value.guildId;
         this.channelId = value.channelId;
     }
 
     public SnipeDisabledChannels(
-        Long snipeDisabledChannelId,
+        Long id,
         Long guildId,
         Long channelId
     ) {
-        this.snipeDisabledChannelId = snipeDisabledChannelId;
+        this.id = id;
         this.guildId = guildId;
         this.channelId = channelId;
     }
 
     /**
-     * Getter for <code>public.snipe_disabled_channels.snipe_disabled_channel_id</code>.
+     * Getter for <code>public.snipe_disabled_channels.id</code>.
      */
-    public Long getSnipeDisabledChannelId() {
-        return this.snipeDisabledChannelId;
+    public Long getId() {
+        return this.id;
     }
 
     /**
@@ -60,7 +60,7 @@ public class SnipeDisabledChannels implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("SnipeDisabledChannels (");
 
-        sb.append(snipeDisabledChannelId);
+        sb.append(id);
         sb.append(", ").append(guildId);
         sb.append(", ").append(channelId);
 

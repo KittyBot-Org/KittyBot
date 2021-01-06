@@ -20,7 +20,7 @@ public class TagCreateCommand extends Command{
 			ctx.sendUsage(this);
 			return;
 		}
-		ctx.getTagManager().create(args.get(0), ctx.getRawMessage(1), ctx.getGuildId(), ctx.getUser().getIdLong());
+		ctx.getTagModule().create(args.get(0), ctx.getRawMessage(1), ctx.getGuildId(), ctx.getUser().getIdLong());
 		ctx.sendSuccess("Created tag");
 	}
 

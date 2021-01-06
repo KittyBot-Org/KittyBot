@@ -32,7 +32,7 @@ public class NotificationCreateCommand extends Command{
 			ctx.sendError("Please provide a valid time or duration");
 			return;
 		}
-		var notif = ctx.getNotificationManager().create(
+		var notif = ctx.getNotificationModule().create(
 				ctx.getGuildId(),
 				ctx.getChannelId(),
 				ctx.getMessageId(),

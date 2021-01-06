@@ -15,31 +15,31 @@ public class StreamUserEvents implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Long    steamUserEventId;
+    private final Long    id;
     private final Long    streamUserId;
     private final Integer event;
 
     public StreamUserEvents(StreamUserEvents value) {
-        this.steamUserEventId = value.steamUserEventId;
+        this.id = value.id;
         this.streamUserId = value.streamUserId;
         this.event = value.event;
     }
 
     public StreamUserEvents(
-        Long    steamUserEventId,
+        Long    id,
         Long    streamUserId,
         Integer event
     ) {
-        this.steamUserEventId = steamUserEventId;
+        this.id = id;
         this.streamUserId = streamUserId;
         this.event = event;
     }
 
     /**
-     * Getter for <code>public.stream_user_events.steam_user_event_id</code>.
+     * Getter for <code>public.stream_user_events.id</code>.
      */
-    public Long getSteamUserEventId() {
-        return this.steamUserEventId;
+    public Long getId() {
+        return this.id;
     }
 
     /**
@@ -60,7 +60,7 @@ public class StreamUserEvents implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("StreamUserEvents (");
 
-        sb.append(steamUserEventId);
+        sb.append(id);
         sb.append(", ").append(streamUserId);
         sb.append(", ").append(event);
 

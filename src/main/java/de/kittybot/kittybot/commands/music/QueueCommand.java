@@ -9,8 +9,6 @@ import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.MusicUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.util.stream.Collectors;
-
 public class QueueCommand extends Command{
 
 	public QueueCommand(){
@@ -22,14 +20,14 @@ public class QueueCommand extends Command{
 	@Override
 	public void run(Args args, CommandContext ctx){
 		if(args.isEmpty()){
-			var player = ctx.getMusicManager().get(ctx.getGuildId());
+			var player = ctx.getMusicModule().get(ctx.getGuildId());
 			if(player == null){
 				ctx.sendError("Please play something before requesting the queue");
 				return;
 			}
 			var tracks = player.getQueue();
 			if(tracks.size() == 0){
-				var prefix = ctx.getGuildSettingsManager().getPrefix(ctx.getGuildId());
+				var prefix = ctx.getGuildSettingsModule().getPrefix(ctx.getGuildId());
 				ctx.sendAnswer(new EmbedBuilder()
 						.setColor(Colors.KITTYBOT_BLUE)
 						.setDescription("The queue is empty. You can queue new tracks with `" + prefix + "p <link/search-term>` or `" + prefix + "q <link/search-term>`")
@@ -45,7 +43,7 @@ public class QueueCommand extends Command{
 		if(!MusicUtils.checkVoiceRequirements(ctx)){
 			return;
 		}
-		ctx.getMusicManager().create(ctx).loadItem(ctx);
+		ctx.getMusicModule().create(ctx).loadItem(ctx);
 	}
 
 }

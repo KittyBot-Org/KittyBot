@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.web.routes.guilds.guild.tags;
 
-import de.kittybot.kittybot.main.KittyBot;
+import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.web.WebService;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -13,16 +13,16 @@ import java.util.stream.Collectors;
 
 public class GetTagsRoute implements Handler{
 
-	private final KittyBot main;
+	private final Modules modules;
 
-	public GetTagsRoute(KittyBot main){
-		this.main = main;
+	public GetTagsRoute(Modules modules){
+		this.modules = modules;
 	}
 
 	@Override
 	public void handle(@NotNull Context ctx){
-		var guild = this.main.getWebService().getGuild(ctx);
-		var tags = this.main.getTagManager().getAll(guild.getIdLong());
+		var guild = this.modules.getWebService().getGuild(ctx);
+		var tags = this.modules.getTagModule().getAll(guild.getIdLong());
 		WebService.ok(ctx, DataObject.empty().put("tags", DataArray.fromCollection(
 				tags.stream().map(tag -> DataObject.empty()
 						.put("id", tag.getId())

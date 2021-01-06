@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.web.routes.guilds.guild;
 
-import de.kittybot.kittybot.main.KittyBot;
+import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.web.WebService;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -9,17 +9,17 @@ import org.jetbrains.annotations.NotNull;
 
 public class PostGuildSettingsRoute implements Handler{
 
-	private final KittyBot main;
+	private final Modules modules;
 
-	public PostGuildSettingsRoute(KittyBot main){
-		this.main = main;
+	public PostGuildSettingsRoute(Modules modules){
+		this.modules = modules;
 	}
 
 	@Override
 	public void handle(@NotNull Context ctx){
-		var guildId = this.main.getWebService().getGuild(ctx).getIdLong();
+		var guildId = this.modules.getWebService().getGuild(ctx).getIdLong();
 		var json = DataObject.fromJson(ctx.body());
-		var settings = this.main.getGuildSettingsManager();
+		var settings = this.modules.getGuildSettingsModule();
 		if(json.hasKey("prefix")){
 			settings.setPrefix(guildId, json.getString("prefix"));
 		}

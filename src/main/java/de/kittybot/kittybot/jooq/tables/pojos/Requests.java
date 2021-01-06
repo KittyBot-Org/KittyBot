@@ -16,65 +16,54 @@ public class Requests implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Long          requestId;
-    private final Long          userId;
-    private final Long          guildId;
+    private final Long          id;
+    private final Long          memberId;
     private final String        title;
     private final String        body;
     private final Boolean       answered;
     private final Boolean       accepted;
-    private final LocalDateTime creationTime;
+    private final LocalDateTime creationAt;
 
     public Requests(Requests value) {
-        this.requestId = value.requestId;
-        this.userId = value.userId;
-        this.guildId = value.guildId;
+        this.id = value.id;
+        this.memberId = value.memberId;
         this.title = value.title;
         this.body = value.body;
         this.answered = value.answered;
         this.accepted = value.accepted;
-        this.creationTime = value.creationTime;
+        this.creationAt = value.creationAt;
     }
 
     public Requests(
-        Long          requestId,
-        Long          userId,
-        Long          guildId,
+        Long          id,
+        Long          memberId,
         String        title,
         String        body,
         Boolean       answered,
         Boolean       accepted,
-        LocalDateTime creationTime
+        LocalDateTime creationAt
     ) {
-        this.requestId = requestId;
-        this.userId = userId;
-        this.guildId = guildId;
+        this.id = id;
+        this.memberId = memberId;
         this.title = title;
         this.body = body;
         this.answered = answered;
         this.accepted = accepted;
-        this.creationTime = creationTime;
+        this.creationAt = creationAt;
     }
 
     /**
-     * Getter for <code>public.requests.request_id</code>.
+     * Getter for <code>public.requests.id</code>.
      */
-    public Long getRequestId() {
-        return this.requestId;
+    public Long getId() {
+        return this.id;
     }
 
     /**
-     * Getter for <code>public.requests.user_id</code>.
+     * Getter for <code>public.requests.member_id</code>.
      */
-    public Long getUserId() {
-        return this.userId;
-    }
-
-    /**
-     * Getter for <code>public.requests.guild_id</code>.
-     */
-    public Long getGuildId() {
-        return this.guildId;
+    public Long getMemberId() {
+        return this.memberId;
     }
 
     /**
@@ -106,24 +95,23 @@ public class Requests implements Serializable {
     }
 
     /**
-     * Getter for <code>public.requests.creation_time</code>.
+     * Getter for <code>public.requests.creation_at</code>.
      */
-    public LocalDateTime getCreationTime() {
-        return this.creationTime;
+    public LocalDateTime getCreationAt() {
+        return this.creationAt;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Requests (");
 
-        sb.append(requestId);
-        sb.append(", ").append(userId);
-        sb.append(", ").append(guildId);
+        sb.append(id);
+        sb.append(", ").append(memberId);
         sb.append(", ").append(title);
         sb.append(", ").append(body);
         sb.append(", ").append(answered);
         sb.append(", ").append(accepted);
-        sb.append(", ").append(creationTime);
+        sb.append(", ").append(creationAt);
 
         sb.append(")");
         return sb.toString();

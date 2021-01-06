@@ -27,7 +27,7 @@ public class TagCommand extends Command{
 			ctx.sendUsage(this.getUsage() + " " + this.getRawUsage());
 			return;
 		}
-		ctx.sendBlankSuccess(ctx.getTagManager().get(args.get(0), ctx.getGuildId()).getContent());
+		ctx.sendBlankSuccess(ctx.getTagModule().get(args.get(0), ctx.getGuildId()).getContent());
 	}
 
 }

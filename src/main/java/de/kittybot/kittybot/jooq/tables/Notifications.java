@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -50,14 +50,14 @@ public class Notifications extends TableImpl<NotificationsRecord> {
     }
 
     /**
-     * The column <code>public.notifications.notification_id</code>.
+     * The column <code>public.notifications.id</code>.
      */
-    public final TableField<NotificationsRecord, Long> NOTIFICATION_ID = createField(DSL.name("notification_id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+    public final TableField<NotificationsRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>public.notifications.guild_id</code>.
+     * The column <code>public.notifications.member_id</code>.
      */
-    public final TableField<NotificationsRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<NotificationsRecord, Long> MEMBER_ID = createField(DSL.name("member_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.notifications.channel_id</code>.
@@ -70,19 +70,14 @@ public class Notifications extends TableImpl<NotificationsRecord> {
     public final TableField<NotificationsRecord, Long> MESSAGE_ID = createField(DSL.name("message_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
-     * The column <code>public.notifications.user_id</code>.
-     */
-    public final TableField<NotificationsRecord, Long> USER_ID = createField(DSL.name("user_id"), SQLDataType.BIGINT.nullable(false), this, "");
-
-    /**
      * The column <code>public.notifications.content</code>.
      */
     public final TableField<NotificationsRecord, String> CONTENT = createField(DSL.name("content"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
-     * The column <code>public.notifications.creation_time</code>.
+     * The column <code>public.notifications.created_at</code>.
      */
-    public final TableField<NotificationsRecord, LocalDateTime> CREATION_TIME = createField(DSL.name("creation_time"), SQLDataType.LOCALDATETIME(6).nullable(false), this, "");
+    public final TableField<NotificationsRecord, LocalDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * The column <code>public.notifications.notification_time</code>.
@@ -144,11 +139,11 @@ public class Notifications extends TableImpl<NotificationsRecord> {
 
     @Override
     public List<ForeignKey<NotificationsRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<NotificationsRecord, ?>>asList(Keys.NOTIFICATIONS__NOTIFICATIONS_GUILD_ID_FKEY);
+        return Arrays.<ForeignKey<NotificationsRecord, ?>>asList(Keys.NOTIFICATIONS__NOTIFICATIONS_MEMBER_ID_FKEY);
     }
 
-    public Guilds guilds() {
-        return new Guilds(this, Keys.NOTIFICATIONS__NOTIFICATIONS_GUILD_ID_FKEY);
+    public Members members() {
+        return new Members(this, Keys.NOTIFICATIONS__NOTIFICATIONS_MEMBER_ID_FKEY);
     }
 
     @Override
@@ -178,11 +173,11 @@ public class Notifications extends TableImpl<NotificationsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Long, Long, Long, Long, Long, String, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row7<Long, Long, Long, Long, String, LocalDateTime, LocalDateTime> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

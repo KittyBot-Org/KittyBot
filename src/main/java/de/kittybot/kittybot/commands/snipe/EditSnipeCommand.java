@@ -20,13 +20,13 @@ public class EditSnipeCommand extends Command{
 		if(!ctx.getChannel().canTalk()){
 			return;
 		}
-		if(!ctx.getGuildSettingsManager().areSnipesEnabled(ctx.getGuildId())){
+		if(!ctx.getGuildSettingsModule().areSnipesEnabled(ctx.getGuildId())){
 			ctx.error("Edit Snipes are disabled for this guild");
 		}
-		if(ctx.getGuildSettingsManager().areSnipesDisabledInChannel(ctx.getGuildId(), ctx.getChannelId())){
+		if(ctx.getGuildSettingsModule().areSnipesDisabledInChannel(ctx.getGuildId(), ctx.getChannelId())){
 			ctx.error("Snipes are disabled for this guild");
 		}
-		var lastEditedMessage = ctx.getMessageManager().getLastEditedMessage(ctx.getMessage().getTextChannel().getIdLong());
+		var lastEditedMessage = ctx.getMessageModule().getLastEditedMessage(ctx.getMessage().getTextChannel().getIdLong());
 		if(lastEditedMessage == null){
 			ctx.sendError("There's no edited message to snipe");
 			return;

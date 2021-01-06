@@ -133,13 +133,13 @@ public class Config{
 		}
 	}
 
-	private static long getIdFromToken() {
+	private static long getIdFromToken(){
 		return Long.parseLong(
-			new String(
-				Base64.getDecoder().decode(
-					BOT_TOKEN.split("\\.")[0]
+				new String(
+						Base64.getDecoder().decode(
+								BOT_TOKEN.split("\\.")[0]
+						)
 				)
-			)
 		);
 	}
 

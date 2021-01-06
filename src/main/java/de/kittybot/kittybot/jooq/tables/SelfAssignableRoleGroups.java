@@ -49,9 +49,9 @@ public class SelfAssignableRoleGroups extends TableImpl<SelfAssignableRoleGroups
     }
 
     /**
-     * The column <code>public.self_assignable_role_groups.self_assignable_role_group_id</code>.
+     * The column <code>public.self_assignable_role_groups.id</code>.
      */
-    public final TableField<SelfAssignableRoleGroupsRecord, Long> SELF_ASSIGNABLE_ROLE_GROUP_ID = createField(DSL.name("self_assignable_role_group_id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+    public final TableField<SelfAssignableRoleGroupsRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.self_assignable_role_groups.guild_id</code>.

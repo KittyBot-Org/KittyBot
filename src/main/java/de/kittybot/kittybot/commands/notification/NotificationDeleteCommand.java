@@ -19,7 +19,7 @@ public class NotificationDeleteCommand extends Command{
 			ctx.sendUsage(this);
 			return;
 		}
-		if(ctx.getNotificationManager().delete(Long.parseLong(args.get(0)), ctx.getUser().getIdLong())){
+		if(ctx.getNotificationModule().delete(Long.parseLong(args.get(0)), ctx.getUser().getIdLong())){
 			ctx.sendSuccess("Deleted your notification with id `" + args.get(0) + "`");
 			return;
 		}

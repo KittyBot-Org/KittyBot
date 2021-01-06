@@ -7,7 +7,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import de.kittybot.kittybot.command.CommandContext;
-import de.kittybot.kittybot.main.KittyBot;
+import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.MusicUtils;
@@ -19,14 +19,13 @@ import lavalink.client.player.event.PlayerEventListenerAdapter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.requests.RestAction;
 
-import javax.annotation.Nonnull;
 import java.awt.*;
 import java.time.Instant;
-import java.util.*;
 import java.util.List;
+import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
@@ -35,7 +34,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	public static final Pattern URL_PATTERN = Pattern.compile("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]?");
 
-	private final KittyBot main;
+	private final Modules modules;
 	private final JdaLink link;
 	private final LavalinkPlayer player;
 	private final Queue<AudioTrack> queue;
@@ -45,8 +44,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	private long controllerMessageId;
 	private ScheduledFuture<?> future;
 
-	public MusicPlayer(KittyBot main, JdaLink link, long guildId, long channelId){
-		this.main = main;
+	public MusicPlayer(Modules modules, JdaLink link, long guildId, long channelId){
+		this.modules = modules;
 		this.link = link;
 		this.player = link.getPlayer();
 		this.player.addListener(this);
@@ -106,6 +105,36 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		}
 	}
 
+	public void queue(List<AudioTrack> tracks){
+		for(var track : tracks){
+			queue.offer(track);
+		}
+		if(player.getPlayingTrack() == null){
+			player.playTrack(this.queue.poll());
+		}
+		sendMessageToChannel(new EmbedBuilder()
+				.setColor(Colors.KITTYBOT_BLUE)
+				.setDescription(MusicUtils.formatTracks("Queued " + tracks.size() + " " + MessageUtils.pluralize("track", tracks) + ":\n", tracks))
+		);
+	}
+
+	public void sendMessageToChannel(EmbedBuilder embed){
+		messageToChannel(embed).queue();
+	}
+
+	public RestAction<Message> messageToChannel(EmbedBuilder embed){
+		var guild = this.modules.getJDA().getGuildById(this.guildId);
+		if(guild == null){
+			return null;
+		}
+		var channel = guild.getTextChannelById(this.channelId);
+		if(channel == null){
+			return null;
+		}
+		return channel.sendMessage(
+				embed.setTimestamp(Instant.now()).build()
+		);
+	}
 
 	@Override
 	public void onPlayerPause(IPlayer player){
@@ -132,33 +161,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		next();
 	}
 
-	public void next(){
-		var next = this.queue.poll();
-		if(next == null){
-			updateMusicController();
-			planDestroy();
-			return;
-		}
-		this.player.playTrack(next);
-	}
-
-	public void planDestroy(){
-		if(this.future != null){
-			return;
-		}
-		this.future = this.main.getScheduler().schedule(() -> {
-			this.main.getMusicManager().destroy(this.guildId);
-		}, 3, TimeUnit.MINUTES);
-	}
-
-	public void cancelDestroy(){
-		if(this.future == null){
-			return;
-		}
-		this.future.cancel(true);
-		this.future = null;
-	}
-
 	/*public void planDestroy(long currentChannel){
 		player.setPaused(true);
 		this.main.getEventWaiter().waitForEvent(
@@ -167,7 +169,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 			event -> this.player.setPaused(false),
 			3,
 			TimeUnit.MINUTES,
-			this.main.getMusicManager().destroy(this.guildId)
+			this.main.getMusicModule().destroy(this.guildId)
 		);
 	}*/
 
@@ -175,39 +177,11 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		messageToChannel(buildMusicController()).queue(message -> controllerMessageId = message.getIdLong());
 	}
 
-	public EmbedBuilder buildMusicController(){
-		var embed = new EmbedBuilder();
-		var track = this.player.getPlayingTrack();
-		if(track == null){
-			embed.setColor(Color.RED)
-				.addField("Waiting", "The queue is empty", true)
-				.addField("Author", "", true)
-				.addField("Length", "", true)
-				.addField("Requested by", "", true);
-		}
-		else{
-			var info = track.getInfo();
-			if(this.player.isPaused()){
-				embed.setColor(Color.ORANGE)
-				     .addField("Pausing", Emoji.FORWARD.getAsMention() + " " + MusicUtils.formatTrack(track), false);
-			}
-			else{
-				embed.setColor(Color.GREEN)
-				     .addField("Playing", Emoji.FORWARD.getAsMention() + " " + MusicUtils.formatTrack(track), false);
-			}
-			embed.setThumbnail(getThumbnail(track.getIdentifier(), track.getSourceManager()))
-			     .addField("Author", info.author, true)
-			     .addField("Length", TimeUtils.formatDuration(track.getDuration()), true)
-			     .addField("Requested by", MessageUtils.getUserMention(getRequesterId(track)), true);
-		}
-		return embed.addField("Volume", (int)(this.player.getFilters().getVolume() * 100) + "%", true);
-	}
-
 	public void updateMusicController(){
 		if(this.controllerMessageId == -1){
 			return;
 		}
-		var guild = this.main.getJDA().getGuildById(this.guildId);
+		var guild = this.modules.getJDA().getGuildById(this.guildId);
 		if(guild == null){
 			return;
 		}
@@ -216,6 +190,34 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 			return;
 		}
 		channel.editMessageById(this.controllerMessageId, new MessageBuilder().setEmbed(buildMusicController().build()).build()).override(true).queue();
+	}
+
+	public EmbedBuilder buildMusicController(){
+		var embed = new EmbedBuilder();
+		var track = this.player.getPlayingTrack();
+		if(track == null){
+			embed.setColor(Color.RED)
+					.addField("Waiting", "The queue is empty", true)
+					.addField("Author", "", true)
+					.addField("Length", "", true)
+					.addField("Requested by", "", true);
+		}
+		else{
+			var info = track.getInfo();
+			if(this.player.isPaused()){
+				embed.setColor(Color.ORANGE)
+						.addField("Pausing", Emoji.FORWARD.getAsMention() + " " + MusicUtils.formatTrack(track), false);
+			}
+			else{
+				embed.setColor(Color.GREEN)
+						.addField("Playing", Emoji.FORWARD.getAsMention() + " " + MusicUtils.formatTrack(track), false);
+			}
+			embed.setThumbnail(getThumbnail(track.getIdentifier(), track.getSourceManager()))
+					.addField("Author", info.author, true)
+					.addField("Length", TimeUtils.formatDuration(track.getDuration()), true)
+					.addField("Requested by", MessageUtils.getUserMention(getRequesterId(track)), true);
+		}
+		return embed.addField("Volume", (int) (this.player.getFilters().getVolume() * 100) + "%", true);
 	}
 
 	public String getThumbnail(String identifier, AudioSourceManager source){
@@ -238,39 +240,39 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		return thumbnail;
 	}
 
-	public void queue(List<AudioTrack> tracks){
-		for(var track : tracks){
-			queue.offer(track);
-		}
-		if(player.getPlayingTrack() == null){
-			player.playTrack(this.queue.poll());
-		}
-		sendMessageToChannel(new EmbedBuilder()
-				.setColor(Colors.KITTYBOT_BLUE)
-				.setDescription(MusicUtils.formatTracks("Queued " + tracks.size() + " " + MessageUtils.pluralize("track", tracks) + ":\n", tracks))
-		);
+	public long getRequesterId(AudioTrack track){
+		return track.getUserData(Long.class);
 	}
 
-	public RestAction<Message> messageToChannel(EmbedBuilder embed){
-		var guild = this.main.getJDA().getGuildById(this.guildId);
-		if(guild == null){
-			return null;
+	public void next(){
+		var next = this.queue.poll();
+		if(next == null){
+			updateMusicController();
+			planDestroy();
+			return;
 		}
-		var channel = guild.getTextChannelById(this.channelId);
-		if(channel == null){
-			return null;
-		}
-		return channel.sendMessage(
-				embed.setTimestamp(Instant.now()).build()
-		);
+		this.player.playTrack(next);
 	}
 
-	public void sendMessageToChannel(EmbedBuilder embed){
-		messageToChannel(embed).queue();
+	public void planDestroy(){
+		if(this.future != null){
+			return;
+		}
+		this.future = this.modules.getScheduler().schedule(() -> {
+			this.modules.getMusicModule().destroy(this.guildId);
+		}, 3, TimeUnit.MINUTES);
+	}
+
+	public void cancelDestroy(){
+		if(this.future == null){
+			return;
+		}
+		this.future.cancel(true);
+		this.future = null;
 	}
 
 	public void sendMessageToChannel(EmbedBuilder embed, long commandId){
-		messageToChannel(embed).queue(message -> this.main.getCommandResponseManager().add(commandId, message.getIdLong()));
+		messageToChannel(embed).queue(message -> this.modules.getCommandResponseModule().add(commandId, message.getIdLong()));
 	}
 
 	public void pause(){
@@ -291,10 +293,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	public void setVolume(int volume){
 		player.getFilters().setVolume(volume).commit();
-	}
-
-	public long getRequesterId(AudioTrack track){
-		return track.getUserData(Long.class);
 	}
 
 	public JdaLink getLink(){

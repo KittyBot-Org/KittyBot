@@ -18,7 +18,7 @@ public class StopCommand extends Command{
 		if(!MusicUtils.checkVoiceRequirements(ctx)){
 			return;
 		}
-		ctx.getMusicManager().destroy(ctx.getGuildId());
+		ctx.getMusicModule().destroy(ctx.getGuildId());
 		if(ctx.getCommand().equalsIgnoreCase("stfu")){
 			ctx.sendSuccess("Okowo");
 		}

@@ -50,9 +50,9 @@ public class GuildTags extends TableImpl<GuildTagsRecord> {
     }
 
     /**
-     * The column <code>public.guild_tags.tag_id</code>.
+     * The column <code>public.guild_tags.id</code>.
      */
-    public final TableField<GuildTagsRecord, Long> TAG_ID = createField(DSL.name("tag_id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+    public final TableField<GuildTagsRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.guild_tags.name</code>.
@@ -60,14 +60,9 @@ public class GuildTags extends TableImpl<GuildTagsRecord> {
     public final TableField<GuildTagsRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(64).nullable(false), this, "");
 
     /**
-     * The column <code>public.guild_tags.guild_id</code>.
+     * The column <code>public.guild_tags.member_id</code>.
      */
-    public final TableField<GuildTagsRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.BIGINT.nullable(false), this, "");
-
-    /**
-     * The column <code>public.guild_tags.user_id</code>.
-     */
-    public final TableField<GuildTagsRecord, Long> USER_ID = createField(DSL.name("user_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<GuildTagsRecord, Long> MEMBER_ID = createField(DSL.name("member_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.guild_tags.content</code>.
@@ -77,7 +72,12 @@ public class GuildTags extends TableImpl<GuildTagsRecord> {
     /**
      * The column <code>public.guild_tags.created_at</code>.
      */
-    public final TableField<GuildTagsRecord, LocalDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.LOCALDATETIME(6).nullable(false), this, "");
+    public final TableField<GuildTagsRecord, LocalDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", SQLDataType.LOCALDATETIME)), this, "");
+
+    /**
+     * The column <code>public.guild_tags.updated_at</code>.
+     */
+    public final TableField<GuildTagsRecord, LocalDateTime> UPDATED_AT = createField(DSL.name("updated_at"), SQLDataType.LOCALDATETIME(6), this, "");
 
     private GuildTags(Name alias, Table<GuildTagsRecord> aliased) {
         this(alias, aliased, null);
@@ -129,16 +129,16 @@ public class GuildTags extends TableImpl<GuildTagsRecord> {
 
     @Override
     public List<UniqueKey<GuildTagsRecord>> getKeys() {
-        return Arrays.<UniqueKey<GuildTagsRecord>>asList(Keys.GUILD_TAGS_PKEY, Keys.GUILD_TAGS_NAME_KEY, Keys.GUILD_TAGS_GUILD_ID_KEY);
+        return Arrays.<UniqueKey<GuildTagsRecord>>asList(Keys.GUILD_TAGS_PKEY, Keys.GUILD_TAGS_NAME_KEY, Keys.GUILD_TAGS_MEMBER_ID_KEY);
     }
 
     @Override
     public List<ForeignKey<GuildTagsRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<GuildTagsRecord, ?>>asList(Keys.GUILD_TAGS__GUILD_TAGS_GUILD_ID_FKEY);
+        return Arrays.<ForeignKey<GuildTagsRecord, ?>>asList(Keys.GUILD_TAGS__GUILD_TAGS_MEMBER_ID_FKEY);
     }
 
-    public Guilds guilds() {
-        return new Guilds(this, Keys.GUILD_TAGS__GUILD_TAGS_GUILD_ID_FKEY);
+    public Members members() {
+        return new Members(this, Keys.GUILD_TAGS__GUILD_TAGS_MEMBER_ID_FKEY);
     }
 
     @Override
@@ -172,7 +172,7 @@ public class GuildTags extends TableImpl<GuildTagsRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Long, String, Long, Long, String, LocalDateTime> fieldsRow() {
+    public Row6<Long, String, Long, String, LocalDateTime, LocalDateTime> fieldsRow() {
         return (Row6) super.fieldsRow();
     }
 }

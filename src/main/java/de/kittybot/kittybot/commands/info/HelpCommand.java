@@ -18,10 +18,10 @@ public class HelpCommand extends Command{
 	@Override
 	public void run(Args args, CommandContext ctx){
 		var response = new StringBuilder();
-		var prefix = ctx.getGuildSettingsManager().getPrefix(ctx.getGuildId());
+		var prefix = ctx.getGuildSettingsModule().getPrefix(ctx.getGuildId());
 		for(var category : Category.values()){
 			response.append("\n**").append(category.getEmote()).append(" ").append(category.getName()).append("**");
-			ctx.getCommandManager().getCommands().stream()
+			ctx.getCommandModule().getCommands().stream()
 					.filter(cmd -> cmd.getCategory() == category)
 					//.forEach(cmd -> response.append("\n• **").append(prefix).append(cmd.getCommand()).append("** - *").append(cmd.getDescription()).append("*"));
 					.forEach(cmd -> response.append("\n• ").append(prefix).append(cmd.getCommand()));

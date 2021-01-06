@@ -16,12 +16,14 @@ public class Sessions implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private final Long          id;
     private final Long          userId;
     private final String        accessToken;
     private final String        refreshToken;
     private final LocalDateTime expiration;
 
     public Sessions(Sessions value) {
+        this.id = value.id;
         this.userId = value.userId;
         this.accessToken = value.accessToken;
         this.refreshToken = value.refreshToken;
@@ -29,15 +31,24 @@ public class Sessions implements Serializable {
     }
 
     public Sessions(
+        Long          id,
         Long          userId,
         String        accessToken,
         String        refreshToken,
         LocalDateTime expiration
     ) {
+        this.id = id;
         this.userId = userId;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.expiration = expiration;
+    }
+
+    /**
+     * Getter for <code>public.sessions.id</code>.
+     */
+    public Long getId() {
+        return this.id;
     }
 
     /**
@@ -72,7 +83,8 @@ public class Sessions implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("Sessions (");
 
-        sb.append(userId);
+        sb.append(id);
+        sb.append(", ").append(userId);
         sb.append(", ").append(accessToken);
         sb.append(", ").append(refreshToken);
         sb.append(", ").append(expiration);

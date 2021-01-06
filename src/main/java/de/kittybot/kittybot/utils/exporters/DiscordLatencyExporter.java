@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.utils.exporters;
 
-import de.kittybot.kittybot.main.KittyBot;
-import de.kittybot.kittybot.managers.PrometheusManager;
+import de.kittybot.kittybot.module.Modules;
+import de.kittybot.kittybot.modules.PrometheusModule;
 import io.prometheus.client.Gauge;
 
 import java.util.concurrent.TimeUnit;
@@ -20,15 +20,15 @@ public class DiscordLatencyExporter{
 			.help("Rest latency in ms")
 			.create();
 
-	public static void start(KittyBot main){
-		main.getScheduler().scheduleAtFixedRate(() -> {
-			var jda = main.getJDA();
+	public static void start(Modules modules){
+		modules.getScheduler().scheduleAtFixedRate(() -> {
+			var jda = modules.getJDA();
 			var ping = jda.getGatewayPing();
 			if(ping >= 0){
 				GATEWAY_PING.set(ping);
 			}
 			jda.getRestPing().queue(REST_PING::set);
-		}, 0, PrometheusManager.UPDATE_PERIOD.toMillis(), TimeUnit.MILLISECONDS);
+		}, 0, PrometheusModule.UPDATE_PERIOD.toMillis(), TimeUnit.MILLISECONDS);
 	}
 
 	public void register(){

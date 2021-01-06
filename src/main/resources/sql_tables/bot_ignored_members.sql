@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS bot_ignored_members(
+  id        BIGSERIAL PRIMARY KEY NOT NULL,
+  member_id BIGINT NOT NULL REFERENCES members(id) ON DELETE CASCADE
+);

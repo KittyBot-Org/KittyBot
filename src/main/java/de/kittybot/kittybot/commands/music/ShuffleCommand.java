@@ -17,7 +17,7 @@ public class ShuffleCommand extends Command{
 		if(!MusicUtils.checkVoiceRequirements(ctx)){
 			return;
 		}
-		if(ctx.getMusicManager().get(ctx.getGuildId()).shuffle()){
+		if(ctx.getMusicModule().get(ctx.getGuildId()).shuffle()){
 			ctx.sendSuccess("Queue shuffled");
 			return;
 		}

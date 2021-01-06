@@ -27,7 +27,7 @@ public class UnassignCommand extends Command{
 			return;
 		}
 		var role = roles.get(0);
-		var selfAssignableRoles = ctx.getGuildSettingsManager().getSelfAssignableRoles(ctx.getGuildId());
+		var selfAssignableRoles = ctx.getGuildSettingsModule().getSelfAssignableRoles(ctx.getGuildId());
 		if(selfAssignableRoles.stream().noneMatch(r -> r.getRoleId() == role.getIdLong())){
 			ctx.sendError("Role `" + roleName + "` is not self assignable");
 			return;

@@ -16,43 +16,43 @@ public class GuildTags implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Long          tagId;
+    private final Long          id;
     private final String        name;
-    private final Long          guildId;
-    private final Long          userId;
+    private final Long          memberId;
     private final String        content;
     private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
 
     public GuildTags(GuildTags value) {
-        this.tagId = value.tagId;
+        this.id = value.id;
         this.name = value.name;
-        this.guildId = value.guildId;
-        this.userId = value.userId;
+        this.memberId = value.memberId;
         this.content = value.content;
         this.createdAt = value.createdAt;
+        this.updatedAt = value.updatedAt;
     }
 
     public GuildTags(
-        Long          tagId,
+        Long          id,
         String        name,
-        Long          guildId,
-        Long          userId,
+        Long          memberId,
         String        content,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt
     ) {
-        this.tagId = tagId;
+        this.id = id;
         this.name = name;
-        this.guildId = guildId;
-        this.userId = userId;
+        this.memberId = memberId;
         this.content = content;
         this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     /**
-     * Getter for <code>public.guild_tags.tag_id</code>.
+     * Getter for <code>public.guild_tags.id</code>.
      */
-    public Long getTagId() {
-        return this.tagId;
+    public Long getId() {
+        return this.id;
     }
 
     /**
@@ -63,17 +63,10 @@ public class GuildTags implements Serializable {
     }
 
     /**
-     * Getter for <code>public.guild_tags.guild_id</code>.
+     * Getter for <code>public.guild_tags.member_id</code>.
      */
-    public Long getGuildId() {
-        return this.guildId;
-    }
-
-    /**
-     * Getter for <code>public.guild_tags.user_id</code>.
-     */
-    public Long getUserId() {
-        return this.userId;
+    public Long getMemberId() {
+        return this.memberId;
     }
 
     /**
@@ -90,16 +83,23 @@ public class GuildTags implements Serializable {
         return this.createdAt;
     }
 
+    /**
+     * Getter for <code>public.guild_tags.updated_at</code>.
+     */
+    public LocalDateTime getUpdatedAt() {
+        return this.updatedAt;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("GuildTags (");
 
-        sb.append(tagId);
+        sb.append(id);
         sb.append(", ").append(name);
-        sb.append(", ").append(guildId);
-        sb.append(", ").append(userId);
+        sb.append(", ").append(memberId);
         sb.append(", ").append(content);
         sb.append(", ").append(createdAt);
+        sb.append(", ").append(updatedAt);
 
         sb.append(")");
         return sb.toString();
