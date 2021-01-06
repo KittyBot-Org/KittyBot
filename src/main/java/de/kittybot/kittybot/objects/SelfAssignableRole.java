@@ -1,6 +1,8 @@
 package de.kittybot.kittybot.objects;
 
-import de.kittybot.kittybot.jooq.tables.records.SelfAssignableRolesRecord;
+import org.jooq.Record;
+
+import static de.kittybot.kittybot.jooq.Tables.*;
 
 public class SelfAssignableRole{
 
@@ -13,11 +15,11 @@ public class SelfAssignableRole{
 		this.emoteId = emoteId;
 	}
 
-	public SelfAssignableRole(SelfAssignableRolesRecord record){
-		this.guildId = record.getGuildId();
-		this.groupId = record.getGroupId();
-		this.roleId = record.getRoleId();
-		this.emoteId = record.getEmoteId();
+	public SelfAssignableRole(Record record){
+		this.guildId = record.get(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID);
+		this.groupId = record.get(SELF_ASSIGNABLE_ROLES.GROUP_ID);
+		this.roleId = record.get(SELF_ASSIGNABLE_ROLES.ROLE_ID);
+		this.emoteId = record.get(SELF_ASSIGNABLE_ROLES.EMOTE_ID);
 	}
 
 	public long getGuildId(){

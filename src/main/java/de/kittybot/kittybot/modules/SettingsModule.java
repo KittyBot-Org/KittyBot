@@ -4,7 +4,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
 import de.kittybot.kittybot.jooq.tables.records.BotDisabledChannelsRecord;
-import de.kittybot.kittybot.jooq.tables.records.BotIgnoredUsersRecord;
+import de.kittybot.kittybot.jooq.tables.records.BotIgnoredMembersRecord;
 import de.kittybot.kittybot.jooq.tables.records.SnipeDisabledChannelsRecord;
 import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.module.Modules;
@@ -33,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static de.kittybot.kittybot.jooq.Tables.*;
+import static org.jooq.impl.DSL.*;
 
 public class SettingsModule extends Module{
 
@@ -51,40 +52,43 @@ public class SettingsModule extends Module{
 
 	public Settings retrieveGuildSettings(long guildId){
 		var dbModule = this.modules.getDatabaseModule();
+
 		try(var con = dbModule.getCon();
 		    var ctxSettings = dbModule.getCtx(con).selectFrom(GUILDS);
 		    var ctxSnipeDisabledChannels = dbModule.getCtx(con).selectFrom(SNIPE_DISABLED_CHANNELS);
 		    var ctxBotDisabledChannels = dbModule.getCtx(con).selectFrom(BOT_DISABLED_CHANNELS);
-		    var ctxBotIgnoredUsers = dbModule.getCtx(con).selectFrom(BOT_IGNORED_USERS);
-		    var ctxSelfAssignableRoles = dbModule.getCtx(con).selectFrom(SELF_ASSIGNABLE_ROLES);
+		    var ctxBotIgnoredUsers = dbModule.getCtx(con).selectFrom(BOT_IGNORED_MEMBERS);
+		    var ctxSelfAssignableRoles = dbModule.getCtx(con).select();
 		    var ctxSelfAssignableRoleGroups = dbModule.getCtx(con).selectFrom(SELF_ASSIGNABLE_ROLE_GROUPS);
 		    var ctxGuildInviteRoles = dbModule.getCtx(con).select()
 		){
-			var res = ctxSettings.where(GUILDS.GUILD_ID.eq(guildId)).fetchOne();
+			var res = ctxSettings.where(GUILDS.ID.eq(guildId)).fetchOne();
 			if(res != null){
 				return new Settings(
 						res,
-						ctxSnipeDisabledChannels.where(SNIPE_DISABLED_CHANNELS.GUILD_ID.eq(guildId)).fetch().stream().map(
-								SnipeDisabledChannelsRecord::getChannelId).collect(Collectors.toSet()
+						ctxSnipeDisabledChannels.where(SNIPE_DISABLED_CHANNELS.GUILD_ID.eq(guildId)).fetch().map(
+								SnipeDisabledChannelsRecord::getChannelId
 						),
-						ctxBotDisabledChannels.where(BOT_DISABLED_CHANNELS.GUILD_ID.eq(guildId)).fetch().stream().map(
-								BotDisabledChannelsRecord::getChannelId).collect(Collectors.toSet()
+						ctxBotDisabledChannels.where(BOT_DISABLED_CHANNELS.GUILD_ID.eq(guildId)).fetch().map(
+								BotDisabledChannelsRecord::getChannelId
 						),
-						ctxBotIgnoredUsers.where(BOT_IGNORED_USERS.GUILD_ID.eq(guildId)).fetch().stream().map(
-								BotIgnoredUsersRecord::getUserId).collect(Collectors.toSet()
+						ctxBotIgnoredUsers.where(BOT_IGNORED_MEMBERS.MEMBER_ID.eq(guildId)).fetch().map(
+								BotIgnoredMembersRecord::getMemberId
 						),
-						ctxSelfAssignableRoles.where(SELF_ASSIGNABLE_ROLES.GUILD_ID.eq(guildId)).fetch().stream().map(
-								SelfAssignableRole::new).collect(Collectors.toSet()
+						ctxSelfAssignableRoles.from(SELF_ASSIGNABLE_ROLES).join(SELF_ASSIGNABLE_ROLE_GROUPS).onKey().where(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID.eq(guildId)).fetch().map(
+								SelfAssignableRole::new
 						),
-						ctxSelfAssignableRoleGroups.where(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID.eq(guildId)).fetch().stream().map(
-								SelfAssignableRoleGroup::new).collect(Collectors.toSet()
+						ctxSelfAssignableRoleGroups.where(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID.eq(guildId)).fetch().map(
+								SelfAssignableRoleGroup::new
 						),
 						ctxGuildInviteRoles.from(GUILD_INVITES).join(GUILD_INVITE_ROLES).on(
-								GUILD_INVITES.GUILD_INVITE_ID.eq(GUILD_INVITE_ROLES.GUILD_INVITE_ID))
-								.where(GUILD_INVITES.GUILD_ID.eq(guildId)).fetch().stream()
+								GUILD_INVITES.ID.eq(GUILD_INVITE_ROLES.GUILD_INVITE_ID))
+								.where(GUILD_INVITES.GUILD_ID.eq(guildId)).fetch()
 								.map(InviteRole::new)
+								.stream()
 								.collect(
-										Collectors.groupingBy(InviteRole::getCode, Collectors.mapping(InviteRole::getRoleId, Collectors.toSet())))
+										Collectors.groupingBy(InviteRole::getCode, Collectors.mapping(InviteRole::getRoleId, Collectors.toSet()))
+								)
 				);
 
 			}
@@ -114,7 +118,7 @@ public class SettingsModule extends Module{
 		LOG.info("Cleaning up guild: {}", guildId);
 		var dbModule = this.modules.getDatabaseModule();
 		try(var con = dbModule.getCon()){
-			dbModule.getCtx(con).deleteFrom(GUILDS).where(GUILDS.GUILD_ID.eq(guildId)).execute();
+			dbModule.getCtx(con).deleteFrom(GUILDS).where(GUILDS.ID.eq(guildId)).execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error cleaning up guild: {}", guildId, e);
@@ -125,7 +129,7 @@ public class SettingsModule extends Module{
 		var dbModule = this.modules.getDatabaseModule();
 		var insert = true;
 		try(var con = dbModule.getCon(); var ctx = dbModule.getCtx(con).selectFrom(GUILDS)){
-			insert = ctx.where(GUILDS.GUILD_ID.eq(guild.getIdLong())).fetch().isEmpty();
+			insert = ctx.where(GUILDS.ID.eq(guild.getIdLong())).fetch().isEmpty();
 		}
 		catch(SQLException e){
 			LOG.error("Error while checking if guild exists for guild: " + guild.getIdLong(), e);
@@ -141,7 +145,7 @@ public class SettingsModule extends Module{
 		try(var con = dbModule.getCon()){
 			dbModule.getCtx(con).insertInto(GUILDS)
 					.columns(
-							GUILDS.GUILD_ID,
+							GUILDS.ID,
 							GUILDS.PREFIX,
 							GUILDS.ANNOUNCEMENT_CHANNEL_ID,
 							GUILDS.INACTIVE_DURATION
@@ -183,7 +187,7 @@ public class SettingsModule extends Module{
 	public <T> void updateSetting(long guildId, Field<T> field, T value){
 		var dbModule = this.modules.getDatabaseModule();
 		try(var con = dbModule.getCon()){
-			dbModule.getCtx(con).update(GUILDS).set(field, value).where(GUILDS.GUILD_ID.eq(guildId)).execute();
+			dbModule.getCtx(con).update(GUILDS).set(field, value).where(GUILDS.ID.eq(guildId)).execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error updating guild: {}", guildId, e);
@@ -465,23 +469,20 @@ public class SettingsModule extends Module{
 		insertSelfAssignableRoles(guildId, roles);
 	}
 
-	private void insertSelfAssignableRoles(long guildId, Set<SelfAssignableRole> roles){
-		var dbModule = this.modules.getDatabaseModule();
-		try(var con = dbModule.getCon()){
-			var ctx = dbModule.getCtx(con).insertInto(SELF_ASSIGNABLE_ROLE_GROUPS)
-					.columns(
-							SELF_ASSIGNABLE_ROLES.GROUP_ID, SELF_ASSIGNABLE_ROLES.GUILD_ID, SELF_ASSIGNABLE_ROLES.ROLE_ID,
-							SELF_ASSIGNABLE_ROLES.EMOTE_ID
-					);
-			for(var role : roles){
-				ctx.values(role.getGroupId(), guildId, role.getRoleId(), role.getEmoteId());
-			}
-			ctx.execute();
+private void insertSelfAssignableRoles(long guildId, Set<SelfAssignableRole> roles){
+	var dbModule = this.modules.getDatabaseModule();
+	try(var con = dbModule.getCon()){
+		var ctx = dbModule.getCtx(con).insertInto(SELF_ASSIGNABLE_ROLE_GROUPS)
+				.columns(SELF_ASSIGNABLE_ROLES.GROUP_ID, SELF_ASSIGNABLE_ROLES.ROLE_ID, SELF_ASSIGNABLE_ROLES.EMOTE_ID);
+		for(var role : roles){
+			ctx.values(role.getGroupId(), role.getRoleId(), role.getEmoteId());
 		}
-		catch(SQLException e){
-			LOG.error("Error inserting self-assignable roles", e);
-		}
+		ctx.execute();
 	}
+	catch(SQLException e){
+		LOG.error("Error inserting self-assignable roles for guild: {}", guildId, e);
+	}
+}
 
 	public void removeSelfAssignableRoles(long guildId, Set<Long> roles){
 		var settings = getSettings(guildId);
@@ -495,10 +496,10 @@ public class SettingsModule extends Module{
 		var dbModule = this.modules.getDatabaseModule();
 		try(var con = dbModule.getCon()){
 			dbModule.getCtx(con).deleteFrom(SELF_ASSIGNABLE_ROLES).where(
-					SELF_ASSIGNABLE_ROLES.GUILD_ID.eq(guildId).and(SELF_ASSIGNABLE_ROLES.SELF_ASSIGNABLE_ROLE_ID.in(roles))).execute();
+					SELF_ASSIGNABLE_ROLES.ROLE_ID.in(roles)).execute();
 		}
 		catch(SQLException e){
-			LOG.error("Error deleting self-assignable roles", e);
+			LOG.error("Error deleting self-assignable roles for guild: {}", guildId, e);
 		}
 	}
 
@@ -525,16 +526,16 @@ public class SettingsModule extends Module{
 			for(var group : groups){
 				ctx.values(group.getGuildId(), group.getName(), group.getMaxRoles());
 			}
-			var res = ctx.returningResult(SELF_ASSIGNABLE_ROLE_GROUPS.SELF_ASSIGNABLE_ROLE_GROUP_ID).fetch();
+			var res = ctx.returningResult(SELF_ASSIGNABLE_ROLE_GROUPS.ID).fetch();
 			res.forEach(group ->
 					groups.stream().filter(g ->
-							g.getId() == group.get(SELF_ASSIGNABLE_ROLE_GROUPS.SELF_ASSIGNABLE_ROLE_GROUP_ID)
-					).findFirst().ifPresent(grp -> grp.setId(group.get(SELF_ASSIGNABLE_ROLE_GROUPS.SELF_ASSIGNABLE_ROLE_GROUP_ID)))
+							g.getId() == group.get(SELF_ASSIGNABLE_ROLE_GROUPS.ID)
+					).findFirst().ifPresent(grp -> grp.setId(group.get(SELF_ASSIGNABLE_ROLE_GROUPS.ID)))
 			);
 			return groups;
 		}
 		catch(SQLException e){
-			LOG.error("Error inserting self-assignable role groups", e);
+			LOG.error("Error inserting self-assignable role groups for guild: {}", guildId, e);
 		}
 		return null;
 	}
@@ -551,7 +552,7 @@ public class SettingsModule extends Module{
 		var dbModule = this.modules.getDatabaseModule();
 		try(var con = dbModule.getCon()){
 			dbModule.getCtx(con).deleteFrom(SELF_ASSIGNABLE_ROLE_GROUPS).where(
-					SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID.eq(guildId).and(SELF_ASSIGNABLE_ROLE_GROUPS.SELF_ASSIGNABLE_ROLE_GROUP_ID.in(groups))).execute();
+					SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID.eq(guildId).and(SELF_ASSIGNABLE_ROLE_GROUPS.ID.in(groups))).execute();
 		}
 		catch(SQLException e){
 			LOG.error("Error deleting self-assignable roles groups", e);
@@ -583,11 +584,11 @@ public class SettingsModule extends Module{
 		var dbModule = this.modules.getDatabaseModule();
 		try(var con = dbModule.getCon()){
 			var res = dbModule.getCtx(con).deleteFrom(GUILD_INVITES).where(
-					GUILD_INVITES.GUILD_ID.eq(guildId).and(GUILD_INVITES.CODE.eq(code))).returningResult(GUILD_INVITES.GUILD_INVITE_ID).fetchOne();
+					GUILD_INVITES.GUILD_ID.eq(guildId).and(GUILD_INVITES.CODE.eq(code))).returningResult(GUILD_INVITES.ID).fetchOne();
 			if(res == null){
 				return;
 			}
-			var guildInviteId = res.get(GUILD_INVITES.GUILD_INVITE_ID);
+			var guildInviteId = res.get(GUILD_INVITES.ID);
 			dbModule.getCtx(con).deleteFrom(GUILD_INVITE_ROLES).where(GUILD_INVITE_ROLES.GUILD_INVITE_ID.eq(guildInviteId)).execute();
 		}
 		catch(SQLException e){
@@ -603,7 +604,7 @@ public class SettingsModule extends Module{
 			if(res == null){
 				return;
 			}
-			var guildInviteId = res.get(GUILD_INVITES.GUILD_INVITE_ID);
+			var guildInviteId = res.get(GUILD_INVITES.ID);
 			dbModule.getCtx(con).deleteFrom(GUILD_INVITE_ROLES).where(GUILD_INVITE_ROLES.GUILD_INVITE_ID.eq(guildInviteId)).execute();
 		}
 		catch(SQLException e){
@@ -618,15 +619,15 @@ public class SettingsModule extends Module{
 			var inviteRoleId = 0L;
 			if(res == null){
 				var res2 = dbModule.getCtx(con).insertInto(GUILD_INVITES).columns(GUILD_INVITES.GUILD_ID, GUILD_INVITES.CODE).values(
-						guildId, code).returningResult(GUILD_INVITES.GUILD_INVITE_ID).fetchOne();
+						guildId, code).returningResult(GUILD_INVITES.ID).fetchOne();
 				if(res2 == null){
 					LOG.error("Cane we have a problem! Tickle Topi!");
 					return;
 				}
-				inviteRoleId = res2.get(GUILD_INVITES.GUILD_INVITE_ID);
+				inviteRoleId = res2.get(GUILD_INVITES.ID);
 			}
 			else{
-				inviteRoleId = res.getGuildInviteId();
+				inviteRoleId = res.getId();
 			}
 			var ctx = dbModule.getCtx(con).insertInto(GUILD_INVITE_ROLES).columns(GUILD_INVITE_ROLES.ROLE_ID, GUILD_INVITE_ROLES.GUILD_INVITE_ID);
 			for(var role : roles){
@@ -678,9 +679,9 @@ public class SettingsModule extends Module{
 	private void insertIgnoredUsers(long guildId, Set<Long> users){
 		var dbModule = this.modules.getDatabaseModule();
 		try(var con = dbModule.getCon()){
-			var ctx = dbModule.getCtx(con).insertInto(BOT_IGNORED_USERS).columns(BOT_IGNORED_USERS.GUILD_ID, BOT_IGNORED_USERS.USER_ID);
+			var ctx = dbModule.getCtx(con).insertInto(BOT_IGNORED_MEMBERS).columns(BOT_IGNORED_MEMBERS.MEMBER_ID);
 			for(var user : users){
-				ctx = ctx.values(guildId, user);
+				ctx = ctx.select(MEMBERS.ID)
 			}
 			ctx.execute();
 		}
@@ -697,15 +698,15 @@ public class SettingsModule extends Module{
 		removeIgnoredUsers(guildId, users);
 	}
 
-	private void removeIgnoredUsers(long guildId, Set<Long> users){
-		var dbModule = this.modules.getDatabaseModule();
-		try(var con = dbModule.getCon()){
-			dbModule.getCtx(con).deleteFrom(BOT_IGNORED_USERS).where(
-					BOT_IGNORED_USERS.GUILD_ID.eq(guildId).and(BOT_IGNORED_USERS.USER_ID.in(users))).execute();
-		}
-		catch(SQLException e){
-			LOG.error("Error inserting ignored users", e);
-		}
+private void removeIgnoredUsers(long guildId, Set<Long> users){
+	var dbModule = this.modules.getDatabaseModule();
+	try(var con = dbModule.getCon()){
+		dbModule.getCtx(con).deleteFrom(BOT_IGNORED_MEMBERS).where(
+				BOT_IGNORED_MEMBERS.MEMBER_ID.in(select(MEMBERS.ID).where(MEMBERS.GUILD_ID.eq(guildId).and(MEMBERS.USER_ID.in(users))))).execute();
 	}
+	catch(SQLException e){
+		LOG.error("Error removing ignored users", e);
+	}
+}
 
 }

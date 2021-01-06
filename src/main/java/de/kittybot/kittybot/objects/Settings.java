@@ -4,10 +4,7 @@ import de.kittybot.kittybot.jooq.tables.records.GuildsRecord;
 import de.kittybot.kittybot.utils.MessageUtils;
 
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Settings{
 
@@ -36,8 +33,8 @@ public class Settings{
 	private long djRoleId;
 	private boolean snipesEnabled;
 
-	public Settings(GuildsRecord record, Set<Long> snipeDisabledChannels, Set<Long> botDisabledChannels, Set<Long> botIgnoredUsers, Set<SelfAssignableRole> selfAssignableRoles, Set<SelfAssignableRoleGroup> selfAssignableRoleGroups, Map<String, Set<Long>> guildInviteRoles){
-		this.guildId = record.getGuildId();
+	public Settings(GuildsRecord record, Collection<Long> snipeDisabledChannels, Collection<Long> botDisabledChannels, Collection<Long> botIgnoredUsers, Collection<SelfAssignableRole> selfAssignableRoles, Collection<SelfAssignableRoleGroup> selfAssignableRoleGroups, Map<String, Set<Long>> guildInviteRoles){
+		this.guildId = record.getId();
 		this.prefix = record.getPrefix();
 		this.streamAnnouncementChannelId = record.getStreamAnnouncementChannelId();
 		this.streamAnnouncementMessage = record.getStreamAnnouncementMessage();
@@ -55,12 +52,12 @@ public class Settings{
 		this.inactiveDuration = record.getInactiveDuration().toDuration();
 		this.djRoleId = record.getDjRoleId();
 		this.snipesEnabled = record.getSnipesEnabled();
-		this.snipeDisabledChannels = snipeDisabledChannels == null ? new HashSet<>() : snipeDisabledChannels;
-		this.botDisabledChannels = botDisabledChannels == null ? new HashSet<>() : botDisabledChannels;
-		this.botIgnoredUsers = botIgnoredUsers == null ? new HashSet<>() : botIgnoredUsers;
-		this.selfAssignableRoles = selfAssignableRoles == null ? new HashSet<>() : selfAssignableRoles;
-		this.selfAssignableRoleGroups = selfAssignableRoleGroups == null ? new HashSet<>() : selfAssignableRoleGroups;
-		this.guildInviteRoles = guildInviteRoles == null ? new HashMap<>() : guildInviteRoles;
+		this.snipeDisabledChannels = new HashSet<>(snipeDisabledChannels);
+		this.botDisabledChannels = new HashSet<>(botDisabledChannels);
+		this.botIgnoredUsers = new HashSet<>(botIgnoredUsers);
+		this.selfAssignableRoles =  new HashSet<>(selfAssignableRoles);
+		this.selfAssignableRoleGroups =  new HashSet<>(selfAssignableRoleGroups);
+		this.guildInviteRoles = guildInviteRoles;
 	}
 
 	public long getGuildId(){

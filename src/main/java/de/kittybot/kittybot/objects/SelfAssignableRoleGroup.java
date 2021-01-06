@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.objects;
 
 import de.kittybot.kittybot.jooq.tables.records.SelfAssignableRoleGroupsRecord;
+import org.jooq.Record;
 
 public class SelfAssignableRoleGroup{
 
@@ -18,7 +19,7 @@ public class SelfAssignableRoleGroup{
 
 	public SelfAssignableRoleGroup(SelfAssignableRoleGroupsRecord record){
 		this.guildId = record.getGuildId();
-		this.id = record.getSelfAssignableRoleGroupId();
+		this.id = record.getId();
 		this.groupName = record.getGroupName();
 		this.maxRoles = record.getMaxRoles();
 	}
