@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row4;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -57,6 +57,11 @@ public class SelfAssignableRoles extends TableImpl<SelfAssignableRolesRecord> {
      * The column <code>public.self_assignable_roles.group_id</code>.
      */
     public final TableField<SelfAssignableRolesRecord, Long> GROUP_ID = createField(DSL.name("group_id"), SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>public.self_assignable_roles.guild_id</code>.
+     */
+    public final TableField<SelfAssignableRolesRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.self_assignable_roles.role_id</code>.
@@ -123,11 +128,15 @@ public class SelfAssignableRoles extends TableImpl<SelfAssignableRolesRecord> {
 
     @Override
     public List<ForeignKey<SelfAssignableRolesRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<SelfAssignableRolesRecord, ?>>asList(Keys.SELF_ASSIGNABLE_ROLES__SELF_ASSIGNABLE_ROLES_GROUP_ID_FKEY);
+        return Arrays.<ForeignKey<SelfAssignableRolesRecord, ?>>asList(Keys.SELF_ASSIGNABLE_ROLES__SELF_ASSIGNABLE_ROLES_GROUP_ID_FKEY, Keys.SELF_ASSIGNABLE_ROLES__SELF_ASSIGNABLE_ROLES_GUILD_ID_FKEY);
     }
 
     public SelfAssignableRoleGroups selfAssignableRoleGroups() {
         return new SelfAssignableRoleGroups(this, Keys.SELF_ASSIGNABLE_ROLES__SELF_ASSIGNABLE_ROLES_GROUP_ID_FKEY);
+    }
+
+    public Guilds guilds() {
+        return new Guilds(this, Keys.SELF_ASSIGNABLE_ROLES__SELF_ASSIGNABLE_ROLES_GUILD_ID_FKEY);
     }
 
     @Override
@@ -157,11 +166,11 @@ public class SelfAssignableRoles extends TableImpl<SelfAssignableRolesRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Long, Long, Long, Long> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row5<Long, Long, Long, Long, Long> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }

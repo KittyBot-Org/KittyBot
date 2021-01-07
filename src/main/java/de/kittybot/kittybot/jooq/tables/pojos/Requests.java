@@ -17,7 +17,8 @@ public class Requests implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Long          id;
-    private final Long          memberId;
+    private final Long          guildId;
+    private final Long          userId;
     private final String        title;
     private final String        body;
     private final Boolean       answered;
@@ -26,7 +27,8 @@ public class Requests implements Serializable {
 
     public Requests(Requests value) {
         this.id = value.id;
-        this.memberId = value.memberId;
+        this.guildId = value.guildId;
+        this.userId = value.userId;
         this.title = value.title;
         this.body = value.body;
         this.answered = value.answered;
@@ -36,7 +38,8 @@ public class Requests implements Serializable {
 
     public Requests(
         Long          id,
-        Long          memberId,
+        Long          guildId,
+        Long          userId,
         String        title,
         String        body,
         Boolean       answered,
@@ -44,7 +47,8 @@ public class Requests implements Serializable {
         LocalDateTime creationAt
     ) {
         this.id = id;
-        this.memberId = memberId;
+        this.guildId = guildId;
+        this.userId = userId;
         this.title = title;
         this.body = body;
         this.answered = answered;
@@ -60,10 +64,17 @@ public class Requests implements Serializable {
     }
 
     /**
-     * Getter for <code>public.requests.member_id</code>.
+     * Getter for <code>public.requests.guild_id</code>.
      */
-    public Long getMemberId() {
-        return this.memberId;
+    public Long getGuildId() {
+        return this.guildId;
+    }
+
+    /**
+     * Getter for <code>public.requests.user_id</code>.
+     */
+    public Long getUserId() {
+        return this.userId;
     }
 
     /**
@@ -106,7 +117,8 @@ public class Requests implements Serializable {
         StringBuilder sb = new StringBuilder("Requests (");
 
         sb.append(id);
-        sb.append(", ").append(memberId);
+        sb.append(", ").append(guildId);
+        sb.append(", ").append(userId);
         sb.append(", ").append(title);
         sb.append(", ").append(body);
         sb.append(", ").append(answered);

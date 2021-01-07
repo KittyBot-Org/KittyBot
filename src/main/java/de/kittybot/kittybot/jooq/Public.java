@@ -11,7 +11,6 @@ import de.kittybot.kittybot.jooq.tables.GuildInvites;
 import de.kittybot.kittybot.jooq.tables.GuildTags;
 import de.kittybot.kittybot.jooq.tables.Guilds;
 import de.kittybot.kittybot.jooq.tables.MemberRoles;
-import de.kittybot.kittybot.jooq.tables.Members;
 import de.kittybot.kittybot.jooq.tables.Notifications;
 import de.kittybot.kittybot.jooq.tables.ReactiveMessages;
 import de.kittybot.kittybot.jooq.tables.Requests;
@@ -22,7 +21,6 @@ import de.kittybot.kittybot.jooq.tables.SnipeDisabledChannels;
 import de.kittybot.kittybot.jooq.tables.StreamUserEvents;
 import de.kittybot.kittybot.jooq.tables.StreamUsers;
 import de.kittybot.kittybot.jooq.tables.UserStatistics;
-import de.kittybot.kittybot.jooq.tables.Users;
 
 import java.util.Arrays;
 import java.util.List;
@@ -82,11 +80,6 @@ public class Public extends SchemaImpl {
     public final MemberRoles MEMBER_ROLES = MemberRoles.MEMBER_ROLES;
 
     /**
-     * The table <code>public.members</code>.
-     */
-    public final Members MEMBERS = Members.MEMBERS;
-
-    /**
      * The table <code>public.notifications</code>.
      */
     public final Notifications NOTIFICATIONS = Notifications.NOTIFICATIONS;
@@ -137,11 +130,6 @@ public class Public extends SchemaImpl {
     public final UserStatistics USER_STATISTICS = UserStatistics.USER_STATISTICS;
 
     /**
-     * The table <code>public.users</code>.
-     */
-    public final Users USERS = Users.USERS;
-
-    /**
      * No further instances allowed
      */
     private Public() {
@@ -163,7 +151,6 @@ public class Public extends SchemaImpl {
             Sequences.GUILD_INVITES_ID_SEQ,
             Sequences.GUILD_TAGS_ID_SEQ,
             Sequences.MEMBER_ROLES_ID_SEQ,
-            Sequences.MEMBERS_ID_SEQ,
             Sequences.NOTIFICATIONS_ID_SEQ,
             Sequences.REACTIVE_MESSAGES_ID_SEQ,
             Sequences.REQUESTS_ID_SEQ,
@@ -173,8 +160,7 @@ public class Public extends SchemaImpl {
             Sequences.SNIPE_DISABLED_CHANNELS_ID_SEQ,
             Sequences.STREAM_USER_EVENTS_ID_SEQ,
             Sequences.STREAM_USERS_ID_SEQ,
-            Sequences.USER_STATISTICS_ID_SEQ,
-            Sequences.USERS_ID_SEQ);
+            Sequences.USER_STATISTICS_ID_SEQ);
     }
 
     @Override
@@ -187,7 +173,6 @@ public class Public extends SchemaImpl {
             GuildTags.GUILD_TAGS,
             Guilds.GUILDS,
             MemberRoles.MEMBER_ROLES,
-            Members.MEMBERS,
             Notifications.NOTIFICATIONS,
             ReactiveMessages.REACTIVE_MESSAGES,
             Requests.REQUESTS,
@@ -197,7 +182,6 @@ public class Public extends SchemaImpl {
             SnipeDisabledChannels.SNIPE_DISABLED_CHANNELS,
             StreamUserEvents.STREAM_USER_EVENTS,
             StreamUsers.STREAM_USERS,
-            UserStatistics.USER_STATISTICS,
-            Users.USERS);
+            UserStatistics.USER_STATISTICS);
     }
 }

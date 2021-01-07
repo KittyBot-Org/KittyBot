@@ -16,7 +16,8 @@ public class ReactiveMessages implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Long   id;
-    private final Long   memberId;
+    private final Long   guildId;
+    private final Long   userId;
     private final Long   channelId;
     private final Long   messageId;
     private final String commandPath;
@@ -24,7 +25,8 @@ public class ReactiveMessages implements Serializable {
 
     public ReactiveMessages(ReactiveMessages value) {
         this.id = value.id;
-        this.memberId = value.memberId;
+        this.guildId = value.guildId;
+        this.userId = value.userId;
         this.channelId = value.channelId;
         this.messageId = value.messageId;
         this.commandPath = value.commandPath;
@@ -33,14 +35,16 @@ public class ReactiveMessages implements Serializable {
 
     public ReactiveMessages(
         Long   id,
-        Long   memberId,
+        Long   guildId,
+        Long   userId,
         Long   channelId,
         Long   messageId,
         String commandPath,
         Long   allowed
     ) {
         this.id = id;
-        this.memberId = memberId;
+        this.guildId = guildId;
+        this.userId = userId;
         this.channelId = channelId;
         this.messageId = messageId;
         this.commandPath = commandPath;
@@ -55,10 +59,17 @@ public class ReactiveMessages implements Serializable {
     }
 
     /**
-     * Getter for <code>public.reactive_messages.member_id</code>.
+     * Getter for <code>public.reactive_messages.guild_id</code>.
      */
-    public Long getMemberId() {
-        return this.memberId;
+    public Long getGuildId() {
+        return this.guildId;
+    }
+
+    /**
+     * Getter for <code>public.reactive_messages.user_id</code>.
+     */
+    public Long getUserId() {
+        return this.userId;
     }
 
     /**
@@ -94,7 +105,8 @@ public class ReactiveMessages implements Serializable {
         StringBuilder sb = new StringBuilder("ReactiveMessages (");
 
         sb.append(id);
-        sb.append(", ").append(memberId);
+        sb.append(", ").append(guildId);
+        sb.append(", ").append(userId);
         sb.append(", ").append(channelId);
         sb.append(", ").append(messageId);
         sb.append(", ").append(commandPath);

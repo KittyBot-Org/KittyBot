@@ -8,6 +8,7 @@ import de.kittybot.kittybot.objects.StreamAnnouncement;
 import de.kittybot.kittybot.streams.Stream;
 import de.kittybot.kittybot.streams.StreamType;
 import de.kittybot.kittybot.streams.twitch.TwitchWrapper;
+import de.kittybot.kittybot.streams.youtube.YouTubeWrapper;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.Config;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -35,6 +36,8 @@ public class StreamAnnouncementModule extends Module{
 	private final List<StreamAnnouncement> streamAnnouncements;
 	private final Set<String> activeStreams;
 	private TwitchWrapper twitchWrapper;
+	private YouTubeWrapper youTubeWrapper;
+
 
 	public StreamAnnouncementModule(Modules modules){
 		this.modules = modules;

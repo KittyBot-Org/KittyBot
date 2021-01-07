@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -55,9 +55,14 @@ public class Notifications extends TableImpl<NotificationsRecord> {
     public final TableField<NotificationsRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>public.notifications.member_id</code>.
+     * The column <code>public.notifications.guild_id</code>.
      */
-    public final TableField<NotificationsRecord, Long> MEMBER_ID = createField(DSL.name("member_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<NotificationsRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>public.notifications.user_id</code>.
+     */
+    public final TableField<NotificationsRecord, Long> USER_ID = createField(DSL.name("user_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.notifications.channel_id</code>.
@@ -139,11 +144,11 @@ public class Notifications extends TableImpl<NotificationsRecord> {
 
     @Override
     public List<ForeignKey<NotificationsRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<NotificationsRecord, ?>>asList(Keys.NOTIFICATIONS__NOTIFICATIONS_MEMBER_ID_FKEY);
+        return Arrays.<ForeignKey<NotificationsRecord, ?>>asList(Keys.NOTIFICATIONS__NOTIFICATIONS_GUILD_ID_FKEY);
     }
 
-    public Members members() {
-        return new Members(this, Keys.NOTIFICATIONS__NOTIFICATIONS_MEMBER_ID_FKEY);
+    public Guilds guilds() {
+        return new Guilds(this, Keys.NOTIFICATIONS__NOTIFICATIONS_GUILD_ID_FKEY);
     }
 
     @Override
@@ -173,11 +178,11 @@ public class Notifications extends TableImpl<NotificationsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Long, Long, Long, Long, String, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<Long, Long, Long, Long, Long, String, LocalDateTime, LocalDateTime> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

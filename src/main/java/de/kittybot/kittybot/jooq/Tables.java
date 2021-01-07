@@ -11,7 +11,6 @@ import de.kittybot.kittybot.jooq.tables.GuildInvites;
 import de.kittybot.kittybot.jooq.tables.GuildTags;
 import de.kittybot.kittybot.jooq.tables.Guilds;
 import de.kittybot.kittybot.jooq.tables.MemberRoles;
-import de.kittybot.kittybot.jooq.tables.Members;
 import de.kittybot.kittybot.jooq.tables.Notifications;
 import de.kittybot.kittybot.jooq.tables.ReactiveMessages;
 import de.kittybot.kittybot.jooq.tables.Requests;
@@ -22,7 +21,6 @@ import de.kittybot.kittybot.jooq.tables.SnipeDisabledChannels;
 import de.kittybot.kittybot.jooq.tables.StreamUserEvents;
 import de.kittybot.kittybot.jooq.tables.StreamUsers;
 import de.kittybot.kittybot.jooq.tables.UserStatistics;
-import de.kittybot.kittybot.jooq.tables.Users;
 
 
 /**
@@ -65,11 +63,6 @@ public class Tables {
      * The table <code>public.member_roles</code>.
      */
     public static final MemberRoles MEMBER_ROLES = MemberRoles.MEMBER_ROLES;
-
-    /**
-     * The table <code>public.members</code>.
-     */
-    public static final Members MEMBERS = Members.MEMBERS;
 
     /**
      * The table <code>public.notifications</code>.
@@ -120,9 +113,4 @@ public class Tables {
      * The table <code>public.user_statistics</code>.
      */
     public static final UserStatistics USER_STATISTICS = UserStatistics.USER_STATISTICS;
-
-    /**
-     * The table <code>public.users</code>.
-     */
-    public static final Users USERS = Users.USERS;
 }

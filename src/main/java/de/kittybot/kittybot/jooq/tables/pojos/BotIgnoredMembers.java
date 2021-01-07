@@ -16,19 +16,23 @@ public class BotIgnoredMembers implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Long id;
-    private final Long memberId;
+    private final Long guildId;
+    private final Long userId;
 
     public BotIgnoredMembers(BotIgnoredMembers value) {
         this.id = value.id;
-        this.memberId = value.memberId;
+        this.guildId = value.guildId;
+        this.userId = value.userId;
     }
 
     public BotIgnoredMembers(
         Long id,
-        Long memberId
+        Long guildId,
+        Long userId
     ) {
         this.id = id;
-        this.memberId = memberId;
+        this.guildId = guildId;
+        this.userId = userId;
     }
 
     /**
@@ -39,10 +43,17 @@ public class BotIgnoredMembers implements Serializable {
     }
 
     /**
-     * Getter for <code>public.bot_ignored_members.member_id</code>.
+     * Getter for <code>public.bot_ignored_members.guild_id</code>.
      */
-    public Long getMemberId() {
-        return this.memberId;
+    public Long getGuildId() {
+        return this.guildId;
+    }
+
+    /**
+     * Getter for <code>public.bot_ignored_members.user_id</code>.
+     */
+    public Long getUserId() {
+        return this.userId;
     }
 
     @Override
@@ -50,7 +61,8 @@ public class BotIgnoredMembers implements Serializable {
         StringBuilder sb = new StringBuilder("BotIgnoredMembers (");
 
         sb.append(id);
-        sb.append(", ").append(memberId);
+        sb.append(", ").append(guildId);
+        sb.append(", ").append(userId);
 
         sb.append(")");
         return sb.toString();

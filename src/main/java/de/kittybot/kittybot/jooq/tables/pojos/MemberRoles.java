@@ -16,22 +16,26 @@ public class MemberRoles implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Long id;
-    private final Long memberId;
+    private final Long guildId;
+    private final Long userId;
     private final Long roleId;
 
     public MemberRoles(MemberRoles value) {
         this.id = value.id;
-        this.memberId = value.memberId;
+        this.guildId = value.guildId;
+        this.userId = value.userId;
         this.roleId = value.roleId;
     }
 
     public MemberRoles(
         Long id,
-        Long memberId,
+        Long guildId,
+        Long userId,
         Long roleId
     ) {
         this.id = id;
-        this.memberId = memberId;
+        this.guildId = guildId;
+        this.userId = userId;
         this.roleId = roleId;
     }
 
@@ -43,10 +47,17 @@ public class MemberRoles implements Serializable {
     }
 
     /**
-     * Getter for <code>public.member_roles.member_id</code>.
+     * Getter for <code>public.member_roles.guild_id</code>.
      */
-    public Long getMemberId() {
-        return this.memberId;
+    public Long getGuildId() {
+        return this.guildId;
+    }
+
+    /**
+     * Getter for <code>public.member_roles.user_id</code>.
+     */
+    public Long getUserId() {
+        return this.userId;
     }
 
     /**
@@ -61,7 +72,8 @@ public class MemberRoles implements Serializable {
         StringBuilder sb = new StringBuilder("MemberRoles (");
 
         sb.append(id);
-        sb.append(", ").append(memberId);
+        sb.append(", ").append(guildId);
+        sb.append(", ").append(userId);
         sb.append(", ").append(roleId);
 
         sb.append(")");

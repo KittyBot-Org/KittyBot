@@ -46,11 +46,6 @@ public class Sequences {
     public static final Sequence<Long> MEMBER_ROLES_ID_SEQ = Internal.createSequence("member_roles_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.members_id_seq</code>
-     */
-    public static final Sequence<Long> MEMBERS_ID_SEQ = Internal.createSequence("members_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
      * The sequence <code>public.notifications_id_seq</code>
      */
     public static final Sequence<Long> NOTIFICATIONS_ID_SEQ = Internal.createSequence("notifications_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -99,9 +94,4 @@ public class Sequences {
      * The sequence <code>public.user_statistics_id_seq</code>
      */
     public static final Sequence<Long> USER_STATISTICS_ID_SEQ = Internal.createSequence("user_statistics_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>public.users_id_seq</code>
-     */
-    public static final Sequence<Long> USERS_ID_SEQ = Internal.createSequence("users_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 }

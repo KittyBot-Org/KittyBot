@@ -17,7 +17,8 @@ public class Notifications implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Long          id;
-    private final Long          memberId;
+    private final Long          guildId;
+    private final Long          userId;
     private final Long          channelId;
     private final Long          messageId;
     private final String        content;
@@ -26,7 +27,8 @@ public class Notifications implements Serializable {
 
     public Notifications(Notifications value) {
         this.id = value.id;
-        this.memberId = value.memberId;
+        this.guildId = value.guildId;
+        this.userId = value.userId;
         this.channelId = value.channelId;
         this.messageId = value.messageId;
         this.content = value.content;
@@ -36,7 +38,8 @@ public class Notifications implements Serializable {
 
     public Notifications(
         Long          id,
-        Long          memberId,
+        Long          guildId,
+        Long          userId,
         Long          channelId,
         Long          messageId,
         String        content,
@@ -44,7 +47,8 @@ public class Notifications implements Serializable {
         LocalDateTime notificationTime
     ) {
         this.id = id;
-        this.memberId = memberId;
+        this.guildId = guildId;
+        this.userId = userId;
         this.channelId = channelId;
         this.messageId = messageId;
         this.content = content;
@@ -60,10 +64,17 @@ public class Notifications implements Serializable {
     }
 
     /**
-     * Getter for <code>public.notifications.member_id</code>.
+     * Getter for <code>public.notifications.guild_id</code>.
      */
-    public Long getMemberId() {
-        return this.memberId;
+    public Long getGuildId() {
+        return this.guildId;
+    }
+
+    /**
+     * Getter for <code>public.notifications.user_id</code>.
+     */
+    public Long getUserId() {
+        return this.userId;
     }
 
     /**
@@ -106,7 +117,8 @@ public class Notifications implements Serializable {
         StringBuilder sb = new StringBuilder("Notifications (");
 
         sb.append(id);
-        sb.append(", ").append(memberId);
+        sb.append(", ").append(guildId);
+        sb.append(", ").append(userId);
         sb.append(", ").append(channelId);
         sb.append(", ").append(messageId);
         sb.append(", ").append(content);

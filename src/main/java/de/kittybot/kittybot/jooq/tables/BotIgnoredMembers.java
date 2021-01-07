@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row2;
+import org.jooq.Row3;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -54,9 +54,14 @@ public class BotIgnoredMembers extends TableImpl<BotIgnoredMembersRecord> {
     public final TableField<BotIgnoredMembersRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>public.bot_ignored_members.member_id</code>.
+     * The column <code>public.bot_ignored_members.guild_id</code>.
      */
-    public final TableField<BotIgnoredMembersRecord, Long> MEMBER_ID = createField(DSL.name("member_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<BotIgnoredMembersRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>public.bot_ignored_members.user_id</code>.
+     */
+    public final TableField<BotIgnoredMembersRecord, Long> USER_ID = createField(DSL.name("user_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     private BotIgnoredMembers(Name alias, Table<BotIgnoredMembersRecord> aliased) {
         this(alias, aliased, null);
@@ -113,11 +118,11 @@ public class BotIgnoredMembers extends TableImpl<BotIgnoredMembersRecord> {
 
     @Override
     public List<ForeignKey<BotIgnoredMembersRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<BotIgnoredMembersRecord, ?>>asList(Keys.BOT_IGNORED_MEMBERS__BOT_IGNORED_MEMBERS_MEMBER_ID_FKEY);
+        return Arrays.<ForeignKey<BotIgnoredMembersRecord, ?>>asList(Keys.BOT_IGNORED_MEMBERS__BOT_IGNORED_MEMBERS_GUILD_ID_FKEY);
     }
 
-    public Members members() {
-        return new Members(this, Keys.BOT_IGNORED_MEMBERS__BOT_IGNORED_MEMBERS_MEMBER_ID_FKEY);
+    public Guilds guilds() {
+        return new Guilds(this, Keys.BOT_IGNORED_MEMBERS__BOT_IGNORED_MEMBERS_GUILD_ID_FKEY);
     }
 
     @Override
@@ -147,11 +152,11 @@ public class BotIgnoredMembers extends TableImpl<BotIgnoredMembersRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row2 type methods
+    // Row3 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row2<Long, Long> fieldsRow() {
-        return (Row2) super.fieldsRow();
+    public Row3<Long, Long, Long> fieldsRow() {
+        return (Row3) super.fieldsRow();
     }
 }

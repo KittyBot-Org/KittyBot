@@ -17,7 +17,8 @@ public class UserStatistics implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Long          id;
-    private final Long          memberId;
+    private final Long          guildId;
+    private final Long          userId;
     private final Integer       xp;
     private final Integer       level;
     private final Integer       botCalls;
@@ -28,7 +29,8 @@ public class UserStatistics implements Serializable {
 
     public UserStatistics(UserStatistics value) {
         this.id = value.id;
-        this.memberId = value.memberId;
+        this.guildId = value.guildId;
+        this.userId = value.userId;
         this.xp = value.xp;
         this.level = value.level;
         this.botCalls = value.botCalls;
@@ -40,7 +42,8 @@ public class UserStatistics implements Serializable {
 
     public UserStatistics(
         Long          id,
-        Long          memberId,
+        Long          guildId,
+        Long          userId,
         Integer       xp,
         Integer       level,
         Integer       botCalls,
@@ -50,7 +53,8 @@ public class UserStatistics implements Serializable {
         LocalDateTime lastActive
     ) {
         this.id = id;
-        this.memberId = memberId;
+        this.guildId = guildId;
+        this.userId = userId;
         this.xp = xp;
         this.level = level;
         this.botCalls = botCalls;
@@ -68,10 +72,17 @@ public class UserStatistics implements Serializable {
     }
 
     /**
-     * Getter for <code>public.user_statistics.member_id</code>.
+     * Getter for <code>public.user_statistics.guild_id</code>.
      */
-    public Long getMemberId() {
-        return this.memberId;
+    public Long getGuildId() {
+        return this.guildId;
+    }
+
+    /**
+     * Getter for <code>public.user_statistics.user_id</code>.
+     */
+    public Long getUserId() {
+        return this.userId;
     }
 
     /**
@@ -128,7 +139,8 @@ public class UserStatistics implements Serializable {
         StringBuilder sb = new StringBuilder("UserStatistics (");
 
         sb.append(id);
-        sb.append(", ").append(memberId);
+        sb.append(", ").append(guildId);
+        sb.append(", ").append(userId);
         sb.append(", ").append(xp);
         sb.append(", ").append(level);
         sb.append(", ").append(botCalls);

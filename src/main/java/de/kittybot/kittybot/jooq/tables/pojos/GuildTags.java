@@ -18,7 +18,8 @@ public class GuildTags implements Serializable {
 
     private final Long          id;
     private final String        name;
-    private final Long          memberId;
+    private final Long          guildId;
+    private final Long          userId;
     private final String        content;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
@@ -26,7 +27,8 @@ public class GuildTags implements Serializable {
     public GuildTags(GuildTags value) {
         this.id = value.id;
         this.name = value.name;
-        this.memberId = value.memberId;
+        this.guildId = value.guildId;
+        this.userId = value.userId;
         this.content = value.content;
         this.createdAt = value.createdAt;
         this.updatedAt = value.updatedAt;
@@ -35,14 +37,16 @@ public class GuildTags implements Serializable {
     public GuildTags(
         Long          id,
         String        name,
-        Long          memberId,
+        Long          guildId,
+        Long          userId,
         String        content,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
     ) {
         this.id = id;
         this.name = name;
-        this.memberId = memberId;
+        this.guildId = guildId;
+        this.userId = userId;
         this.content = content;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -63,10 +67,17 @@ public class GuildTags implements Serializable {
     }
 
     /**
-     * Getter for <code>public.guild_tags.member_id</code>.
+     * Getter for <code>public.guild_tags.guild_id</code>.
      */
-    public Long getMemberId() {
-        return this.memberId;
+    public Long getGuildId() {
+        return this.guildId;
+    }
+
+    /**
+     * Getter for <code>public.guild_tags.user_id</code>.
+     */
+    public Long getUserId() {
+        return this.userId;
     }
 
     /**
@@ -96,7 +107,8 @@ public class GuildTags implements Serializable {
 
         sb.append(id);
         sb.append(", ").append(name);
-        sb.append(", ").append(memberId);
+        sb.append(", ").append(guildId);
+        sb.append(", ").append(userId);
         sb.append(", ").append(content);
         sb.append(", ").append(createdAt);
         sb.append(", ").append(updatedAt);

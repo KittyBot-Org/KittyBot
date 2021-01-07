@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row3;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -54,9 +54,14 @@ public class MemberRoles extends TableImpl<MemberRolesRecord> {
     public final TableField<MemberRolesRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>public.member_roles.member_id</code>.
+     * The column <code>public.member_roles.guild_id</code>.
      */
-    public final TableField<MemberRolesRecord, Long> MEMBER_ID = createField(DSL.name("member_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<MemberRolesRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>public.member_roles.user_id</code>.
+     */
+    public final TableField<MemberRolesRecord, Long> USER_ID = createField(DSL.name("user_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.member_roles.role_id</code>.
@@ -113,16 +118,16 @@ public class MemberRoles extends TableImpl<MemberRolesRecord> {
 
     @Override
     public List<UniqueKey<MemberRolesRecord>> getKeys() {
-        return Arrays.<UniqueKey<MemberRolesRecord>>asList(Keys.MEMBER_ROLES_PKEY, Keys.MEMBER_ROLES_MEMBER_ID_KEY, Keys.MEMBER_ROLES_ROLE_ID_KEY);
+        return Arrays.<UniqueKey<MemberRolesRecord>>asList(Keys.MEMBER_ROLES_PKEY, Keys.MEMBER_ROLES_GUILD_ID_KEY, Keys.MEMBER_ROLES_USER_ID_KEY, Keys.MEMBER_ROLES_ROLE_ID_KEY);
     }
 
     @Override
     public List<ForeignKey<MemberRolesRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<MemberRolesRecord, ?>>asList(Keys.MEMBER_ROLES__MEMBER_ROLES_MEMBER_ID_FKEY);
+        return Arrays.<ForeignKey<MemberRolesRecord, ?>>asList(Keys.MEMBER_ROLES__MEMBER_ROLES_GUILD_ID_FKEY);
     }
 
-    public Members members() {
-        return new Members(this, Keys.MEMBER_ROLES__MEMBER_ROLES_MEMBER_ID_FKEY);
+    public Guilds guilds() {
+        return new Guilds(this, Keys.MEMBER_ROLES__MEMBER_ROLES_GUILD_ID_FKEY);
     }
 
     @Override
@@ -152,11 +157,11 @@ public class MemberRoles extends TableImpl<MemberRolesRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<Long, Long, Long> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row4<Long, Long, Long, Long> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 }

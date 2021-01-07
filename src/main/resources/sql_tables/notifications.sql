@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS notifications(
   id                BIGSERIAL PRIMARY KEY NOT NULL,
-  member_id         BIGINT NOT NULL REFERENCES members(id) ON DELETE CASCADE,
+  guild_id          BIGINT NOT NULL REFERENCES guilds(id) ON DELETE CASCADE,
+  user_id           BIGINT NOT NULL,
   channel_id        BIGINT NOT NULL,
   message_id        BIGINT NOT NULL,
   content           TEXT NOT NULL,

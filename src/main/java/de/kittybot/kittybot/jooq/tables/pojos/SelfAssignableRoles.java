@@ -17,12 +17,14 @@ public class SelfAssignableRoles implements Serializable {
 
     private final Long id;
     private final Long groupId;
+    private final Long guildId;
     private final Long roleId;
     private final Long emoteId;
 
     public SelfAssignableRoles(SelfAssignableRoles value) {
         this.id = value.id;
         this.groupId = value.groupId;
+        this.guildId = value.guildId;
         this.roleId = value.roleId;
         this.emoteId = value.emoteId;
     }
@@ -30,11 +32,13 @@ public class SelfAssignableRoles implements Serializable {
     public SelfAssignableRoles(
         Long id,
         Long groupId,
+        Long guildId,
         Long roleId,
         Long emoteId
     ) {
         this.id = id;
         this.groupId = groupId;
+        this.guildId = guildId;
         this.roleId = roleId;
         this.emoteId = emoteId;
     }
@@ -51,6 +55,13 @@ public class SelfAssignableRoles implements Serializable {
      */
     public Long getGroupId() {
         return this.groupId;
+    }
+
+    /**
+     * Getter for <code>public.self_assignable_roles.guild_id</code>.
+     */
+    public Long getGuildId() {
+        return this.guildId;
     }
 
     /**
@@ -73,6 +84,7 @@ public class SelfAssignableRoles implements Serializable {
 
         sb.append(id);
         sb.append(", ").append(groupId);
+        sb.append(", ").append(guildId);
         sb.append(", ").append(roleId);
         sb.append(", ").append(emoteId);
 

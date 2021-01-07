@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import java.sql.SQLException;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Set;
@@ -58,7 +57,7 @@ public class SettingsModule extends Module{
 				var ctxSnipeDisabledChannels = dbModule.getCtx().selectFrom(SNIPE_DISABLED_CHANNELS);
 				var ctxBotDisabledChannels = dbModule.getCtx().selectFrom(BOT_DISABLED_CHANNELS);
 				var ctxBotIgnoredUsers = dbModule.getCtx().selectFrom(BOT_IGNORED_MEMBERS);
-				var ctxSelfAssignableRoles = dbModule.getCtx().select();
+				var ctxSelfAssignableRoles = dbModule.getCtx().selectFrom(SELF_ASSIGNABLE_ROLES);
 				var ctxSelfAssignableRoleGroups = dbModule.getCtx().selectFrom(SELF_ASSIGNABLE_ROLE_GROUPS);
 				var ctxGuildInviteRoles = dbModule.getCtx().select()
 		){
@@ -71,18 +70,16 @@ public class SettingsModule extends Module{
 
 						ctxBotDisabledChannels.where(BOT_DISABLED_CHANNELS.GUILD_ID.eq(guildId)).fetch().map(BotDisabledChannelsRecord::getChannelId),
 
-						ctxBotIgnoredUsers.where(BOT_IGNORED_MEMBERS.MEMBER_ID.eq(guildId)).fetch().map(BotIgnoredMembersRecord::getMemberId),
+						ctxBotIgnoredUsers.where(BOT_IGNORED_MEMBERS.GUILD_ID.eq(guildId)).fetch().map(BotIgnoredMembersRecord::getUserId),
 
-						ctxSelfAssignableRoles.from(SELF_ASSIGNABLE_ROLES).join(SELF_ASSIGNABLE_ROLE_GROUPS).onKey().where(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID.eq(guildId)).fetch().map(SelfAssignableRole::new),
+						ctxSelfAssignableRoles.where(SELF_ASSIGNABLE_ROLES.GUILD_ID.eq(guildId)).fetch().map(SelfAssignableRole::new),
 
 						ctxSelfAssignableRoleGroups.where(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID.eq(guildId)).fetch().map(SelfAssignableRoleGroup::new),
 
-						ctxGuildInviteRoles.from(GUILD_INVITES).join(GUILD_INVITE_ROLES).on(
-								GUILD_INVITES.ID.eq(GUILD_INVITE_ROLES.GUILD_INVITE_ID))
+						ctxGuildInviteRoles.from(GUILD_INVITES).join(GUILD_INVITE_ROLES).on(GUILD_INVITES.ID.eq(GUILD_INVITE_ROLES.GUILD_INVITE_ID))
 								.where(GUILD_INVITES.GUILD_ID.eq(guildId)).fetch()
-								.map(InviteRole::new)
 								.stream()
-								.collect(Collectors.groupingBy(InviteRole::getCode, Collectors.mapping(InviteRole::getRoleId, Collectors.toSet())))
+								.collect(Collectors.groupingBy(record -> record.get(GUILD_INVITES.CODE), Collectors.mapping(record -> record.get(GUILD_INVITE_ROLES.ROLE_ID), Collectors.toSet())))
 				);
 
 			}
@@ -581,9 +578,9 @@ public class SettingsModule extends Module{
 	}
 
 	private void insertIgnoredUsers(long guildId, Set<Long> users){
-		var ctx = this.modules.getDatabaseModule().getCtx().insertInto(BOT_IGNORED_MEMBERS).columns(BOT_IGNORED_MEMBERS.MEMBER_ID);
+		var ctx = this.modules.getDatabaseModule().getCtx().insertInto(BOT_IGNORED_MEMBERS).columns(BOT_IGNORED_MEMBERS.GUILD_ID, BOT_IGNORED_MEMBERS.USER_ID);
 		for(var user : users){
-			ctx.select(select(MEMBERS.ID).where(MEMBERS.GUILD_ID.eq(guildId).and(MEMBERS.USER_ID.eq(user))));
+			ctx.values(guildId, user);
 		}
 		ctx.execute();
 	}
@@ -598,7 +595,7 @@ public class SettingsModule extends Module{
 
 	private void removeIgnoredUsers(long guildId, Set<Long> users){
 		this.modules.getDatabaseModule().getCtx().deleteFrom(BOT_IGNORED_MEMBERS).where(
-				BOT_IGNORED_MEMBERS.MEMBER_ID.in(select(MEMBERS.ID).where(MEMBERS.GUILD_ID.eq(guildId).and(MEMBERS.USER_ID.in(users))))
+			BOT_IGNORED_MEMBERS.GUILD_ID.eq(guildId).and(BOT_IGNORED_MEMBERS.USER_ID.in(users))
 		).execute();
 	}
 

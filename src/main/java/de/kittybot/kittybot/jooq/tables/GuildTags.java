@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -60,9 +60,14 @@ public class GuildTags extends TableImpl<GuildTagsRecord> {
     public final TableField<GuildTagsRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(64).nullable(false), this, "");
 
     /**
-     * The column <code>public.guild_tags.member_id</code>.
+     * The column <code>public.guild_tags.guild_id</code>.
      */
-    public final TableField<GuildTagsRecord, Long> MEMBER_ID = createField(DSL.name("member_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<GuildTagsRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>public.guild_tags.user_id</code>.
+     */
+    public final TableField<GuildTagsRecord, Long> USER_ID = createField(DSL.name("user_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.guild_tags.content</code>.
@@ -129,16 +134,16 @@ public class GuildTags extends TableImpl<GuildTagsRecord> {
 
     @Override
     public List<UniqueKey<GuildTagsRecord>> getKeys() {
-        return Arrays.<UniqueKey<GuildTagsRecord>>asList(Keys.GUILD_TAGS_PKEY, Keys.GUILD_TAGS_NAME_KEY, Keys.GUILD_TAGS_MEMBER_ID_KEY);
+        return Arrays.<UniqueKey<GuildTagsRecord>>asList(Keys.GUILD_TAGS_PKEY, Keys.GUILD_TAGS_NAME_KEY, Keys.GUILD_TAGS_GUILD_ID_KEY);
     }
 
     @Override
     public List<ForeignKey<GuildTagsRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<GuildTagsRecord, ?>>asList(Keys.GUILD_TAGS__GUILD_TAGS_MEMBER_ID_FKEY);
+        return Arrays.<ForeignKey<GuildTagsRecord, ?>>asList(Keys.GUILD_TAGS__GUILD_TAGS_GUILD_ID_FKEY);
     }
 
-    public Members members() {
-        return new Members(this, Keys.GUILD_TAGS__GUILD_TAGS_MEMBER_ID_FKEY);
+    public Guilds guilds() {
+        return new Guilds(this, Keys.GUILD_TAGS__GUILD_TAGS_GUILD_ID_FKEY);
     }
 
     @Override
@@ -168,11 +173,11 @@ public class GuildTags extends TableImpl<GuildTagsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Long, String, Long, String, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row7<Long, String, Long, Long, String, LocalDateTime, LocalDateTime> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }
