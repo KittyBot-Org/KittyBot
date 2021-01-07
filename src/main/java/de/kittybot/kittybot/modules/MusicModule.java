@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.modules;
 
 import de.kittybot.kittybot.command.CommandContext;
-import de.kittybot.kittybot.module.Module;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.objects.MusicPlayer;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MusicModule extends Module{
+public class MusicModule extends ListenerAdapter{
 
 	private final Modules modules;
 	private final Map<Long, MusicPlayer> musicPlayers;

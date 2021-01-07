@@ -26,8 +26,6 @@ public class DatabaseModule{
 	public DatabaseModule(){
 		this.configuration = initConfiguration();
 		initTable("guilds",
-				"users",
-				"members",
 				"member_roles",
 				"guild_tags",
 				"guild_invites",

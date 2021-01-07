@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.modules;
 
-import de.kittybot.kittybot.module.Module;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.utils.exporters.Metrics;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteDeleteEvent;
@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 
-public class InviteRolesModule extends Module{
+public class InviteRolesModule extends ListenerAdapter{
 
 	private final Modules modules;
 

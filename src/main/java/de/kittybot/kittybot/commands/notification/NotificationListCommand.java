@@ -9,7 +9,7 @@ import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.TimeUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.util.Set;
+import java.util.List;
 
 public class NotificationListCommand extends Command{
 
@@ -21,7 +21,7 @@ public class NotificationListCommand extends Command{
 
 	@Override
 	public void run(Args args, CommandContext ctx){
-		Set<Notification> notifs;
+		List<Notification> notifs;
 		if(args.isEmpty()){
 			notifs = ctx.getNotificationModule().get(ctx.getUser().getIdLong());
 		}

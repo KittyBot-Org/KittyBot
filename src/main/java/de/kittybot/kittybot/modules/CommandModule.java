@@ -4,7 +4,7 @@ import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
 import de.kittybot.kittybot.command.ReactionContext;
-import de.kittybot.kittybot.module.Module;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.exporters.Metrics;
@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class CommandModule extends Module{
+public class CommandModule extends ListenerAdapter{
 
 	public static final String ARGUMENT_REGEX = "\\s+";
 	private static final Logger LOG = LoggerFactory.getLogger(CommandModule.class);

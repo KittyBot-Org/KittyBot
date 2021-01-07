@@ -6,10 +6,9 @@ import de.kittybot.kittybot.web.WebService;
 import net.dv8tion.jda.api.JDA;
 import okhttp3.OkHttpClient;
 
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.stream.Collectors;
 
 public class Modules{
 
@@ -17,6 +16,7 @@ public class Modules{
 	private final LavalinkModule lavalinkModule;
 	private final PrometheusModule prometheusModule;
 	private final CommandModule commandModule;
+	private final EventLogModule eventLogModule;
 	private final DatabaseModule databaseModule;
 	private final InviteModule inviteModule;
 	private final InviteRolesModule inviteRolesModule;
@@ -33,27 +33,31 @@ public class Modules{
 	private final TagModule tagModule;
 	private final MusicModule musicModule;
 	private final JoinModule joinModule;
+	private final RoleSaverModule roleSaver;
 
-	private final Set<Object> modules;
+	private final List<Object> modules;
 
 	public Modules(KittyBot main){
 		this.main = main;
-		this.modules = new LinkedHashSet<>();
+		this.modules = new LinkedList<>();
 
 		this.lavalinkModule = new LavalinkModule(this);
+		this.tagModule = new TagModule(this);
 		this.databaseModule = new DatabaseModule();
+		this.reactiveMessageModule = new ReactiveMessageModule();
+		this.requestModule = new RequestModule(this);
+
 		this.settingsModule = new SettingsModule(this);
 		this.commandModule = new CommandModule(this);
+		this.eventLogModule = new EventLogModule();
 		this.commandResponseModule = new CommandResponseModule();
-		this.reactiveMessageModule = new ReactiveMessageModule();
 		this.joinModule = new JoinModule();
 		this.inviteModule = new InviteModule();
 		this.inviteRolesModule = new InviteRolesModule(this);
 		this.statusModule = new StatusModule(this);
 		this.messageModule = new MessageModule();
 		this.botListModule = new BotListsModule(this);
-		this.requestModule = new RequestModule(this);
-		this.tagModule = new TagModule(this);
+		this.roleSaver = new RoleSaverModule(this);
 		this.musicModule = new MusicModule(this);
 		this.dashboardSessionModule = new DashboardSessionModule(this);
 		this.notificationModule = new NotificationModule(this);
@@ -61,20 +65,18 @@ public class Modules{
 		this.prometheusModule = new PrometheusModule(this);
 
 		Collections.addAll(this.modules,
-				this.lavalinkModule,
-				this.databaseModule,
 				this.settingsModule,
+				this.lavalinkModule.getLavalink(),
 				this.commandModule,
+				this.eventLogModule,
 				this.commandResponseModule,
-				this.reactiveMessageModule,
 				this.joinModule,
 				this.inviteModule,
 				this.inviteRolesModule,
 				this.statusModule,
 				this.messageModule,
 				this.botListModule,
-				this.requestModule,
-				this.tagModule,
+				this.roleSaver,
 				this.musicModule,
 				this.dashboardSessionModule,
 				this.notificationModule,
@@ -83,7 +85,8 @@ public class Modules{
 		);
 	}
 
-	public Set<Object> getAll(){
+	public List<Object> getModules(){
+		System.out.println(this.modules.stream().filter(module -> module instanceof EventListener).map(o -> o.getClass().getName()).collect(Collectors.joining(", ")));
 		return this.modules;
 	}
 

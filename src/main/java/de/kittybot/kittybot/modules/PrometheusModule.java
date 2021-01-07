@@ -1,6 +1,5 @@
 package de.kittybot.kittybot.modules;
 
-import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.Utils;
@@ -19,6 +18,7 @@ import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.http.HttpRequestEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.time.Duration;
 
-public class PrometheusModule extends Module{
+public class PrometheusModule extends ListenerAdapter{
 
 	public static final Duration UPDATE_PERIOD = Duration.ofSeconds(5);
 	// ty Natan 👀 https://github.com/Mantaro/MantaroBot/blob/master/src/main/java/net/kodehawa/mantarobot/utils/Prometheus.java
@@ -36,6 +36,9 @@ public class PrometheusModule extends Module{
 
 	public PrometheusModule(Modules modules){
 		this.modules = modules;
+		if(Config.PROMETHEUS_PORT == -1){
+			return;
+		}
 		new StandardExports().register();
 		new MemoryPoolsExports().register();
 		new BufferPoolsExports().register();

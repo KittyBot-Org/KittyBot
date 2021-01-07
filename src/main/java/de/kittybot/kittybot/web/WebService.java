@@ -31,32 +31,6 @@ public class WebService{
 
 	public WebService(Modules modules){
 		this.modules = modules;
-		initJavalin();
-	}
-
-	public static void accepted(Context ctx){
-		accepted(ctx, DataObject.empty());
-	}
-
-	public static void accepted(Context ctx, DataObject data){
-		result(ctx, 202, data);
-	}
-
-	public static void result(Context ctx, int code, DataObject data){
-		ctx.header("Content-Type", "application/json");
-		ctx.status(code);
-		ctx.result(data.toString());
-	}
-
-	public static void ok(Context ctx, DataObject data){
-		result(ctx, 200, data);
-	}
-
-	public static void ok(Context ctx){
-		result(ctx, 200, DataObject.empty());
-	}
-
-	private void initJavalin(){
 		if(Config.BACKEND_PORT == -1){
 			return;
 		}
@@ -116,6 +90,28 @@ public class WebService{
 				});
 			});
 		}).start(Config.BACKEND_PORT);
+	}
+
+	public static void accepted(Context ctx){
+		accepted(ctx, DataObject.empty());
+	}
+
+	public static void accepted(Context ctx, DataObject data){
+		result(ctx, 202, data);
+	}
+
+	public static void result(Context ctx, int code, DataObject data){
+		ctx.header("Content-Type", "application/json");
+		ctx.status(code);
+		ctx.result(data.toString());
+	}
+
+	public static void ok(Context ctx, DataObject data){
+		result(ctx, 200, data);
+	}
+
+	public static void ok(Context ctx){
+		result(ctx, 200, DataObject.empty());
 	}
 
 	private void checkDiscordLogin(Context ctx){

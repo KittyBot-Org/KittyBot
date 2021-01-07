@@ -23,8 +23,6 @@ public class SelfAssignableRole{
 		this.emoteId = record.getEmoteId();
 	}
 
-	public SelfAssignableRole(Record record){}
-
 	public long getGuildId(){
 		return this.guildId;
 	}

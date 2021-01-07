@@ -6,7 +6,7 @@ import com.github.benmanes.caffeine.cache.stats.CacheStats;
 import de.kittybot.kittybot.jooq.tables.records.BotDisabledChannelsRecord;
 import de.kittybot.kittybot.jooq.tables.records.BotIgnoredMembersRecord;
 import de.kittybot.kittybot.jooq.tables.records.SnipeDisabledChannelsRecord;
-import de.kittybot.kittybot.module.Module;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.objects.InviteRole;
 import de.kittybot.kittybot.objects.SelfAssignableRole;
@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 import static de.kittybot.kittybot.jooq.Tables.*;
 import static org.jooq.impl.DSL.*;
 
-public class SettingsModule extends Module{
+public class SettingsModule extends ListenerAdapter{
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommandModule.class);
 

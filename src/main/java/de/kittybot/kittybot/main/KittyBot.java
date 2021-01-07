@@ -56,7 +56,7 @@ public class KittyBot{
 				)
 				.setMemberCachePolicy(MemberCachePolicy.VOICE)
 				.setChunkingFilter(ChunkingFilter.NONE)
-				.addEventListeners(this.modules.getAll())
+				.addEventListeners(this.modules.getModules())
 				.setHttpClient(this.httpClient)
 				.setVoiceDispatchInterceptor(this.modules.getLavalinkModule().getLavalink().getVoiceInterceptor())
 				.setActivity(Activity.playing("loading..."))

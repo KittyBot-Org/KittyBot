@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.modules;
 
 import de.kittybot.kittybot.exceptions.CommandException;
-import de.kittybot.kittybot.module.Module;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.objects.AnnouncementType;
 import de.kittybot.kittybot.objects.StreamAnnouncement;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 import static de.kittybot.kittybot.jooq.Tables.STREAM_USERS;
 
-public class StreamAnnouncementModule extends Module{
+public class StreamAnnouncementModule extends ListenerAdapter{
 
 	private static final Logger LOG = LoggerFactory.getLogger(StreamAnnouncementModule.class);
 
@@ -53,13 +53,9 @@ public class StreamAnnouncementModule extends Module{
 
 	private List<StreamAnnouncement> loadStreamAnnouncements(){
 		var dbModule = this.modules.getDatabaseModule();
-		try(var con = dbModule.getCon(); var ctx = dbModule.getCtx(con).selectFrom(STREAM_USERS)){
+		try(var ctx = dbModule.getCtx().selectFrom(STREAM_USERS)){
 			return ctx.fetch().stream().map(StreamAnnouncement::new).collect(Collectors.toList());
 		}
-		catch(SQLException e){
-			LOG.error("Error loading stream announcements", e);
-		}
-		return new ArrayList<>();
 	}
 
 	@Override
@@ -129,19 +125,14 @@ public class StreamAnnouncementModule extends Module{
 	}
 
 	public void add(String name, long guildId, StreamType type) throws CommandException{
-		var dbModule = this.modules.getDatabaseModule();
-		try(var con = dbModule.getCon()){
-			var rows = dbModule.getCtx(con).insertInto(STREAM_USERS)
-					.columns(STREAM_USERS.GUILD_ID, STREAM_USERS.USER_NAME, STREAM_USERS.STREAM_TYPE)
-					.values(guildId, name, type.getId())
-					.execute();
-			if(rows != 1){
-				throw new CommandException("Stream already exists");
-			}
+		var rows = this.modules.getDatabaseModule().getCtx().insertInto(STREAM_USERS)
+				.columns(STREAM_USERS.GUILD_ID, STREAM_USERS.USER_NAME, STREAM_USERS.STREAM_TYPE)
+				.values(guildId, name, type.getId())
+				.execute();
+		if(rows != 1){
+			throw new CommandException("Stream already exists");
 		}
-		catch(SQLException e){
-			LOG.error("Error adding stream announcement", e);
-		}
+
 		this.streamAnnouncements.add(new StreamAnnouncement(name, guildId, type));
 	}
 
@@ -151,16 +142,12 @@ public class StreamAnnouncementModule extends Module{
 
 	public void delete(String name, long guildId, StreamType type) throws CommandException{
 		var dbModule = this.modules.getDatabaseModule();
-		try(var con = dbModule.getCon()){
-			var rows = dbModule.getCtx(con).deleteFrom(STREAM_USERS).where(
-					STREAM_USERS.USER_NAME.eq(name).and(STREAM_USERS.GUILD_ID.eq(guildId)).and(STREAM_USERS.STREAM_TYPE.eq(type.getId()))).execute();
-			if(rows != 1){
-				throw new CommandException("No stream found");
-			}
+		var rows = dbModule.getCtx().deleteFrom(STREAM_USERS).where(
+				STREAM_USERS.USER_NAME.eq(name).and(STREAM_USERS.GUILD_ID.eq(guildId)).and(STREAM_USERS.STREAM_TYPE.eq(type.getId()))).execute();
+		if(rows != 1){
+			throw new CommandException("No stream found");
 		}
-		catch(SQLException e){
-			LOG.error("Error adding stream announcement", e);
-		}
+
 		this.streamAnnouncements.removeIf(
 				stream -> stream.getUserName().equals(name) && stream.getStreamType() == type && stream.getGuildId() == guildId);
 	}

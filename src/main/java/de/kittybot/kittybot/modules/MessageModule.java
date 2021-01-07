@@ -3,7 +3,7 @@ package de.kittybot.kittybot.modules;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
-import de.kittybot.kittybot.module.Module;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import de.kittybot.kittybot.objects.MessageData;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
 
-public class MessageModule extends Module{
+public class MessageModule extends ListenerAdapter{
 
 	private final Cache<Long, MessageData> messages;// messageId - messageData
 	private final Cache<Long, MessageData> editedMessages;// messageId - messageData

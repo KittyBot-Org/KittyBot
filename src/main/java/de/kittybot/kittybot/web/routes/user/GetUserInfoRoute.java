@@ -35,18 +35,14 @@ public class GetUserInfoRoute implements Handler{
 			throw new NotFoundResponse("User not found");
 		}
 		try{
-			var guilds = this.modules.getDashboardSessionModule().getOAuth2Client().getGuilds(session).complete();
 			var guildData = DataArray.fromCollection(
-					guilds.stream().filter(
+					this.modules.getDashboardSessionModule().getGuilds(session).stream().filter(
 							guild -> this.modules.getJDA().getGuildCache().stream().anyMatch(g -> g.getIdLong() == guild.getIdLong())
 					).map(
 							guild -> DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl())
 					).collect(Collectors.toSet())
 			);
 			WebService.ok(ctx, DataObject.empty().put("name", user.getName()).put("id", userId).put("icon", user.getEffectiveAvatarUrl()).put("guilds", guildData));
-		}
-		catch(IOException e){
-			throw new InternalServerErrorResponse("There was a problem while login. Please try again");
 		}
 		catch(HttpException e){
 			throw new TooManyRequestResponse("Discord ratelimits us please wait with your request");

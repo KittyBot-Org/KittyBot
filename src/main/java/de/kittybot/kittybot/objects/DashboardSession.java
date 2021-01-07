@@ -6,6 +6,7 @@ import com.jagrosh.jdautilities.oauth2.session.SessionData;
 import de.kittybot.kittybot.jooq.tables.records.SessionsRecord;
 import de.kittybot.kittybot.modules.DashboardSessionModule;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
@@ -65,6 +66,10 @@ public class DashboardSession implements Session{
 	@Override
 	public OffsetDateTime getExpiration(){
 		return this.expiration;
+	}
+
+	public LocalDateTime getExpirationTime(){
+		return this.expiration.toLocalDateTime();
 	}
 
 }

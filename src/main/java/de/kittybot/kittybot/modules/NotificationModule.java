@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.modules;
 
 import de.kittybot.kittybot.jooq.tables.records.NotificationsRecord;
-import de.kittybot.kittybot.module.Module;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.objects.Notification;
 import de.kittybot.kittybot.utils.MessageUtils;
@@ -12,19 +12,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static de.kittybot.kittybot.jooq.Tables.NOTIFICATIONS;
 
-public class NotificationModule extends Module{
+public class NotificationModule extends ListenerAdapter{
 
 	private static final Logger LOG = LoggerFactory.getLogger(NotificationModule.class);
 
@@ -42,22 +39,11 @@ public class NotificationModule extends Module{
 	}
 
 	private Map<Long, Notification> retrieveNotifications(LocalDateTime to){
-		var dbModule = this.modules.getDatabaseModule();
-		try(var con = dbModule.getCon(); var ctx = dbModule.getCtx(con).selectFrom(NOTIFICATIONS)){
+		try(var ctx = this.modules.getDatabaseModule().getCtx().selectFrom(NOTIFICATIONS)){
 			return ctx.where(NOTIFICATIONS.NOTIFICATION_TIME.lessOrEqual(to)).fetch().stream().collect(
-					Collectors.toMap(
-							NotificationsRecord::getNotificationId,
-							record -> new Notification(
-									record.getNotificationId(), record.getGuildId(), record.getChannelId(), record.getMessageId(), record.getUserId(),
-									record.getContent(), record.getCreationTime(), record.getNotificationTime()
-							)
-					)
+					Collectors.toMap(NotificationsRecord::getId, Notification::new)
 			);
 		}
-		catch(SQLException e){
-			LOG.error("Error while retrieving notifications", e);
-		}
-		return Collections.emptyMap();
 	}
 
 	@Override
@@ -117,8 +103,7 @@ public class NotificationModule extends Module{
 		var notifications = this.notifications.values().stream().filter(
 				notification -> notification.getNotificationTime().isBefore(to)
 		).collect(Collectors.toSet());
-		this.notifications.entrySet().removeIf(
-				entry -> notifications.stream().anyMatch(notification -> notification.getId() == entry.getValue().getId()));
+		this.notifications.entrySet().removeIf(entry -> notifications.stream().anyMatch(notification -> notification.getId() == entry.getValue().getId()));
 		return notifications;
 	}
 
@@ -128,15 +113,9 @@ public class NotificationModule extends Module{
 	}
 
 	private boolean deleteNotifications(long id, long userId){
-		var dbModule = this.modules.getDatabaseModule();
-		try(var con = dbModule.getCon()){
-			return dbModule.getCtx(con).deleteFrom(NOTIFICATIONS).where(
-					NOTIFICATIONS.NOTIFICATION_ID.eq(id).and((NOTIFICATIONS.USER_ID.eq(userId)))).execute() == 1;
-		}
-		catch(SQLException e){
-			LOG.error("Error while retrieving notifications", e);
-		}
-		return false;
+		return this.modules.getDatabaseModule().getCtx().deleteFrom(NOTIFICATIONS)
+				.where(NOTIFICATIONS.ID.eq(id).and((NOTIFICATIONS.USER_ID.eq(userId))))
+				.execute() == 1;
 	}
 
 	public Notification create(long guildId, long channelId, long messageId, long userId, String content, LocalDateTime notificationTime){
@@ -153,55 +132,39 @@ public class NotificationModule extends Module{
 	}
 
 	private Notification insertNotification(long guildId, long channelId, long messageId, long userId, String content, LocalDateTime creationTime, LocalDateTime notificationTime){
-		var dbModule = this.modules.getDatabaseModule();
-		try(var con = dbModule.getCon()){
-			var res = dbModule.getCtx(con).insertInto(NOTIFICATIONS)
-					.columns(
-							NOTIFICATIONS.GUILD_ID,
-							NOTIFICATIONS.CHANNEL_ID,
-							NOTIFICATIONS.MESSAGE_ID,
-							NOTIFICATIONS.USER_ID,
-							NOTIFICATIONS.CONTENT,
-							NOTIFICATIONS.CREATION_TIME,
-							NOTIFICATIONS.NOTIFICATION_TIME
-					).values(
-							guildId,
-							channelId,
-							messageId,
-							userId,
-							content,
-							creationTime,
-							notificationTime
-					).returningResult(NOTIFICATIONS.NOTIFICATION_ID).fetchOne();
-			if(res != null){
-				return new Notification(
-						res.get(NOTIFICATIONS.NOTIFICATION_ID), guildId, channelId, messageId, userId, content, creationTime, notificationTime);
-			}
+		var res = this.modules.getDatabaseModule().getCtx().insertInto(NOTIFICATIONS)
+				.columns(
+						NOTIFICATIONS.GUILD_ID,
+						NOTIFICATIONS.CHANNEL_ID,
+						NOTIFICATIONS.MESSAGE_ID,
+						NOTIFICATIONS.USER_ID,
+						NOTIFICATIONS.CONTENT,
+						NOTIFICATIONS.CREATED_AT,
+						NOTIFICATIONS.NOTIFICATION_TIME
+				).values(
+						guildId,
+						channelId,
+						messageId,
+						userId,
+						content,
+						creationTime,
+						notificationTime
+				).returningResult(NOTIFICATIONS.ID).fetchOne();
+		if(res == null){
+			return null;
 		}
-		catch(SQLException e){
-			LOG.error("Error while retrieving notifications", e);
-		}
-		return null;
+		return new Notification(res.get(NOTIFICATIONS.ID), guildId, channelId, messageId, userId, content, creationTime, notificationTime);
 	}
 
-	public Set<Notification> get(long userId){
+	public List<Notification> get(long userId){
 		return retrieveNotifications(userId);
 	}
 
-	private Set<Notification> retrieveNotifications(long userId){
+	private List<Notification> retrieveNotifications(long userId){
 		var dbModule = this.modules.getDatabaseModule();
-		try(var con = dbModule.getCon(); var ctx = dbModule.getCtx(con).selectFrom(NOTIFICATIONS)){
-			return ctx.where(NOTIFICATIONS.USER_ID.eq(userId)).fetch().stream().map(
-					record -> new Notification(
-							record.getNotificationId(), record.getGuildId(), record.getChannelId(), record.getMessageId(), record.getUserId(),
-							record.getContent(), record.getCreationTime(), record.getNotificationTime()
-					)
-			).collect(Collectors.toSet());
+		try(var ctx = dbModule.getCtx().selectFrom(NOTIFICATIONS)){
+			return ctx.where(NOTIFICATIONS.USER_ID.eq(userId)).fetch().map(Notification::new);
 		}
-		catch(SQLException e){
-			LOG.error("Error while retrieving notifications", e);
-		}
-		return Collections.emptySet();
 	}
 
 }
