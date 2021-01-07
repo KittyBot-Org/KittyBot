@@ -4,9 +4,11 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import de.kittybot.kittybot.utils.Config;
 import org.apache.commons.io.IOUtils;
+import org.jooq.Configuration;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
+import org.jooq.impl.DefaultConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,10 +21,10 @@ public class DatabaseModule{
 
 	private static final Logger LOG = LoggerFactory.getLogger(DatabaseModule.class);
 
-	private final HikariDataSource dataSource;
+	private final Configuration configuration;
 
 	public DatabaseModule(){
-		this.dataSource = initDataSource();
+		this.configuration = initConfiguration();
 		initTable("guilds",
 				"users",
 				"members",
@@ -45,7 +47,7 @@ public class DatabaseModule{
 		);
 	}
 
-	private HikariDataSource initDataSource(){
+	private Configuration initConfiguration(){
 		if(Config.DB_HOST.isBlank() || Config.DB_PORT.isBlank() || Config.DB_DATABASE.isBlank() || Config.DB_USER.isBlank() || Config.DB_PASSWORD.isBlank()){
 			LOG.error("Please check your db host/port/database/user/password");
 			return null;
@@ -62,35 +64,30 @@ public class DatabaseModule{
 		config.setIdleTimeout(600000);
 		config.setMaxLifetime(1800000);
 
-		return new HikariDataSource(config);
+		var configuration = new DefaultConfiguration();
+		configuration.setDataSource(new HikariDataSource(config));
+		configuration.setSQLDialect(SQLDialect.POSTGRES);
+		return configuration;
 	}
 
 	private void initTable(String... tables){
-		try(var con = getCon()){
-			for(var table : tables){
-				try{
-					var file = DatabaseModule.class.getClassLoader().getResourceAsStream("sql_tables/" + table + ".sql");
-					if(file == null){
-						throw new NullPointerException("File for table '" + table + "' not found");
-					}
-					getCtx(con).query(IOUtils.toString(file, StandardCharsets.UTF_8.name())).execute();
+
+		for(var table : tables){
+			try{
+				var file = DatabaseModule.class.getClassLoader().getResourceAsStream("sql_tables/" + table + ".sql");
+				if(file == null){
+					throw new NullPointerException("File for table '" + table + "' not found");
 				}
-				catch(IOException | NullPointerException e){
-					LOG.error("Error initializing table: '" + table + "'", e);
-				}
+				getCtx().query(IOUtils.toString(file, StandardCharsets.UTF_8.name())).execute();
+			}
+			catch(IOException | NullPointerException e){
+				LOG.error("Error initializing table: '" + table + "'", e);
 			}
 		}
-		catch(SQLException e){
-			LOG.error("Error getting connection", e);
-		}
 	}
 
-	public Connection getCon() throws SQLException{
-		return this.dataSource.getConnection();
-	}
-
-	public DSLContext getCtx(Connection con){
-		return DSL.using(con, SQLDialect.POSTGRES);
+	public DSLContext getCtx(){
+		return DSL.using(this.configuration);
 	}
 
 }

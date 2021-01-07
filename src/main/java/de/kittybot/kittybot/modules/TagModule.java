@@ -11,11 +11,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.kittybot.kittybot.jooq.Tables.GUILD_TAGS;
+import static de.kittybot.kittybot.jooq.Tables.*;
+import static org.jooq.impl.DSL.*;
 
 public class TagModule{
-
-	private static final Logger LOG = LoggerFactory.getLogger(TagModule.class);
 
 	private final Modules modules;
 
@@ -24,172 +23,108 @@ public class TagModule{
 	}
 
 	public void create(String name, String content, long guildId, long userId) throws CommandException{
-		name = name.toLowerCase();
-		var dbModule = this.modules.getDatabaseModule();
-		try(var con = dbModule.getCon()){
-			var rows = dbModule.getCtx(con).insertInto(GUILD_TAGS)
-					.columns(GUILD_TAGS.NAME, GUILD_TAGS.GUILD_ID, GUILD_TAGS.USER_ID, GUILD_TAGS.CONTENT, GUILD_TAGS.CREATED_AT)
-					.values(name, guildId, userId, content, LocalDateTime.now())
-					.onConflictDoNothing()
-					.execute();
-			if(rows != 1){
-				throw new CommandException("This name is already in use");
-			}
+		var dbManager = this.modules.getDatabaseModule();
+		var member = dbManager.getCtx().insertInto(MEMBERS).columns(MEMBERS.GUILD_ID, MEMBERS.USER_ID).values(guildId, userId).onConflictDoNothing().returningResult(MEMBERS.ID).fetchOne();
+		if(member == null){
+			throw new CommandException("WTF is going on welp");
 		}
-		catch(SQLException e){
-			LOG.error("Error creating tag", e);
-			throw new CommandException(e);
+		var rows = dbManager.getCtx().insertInto(GUILD_TAGS)
+				.columns(GUILD_TAGS.NAME, GUILD_TAGS.MEMBER_ID, GUILD_TAGS.CONTENT, GUILD_TAGS.CREATED_AT)
+				.values(name.toLowerCase(), member.get(MEMBERS.ID), content, LocalDateTime.now())
+				.onConflictDoNothing()
+				.execute();
+		if(rows != 1){
+			throw new CommandException("This name is already in use");
 		}
 	}
 
 	public Tag get(String name, long guildId) throws CommandException{
-		name = name.toLowerCase();
-		var dbModule = this.modules.getDatabaseModule();
-		try(var con = dbModule.getCon(); var ctx = dbModule.getCtx(con).selectFrom(GUILD_TAGS)){
-			var res = ctx
-					.where(GUILD_TAGS.NAME.eq(name).and(GUILD_TAGS.GUILD_ID.eq(guildId)))
-					.fetchOne();
+		try(var ctx = this.modules.getDatabaseModule().getCtx().select()){
+			var res = ctx.from(GUILD_TAGS).join(MEMBERS).onKey().where(GUILD_TAGS.NAME.eq(name.toLowerCase()).and(MEMBERS.GUILD_ID.eq(guildId))).fetchOne();
 			if(res == null){
 				throw new CommandException("Tag not found");
 			}
 			return new Tag(res);
 		}
-		catch(SQLException e){
-			LOG.error("Error getting tag", e);
-			throw new CommandException(e);
-		}
 	}
 
 	public List<Tag> get(long userId, long guildId) throws CommandException{
-		var dbModule = this.modules.getDatabaseModule();
-		try(var con = dbModule.getCon(); var ctx = dbModule.getCtx(con).selectFrom(GUILD_TAGS)){
-			var res = ctx
-					.where(GUILD_TAGS.USER_ID.eq(userId).and(GUILD_TAGS.GUILD_ID.eq(guildId)))
-					.fetch();
+		try(var ctx = this.modules.getDatabaseModule().getCtx().select()){
+			var res = ctx.from(GUILD_TAGS).join(MEMBERS).onKey()
+					.where(MEMBERS.USER_ID.eq(userId).and(MEMBERS.GUILD_ID.eq(guildId))).fetch();
 			if(res.isEmpty()){
 				throw new CommandException("No Tags found");
 			}
 			return res.stream().map(Tag::new).collect(Collectors.toList());
-		}
-		catch(SQLException e){
-			LOG.error("Error getting tags", e);
-			throw new CommandException(e);
 		}
 	}
 
 	public List<Tag> get(long guildId) throws CommandException{
-		var dbModule = this.modules.getDatabaseModule();
-		try(var con = dbModule.getCon(); var ctx = dbModule.getCtx(con).selectFrom(GUILD_TAGS)){
-			var res = ctx
-					.where(GUILD_TAGS.GUILD_ID.eq(guildId))
-					.fetch();
+		try(var ctx = this.modules.getDatabaseModule().getCtx().select()){
+			var res = ctx.from().join(MEMBERS).onKey()
+					.where(MEMBERS.GUILD_ID.eq(guildId)).fetch();
 			if(res.isEmpty()){
 				throw new CommandException("No Tags found");
 			}
 			return res.stream().map(Tag::new).collect(Collectors.toList());
-		}
-		catch(SQLException e){
-			LOG.error("Error getting tags", e);
-			throw new CommandException(e);
 		}
 	}
 
 	public List<Tag> getAll(long guildId){
-		var dbModule = this.modules.getDatabaseModule();
-		try(var con = dbModule.getCon(); var ctx = dbModule.getCtx(con).selectFrom(GUILD_TAGS)){
-			var res = ctx
-					.where(GUILD_TAGS.GUILD_ID.eq(guildId))
+		try(var ctx = this.modules.getDatabaseModule().getCtx().select()){
+			var res = ctx.from().join(MEMBERS).onKey()
+					.where(MEMBERS.GUILD_ID.eq(guildId))
 					.fetch();
 			return res.stream().map(Tag::new).collect(Collectors.toList());
 		}
-		catch(SQLException e){
-			LOG.error("Error getting tags", e);
-		}
-		return null;
 	}
 
 	public List<Tag> search(String name, long guildId) throws CommandException{
-		name = name.toLowerCase();
-		var dbModule = this.modules.getDatabaseModule();
-		try(var con = dbModule.getCon(); var ctx = dbModule.getCtx(con).selectFrom(GUILD_TAGS)){
-			var res = ctx
-					.where(GUILD_TAGS.GUILD_ID.eq(guildId).and(GUILD_TAGS.NAME.likeRegex(name)))
-					.fetch();
+		try(var ctx = this.modules.getDatabaseModule().getCtx().select()){
+			var res = ctx.from().join(MEMBERS).onKey()
+					.where(MEMBERS.GUILD_ID.eq(guildId).and(GUILD_TAGS.NAME.likeRegex(name.toLowerCase()))).fetch();
 			if(res.isEmpty()){
 				throw new CommandException("No Tags found");
 			}
 			return res.stream().map(Tag::new).collect(Collectors.toList());
 		}
-		catch(SQLException e){
-			LOG.error("Error searching tags", e);
-			throw new CommandException(e);
-		}
 	}
 
 	public void delete(String name, long userId, long guildId) throws CommandException{
-		name = name.toLowerCase();
-		var dbModule = this.modules.getDatabaseModule();
-		try(var con = dbModule.getCon()){
-			var rows = dbModule.getCtx(con).deleteFrom(GUILD_TAGS)
-					.where(GUILD_TAGS.USER_ID.eq(userId).and(GUILD_TAGS.NAME.eq(name).and(GUILD_TAGS.GUILD_ID.eq(guildId))))
-					.execute();
-			if(rows != 1){
-				throw new CommandException("Tag not found or not owned by you");
-			}
-		}
-		catch(SQLException e){
-			LOG.error("Error deleting tag", e);
-			throw new CommandException(e);
+		var rows = this.modules.getDatabaseModule().getCtx().deleteFrom(GUILD_TAGS)
+				.where(GUILD_TAGS.MEMBER_ID.eq(select(MEMBERS.ID).where(MEMBERS.GUILD_ID.eq(guildId).and(MEMBERS.USER_ID.eq(userId)))).and(GUILD_TAGS.NAME.eq(name.toLowerCase())))
+				.execute();
+		if(rows != 1){
+			throw new CommandException("Tag not found or not owned by you");
 		}
 	}
 
 	public boolean delete(long tagId){
 		var dbModule = this.modules.getDatabaseModule();
-		try(var con = dbModule.getCon()){
-			var rows = dbModule.getCtx(con).deleteFrom(GUILD_TAGS)
-					.where(GUILD_TAGS.TAG_ID.eq(tagId))
-					.execute();
-			return rows == 1;
-		}
-		catch(SQLException e){
-			LOG.error("Error deleting tag", e);
-		}
-		return false;
+		var rows = dbModule.getCtx().deleteFrom(GUILD_TAGS)
+				.where(GUILD_TAGS.ID.eq(tagId))
+				.execute();
+		return rows == 1;
 	}
 
 	public void edit(String name, String content, long userId, long guildId) throws CommandException{
-		name = name.toLowerCase();
-		var dbModule = this.modules.getDatabaseModule();
-		try(var con = dbModule.getCon()){
-			var rows = dbModule.getCtx(con).update(GUILD_TAGS)
-					.set(GUILD_TAGS.CONTENT, content)
-					.where(GUILD_TAGS.USER_ID.eq(userId).and(GUILD_TAGS.NAME.eq(name).and(GUILD_TAGS.GUILD_ID.eq(guildId))))
-					.execute();
-			if(rows != 1){
-				throw new CommandException("Tag not found or not owned by you");
-			}
-		}
-		catch(SQLException e){
-			LOG.error("Error editing tag", e);
-			throw new CommandException(e);
+		var rows = this.modules.getDatabaseModule().getCtx().update(GUILD_TAGS)
+				.set(GUILD_TAGS.CONTENT, content)
+				.where(GUILD_TAGS.MEMBER_ID.eq(select(MEMBERS.ID).where(MEMBERS.GUILD_ID.eq(guildId).and(MEMBERS.USER_ID.eq(userId)))).and(GUILD_TAGS.NAME.eq(name.toLowerCase())))
+				.execute();
+		if(rows != 1){
+			throw new CommandException("Tag not found or not owned by you");
 		}
 	}
 
 	public boolean edit(long id, String name, String content, long userId){
-		var dbModule = this.modules.getDatabaseModule();
-		try(var con = dbModule.getCon()){
-			var rows = dbModule.getCtx(con).update(GUILD_TAGS)
-					.set(GUILD_TAGS.NAME, name)
-					.set(GUILD_TAGS.CONTENT, content)
-					.set(GUILD_TAGS.USER_ID, userId)
-					.where(GUILD_TAGS.TAG_ID.eq(id))
-					.execute();
-			return rows == 1;
-		}
-		catch(SQLException e){
-			LOG.error("Error editing tag", e);
-		}
-		return false;
+		var rows = this.modules.getDatabaseModule().getCtx().update(GUILD_TAGS)
+				.set(GUILD_TAGS.NAME, name)
+				.set(GUILD_TAGS.CONTENT, content)
+				.set(GUILD_TAGS.MEMBER_ID, select(MEMBERS.ID).where(MEMBERS.USER_ID.eq(userId)))
+				.where(GUILD_TAGS.ID.eq(id))
+				.execute();
+		return rows == 1;
 	}
 
 }
