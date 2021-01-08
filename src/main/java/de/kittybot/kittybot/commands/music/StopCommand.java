@@ -4,6 +4,7 @@ import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.modules.MusicModule;
 import de.kittybot.kittybot.utils.MusicUtils;
 
 public class StopCommand extends Command{
@@ -18,7 +19,7 @@ public class StopCommand extends Command{
 		if(!MusicUtils.checkVoiceRequirements(ctx)){
 			return;
 		}
-		ctx.getMusicModule().destroy(ctx.getGuildId());
+		ctx.get(MusicModule.class).destroy(ctx.getGuildId());
 		if(ctx.getCommand().equalsIgnoreCase("stfu")){
 			ctx.sendSuccess("Okowo");
 		}

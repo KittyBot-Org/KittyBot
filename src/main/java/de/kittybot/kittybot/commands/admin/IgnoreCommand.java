@@ -4,6 +4,7 @@ import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -40,7 +41,7 @@ public class IgnoreCommand extends Command{
 		if(users.isEmpty()){
 			ctx.sendError("Please provide a user");
 		}
-		ctx.getGuildSettingsModule().addBotIgnoredUsers(ctx.getGuildId(), users.stream().map(User::getIdLong).collect(Collectors.toSet()));
+		ctx.get(SettingsModule.class).addBotIgnoredUsers(ctx.getGuildId(), users.stream().map(User::getIdLong).collect(Collectors.toSet()));
 		ctx.sendSuccess(new EmbedBuilder().setDescription("Ignoring following users: " + users.stream().map(User::getAsMention).collect(Collectors.joining(", "))));
 	}
 

@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.modules;
 
+import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.Utils;
@@ -27,7 +28,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.time.Duration;
 
-public class PrometheusModule extends ListenerAdapter{
+public class PrometheusModule extends Module{
 
 	public static final Duration UPDATE_PERIOD = Duration.ofSeconds(5);
 	// ty Natan 👀 https://github.com/Mantaro/MantaroBot/blob/master/src/main/java/net/kodehawa/mantarobot/utils/Prometheus.java
@@ -44,7 +45,7 @@ public class PrometheusModule extends ListenerAdapter{
 		new BufferPoolsExports().register();
 		new DiscordLatencyExporter().register();
 		new MemoryUsageExporter(modules).register();
-		new LavalinkCollector(modules.getLavalinkModule().getLavalink()).register();
+		new LavalinkCollector(modules.get(LavalinkModule.class).getLavalink()).register();
 		try{
 			new HTTPServer(Config.PROMETHEUS_PORT);
 		}

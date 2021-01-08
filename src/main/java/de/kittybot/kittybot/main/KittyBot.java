@@ -2,6 +2,7 @@ package de.kittybot.kittybot.main;
 
 import de.kittybot.kittybot.exceptions.MissingConfigValuesException;
 import de.kittybot.kittybot.module.Modules;
+import de.kittybot.kittybot.modules.LavalinkModule;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.ThreadFactoryHelper;
 import de.kittybot.kittybot.web.WebService;
@@ -27,7 +28,6 @@ public class KittyBot{
 
 	private final OkHttpClient httpClient;
 	private final JDA jda;
-	private final WebService webService;
 	private final ScheduledExecutorService scheduler;
 	private final Modules modules;
 
@@ -36,7 +36,6 @@ public class KittyBot{
 		this.scheduler = new ScheduledThreadPoolExecutor(2, new ThreadFactoryHelper());
 		this.httpClient = new OkHttpClient();
 		this.modules = new Modules(this);
-		this.webService = new WebService(this.modules);
 
 		RestAction.setDefaultFailure(null);
 		jda = JDABuilder.create(
@@ -58,7 +57,7 @@ public class KittyBot{
 				.setChunkingFilter(ChunkingFilter.NONE)
 				.addEventListeners(this.modules.getModules())
 				.setHttpClient(this.httpClient)
-				.setVoiceDispatchInterceptor(this.modules.getLavalinkModule().getLavalink().getVoiceInterceptor())
+				.setVoiceDispatchInterceptor(this.modules.get(LavalinkModule.class).getLavalink().getVoiceInterceptor())
 				.setActivity(Activity.playing("loading..."))
 				.setStatus(OnlineStatus.DO_NOT_DISTURB)
 				.setEventPool(ThreadingConfig.newScheduler(1, () -> "KittyBot", "Events"), true)
@@ -81,10 +80,6 @@ public class KittyBot{
 
 	public Modules getModules(){
 		return this.modules;
-	}
-
-	public WebService getWebService(){
-		return this.webService;
 	}
 
 }

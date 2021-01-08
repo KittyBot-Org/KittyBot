@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.modules;
 
+import de.kittybot.kittybot.module.Module;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import de.kittybot.kittybot.module.Modules;
 import net.dv8tion.jda.api.entities.Role;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 
 import static de.kittybot.kittybot.jooq.Tables.*;
 
-public class RoleSaverModule extends ListenerAdapter{
+public class RoleSaverModule extends Module{
 
 	private final Modules modules;
 
@@ -43,13 +44,13 @@ public class RoleSaverModule extends ListenerAdapter{
 	}
 
 	private void deleteGuildUserRole(long guildId, long roleId){
-		this.modules.getDatabaseModule().getCtx().deleteFrom(MEMBER_ROLES)
+		this.modules.get(DatabaseModule.class).getCtx().deleteFrom(MEMBER_ROLES)
 				.where(MEMBER_ROLES.GUILD_ID.eq(guildId).and(MEMBER_ROLES.ROLE_ID.eq(roleId)))
 				.execute();
 	}
 
 	private void insertGuildUserRoles(long guildId, long userId, Set<Long> roles){
-		var ctxRoles = this.modules.getDatabaseModule().getCtx().insertInto(MEMBER_ROLES)
+		var ctxRoles = this.modules.get(DatabaseModule.class).getCtx().insertInto(MEMBER_ROLES)
 				.columns(MEMBER_ROLES.GUILD_ID, MEMBER_ROLES.USER_ID, MEMBER_ROLES.ROLE_ID);
 		for(var role : roles){
 			ctxRoles.values(guildId, userId, role);
@@ -58,7 +59,7 @@ public class RoleSaverModule extends ListenerAdapter{
 	}
 
 	private List<Long> retrieveGuildUserRoles(long guildId, long userId){
-		var dbModule = this.modules.getDatabaseModule();
+		var dbModule = this.modules.get(DatabaseModule.class);
 		try(var ctx = dbModule.getCtx().selectFrom(MEMBER_ROLES)){
 			return ctx.where(MEMBER_ROLES.GUILD_ID.eq(guildId).and(MEMBER_ROLES.USER_ID.eq(userId))).fetch().map(entry -> entry.get(MEMBER_ROLES.ROLE_ID));
 		}

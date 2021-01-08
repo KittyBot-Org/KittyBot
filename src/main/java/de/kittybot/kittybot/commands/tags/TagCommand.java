@@ -5,6 +5,7 @@ import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
 import de.kittybot.kittybot.exceptions.CommandException;
+import de.kittybot.kittybot.modules.TagModule;
 
 public class TagCommand extends Command{
 
@@ -27,7 +28,7 @@ public class TagCommand extends Command{
 			ctx.sendUsage(this.getUsage() + " " + this.getRawUsage());
 			return;
 		}
-		ctx.sendBlankSuccess(ctx.getTagModule().get(args.get(0), ctx.getGuildId()).getContent());
+		ctx.sendBlankSuccess(ctx.get(TagModule.class).get(args.get(0), ctx.getGuildId()).getContent());
 	}
 
 }

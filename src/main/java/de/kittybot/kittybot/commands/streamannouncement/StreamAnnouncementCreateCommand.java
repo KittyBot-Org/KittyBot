@@ -5,6 +5,7 @@ import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
 import de.kittybot.kittybot.exceptions.CommandException;
+import de.kittybot.kittybot.modules.StreamAnnouncementModule;
 import de.kittybot.kittybot.streams.StreamType;
 import net.dv8tion.jda.api.Permission;
 
@@ -28,7 +29,7 @@ public class StreamAnnouncementCreateCommand extends Command{
 			ctx.sendError("'" + args.get(0) + "' is not a valid stream type. Use twitch or youtube");
 			return;
 		}
-		ctx.getStreamAnnouncementModule().add(args.get(1), ctx.getGuildId(), type);
+		ctx.get(StreamAnnouncementModule.class).add(args.get(1), ctx.getGuildId(), type);
 		ctx.sendSuccess("Stream announcement added");
 	}
 

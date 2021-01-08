@@ -4,6 +4,8 @@ import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.modules.MessageModule;
+import de.kittybot.kittybot.modules.SettingsModule;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
@@ -20,13 +22,13 @@ public class EditSnipeCommand extends Command{
 		if(!ctx.getChannel().canTalk()){
 			return;
 		}
-		if(!ctx.getGuildSettingsModule().areSnipesEnabled(ctx.getGuildId())){
+		if(!ctx.get(SettingsModule.class).areSnipesEnabled(ctx.getGuildId())){
 			ctx.error("Edit Snipes are disabled for this guild");
 		}
-		if(ctx.getGuildSettingsModule().areSnipesDisabledInChannel(ctx.getGuildId(), ctx.getChannelId())){
+		if(ctx.get(SettingsModule.class).areSnipesDisabledInChannel(ctx.getGuildId(), ctx.getChannelId())){
 			ctx.error("Snipes are disabled for this guild");
 		}
-		var lastEditedMessage = ctx.getMessageModule().getLastEditedMessage(ctx.getMessage().getTextChannel().getIdLong());
+		var lastEditedMessage = ctx.get(MessageModule.class).getLastEditedMessage(ctx.getMessage().getTextChannel().getIdLong());
 		if(lastEditedMessage == null){
 			ctx.sendError("There's no edited message to snipe");
 			return;

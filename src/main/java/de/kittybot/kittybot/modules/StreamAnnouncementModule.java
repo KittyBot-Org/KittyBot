@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.modules;
 
 import de.kittybot.kittybot.exceptions.CommandException;
+import de.kittybot.kittybot.module.Module;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.objects.AnnouncementType;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
 
 import static de.kittybot.kittybot.jooq.Tables.STREAM_USERS;
 
-public class StreamAnnouncementModule extends ListenerAdapter{
+public class StreamAnnouncementModule extends Module{
 
 	private static final Logger LOG = LoggerFactory.getLogger(StreamAnnouncementModule.class);
 
@@ -52,8 +53,7 @@ public class StreamAnnouncementModule extends ListenerAdapter{
 	}
 
 	private List<StreamAnnouncement> loadStreamAnnouncements(){
-		var dbModule = this.modules.getDatabaseModule();
-		try(var ctx = dbModule.getCtx().selectFrom(STREAM_USERS)){
+		try(var ctx = this.modules.get(DatabaseModule.class).getCtx().selectFrom(STREAM_USERS)){
 			return ctx.fetch().stream().map(StreamAnnouncement::new).collect(Collectors.toList());
 		}
 	}
@@ -98,7 +98,7 @@ public class StreamAnnouncementModule extends ListenerAdapter{
 		if(guild == null){
 			return;
 		}
-		var settings = this.modules.getGuildSettingsModule().getSettings(guildId);
+		var settings = this.modules.get(SettingsModule.class).getSettings(guildId);
 
 		var channel = guild.getTextChannelById(settings.getStreamAnnouncementChannelId());
 		if(channel == null){
@@ -125,7 +125,7 @@ public class StreamAnnouncementModule extends ListenerAdapter{
 	}
 
 	public void add(String name, long guildId, StreamType type) throws CommandException{
-		var rows = this.modules.getDatabaseModule().getCtx().insertInto(STREAM_USERS)
+		var rows = this.modules.get(DatabaseModule.class).getCtx().insertInto(STREAM_USERS)
 				.columns(STREAM_USERS.GUILD_ID, STREAM_USERS.USER_NAME, STREAM_USERS.STREAM_TYPE)
 				.values(guildId, name, type.getId())
 				.execute();
@@ -141,7 +141,7 @@ public class StreamAnnouncementModule extends ListenerAdapter{
 	}
 
 	public void delete(String name, long guildId, StreamType type) throws CommandException{
-		var dbModule = this.modules.getDatabaseModule();
+		var dbModule = this.modules.get(DatabaseModule.class);
 		var rows = dbModule.getCtx().deleteFrom(STREAM_USERS).where(
 				STREAM_USERS.USER_NAME.eq(name).and(STREAM_USERS.GUILD_ID.eq(guildId)).and(STREAM_USERS.STREAM_TYPE.eq(type.getId()))).execute();
 		if(rows != 1){

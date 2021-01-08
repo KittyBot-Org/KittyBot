@@ -31,7 +31,7 @@ public class PostLoginRoute implements Handler{
 			throw new UnauthorizedResponse("State or code is invalid");
 		}
 		try{
-			var sessionManager = this.modules.getDashboardSessionModule();
+			var sessionManager = this.modules.get(DashboardSessionModule.class);
 			var session = (DashboardSession) sessionManager.getOAuth2Client().startSession(code, state, "", DashboardSessionModule.getScopes()).complete();
 			WebService.accepted(ctx, DataObject.empty().put("token", Jwts.builder().setIssuedAt(new Date()).setSubject(String.valueOf(session.getUserId())).signWith(sessionManager.getSecretKey()).compact()));
 		}

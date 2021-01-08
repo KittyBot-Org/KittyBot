@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.web.routes.guilds.guild;
 
 import de.kittybot.kittybot.module.Modules;
+import de.kittybot.kittybot.modules.InviteModule;
 import de.kittybot.kittybot.web.WebService;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -20,9 +21,9 @@ public class GetInvitesRoute implements Handler{
 
 	@Override
 	public void handle(@NotNull Context ctx){
-		var guild = this.modules.getWebService().getGuild(ctx);
+		var guild = this.modules.get(WebService.class).getGuild(ctx);
 		var invites = DataArray.fromCollection(
-				this.modules.getInviteModule().getGuildInvites(guild.getIdLong()).values().stream().map(
+				this.modules.get(InviteModule.class).getGuildInvites(guild.getIdLong()).values().stream().map(
 						invite -> DataObject.empty().put("code", invite.getCode()).put("user_id", invite.getUserId()).put("uses", invite.getUses())
 				).collect(Collectors.toSet())
 		);

@@ -5,10 +5,11 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
 import de.kittybot.kittybot.command.CommandContext;
 import de.kittybot.kittybot.command.ReactiveMessage;
+import de.kittybot.kittybot.module.Module;
 
 import java.util.concurrent.TimeUnit;
 
-public class ReactiveMessageModule{
+public class ReactiveMessageModule extends Module{
 
 	private final Cache<Long, ReactiveMessage> reactiveMessages;
 

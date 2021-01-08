@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.modules;
 
+import de.kittybot.kittybot.module.Module;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.utils.FileUtils;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-public class StatusModule extends ListenerAdapter{
+public class StatusModule extends Module{
 
 	private final List<String> status_messages;
 	private final Modules modules;

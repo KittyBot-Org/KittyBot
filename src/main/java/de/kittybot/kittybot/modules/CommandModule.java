@@ -4,7 +4,7 @@ import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
 import de.kittybot.kittybot.command.ReactionContext;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.exporters.Metrics;
@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class CommandModule extends ListenerAdapter{
+public class CommandModule extends Module{
 
 	public static final String ARGUMENT_REGEX = "\\s+";
 	private static final Logger LOG = LoggerFactory.getLogger(CommandModule.class);
@@ -70,7 +70,7 @@ public class CommandModule extends ListenerAdapter{
 	@Override
 	public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event){
 		var start = System.currentTimeMillis();
-		var settings = this.modules.getGuildSettingsModule().getSettings(event.getGuild().getIdLong());
+		var settings = this.modules.get(SettingsModule.class).getSettings(event.getGuild().getIdLong());
 
 		if(settings.isBotDisabledInChannel(event.getChannel().getIdLong())){
 			return;
@@ -101,7 +101,7 @@ public class CommandModule extends ListenerAdapter{
 		if(event.getMember().getUser().isBot()){
 			return;
 		}
-		var settings = this.modules.getGuildSettingsModule().getSettings(event.getGuild().getIdLong());
+		var settings = this.modules.get(SettingsModule.class).getSettings(event.getGuild().getIdLong());
 		if(settings.isBotDisabledInChannel(event.getChannel().getIdLong())){
 			return;
 		}
@@ -109,13 +109,13 @@ public class CommandModule extends ListenerAdapter{
 			return;
 		}
 
-		var reactiveMessage = this.modules.getReactiveMessageModule().getReactiveMessage(event.getMessageIdLong());
+		var reactiveMessage = this.modules.get(ReactiveMessageModule.class).getReactiveMessage(event.getMessageIdLong());
 		if(reactiveMessage == null){
 			return;
 		}
 		if(reactiveMessage.getAllowed() == -1L || reactiveMessage.getAllowed() == event.getUserIdLong()){
 			this.allCommands.get(reactiveMessage.getPath()).onReactionAdd(
-					new ReactionContext(event, this, this.modules.getReactiveMessageModule(), reactiveMessage));
+					new ReactionContext(event, this, this.modules.get(ReactiveMessageModule.class), reactiveMessage));
 			return;
 		}
 		event.getReaction().removeReaction(event.getUser()).queue();
@@ -123,7 +123,7 @@ public class CommandModule extends ListenerAdapter{
 
 	private String trimPrefix(GuildMessageReceivedEvent event){
 		var message = event.getMessage().getContentRaw();
-		var prefix = this.modules.getGuildSettingsModule().getPrefix(event.getGuild().getIdLong());
+		var prefix = this.modules.get(SettingsModule.class).getPrefix(event.getGuild().getIdLong());
 		if(message.startsWith(prefix)){
 			return message.substring(prefix.length()).trim();
 		}

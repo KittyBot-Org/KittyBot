@@ -5,6 +5,7 @@ import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
 import de.kittybot.kittybot.exceptions.CommandException;
+import de.kittybot.kittybot.modules.TagModule;
 import de.kittybot.kittybot.objects.Tag;
 
 import java.util.stream.Collectors;
@@ -23,7 +24,7 @@ public class TagSearchCommand extends Command{
 			ctx.sendUsage(this);
 			return;
 		}
-		var tags = ctx.getTagModule().search(args.get(0), ctx.getGuildId());
+		var tags = ctx.get(TagModule.class).search(args.get(0), ctx.getGuildId());
 		ctx.sendSuccess("Tags found:\n" + tags.stream().map(Tag::getName).collect(Collectors.joining("\n")));
 	}
 

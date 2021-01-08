@@ -4,6 +4,8 @@ import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.modules.InviteModule;
+import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -36,7 +38,7 @@ public class InviteRolesCommand extends Command{
 		var guildId = ctx.getGuildId();
 		if(args.get(0).equalsIgnoreCase("list")){
 			var message = new StringBuilder();
-			var inviteRoles = ctx.getGuildSettingsModule().getInviteRoles(guildId).entrySet();
+			var inviteRoles = ctx.get(SettingsModule.class).getInviteRoles(guildId).entrySet();
 			if(inviteRoles.isEmpty()){
 				message.append("No invite roles found");
 			}
@@ -52,7 +54,7 @@ public class InviteRolesCommand extends Command{
 			ctx.sendSuccess(new EmbedBuilder().setAuthor("Invite Roles", Config.ORIGIN_URL, ctx.getSelfUser().getEffectiveAvatarUrl()).setDescription(message.toString()));
 			return;
 		}
-		var invites = ctx.getInviteModule().getGuildInvites(guildId);
+		var invites = ctx.get(InviteModule.class).getGuildInvites(guildId);
 		if(invites == null){
 			ctx.sendError("No invites found for this guild");
 			return;
@@ -62,7 +64,7 @@ public class InviteRolesCommand extends Command{
 			return;
 		}
 		if(args.size() > 1 && args.get(1).equalsIgnoreCase("delete")){
-			ctx.getGuildSettingsModule().setInviteRoles(guildId, args.get(0), Collections.emptySet());
+			ctx.get(SettingsModule.class).setInviteRoles(guildId, args.get(0), Collections.emptySet());
 			ctx.sendSuccess("Deleted roles for invite '" + args.get(0) + "'");
 			return;
 		}
@@ -70,7 +72,7 @@ public class InviteRolesCommand extends Command{
 			ctx.sendUsage(this);
 			return;
 		}
-		ctx.getGuildSettingsModule().setInviteRoles(guildId, args.get(0), roles.stream().map(Role::getIdLong).collect(Collectors.toSet()));
+		ctx.get(SettingsModule.class).setInviteRoles(guildId, args.get(0), roles.stream().map(Role::getIdLong).collect(Collectors.toSet()));
 		ctx.sendSuccess("Added roles " + roles.stream().map(Role::getAsMention).collect(Collectors.joining(", ")) + " to invite with code '" + args.get(0) + "'");
 	}
 

@@ -8,6 +8,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import de.kittybot.kittybot.command.CommandContext;
 import de.kittybot.kittybot.module.Modules;
+import de.kittybot.kittybot.modules.CommandResponseModule;
+import de.kittybot.kittybot.modules.MusicModule;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.MusicUtils;
@@ -169,7 +171,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 			event -> this.player.setPaused(false),
 			3,
 			TimeUnit.MINUTES,
-			this.main.getMusicModule().destroy(this.guildId)
+			this.main.get(MusicModule.class).destroy(this.guildId)
 		);
 	}*/
 
@@ -259,7 +261,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 			return;
 		}
 		this.future = this.modules.getScheduler().schedule(() -> {
-			this.modules.getMusicModule().destroy(this.guildId);
+			this.modules.get(MusicModule.class).destroy(this.guildId);
 		}, 3, TimeUnit.MINUTES);
 	}
 
@@ -272,7 +274,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	public void sendMessageToChannel(EmbedBuilder embed, long commandId){
-		messageToChannel(embed).queue(message -> this.modules.getCommandResponseModule().add(commandId, message.getIdLong()));
+		messageToChannel(embed).queue(message -> this.modules.get(CommandResponseModule.class).add(commandId, message.getIdLong()));
 	}
 
 	public void pause(){

@@ -2,6 +2,7 @@ package de.kittybot.kittybot.web.routes.user;
 
 import de.kittybot.kittybot.exceptions.TooManyRequestResponse;
 import de.kittybot.kittybot.module.Modules;
+import de.kittybot.kittybot.modules.DashboardSessionModule;
 import de.kittybot.kittybot.web.WebService;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -25,8 +26,9 @@ public class GetUserInfoRoute implements Handler{
 
 	@Override
 	public void handle(@NotNull Context ctx){
-		var userId = this.modules.getWebService().getUserId(ctx);
-		var session = this.modules.getDashboardSessionModule().get(userId);
+		var userId = this.modules.get(WebService.class).getUserId(ctx);
+		var dashboardSessionModule = this.modules.get(DashboardSessionModule.class);
+		var session = dashboardSessionModule.get(userId);
 		if(session == null){
 			throw new NotFoundResponse("Session not found");
 		}
@@ -36,7 +38,7 @@ public class GetUserInfoRoute implements Handler{
 		}
 		try{
 			var guildData = DataArray.fromCollection(
-					this.modules.getDashboardSessionModule().getGuilds(session).stream().filter(
+					dashboardSessionModule.getGuilds(session).stream().filter(
 							guild -> this.modules.getJDA().getGuildCache().stream().anyMatch(g -> g.getIdLong() == guild.getIdLong())
 					).map(
 							guild -> DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl())

@@ -4,6 +4,7 @@ import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.modules.MusicModule;
 import de.kittybot.kittybot.utils.MusicUtils;
 
 public class PauseCommand extends Command{
@@ -17,7 +18,7 @@ public class PauseCommand extends Command{
 		if(!MusicUtils.checkVoiceRequirements(ctx)){
 			return;
 		}
-		ctx.getMusicModule().get(ctx.getGuildId()).pause();
+		ctx.get(MusicModule.class).get(ctx.getGuildId()).pause();
 		ctx.sendSuccess("Toggled pause");
 	}
 

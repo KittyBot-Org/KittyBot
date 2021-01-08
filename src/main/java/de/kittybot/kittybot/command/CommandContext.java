@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.command;
 
+import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.modules.*;
 import de.kittybot.kittybot.utils.Utils;
@@ -48,52 +49,8 @@ public class CommandContext{
 		return this.modules;
 	}
 
-	public CommandModule getCommandModule(){
-		return this.modules.getCommandModule();
-	}
-
-	public SettingsModule getGuildSettingsModule(){
-		return this.modules.getGuildSettingsModule();
-	}
-
-	public StreamAnnouncementModule getStreamAnnouncementModule(){
-		return this.modules.getStreamAnnouncementModule();
-	}
-
-	public NotificationModule getNotificationModule(){
-		return this.modules.getNotificationModule();
-	}
-
-	public ReactiveMessageModule getReactiveMessageModule(){
-		return this.modules.getReactiveMessageModule();
-	}
-
-	public DashboardSessionModule getDashboardSessionModule(){
-		return this.modules.getDashboardSessionModule();
-	}
-
-	public TagModule getTagModule(){
-		return this.modules.getTagModule();
-	}
-
-	public InviteModule getInviteModule(){
-		return this.modules.getInviteModule();
-	}
-
-	public CommandResponseModule getCommandResponseModule(){
-		return this.modules.getCommandResponseModule();
-	}
-
-	public MessageModule getMessageModule(){
-		return this.modules.getMessageModule();
-	}
-
-	public RequestModule getRequestModule(){
-		return this.modules.getRequestModule();
-	}
-
-	public MusicModule getMusicModule(){
-		return this.modules.getMusicModule();
+	public <T extends Module> T get(Class<T> clazz){
+		return this.modules.get(clazz);
 	}
 
 	public JDA getJDA(){
@@ -269,7 +226,7 @@ public class CommandContext{
 
 	public void queue(MessageAction messageAction){
 		if(messageAction != null){
-			messageAction.queue(message -> this.modules.getCommandResponseModule().add(getMessage().getIdLong(), message.getIdLong()), null);
+			messageAction.queue(message -> this.modules.get(CommandResponseModule.class).add(getMessage().getIdLong(), message.getIdLong()), null);
 		}
 	}
 

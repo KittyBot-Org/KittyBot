@@ -4,6 +4,7 @@ import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.modules.NotificationModule;
 
 public class NotificationDeleteCommand extends Command{
 
@@ -19,7 +20,7 @@ public class NotificationDeleteCommand extends Command{
 			ctx.sendUsage(this);
 			return;
 		}
-		if(ctx.getNotificationModule().delete(Long.parseLong(args.get(0)), ctx.getUser().getIdLong())){
+		if(ctx.get(NotificationModule.class).delete(Long.parseLong(args.get(0)), ctx.getUser().getIdLong())){
 			ctx.sendSuccess("Deleted your notification with id `" + args.get(0) + "`");
 			return;
 		}

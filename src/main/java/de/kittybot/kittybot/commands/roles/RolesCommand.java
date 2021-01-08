@@ -5,6 +5,8 @@ import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
 import de.kittybot.kittybot.exceptions.CommandException;
+import de.kittybot.kittybot.modules.ReactiveMessageModule;
+import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.objects.Emoji;
 import de.kittybot.kittybot.objects.SelfAssignableRole;
 import de.kittybot.kittybot.objects.SelfAssignableRoleGroup;
@@ -49,7 +51,7 @@ public class RolesCommand extends Command{
 					.setDescription("To get/remove a role react to this message with the specific  emote\n\n")
 					.setColor(Color.MAGENTA)
 					.appendDescription(value)).queue(message -> {
-				ctx.getReactiveMessageModule().addReactiveMessage(ctx, message.getIdLong(), ctx.getUser().getIdLong());
+				ctx.get(ReactiveMessageModule.class).addReactiveMessage(ctx, message.getIdLong(), ctx.getUser().getIdLong());
 				for(var group : groups.entrySet()){
 					for(var role : group.getValue()){
 						message.addReaction(":i:" + role.getEmoteId()).queue();
@@ -59,7 +61,7 @@ public class RolesCommand extends Command{
 			});
 		}
 		else if(args.get(0).equalsIgnoreCase("list")){
-			var sRoles = ctx.getGuildSettingsModule().getSelfAssignableRoles(ctx.getGuildId());
+			var sRoles = ctx.get(SettingsModule.class).getSelfAssignableRoles(ctx.getGuildId());
 			if(sRoles == null || sRoles.isEmpty()){
 				ctx.sendSuccess("There are no roles added");
 			}
@@ -81,7 +83,7 @@ public class RolesCommand extends Command{
 				ctx.sendError("Role Group with name `" + args.get(1) + "` not found");
 				return;
 			}
-			ctx.getGuildSettingsModule().addSelfAssignableRoles(ctx.getGuildId(), toSet(ctx.getGuildId(), groups.iterator().next().getId(), roles, emotes));
+			ctx.get(SettingsModule.class).addSelfAssignableRoles(ctx.getGuildId(), toSet(ctx.getGuildId(), groups.iterator().next().getId(), roles, emotes));
 			ctx.sendSuccess("Roles added!");
 		}
 		else if(args.get(0).equalsIgnoreCase("remove")){
@@ -93,11 +95,11 @@ public class RolesCommand extends Command{
 				ctx.sendError("Please be sure to mention a role");
 				return;
 			}
-			ctx.getGuildSettingsModule().removeSelfAssignableRoles(ctx.getGuildId(), roles.stream().map(Role::getIdLong).collect(Collectors.toSet()));
+			ctx.get(SettingsModule.class).removeSelfAssignableRoles(ctx.getGuildId(), roles.stream().map(Role::getIdLong).collect(Collectors.toSet()));
 			ctx.sendSuccess("Roles removed!");
 		}
 		else if(args.get(0).equalsIgnoreCase("remove") && !roles.isEmpty()){
-			ctx.getGuildSettingsModule().removeSelfAssignableRoles(ctx.getGuildId(), toSet(roles));
+			ctx.get(SettingsModule.class).removeSelfAssignableRoles(ctx.getGuildId(), toSet(roles));
 			ctx.sendSuccess("Roles removed!");
 		}
 		else{
@@ -107,7 +109,7 @@ public class RolesCommand extends Command{
 
 	private Map<SelfAssignableRoleGroup, Set<SelfAssignableRole>> getSelfAssignableRoles(CommandContext ctx){
 		var guildId = ctx.getGuildId();
-		var settings = ctx.getGuildSettingsModule().getSettings(guildId);
+		var settings = ctx.get(SettingsModule.class).getSettings(guildId);
 		var roles = settings.getSelfAssignableRoles();
 		var groups = settings.getSelfAssignableRoleGroups();
 		if(roles == null || roles.isEmpty() || groups == null || groups.isEmpty()){
@@ -130,7 +132,7 @@ public class RolesCommand extends Command{
 	}
 
 	private Set<SelfAssignableRoleGroup> getSelfAssignableRoleGroupsByName(CommandContext ctx, String groupName){
-		return ctx.getGuildSettingsModule().getSelfAssignableRoleGroups(ctx.getGuildId()).stream().filter(group -> group.getName().equalsIgnoreCase(groupName)).collect(Collectors.toSet());
+		return ctx.get(SettingsModule.class).getSelfAssignableRoleGroups(ctx.getGuildId()).stream().filter(group -> group.getName().equalsIgnoreCase(groupName)).collect(Collectors.toSet());
 	}
 
 	public Set<SelfAssignableRole> toSet(long guildId, long groupId, List<Role> roles, List<Emote> emotes){

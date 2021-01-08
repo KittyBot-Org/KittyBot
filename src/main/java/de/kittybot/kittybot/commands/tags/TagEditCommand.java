@@ -5,6 +5,7 @@ import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
 import de.kittybot.kittybot.exceptions.CommandException;
+import de.kittybot.kittybot.modules.TagModule;
 
 public class TagEditCommand extends Command{
 
@@ -19,7 +20,7 @@ public class TagEditCommand extends Command{
 			ctx.sendUsage(this);
 			return;
 		}
-		ctx.getTagModule().edit(args.get(0), ctx.getRawMessage(1), ctx.getGuildId(), ctx.getUser().getIdLong());
+		ctx.get(TagModule.class).edit(args.get(0), ctx.getRawMessage(1), ctx.getGuildId(), ctx.getUser().getIdLong());
 		ctx.sendSuccess("Edited tag");
 	}
 

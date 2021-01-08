@@ -4,6 +4,7 @@ import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.modules.NotificationModule;
 import de.kittybot.kittybot.objects.Notification;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.TimeUtils;
@@ -23,10 +24,10 @@ public class NotificationListCommand extends Command{
 	public void run(Args args, CommandContext ctx){
 		List<Notification> notifs;
 		if(args.isEmpty()){
-			notifs = ctx.getNotificationModule().get(ctx.getUser().getIdLong());
+			notifs = ctx.get(NotificationModule.class).get(ctx.getUser().getIdLong());
 		}
 		else if(Config.OWNER_IDS.contains(ctx.getUser().getIdLong())){
-			notifs = ctx.getNotificationModule().get(Long.parseLong(args.get(0)));
+			notifs = ctx.get(NotificationModule.class).get(Long.parseLong(args.get(0)));
 		}
 		else{
 			ctx.sendError("Error while retrieving notifications");

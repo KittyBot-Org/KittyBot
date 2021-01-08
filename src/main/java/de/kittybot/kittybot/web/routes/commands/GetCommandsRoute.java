@@ -2,6 +2,7 @@ package de.kittybot.kittybot.web.routes.commands;
 
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.module.Modules;
+import de.kittybot.kittybot.modules.CommandModule;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.web.WebService;
 import io.javalin.http.Context;
@@ -23,7 +24,7 @@ public class GetCommandsRoute implements Handler{
 
 	@Override
 	public void handle(@NotNull Context ctx){
-		var commandSet = this.modules.getCommandModule().getCommands();
+		var commandSet = this.modules.get(CommandModule.class).getCommands();
 		var categories = DataArray.fromCollection(
 				Arrays.stream(Category.values()).map(category ->
 						DataObject.empty().put("name", category.getName()).put("emote_url", category.getEmoteUrl()).put("commands", DataArray.fromCollection(

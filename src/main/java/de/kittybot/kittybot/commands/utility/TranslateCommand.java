@@ -5,6 +5,7 @@ import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
 import de.kittybot.kittybot.modules.CommandModule;
+import de.kittybot.kittybot.modules.RequestModule;
 import de.kittybot.kittybot.objects.Language;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -40,7 +41,7 @@ public class TranslateCommand extends Command{
 			ctx.sendError("Please provide text to translate");
 			return;
 		}
-		var translatedText = ctx.getRequestModule().translateText(text, lang.get().getShortname());
+		var translatedText = ctx.get(RequestModule.class).translateText(text, lang.get().getShortname());
 
 		ctx.sendSuccess(new EmbedBuilder().setDescription("Translated text:\n```\n" + translatedText + "\n```"));
 	}

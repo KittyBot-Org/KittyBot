@@ -4,6 +4,7 @@ import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.modules.SettingsModule;
 
 public class UnassignCommand extends Command{
 
@@ -27,7 +28,7 @@ public class UnassignCommand extends Command{
 			return;
 		}
 		var role = roles.get(0);
-		var selfAssignableRoles = ctx.getGuildSettingsModule().getSelfAssignableRoles(ctx.getGuildId());
+		var selfAssignableRoles = ctx.get(SettingsModule.class).getSelfAssignableRoles(ctx.getGuildId());
 		if(selfAssignableRoles.stream().noneMatch(r -> r.getRoleId() == role.getIdLong())){
 			ctx.sendError("Role `" + roleName + "` is not self assignable");
 			return;

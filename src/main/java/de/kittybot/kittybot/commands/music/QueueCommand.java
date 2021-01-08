@@ -4,6 +4,8 @@ import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.modules.MusicModule;
+import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.MusicUtils;
@@ -20,14 +22,14 @@ public class QueueCommand extends Command{
 	@Override
 	public void run(Args args, CommandContext ctx){
 		if(args.isEmpty()){
-			var player = ctx.getMusicModule().get(ctx.getGuildId());
+			var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
 			if(player == null){
 				ctx.sendError("Please play something before requesting the queue");
 				return;
 			}
 			var tracks = player.getQueue();
 			if(tracks.size() == 0){
-				var prefix = ctx.getGuildSettingsModule().getPrefix(ctx.getGuildId());
+				var prefix = ctx.get(SettingsModule.class).getPrefix(ctx.getGuildId());
 				ctx.sendAnswer(new EmbedBuilder()
 						.setColor(Colors.KITTYBOT_BLUE)
 						.setDescription("The queue is empty. You can queue new tracks with `" + prefix + "p <link/search-term>` or `" + prefix + "q <link/search-term>`")
@@ -43,7 +45,7 @@ public class QueueCommand extends Command{
 		if(!MusicUtils.checkVoiceRequirements(ctx)){
 			return;
 		}
-		ctx.getMusicModule().create(ctx).loadItem(ctx);
+		ctx.get(MusicModule.class).create(ctx).loadItem(ctx);
 	}
 
 }

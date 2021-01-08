@@ -4,6 +4,7 @@ import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.TimeUtils;
@@ -22,7 +23,7 @@ public class SettingsCommand extends Command{
 	@Override
 	public void run(Args args, CommandContext ctx){
 		var guildId = ctx.getGuildId();
-		var settingsManager = ctx.getGuildSettingsModule();
+		var settingsManager = ctx.get(SettingsModule.class);
 		if(args.isEmpty()){
 			var settings = settingsManager.getSettings(ctx.getGuildId());
 			ctx.sendSuccess(new EmbedBuilder()

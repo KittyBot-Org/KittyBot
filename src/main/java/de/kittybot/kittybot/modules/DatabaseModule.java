@@ -2,6 +2,7 @@ package de.kittybot.kittybot.modules;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.utils.Config;
 import org.apache.commons.io.IOUtils;
 import org.jooq.Configuration;
@@ -17,7 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class DatabaseModule{
+public class DatabaseModule extends Module{
 
 	private static final Logger LOG = LoggerFactory.getLogger(DatabaseModule.class);
 

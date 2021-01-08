@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.web.routes.guilds.guild;
 
 import de.kittybot.kittybot.module.Modules;
+import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.web.WebService;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -17,9 +18,9 @@ public class PostGuildSettingsRoute implements Handler{
 
 	@Override
 	public void handle(@NotNull Context ctx){
-		var guildId = this.modules.getWebService().getGuild(ctx).getIdLong();
+		var guildId = this.modules.get(WebService.class).getGuild(ctx).getIdLong();
 		var json = DataObject.fromJson(ctx.body());
-		var settings = this.modules.getGuildSettingsModule();
+		var settings = this.modules.get(SettingsModule.class);
 		if(json.hasKey("prefix")){
 			settings.setPrefix(guildId, json.getString("prefix"));
 		}

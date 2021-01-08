@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.modules;
 
+import de.kittybot.kittybot.module.Module;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.objects.API;
@@ -9,7 +10,7 @@ import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class BotListsModule extends ListenerAdapter{
+public class BotListsModule extends Module{
 
 	private final Modules modules;
 
@@ -33,7 +34,7 @@ public class BotListsModule extends ListenerAdapter{
 	}
 
 	private void updateStats(int guildCount){
-		var requestModule = this.modules.getRequestModule();
+		var requestModule = this.modules.get(RequestModule.class);
 		if(!Config.DISCORD_BOTS_TOKEN.isBlank()){
 			requestModule.updateStats(API.DISCORD_BOTS, guildCount, Config.DISCORD_BOTS_TOKEN);
 		}

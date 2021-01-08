@@ -4,6 +4,8 @@ import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.modules.MessageModule;
+import de.kittybot.kittybot.modules.SettingsModule;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
@@ -20,10 +22,10 @@ public class SnipeCommand extends Command{
 		if(!ctx.getChannel().canTalk()){
 			return;
 		}
-		if(!ctx.getGuildSettingsModule().areSnipesEnabled(ctx.getGuildId())){
+		if(!ctx.get(SettingsModule.class).areSnipesEnabled(ctx.getGuildId())){
 			ctx.error("Snipes are disabled for this guild");
 		}
-		var lastDeletedMessage = ctx.getMessageModule().getLastDeletedMessage(ctx.getMessage().getTextChannel().getIdLong());
+		var lastDeletedMessage = ctx.get(MessageModule.class).getLastDeletedMessage(ctx.getMessage().getTextChannel().getIdLong());
 		if(lastDeletedMessage == null){
 			ctx.sendError("There's no deleted message to snipe");
 			return;

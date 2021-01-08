@@ -1,6 +1,8 @@
 package de.kittybot.kittybot.web;
 
+import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.module.Modules;
+import de.kittybot.kittybot.modules.DashboardSessionModule;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.Utils;
 import de.kittybot.kittybot.web.routes.GetDiscordLoginRoute;
@@ -25,7 +27,7 @@ import net.dv8tion.jda.api.utils.data.DataObject;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
-public class WebService{
+public class WebService extends Module{
 
 	private final Modules modules;
 
@@ -119,7 +121,7 @@ public class WebService{
 			return;
 		}
 		var userId = getUserId(ctx);
-		if(!this.modules.getDashboardSessionModule().has(userId)){
+		if(!this.modules.get(DashboardSessionModule.class).has(userId)){
 			throw new UnauthorizedResponse("Invalid token");
 		}
 	}
@@ -157,7 +159,7 @@ public class WebService{
 	public long getUserId(String token){
 		try{
 			return Long.parseLong(Jwts.parserBuilder()
-					.setSigningKey(this.modules.getDashboardSessionModule().getSecretKey())
+					.setSigningKey(this.modules.get(DashboardSessionModule.class).getSecretKey())
 					.build()
 					.parseClaimsJws(token)
 					.getBody()

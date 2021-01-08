@@ -6,6 +6,7 @@ import com.github.benmanes.caffeine.cache.stats.CacheStats;
 import de.kittybot.kittybot.jooq.tables.records.BotDisabledChannelsRecord;
 import de.kittybot.kittybot.jooq.tables.records.BotIgnoredMembersRecord;
 import de.kittybot.kittybot.jooq.tables.records.SnipeDisabledChannelsRecord;
+import de.kittybot.kittybot.module.Module;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.objects.InviteRole;
@@ -34,7 +35,7 @@ import java.util.stream.Collectors;
 import static de.kittybot.kittybot.jooq.Tables.*;
 import static org.jooq.impl.DSL.*;
 
-public class SettingsModule extends ListenerAdapter{
+public class SettingsModule extends Module{
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommandModule.class);
 
@@ -50,7 +51,7 @@ public class SettingsModule extends ListenerAdapter{
 	}
 
 	public Settings retrieveGuildSettings(long guildId){
-		var dbModule = this.modules.getDatabaseModule();
+		var dbModule = this.modules.get(DatabaseModule.class);
 
 		try(
 				var ctxSettings = dbModule.getCtx().selectFrom(GUILDS);
@@ -104,12 +105,12 @@ public class SettingsModule extends ListenerAdapter{
 
 	public void cleanupAllSettings(long guildId){
 		LOG.info("Cleaning up guild: {}", guildId);
-		var dbModule = this.modules.getDatabaseModule();
+		var dbModule = this.modules.get(DatabaseModule.class);
 		dbModule.getCtx().deleteFrom(GUILDS).where(GUILDS.ID.eq(guildId)).execute();
 	}
 
 	public void insertSettingsIfNotExists(Guild guild){
-		var dbModule = this.modules.getDatabaseModule();
+		var dbModule = this.modules.get(DatabaseModule.class);
 		var insert = true;
 		try(var ctx = dbModule.getCtx().selectFrom(GUILDS)){
 			insert = ctx.where(GUILDS.ID.eq(guild.getIdLong())).fetch().isEmpty();
@@ -122,7 +123,7 @@ public class SettingsModule extends ListenerAdapter{
 	public void insertSettings(Guild guild){
 		LOG.info("Registering new guild: {}", guild.getId());
 
-		this.modules.getDatabaseModule().getCtx().insertInto(GUILDS)
+		this.modules.get(DatabaseModule.class).getCtx().insertInto(GUILDS)
 				.columns(
 						GUILDS.ID,
 						GUILDS.PREFIX,
@@ -160,7 +161,7 @@ public class SettingsModule extends ListenerAdapter{
 	}
 
 	public <T> void updateSetting(long guildId, Field<T> field, T value){
-		this.modules.getDatabaseModule().getCtx().update(GUILDS).set(field, value).where(GUILDS.ID.eq(guildId)).execute();
+		this.modules.get(DatabaseModule.class).getCtx().update(GUILDS).set(field, value).where(GUILDS.ID.eq(guildId)).execute();
 	}
 
 	public Settings getSettingsIfPresent(long guildId){
@@ -369,11 +370,11 @@ public class SettingsModule extends ListenerAdapter{
 	}
 
 	public void insertSnipeDisabledChannel(long guildId, long channelId){
-		this.modules.getDatabaseModule().getCtx().insertInto(SNIPE_DISABLED_CHANNELS).values(guildId, channelId).execute();
+		this.modules.get(DatabaseModule.class).getCtx().insertInto(SNIPE_DISABLED_CHANNELS).values(guildId, channelId).execute();
 	}
 
 	public void deleteSnipeDisabledChannel(long guildId, long channelId){
-		this.modules.getDatabaseModule().getCtx().deleteFrom(SNIPE_DISABLED_CHANNELS).where(
+		this.modules.get(DatabaseModule.class).getCtx().deleteFrom(SNIPE_DISABLED_CHANNELS).where(
 				SNIPE_DISABLED_CHANNELS.GUILD_ID.eq(guildId).and(SNIPE_DISABLED_CHANNELS.CHANNEL_ID.eq(channelId))
 		).execute();
 	}
@@ -395,11 +396,11 @@ public class SettingsModule extends ListenerAdapter{
 	}
 
 	public void insertBotDisabledChannel(long guildId, long channelId){
-		this.modules.getDatabaseModule().getCtx().insertInto(BOT_DISABLED_CHANNELS).values(guildId, channelId).execute();
+		this.modules.get(DatabaseModule.class).getCtx().insertInto(BOT_DISABLED_CHANNELS).values(guildId, channelId).execute();
 	}
 
 	public void deleteBotDisabledChannel(long guildId, long channelId){
-		this.modules.getDatabaseModule().getCtx().deleteFrom(BOT_DISABLED_CHANNELS).where(
+		this.modules.get(DatabaseModule.class).getCtx().deleteFrom(BOT_DISABLED_CHANNELS).where(
 				BOT_DISABLED_CHANNELS.GUILD_ID.eq(guildId).and(BOT_DISABLED_CHANNELS.CHANNEL_ID.eq(channelId))
 		).execute();
 	}
@@ -417,7 +418,7 @@ public class SettingsModule extends ListenerAdapter{
 	}
 
 	private void insertSelfAssignableRoles(long guildId, Set<SelfAssignableRole> roles){
-		var ctx = this.modules.getDatabaseModule().getCtx().insertInto(SELF_ASSIGNABLE_ROLE_GROUPS)
+		var ctx = this.modules.get(DatabaseModule.class).getCtx().insertInto(SELF_ASSIGNABLE_ROLE_GROUPS)
 				.columns(SELF_ASSIGNABLE_ROLES.GROUP_ID, SELF_ASSIGNABLE_ROLES.ROLE_ID, SELF_ASSIGNABLE_ROLES.EMOTE_ID);
 		for(var role : roles){
 			ctx.values(role.getGroupId(), role.getRoleId(), role.getEmoteId());
@@ -434,7 +435,7 @@ public class SettingsModule extends ListenerAdapter{
 	}
 
 	private void deleteSelfAssignableRoles(long guildId, Set<Long> roles){
-		this.modules.getDatabaseModule().getCtx().deleteFrom(SELF_ASSIGNABLE_ROLES).where(
+		this.modules.get(DatabaseModule.class).getCtx().deleteFrom(SELF_ASSIGNABLE_ROLES).where(
 				SELF_ASSIGNABLE_ROLES.ROLE_ID.in(roles)
 		).execute();
 	}
@@ -452,7 +453,7 @@ public class SettingsModule extends ListenerAdapter{
 	}
 
 	private Set<SelfAssignableRoleGroup> insertSelfAssignableRoleGroups(long guildId, Set<SelfAssignableRoleGroup> groups){
-		var dbModule = this.modules.getDatabaseModule();
+		var dbModule = this.modules.get(DatabaseModule.class);
 		var ctx = dbModule.getCtx().insertInto(SELF_ASSIGNABLE_ROLE_GROUPS)
 				.columns(
 						SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID, SELF_ASSIGNABLE_ROLE_GROUPS.GROUP_NAME,
@@ -479,7 +480,7 @@ public class SettingsModule extends ListenerAdapter{
 	}
 
 	private void deleteSelfAssignableRoleGroups(long guildId, Set<Long> groups){
-		this.modules.getDatabaseModule().getCtx().deleteFrom(SELF_ASSIGNABLE_ROLE_GROUPS).where(
+		this.modules.get(DatabaseModule.class).getCtx().deleteFrom(SELF_ASSIGNABLE_ROLE_GROUPS).where(
 				SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID.eq(guildId).and(SELF_ASSIGNABLE_ROLE_GROUPS.ID.in(groups))
 		).execute();
 	}
@@ -506,7 +507,7 @@ public class SettingsModule extends ListenerAdapter{
 	}
 
 	private void deleteInviteRole(long guildId, String code){
-		var dbModule = this.modules.getDatabaseModule();
+		var dbModule = this.modules.get(DatabaseModule.class);
 		var res = dbModule.getCtx().deleteFrom(GUILD_INVITES).where(
 				GUILD_INVITES.GUILD_ID.eq(guildId).and(GUILD_INVITES.CODE.eq(code))).returningResult(GUILD_INVITES.ID).fetchOne();
 		if(res == null){
@@ -518,7 +519,7 @@ public class SettingsModule extends ListenerAdapter{
 	}
 
 	private void deleteInviteRoles(long guildId, String code){
-		var dbModule = this.modules.getDatabaseModule();
+		var dbModule = this.modules.get(DatabaseModule.class);
 		var res = dbModule.getCtx().selectFrom(GUILD_INVITES).where(
 				GUILD_INVITES.GUILD_ID.eq(guildId).and(GUILD_INVITES.CODE.eq(code))).fetchOne();
 		if(res == null){
@@ -529,7 +530,7 @@ public class SettingsModule extends ListenerAdapter{
 	}
 
 	private void insertInviteRoles(long guildId, String code, Set<Long> roles){
-		var dbModule = this.modules.getDatabaseModule();
+		var dbModule = this.modules.get(DatabaseModule.class);
 		try(var selectCtx = dbModule.getCtx().selectFrom(GUILD_INVITES)){
 			var res = selectCtx.where(GUILD_INVITES.GUILD_ID.eq(guildId).and(GUILD_INVITES.CODE.eq(code))).fetchOne();
 			var inviteRoleId = 0L;
@@ -558,7 +559,7 @@ public class SettingsModule extends ListenerAdapter{
 		if(settings != null){
 			settings.getInviteRoles().forEach((key, value) -> value.removeIf(r -> r == roleId));
 		}
-		this.modules.getDatabaseModule().getCtx().deleteFrom(GUILD_INVITE_ROLES).where(GUILD_INVITE_ROLES.ROLE_ID.eq(roleId)).execute();
+		this.modules.get(DatabaseModule.class).getCtx().deleteFrom(GUILD_INVITE_ROLES).where(GUILD_INVITE_ROLES.ROLE_ID.eq(roleId)).execute();
 	}
 
 	public void removeInviteRoles(long guildId, String code){
@@ -566,7 +567,7 @@ public class SettingsModule extends ListenerAdapter{
 		if(settings != null){
 			settings.getInviteRoles().remove(code);
 		}
-		this.modules.getDatabaseModule().getCtx().deleteFrom(GUILD_INVITES).where(GUILD_INVITES.CODE.eq(code)).execute();
+		this.modules.get(DatabaseModule.class).getCtx().deleteFrom(GUILD_INVITES).where(GUILD_INVITES.CODE.eq(code)).execute();
 	}
 
 	public void addBotIgnoredUsers(long guildId, Set<Long> users){
@@ -578,7 +579,7 @@ public class SettingsModule extends ListenerAdapter{
 	}
 
 	private void insertIgnoredUsers(long guildId, Set<Long> users){
-		var ctx = this.modules.getDatabaseModule().getCtx().insertInto(BOT_IGNORED_MEMBERS).columns(BOT_IGNORED_MEMBERS.GUILD_ID, BOT_IGNORED_MEMBERS.USER_ID);
+		var ctx = this.modules.get(DatabaseModule.class).getCtx().insertInto(BOT_IGNORED_MEMBERS).columns(BOT_IGNORED_MEMBERS.GUILD_ID, BOT_IGNORED_MEMBERS.USER_ID);
 		for(var user : users){
 			ctx.values(guildId, user);
 		}
@@ -594,7 +595,7 @@ public class SettingsModule extends ListenerAdapter{
 	}
 
 	private void removeIgnoredUsers(long guildId, Set<Long> users){
-		this.modules.getDatabaseModule().getCtx().deleteFrom(BOT_IGNORED_MEMBERS).where(
+		this.modules.get(DatabaseModule.class).getCtx().deleteFrom(BOT_IGNORED_MEMBERS).where(
 			BOT_IGNORED_MEMBERS.GUILD_ID.eq(guildId).and(BOT_IGNORED_MEMBERS.USER_ID.in(users))
 		).execute();
 	}

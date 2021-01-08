@@ -22,7 +22,7 @@ public class GetAllGuildsRoute implements Handler{
 
 	@Override
 	public void handle(@NotNull Context ctx){
-		var userId = this.modules.getWebService().getUserId(ctx);
+		var userId = this.modules.get(WebService.class).getUserId(ctx);
 		if(!Config.OWNER_IDS.contains(userId)){
 			throw new ForbiddenResponse("Only bot owners have access to this");
 		}

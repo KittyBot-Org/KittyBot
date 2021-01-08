@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.modules;
 
 import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.module.Module;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.objects.MusicPlayer;
@@ -14,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MusicModule extends ListenerAdapter{
+public class MusicModule extends Module{
 
 	private final Modules modules;
 	private final Map<Long, MusicPlayer> musicPlayers;
@@ -60,7 +61,7 @@ public class MusicModule extends ListenerAdapter{
 	}
 
 	public void destroy(long guildId){
-		var link = this.modules.getLavalinkModule().getLavalink().getExistingLink(guildId);
+		var link = this.modules.get(LavalinkModule.class).getLavalink().getExistingLink(guildId);
 		if(link != null){
 			link.destroy();
 		}
@@ -70,7 +71,7 @@ public class MusicModule extends ListenerAdapter{
 
 	public MusicPlayer create(CommandContext ctx){
 		var guildId = ctx.getGuildId();
-		var link = this.modules.getLavalinkModule().getLink(guildId);
+		var link = this.modules.get(LavalinkModule.class).getLink(guildId);
 		var player = new MusicPlayer(this.modules, link, guildId, ctx.getChannelId());
 		this.musicPlayers.put(guildId, player);
 		return player;

@@ -5,6 +5,7 @@ import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
 import de.kittybot.kittybot.exceptions.CommandException;
+import de.kittybot.kittybot.modules.StreamAnnouncementModule;
 import net.dv8tion.jda.api.Permission;
 
 import java.util.stream.Collectors;
@@ -19,7 +20,7 @@ public class StreamAnnouncementListCommand extends Command{
 
 	@Override
 	protected void run(Args args, CommandContext ctx) throws CommandException{
-		var streams = ctx.getStreamAnnouncementModule().get(ctx.getGuildId());
+		var streams = ctx.get(StreamAnnouncementModule.class).get(ctx.getGuildId());
 		ctx.sendSuccess("Following stream announcements are enabled:\n" + streams.stream().map(stream -> stream.getUserName() + ": " + stream.getStreamType()).collect(Collectors.joining("\n")));
 	}
 

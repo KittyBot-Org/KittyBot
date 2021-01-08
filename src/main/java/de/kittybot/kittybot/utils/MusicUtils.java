@@ -2,6 +2,7 @@ package de.kittybot.kittybot.utils;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.modules.SettingsModule;
 import net.dv8tion.jda.api.Permission;
 
 import java.util.Collection;
@@ -32,7 +33,7 @@ public class MusicUtils{
 
 	public static boolean checkVoiceRequirements(CommandContext ctx){
 		var member = ctx.getMember();
-		if(member.hasPermission(Permission.ADMINISTRATOR) || ctx.getGuildSettingsModule().hasDJRole(member)){
+		if(member.hasPermission(Permission.ADMINISTRATOR) || ctx.get(SettingsModule.class).hasDJRole(member)){
 			return true;
 		}
 		var voiceState = member.getVoiceState();

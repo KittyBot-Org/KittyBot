@@ -4,6 +4,7 @@ import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.modules.SettingsModule;
 
 public class AssignCommand extends Command{
 
@@ -27,7 +28,7 @@ public class AssignCommand extends Command{
 			return;
 		}
 		var role = roles.get(0);
-		var settings = ctx.getGuildSettingsModule().getSettings(ctx.getGuildId());
+		var settings = ctx.get(SettingsModule.class).getSettings(ctx.getGuildId());
 		var selfAssignableRoles = settings.getSelfAssignableRoles();
 		if(selfAssignableRoles == null){
 			ctx.sendError("No self assignable roles found");

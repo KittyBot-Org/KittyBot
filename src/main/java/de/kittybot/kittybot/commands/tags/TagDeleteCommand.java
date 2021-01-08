@@ -5,6 +5,7 @@ import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
 import de.kittybot.kittybot.exceptions.CommandException;
+import de.kittybot.kittybot.modules.TagModule;
 
 public class TagDeleteCommand extends Command{
 
@@ -20,7 +21,7 @@ public class TagDeleteCommand extends Command{
 			ctx.sendUsage(this);
 			return;
 		}
-		ctx.getTagModule().delete(args.get(0), ctx.getUser().getIdLong(), ctx.getGuildId());
+		ctx.get(TagModule.class).delete(args.get(0), ctx.getUser().getIdLong(), ctx.getGuildId());
 		ctx.sendSuccess("Deleted tag");
 	}
 

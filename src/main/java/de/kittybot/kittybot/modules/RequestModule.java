@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.modules;
 
+import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.objects.API;
 import net.dv8tion.jda.api.utils.data.DataArray;
@@ -14,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-public class RequestModule{
+public class RequestModule extends Module{
 
 	private static final Logger LOG = LoggerFactory.getLogger(RequestModule.class);
 	private final Request.Builder requestBuilder = new Request.Builder().header("user-agent", "de.kittybot");

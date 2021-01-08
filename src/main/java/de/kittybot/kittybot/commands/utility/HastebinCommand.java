@@ -4,6 +4,7 @@ import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.modules.RequestModule;
 import net.dv8tion.jda.api.entities.Message;
 import org.apache.commons.io.IOUtils;
 
@@ -42,7 +43,7 @@ public class HastebinCommand extends Command{
 			attachment.retrieveInputStream().thenAcceptAsync(inputStream -> {
 				try(inputStream){
 					var text = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
-					ctx.sendSuccess(maskLink("here is a hastebin", ctx.getModules().getRequestModule().postToHastebin(text)));
+					ctx.sendSuccess(maskLink("here is a hastebin", ctx.get(RequestModule.class).postToHastebin(text)));
 				}
 				catch(NullPointerException | IOException e){
 					ctx.sendError("Error while creating hastebin\nError: " + e.getMessage());

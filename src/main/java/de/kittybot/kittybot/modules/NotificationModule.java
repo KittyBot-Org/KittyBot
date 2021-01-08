@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.modules;
 
 import de.kittybot.kittybot.jooq.tables.records.NotificationsRecord;
+import de.kittybot.kittybot.module.Module;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.objects.Notification;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 
 import static de.kittybot.kittybot.jooq.Tables.NOTIFICATIONS;
 
-public class NotificationModule extends ListenerAdapter{
+public class NotificationModule extends Module{
 
 	private static final Logger LOG = LoggerFactory.getLogger(NotificationModule.class);
 
@@ -39,7 +40,7 @@ public class NotificationModule extends ListenerAdapter{
 	}
 
 	private Map<Long, Notification> retrieveNotifications(LocalDateTime to){
-		try(var ctx = this.modules.getDatabaseModule().getCtx().selectFrom(NOTIFICATIONS)){
+		try(var ctx = this.modules.get(DatabaseModule.class).getCtx().selectFrom(NOTIFICATIONS)){
 			return ctx.where(NOTIFICATIONS.NOTIFICATION_TIME.lessOrEqual(to)).fetch().stream().collect(
 					Collectors.toMap(NotificationsRecord::getId, Notification::new)
 			);
@@ -113,7 +114,7 @@ public class NotificationModule extends ListenerAdapter{
 	}
 
 	private boolean deleteNotifications(long id, long userId){
-		return this.modules.getDatabaseModule().getCtx().deleteFrom(NOTIFICATIONS)
+		return this.modules.get(DatabaseModule.class).getCtx().deleteFrom(NOTIFICATIONS)
 				.where(NOTIFICATIONS.ID.eq(id).and((NOTIFICATIONS.USER_ID.eq(userId))))
 				.execute() == 1;
 	}
@@ -132,7 +133,7 @@ public class NotificationModule extends ListenerAdapter{
 	}
 
 	private Notification insertNotification(long guildId, long channelId, long messageId, long userId, String content, LocalDateTime creationTime, LocalDateTime notificationTime){
-		var res = this.modules.getDatabaseModule().getCtx().insertInto(NOTIFICATIONS)
+		var res = this.modules.get(DatabaseModule.class).getCtx().insertInto(NOTIFICATIONS)
 				.columns(
 						NOTIFICATIONS.GUILD_ID,
 						NOTIFICATIONS.CHANNEL_ID,
@@ -161,7 +162,7 @@ public class NotificationModule extends ListenerAdapter{
 	}
 
 	private List<Notification> retrieveNotifications(long userId){
-		var dbModule = this.modules.getDatabaseModule();
+		var dbModule = this.modules.get(DatabaseModule.class);
 		try(var ctx = dbModule.getCtx().selectFrom(NOTIFICATIONS)){
 			return ctx.where(NOTIFICATIONS.USER_ID.eq(userId)).fetch().map(Notification::new);
 		}

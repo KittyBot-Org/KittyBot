@@ -6,6 +6,7 @@ import com.github.benmanes.caffeine.cache.stats.CacheStats;
 import com.jagrosh.jdautilities.oauth2.OAuth2Client;
 import com.jagrosh.jdautilities.oauth2.Scope;
 import com.jagrosh.jdautilities.oauth2.entities.OAuth2Guild;
+import de.kittybot.kittybot.module.Module;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.objects.DashboardSession;
@@ -29,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 import static de.kittybot.kittybot.jooq.Tables.SESSIONS;
 
 
-public class DashboardSessionModule extends ListenerAdapter{
+public class DashboardSessionModule extends Module{
 
 	private static final Logger LOG = LoggerFactory.getLogger(DashboardSessionModule.class);
 	private static final Scope[] SCOPES = {Scope.IDENTIFY, Scope.GUILDS};
@@ -54,7 +55,7 @@ public class DashboardSessionModule extends ListenerAdapter{
 	}
 
 	private DashboardSession retrieveDashboardSession(long userId){
-		var dbModule = this.modules.getDatabaseModule();
+		var dbModule = this.modules.get(DatabaseModule.class);
 		try(var ctx = dbModule.getCtx().selectFrom(SESSIONS)){
 			var res = ctx.where(SESSIONS.USER_ID.eq(userId)).fetchOne();
 			if(res == null){
@@ -113,7 +114,7 @@ public class DashboardSessionModule extends ListenerAdapter{
 	}
 
 	private void saveDashboardSession(DashboardSession session){
-		this.modules.getDatabaseModule().getCtx().insertInto(SESSIONS)
+		this.modules.get(DatabaseModule.class).getCtx().insertInto(SESSIONS)
 				.columns(SESSIONS.USER_ID, SESSIONS.ACCESS_TOKEN, SESSIONS.REFRESH_TOKEN, SESSIONS.EXPIRATION)
 				.values(session.getUserId(), session.getAccessToken(), session.getRefreshToken(), session.getExpirationTime())
 				.onDuplicateKeyIgnore()
@@ -139,7 +140,7 @@ public class DashboardSessionModule extends ListenerAdapter{
 	}
 
 	private void deleteDashboardSession(long userId){
-		this.modules.getDatabaseModule().getCtx().deleteFrom(SESSIONS).where(SESSIONS.USER_ID.eq(userId)).execute();
+		this.modules.get(DatabaseModule.class).getCtx().deleteFrom(SESSIONS).where(SESSIONS.USER_ID.eq(userId)).execute();
 	}
 
 	public CacheStats getStats(){

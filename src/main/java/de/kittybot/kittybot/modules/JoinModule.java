@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.modules;
 
+import de.kittybot.kittybot.module.Module;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.Config;
@@ -11,7 +12,7 @@ import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import javax.annotation.Nonnull;
 import java.time.Instant;
 
-public class JoinModule extends ListenerAdapter{
+public class JoinModule extends Module{
 
 
 	public JoinModule(){}

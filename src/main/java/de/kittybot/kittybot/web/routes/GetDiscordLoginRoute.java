@@ -3,6 +3,7 @@ package de.kittybot.kittybot.web.routes;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.modules.DashboardSessionModule;
 import de.kittybot.kittybot.utils.Config;
+import de.kittybot.kittybot.web.WebService;
 import io.javalin.http.Context;
 import io.javalin.http.ForbiddenResponse;
 import io.javalin.http.Handler;
@@ -19,15 +20,16 @@ public class GetDiscordLoginRoute implements Handler{
 
 	@Override
 	public void handle(@NotNull Context ctx){
+		var dashboardSessionModule = this.modules.get(DashboardSessionModule.class);
 		try{
-			if(!this.modules.getDashboardSessionModule().has(this.modules.getWebService().getUserId(ctx))){
+			if(!dashboardSessionModule.has(this.modules.get(WebService.class).getUserId(ctx))){
 				ctx.redirect(Config.REDIRECT_URL);
 				return;
 			}
 		}
 		catch(UnauthorizedResponse | ForbiddenResponse ignored){
 		}
-		ctx.redirect(this.modules.getDashboardSessionModule().getOAuth2Client().generateAuthorizationURL(Config.REDIRECT_URL, DashboardSessionModule.getScopes()));
+		ctx.redirect(dashboardSessionModule.getOAuth2Client().generateAuthorizationURL(Config.REDIRECT_URL, DashboardSessionModule.getScopes()));
 	}
 
 }
