@@ -27,7 +27,7 @@ public class GetAllGuildsRoute implements Handler{
 			throw new ForbiddenResponse("Only bot owners have access to this");
 		}
 		var data = DataArray.fromCollection(
-				this.modules.getJDA().getGuildCache().stream().map(guild ->
+				this.modules.getShardManager().getGuildCache().stream().map(guild ->
 						DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl()).put("count", guild.getMemberCount()).put("owner", guild.getOwner() == null ? null : guild.getOwner().getUser().getAsTag())
 				).collect(Collectors.toSet())
 		);

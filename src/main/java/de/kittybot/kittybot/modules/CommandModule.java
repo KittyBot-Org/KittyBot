@@ -5,7 +5,6 @@ import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
 import de.kittybot.kittybot.command.ReactionContext;
 import de.kittybot.kittybot.module.Module;
-import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.exporters.Metrics;
 import io.github.classgraph.ClassGraph;
@@ -30,12 +29,11 @@ public class CommandModule extends Module{
 	private static final String COMMAND_PACKAGE = "de.kittybot.kittybot.commands";
 	private static final Pattern BOT_MENTION = Pattern.compile("<@!?" + Config.BOT_ID + ">");
 
-	private final Modules modules;
-	private final Map<String, Command> commands;
-	private final Map<String, Command> allCommands;
+	private Map<String, Command> commands;
+	private Map<String, Command> allCommands;
 
-	public CommandModule(Modules modules){
-		this.modules = modules;
+	@Override
+	public void onEnable(){
 		this.commands = new HashMap<>();
 		this.allCommands = new HashMap<>();
 		try(var result = new ClassGraph().acceptPackages(COMMAND_PACKAGE).scan()){

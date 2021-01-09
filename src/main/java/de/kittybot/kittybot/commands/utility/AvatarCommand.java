@@ -28,13 +28,13 @@ public class AvatarCommand extends Command{
 						return;
 					}
 					ctx.sendSuccess(new EmbedBuilder()
-					.setTitle(MessageUtils.pluralize("User Avatar", users))
-					.setDescription(users.stream().map(
-							user -> "**" + user.getAsTag() + "**: " + Arrays.stream(SIZES).map(
-									size -> MessageUtils.maskLink(size + "px", user.getEffectiveAvatarUrl() + "?size=" + size)).collect(Collectors.joining(" "))
-							).collect(Collectors.joining("\n\n"))
-					)
-			);
+							.setTitle(MessageUtils.pluralize("User Avatar", users))
+							.setDescription(users.stream().map(
+									user -> "**" + user.getAsTag() + "**: " + Arrays.stream(SIZES).map(
+											size -> MessageUtils.maskLink(size + "px", user.getEffectiveAvatarUrl() + "?size=" + size)).collect(Collectors.joining(" "))
+									).collect(Collectors.joining("\n\n"))
+							)
+					);
 				},
 				error -> ctx.sendError("Error while retrieving users:\n" + error.getMessage()));
 	}

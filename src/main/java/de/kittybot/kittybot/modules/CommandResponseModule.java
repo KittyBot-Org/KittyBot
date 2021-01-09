@@ -4,7 +4,6 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
 import de.kittybot.kittybot.module.Module;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
 import org.jetbrains.annotations.NotNull;
@@ -13,9 +12,10 @@ import java.util.concurrent.TimeUnit;
 
 public class CommandResponseModule extends Module{
 
-	private final Cache<Long, Long> commandResponses;
+	private Cache<Long, Long> commandResponses;
 
-	public CommandResponseModule(){
+	@Override
+	public void onEnable(){
 		this.commandResponses = Caffeine.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).recordStats().build();
 	}
 

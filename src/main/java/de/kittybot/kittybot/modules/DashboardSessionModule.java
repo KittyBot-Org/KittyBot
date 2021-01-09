@@ -7,11 +7,8 @@ import com.jagrosh.jdautilities.oauth2.OAuth2Client;
 import com.jagrosh.jdautilities.oauth2.Scope;
 import com.jagrosh.jdautilities.oauth2.entities.OAuth2Guild;
 import de.kittybot.kittybot.module.Module;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.objects.DashboardSession;
 import de.kittybot.kittybot.objects.DashboardSessionController;
-import de.kittybot.kittybot.objects.GuildData;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.exporters.Metrics;
 import io.jsonwebtoken.security.Keys;
@@ -23,7 +20,6 @@ import javax.annotation.Nonnull;
 import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -35,15 +31,18 @@ public class DashboardSessionModule extends Module{
 	private static final Logger LOG = LoggerFactory.getLogger(DashboardSessionModule.class);
 	private static final Scope[] SCOPES = {Scope.IDENTIFY, Scope.GUILDS};
 
-	private final Modules modules;
-	private final SecretKey secretKey;
-	private final LoadingCache<Long, DashboardSession> sessionCache;
-	private final Map<Long, Boolean> userSessionCache;
-	private final Map<Long, Set<Long>> userGuilds;
+	private SecretKey secretKey;
+	private LoadingCache<Long, DashboardSession> sessionCache;
+	private Map<Long, Boolean> userSessionCache;
+	private Map<Long, Set<Long>> userGuilds;
 	private OAuth2Client oAuth2Client;
 
-	public DashboardSessionModule(Modules modules){
-		this.modules = modules;
+	public static Scope[] getScopes(){
+		return SCOPES;
+	}
+
+	@Override
+	public void onEnable(){
 		this.secretKey = Keys.hmacShaKeyFor(Config.SIGNING_KEY.getBytes(StandardCharsets.UTF_8));
 		this.sessionCache = Caffeine.newBuilder()
 				.expireAfterAccess(15, TimeUnit.MINUTES)
@@ -76,10 +75,6 @@ public class DashboardSessionModule extends Module{
 				.setOkHttpClient(this.modules.getHttpClient())
 				.setSessionController(new DashboardSessionController(this))
 				.build();
-	}
-
-	public static Scope[] getScopes(){
-		return SCOPES;
 	}
 
 	@Override

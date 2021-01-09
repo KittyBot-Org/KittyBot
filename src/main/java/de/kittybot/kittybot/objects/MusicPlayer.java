@@ -23,10 +23,8 @@ import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.requests.RestAction;
 
-import java.awt.*;
+import java.awt.Color;
 import java.time.Instant;
-import java.util.List;
-import java.util.Queue;
 import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -125,7 +123,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	public RestAction<Message> messageToChannel(EmbedBuilder embed){
-		var guild = this.modules.getJDA().getGuildById(this.guildId);
+		var guild = this.modules.getJDA(this.guildId).getGuildById(this.guildId);
 		if(guild == null){
 			return null;
 		}
@@ -183,7 +181,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		if(this.controllerMessageId == -1){
 			return;
 		}
-		var guild = this.modules.getJDA().getGuildById(this.guildId);
+		var guild = this.modules.getJDA(this.guildId).getGuildById(this.guildId);
 		if(guild == null){
 			return;
 		}

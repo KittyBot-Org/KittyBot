@@ -4,7 +4,10 @@ import de.kittybot.kittybot.jooq.tables.records.GuildsRecord;
 import de.kittybot.kittybot.utils.MessageUtils;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class Settings{
 
@@ -55,8 +58,8 @@ public class Settings{
 		this.snipeDisabledChannels = new HashSet<>(snipeDisabledChannels);
 		this.botDisabledChannels = new HashSet<>(botDisabledChannels);
 		this.botIgnoredUsers = new HashSet<>(botIgnoredUsers);
-		this.selfAssignableRoles =  new HashSet<>(selfAssignableRoles);
-		this.selfAssignableRoleGroups =  new HashSet<>(selfAssignableRoleGroups);
+		this.selfAssignableRoles = new HashSet<>(selfAssignableRoles);
+		this.selfAssignableRoleGroups = new HashSet<>(selfAssignableRoleGroups);
 		this.guildInviteRoles = guildInviteRoles;
 	}
 

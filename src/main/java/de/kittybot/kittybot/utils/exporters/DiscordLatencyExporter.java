@@ -22,12 +22,12 @@ public class DiscordLatencyExporter{
 
 	public static void start(Modules modules){
 		modules.getScheduler().scheduleAtFixedRate(() -> {
-			var jda = modules.getJDA();
-			var ping = jda.getGatewayPing();
+			var shardManager = modules.getShardManager();
+			var ping = shardManager.getAverageGatewayPing();
 			if(ping >= 0){
 				GATEWAY_PING.set(ping);
 			}
-			jda.getRestPing().queue(REST_PING::set);
+			shardManager.getShardById(0).getRestPing().queue(REST_PING::set);
 		}, 0, PrometheusModule.UPDATE_PERIOD.toMillis(), TimeUnit.MILLISECONDS);
 	}
 

@@ -1,20 +1,25 @@
 package de.kittybot.kittybot.module;
 
+import de.kittybot.kittybot.exceptions.ModuleNotFoundException;
 import de.kittybot.kittybot.main.KittyBot;
-import de.kittybot.kittybot.modules.*;
-import de.kittybot.kittybot.web.WebService;
+import io.github.classgraph.ClassGraph;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.hooks.EventListener;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.sharding.ShardManager;
+import net.dv8tion.jda.api.utils.MiscUtil;
 import okhttp3.OkHttpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.Collections;
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.stream.Collectors;
 
 public class Modules{
+
+	private static final String MODULE_PACKAGE = "de.kittybot.kittybot.modules";
+	private static final Logger LOG = LoggerFactory.getLogger(Modules.class);
 
 	private final KittyBot main;
 	private final List<Module> modules;
@@ -23,35 +28,21 @@ public class Modules{
 		this.main = main;
 		this.modules = new LinkedList<>();
 
-		addAll(new LavalinkModule(this),
-				new TagModule(this),
-				new DatabaseModule(),
-				new ReactiveMessageModule(),
-				new RequestModule(this),
-				new SettingsModule(this),
-				new CommandModule(this),
-				new EventLogModule(),
-				new CommandResponseModule(),
-				new JoinModule(),
-				new InviteModule(),
-				new InviteRolesModule(this),
-				new StatusModule(this),
-				new MessageModule(),
-				new BotListsModule(this),
-				new RoleSaverModule(this),
-				new MusicModule(this),
-				new DashboardSessionModule(this),
-				new NotificationModule(this),
-				new StreamAnnouncementModule(this),
-				new PrometheusModule(this),
-				new WebService(this)
-		);
-	}
-
-	private void addAll(Module... modules){
-		for(var module : modules){
-			this.modules.add(module);
+		LOG.info("Loading modules...");
+		try(var result = new ClassGraph().acceptPackages(MODULE_PACKAGE).scan()){
+			for(var cls : result.getSubclasses(Module.class.getName())){
+				var instance = cls.loadClass().getDeclaredConstructors()[0].newInstance();
+				if(!(instance instanceof Module)){
+					continue;
+				}
+				this.modules.add(((Module) instance).init(this));
+			}
 		}
+		catch(IllegalAccessException | InvocationTargetException | InstantiationException e){
+			LOG.error("Error while loading modules", e);
+		}
+		this.modules.forEach(Module::onEnable);
+		LOG.info("Finished loading " + this.modules.size() + "modules");
 	}
 
 	public Object[] getModules(){
@@ -59,15 +50,32 @@ public class Modules{
 	}
 
 	public <T extends Module> T get(Class<T> clazz){
-		System.out.println("Clazz: " + clazz.getSimpleName());
-		return (T) this.modules.stream().filter(module -> {
-			System.out.println("Module: " + module.getClass().getSimpleName());
-			return module.getClass().getSimpleName().equals(clazz.getSimpleName());
-		}).findFirst().orElse(null);
+		var module = this.modules.stream().filter(mod -> mod.getClass().equals(clazz)).findFirst();
+		if(module.isEmpty()){
+			throw new ModuleNotFoundException(clazz);
+		}
+		return (T) module.get();
 	}
 
-	public JDA getJDA(){
-		return this.main.getJDA();
+	public JDA getJDA(long guildId){
+		var shardManager = this.main.getShardManager();
+		return shardManager.getShardById(MiscUtil.getShardForGuild(guildId, shardManager.getShardsTotal()));
+	}
+
+	public JDA getJDA(int shardId){
+		return this.main.getShardManager().getShardById(shardId);
+	}
+
+	public Guild getGuildById(long guildId){
+		return getShardManager().getGuildById(guildId);
+	}
+
+	public ShardManager getShardManager(){
+		return this.main.getShardManager();
+	}
+
+	public Guild getGuildById(String guildId){
+		return getShardManager().getGuildById(guildId);
 	}
 
 	public ScheduledExecutorService getScheduler(){

@@ -2,13 +2,15 @@ package de.kittybot.kittybot.modules;
 
 import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.module.Module;
-import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.utils.Config;
 import lavalink.client.io.jda.JdaLavalink;
 import lavalink.client.io.jda.JdaLink;
+import net.dv8tion.jda.api.events.GenericEvent;
+import net.dv8tion.jda.api.hooks.VoiceDispatchInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -16,10 +18,11 @@ public class LavalinkModule extends Module{
 
 	private static final Logger LOG = LoggerFactory.getLogger(KittyBot.class);
 
-	private final JdaLavalink lavalink;
+	private JdaLavalink lavalink;
 
-	public LavalinkModule(Modules modules){
-		this.lavalink = new JdaLavalink(String.valueOf(Config.BOT_ID), 1, guildId -> modules.getJDA());
+	@Override
+	public void onEnable(){
+		this.lavalink = new JdaLavalink(String.valueOf(Config.BOT_ID), 1, guildId -> modules.getJDA(guildId));
 		try{
 			for(var node : Config.LAVALINK_NODES){
 				lavalink.addNode(new URI("ws://" + node.getHost() + ":" + node.getPort()), node.getPassword());
@@ -34,8 +37,22 @@ public class LavalinkModule extends Module{
 		return this.lavalink.getLink(guildId);
 	}
 
+	protected JdaLink getExistingLink(long guildId){
+		return this.lavalink.getExistingLink(guildId);
+	}
+
+
 	public JdaLavalink getLavalink(){
 		return this.lavalink;
+	}
+
+	@Override
+	public void onGenericEvent(@Nonnull GenericEvent event){
+		this.lavalink.onEvent(event);
+	}
+
+	public VoiceDispatchInterceptor getVoiceInterceptor(){
+		return this.lavalink.getVoiceInterceptor();
 	}
 
 }

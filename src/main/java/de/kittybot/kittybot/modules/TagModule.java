@@ -2,7 +2,6 @@ package de.kittybot.kittybot.modules;
 
 import de.kittybot.kittybot.exceptions.CommandException;
 import de.kittybot.kittybot.module.Module;
-import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.objects.Tag;
 
 import java.time.LocalDateTime;
@@ -12,12 +11,6 @@ import java.util.stream.Collectors;
 import static de.kittybot.kittybot.jooq.Tables.GUILD_TAGS;
 
 public class TagModule extends Module{
-
-	private final Modules modules;
-
-	public TagModule(Modules modules){
-		this.modules = modules;
-	}
 
 	public void create(String name, String content, long guildId, long userId) throws CommandException{
 		var dbManager = this.modules.get(DatabaseModule.class);

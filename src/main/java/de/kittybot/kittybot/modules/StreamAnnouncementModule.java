@@ -2,8 +2,6 @@ package de.kittybot.kittybot.modules;
 
 import de.kittybot.kittybot.exceptions.CommandException;
 import de.kittybot.kittybot.module.Module;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.objects.AnnouncementType;
 import de.kittybot.kittybot.objects.StreamAnnouncement;
 import de.kittybot.kittybot.streams.Stream;
@@ -18,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.SQLException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -33,34 +30,34 @@ public class StreamAnnouncementModule extends Module{
 
 	private static final Logger LOG = LoggerFactory.getLogger(StreamAnnouncementModule.class);
 
-	private final Modules modules;
-	private final List<StreamAnnouncement> streamAnnouncements;
-	private final Set<String> activeStreams;
+	private List<StreamAnnouncement> streamAnnouncements;
+	private Set<String> activeStreams;
 	private TwitchWrapper twitchWrapper;
 	private YouTubeWrapper youTubeWrapper;
 
 
-	public StreamAnnouncementModule(Modules modules){
-		this.modules = modules;
+	@Override
+	public void onEnable(){
 		if(Config.TWITCH_CLIENT_ID.isBlank() || Config.TWITCH_CLIENT_SECRET.isBlank()){
 			LOG.error("Twitch disabled because twitch_client_id and twitch_client_secret are missing");
 		}
 		else{
 			this.twitchWrapper = new TwitchWrapper(Config.TWITCH_CLIENT_ID, Config.TWITCH_CLIENT_SECRET, this.modules.getHttpClient());
 		}
-		this.streamAnnouncements = loadStreamAnnouncements();
+		this.streamAnnouncements = new ArrayList<>();
 		this.activeStreams = new HashSet<>();
+	}
+
+	@Override
+	public void onReady(@NotNull ReadyEvent event){
+		this.streamAnnouncements.addAll(loadStreamAnnouncements());
+		this.modules.getScheduler().scheduleAtFixedRate(this::checkStreams, 0, 1, TimeUnit.MINUTES);
 	}
 
 	private List<StreamAnnouncement> loadStreamAnnouncements(){
 		try(var ctx = this.modules.get(DatabaseModule.class).getCtx().selectFrom(STREAM_USERS)){
 			return ctx.fetch().stream().map(StreamAnnouncement::new).collect(Collectors.toList());
 		}
-	}
-
-	@Override
-	public void onReady(@NotNull ReadyEvent event){
-		this.modules.getScheduler().scheduleAtFixedRate(this::checkStreams, 0, 1, TimeUnit.MINUTES);
 	}
 
 	private void checkStreams(){
@@ -94,7 +91,7 @@ public class StreamAnnouncementModule extends Module{
 
 	private void sendAnnouncementMessage(StreamAnnouncement streamAnnouncement, Stream stream, AnnouncementType announcementType){
 		var guildId = streamAnnouncement.getGuildId();
-		var guild = this.modules.getJDA().getGuildById(guildId);
+		var guild = this.modules.getGuildById(guildId);
 		if(guild == null){
 			return;
 		}

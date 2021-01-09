@@ -1,8 +1,6 @@
 package de.kittybot.kittybot.modules;
 
 import de.kittybot.kittybot.module.Module;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import de.kittybot.kittybot.module.Modules;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberUpdateEvent;
@@ -14,15 +12,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static de.kittybot.kittybot.jooq.Tables.*;
+import static de.kittybot.kittybot.jooq.Tables.MEMBER_ROLES;
 
 public class RoleSaverModule extends Module{
-
-	private final Modules modules;
-
-	public RoleSaverModule(Modules modules){
-		this.modules = modules;
-	}
 
 	@Override
 	public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event){

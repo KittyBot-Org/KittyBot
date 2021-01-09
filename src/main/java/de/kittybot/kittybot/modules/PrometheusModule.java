@@ -1,7 +1,6 @@
 package de.kittybot.kittybot.modules;
 
 import de.kittybot.kittybot.module.Module;
-import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.Utils;
 import de.kittybot.kittybot.utils.exporters.DiscordLatencyExporter;
@@ -19,7 +18,6 @@ import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.http.HttpRequestEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,10 +31,9 @@ public class PrometheusModule extends Module{
 	public static final Duration UPDATE_PERIOD = Duration.ofSeconds(5);
 	// ty Natan 👀 https://github.com/Mantaro/MantaroBot/blob/master/src/main/java/net/kodehawa/mantarobot/utils/Prometheus.java
 	private static final Logger LOG = LoggerFactory.getLogger(PrometheusModule.class);
-	private final Modules modules;
 
-	public PrometheusModule(Modules modules){
-		this.modules = modules;
+	@Override
+	public void onEnable(){
 		if(Config.PROMETHEUS_PORT == -1){
 			return;
 		}
@@ -45,7 +42,6 @@ public class PrometheusModule extends Module{
 		new BufferPoolsExports().register();
 		new DiscordLatencyExporter().register();
 		new MemoryUsageExporter(modules).register();
-		new LavalinkCollector(modules.get(LavalinkModule.class).getLavalink()).register();
 		try{
 			new HTTPServer(Config.PROMETHEUS_PORT);
 		}
@@ -57,8 +53,9 @@ public class PrometheusModule extends Module{
 	@Override
 	public void onReady(@Nonnull ReadyEvent event){
 		Metrics.GUILD_COUNT.set(event.getJDA().getGuildCache().size());
-		Metrics.USER_COUNT.set(Utils.getUserCount(event.getJDA()));
+		Metrics.USER_COUNT.set(Utils.getUserCount(this.modules.getShardManager()));
 		DiscordLatencyExporter.start(this.modules);
+		new LavalinkCollector(modules.get(LavalinkModule.class).getLavalink()).register();
 	}
 
 	@Override
@@ -79,14 +76,14 @@ public class PrometheusModule extends Module{
 	@Override
 	public void onGuildJoin(@Nonnull GuildJoinEvent event){
 		Metrics.GUILD_COUNT.set(event.getJDA().getGuildCache().size());
-		Metrics.USER_COUNT.set(Utils.getUserCount(event.getJDA()));
+		Metrics.USER_COUNT.set(Utils.getUserCount(this.modules.getShardManager()));
 		Metrics.GUILD_ACTIONS.labels("join").inc();
 	}
 
 	@Override
 	public void onGuildLeave(@Nonnull GuildLeaveEvent event){
 		Metrics.GUILD_COUNT.set(event.getJDA().getGuildCache().size());
-		Metrics.USER_COUNT.set(Utils.getUserCount(event.getJDA()));
+		Metrics.USER_COUNT.set(Utils.getUserCount(this.modules.getShardManager()));
 		Metrics.GUILD_ACTIONS.labels("leave").inc();
 	}
 

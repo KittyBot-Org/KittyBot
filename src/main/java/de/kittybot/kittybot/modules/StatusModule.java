@@ -1,8 +1,6 @@
 package de.kittybot.kittybot.modules;
 
 import de.kittybot.kittybot.module.Module;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.utils.FileUtils;
 import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.JDA;
@@ -17,11 +15,10 @@ import java.util.concurrent.TimeUnit;
 
 public class StatusModule extends Module{
 
-	private final List<String> status_messages;
-	private final Modules modules;
+	private List<String> status_messages;
 
-	public StatusModule(Modules modules){
-		this.modules = modules;
+	@Override
+	public void onEnable(){
 		this.status_messages = FileUtils.loadMessageFile("status");
 	}
 
@@ -31,7 +28,8 @@ public class StatusModule extends Module{
 	}
 
 	public void newRandomStatus(){
-		this.modules.getJDA().getPresence().setPresence(OnlineStatus.ONLINE, generateRandomMessage(this.modules.getJDA()));
+		var jda = this.modules.getJDA(0);
+		jda.getPresence().setPresence(OnlineStatus.ONLINE, generateRandomMessage(jda));
 	}
 
 	private Activity generateRandomMessage(JDA jda){
@@ -44,7 +42,7 @@ public class StatusModule extends Module{
 		var type = activityMessage[0].toUpperCase();
 		var message = activityMessage[1];
 
-		message = message.replace("${total_users}", String.valueOf(Utils.getUserCount(jda)));
+		message = message.replace("${total_users}", String.valueOf(Utils.getUserCount(this.modules.getShardManager())));
 		message = message.replace("${total_guilds}", String.valueOf(jda.getGuildCache().size()));
 		return Activity.of(Activity.ActivityType.valueOf(type), message);
 	}

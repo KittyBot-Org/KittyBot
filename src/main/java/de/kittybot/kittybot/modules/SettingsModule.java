@@ -7,9 +7,6 @@ import de.kittybot.kittybot.jooq.tables.records.BotDisabledChannelsRecord;
 import de.kittybot.kittybot.jooq.tables.records.BotIgnoredMembersRecord;
 import de.kittybot.kittybot.jooq.tables.records.SnipeDisabledChannelsRecord;
 import de.kittybot.kittybot.module.Module;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import de.kittybot.kittybot.module.Modules;
-import de.kittybot.kittybot.objects.InviteRole;
 import de.kittybot.kittybot.objects.SelfAssignableRole;
 import de.kittybot.kittybot.objects.SelfAssignableRoleGroup;
 import de.kittybot.kittybot.objects.Settings;
@@ -33,17 +30,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static de.kittybot.kittybot.jooq.Tables.*;
-import static org.jooq.impl.DSL.*;
 
 public class SettingsModule extends Module{
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommandModule.class);
 
-	private final Modules modules;
-	private final LoadingCache<Long, Settings> guildSettings;
+	private LoadingCache<Long, Settings> guildSettings;
 
-	public SettingsModule(Modules modules){
-		this.modules = modules;
+	@Override
+	public void onEnable(){
 		this.guildSettings = Caffeine.newBuilder()
 				.expireAfterAccess(30, TimeUnit.MINUTES)
 				.recordStats()
@@ -596,7 +591,7 @@ public class SettingsModule extends Module{
 
 	private void removeIgnoredUsers(long guildId, Set<Long> users){
 		this.modules.get(DatabaseModule.class).getCtx().deleteFrom(BOT_IGNORED_MEMBERS).where(
-			BOT_IGNORED_MEMBERS.GUILD_ID.eq(guildId).and(BOT_IGNORED_MEMBERS.USER_ID.in(users))
+				BOT_IGNORED_MEMBERS.GUILD_ID.eq(guildId).and(BOT_IGNORED_MEMBERS.USER_ID.in(users))
 		).execute();
 	}
 

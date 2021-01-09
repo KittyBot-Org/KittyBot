@@ -16,8 +16,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Role;
 
-import java.awt.*;
-import java.util.List;
+import java.awt.Color;
 import java.util.*;
 import java.util.stream.Collectors;
 

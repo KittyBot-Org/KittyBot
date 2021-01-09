@@ -1,8 +1,6 @@
 package de.kittybot.kittybot.modules;
 
 import de.kittybot.kittybot.module.Module;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.utils.exporters.Metrics;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteDeleteEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
@@ -12,12 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 
 public class InviteRolesModule extends Module{
-
-	private final Modules modules;
-
-	public InviteRolesModule(Modules modules){
-		this.modules = modules;
-	}
 
 	@Override
 	public void onGuildInviteDelete(@Nonnull GuildInviteDeleteEvent event){

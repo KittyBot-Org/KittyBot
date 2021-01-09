@@ -1,7 +1,6 @@
 package de.kittybot.kittybot.modules;
 
 import de.kittybot.kittybot.module.Module;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import de.kittybot.kittybot.objects.InviteData;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -23,10 +22,11 @@ public class InviteModule extends Module{
 
 	private static final Logger LOG = LoggerFactory.getLogger(InviteModule.class);
 
-	private final Map<Long, Map<String, InviteData>> invites;
-	private final Map<Long, Map<Long, InviteData>> usedInvites;
+	private Map<Long, Map<String, InviteData>> invites;
+	private Map<Long, Map<Long, InviteData>> usedInvites;
 
-	public InviteModule(){
+	@Override
+	public void onEnable(){
 		this.invites = new HashMap<>();
 		this.usedInvites = new HashMap<>();
 	}

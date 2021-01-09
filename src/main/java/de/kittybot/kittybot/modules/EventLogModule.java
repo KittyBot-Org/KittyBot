@@ -6,7 +6,6 @@ import club.minnced.discord.webhook.send.WebhookEmbed;
 import club.minnced.discord.webhook.send.WebhookEmbedBuilder;
 import club.minnced.discord.webhook.send.WebhookMessageBuilder;
 import de.kittybot.kittybot.module.Module;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.Config;
 import net.dv8tion.jda.api.JDA;
@@ -19,9 +18,10 @@ import javax.annotation.Nonnull;
 
 public class EventLogModule extends Module{
 
-	private final JDAWebhookClient webhookClient;
+	private JDAWebhookClient webhookClient;
 
-	public EventLogModule(){
+	@Override
+	public void onEnable(){
 		if(Config.LOG_WEBHOOK_URL.isBlank()){
 			this.webhookClient = null;
 			return;

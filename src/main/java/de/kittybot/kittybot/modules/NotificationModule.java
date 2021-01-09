@@ -1,10 +1,11 @@
 package de.kittybot.kittybot.modules;
 
+import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.jooq.tables.records.NotificationsRecord;
 import de.kittybot.kittybot.module.Module;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import de.kittybot.kittybot.module.Modules;
+import de.kittybot.kittybot.objects.Emoji;
 import de.kittybot.kittybot.objects.Notification;
+import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.ReadyEvent;
@@ -12,11 +13,10 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
+import java.awt.Color;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -26,11 +26,10 @@ public class NotificationModule extends Module{
 
 	private static final Logger LOG = LoggerFactory.getLogger(NotificationModule.class);
 
-	private final Modules modules;
-	private final Map<Long, Notification> notifications;
+	private Map<Long, Notification> notifications;
 
-	public NotificationModule(Modules modules){
-		this.modules = modules;
+	@Override
+	public void onEnable(){
 		this.notifications = new HashMap<>();
 		this.modules.getScheduler().scheduleAtFixedRate(this::update, 0, 30, TimeUnit.MINUTES);
 	}
@@ -68,7 +67,7 @@ public class NotificationModule extends Module{
 			}
 			LOG.info("Scheduled in " + scheduleIn);
 			this.modules.getScheduler().schedule(() -> {
-				var guild = this.modules.getJDA().getGuildById(notification.getGuildId());
+				var guild = this.modules.getGuildById(notification.getGuildId());
 				if(guild == null){
 					return;
 				}
@@ -79,19 +78,11 @@ public class NotificationModule extends Module{
 				guild.retrieveMemberById(notification.getUserId()).flatMap(member ->
 						channel.sendMessage(member.getAsMention()).embed(
 								new EmbedBuilder()
-										.setAuthor(
-												"Notification",
-												MessageUtils.getMessageLink(notification.getGuildId(),
-														notification.getChannelId(),
-														notification.getMessageId()
-												), this.modules.getJDA().getSelfUser().getEffectiveAvatarUrl()
-										)
-										.setColor(Color.ORANGE)
-										.setDescription(notification.getContent())
-										.setFooter(
-												member.getEffectiveName(),
-												member.getUser().getEffectiveAvatarUrl()
-										)
+										//.setAuthor("Notification", Category.NOTIFICATION.getUrl(), Category.NOTIFICATION.getEmoteUrl())
+										.setColor(Colors.NOTIFICATION)
+										.addField("Text", notification.getContent(), false)
+										.addField("Message", MessageUtils.maskLink("click here", MessageUtils.getMessageLink(notification.getGuildId(), notification.getChannelId(), notification.getMessageId())), false)
+										.setFooter(member.getEffectiveName(), member.getUser().getEffectiveAvatarUrl())
 										.build()
 						)
 				).queue();

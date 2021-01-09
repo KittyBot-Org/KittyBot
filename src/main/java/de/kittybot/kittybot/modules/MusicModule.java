@@ -2,8 +2,6 @@ package de.kittybot.kittybot.modules;
 
 import de.kittybot.kittybot.command.CommandContext;
 import de.kittybot.kittybot.module.Module;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.objects.MusicPlayer;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
@@ -17,11 +15,10 @@ import java.util.Map;
 
 public class MusicModule extends Module{
 
-	private final Modules modules;
-	private final Map<Long, MusicPlayer> musicPlayers;
+	private Map<Long, MusicPlayer> musicPlayers;
 
-	public MusicModule(Modules modules){
-		this.modules = modules;
+	@Override
+	public void onEnable(){
 		this.musicPlayers = new HashMap<>();
 	}
 
@@ -61,7 +58,7 @@ public class MusicModule extends Module{
 	}
 
 	public void destroy(long guildId){
-		var link = this.modules.get(LavalinkModule.class).getLavalink().getExistingLink(guildId);
+		var link = this.modules.get(LavalinkModule.class).getExistingLink(guildId);
 		if(link != null){
 			link.destroy();
 		}

@@ -15,16 +15,15 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 public class DatabaseModule extends Module{
 
 	private static final Logger LOG = LoggerFactory.getLogger(DatabaseModule.class);
 
-	private final Configuration configuration;
+	private Configuration configuration;
 
-	public DatabaseModule(){
+	@Override
+	public void onEnable(){
 		this.configuration = initConfiguration();
 		initTable("guilds",
 				"member_roles",

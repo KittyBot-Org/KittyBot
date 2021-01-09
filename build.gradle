@@ -74,10 +74,10 @@ jooq {
             generationTool {
                 logging = org.jooq.meta.jaxb.Logging.WARN
                 jdbc {
+                    driver = 'org.postgresql.Driver'
                     url = "jdbc:postgresql://${KITTYBOT_DB_HOST}:${KITTYBOT_DB_PORT}/${KITTYBOT_DB_DATABASE}"
                     user = KITTYBOT_DB_USER
                     password = KITTYBOT_DB_PASSWORD
-                    driver = 'org.postgresql.Driver'
                 }
                 generator {
                     name = 'org.jooq.codegen.DefaultGenerator'
@@ -88,15 +88,12 @@ jooq {
                         excludes = ''
                     }
                     generate {
-                        deprecated = false
                         records = true
-                        immutablePojos = true
                         fluentSetters = true
                     }
                     target {
                         packageName = 'de.kittybot.kittybot.jooq'
-                        directory = "${projectDir}/src/main/java"
-                        clean = true
+                        directory = "src/main/jooq"
                     }
                     strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
                 }

@@ -1,7 +1,6 @@
 package de.kittybot.kittybot.web;
 
 import de.kittybot.kittybot.module.Module;
-import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.modules.DashboardSessionModule;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.Utils;
@@ -29,10 +28,30 @@ import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class WebService extends Module{
 
-	private final Modules modules;
+	public static void accepted(Context ctx){
+		accepted(ctx, DataObject.empty());
+	}
 
-	public WebService(Modules modules){
-		this.modules = modules;
+	public static void accepted(Context ctx, DataObject data){
+		result(ctx, 202, data);
+	}
+
+	public static void result(Context ctx, int code, DataObject data){
+		ctx.header("Content-Type", "application/json");
+		ctx.status(code);
+		ctx.result(data.toString());
+	}
+
+	public static void ok(Context ctx, DataObject data){
+		result(ctx, 200, data);
+	}
+
+	public static void ok(Context ctx){
+		result(ctx, 200, DataObject.empty());
+	}
+
+	@Override
+	public void onEnable(){
 		if(Config.BACKEND_PORT == -1){
 			return;
 		}
@@ -94,26 +113,9 @@ public class WebService extends Module{
 		}).start(Config.BACKEND_PORT);
 	}
 
-	public static void accepted(Context ctx){
-		accepted(ctx, DataObject.empty());
-	}
+	@Override
+	protected void onDisable(){
 
-	public static void accepted(Context ctx, DataObject data){
-		result(ctx, 202, data);
-	}
-
-	public static void result(Context ctx, int code, DataObject data){
-		ctx.header("Content-Type", "application/json");
-		ctx.status(code);
-		ctx.result(data.toString());
-	}
-
-	public static void ok(Context ctx, DataObject data){
-		result(ctx, 200, data);
-	}
-
-	public static void ok(Context ctx){
-		result(ctx, 200, DataObject.empty());
 	}
 
 	private void checkDiscordLogin(Context ctx){
@@ -176,7 +178,7 @@ public class WebService extends Module{
 		if(guildId.isBlank() || !Utils.isSnowflake(guildId)){
 			throw new BadRequestResponse("Please provide a valid guild id");
 		}
-		var guild = this.modules.getJDA().getGuildById(guildId);
+		var guild = this.modules.getGuildById(guildId);
 		if(guild == null){
 			throw new NotFoundResponse("Guild not found");
 		}

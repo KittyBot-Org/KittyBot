@@ -18,6 +18,7 @@ public class HastebinCommand extends Command{
 
 	public HastebinCommand(){
 		super("hastebin", "Creates a hastebin from the newly provided or last file in this channel", Category.UTILITIES);
+		addAliases("haste", "bin");
 		setUsage("<file>");
 	}
 

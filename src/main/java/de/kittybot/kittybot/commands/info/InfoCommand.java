@@ -20,7 +20,7 @@ public class InfoCommand extends Command{
 
 	@Override
 	public void run(Args args, CommandContext ctx){
-		var jda = ctx.getJDA();
+		var shardManager = ctx.getShardManager();
 		var runtime = Runtime.getRuntime();
 		ctx.sendSuccess(new EmbedBuilder()
 				.setAuthor("KittyBot Information", Config.ORIGIN_URL, Category.INFORMATION.getEmoteUrl())
@@ -29,8 +29,12 @@ public class InfoCommand extends Command{
 				.addField("JDA Version:", JDAInfo.VERSION, true)
 				.addBlankField(true)
 
-				.addField("Total Guilds:", String.valueOf(jda.getGuildCache().size()), true)
-				.addField("Total Users:", String.valueOf(Utils.getUserCount(jda)), true)
+				.addField("Total Shards:", String.valueOf(shardManager.getShardsTotal()), true)
+				.addField("Current Shard:", String.valueOf(ctx.getJDA().getShardInfo().getShardId()), true)
+				.addBlankField(true)
+
+				.addField("Total Guilds:", String.valueOf(shardManager.getGuildCache().size()), true)
+				.addField("Total Users:", String.valueOf(Utils.getUserCount(shardManager)), true)
 				.addBlankField(true)
 
 				.addField("Memory Usage:", ((runtime.totalMemory() - runtime.freeMemory()) >> 20) + "MB / " + (runtime.maxMemory() >> 20) + "MB", true)

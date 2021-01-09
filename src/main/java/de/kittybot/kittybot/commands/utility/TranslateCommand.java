@@ -43,7 +43,7 @@ public class TranslateCommand extends Command{
 		}
 		var translatedText = ctx.get(RequestModule.class).translateText(text, lang.get().getShortname());
 
-		ctx.sendSuccess(new EmbedBuilder().setDescription("Translated text:\n```\n" + translatedText + "\n```"));
+		ctx.sendSuccess(new EmbedBuilder().setDescription("Translated text to `" + lang.get().getName() + "`:\n```\n" + translatedText + "\n```"));
 	}
 
 }

@@ -4,11 +4,11 @@ import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.CommandContext;
-import de.kittybot.kittybot.modules.MusicModule;
 import de.kittybot.kittybot.modules.NotificationModule;
 import de.kittybot.kittybot.utils.TimeUtils;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 public class NotificationCreateCommand extends Command{
 
@@ -46,7 +46,7 @@ public class NotificationCreateCommand extends Command{
 			ctx.sendError("There was an unexpected error while creating your notification");
 			return;
 		}
-		ctx.sendSuccess("Created Notification with id: `" + notif.getId() + "`");
+		ctx.sendSuccess("Created Notification in `" + TimeUtils.formatDuration(notif.getCreatedAt().until(notif.getNotificationTime(), ChronoUnit.MILLIS)) + "` with id: `" + notif.getId() + "`");
 	}
 
 }

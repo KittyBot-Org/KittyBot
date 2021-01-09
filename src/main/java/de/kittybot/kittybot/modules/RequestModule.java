@@ -1,30 +1,31 @@
 package de.kittybot.kittybot.modules;
 
 import de.kittybot.kittybot.module.Module;
-import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.objects.API;
+import de.kittybot.kittybot.utils.Config;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 public class RequestModule extends Module{
 
 	private static final Logger LOG = LoggerFactory.getLogger(RequestModule.class);
-	private final Request.Builder requestBuilder = new Request.Builder().header("user-agent", "de.kittybot");
-	private final Modules modules;
-	private final OkHttpClient httpClient;
 
-	public RequestModule(Modules modules){
-		this.modules = modules;
-		this.httpClient = modules.getHttpClient();
+	private final Request.Builder requestBuilder = new Request.Builder().header("user-agent", "de.kittybot");
+	private OkHttpClient httpClient;
+
+	@Override
+	public void onEnable(){
+		this.httpClient = this.modules.getHttpClient();
 	}
 
 	public String translateText(String text, String language){
@@ -53,10 +54,75 @@ public class RequestModule extends Module{
 			}
 			return body.string();
 		}
-		catch(final Exception ex){
-			LOG.error("There was an error while sending a request to {}", requestUrl, ex);
+		catch(Exception e){
+			LOG.error("There was an error while sending a request to {}", requestUrl, e);
 		}
 		return "";
+	}
+
+	public void translateText(String text, String language, Function<String, Void> callback){
+		requestBuilder.url(String.format(API.GOOGLE_TRANSLATE_API.getUrl(), "auto", language, URLEncoder.encode(text, StandardCharsets.UTF_8)));
+		executeAsync(requestBuilder.build(), (call, response) -> {
+			var body = response.body();
+			String newText = null;
+			if(body != null){
+				try{
+					newText = DataArray.fromJson(body.string()).getArray(0).getArray(0).getString(0);
+				}
+				catch(IOException e){
+					LOG.error("Error while reading body", e);
+				}
+			}
+			callback.apply(newText);
+		}, (call, response) -> {
+			callback.apply(null);
+		});
+	}
+
+	public void executeAsync(Request request, BiConsumer<Call, Response> success, BiConsumer<Call, Response> error){
+		executeAsync(request, null, success, error);
+	}
+
+	public void executeAsync(Request request, API api, BiConsumer<Call, Response> success, BiConsumer<Call, Response> error){
+		this.httpClient.newCall(request).enqueue(new Callback(){
+
+			@Override
+			public void onFailure(@NotNull Call call, @NotNull IOException e){
+				LOG.error("There was an error while sending a request to {}", call.request().url(), e);
+				if(error != null){
+					error.accept(call, null);
+
+				}
+			}
+
+			@Override
+			public void onResponse(@NotNull Call call, @NotNull Response response){
+				var requestUrl = call.request().url();
+				var code = response.code();
+				if(code != 200){
+					var stringBody = "null";
+					try(var body = response.body()){
+						if(body != null){
+							stringBody = body.string();
+						}
+					}
+					catch(IOException ignored){
+					}
+					LOG.warn("Failed to send a request to {} | code: {} | response: {}", requestUrl, code, stringBody);
+					if(error != null){
+						error.accept(call, response);
+					}
+					return;
+				}
+				if(api != null){
+					LOG.info("Successfully executed a stats update request to {} API", api.getName());
+				}
+				if(success != null){
+					success.accept(call, response);
+				}
+			}
+
+		});
 	}
 
 	public String getNeko(boolean nsfw, String type, String imageType){
@@ -77,17 +143,20 @@ public class RequestModule extends Module{
 	}
 
 	public void updateStats(API api, int guildCount, String token){
-		var url = String.format(api.getUrl(), this.modules.getJDA().getSelfUser().getId());
 		var requestBody = RequestBody.create(
 				MediaType.parse("application/json; charset=utf-8"),
 				DataObject.empty()
 						.put(api.getStatsParameter(), guildCount)
 						.toString()
 		);
-		requestBuilder.url(url);
+		requestBuilder.url(String.format(api.getUrl(), Config.BOT_ID));
 		requestBuilder.header("Authorization", token);
 		requestBuilder.post(requestBody);
-		executeRequest(requestBuilder.build(), api);
+		executeAsync(requestBuilder.build(), api);
+	}
+
+	public void executeAsync(Request request, API api){
+		executeAsync(request, api, null, null);
 	}
 
 }

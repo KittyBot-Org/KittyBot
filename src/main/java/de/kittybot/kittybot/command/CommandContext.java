@@ -2,7 +2,7 @@ package de.kittybot.kittybot.command;
 
 import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.module.Modules;
-import de.kittybot.kittybot.modules.*;
+import de.kittybot.kittybot.modules.CommandResponseModule;
 import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -11,9 +11,10 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.api.sharding.ShardManager;
 import org.apache.commons.collections4.Bag;
 
-import java.awt.*;
+import java.awt.Color;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -55,6 +56,10 @@ public class CommandContext{
 
 	public JDA getJDA(){
 		return this.event.getJDA();
+	}
+
+	public ShardManager getShardManager(){
+		return this.modules.getShardManager();
 	}
 
 	public GuildMessageReceivedEvent getEvent(){

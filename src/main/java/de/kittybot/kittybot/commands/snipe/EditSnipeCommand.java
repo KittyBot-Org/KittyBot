@@ -8,7 +8,7 @@ import de.kittybot.kittybot.modules.MessageModule;
 import de.kittybot.kittybot.modules.SettingsModule;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class EditSnipeCommand extends Command{
 

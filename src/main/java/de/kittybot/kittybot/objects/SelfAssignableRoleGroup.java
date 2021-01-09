@@ -1,7 +1,6 @@
 package de.kittybot.kittybot.objects;
 
 import de.kittybot.kittybot.jooq.tables.records.SelfAssignableRoleGroupsRecord;
-import org.jooq.Record;
 
 public class SelfAssignableRoleGroup{
 

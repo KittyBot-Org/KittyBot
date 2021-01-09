@@ -11,9 +11,10 @@ import java.util.concurrent.TimeUnit;
 
 public class ReactiveMessageModule extends Module{
 
-	private final Cache<Long, ReactiveMessage> reactiveMessages;
+	private Cache<Long, ReactiveMessage> reactiveMessages;
 
-	public ReactiveMessageModule(){
+	@Override
+	public void onEnable(){
 		this.reactiveMessages = Caffeine.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).recordStats().build();
 	}
 
