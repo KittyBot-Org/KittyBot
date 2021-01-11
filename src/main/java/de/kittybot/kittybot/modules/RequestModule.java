@@ -11,9 +11,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class RequestModule extends Module{
@@ -60,7 +62,7 @@ public class RequestModule extends Module{
 		return "";
 	}
 
-	public void translateText(String text, String language, Function<String, Void> callback){
+	public void translateText(String text, String language, Consumer<String> callback){
 		requestBuilder.url(String.format(API.GOOGLE_TRANSLATE_API.getUrl(), "auto", language, URLEncoder.encode(text, StandardCharsets.UTF_8)));
 		executeAsync(requestBuilder.build(), (call, response) -> {
 			var body = response.body();
@@ -73,9 +75,9 @@ public class RequestModule extends Module{
 					LOG.error("Error while reading body", e);
 				}
 			}
-			callback.apply(newText);
+			callback.accept(newText);
 		}, (call, response) -> {
-			callback.apply(null);
+			callback.accept(null);
 		});
 	}
 

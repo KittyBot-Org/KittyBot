@@ -8,7 +8,12 @@ import de.kittybot.kittybot.modules.CommandModule;
 import de.kittybot.kittybot.modules.RequestModule;
 import de.kittybot.kittybot.objects.Language;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.utils.MarkdownSanitizer;
+import net.dv8tion.jda.api.utils.MiscUtil;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -16,7 +21,7 @@ public class TranslateCommand extends Command{
 
 	public TranslateCommand(){
 		super("translate", "Translates text to a given language", Category.UTILITIES);
-		addAliases("tran", "tr", "trans");
+		addAliases("tran", "tr");
 		setUsage("<language> <text>");
 	}
 
@@ -41,9 +46,13 @@ public class TranslateCommand extends Command{
 			ctx.sendError("Please provide text to translate");
 			return;
 		}
-		var translatedText = ctx.get(RequestModule.class).translateText(text, lang.get().getShortname());
-
-		ctx.sendSuccess(new EmbedBuilder().setDescription("Translated text to `" + lang.get().getName() + "`:\n```\n" + translatedText + "\n```"));
+		ctx.get(RequestModule.class).translateText(text, lang.get().getShortname(), translatedText -> {
+			if(translatedText == null){
+				ctx.sendError("Error while trying to translate text");
+				return;
+			}
+			ctx.sendSuccess(new EmbedBuilder().setDescription("Translated text to `" + lang.get().getName() + "`:\n```\n" + MarkdownSanitizer.escape(translatedText) + "\n```"));
+		});
 	}
 
 }

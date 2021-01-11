@@ -78,9 +78,9 @@ public class NotificationModule extends Module{
 				guild.retrieveMemberById(notification.getUserId()).flatMap(member ->
 						channel.sendMessage(member.getAsMention()).embed(
 								new EmbedBuilder()
-										//.setAuthor("Notification", Category.NOTIFICATION.getUrl(), Category.NOTIFICATION.getEmoteUrl())
+										.setAuthor("Notification", Category.NOTIFICATION.getUrl(), Category.NOTIFICATION.getEmoteUrl())
 										.setColor(Colors.NOTIFICATION)
-										.addField("Text", notification.getContent(), false)
+										.setDescription(notification.getContent())
 										.addField("Message", MessageUtils.maskLink("click here", MessageUtils.getMessageLink(notification.getGuildId(), notification.getChannelId(), notification.getMessageId())), false)
 										.setFooter(member.getEffectiveName(), member.getUser().getEffectiveAvatarUrl())
 										.build()

@@ -10,6 +10,7 @@ import de.kittybot.kittybot.command.CommandContext;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.modules.CommandResponseModule;
 import de.kittybot.kittybot.modules.MusicModule;
+import de.kittybot.kittybot.modules.PaginatorModule;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.MusicUtils;
@@ -21,6 +22,7 @@ import lavalink.client.player.event.PlayerEventListenerAdapter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.requests.RestAction;
 
 import java.awt.Color;
@@ -112,6 +114,19 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		if(player.getPlayingTrack() == null){
 			player.playTrack(this.queue.poll());
 		}
+
+		var channel = getTextChannel();
+		if(channel == null){
+			return;
+		}
+		this.modules.get(PaginatorModule.class).create(
+				channel,
+				1,
+				(page, embedBuilder) -> {
+					return
+				}
+		);
+
 		sendMessageToChannel(new EmbedBuilder()
 				.setColor(Colors.KITTYBOT_BLUE)
 				.setDescription(MusicUtils.formatTracks("Queued " + tracks.size() + " " + MessageUtils.pluralize("track", tracks) + ":\n", tracks))
@@ -134,6 +149,14 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		return channel.sendMessage(
 				embed.setTimestamp(Instant.now()).build()
 		);
+	}
+
+	public TextChannel getTextChannel(){
+		var guild = this.modules.getJDA(this.guildId).getGuildById(this.guildId);
+		if(guild == null){
+			return null;
+		}
+		return guild.getTextChannelById(this.channelId);
 	}
 
 	@Override

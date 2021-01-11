@@ -46,13 +46,13 @@ public enum Emoji{
 	Emoji(long emoteId, boolean isAnimated){
 		this.emoteId = emoteId;
 		this.isAnimated = isAnimated;
-		this.unicode = "";
+		this.unicode = null;
 	}
 
 	Emoji(long emoteId){
 		this.emoteId = emoteId;
 		this.isAnimated = false;
-		this.unicode = "";
+		this.unicode = null;
 	}
 
 	Emoji(String unicode){
@@ -65,12 +65,8 @@ public enum Emoji{
 		return this.emoteId;
 	}
 
-	public String getUnicode(){
-		return this.unicode;
-	}
-
 	public String getAsMention(){
-		if(this.unicode.equals("")){
+		if(this.unicode == null){
 			if(this.isAnimated){
 				return "<a:emote:" + this.emoteId + ">";
 			}

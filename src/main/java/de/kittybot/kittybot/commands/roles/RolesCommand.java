@@ -56,7 +56,7 @@ public class RolesCommand extends Command{
 						message.addReaction(":i:" + role.getEmoteId()).queue();
 					}
 				}
-				message.addReaction(Emoji.WASTEBASKET.getUnicode()).queue();
+				message.addReaction(Emoji.WASTEBASKET.getAsMention()).queue();
 			});
 		}
 		else if(args.get(0).equalsIgnoreCase("list")){
