@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS guild_invites(
   id       BIGSERIAL PRIMARY KEY NOT NULL,
   guild_id BIGINT NOT NULL REFERENCES guilds(id) ON DELETE CASCADE,
-  code     VARCHAR(8) NOT NULL UNIQUE
+  code     VARCHAR(8) NOT NULL UNIQUE,
+  UNIQUE(guild_id, code)
 );

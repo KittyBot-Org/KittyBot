@@ -3,8 +3,9 @@ package de.kittybot.kittybot.commands.botowner;
 import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.command.context.CommandContext;
 
+@SuppressWarnings("unused")
 public class TestCommand extends Command{
 
 	public TestCommand(){

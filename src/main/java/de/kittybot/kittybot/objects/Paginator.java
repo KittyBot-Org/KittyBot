@@ -13,9 +13,9 @@ public class Paginator{
 	private final long guildId, channelId, messageId;
 	private int currentPage;
 	private final int maxPages;
-	private final BiFunction<Integer, EmbedBuilder, MessageEmbed> embedFunction;
+	private final BiFunction<Integer, EmbedBuilder, EmbedBuilder> embedFunction;
 
-	public Paginator(Message message, int maxPages, BiFunction<Integer, EmbedBuilder, MessageEmbed> embedFunction){
+	public Paginator(Message message, int maxPages, BiFunction<Integer, EmbedBuilder, EmbedBuilder> embedFunction){
 		this.guildId = message.getGuild().getIdLong();
 		this.channelId = message.getChannel().getIdLong();
 		this.messageId = message.getIdLong();
@@ -53,7 +53,7 @@ public class Paginator{
 	}
 
 	public MessageEmbed constructEmbed(){
-		return this.embedFunction.apply(this.currentPage, new EmbedBuilder());
+		return this.embedFunction.apply(this.currentPage, new EmbedBuilder().setFooter("Page " + (this.currentPage + 1) + "/" + this.maxPages)).build();
 	}
 
 }

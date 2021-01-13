@@ -3,13 +3,14 @@ package de.kittybot.kittybot.commands.notification;
 import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.modules.NotificationModule;
 import de.kittybot.kittybot.utils.TimeUtils;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+@SuppressWarnings("unused")
 public class NotificationCreateCommand extends Command{
 
 	public NotificationCreateCommand(Command parent){

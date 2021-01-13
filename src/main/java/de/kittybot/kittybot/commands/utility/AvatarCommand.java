@@ -3,13 +3,14 @@ package de.kittybot.kittybot.commands.utility;
 import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 public class AvatarCommand extends Command{
 
 	private static final String[] SIZES = {"128", "256", "512", "1024"};

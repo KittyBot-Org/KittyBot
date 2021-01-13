@@ -113,7 +113,7 @@ public class BotDisabledChannels extends TableImpl<BotDisabledChannelsRecord> {
 
     @Override
     public List<UniqueKey<BotDisabledChannelsRecord>> getKeys() {
-        return Arrays.<UniqueKey<BotDisabledChannelsRecord>>asList(Keys.BOT_DISABLED_CHANNELS_PKEY);
+        return Arrays.<UniqueKey<BotDisabledChannelsRecord>>asList(Keys.BOT_DISABLED_CHANNELS_PKEY, Keys.BOT_DISABLED_CHANNELS_GUILD_ID_CHANNEL_ID_KEY, Keys.BOT_DISABLED_CHANNELS_CHANNEL_ID_KEY);
     }
 
     @Override

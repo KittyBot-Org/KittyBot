@@ -123,7 +123,7 @@ public class SelfAssignableRoles extends TableImpl<SelfAssignableRolesRecord> {
 
     @Override
     public List<UniqueKey<SelfAssignableRolesRecord>> getKeys() {
-        return Arrays.<UniqueKey<SelfAssignableRolesRecord>>asList(Keys.SELF_ASSIGNABLE_ROLES_PKEY);
+        return Arrays.<UniqueKey<SelfAssignableRolesRecord>>asList(Keys.SELF_ASSIGNABLE_ROLES_PKEY, Keys.SELF_ASSIGNABLE_ROLES_GROUP_ID_ROLE_ID_KEY);
     }
 
     @Override

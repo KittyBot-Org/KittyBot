@@ -113,7 +113,7 @@ public class GuildInviteRoles extends TableImpl<GuildInviteRolesRecord> {
 
     @Override
     public List<UniqueKey<GuildInviteRolesRecord>> getKeys() {
-        return Arrays.<UniqueKey<GuildInviteRolesRecord>>asList(Keys.GUILD_INVITE_ROLES_PKEY);
+        return Arrays.<UniqueKey<GuildInviteRolesRecord>>asList(Keys.GUILD_INVITE_ROLES_PKEY, Keys.GUILD_INVITE_ROLES_GUILD_INVITE_ID_ROLE_ID_KEY);
     }
 
     @Override

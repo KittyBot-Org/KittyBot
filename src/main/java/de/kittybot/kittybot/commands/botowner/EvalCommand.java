@@ -3,7 +3,7 @@ package de.kittybot.kittybot.commands.botowner;
 import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.command.context.CommandContext;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import javax.script.ScriptEngine;
@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class EvalCommand extends Command{
 
 	private final ScriptEngine scriptEngine;

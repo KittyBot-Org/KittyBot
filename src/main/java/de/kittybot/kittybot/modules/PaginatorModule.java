@@ -7,14 +7,11 @@ import de.kittybot.kittybot.objects.Emoji;
 import de.kittybot.kittybot.objects.Paginator;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
 public class PaginatorModule extends Module{
@@ -32,6 +29,9 @@ public class PaginatorModule extends Module{
 
 	@Override
 	public void onGuildMessageReactionAdd(@NotNull GuildMessageReactionAddEvent event){
+		if(event.getUser().isBot()){
+			return;
+		}
 		var paginator = this.paginators.getIfPresent(event.getMessageIdLong());
 		if(paginator == null){
 			return;
@@ -40,22 +40,22 @@ public class PaginatorModule extends Module{
 		var currentPage = paginator.getCurrentPage();
 		var maxPages = paginator.getMaxPages();
 
-		if(Emoji.ARROW_LEFT.getAsMention().equals(code)){
-			if(currentPage == 0){
-				return;
+		if(Emoji.ARROW_LEFT.get().equals(code)){
+			if(currentPage != 0){
+				paginator.previousPage();
+				event.getChannel().editMessageById(event.getMessageIdLong(), paginator.constructEmbed()).queue();
 			}
-			paginator.previousPage();
-			event.getChannel().editMessageById(event.getMessageIdLong(), paginator.constructEmbed()).queue();
 		}
-		else if(Emoji.ARROW_RIGHT.getAsMention().equals(code)){
-			if(currentPage == maxPages - 1){
-				return;
+		else if(Emoji.ARROW_RIGHT.get().equals(code)){
+			if(currentPage != maxPages - 1){
+				paginator.nextPage();
+				event.getChannel().editMessageById(event.getMessageIdLong(), paginator.constructEmbed()).queue();
 			}
-			paginator.nextPage();
-			event.getChannel().editMessageById(event.getMessageIdLong(), paginator.constructEmbed()).queue();
 		}
-		else if(Emoji.WASTEBASKET.getAsMention().equals(code)){
+		else if(Emoji.WASTEBASKET.get().equals(code)){
+			event.getChannel().deleteMessageById(event.getMessageIdLong()).queue();
 			this.paginators.invalidate(event.getMessageIdLong());
+			return;
 		}
 		event.getReaction().removeReaction(event.getUser()).queue();
 	}
@@ -72,14 +72,14 @@ public class PaginatorModule extends Module{
 		channel.clearReactionsById(paginator.getMessageId()).queue();
 	}
 
-	public void create(TextChannel channel, int maxPages, BiFunction<Integer, EmbedBuilder, MessageEmbed> embedFunction){
-		var embedBuilder = embedFunction.apply(0, new EmbedBuilder());
+	public void create(TextChannel channel, int maxPages, BiFunction<Integer, EmbedBuilder, EmbedBuilder> embedFunction){
+		var embedBuilder = embedFunction.apply(0, new EmbedBuilder().setFooter("Page 1/" + maxPages)).build();
 		channel.sendMessage(embedBuilder).queue(message -> {
 			var paginator = new Paginator(message, maxPages, embedFunction);
-			if(channel.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_HISTORY, Permission.MESSAGE_ADD_REACTION)){
-				message.addReaction(Emoji.ARROW_LEFT.getAsMention()).queue();
-				message.addReaction(Emoji.ARROW_RIGHT.getAsMention()).queue();
-				message.addReaction(Emoji.WASTEBASKET.getAsMention()).queue();
+			if(maxPages > 0 && channel.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_HISTORY, Permission.MESSAGE_ADD_REACTION)){
+				message.addReaction(Emoji.ARROW_LEFT.get()).queue();
+				message.addReaction(Emoji.ARROW_RIGHT.get()).queue();
+				message.addReaction(Emoji.WASTEBASKET.get()).queue();
 			}
 			this.paginators.put(paginator.getMessageId(), paginator);
 		});

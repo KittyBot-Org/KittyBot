@@ -3,9 +3,10 @@ package de.kittybot.kittybot.commands.utility;
 import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.command.context.CommandContext;
 import net.dv8tion.jda.api.entities.Message;
 
+@SuppressWarnings("unused")
 public class DownloadEmotesCommand extends Command{
 
 	public DownloadEmotesCommand(){

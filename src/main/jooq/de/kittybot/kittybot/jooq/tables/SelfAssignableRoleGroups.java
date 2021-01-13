@@ -59,9 +59,9 @@ public class SelfAssignableRoleGroups extends TableImpl<SelfAssignableRoleGroups
     public final TableField<SelfAssignableRoleGroupsRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
-     * The column <code>public.self_assignable_role_groups.group_name</code>.
+     * The column <code>public.self_assignable_role_groups.name</code>.
      */
-    public final TableField<SelfAssignableRoleGroupsRecord, String> GROUP_NAME = createField(DSL.name("group_name"), SQLDataType.VARCHAR(255).nullable(false), this, "");
+    public final TableField<SelfAssignableRoleGroupsRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
      * The column <code>public.self_assignable_role_groups.max_roles</code>.
@@ -118,7 +118,7 @@ public class SelfAssignableRoleGroups extends TableImpl<SelfAssignableRoleGroups
 
     @Override
     public List<UniqueKey<SelfAssignableRoleGroupsRecord>> getKeys() {
-        return Arrays.<UniqueKey<SelfAssignableRoleGroupsRecord>>asList(Keys.SELF_ASSIGNABLE_ROLE_GROUPS_PKEY);
+        return Arrays.<UniqueKey<SelfAssignableRoleGroupsRecord>>asList(Keys.SELF_ASSIGNABLE_ROLE_GROUPS_PKEY, Keys.SELF_ASSIGNABLE_ROLE_GROUPS_GUILD_ID_NAME_KEY);
     }
 
     @Override

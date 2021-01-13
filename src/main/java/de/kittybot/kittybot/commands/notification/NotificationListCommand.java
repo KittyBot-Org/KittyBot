@@ -3,7 +3,7 @@ package de.kittybot.kittybot.commands.notification;
 import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.modules.NotificationModule;
 import de.kittybot.kittybot.objects.Notification;
 import de.kittybot.kittybot.utils.Config;
@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class NotificationListCommand extends Command{
 
 	public NotificationListCommand(Command parent){

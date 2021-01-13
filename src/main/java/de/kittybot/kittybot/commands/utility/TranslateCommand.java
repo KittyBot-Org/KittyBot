@@ -3,20 +3,17 @@ package de.kittybot.kittybot.commands.utility;
 import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.modules.CommandModule;
 import de.kittybot.kittybot.modules.RequestModule;
 import de.kittybot.kittybot.objects.Language;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
-import net.dv8tion.jda.api.utils.MiscUtil;
 
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 public class TranslateCommand extends Command{
 
 	public TranslateCommand(){

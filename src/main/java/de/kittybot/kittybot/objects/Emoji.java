@@ -27,7 +27,7 @@ public enum Emoji{
 	ARROW_LEFT("\u2B05\uFE0F"),
 	ARROW_RIGHT("\u27A1\uFE0F"),
 	BACK("\u25C0"),
-	PLAY_PAUSE(""),
+	PLAY_PAUSE(744945002416963634L),
 	FORWARD("\u25B6"),
 	WASTEBASKET("\uD83D\uDDD1\uFE0F"),
 	SHUFFLE("\uD83D\uDD00"),
@@ -65,12 +65,22 @@ public enum Emoji{
 		return this.emoteId;
 	}
 
-	public String getAsMention(){
+	public String get(){
 		if(this.unicode == null){
 			if(this.isAnimated){
 				return "<a:emote:" + this.emoteId + ">";
 			}
 			return "<:emote:" + this.emoteId + ">";
+		}
+		return this.unicode;
+	}
+
+	public String getStripped(){
+		if(this.unicode == null){
+			if(this.isAnimated){
+				return "a:emote:" + this.emoteId;
+			}
+			return ":emote:" + this.emoteId;
 		}
 		return this.unicode;
 	}

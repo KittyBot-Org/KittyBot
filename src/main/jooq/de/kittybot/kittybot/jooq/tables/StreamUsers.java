@@ -118,7 +118,7 @@ public class StreamUsers extends TableImpl<StreamUsersRecord> {
 
     @Override
     public List<UniqueKey<StreamUsersRecord>> getKeys() {
-        return Arrays.<UniqueKey<StreamUsersRecord>>asList(Keys.STREAM_USERS_PKEY);
+        return Arrays.<UniqueKey<StreamUsersRecord>>asList(Keys.STREAM_USERS_PKEY, Keys.STREAM_USERS_GUILD_ID_USER_NAME_STREAM_TYPE_KEY);
     }
 
     @Override

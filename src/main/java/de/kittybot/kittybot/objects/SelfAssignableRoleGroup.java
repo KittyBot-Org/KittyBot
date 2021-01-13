@@ -19,7 +19,7 @@ public class SelfAssignableRoleGroup{
 	public SelfAssignableRoleGroup(SelfAssignableRoleGroupsRecord record){
 		this.guildId = record.getGuildId();
 		this.id = record.getId();
-		this.groupName = record.getGroupName();
+		this.groupName = record.getName();
 		this.maxRoles = record.getMaxRoles();
 	}
 

@@ -3,7 +3,7 @@ package de.kittybot.kittybot.commands.utility;
 import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.modules.RequestModule;
 import net.dv8tion.jda.api.entities.Message;
 import org.apache.commons.io.IOUtils;
@@ -14,6 +14,7 @@ import java.util.List;
 
 import static de.kittybot.kittybot.utils.MessageUtils.maskLink;
 
+@SuppressWarnings("unused")
 public class HastebinCommand extends Command{
 
 	public HastebinCommand(){
@@ -44,9 +45,16 @@ public class HastebinCommand extends Command{
 			attachment.retrieveInputStream().thenAcceptAsync(inputStream -> {
 				try(inputStream){
 					var text = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
-					ctx.sendSuccess(maskLink("here is a hastebin", ctx.get(RequestModule.class).postToHastebin(text)));
+					ctx.get(RequestModule.class).postToHastebin(text, url -> {
+						if(url == null){
+							ctx.sendError("Unexpected error while creating hastebin");
+							return;
+						}
+						ctx.sendSuccess(maskLink("here is a hastebin", url));
+					});
+
 				}
-				catch(NullPointerException | IOException e){
+				catch(IOException e){
 					ctx.sendError("Error while creating hastebin\nError: " + e.getMessage());
 				}
 			});

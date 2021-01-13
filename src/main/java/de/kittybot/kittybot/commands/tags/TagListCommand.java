@@ -3,7 +3,7 @@ package de.kittybot.kittybot.commands.tags;
 import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.exceptions.CommandException;
 import de.kittybot.kittybot.modules.TagModule;
 import de.kittybot.kittybot.objects.Tag;
@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.entities.User;
 
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 public class TagListCommand extends Command{
 
 	public TagListCommand(Command parent){
@@ -42,7 +43,7 @@ public class TagListCommand extends Command{
 			ctx.sendUsage(this);
 			return;
 		}
-		var tags = ctx.get(TagModule.class).get(users.get(0).getIdLong(), guildId);
+		var tags = ctx.get(TagModule.class).get(guildId, users.get(0).getIdLong());
 		ctx.sendSuccess(users.get(0).getAsMention() + " owns following tags:\n" + tags.stream().map(Tag::getName).collect(Collectors.joining("\n")));
 	}
 

@@ -113,7 +113,7 @@ public class SnipeDisabledChannels extends TableImpl<SnipeDisabledChannelsRecord
 
     @Override
     public List<UniqueKey<SnipeDisabledChannelsRecord>> getKeys() {
-        return Arrays.<UniqueKey<SnipeDisabledChannelsRecord>>asList(Keys.SNIPE_DISABLED_CHANNELS_PKEY);
+        return Arrays.<UniqueKey<SnipeDisabledChannelsRecord>>asList(Keys.SNIPE_DISABLED_CHANNELS_PKEY, Keys.SNIPE_DISABLED_CHANNELS_GUILD_ID_CHANNEL_ID_KEY);
     }
 
     @Override

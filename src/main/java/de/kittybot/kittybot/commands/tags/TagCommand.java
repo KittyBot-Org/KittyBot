@@ -3,10 +3,11 @@ package de.kittybot.kittybot.commands.tags;
 import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.exceptions.CommandException;
 import de.kittybot.kittybot.modules.TagModule;
 
+@SuppressWarnings("unused")
 public class TagCommand extends Command{
 
 	public TagCommand(){
@@ -16,10 +17,11 @@ public class TagCommand extends Command{
 				new TagEditCommand(this),
 				new TagDeleteCommand(this),
 				new TagListCommand(this),
-				new TagSearchCommand(this)
+				new TagSearchCommand(this),
+				new TagInfoCommand(this)
 		);
 		addAliases("t");
-		setUsage("<create/edit/delete/list/search/tag-name> <tag-name> <content>");
+		setUsage("<create/edit/delete/list/search/info/tag-name> <tag-name> <content>");
 	}
 
 	@Override

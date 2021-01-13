@@ -1,5 +1,7 @@
 package de.kittybot.kittybot.objects;
 
+import de.kittybot.kittybot.utils.Config;
+
 public enum API{
 
 	// stats APIs
@@ -12,7 +14,7 @@ public enum API{
 
 	// other
 	PURR_BOT("purr bot", "https://purrbot.site/api/img/%s/%s/%s"),
-	HASTEBIN("hastebin", ""),
+	HASTEBIN("hastebin", Config.HASTEBIN_URL),
 	GOOGLE_TRANSLATE_API("google translate api", "https://translate.google.com/translate_a/single?client=gtx&sl=%s&tl=%s&dt=t&q=%s&ie=UTF-8&oe=UTF-8");
 
 	private final String name;

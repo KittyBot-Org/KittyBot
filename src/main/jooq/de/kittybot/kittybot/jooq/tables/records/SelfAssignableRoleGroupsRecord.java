@@ -52,17 +52,17 @@ public class SelfAssignableRoleGroupsRecord extends UpdatableRecordImpl<SelfAssi
     }
 
     /**
-     * Setter for <code>public.self_assignable_role_groups.group_name</code>.
+     * Setter for <code>public.self_assignable_role_groups.name</code>.
      */
-    public SelfAssignableRoleGroupsRecord setGroupName(String value) {
+    public SelfAssignableRoleGroupsRecord setName(String value) {
         set(2, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.self_assignable_role_groups.group_name</code>.
+     * Getter for <code>public.self_assignable_role_groups.name</code>.
      */
-    public String getGroupName() {
+    public String getName() {
         return (String) get(2);
     }
 
@@ -116,7 +116,7 @@ public class SelfAssignableRoleGroupsRecord extends UpdatableRecordImpl<SelfAssi
 
     @Override
     public Field<String> field3() {
-        return SelfAssignableRoleGroups.SELF_ASSIGNABLE_ROLE_GROUPS.GROUP_NAME;
+        return SelfAssignableRoleGroups.SELF_ASSIGNABLE_ROLE_GROUPS.NAME;
     }
 
     @Override
@@ -136,7 +136,7 @@ public class SelfAssignableRoleGroupsRecord extends UpdatableRecordImpl<SelfAssi
 
     @Override
     public String component3() {
-        return getGroupName();
+        return getName();
     }
 
     @Override
@@ -156,7 +156,7 @@ public class SelfAssignableRoleGroupsRecord extends UpdatableRecordImpl<SelfAssi
 
     @Override
     public String value3() {
-        return getGroupName();
+        return getName();
     }
 
     @Override
@@ -178,7 +178,7 @@ public class SelfAssignableRoleGroupsRecord extends UpdatableRecordImpl<SelfAssi
 
     @Override
     public SelfAssignableRoleGroupsRecord value3(String value) {
-        setGroupName(value);
+        setName(value);
         return this;
     }
 
@@ -211,12 +211,12 @@ public class SelfAssignableRoleGroupsRecord extends UpdatableRecordImpl<SelfAssi
     /**
      * Create a detached, initialised SelfAssignableRoleGroupsRecord
      */
-    public SelfAssignableRoleGroupsRecord(Long id, Long guildId, String groupName, Integer maxRoles) {
+    public SelfAssignableRoleGroupsRecord(Long id, Long guildId, String name, Integer maxRoles) {
         super(SelfAssignableRoleGroups.SELF_ASSIGNABLE_ROLE_GROUPS);
 
         setId(id);
         setGuildId(guildId);
-        setGroupName(groupName);
+        setName(name);
         setMaxRoles(maxRoles);
     }
 }

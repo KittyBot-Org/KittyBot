@@ -3,9 +3,10 @@ package de.kittybot.kittybot.commands.streamannouncement;
 import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.command.context.CommandContext;
 import net.dv8tion.jda.api.Permission;
 
+@SuppressWarnings("unused")
 public class StreamAnnouncementCommand extends Command{
 
 	public StreamAnnouncementCommand(){

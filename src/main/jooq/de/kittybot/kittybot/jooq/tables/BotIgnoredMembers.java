@@ -113,7 +113,7 @@ public class BotIgnoredMembers extends TableImpl<BotIgnoredMembersRecord> {
 
     @Override
     public List<UniqueKey<BotIgnoredMembersRecord>> getKeys() {
-        return Arrays.<UniqueKey<BotIgnoredMembersRecord>>asList(Keys.BOT_IGNORED_MEMBERS_PKEY);
+        return Arrays.<UniqueKey<BotIgnoredMembersRecord>>asList(Keys.BOT_IGNORED_MEMBERS_PKEY, Keys.BOT_IGNORED_MEMBERS_GUILD_ID_USER_ID_KEY);
     }
 
     @Override

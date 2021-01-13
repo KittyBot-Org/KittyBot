@@ -3,9 +3,10 @@ package de.kittybot.kittybot.commands.roles;
 import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.modules.SettingsModule;
 
+@SuppressWarnings("unused")
 public class AssignCommand extends Command{
 
 

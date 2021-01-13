@@ -3,13 +3,14 @@ package de.kittybot.kittybot.commands.info;
 import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.modules.CommandModule;
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 
+@SuppressWarnings("unused")
 public class HelpCommand extends Command{
 
 	public HelpCommand(){

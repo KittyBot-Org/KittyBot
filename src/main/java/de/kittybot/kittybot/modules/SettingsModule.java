@@ -413,10 +413,10 @@ public class SettingsModule extends Module{
 	}
 
 	private void insertSelfAssignableRoles(long guildId, Set<SelfAssignableRole> roles){
-		var ctx = this.modules.get(DatabaseModule.class).getCtx().insertInto(SELF_ASSIGNABLE_ROLE_GROUPS)
-				.columns(SELF_ASSIGNABLE_ROLES.GROUP_ID, SELF_ASSIGNABLE_ROLES.ROLE_ID, SELF_ASSIGNABLE_ROLES.EMOTE_ID);
+		var ctx = this.modules.get(DatabaseModule.class).getCtx().insertInto(SELF_ASSIGNABLE_ROLES)
+				.columns(SELF_ASSIGNABLE_ROLES.GROUP_ID, SELF_ASSIGNABLE_ROLES.GUILD_ID, SELF_ASSIGNABLE_ROLES.ROLE_ID, SELF_ASSIGNABLE_ROLES.EMOTE_ID);
 		for(var role : roles){
-			ctx.values(role.getGroupId(), role.getRoleId(), role.getEmoteId());
+			ctx.values(role.getGroupId(), role.getGuildId(), role.getRoleId(), role.getEmoteId());
 		}
 		ctx.execute();
 	}
@@ -450,10 +450,8 @@ public class SettingsModule extends Module{
 	private Set<SelfAssignableRoleGroup> insertSelfAssignableRoleGroups(long guildId, Set<SelfAssignableRoleGroup> groups){
 		var dbModule = this.modules.get(DatabaseModule.class);
 		var ctx = dbModule.getCtx().insertInto(SELF_ASSIGNABLE_ROLE_GROUPS)
-				.columns(
-						SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID, SELF_ASSIGNABLE_ROLE_GROUPS.GROUP_NAME,
-						SELF_ASSIGNABLE_ROLE_GROUPS.MAX_ROLES
-				);
+				.columns(SELF_ASSIGNABLE_ROLE_GROUPS.GUILD_ID, SELF_ASSIGNABLE_ROLE_GROUPS.NAME, SELF_ASSIGNABLE_ROLE_GROUPS.MAX_ROLES);
+
 		for(var group : groups){
 			ctx.values(group.getGuildId(), group.getName(), group.getMaxRoles());
 		}

@@ -1,5 +1,7 @@
-package de.kittybot.kittybot.command;
+package de.kittybot.kittybot.command.context;
 
+import de.kittybot.kittybot.command.Args;
+import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.modules.CommandResponseModule;
@@ -24,18 +26,17 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class CommandContext{
+public class CommandContext extends Context{
 
 	private final GuildMessageReceivedEvent event;
-	private final Modules modules;
 	private final String command;
 	private final String fullPath;
 	private final Args args;
 	private final String rawMessage;
 
 	public CommandContext(GuildMessageReceivedEvent event, Modules modules, String fullPath, Args args, String rawMessage){
+		super(modules, event.getGuild());
 		this.event = event;
-		this.modules = modules;
 		this.command = args.get(0);
 		this.fullPath = fullPath;
 		this.args = args.subArgs();
@@ -44,14 +45,6 @@ public class CommandContext{
 
 	public CommandContext getChildContext(String fullPath){
 		return new CommandContext(this.event, this.modules, fullPath, this.args, rawMessage);
-	}
-
-	public Modules getModules(){
-		return this.modules;
-	}
-
-	public <T extends Module> T get(Class<T> clazz){
-		return this.modules.get(clazz);
 	}
 
 	public JDA getJDA(){
@@ -181,10 +174,6 @@ public class CommandContext{
 		return this.getGuild().getSelfMember();
 	}
 
-	public Guild getGuild(){
-		return this.event.getGuild();
-	}
-
 	public Bag<User> getMentionedUsersBag(){
 		var users = this.getMessage().getMentionedUsersBag();
 		var selfUser = this.getSelfUser();
@@ -196,8 +185,8 @@ public class CommandContext{
 		return users;
 	}
 
-	public long getGuildId(){
-		return this.event.getGuild().getIdLong();
+	public long getUserId(){
+		return this.event.getAuthor().getIdLong();
 	}
 
 	public List<TextChannel> getMentionedChannels(){

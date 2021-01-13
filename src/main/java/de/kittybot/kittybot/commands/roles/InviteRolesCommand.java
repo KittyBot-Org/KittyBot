@@ -3,7 +3,7 @@ package de.kittybot.kittybot.commands.roles;
 import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.modules.InviteModule;
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.utils.Config;
@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.entities.Role;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 public class InviteRolesCommand extends Command{
 
 	public InviteRolesCommand(){

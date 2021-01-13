@@ -2,8 +2,8 @@ package de.kittybot.kittybot.modules;
 
 import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.command.CommandContext;
-import de.kittybot.kittybot.command.ReactionContext;
+import de.kittybot.kittybot.command.context.CommandContext;
+import de.kittybot.kittybot.command.context.ReactionContext;
 import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.exporters.Metrics;
@@ -107,13 +107,13 @@ public class CommandModule extends Module{
 			return;
 		}
 
-		var reactiveMessage = this.modules.get(ReactiveMessageModule.class).getReactiveMessage(event.getMessageIdLong());
+		var reactiveMessage = this.modules.get(ReactiveMessageModule.class).get(event.getMessageIdLong());
 		if(reactiveMessage == null){
 			return;
 		}
 		if(reactiveMessage.getAllowed() == -1L || reactiveMessage.getAllowed() == event.getUserIdLong()){
-			this.allCommands.get(reactiveMessage.getPath()).onReactionAdd(
-					new ReactionContext(event, this, this.modules.get(ReactiveMessageModule.class), reactiveMessage));
+			this.allCommands.get(reactiveMessage.getPath())
+					.process(new ReactionContext(event, this.modules, reactiveMessage));
 			return;
 		}
 		event.getReaction().removeReaction(event.getUser()).queue();

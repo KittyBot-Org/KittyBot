@@ -64,9 +64,11 @@ public class TableBuilder<T>{
 	}
 
 	private static String padLeft(String s, char c, int length){
-		while(s.length() < length){
-			s = c + s;
+		StringBuilder sBuilder = new StringBuilder(s);
+		while(sBuilder.length() < length){
+			sBuilder.insert(0, c);
 		}
+		s = sBuilder.toString();
 		return s;
 	}
 

@@ -3,7 +3,7 @@ package de.kittybot.kittybot.commands.utility;
 import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Icon;
@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+@SuppressWarnings("unused")
 public class EmoteStealCommand extends Command{
 
 	private static final Logger LOG = LoggerFactory.getLogger(EmoteStealCommand.class);

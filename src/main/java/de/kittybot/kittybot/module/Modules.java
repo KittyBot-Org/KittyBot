@@ -42,13 +42,14 @@ public class Modules{
 			LOG.error("Error while loading modules", e);
 		}
 		this.modules.forEach(Module::onEnable);
-		LOG.info("Finished loading " + this.modules.size() + "modules");
+		LOG.info("Finished loading " + this.modules.size() + " modules");
 	}
 
 	public Object[] getModules(){
 		return this.modules.toArray();
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T extends Module> T get(Class<T> clazz){
 		var module = this.modules.stream().filter(mod -> mod.getClass().equals(clazz)).findFirst();
 		if(module.isEmpty()){

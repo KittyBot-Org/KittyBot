@@ -118,7 +118,7 @@ public class MemberRoles extends TableImpl<MemberRolesRecord> {
 
     @Override
     public List<UniqueKey<MemberRolesRecord>> getKeys() {
-        return Arrays.<UniqueKey<MemberRolesRecord>>asList(Keys.MEMBER_ROLES_PKEY, Keys.MEMBER_ROLES_GUILD_ID_KEY, Keys.MEMBER_ROLES_USER_ID_KEY, Keys.MEMBER_ROLES_ROLE_ID_KEY);
+        return Arrays.<UniqueKey<MemberRolesRecord>>asList(Keys.MEMBER_ROLES_PKEY, Keys.MEMBER_ROLES_GUILD_ID_USER_ID_ROLE_ID_KEY);
     }
 
     @Override

@@ -134,7 +134,7 @@ public class GuildTags extends TableImpl<GuildTagsRecord> {
 
     @Override
     public List<UniqueKey<GuildTagsRecord>> getKeys() {
-        return Arrays.<UniqueKey<GuildTagsRecord>>asList(Keys.GUILD_TAGS_PKEY, Keys.GUILD_TAGS_NAME_KEY, Keys.GUILD_TAGS_GUILD_ID_KEY);
+        return Arrays.<UniqueKey<GuildTagsRecord>>asList(Keys.GUILD_TAGS_PKEY, Keys.GUILD_TAGS_NAME_GUILD_ID_KEY);
     }
 
     @Override

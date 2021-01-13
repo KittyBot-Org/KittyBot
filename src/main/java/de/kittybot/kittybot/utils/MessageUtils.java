@@ -17,7 +17,7 @@ public class MessageUtils{
 	}
 
 	public static String getBoolEmote(boolean bool){
-		return bool ? Emoji.CHECK.getAsMention() : Emoji.X.getAsMention();
+		return bool ? Emoji.CHECK.get() : Emoji.X.get();
 	}
 
 	public static String maskLink(String title, String url){

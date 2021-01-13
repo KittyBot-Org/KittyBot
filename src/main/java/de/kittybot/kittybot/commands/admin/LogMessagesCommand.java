@@ -3,10 +3,11 @@ package de.kittybot.kittybot.commands.admin;
 import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.modules.SettingsModule;
 import net.dv8tion.jda.api.Permission;
 
+@SuppressWarnings("unused")
 public class LogMessagesCommand extends Command{
 
 	public LogMessagesCommand(){

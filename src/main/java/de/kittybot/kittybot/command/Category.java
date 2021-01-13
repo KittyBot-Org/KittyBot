@@ -25,7 +25,7 @@ public enum Category{
 	}
 
 	public String getEmote(){
-		return this.emoji.getAsMention();
+		return this.emoji.get();
 	}
 
 	public String getEmoteUrl(){

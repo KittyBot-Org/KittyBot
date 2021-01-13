@@ -1,6 +1,9 @@
 package de.kittybot.kittybot.command;
 
+import de.kittybot.kittybot.command.context.CommandContext;
+import de.kittybot.kittybot.command.context.ReactionContext;
 import de.kittybot.kittybot.exceptions.CommandException;
+import de.kittybot.kittybot.modules.ReactiveMessageModule;
 import de.kittybot.kittybot.objects.Emoji;
 import de.kittybot.kittybot.utils.Config;
 import net.dv8tion.jda.api.Permission;
@@ -38,13 +41,13 @@ public abstract class Command{
 
 	protected abstract void run(Args args, CommandContext ctx) throws CommandException;
 
-	public void onReactionAdd(ReactionContext ctx){
+	public void process(ReactionContext ctx){
 		var event = ctx.getEvent();
 		var reactiveMessage = ctx.getReactiveMessage();
-		if(event.getReactionEmote().getName().equals(Emoji.WASTEBASKET.getAsMention()) && (event.getUserIdLong() == reactiveMessage.getUserId() || event.getMember().hasPermission(Permission.MESSAGE_MANAGE))){
+		if(event.getReactionEmote().getName().equals(Emoji.WASTEBASKET.get()) && (event.getUserIdLong() == reactiveMessage.getUserId() || event.getMember().hasPermission(Permission.MESSAGE_MANAGE))){
 			event.getChannel().deleteMessageById(event.getMessageId()).queue();
 			event.getChannel().deleteMessageById(reactiveMessage.getMessageId()).queue();
-			ctx.getReactiveMessageModule().removeReactiveMessage(event.getMessageIdLong());
+			ctx.get(ReactiveMessageModule.class).remove(event.getMessageIdLong());
 		}
 	}
 

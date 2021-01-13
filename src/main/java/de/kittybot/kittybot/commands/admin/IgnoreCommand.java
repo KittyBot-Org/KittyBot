@@ -3,7 +3,7 @@ package de.kittybot.kittybot.commands.admin;
 import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 public class IgnoreCommand extends Command{
 
 	public IgnoreCommand(){

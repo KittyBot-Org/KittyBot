@@ -113,7 +113,7 @@ public class StreamUserEvents extends TableImpl<StreamUserEventsRecord> {
 
     @Override
     public List<UniqueKey<StreamUserEventsRecord>> getKeys() {
-        return Arrays.<UniqueKey<StreamUserEventsRecord>>asList(Keys.STREAM_USER_EVENTS_PKEY);
+        return Arrays.<UniqueKey<StreamUserEventsRecord>>asList(Keys.STREAM_USER_EVENTS_PKEY, Keys.STREAM_USER_EVENTS_STREAM_USER_ID_EVENT_KEY);
     }
 
     @Override

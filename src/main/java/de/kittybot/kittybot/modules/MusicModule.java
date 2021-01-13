@@ -1,8 +1,9 @@
 package de.kittybot.kittybot.modules;
 
-import de.kittybot.kittybot.command.CommandContext;
+import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.objects.MusicPlayer;
+import de.kittybot.kittybot.utils.Config;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
@@ -32,6 +33,10 @@ public class MusicModule extends Module{
 		if(event instanceof GuildVoiceLeaveEvent || event instanceof GuildVoiceMoveEvent){
 			var player = get(event.getEntity().getGuild().getIdLong());
 			if(player == null){
+				return;
+			}
+			if(event.getEntity().getIdLong() == Config.BOT_ID){
+				this.modules.get(MusicModule.class).destroy(event.getEntity().getGuild().getIdLong());
 				return;
 			}
 			var channel = event.getChannelLeft();

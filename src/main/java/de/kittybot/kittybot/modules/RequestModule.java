@@ -23,19 +23,6 @@ public class RequestModule extends Module{
 	private static final Logger LOG = LoggerFactory.getLogger(RequestModule.class);
 
 	private final Request.Builder requestBuilder = new Request.Builder().header("user-agent", "de.kittybot");
-	private OkHttpClient httpClient;
-
-	@Override
-	public void onEnable(){
-		this.httpClient = this.modules.getHttpClient();
-	}
-
-	public String translateText(String text, String language){
-		var url = String.format(API.GOOGLE_TRANSLATE_API.getUrl(), "auto", language, URLEncoder.encode(text, StandardCharsets.UTF_8));
-		requestBuilder.url(url);
-		var json = DataArray.fromJson(executeRequest(requestBuilder.build()));
-		return json.getArray(0).getArray(0).getString(0);
-	}
 
 	public String executeRequest(Request request){
 		return executeRequest(request, null);
@@ -43,7 +30,7 @@ public class RequestModule extends Module{
 
 	public String executeRequest(Request request, API api){
 		var requestUrl = request.url();
-		try(var response = this.httpClient.newCall(request).execute()){
+		try(var response = this.modules.getHttpClient().newCall(request).execute()){
 			var body = response.body();
 			var code = response.code();
 			if(code != 200 || body == null){
@@ -62,31 +49,12 @@ public class RequestModule extends Module{
 		return "";
 	}
 
-	public void translateText(String text, String language, Consumer<String> callback){
-		requestBuilder.url(String.format(API.GOOGLE_TRANSLATE_API.getUrl(), "auto", language, URLEncoder.encode(text, StandardCharsets.UTF_8)));
-		executeAsync(requestBuilder.build(), (call, response) -> {
-			var body = response.body();
-			String newText = null;
-			if(body != null){
-				try{
-					newText = DataArray.fromJson(body.string()).getArray(0).getArray(0).getString(0);
-				}
-				catch(IOException e){
-					LOG.error("Error while reading body", e);
-				}
-			}
-			callback.accept(newText);
-		}, (call, response) -> {
-			callback.accept(null);
-		});
-	}
-
 	public void executeAsync(Request request, BiConsumer<Call, Response> success, BiConsumer<Call, Response> error){
 		executeAsync(request, null, success, error);
 	}
 
 	public void executeAsync(Request request, API api, BiConsumer<Call, Response> success, BiConsumer<Call, Response> error){
-		this.httpClient.newCall(request).enqueue(new Callback(){
+		this.modules.getHttpClient().newCall(request).enqueue(new Callback(){
 
 			@Override
 			public void onFailure(@NotNull Call call, @NotNull IOException e){
@@ -127,6 +95,23 @@ public class RequestModule extends Module{
 		});
 	}
 
+	public void translateText(String text, String language, Consumer<String> callback){
+		requestBuilder.url(String.format(API.GOOGLE_TRANSLATE_API.getUrl(), "auto", language, URLEncoder.encode(text, StandardCharsets.UTF_8)));
+		executeAsync(requestBuilder.build(), (call, response) -> {
+			var body = response.body();
+			String newText = null;
+			if(body != null){
+				try{
+					newText = DataArray.fromJson(body.string()).getArray(0).getArray(0).getString(0);
+				}
+				catch(IOException e){
+					LOG.error("Error while reading body", e);
+				}
+			}
+			callback.accept(newText);
+		}, (call, response) -> callback.accept(null));
+	}
+
 	public String getNeko(boolean nsfw, String type, String imageType){
 		var url = String.format(API.PURR_BOT.getUrl(), nsfw ? "nsfw" : "sfw", type, imageType);
 		requestBuilder.url(url);
@@ -135,13 +120,22 @@ public class RequestModule extends Module{
 		return json.getString("link");
 	}
 
-	public String postToHastebin(String content){
-		var url = API.HASTEBIN.getUrl();
-		var requestBody = RequestBody.create(MediaType.parse("text/html; charset=utf-8"), content);
-		requestBuilder.url(url + "/documents");
-		requestBuilder.post(requestBody);
-		var json = DataObject.fromJson(executeRequest(requestBuilder.build()));
-		return url + "/" + json.getString("key");
+	public void postToHastebin(String content, Consumer<String> callback){
+		requestBuilder.url(API.HASTEBIN.getUrl() + "/documents");
+		requestBuilder.post(RequestBody.create(MediaType.parse("text/html; charset=utf-8"), content));
+		executeAsync(requestBuilder.build(), (call, response) -> {
+			var body = response.body();
+			String key = null;
+			if(body != null){
+				try{
+					key = DataObject.fromJson(body.string()).getString("key");
+				}
+				catch(IOException e){
+					LOG.error("Error while reading body", e);
+				}
+			}
+			callback.accept(key);
+		}, (call, response) -> callback.accept(null));
 	}
 
 	public void updateStats(API api, int guildCount, String token){
