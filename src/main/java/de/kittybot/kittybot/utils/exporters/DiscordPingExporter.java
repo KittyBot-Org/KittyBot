@@ -6,13 +6,14 @@ import io.prometheus.client.Gauge;
 
 import java.util.concurrent.TimeUnit;
 
-public class DiscordLatencyExporter{
+public class DiscordPingExporter{
 
 	// ty Natan 👀 https://github.com/Mantaro/MantaroBot/blob/master/src/main/java/net/kodehawa/mantarobot/utils/exporters/DiscordLatencyExports.java
 
 	private static final Gauge GATEWAY_PING = Gauge.build()
 			.name("kittybot_gateway_ping")
-			.help("Gateway latency in ms")
+			.help("Gateway ping per shard in ms")
+			.labelNames("shard")
 			.create();
 
 	private static final Gauge REST_PING = Gauge.build()
@@ -25,12 +26,19 @@ public class DiscordLatencyExporter{
 		REST_PING.register();
 		modules.getScheduler().scheduleAtFixedRate(() -> {
 			var shardManager = modules.getShardManager();
-			var ping = shardManager.getAverageGatewayPing();
-			if(ping >= 0){
-				GATEWAY_PING.set(ping);
+			if(shardManager == null){
+				return;
 			}
-			if(shardManager.getShardCache().size() > 0){
-				shardManager.getShardCache().iterator().next().getRestPing().queue(REST_PING::set);
+			var shards = shardManager.getShardCache();
+			shards.forEach(shard -> {
+				var ping = shard.getGatewayPing();
+
+				if (ping >= 0) {
+					GATEWAY_PING.labels(String.valueOf(shard.getShardInfo().getShardId())).set(ping);
+				}
+			});
+			if(shards.size() > 0){
+				shards.iterator().next().getRestPing().queue(REST_PING::set);
 			}
 		}, 0, PrometheusModule.UPDATE_PERIOD.toMillis(), TimeUnit.MILLISECONDS);
 	}

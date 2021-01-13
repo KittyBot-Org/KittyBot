@@ -30,13 +30,7 @@ public class MemoryUsageExporter{
 	private static final Gauge.Child RSS = MEMORY_USAGE.labels("RSS");
 	private static volatile ScheduledFuture<?> task;
 
-	private final Modules modules;
-
-	public MemoryUsageExporter(Modules modules){
-		this.modules = modules;
-	}
-
-	public void register(){
+	public void register(Modules modules){
 		MEMORY_USAGE.register();
 
 		if(!Files.exists(SMAPS_ROLLUP)){
@@ -45,7 +39,7 @@ public class MemoryUsageExporter{
 			return;
 		}
 
-		task = this.modules.getScheduler().scheduleAtFixedRate(
+		task = modules.getScheduler().scheduleAtFixedRate(
 				this::collect, 0,
 				PrometheusModule.UPDATE_PERIOD.toMillis(), TimeUnit.MILLISECONDS
 		);

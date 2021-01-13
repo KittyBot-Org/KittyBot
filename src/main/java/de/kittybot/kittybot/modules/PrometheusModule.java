@@ -3,7 +3,7 @@ package de.kittybot.kittybot.modules;
 import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.Utils;
-import de.kittybot.kittybot.utils.exporters.DiscordLatencyExporter;
+import de.kittybot.kittybot.utils.exporters.DiscordPingExporter;
 import de.kittybot.kittybot.utils.exporters.MemoryUsageExporter;
 import de.kittybot.kittybot.utils.exporters.Metrics;
 import io.prometheus.client.exporter.HTTPServer;
@@ -40,8 +40,8 @@ public class PrometheusModule extends Module{
 		new StandardExports().register();
 		new MemoryPoolsExports().register();
 		new BufferPoolsExports().register();
-		new DiscordLatencyExporter().register(modules);
-		new MemoryUsageExporter(modules).register();
+		new DiscordPingExporter().register(modules);
+		new MemoryUsageExporter().register(modules);
 		new LavalinkCollector(modules.get(LavalinkModule.class).getLavalink()).register();
 		try{
 			new HTTPServer(Config.PROMETHEUS_PORT);
