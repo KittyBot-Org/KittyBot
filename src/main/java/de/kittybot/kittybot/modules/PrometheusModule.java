@@ -40,8 +40,9 @@ public class PrometheusModule extends Module{
 		new StandardExports().register();
 		new MemoryPoolsExports().register();
 		new BufferPoolsExports().register();
-		new DiscordLatencyExporter().register();
+		new DiscordLatencyExporter().register(modules);
 		new MemoryUsageExporter(modules).register();
+		new LavalinkCollector(modules.get(LavalinkModule.class).getLavalink()).register();
 		try{
 			new HTTPServer(Config.PROMETHEUS_PORT);
 		}
@@ -54,8 +55,6 @@ public class PrometheusModule extends Module{
 	public void onReady(@Nonnull ReadyEvent event){
 		Metrics.GUILD_COUNT.set(event.getJDA().getGuildCache().size());
 		Metrics.USER_COUNT.set(Utils.getUserCount(this.modules.getShardManager()));
-		DiscordLatencyExporter.start(this.modules);
-		new LavalinkCollector(modules.get(LavalinkModule.class).getLavalink()).register();
 	}
 
 	@Override

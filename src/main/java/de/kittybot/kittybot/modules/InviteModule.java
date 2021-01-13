@@ -107,7 +107,6 @@ public class InviteModule extends Module{
 		if(!guild.getSelfMember().hasPermission(Permission.MANAGE_SERVER)){
 			return;
 		}
-		LOG.info("Initializing invite cache for guild: {}", guild.getId());
 		guild.retrieveInvites().queue(invites -> invites.forEach(this::cache));
 	}
 

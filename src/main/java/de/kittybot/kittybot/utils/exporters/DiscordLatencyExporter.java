@@ -20,20 +20,19 @@ public class DiscordLatencyExporter{
 			.help("Rest latency in ms")
 			.create();
 
-	public static void start(Modules modules){
+	public void register(Modules modules){
+		GATEWAY_PING.register();
+		REST_PING.register();
 		modules.getScheduler().scheduleAtFixedRate(() -> {
 			var shardManager = modules.getShardManager();
 			var ping = shardManager.getAverageGatewayPing();
 			if(ping >= 0){
 				GATEWAY_PING.set(ping);
 			}
-			shardManager.getShardById(0).getRestPing().queue(REST_PING::set);
+			if(shardManager.getShardCache().size() > 0){
+				shardManager.getShardCache().iterator().next().getRestPing().queue(REST_PING::set);
+			}
 		}, 0, PrometheusModule.UPDATE_PERIOD.toMillis(), TimeUnit.MILLISECONDS);
-	}
-
-	public void register(){
-		GATEWAY_PING.register();
-		REST_PING.register();
 	}
 
 }

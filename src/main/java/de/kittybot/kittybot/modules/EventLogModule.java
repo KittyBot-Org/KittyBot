@@ -31,27 +31,27 @@ public class EventLogModule extends Module{
 
 	@Override
 	public void onReady(@NotNull ReadyEvent event){
-		send(event.getJDA(), "Ready", "KittyBot started successfully");
+		send(event.getJDA(), "Shard Ready", "Shard `" + event.getJDA().getShardInfo().getShardId() + "` started");
 	}
 
 	@Override
 	public void onResumed(@Nonnull ResumedEvent event){
-		send(event.getJDA(), "Resumed", "Resumed to remote server");
+		send(event.getJDA(), "Shard Resumed", "Shard `" + event.getJDA().getShardInfo().getShardId() + "` resumed");
 	}
 
 	@Override
 	public void onReconnected(@Nonnull ReconnectedEvent event){
-		send(event.getJDA(), "Reconnected", "Reconnected to remote server");
+		send(event.getJDA(), "Shard Reconnected", "Shard `" + event.getJDA().getShardInfo().getShardId() + "` reconnected");
 	}
 
 	@Override
 	public void onDisconnect(@NotNull DisconnectEvent event){
-		send(event.getJDA(), "Disconnect", "Disconnected from the remote server");
+		send(event.getJDA(), "Shard Disconnect", "Shard `" + event.getJDA().getShardInfo().getShardId() + "` disconnected");
 	}
 
 	@Override
 	public void onShutdown(@Nonnull ShutdownEvent event){
-		send(event.getJDA(), "Shutdown", "KittyBot shutting down...");
+		send(event.getJDA(), "Shard Shutdown", "Shard `" + event.getJDA().getShardInfo().getShardId() + "` shutdown");
 	}
 
 	@Override

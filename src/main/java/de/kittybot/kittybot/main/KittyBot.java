@@ -62,7 +62,6 @@ public class KittyBot{
 				.setEventPool(ThreadingConfig.newScheduler(1, () -> "KittyBot", "Events"), true)
 				.setGatewayEncoding(GatewayEncoding.ETF)
 				.setBulkDeleteSplittingEnabled(false)
-				.setShardsTotal(-1)
 				.build();
 	}
 
