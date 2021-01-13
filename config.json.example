@@ -1,14 +1,27 @@
 {
-    "default_prefix": ".",
+    "default_prefix": "",
+    
     "bot_token": "",
     "bot_secret": "",
+    
     "owner_ids": [
-        170939974227591168
     ],
+    
     "backend_port": 6969,
     "prometheus_port": 8080,
-    "origin_url": "",
+    
     "redirect_url": "",
+    "origin_url": "",
+    "hastebin_url": "",
+    
+    "log_webhook_url": "",
+    
+    "support_guild_invite_url": "",
+    "bot_invite_url": "",
+    
+    "twitch_client_id": "",
+    "twitch_client_secret": "",
+    
     "signing_key": "",
     
     "discord_bots_token": "",
@@ -17,9 +30,6 @@
     "discord_boats_token": "",
     "botlist_space": "",
     "bots_for_discord_token": "",
-    
-    "twitch_client_id": "",
-    "twitch_client_secret": "",
     
     "db_host": "",
     "db_port": "",
