@@ -6,6 +6,8 @@ import net.dv8tion.jda.api.utils.MiscUtil;
 
 public class Utils{
 
+	private Utils(){}
+
 	public static int getUserCount(ShardManager shardManager){
 		//noinspection ConstantConditions
 		return shardManager.getGuildCache().applyStream(guildStream -> guildStream.mapToInt(Guild::getMemberCount).sum());

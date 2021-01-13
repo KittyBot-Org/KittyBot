@@ -5,6 +5,7 @@ import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.modules.RequestModule;
+import de.kittybot.kittybot.utils.Config;
 import net.dv8tion.jda.api.entities.Message;
 import org.apache.commons.io.IOUtils;
 
@@ -41,24 +42,24 @@ public class HastebinCommand extends Command{
 	}
 
 	private void postAttachment(CommandContext ctx, List<Message.Attachment> attachments){
-		attachments.stream().filter(attachment -> !attachment.isImage() && !attachment.isVideo()).forEach(attachment -> {
+		attachments.stream().filter(attachment -> !attachment.isImage() && !attachment.isVideo()).forEach(attachment ->
 			attachment.retrieveInputStream().thenAcceptAsync(inputStream -> {
 				try(inputStream){
-					var text = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
-					ctx.get(RequestModule.class).postToHastebin(text, url -> {
-						if(url == null){
+					var text = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+					ctx.get(RequestModule.class).postToHastebin(text, key -> {
+						if(key == null){
 							ctx.sendError("Unexpected error while creating hastebin");
 							return;
 						}
-						ctx.sendSuccess(maskLink("here is a hastebin", url));
+						ctx.sendSuccess(maskLink("here is a hastebin", Config.HASTEBIN_URL + "/" + key));
 					});
 
 				}
 				catch(IOException e){
 					ctx.sendError("Error while creating hastebin\nError: " + e.getMessage());
 				}
-			});
-		});
+			})
+		);
 	}
 
 }

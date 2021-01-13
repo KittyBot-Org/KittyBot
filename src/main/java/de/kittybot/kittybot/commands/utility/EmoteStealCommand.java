@@ -25,14 +25,11 @@ public class EmoteStealCommand extends Command{
 		super("steal", "Steals some emotes", Category.UTILITIES);
 		setUsage("<Emote, Emote, ...> or <url> <name> or <id> <name> (<animated true | false>)");
 		addAliases("grab", "klau", "st");
+		addPermissions(Permission.MANAGE_EMOTES);
 	}
 
 	@Override
 	public void run(Args args, CommandContext ctx){
-		if(!ctx.getMember().hasPermission(Permission.MANAGE_EMOTES)){
-			ctx.sendError("Sorry you don't have the permission to manage emotes :(");
-			return;
-		}
 		if(!ctx.getMessage().getAttachments().isEmpty()){
 			var attachment = ctx.getMessage().getAttachments().get(0); //Users can't add multiple attachments in one message
 			var extension = attachment.getFileExtension();

@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public abstract class Command{
 
 	private final Command parent;
-	private final String command;
+	private final String name;
 	private final Set<String> aliases;
 	private final Set<Permission> permissions;
 	private final List<Command> children;
@@ -23,13 +23,13 @@ public abstract class Command{
 	private String usage;
 	private boolean botOwnerOnly;
 
-	protected Command(String command, String description, Category category){
-		this(null, command, description, category);
+	protected Command(String name, String description, Category category){
+		this(null, name, description, category);
 	}
 
-	protected Command(Command parent, String command, String description, Category category){
+	protected Command(Command parent, String name, String description, Category category){
 		this.parent = parent;
-		this.command = command;
+		this.name = name;
 		this.description = description;
 		this.usage = "";
 		this.category = category;
@@ -81,7 +81,7 @@ public abstract class Command{
 	}
 
 	public boolean check(String command){
-		return this.command.equalsIgnoreCase(command) || this.aliases.stream().anyMatch(command::equalsIgnoreCase);
+		return this.name.equalsIgnoreCase(command) || this.aliases.stream().anyMatch(command::equalsIgnoreCase);
 	}
 
 	private Set<Permission> getMissingPermissions(CommandContext ctx){
@@ -111,11 +111,11 @@ public abstract class Command{
 	public String getUsage(){
 		if(this.parent == null){
 			if(this.children.isEmpty()){
-				return this.command + " " + this.usage;
+				return this.name + " " + this.usage;
 			}
-			return this.command;
+			return this.name;
 		}
-		return this.parent.getUsage() + " " + this.command + " " + this.usage;
+		return this.parent.getUsage() + " " + this.name + " " + this.usage;
 	}
 
 	protected void setUsage(String usage){
@@ -124,13 +124,13 @@ public abstract class Command{
 
 	public String getPath(){
 		if(this.parent == null){
-			return this.command;
+			return this.name;
 		}
-		return this.parent.getPath() + " " + this.command;
+		return this.parent.getPath() + " " + this.name;
 	}
 
-	public String getCommand(){
-		return this.command;
+	public String getName(){
+		return this.name;
 	}
 
 	public Set<String> getAliases(){

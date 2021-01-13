@@ -8,7 +8,7 @@ import de.kittybot.kittybot.modules.MessageModule;
 import de.kittybot.kittybot.modules.SettingsModule;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.awt.Color;
+import java.awt.*;
 
 @SuppressWarnings("unused")
 public class EditSnipeCommand extends Command{
@@ -34,7 +34,7 @@ public class EditSnipeCommand extends Command{
 			ctx.sendError("There's no edited message to snipe");
 			return;
 		}
-		ctx.getJDA().retrieveUserById(lastEditedMessage.getAuthorId()).queue(user -> {
+		ctx.getJDA().retrieveUserById(lastEditedMessage.getAuthorId()).queue(user ->
 			ctx.getChannel().sendMessage(new EmbedBuilder()
 					.setDescription(lastEditedMessage.getContent())
 					.setTimestamp(lastEditedMessage.getTimeCreated())
@@ -42,8 +42,8 @@ public class EditSnipeCommand extends Command{
 					.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
 					.setAuthor(user.getName(), lastEditedMessage.getJumpUrl(), user.getEffectiveAvatarUrl())
 					.build()
-			).queue();
-		});
+			).queue()
+		);
 	}
 
 }

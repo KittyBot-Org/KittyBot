@@ -6,11 +6,8 @@ import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.objects.SelfAssignableRoleGroup;
-import net.dv8tion.jda.api.Permission;
 
 import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 
 @SuppressWarnings("unused")
 public class AddGroupsCommand extends Command{

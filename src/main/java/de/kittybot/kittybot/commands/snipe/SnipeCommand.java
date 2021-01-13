@@ -8,7 +8,7 @@ import de.kittybot.kittybot.modules.MessageModule;
 import de.kittybot.kittybot.modules.SettingsModule;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.awt.Color;
+import java.awt.*;
 
 @SuppressWarnings("unused")
 public class SnipeCommand extends Command{
@@ -31,7 +31,7 @@ public class SnipeCommand extends Command{
 			ctx.sendError("There's no deleted message to snipe");
 			return;
 		}
-		ctx.getJDA().retrieveUserById(lastDeletedMessage.getAuthorId()).queue(user -> {
+		ctx.getJDA().retrieveUserById(lastDeletedMessage.getAuthorId()).queue(user ->
 			ctx.getChannel().sendMessage(new EmbedBuilder()
 					.setDescription(lastDeletedMessage.getContent())
 					.setTimestamp(lastDeletedMessage.getTimeCreated())
@@ -39,8 +39,8 @@ public class SnipeCommand extends Command{
 					.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
 					.setAuthor(user.getName(), lastDeletedMessage.getJumpUrl(), user.getEffectiveAvatarUrl())
 					.build()
-			).queue();
-		});
+			).queue()
+		);
 	}
 
 }

@@ -15,11 +15,11 @@ import java.util.concurrent.TimeUnit;
 
 public class StatusModule extends Module{
 
-	private List<String> status_messages;
+	private List<String> statusMessages;
 
 	@Override
 	public void onEnable(){
-		this.status_messages = FileUtils.loadMessageFile("status");
+		this.statusMessages = FileUtils.loadMessageFile("status");
 	}
 
 	@Override
@@ -33,10 +33,10 @@ public class StatusModule extends Module{
 	}
 
 	private Activity generateRandomMessage(JDA jda){
-		if(status_messages == null || status_messages.isEmpty()){
+		if(statusMessages.isEmpty()){
 			return Activity.watching("you \uD83D\uDC40");
 		}
-		var randomMessage = status_messages.get(ThreadLocalRandom.current().nextInt(status_messages.size() - 1));
+		var randomMessage = statusMessages.get(ThreadLocalRandom.current().nextInt(statusMessages.size() - 1));
 
 		var activityMessage = randomMessage.split("\\s+", 2);
 		var type = activityMessage[0].toUpperCase();

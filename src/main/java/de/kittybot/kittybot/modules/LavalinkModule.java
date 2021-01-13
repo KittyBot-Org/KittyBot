@@ -1,6 +1,5 @@
 package de.kittybot.kittybot.modules;
 
-import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.utils.Config;
 import lavalink.client.io.jda.JdaLavalink;
@@ -16,7 +15,7 @@ import java.net.URISyntaxException;
 
 public class LavalinkModule extends Module{
 
-	private static final Logger LOG = LoggerFactory.getLogger(KittyBot.class);
+	private static final Logger LOG = LoggerFactory.getLogger(LavalinkModule.class);
 
 	private JdaLavalink lavalink;
 

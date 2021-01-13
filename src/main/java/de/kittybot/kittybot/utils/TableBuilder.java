@@ -16,7 +16,7 @@ public class TableBuilder<T>{
 
 	public TableBuilder<T> addColumn(String columnName, Function<? super T, ?> fieldFunction){
 		columnNames.add(columnName);
-		stringFunctions.add((p) -> String.valueOf(fieldFunction.apply(p)));
+		stringFunctions.add(p -> String.valueOf(fieldFunction.apply(p)));
 		return this;
 	}
 

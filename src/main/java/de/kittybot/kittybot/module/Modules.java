@@ -42,7 +42,7 @@ public class Modules{
 			LOG.error("Error while loading modules", e);
 		}
 		this.modules.forEach(Module::onEnable);
-		LOG.info("Finished loading " + this.modules.size() + " modules");
+		LOG.info("Finished loading {} modules", this.modules.size());
 	}
 
 	public Object[] getModules(){

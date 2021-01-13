@@ -2,7 +2,6 @@ package de.kittybot.kittybot.command.context;
 
 import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.modules.CommandResponseModule;
 import de.kittybot.kittybot.utils.Utils;
@@ -16,7 +15,7 @@ import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import org.apache.commons.collections4.Bag;
 
-import java.awt.Color;
+import java.awt.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -115,10 +114,8 @@ public class CommandContext extends Context{
 		var users = new ArrayList<>(this.getMessage().getMentionedUsers());
 		var selfUser = this.getSelfUser();
 
-		if(this.isMentionCommand()){
-			if(this.getMessage().getMentionedUsersBag().getCount(selfUser) == 1){
-				users.remove(selfUser);
-			}
+		if(this.isMentionCommand() && this.getMessage().getMentionedUsersBag().getCount(selfUser) == 1){
+			users.remove(selfUser);
 		}
 		return users;
 	}
@@ -162,10 +159,8 @@ public class CommandContext extends Context{
 		var members = new ArrayList<>(this.getMessage().getMentionedMembers());
 		var selfMember = this.getSelfMember();
 
-		if(this.isMentionCommand()){
-			if(this.getMessage().getMentionedUsersBag().getCount(selfMember) == 1){
-				members.remove(selfMember);
-			}
+		if(this.isMentionCommand() && this.getMessage().getMentionedUsersBag().getCount(selfMember) == 1){
+			members.remove(selfMember);
 		}
 		return members;
 	}
@@ -276,9 +271,9 @@ public class CommandContext extends Context{
 		return answer(answer.setColor(Color.GREEN));
 	}
 
-	public void sendBlankSuccess(String msg){
+	public void sendSuccess(MessageAction msgAction){
 		addStatus(getMessage(), Status.OK);
-		queue(getChannel().sendMessage(msg));
+		queue(msgAction);
 	}
 
 	public void sendSuccess(EmbedBuilder embed){
@@ -317,7 +312,7 @@ public class CommandContext extends Context{
 		queue(usage(usage));
 	}
 
-	protected enum Status{
+	public enum Status{
 		OK("\u2705"),
 		ERROR("\u274C"),
 		NO_ENTRY("\ud83d\udeab"),

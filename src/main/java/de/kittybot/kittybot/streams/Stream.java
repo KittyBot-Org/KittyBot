@@ -33,6 +33,7 @@ public class Stream{
 	}
 
 	public static Stream fromTwitchJSON(DataObject json){
+		var lang = Arrays.stream(Language.values()).filter(l -> l.getShortname().equalsIgnoreCase(json.getString("language"))).findFirst();
 		return new Stream(
 				json.getLong("id"),
 				json.getString("title"),
@@ -43,7 +44,7 @@ public class Stream{
 				new Game(json.getInt("game_id"), json.getString("game_name")),
 				json.getInt("viewer_count"),
 				Instant.parse(json.getString("started_at")),
-				Arrays.stream(Language.values()).filter(l -> l.getShortname().equalsIgnoreCase(json.getString("language"))).findFirst().get(),
+				lang.orElse(Language.UNKNOWN),
 				StreamType.TWITCH
 		);
 	}
@@ -90,6 +91,10 @@ public class Stream{
 
 	public Language getLanguage(){
 		return this.language;
+	}
+
+	public StreamType getType(){
+		return this.type;
 	}
 
 }

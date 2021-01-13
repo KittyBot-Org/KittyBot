@@ -6,6 +6,9 @@ import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.exceptions.CommandException;
 import de.kittybot.kittybot.modules.TagModule;
+import net.dv8tion.jda.api.entities.Message;
+
+import java.util.List;
 
 @SuppressWarnings("unused")
 public class TagCommand extends Command{
@@ -30,7 +33,12 @@ public class TagCommand extends Command{
 			ctx.sendUsage(this.getUsage() + " " + this.getRawUsage());
 			return;
 		}
-		ctx.sendBlankSuccess(ctx.get(TagModule.class).get(args.get(0), ctx.getGuildId()).getContent());
+		var content = ctx.get(TagModule.class).get(args.get(0), ctx.getGuildId()).getContent();
+		if(content == null){
+			ctx.sendError("Tag '" + args.get(0) + "' not found");
+			return;
+		}
+		ctx.sendSuccess(ctx.getChannel().sendMessage(content).allowedMentions(List.of(Message.MentionType.CHANNEL, Message.MentionType.EMOTE)));
 	}
 
 }

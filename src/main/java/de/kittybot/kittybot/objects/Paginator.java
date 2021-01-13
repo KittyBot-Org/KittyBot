@@ -4,8 +4,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
-import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
 public class Paginator{

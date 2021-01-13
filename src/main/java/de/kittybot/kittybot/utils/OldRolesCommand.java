@@ -10,13 +10,13 @@ import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.objects.Emoji;
 import de.kittybot.kittybot.objects.SelfAssignableRole;
 import de.kittybot.kittybot.objects.SelfAssignableRoleGroup;
-import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Role;
 
-import java.awt.Color;
+import java.awt.*;
+import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
 

@@ -11,7 +11,7 @@ public class Main{
 
 	private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
-	public static void main(String... args){
+	public static void main(String... args) throws InterruptedException{
 		try{
 			LOG.info("Starting KittyBot...");
 			LOG.info("\n" +
@@ -29,8 +29,9 @@ public class Main{
 					"\n");
 			new KittyBot();
 		}
-		catch(LoginException | InterruptedException | IOException | MissingConfigValuesException e){
+		catch(LoginException | IOException | MissingConfigValuesException e){
 			LOG.error("Error while starting KittyBot", e);
+			System.exit(-1);
 		}
 	}
 

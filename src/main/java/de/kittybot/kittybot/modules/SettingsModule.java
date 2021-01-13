@@ -33,7 +33,7 @@ import static de.kittybot.kittybot.jooq.Tables.*;
 
 public class SettingsModule extends Module{
 
-	private static final Logger LOG = LoggerFactory.getLogger(CommandModule.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SettingsModule.class);
 
 	private LoadingCache<Long, Settings> guildSettings;
 
@@ -440,7 +440,7 @@ public class SettingsModule extends Module{
 	}
 
 	public void addSelfAssignableRoleGroups(long guildId, Set<SelfAssignableRoleGroup> groups){
-		groups = insertSelfAssignableRoleGroups(guildId, groups);
+		insertSelfAssignableRoleGroups(guildId, groups);
 		var settings = getSettings(guildId);
 		if(settings != null){
 			settings.addSelfAssignableRoleGroups(groups);

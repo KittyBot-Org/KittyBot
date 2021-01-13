@@ -59,21 +59,6 @@ public class TwitchWrapper{
 		return null;
 	}
 
-	/*public Game getGame(long gameId){
-		var resp = newRequest("games?id=%d", gameId);
-		if(resp == null || resp.body() == null){
-			return Game.getUnknown();
-		}
-		try{
-			var json = DataObject.fromJson(resp.body().string());
-			return Game.fromTwitchJSON(json.getObject("data"));
-		}
-		catch(IOException e){
-			LOG.error("Error while unpacking request body", e);
-		}
-		return Game.getUnknown();
-	} */
-
 	public List<Stream> getStreams(List<String> userNames){
 		var streams = new ArrayList<Stream>();
 		do{
@@ -100,9 +85,12 @@ public class TwitchWrapper{
 	}
 
 	private Call newRequest(String url, Object... params){
-		if(this.bearerToken.isExpired()){
+		if(this.bearerToken == null || this.bearerToken.isExpired()){
 			this.bearerToken = requestBearerToken();
 			LOG.info("New Bearer Token retrieved");
+		}
+		if(bearerToken == null){
+			throw new NullPointerException("bearerToken is null");
 		}
 		return this.httpClient.newCall(new Request.Builder()
 				.url(BASE_URL + String.format(url, params))

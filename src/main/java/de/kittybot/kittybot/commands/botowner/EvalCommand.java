@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import java.awt.Color;
+import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 

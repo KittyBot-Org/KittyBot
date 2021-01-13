@@ -51,7 +51,7 @@ public class SettingsCommand extends Command{
 						settingsManager.setNsfwEnabled(guildId, true);
 						ctx.sendSuccess("NSFW `activated`");
 					}
-					else if(args.isEnable(1)){
+					else if(args.isDisable(1)){
 						settingsManager.setNsfwEnabled(guildId, false);
 						ctx.sendSuccess("NSFW `deactivated`");
 					}

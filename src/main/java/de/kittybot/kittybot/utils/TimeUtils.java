@@ -11,7 +11,9 @@ public class TimeUtils{
 
 	public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm-dd.MM.yyyy");
 	private static final Pattern PERIOD_PATTERN = Pattern.compile("([0-9]+)([ywdhms])");
-	private final static Pattern DATE_TIME_PATTERN = Pattern.compile("^\\d{1,2}:\\d{1,2}-\\d{1,2}.\\d{1,2}.\\d{4}");
+	private static final Pattern DATE_TIME_PATTERN = Pattern.compile("^\\d{1,2}:\\d{1,2}-\\d{1,2}.\\d{1,2}.\\d{4}");
+
+	private TimeUtils(){}
 
 	public static LocalDateTime parse(String string){
 		string = string.toLowerCase();
@@ -42,6 +44,7 @@ public class TimeUtils{
 					case "s":
 						time = time.plus(num, ChronoUnit.SECONDS);
 						break;
+					default:
 				}
 			}
 			return time;

@@ -27,10 +27,6 @@ public class InviteRolesCommand extends Command{
 
 	@Override
 	public void run(Args args, CommandContext ctx){
-		if(!ctx.getSelfMember().hasPermission(Permission.MANAGE_SERVER)){
-			ctx.sendNoPermissions("For this feature to work I need the MANAGE_SERVER permission!");
-			return;
-		}
 		var roles = ctx.getMentionedRoles();
 		if(args.isEmpty()){
 			ctx.sendUsage(this);

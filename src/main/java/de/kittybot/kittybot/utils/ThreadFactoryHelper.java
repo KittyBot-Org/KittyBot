@@ -10,8 +10,6 @@ public class ThreadFactoryHelper implements ThreadFactory{
 
 	private static final Logger LOG = LoggerFactory.getLogger(ThreadFactoryHelper.class);
 
-	public ThreadFactoryHelper(){}
-
 	@Override
 	public Thread newThread(@NotNull Runnable r){
 		var thread = new Thread(r, "KittyBot Scheduler");

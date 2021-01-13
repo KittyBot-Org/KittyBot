@@ -24,7 +24,6 @@ public class GetGuildSettingsRoute implements Handler{
 		var guildId = this.modules.get(WebService.class).getGuild(ctx).getIdLong();
 		var settings = this.modules.get(SettingsModule.class).getSettings(guildId);
 		var selfAssignableRoles = DataArray.empty();
-		//SelfAssignableRoleCache.getSelfAssignableRoles(guildId).forEach((key, value) -> data.add(DataObject.empty().put("role", key).put("emote", value)));
 		var selfAssignableRoleGroups = DataArray.empty();
 		var inviteRoles = DataArray.fromCollection(
 				settings.getInviteRoles().entrySet().stream().map(entry ->

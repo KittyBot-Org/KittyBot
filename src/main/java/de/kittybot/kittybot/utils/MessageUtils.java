@@ -10,6 +10,8 @@ import java.util.Set;
 
 public class MessageUtils{
 
+	private static final String UNSET = "unset";
+
 	private MessageUtils(){}
 
 	public static String trimIfTooLong(String message){
@@ -40,8 +42,7 @@ public class MessageUtils{
 				MiscUtil.parseSnowflake(userMatcher.group(1));
 				mentions.add(userMatcher.group());
 			}
-			catch(NumberFormatException ignored){
-			}
+			catch(NumberFormatException ignored){}
 		}
 
 		var roleMatcher = Message.MentionType.ROLE.getPattern().matcher(message);
@@ -50,8 +51,7 @@ public class MessageUtils{
 				MiscUtil.parseSnowflake(roleMatcher.group(1));
 				mentions.add(roleMatcher.group());
 			}
-			catch(NumberFormatException ignored){
-			}
+			catch(NumberFormatException ignored){}
 		}
 
 		if(Message.MentionType.EVERYONE.getPattern().matcher(message).find()){
@@ -66,28 +66,28 @@ public class MessageUtils{
 
 	public static String getUserMention(long userId){
 		if(userId == -1L){
-			return "unset";
+			return UNSET;
 		}
 		return "<@!" + userId + ">";
 	}
 
 	public static String getRoleMention(long roleId){
 		if(roleId == -1L){
-			return "unset";
+			return UNSET;
 		}
 		return "<@&" + roleId + ">";
 	}
 
 	public static String getChannelMention(long channelId){
 		if(channelId == -1L){
-			return "unset";
+			return UNSET;
 		}
 		return "<#" + channelId + ">";
 	}
 
 	public static String getEmoteMention(long emoteId){
 		if(emoteId == -1L){
-			return "unset";
+			return UNSET;
 		}
 		return "<:i:" + emoteId + ">";
 	}

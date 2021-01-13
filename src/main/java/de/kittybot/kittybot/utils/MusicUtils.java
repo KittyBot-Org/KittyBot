@@ -10,6 +10,8 @@ import java.util.Collection;
 
 public class MusicUtils{
 
+	private MusicUtils(){}
+
 	public static String formatTracks(String message, Collection<AudioTrack> tracks){
 		var trackMessage = new StringBuilder(message).append("\n");
 		for(var track : tracks){

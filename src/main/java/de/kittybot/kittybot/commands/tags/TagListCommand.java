@@ -34,10 +34,8 @@ public class TagListCommand extends Command{
 			return;
 		}
 		var users = ctx.getMentionedUsers();
-		if(users.isEmpty()){
-			if(Utils.isSnowflake(args.get(0))){
-				users.add(User.fromId(args.get(0)));
-			}
+		if(users.isEmpty() && Utils.isSnowflake(args.get(0))){
+			users.add(User.fromId(args.get(0)));
 		}
 		if(users.isEmpty()){
 			ctx.sendUsage(this);

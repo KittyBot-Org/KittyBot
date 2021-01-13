@@ -8,10 +8,6 @@ import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.objects.SelfAssignableRoleGroup;
 import de.kittybot.kittybot.utils.TableBuilder;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
-
-import java.util.List;
-import java.util.Set;
 
 @SuppressWarnings("unused")
 public class ListGroupsCommand extends Command{

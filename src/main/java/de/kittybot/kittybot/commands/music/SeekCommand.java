@@ -22,7 +22,7 @@ public class SeekCommand extends Command{
 		if(!MusicUtils.checkCommandRequirements(ctx, player)){
 			return;
 		}
-
+		// TODO
 	}
 
 }

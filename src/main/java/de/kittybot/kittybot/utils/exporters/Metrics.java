@@ -72,5 +72,7 @@ public class Metrics{
 			.labelNames("type")
 			.register();
 
+	private Metrics(){}
+
 }
 

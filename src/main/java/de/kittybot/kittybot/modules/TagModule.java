@@ -85,7 +85,6 @@ public class TagModule extends Module{
 				.set(GUILD_TAGS.CONTENT, content)
 				.where(GUILD_TAGS.NAME.eq(name.toLowerCase()).and(GUILD_TAGS.GUILD_ID.eq(guildId).and(GUILD_TAGS.USER_ID.eq(userId))))
 				.execute();
-		System.out.println("Records: " + rows);
 		if(rows != 1){
 			throw new CommandException("Tag not found or not owned by you");
 		}

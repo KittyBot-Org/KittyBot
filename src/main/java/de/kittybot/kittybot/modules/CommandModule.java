@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -82,12 +81,12 @@ public class CommandModule extends Module{
 			return;
 		}
 
-		var args = new Args(Arrays.asList(message.split(CommandModule.ARGUMENT_REGEX)));
+		var args = new Args(message.split(CommandModule.ARGUMENT_REGEX));
 		for(var command : this.commands.values()){
 			if(command.check(args.get(0))){
 				command.process(new CommandContext(event, this.modules, command.getPath(), args, message));
-				Metrics.COMMAND_COUNTER.labels(args.get(0)).inc();
-				Metrics.COMMAND_LATENCY.observe(System.currentTimeMillis() - start);
+				Metrics.COMMAND_COUNTER.labels(command.getName()).inc();
+				Metrics.COMMAND_LATENCY.observe((double) (System.currentTimeMillis() - start));
 				return;
 			}
 		}
@@ -112,8 +111,8 @@ public class CommandModule extends Module{
 			return;
 		}
 		if(reactiveMessage.getAllowed() == -1L || reactiveMessage.getAllowed() == event.getUserIdLong()){
-			this.allCommands.get(reactiveMessage.getPath())
-					.process(new ReactionContext(event, this.modules, reactiveMessage));
+			// TODO make it work with sub commands
+			this.allCommands.get(reactiveMessage.getPath()).process(new ReactionContext(event, this.modules, reactiveMessage));
 			return;
 		}
 		event.getReaction().removeReaction(event.getUser()).queue();

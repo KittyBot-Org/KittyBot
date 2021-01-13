@@ -7,14 +7,9 @@ import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.commands.roles.groups.AddGroupsCommand;
 import de.kittybot.kittybot.commands.roles.groups.ListGroupsCommand;
 import de.kittybot.kittybot.commands.roles.groups.RemoveGroupsCommand;
-import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.objects.SelfAssignableRoleGroup;
-import de.kittybot.kittybot.utils.MessageUtils;
-import de.kittybot.kittybot.utils.TableBuilder;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -36,10 +31,6 @@ public class GroupsCommand extends Command{
 	@Override
 	public void run(Args args, CommandContext ctx){
 		ctx.sendUsage(this);
-	}
-
-	public Set<SelfAssignableRoleGroup> removeSelfAssignableRoleGroupsByName(CommandContext ctx, List<String> set){
-		return null;
 	}
 
 }

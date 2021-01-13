@@ -3,7 +3,6 @@ package de.kittybot.kittybot.modules;
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.jooq.tables.records.NotificationsRecord;
 import de.kittybot.kittybot.module.Module;
-import de.kittybot.kittybot.objects.Emoji;
 import de.kittybot.kittybot.objects.Notification;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.MessageUtils;
@@ -13,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.Color;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -58,14 +56,14 @@ public class NotificationModule extends Module{
 	private void schedule(Set<Notification> notifs){
 		var now = LocalDateTime.now();
 		for(var notification : notifs){
-			var scheduleIn = 0L;
+			long scheduleIn;
 			if(notification.getNotificationTime().isBefore(now)){
 				scheduleIn = 1L;
 			}
 			else{
 				scheduleIn = now.until(notification.getNotificationTime(), ChronoUnit.MILLIS);
 			}
-			LOG.info("Scheduled in " + scheduleIn);
+			LOG.info("Scheduled in {}", scheduleIn);
 			this.modules.getScheduler().schedule(() -> {
 				var guild = this.modules.getGuildById(notification.getGuildId());
 				if(guild == null){
@@ -92,11 +90,11 @@ public class NotificationModule extends Module{
 	}
 
 	private Set<Notification> getAndRemoveNext(LocalDateTime to){
-		var notifications = this.notifications.values().stream().filter(
+		var nextNotifs = this.notifications.values().stream().filter(
 				notification -> notification.getNotificationTime().isBefore(to)
 		).collect(Collectors.toSet());
-		this.notifications.entrySet().removeIf(entry -> notifications.stream().anyMatch(notification -> notification.getId() == entry.getValue().getId()));
-		return notifications;
+		this.notifications.entrySet().removeIf(entry -> nextNotifs.stream().anyMatch(notification -> notification.getId() == entry.getValue().getId()));
+		return nextNotifs;
 	}
 
 	public boolean delete(long id, long userId){

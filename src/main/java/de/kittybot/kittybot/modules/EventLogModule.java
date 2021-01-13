@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import java.time.Instant;
 
 public class EventLogModule extends Module{
 
@@ -31,27 +32,27 @@ public class EventLogModule extends Module{
 
 	@Override
 	public void onReady(@NotNull ReadyEvent event){
-		send(event.getJDA(), "Shard Ready", "Shard `" + event.getJDA().getShardInfo().getShardId() + "` started");
+		sendShard(event, "Ready", "started");
 	}
 
 	@Override
 	public void onResumed(@Nonnull ResumedEvent event){
-		send(event.getJDA(), "Shard Resumed", "Shard `" + event.getJDA().getShardInfo().getShardId() + "` resumed");
+		sendShard(event, "Resumed", "resumed");
 	}
 
 	@Override
 	public void onReconnected(@Nonnull ReconnectedEvent event){
-		send(event.getJDA(), "Shard Reconnected", "Shard `" + event.getJDA().getShardInfo().getShardId() + "` reconnected");
+		sendShard(event, "Reconnected", "reconnected");
 	}
 
 	@Override
 	public void onDisconnect(@NotNull DisconnectEvent event){
-		send(event.getJDA(), "Shard Disconnect", "Shard `" + event.getJDA().getShardInfo().getShardId() + "` disconnected");
+		sendShard(event, "Disconnect", "disconnected");
 	}
 
 	@Override
 	public void onShutdown(@Nonnull ShutdownEvent event){
-		send(event.getJDA(), "Shard Shutdown", "Shard `" + event.getJDA().getShardInfo().getShardId() + "` shutdown");
+		sendShard(event, "Shutdown", "shutdown");
 	}
 
 	@Override
@@ -64,7 +65,7 @@ public class EventLogModule extends Module{
 		var guildCount = (int) event.getJDA().getGuildCache().size();
 		var guild = event.getGuild();
 		guild.retrieveOwner().queue(owner -> send(event.getJDA(), "Join", String.format(
-				"Guild: `%s(%s) with owner: `%s`(%s) and `%d` members\nGuilds: `%d`",
+				"Guild: `%s(%s) with owner: `%s`(%s) and `%d` members%nGuilds: `%d`",
 				guild.getName(),
 				guild.getId(),
 				owner.getUser().getAsTag(),
@@ -79,11 +80,16 @@ public class EventLogModule extends Module{
 		var guildCount = (int) event.getJDA().getGuildCache().size();
 		var guild = event.getGuild();
 		send(event.getJDA(), "Leave", String.format(
-				"Guild: `%s(%s)\nGuilds: `%d`",
+				"Guild: `%s(%s)%nGuilds: `%d`",
 				guild.getName(),
 				guild.getId(),
 				guildCount
 		));
+	}
+
+	public void sendShard(GenericEvent genericEvent, String event, String message){
+		var jda = genericEvent.getJDA();
+		send(jda, "Shard " + event, "Shard `" + jda.getShardInfo().getShardId() + "` " + message);
 	}
 
 	public void send(JDA jda, String event, String message){
@@ -99,6 +105,8 @@ public class EventLogModule extends Module{
 						.setColor(Colors.KITTYBOT_BLUE_INT)
 						.setAuthor(new WebhookEmbed.EmbedAuthor(event, avatarUrl, Config.ORIGIN_URL))
 						.setDescription(message)
+						.setFooter(new WebhookEmbed.EmbedFooter("", avatarUrl))
+						.setTimestamp(Instant.now())
 						.build()
 				).build()
 		);

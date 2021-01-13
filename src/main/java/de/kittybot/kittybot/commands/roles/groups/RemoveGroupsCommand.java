@@ -7,10 +7,7 @@ import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.objects.SelfAssignableRoleGroup;
 import de.kittybot.kittybot.utils.MessageUtils;
-import net.dv8tion.jda.api.Permission;
 
-import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")

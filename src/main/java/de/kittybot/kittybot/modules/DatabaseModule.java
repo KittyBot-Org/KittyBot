@@ -24,7 +24,7 @@ public class DatabaseModule extends Module{
 
 	@Override
 	public void onEnable(){
-		this.configuration = initConfiguration();
+		initConfiguration();
 		initTable("guilds",
 				"member_roles",
 				"guild_tags",
@@ -45,10 +45,10 @@ public class DatabaseModule extends Module{
 		);
 	}
 
-	private Configuration initConfiguration(){
+	private void initConfiguration(){
 		if(Config.DB_HOST.isBlank() || Config.DB_PORT.isBlank() || Config.DB_DATABASE.isBlank() || Config.DB_USER.isBlank() || Config.DB_PASSWORD.isBlank()){
 			LOG.error("Please check your db host/port/database/user/password");
-			return null;
+			return;
 		}
 		var config = new HikariConfig();
 		config.setDriverClassName("org.postgresql.Driver");
@@ -62,10 +62,10 @@ public class DatabaseModule extends Module{
 		config.setIdleTimeout(600000);
 		config.setMaxLifetime(1800000);
 
-		var configuration = new DefaultConfiguration();
-		configuration.setDataSource(new HikariDataSource(config));
-		configuration.setSQLDialect(SQLDialect.POSTGRES);
-		return configuration;
+		var defaultConfiguration = new DefaultConfiguration();
+		defaultConfiguration.setDataSource(new HikariDataSource(config));
+		defaultConfiguration.setSQLDialect(SQLDialect.POSTGRES);
+		this.configuration = defaultConfiguration;
 	}
 
 	private void initTable(String... tables){
@@ -76,10 +76,10 @@ public class DatabaseModule extends Module{
 				if(file == null){
 					throw new NullPointerException("File for table '" + table + "' not found");
 				}
-				getCtx().query(IOUtils.toString(file, StandardCharsets.UTF_8.name())).execute();
+				getCtx().query(IOUtils.toString(file, StandardCharsets.UTF_8)).execute();
 			}
 			catch(IOException | NullPointerException e){
-				LOG.error("Error initializing table: '" + table + "'", e);
+				LOG.error("Error initializing table: '{}", table, e);
 			}
 		}
 	}

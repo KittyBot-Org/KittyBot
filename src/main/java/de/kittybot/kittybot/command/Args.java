@@ -5,18 +5,22 @@ import java.util.stream.Stream;
 
 public class Args{
 
-	private final List<String> args;
+	private final List<String> arguments;
+
+	public Args(String[] args){
+		this.arguments = List.of(args);
+	}
 
 	public Args(List<String> args){
-		this.args = args;
+		this.arguments = args;
 	}
 
 	public int size(){
-		return this.args.size();
+		return this.arguments.size();
 	}
 
 	public boolean isEmpty(){
-		return this.args.isEmpty();
+		return this.arguments.isEmpty();
 	}
 
 	public boolean isEnable(int i){
@@ -24,7 +28,7 @@ public class Args{
 	}
 
 	public boolean is(int i, String arg){
-		return this.args.get(i).equalsIgnoreCase(arg);
+		return this.arguments.get(i).equalsIgnoreCase(arg);
 	}
 
 	public boolean isDisable(int i){
@@ -36,23 +40,23 @@ public class Args{
 	}
 
 	public String get(int i){
-		return this.args.get(i);
+		return this.arguments.get(i);
 	}
 
 	public List<String> getList(){
-		return this.args;
+		return this.arguments;
 	}
 
 	public Args subArgs(){
-		return new Args(this.args.subList(1, this.args.size()));
+		return new Args(this.arguments.subList(1, this.arguments.size()));
 	}
 
 	public List<String> subList(int from, int to){
-		return this.args.subList(from, to);
+		return this.arguments.subList(from, to);
 	}
 
 	public Stream<String> stream(){
-		return this.args.stream();
+		return this.arguments.stream();
 	}
 
 }

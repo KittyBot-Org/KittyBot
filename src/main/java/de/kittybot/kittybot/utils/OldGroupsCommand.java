@@ -6,14 +6,13 @@ import de.kittybot.kittybot.command.Command;
 import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.objects.SelfAssignableRoleGroup;
-import de.kittybot.kittybot.utils.MessageUtils;
-import de.kittybot.kittybot.utils.TableBuilder;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class OldGroupsCommand extends Command{
@@ -64,7 +63,7 @@ public class OldGroupsCommand extends Command{
 				return;
 			}
 			var groups = removeSelfAssignableRoleGroupsByName(ctx, args.subList(1, args.size()));
-			ctx.sendAnswer(MessageUtils.pluralize("Removed group", groups) + " " + groups.stream().map(SelfAssignableRoleGroup::getName));
+			ctx.sendAnswer(MessageUtils.pluralize("Removed group", groups) + " " + groups.stream().map(SelfAssignableRoleGroup::getName).collect(Collectors.joining(", ")));
 		}
 		else{
 			ctx.sendUsage(this);

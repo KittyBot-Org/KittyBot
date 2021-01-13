@@ -28,7 +28,7 @@ public class MemoryUsageExporter{
 
 	private static final Gauge.Child PSS = MEMORY_USAGE.labels("PSS");
 	private static final Gauge.Child RSS = MEMORY_USAGE.labels("RSS");
-	private static volatile ScheduledFuture<?> task;
+	private static ScheduledFuture<?> task;
 
 	public void register(Modules modules){
 		MEMORY_USAGE.register();
@@ -86,16 +86,22 @@ public class MemoryUsageExporter{
 
 	private long parse(String line){
 		var parts = SPLIT_PATTERN.split(line.strip());
-		var multiplier = -1;
+		int multiplier;
 		switch(parts[2]){
 			case "B":
 				multiplier = 1;
+				break;
 			case "kB":
 				multiplier = 1024;
+				break;
 			case "mB":
 				multiplier = 1024 * 1024;
+				break;
 			case "gB":
 				multiplier = 1024 * 1024 * 1024;
+				break;
+			default:
+				multiplier = -1;
 		}
 		return Long.parseLong(parts[1]) * multiplier;
 	}

@@ -29,7 +29,7 @@ public class GetCommandsRoute implements Handler{
 				Arrays.stream(Category.values()).map(category ->
 						DataObject.empty().put("name", category.getName()).put("emote_url", category.getEmoteUrl()).put("commands", DataArray.fromCollection(
 								commandSet.stream().filter(cmd -> cmd.getCategory() == category).map(cmd ->
-										DataObject.empty().put("command", cmd.getCommand()).put("usage", cmd.getRawUsage()).put("description", cmd.getDescription())
+										DataObject.empty().put("command", cmd.getName()).put("usage", cmd.getRawUsage()).put("description", cmd.getDescription())
 								).collect(Collectors.toSet())
 						))
 				).collect(Collectors.toSet())

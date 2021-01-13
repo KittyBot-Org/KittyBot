@@ -11,12 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class RequestModule extends Module{
 
@@ -76,8 +74,7 @@ public class RequestModule extends Module{
 							stringBody = body.string();
 						}
 					}
-					catch(IOException ignored){
-					}
+					catch(IOException ignored){}
 					LOG.warn("Failed to send a request to {} | code: {} | response: {}", requestUrl, code, stringBody);
 					if(error != null){
 						error.accept(call, response);
@@ -122,7 +119,7 @@ public class RequestModule extends Module{
 
 	public void postToHastebin(String content, Consumer<String> callback){
 		requestBuilder.url(API.HASTEBIN.getUrl() + "/documents");
-		requestBuilder.post(RequestBody.create(MediaType.parse("text/html; charset=utf-8"), content));
+		requestBuilder.post(RequestBody.create(content, MediaType.parse("text/html; charset=utf-8")));
 		executeAsync(requestBuilder.build(), (call, response) -> {
 			var body = response.body();
 			String key = null;
@@ -140,10 +137,10 @@ public class RequestModule extends Module{
 
 	public void updateStats(API api, int guildCount, String token){
 		var requestBody = RequestBody.create(
-				MediaType.parse("application/json; charset=utf-8"),
 				DataObject.empty()
 						.put(api.getStatsParameter(), guildCount)
-						.toString()
+						.toString(),
+				MediaType.parse("application/json; charset=utf-8")
 		);
 		requestBuilder.url(String.format(api.getUrl(), Config.BOT_ID));
 		requestBuilder.header("Authorization", token);

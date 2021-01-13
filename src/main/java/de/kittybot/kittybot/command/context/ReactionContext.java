@@ -2,8 +2,6 @@ package de.kittybot.kittybot.command.context;
 
 import de.kittybot.kittybot.command.ReactiveMessage;
 import de.kittybot.kittybot.module.Modules;
-import de.kittybot.kittybot.modules.CommandModule;
-import de.kittybot.kittybot.modules.ReactiveMessageModule;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 public class ReactionContext extends Context{

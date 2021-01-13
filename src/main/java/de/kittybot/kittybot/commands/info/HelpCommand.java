@@ -27,7 +27,7 @@ public class HelpCommand extends Command{
 			ctx.get(CommandModule.class).getCommands().stream()
 					.filter(cmd -> cmd.getCategory() == category)
 					//.forEach(cmd -> response.append("\n• **").append(prefix).append(cmd.getCommand()).append("** - *").append(cmd.getDescription()).append("*"));
-					.forEach(cmd -> response.append("\n• ").append(prefix).append(cmd.getCommand()));
+					.forEach(cmd -> response.append("\n• ").append(prefix).append(cmd.getName()));
 		}
 		ctx.sendSuccess(new EmbedBuilder()
 				.setAuthor("Commands", Config.ORIGIN_URL + "/commands", ctx.getSelfUser().getEffectiveAvatarUrl())

@@ -26,7 +26,7 @@ public class HistoryCommand extends Command{
 			return;
 		}
 		var tracks = player.getHistory();
-		if(tracks.size() == 0){
+		if(tracks.isEmpty()){
 			ctx.sendAnswer(new EmbedBuilder()
 					.setColor(Colors.KITTYBOT_BLUE)
 					.setDescription("The history is empty. Play some tracks to fill it`")

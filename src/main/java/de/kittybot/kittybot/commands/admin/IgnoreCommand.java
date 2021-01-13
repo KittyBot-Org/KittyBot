@@ -36,8 +36,7 @@ public class IgnoreCommand extends Command{
 					users.add(user);
 				}
 			}
-			catch(ErrorResponseException ignored){
-			}
+			catch(ErrorResponseException ignored){}
 		}
 		if(users.isEmpty()){
 			ctx.sendError("Please provide a user");

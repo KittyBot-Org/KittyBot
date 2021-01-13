@@ -45,6 +45,9 @@ public class PostGuildSettingsRoute implements Handler{
 		if(json.hasKey("self_assignable_roles")){
 
 		}
+		if(json.hasKey("self_assignable_role_groups")){
+
+		}
 		WebService.accepted(ctx);
 	}
 

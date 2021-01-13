@@ -105,7 +105,8 @@ public enum Language{
 	Xhosa("xh", "Xhosa"),
 	Yiddish("yi", "Yiddish"),
 	Yoruba("yo", "Yoruba"),
-	Zulu("zu", "Zulu");
+	Zulu("zu", "Zulu"),
+	UNKNOWN("??", "Unknown");
 
 	private final String shortname, name;
 

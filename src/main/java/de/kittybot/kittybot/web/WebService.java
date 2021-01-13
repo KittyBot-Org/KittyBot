@@ -28,6 +28,8 @@ import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class WebService extends Module{
 
+	private Javalin javalin;
+
 	public static void accepted(Context ctx){
 		accepted(ctx, DataObject.empty());
 	}
@@ -55,7 +57,7 @@ public class WebService extends Module{
 		if(Config.BACKEND_PORT == -1){
 			return;
 		}
-		Javalin.create(config -> {
+		this.javalin = Javalin.create(config -> {
 			if(Config.ORIGIN_URL.isBlank()){
 				config.enableCorsForOrigin(Config.ORIGIN_URL);
 			}
@@ -63,15 +65,15 @@ public class WebService extends Module{
 				config.enableCorsForAllOrigins();
 			}
 		}).routes(() -> {
-			path("/discord_login", () -> {
-				get(new GetDiscordLoginRoute(this.modules));
-			});
-			path("/health_check", () -> {
-				get(ctx -> ctx.result("alive"));
-			});
-			path("/commands", () -> {
-				get(new GetCommandsRoute(this.modules));
-			});
+			path("/discord_login", () ->
+				get(new GetDiscordLoginRoute(this.modules))
+			);
+			path("/health_check", () ->
+				get(ctx -> ctx.result("alive"))
+			);
+			path("/commands", () ->
+				get(new GetCommandsRoute(this.modules))
+			);
 			path("/login", () -> {
 				post(new PostLoginRoute(this.modules));
 				delete(new DeleteLoginRoute(this.modules));
@@ -85,18 +87,18 @@ public class WebService extends Module{
 				get(new GetAllGuildsRoute(this.modules));
 				path("/:guildId", () -> {
 					before("/*", this::checkGuildPerms);
-					path("/roles", () -> {
-						get(new GetRolesRoute(this.modules));
-					});
-					path("/channels", () -> {
-						get(new GetChannelsRoute(this.modules));
-					});
-					path("/emotes", () -> {
-						get(new GetEmotesRoute(this.modules));
-					});
-					path("/invites", () -> {
-						get(new GetInvitesRoute(this.modules));
-					});
+					path("/roles", () ->
+						get(new GetRolesRoute(this.modules))
+					);
+					path("/channels", () ->
+						get(new GetChannelsRoute(this.modules))
+					);
+					path("/emotes", () ->
+						get(new GetEmotesRoute(this.modules))
+					);
+					path("/invites", () ->
+						get(new GetInvitesRoute(this.modules))
+					);
 					path("/tags", () -> {
 						get(new GetTagsRoute(this.modules));
 						path("/:tagId", () -> {
@@ -115,7 +117,7 @@ public class WebService extends Module{
 
 	@Override
 	protected void onDisable(){
-
+		this.javalin.stop();
 	}
 
 	private void checkDiscordLogin(Context ctx){

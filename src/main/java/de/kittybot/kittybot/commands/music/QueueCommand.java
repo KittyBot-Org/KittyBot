@@ -34,7 +34,7 @@ public class QueueCommand extends Command{
 			return;
 		}
 		var tracks = player.getQueue();
-		if(tracks.size() == 0){
+		if(tracks.isEmpty()){
 			var prefix = ctx.get(SettingsModule.class).getPrefix(ctx.getGuildId());
 			ctx.sendAnswer(new EmbedBuilder()
 					.setColor(Colors.KITTYBOT_BLUE)
