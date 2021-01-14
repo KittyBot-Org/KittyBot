@@ -28,7 +28,8 @@ public class MemoryUsageExporter{
 
 	private static final Gauge.Child PSS = MEMORY_USAGE.labels("PSS");
 	private static final Gauge.Child RSS = MEMORY_USAGE.labels("RSS");
-	private static ScheduledFuture<?> task;
+
+	private ScheduledFuture<?> task;
 
 	public void register(Modules modules){
 		MEMORY_USAGE.register();
@@ -39,7 +40,7 @@ public class MemoryUsageExporter{
 			return;
 		}
 
-		task = modules.getScheduler().scheduleAtFixedRate(
+		this.task = modules.getScheduler().scheduleAtFixedRate(
 				this::collect, 0,
 				PrometheusModule.UPDATE_PERIOD.toMillis(), TimeUnit.MILLISECONDS
 		);

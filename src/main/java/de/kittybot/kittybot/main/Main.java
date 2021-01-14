@@ -25,8 +25,8 @@ public class Main{
 					"                          __/ |                \n" +
 					"                         |___/                 \n" +
 					"\n" +
-					"         https://github.com/KittyBot-Org/KittyBot" +
-					"\n");
+					"         https://github.com/KittyBot-Org/KittyBot\n"
+			);
 			new KittyBot();
 		}
 		catch(LoginException | IOException | MissingConfigValuesException e){
