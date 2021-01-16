@@ -1,29 +1,33 @@
 package de.kittybot.kittybot.commands.info;
 
-import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
-import de.kittybot.kittybot.command.Command;
+import de.kittybot.kittybot.command.application.Command;
+import de.kittybot.kittybot.command.application.RunnableCommand;
 import de.kittybot.kittybot.command.context.CommandContext;
+import de.kittybot.kittybot.command.interaction.Options;
+import de.kittybot.kittybot.command.response.Response;
+import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDAInfo;
 
 import java.lang.management.ManagementFactory;
+import java.time.Instant;
 
 @SuppressWarnings("unused")
-public class InfoCommand extends Command{
-
+public class InfoCommand extends Command implements RunnableCommand{
 
 	public InfoCommand(){
-		super("info", "Shows some bot info", Category.INFORMATION);
+		super("info", "Shows bot info", Category.INFORMATION);
 	}
 
 	@Override
-	public void run(Args args, CommandContext ctx){
-		var shardManager = ctx.getShardManager();
+	public void run(Options options, CommandContext ctx){
+		var shardManager = ctx.getModules().getShardManager();
 		var runtime = Runtime.getRuntime();
-		ctx.sendSuccess(new EmbedBuilder()
+		ctx.reply(new EmbedBuilder()
+				.setColor(Colors.KITTYBOT_BLUE)
 				.setAuthor("KittyBot Information", Config.ORIGIN_URL, Category.INFORMATION.getEmoteUrl())
 
 				.addField("JVM Version:", System.getProperty("java.version"), true)
@@ -40,6 +44,10 @@ public class InfoCommand extends Command{
 
 				.addField("Memory Usage:", ((runtime.totalMemory() - runtime.freeMemory()) >> 20) + "MB / " + (runtime.maxMemory() >> 20) + "MB", true)
 				.addField("Thread Count:", String.valueOf(ManagementFactory.getThreadMXBean().getThreadCount()), true)
+
+				.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
+				.setTimestamp(Instant.now())
+				.build()
 		);
 	}
 

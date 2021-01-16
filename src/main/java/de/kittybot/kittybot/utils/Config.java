@@ -17,7 +17,7 @@ public class Config{
 	public static String BOT_TOKEN;
 	public static long BOT_ID;
 	public static String BOT_SECRET;
-	public static Set<Long> OWNER_IDS;
+	public static Set<Long> DEV_IDS;
 
 	public static int BACKEND_PORT;
 	public static int PROMETHEUS_PORT;
@@ -59,7 +59,7 @@ public class Config{
 			throw new IOException("Config file not found");
 		}
 		var json = DataObject.fromJson(Files.readAllBytes(config.toPath()));
-		checkMandatoryValues(json, "bot_token", "default_prefix", "owner_ids", "db_host", "db_port", "db_database", "db_user", "db_password", "signing_key", "backend_port", "origin_url", "redirect_url");
+		checkMandatoryValues(json, "bot_token", "default_prefix", "dev_ids", "db_host", "db_port", "db_database", "db_user", "db_password", "signing_key", "backend_port", "origin_url", "redirect_url");
 
 		DEFAULT_PREFIX = json.getString("default_prefix", ".");
 
@@ -72,12 +72,12 @@ public class Config{
 		}
 		BOT_SECRET = json.getString("bot_secret", "");
 
-		var ownerIds = json.optArray("owner_ids");
-		OWNER_IDS = new HashSet<>();
+		var ownerIds = json.optArray("dev_ids");
+		DEV_IDS = new HashSet<>();
 		if(ownerIds.isPresent()){
 			var val = ownerIds.get();
 			for(var i = 0; i < val.length(); i++){
-				OWNER_IDS.add(val.getLong(i, -1));
+				DEV_IDS.add(val.getLong(i, -1));
 			}
 		}
 

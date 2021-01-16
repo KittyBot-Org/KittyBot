@@ -8,15 +8,16 @@ import java.util.function.BiFunction;
 
 public class Paginator{
 
-	private final long guildId, channelId, messageId;
+	private final long guildId, channelId, messageId, authorId;
 	private int currentPage;
 	private final int maxPages;
 	private final BiFunction<Integer, EmbedBuilder, EmbedBuilder> embedFunction;
 
-	public Paginator(Message message, int maxPages, BiFunction<Integer, EmbedBuilder, EmbedBuilder> embedFunction){
+	public Paginator(Message message, long authorId, int maxPages, BiFunction<Integer, EmbedBuilder, EmbedBuilder> embedFunction){
 		this.guildId = message.getGuild().getIdLong();
 		this.channelId = message.getChannel().getIdLong();
 		this.messageId = message.getIdLong();
+		this.authorId = authorId;
 		this.currentPage = 0;
 		this.maxPages = maxPages;
 		this.embedFunction = embedFunction;
@@ -32,6 +33,10 @@ public class Paginator{
 
 	public long getMessageId(){
 		return this.messageId;
+	}
+
+	public long getAuthorId(){
+		return this.authorId;
 	}
 
 	public int getCurrentPage(){

@@ -2,13 +2,13 @@ package de.kittybot.kittybot.objects;
 
 public enum Language{
 
-	Afrikaans("af", "Afrikaans"),
-	Albanian("sq", "Albanian"),
-	Amharic("am", "Amharic"),
-	Arabic("ar", "Arabic"),
-	Armenian("hy", "Armenian"),
-	Azerbaijani("az", "Azerbaijani"),
-	Basque("eu", "Basque"),
+	AFRIKAANS("af", "Afrikaans"),
+	ALBANIAN("sq", "Albanian"),
+	AMHARIC("am", "Amharic"),
+	ARABIC("ar", "Arabic"),
+	ARMENIAN("hy", "Armenian"),
+	AZERBAIJANI("az", "Azerbaijani"),
+	BASQUE("eu", "Basque"),
 	Belarusian("be", "Belarusian"),
 	Bengali("bn", "Bengali"),
 	Bosnian("bs", "Bosnian"),

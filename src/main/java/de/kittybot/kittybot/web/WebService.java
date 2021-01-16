@@ -66,13 +66,13 @@ public class WebService extends Module{
 			}
 		}).routes(() -> {
 			path("/discord_login", () ->
-				get(new GetDiscordLoginRoute(this.modules))
+					get(new GetDiscordLoginRoute(this.modules))
 			);
 			path("/health_check", () ->
-				get(ctx -> ctx.result("alive"))
+					get(ctx -> ctx.result("alive"))
 			);
 			path("/commands", () ->
-				get(new GetCommandsRoute(this.modules))
+					get(new GetCommandsRoute(this.modules))
 			);
 			path("/login", () -> {
 				post(new PostLoginRoute(this.modules));
@@ -88,16 +88,16 @@ public class WebService extends Module{
 				path("/:guildId", () -> {
 					before("/*", this::checkGuildPerms);
 					path("/roles", () ->
-						get(new GetRolesRoute(this.modules))
+							get(new GetRolesRoute(this.modules))
 					);
 					path("/channels", () ->
-						get(new GetChannelsRoute(this.modules))
+							get(new GetChannelsRoute(this.modules))
 					);
 					path("/emotes", () ->
-						get(new GetEmotesRoute(this.modules))
+							get(new GetEmotesRoute(this.modules))
 					);
 					path("/invites", () ->
-						get(new GetInvitesRoute(this.modules))
+							get(new GetInvitesRoute(this.modules))
 					);
 					path("/tags", () -> {
 						get(new GetTagsRoute(this.modules));
@@ -136,7 +136,7 @@ public class WebService extends Module{
 		}
 		var guild = getGuild(ctx);
 		var userId = getUserId(ctx);
-		if(Config.OWNER_IDS.contains(userId)){
+		if(Config.DEV_IDS.contains(userId)){
 			return;
 		}
 		var member = guild.retrieveMemberById(userId).complete();

@@ -34,36 +34,6 @@ public class MessageUtils{
 		return count == 1 ? text : text + "s";
 	}
 
-	public static Set<String> getMentions(String message){
-		var mentions = new HashSet<String>();
-		var userMatcher = Message.MentionType.USER.getPattern().matcher(message);
-		while(userMatcher.find()){
-			try{
-				MiscUtil.parseSnowflake(userMatcher.group(1));
-				mentions.add(userMatcher.group());
-			}
-			catch(NumberFormatException ignored){}
-		}
-
-		var roleMatcher = Message.MentionType.ROLE.getPattern().matcher(message);
-		while(roleMatcher.find()){
-			try{
-				MiscUtil.parseSnowflake(roleMatcher.group(1));
-				mentions.add(roleMatcher.group());
-			}
-			catch(NumberFormatException ignored){}
-		}
-
-		if(Message.MentionType.EVERYONE.getPattern().matcher(message).find()){
-			mentions.add("@everyone");
-		}
-
-		if(Message.MentionType.HERE.getPattern().matcher(message).find()){
-			mentions.add("@here");
-		}
-		return mentions;
-	}
-
 	public static String getUserMention(long userId){
 		if(userId == -1L){
 			return UNSET;

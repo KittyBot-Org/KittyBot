@@ -2,6 +2,7 @@ package de.kittybot.kittybot.module;
 
 import de.kittybot.kittybot.exceptions.ModuleNotFoundException;
 import de.kittybot.kittybot.main.KittyBot;
+import de.kittybot.kittybot.utils.ThreadFactoryHelper;
 import io.github.classgraph.ClassGraph;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
@@ -15,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 public class Modules{
 
@@ -22,10 +24,14 @@ public class Modules{
 	private static final Logger LOG = LoggerFactory.getLogger(Modules.class);
 
 	private final KittyBot main;
+	private final OkHttpClient httpClient;
+	private final ScheduledExecutorService scheduler;
 	private final List<Module> modules;
 
 	public Modules(KittyBot main){
 		this.main = main;
+		this.httpClient = new OkHttpClient();
+		this.scheduler = new ScheduledThreadPoolExecutor(2, new ThreadFactoryHelper());
 		this.modules = new LinkedList<>();
 
 		LOG.info("Loading modules...");
@@ -80,11 +86,11 @@ public class Modules{
 	}
 
 	public ScheduledExecutorService getScheduler(){
-		return this.main.getScheduler();
+		return this.scheduler;
 	}
 
 	public OkHttpClient getHttpClient(){
-		return this.main.getHttpClient();
+		return this.httpClient;
 	}
 
 }

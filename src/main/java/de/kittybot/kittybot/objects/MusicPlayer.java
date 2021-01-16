@@ -6,7 +6,7 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
-import de.kittybot.kittybot.command.context.CommandContext;
+import de.kittybot.kittybot.command.old.CommandContext;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.modules.MusicModule;
 import de.kittybot.kittybot.modules.PaginatorModule;
@@ -124,7 +124,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		).queue();
 	}
 
-	public void sendTracks(Collection<AudioTrack> tracks, String baseMessage){
+	public void sendTracks(Collection<AudioTrack> tracks, long authorId, String baseMessage){
 		var channel = getTextChannel();
 		if(channel == null){
 			return;
@@ -144,6 +144,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 		this.modules.get(PaginatorModule.class).create(
 				channel,
+				authorId,
 				pages.size(),
 				(page, embedBuilder) -> embedBuilder.setColor(Colors.KITTYBOT_BLUE)
 						.setDescription(pages.get(page))

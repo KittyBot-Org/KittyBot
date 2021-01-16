@@ -1,9 +1,9 @@
 package de.kittybot.kittybot.modules;
 
-import de.kittybot.kittybot.command.Args;
-import de.kittybot.kittybot.command.Command;
-import de.kittybot.kittybot.command.context.CommandContext;
-import de.kittybot.kittybot.command.context.ReactionContext;
+import de.kittybot.kittybot.command.old.Args;
+import de.kittybot.kittybot.command.old.Command;
+import de.kittybot.kittybot.command.old.CommandContext;
+import de.kittybot.kittybot.command.old.ReactionContext;
 import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.exporters.Metrics;
@@ -19,14 +19,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class CommandModule extends Module{
 
 	public static final String ARGUMENT_REGEX = "\\s+";
 	private static final Logger LOG = LoggerFactory.getLogger(CommandModule.class);
-	private static final String COMMAND_PACKAGE = "de.kittybot.kittybot.commands";
-	private static final Pattern BOT_MENTION = Pattern.compile("<@!?" + Config.BOT_ID + ">");
+	private static final String COMMAND_PACKAGE = "de.kittybot.kittybot.main.commands";
+	private static final String BOT_MENTION = "<@" + Config.BOT_ID + ">";
+	private static final String BOT_MENTION2 = "<@!" + Config.BOT_ID + ">";
 
 	private Map<String, Command> commands;
 	private Map<String, Command> allCommands;
@@ -124,9 +124,11 @@ public class CommandModule extends Module{
 		if(message.startsWith(prefix)){
 			return message.substring(prefix.length()).trim();
 		}
-		var matcher = BOT_MENTION.matcher(message);
-		if(matcher.find()){
-			return message.substring(matcher.regionEnd()).trim();
+		if(message.startsWith(BOT_MENTION)){
+			return message.substring(BOT_MENTION.length()).trim();
+		}
+		if(message.startsWith(BOT_MENTION2)){
+			return message.substring(BOT_MENTION2.length()).trim();
 		}
 		return null;
 	}

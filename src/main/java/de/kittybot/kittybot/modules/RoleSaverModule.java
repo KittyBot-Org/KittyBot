@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -21,7 +22,7 @@ public class RoleSaverModule extends Module{
 		var member = event.getMember();
 		var guild = event.getGuild();
 		var roles = retrieveGuildUserRoles(guild.getIdLong(), member.getIdLong());
-		guild.modifyMemberRoles(member, roles.stream().map(guild::getRoleById).collect(Collectors.toSet()), null).queue();
+		guild.modifyMemberRoles(member, roles.stream().map(guild::getRoleById).filter(Objects::nonNull).collect(Collectors.toSet()), null).queue();
 	}
 
 	@Override

@@ -1,24 +1,32 @@
 package de.kittybot.kittybot.commands.info;
 
-import de.kittybot.kittybot.command.Args;
 import de.kittybot.kittybot.command.Category;
-import de.kittybot.kittybot.command.Command;
+import de.kittybot.kittybot.command.application.Command;
+import de.kittybot.kittybot.command.application.RunnableCommand;
 import de.kittybot.kittybot.command.context.CommandContext;
+import de.kittybot.kittybot.command.interaction.Options;
+import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.Config;
+import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDAInfo;
+
+import java.lang.management.ManagementFactory;
+import java.time.Instant;
 
 @SuppressWarnings("unused")
-public class PingCommand extends Command{
+public class PingCommand extends Command implements RunnableCommand{
 
 	public PingCommand(){
 		super("ping", "Shows the bots ping", Category.INFORMATION);
 	}
 
 	@Override
-	public void run(Args args, CommandContext ctx){
+	public void run(Options options, CommandContext ctx){
 		var jda = ctx.getJDA();
 		jda.getRestPing().queue(ping ->
-				ctx.sendSuccess(new EmbedBuilder()
+				ctx.reply(new EmbedBuilder()
+						.setColor(Colors.KITTYBOT_BLUE)
 						.setAuthor("KittyBot Ping", Config.ORIGIN_URL, jda.getSelfUser().getEffectiveAvatarUrl())
 
 						.addField("Gateway Ping:", jda.getGatewayPing() + "ms", false)

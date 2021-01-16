@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.web.routes.guilds.guild.tags.tag;
 
 import de.kittybot.kittybot.module.Modules;
-import de.kittybot.kittybot.modules.TagModule;
+import de.kittybot.kittybot.modules.TagsModule;
 import de.kittybot.kittybot.web.WebService;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
@@ -28,7 +28,7 @@ public class PostTagRoute implements Handler{
 		if(name.isBlank() || content.isBlank() || userId == -1){
 			throw new BadRequestResponse("Please provide a valid name, content or userId");
 		}
-		if(!this.modules.get(TagModule.class).edit(tagId, name, content, userId)){
+		if(!this.modules.get(TagsModule.class).edit(tagId, name, content, userId)){
 			throw new InternalServerErrorResponse("Error while updating tag");
 		}
 		WebService.accepted(ctx);

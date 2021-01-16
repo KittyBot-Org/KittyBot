@@ -25,16 +25,11 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 public class KittyBot{
 
-	private final OkHttpClient httpClient;
 	private final ShardManager shardManager;
-	private final ScheduledExecutorService scheduler;
-	private final Modules modules;
 
 	public KittyBot() throws IOException, MissingConfigValuesException, LoginException, InterruptedException{
 		Config.init("./config.json");
-		this.scheduler = new ScheduledThreadPoolExecutor(2, new ThreadFactoryHelper());
-		this.httpClient = new OkHttpClient();
-		this.modules = new Modules(this);
+		var modules = new Modules(this);
 
 		RestAction.setDefaultFailure(null);
 		this.shardManager = DefaultShardManagerBuilder.create(
@@ -54,10 +49,10 @@ public class KittyBot{
 				)
 				.setMemberCachePolicy(MemberCachePolicy.VOICE)
 				.setChunkingFilter(ChunkingFilter.NONE)
-				.addEventListeners(this.modules.getModules())
+				.addEventListeners(modules.getModules())
 				.setRawEventsEnabled(true)
-				.setHttpClient(this.httpClient)
-				.setVoiceDispatchInterceptor(this.modules.get(LavalinkModule.class).getVoiceInterceptor())
+				.setHttpClient(modules.getHttpClient())
+				.setVoiceDispatchInterceptor(modules.get(LavalinkModule.class).getVoiceInterceptor())
 				.setActivity(Activity.playing("loading..."))
 				.setStatus(OnlineStatus.DO_NOT_DISTURB)
 				.setEventPool(ThreadingConfig.newScheduler(1, () -> "KittyBot", "Events"), true)
@@ -66,16 +61,8 @@ public class KittyBot{
 				.build();
 	}
 
-	public OkHttpClient getHttpClient(){
-		return this.httpClient;
-	}
-
 	public ShardManager getShardManager(){
 		return this.shardManager;
-	}
-
-	public ScheduledExecutorService getScheduler(){
-		return this.scheduler;
 	}
 
 }

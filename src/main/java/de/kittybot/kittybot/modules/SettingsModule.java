@@ -378,6 +378,10 @@ public class SettingsModule extends Module{
 		return getSettings(guildId).isBotDisabledInChannel(channelId);
 	}
 
+	public Set<Long> getBotDisabledChannels(long guildId){
+		return getSettings(guildId).getBotDisabledChannels();
+	}
+
 	public void setBotDisabledInChannel(long guildId, long channelId, boolean disable){
 		var settings = getSettings(guildId);
 		if(settings != null){
@@ -391,7 +395,7 @@ public class SettingsModule extends Module{
 	}
 
 	public void insertBotDisabledChannel(long guildId, long channelId){
-		this.modules.get(DatabaseModule.class).getCtx().insertInto(BOT_DISABLED_CHANNELS).values(guildId, channelId).execute();
+		this.modules.get(DatabaseModule.class).getCtx().insertInto(BOT_DISABLED_CHANNELS).columns(BOT_DISABLED_CHANNELS.GUILD_ID, BOT_DISABLED_CHANNELS.CHANNEL_ID).values(guildId, channelId).execute();
 	}
 
 	public void deleteBotDisabledChannel(long guildId, long channelId){
@@ -563,15 +567,19 @@ public class SettingsModule extends Module{
 		this.modules.get(DatabaseModule.class).getCtx().deleteFrom(GUILD_INVITES).where(GUILD_INVITES.CODE.eq(code)).execute();
 	}
 
+	public Set<Long> getBotIgnoredUsers(long guildId){
+		return getSettings(guildId).getBotIgnoredUsers();
+	}
+
 	public void addBotIgnoredUsers(long guildId, Set<Long> users){
 		var settings = getSettingsIfPresent(guildId);
 		if(settings != null){
 			settings.setBotIgnoredUsers(users, true);
 		}
-		insertIgnoredUsers(guildId, users);
+		insertBotIgnoredUsers(guildId, users);
 	}
 
-	private void insertIgnoredUsers(long guildId, Set<Long> users){
+	private void insertBotIgnoredUsers(long guildId, Set<Long> users){
 		var ctx = this.modules.get(DatabaseModule.class).getCtx().insertInto(BOT_IGNORED_MEMBERS).columns(BOT_IGNORED_MEMBERS.GUILD_ID, BOT_IGNORED_MEMBERS.USER_ID);
 		for(var user : users){
 			ctx.values(guildId, user);
@@ -579,15 +587,15 @@ public class SettingsModule extends Module{
 		ctx.execute();
 	}
 
-	public void deleteBotIgnoredUsers(long guildId, Set<Long> users){
+	public void removeBotIgnoredUsers(long guildId, Set<Long> users){
 		var settings = getSettingsIfPresent(guildId);
 		if(settings != null){
 			settings.setBotIgnoredUsers(users, false);
 		}
-		removeIgnoredUsers(guildId, users);
+		deleteBotIgnoredUsers(guildId, users);
 	}
 
-	private void removeIgnoredUsers(long guildId, Set<Long> users){
+	private void deleteBotIgnoredUsers(long guildId, Set<Long> users){
 		this.modules.get(DatabaseModule.class).getCtx().deleteFrom(BOT_IGNORED_MEMBERS).where(
 				BOT_IGNORED_MEMBERS.GUILD_ID.eq(guildId).and(BOT_IGNORED_MEMBERS.USER_ID.in(users))
 		).execute();

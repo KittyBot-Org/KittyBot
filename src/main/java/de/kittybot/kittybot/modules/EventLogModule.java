@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import java.time.Instant;
 
+@SuppressWarnings("unused")
 public class EventLogModule extends Module{
 
 	private JDAWebhookClient webhookClient;
