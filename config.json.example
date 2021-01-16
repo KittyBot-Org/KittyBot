@@ -4,7 +4,7 @@
     "bot_token": "",
     "bot_secret": "",
     
-    "owner_ids": [
+    "dev_ids": [
     ],
     
     "backend_port": 6969,
