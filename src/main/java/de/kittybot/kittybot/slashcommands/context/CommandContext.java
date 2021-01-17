@@ -34,7 +34,7 @@ public class CommandContext extends Context{
 	}
 
 	public void reply(String message){
-		this.modules.get(InteractionsModule.class).reply(this.interaction).embeds(getSuccessEmbed().setDescription(message).build()).complete();
+		this.modules.get(InteractionsModule.class).reply(this.interaction).embeds(getSuccessEmbed().setDescription(message).build()).queue();
 	}
 
 	public EmbedBuilder getSuccessEmbed(){

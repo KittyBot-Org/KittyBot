@@ -4,28 +4,20 @@ import de.kittybot.kittybot.jooq.tables.records.SelfAssignableRolesRecord;
 
 public class SelfAssignableRole{
 
-	private final long guildId, groupId, roleId, emoteId;
+	private final long groupId, guildId, roleId, emoteId;
 
-	public SelfAssignableRole(long guildId, long groupId, long roleId, long emoteId){
-		this.guildId = guildId;
-		this.groupId = groupId;
+	public SelfAssignableRole(long roleId, long emoteId, long guildId, long groupId){
 		this.roleId = roleId;
 		this.emoteId = emoteId;
+		this.guildId = guildId;
+		this.groupId = groupId;
 	}
 
 	public SelfAssignableRole(SelfAssignableRolesRecord record){
-		this.guildId = record.getGuildId();
-		this.groupId = record.getGroupId();
 		this.roleId = record.getRoleId();
 		this.emoteId = record.getEmoteId();
-	}
-
-	public long getGuildId(){
-		return this.guildId;
-	}
-
-	public long getGroupId(){
-		return this.groupId;
+		this.guildId = record.getGuildId();
+		this.groupId = record.getGroupId();
 	}
 
 	public long getRoleId(){
@@ -34,6 +26,14 @@ public class SelfAssignableRole{
 
 	public long getEmoteId(){
 		return this.emoteId;
+	}
+
+	public long getGuildId(){
+		return this.guildId;
+	}
+
+	public long getGroupId(){
+		return this.groupId;
 	}
 
 }

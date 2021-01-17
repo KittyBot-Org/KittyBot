@@ -5,9 +5,12 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.ListedEmote;
 import net.dv8tion.jda.api.requests.RestAction;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -50,6 +53,10 @@ public class Options{
 
 	public String getString(String name){
 		return this.options.get(name).getString();
+	}
+
+	public <T> List<T> collect(Function<? super String, T> predicate, String... names){
+		return Arrays.stream(names).filter(this::has).map(predicate).collect(Collectors.toList());
 	}
 
 	public RestAction<ListedEmote> getEmote(Guild guild, String name){

@@ -24,7 +24,7 @@ public class GetCommandsRoute implements Handler{
 
 	@Override
 	public void handle(@NotNull Context ctx){
-		var commandSet = this.modules.get(CommandsModule.class).getCommands();
+		var commandSet = this.modules.get(CommandsModule.class).getCommands().values();
 		var categories = DataArray.fromCollection(
 				Arrays.stream(Category.values()).map(category ->
 						DataObject.empty().put("name", category.getName()).put("emote_url", category.getEmoteUrl()).put("commands", DataArray.fromCollection(

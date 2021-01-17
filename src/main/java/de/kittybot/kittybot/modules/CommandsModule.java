@@ -18,7 +18,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CommandsModule extends Module{
 
@@ -28,9 +30,9 @@ public class CommandsModule extends Module{
 	private static final Logger LOG = LoggerFactory.getLogger(CommandsModule.class);
 	private static final String COMMANDS_PACKAGE = "de.kittybot.kittybot.commands";
 
-	private static final long DEV_GUILD_ID = 730879265956167740L;
+	private static final long DEV_GUILD_ID = 608506410803658753L;
 
-	private List<Command> commands;
+	private Map<String, Command> commands;
 
 	@Override
 	public void onEnable(){
@@ -41,7 +43,7 @@ public class CommandsModule extends Module{
 
 	public void loadCommands(){
 		LOG.info("Loading commands...");
-		this.commands = new ArrayList<>();
+		this.commands = new HashMap<>();
 		try(var result = new ClassGraph().acceptPackages(COMMANDS_PACKAGE).scan()){
 			for(var cls : result.getSubclasses(Command.class.getName())){
 				var instance = cls.loadClass().getDeclaredConstructors()[0].newInstance();
@@ -49,7 +51,7 @@ public class CommandsModule extends Module{
 					continue;
 				}
 				var command = (Command) instance;
-				this.commands.add(command);
+				this.commands.put(command.getName(), command);
 			}
 			LOG.info("Loaded {} commands", this.commands.size());
 		}
@@ -60,7 +62,7 @@ public class CommandsModule extends Module{
 
 	public void registerCommands(){
 		LOG.info("Registering commands...");
-		for(var cmd : commands){
+		for(var cmd : this.commands.values()){
 			registerCommand(cmd);
 		}
 		LOG.info("Registered " + this.commands.size() + "commands...");
@@ -132,7 +134,7 @@ public class CommandsModule extends Module{
 		return this.modules.getHttpClient().newCall(newBuilder(route).delete().build());
 	}
 
-	public List<Command> getCommands(){
+	public Map<String, Command> getCommands(){
 		return this.commands;
 	}
 

@@ -31,7 +31,7 @@ public class HelpCommand extends Command implements RunnableCommand{
 
 	@Override
 	public void run(Options options, CommandContext ctx){
-		var commands = ctx.get(CommandsModule.class).getCommands();
+		var commands = ctx.get(CommandsModule.class).getCommands().values();
 		if(options.has("command")){
 			// TODO display sub-commands
 			var cmdName = options.getString("command");

@@ -53,16 +53,15 @@ public class InteractionsModule extends Module{
 			}
 
 			var data = interaction.getData();
-			for(var cmd : this.modules.get(CommandsModule.class).getCommands()){
-				if(cmd.getName().equalsIgnoreCase(data.getName())){
-					process(cmd, interaction, data);
-
-					Metrics.COMMAND_LATENCY.observe((double) (System.currentTimeMillis() - start));
-					Metrics.COMMAND_COUNTER.labels(cmd.getName()).inc();
-					return;
-				}
+			var cmd =  this.modules.get(CommandsModule.class).getCommands().get(data.getName());
+			if(cmd == null){
+				LOG.error("Could not process interaction: {}", event.getPayload());
+				return;
 			}
-			LOG.error("Could not process interaction: {}", event.getPayload());
+			process(cmd, interaction, data);
+
+			Metrics.COMMAND_LATENCY.observe((double) (System.currentTimeMillis() - start));
+			Metrics.COMMAND_COUNTER.labels(cmd.getName()).inc();
 		}
 	}
 
