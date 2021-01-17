@@ -21,7 +21,7 @@ public class IgnoreCommand extends Command{
 				new UserIgnoreCommand(),
 				new ChannelIgnoreCommand()
 		);
-		addPermissions(Permission.MANAGE_SERVER);
+		addPermissions(Permission.ADMINISTRATOR);
 	}
 
 }

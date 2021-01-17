@@ -24,7 +24,7 @@ public abstract class Command implements CommandOptionsHolder{
 		this.options = new ArrayList<>();
 	}
 
-	protected void setBotOwnerOnly(){
+	protected void devOnly(){
 		this.devOnly = true;
 	}
 

@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.modules;
 
-import de.kittybot.kittybot.command.old.CommandContext;
+import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.objects.MusicPlayer;
 import de.kittybot.kittybot.utils.Config;

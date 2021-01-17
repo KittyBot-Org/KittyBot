@@ -26,7 +26,7 @@ public class ChannelIgnoreCommand extends SubCommandGroup{
 		public AddCommand(){
 			super("add", "Used to ignore a channel");
 			addOptions(
-					new CommandOptionChannel("channel", "Channel to ignore").setRequired()
+					new CommandOptionChannel("channel", "Channel to ignore").required()
 			);
 		}
 
@@ -44,7 +44,7 @@ public class ChannelIgnoreCommand extends SubCommandGroup{
 		public RemoveCommand(){
 			super("remove", "Used to unignore a channel");
 			addOptions(
-					new CommandOptionChannel("channel", "Channel to unignore").setRequired()
+					new CommandOptionChannel("channel", "Channel to unignore").required()
 			);
 		}
 

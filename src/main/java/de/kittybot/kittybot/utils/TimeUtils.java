@@ -9,9 +9,9 @@ import java.util.regex.Pattern;
 
 public class TimeUtils{
 
-	public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm-dd.MM.yyyy");
+	public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
 	private static final Pattern PERIOD_PATTERN = Pattern.compile("([0-9]+)([ywdhms])");
-	private static final Pattern DATE_TIME_PATTERN = Pattern.compile("^\\d{1,2}:\\d{1,2}-\\d{1,2}.\\d{1,2}.\\d{4}");
+	private static final Pattern DATE_TIME_PATTERN = Pattern.compile("^\\d{1,2}:\\d{1,2} \\d{1,2}.\\d{1,2}.\\d{4}");
 
 	private TimeUtils(){}
 

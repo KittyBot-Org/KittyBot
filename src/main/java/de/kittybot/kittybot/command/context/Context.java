@@ -4,7 +4,9 @@ import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.module.Modules;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 
 public class Context{
 
@@ -36,6 +38,14 @@ public class Context{
 
 	public long getGuildId(){
 		return this.guild.getIdLong();
+	}
+
+	public Member getSelfMember(){
+		return this.guild.getSelfMember();
+	}
+
+	public User getSelfUser(){
+		return this.guild.getJDA().getSelfUser();
 	}
 
 	public TextChannel getChannel(){

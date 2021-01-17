@@ -20,7 +20,7 @@ public enum Emoji{
 	TAGS(794598349113786389L),
 	NOTIFICATION(794598349348012093L),
 	ANNOUNCEMENT(794601647095283783L),
-	OWNER(794598349277102100L),
+	DEV(794598349277102100L),
 	SETTINGS(794598349650788373L),
 	NEKO(760947689511714836L, true),
 
@@ -63,6 +63,13 @@ public enum Emoji{
 
 	public long getId(){
 		return this.emoteId;
+	}
+
+	public String getUrl(){
+		if(this.emoteId == 0){
+			return null;
+		}
+		return "https://cdn.discordapp.com/emojis/" + this.emoteId + ".png";
 	}
 
 	public String get(){

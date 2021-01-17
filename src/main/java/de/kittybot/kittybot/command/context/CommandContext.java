@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.command.context;
 
+import com.jagrosh.jdautilities.oauth2.entities.OAuth2Guild;
 import de.kittybot.kittybot.command.interaction.Interaction;
 import de.kittybot.kittybot.command.response.Response;
 import de.kittybot.kittybot.command.response.ResponseData;
@@ -13,6 +14,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 
+import java.awt.Color;
 import java.time.Instant;
 
 public class CommandContext extends Context{
@@ -69,6 +71,18 @@ public class CommandContext extends Context{
 		this.modules.get(InteractionsModule.class).reply(this.interaction, new Response.Builder().setType(ResponseType.ACKNOWLEDGE).setContent(Emoji.X.get() + " " + error).ephemeral().build());
 	}
 
+	public void followup(ResponseData response){
+		this.modules.get(InteractionsModule.class).followUp(this.interaction, response);
+	}
+
+	public void followup(String message){
+		followup(new ResponseData.Builder().addEmbeds(getSuccessEmbed().setDescription(message).build()).build());
+	}
+
+	public void followupError(String error){
+		followup(new ResponseData.Builder().addEmbeds(getErrorEmbed().setDescription(error).build()).build());
+	}
+
 	public void acknowledge(boolean withSource){
 		ResponseType type;
 		if(withSource){
@@ -81,10 +95,17 @@ public class CommandContext extends Context{
 	}
 
 	public EmbedBuilder getSuccessEmbed(){
+		return getEmbed().setColor(Colors.KITTYBOT_BLUE);
+	}
+
+	public EmbedBuilder getEmbed(){
 		return new EmbedBuilder()
-				.setColor(Colors.KITTYBOT_BLUE)
 				.setFooter(getMember().getEffectiveName(), getUser().getEffectiveAvatarUrl())
 				.setTimestamp(Instant.now());
+	}
+
+	public EmbedBuilder getErrorEmbed(){
+		return getEmbed().setColor(Color.RED);
 	}
 
 }

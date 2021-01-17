@@ -324,7 +324,7 @@ public class SettingsModule extends Module{
 	}
 
 	public boolean hasDJRole(Member member){
-		var djRole = this.getSettings(member.getIdLong()).getDjRoleId();
+		var djRole = this.getSettings(member.getGuild().getIdLong()).getDjRoleId();
 		return member.getRoles().stream().anyMatch(role -> role.getIdLong() == djRole);
 	}
 
@@ -365,7 +365,7 @@ public class SettingsModule extends Module{
 	}
 
 	public void insertSnipeDisabledChannel(long guildId, long channelId){
-		this.modules.get(DatabaseModule.class).getCtx().insertInto(SNIPE_DISABLED_CHANNELS).values(guildId, channelId).execute();
+		this.modules.get(DatabaseModule.class).getCtx().insertInto(SNIPE_DISABLED_CHANNELS).columns(SNIPE_DISABLED_CHANNELS.GUILD_ID, SNIPE_DISABLED_CHANNELS.CHANNEL_ID).values(guildId, channelId).execute();
 	}
 
 	public void deleteSnipeDisabledChannel(long guildId, long channelId){

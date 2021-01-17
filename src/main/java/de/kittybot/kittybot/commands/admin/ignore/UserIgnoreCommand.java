@@ -27,7 +27,7 @@ public class UserIgnoreCommand extends SubCommandGroup{
 		public AddCommand(){
 			super("add", "Used to ignore a user");
 			addOptions(
-					new CommandOptionUser("user", "User to ignore").setRequired()
+					new CommandOptionUser("user", "User to ignore").required()
 			);
 		}
 
@@ -45,7 +45,7 @@ public class UserIgnoreCommand extends SubCommandGroup{
 		public RemoveCommand(){
 			super("remove", "Used to unignore a user");
 			addOptions(
-					new CommandOptionUser("user", "User to unignore").setRequired()
+					new CommandOptionUser("user", "User to unignore").required()
 			);
 		}
 

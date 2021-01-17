@@ -1,5 +1,10 @@
 package de.kittybot.kittybot.command.interaction;
 
+import net.dv8tion.jda.api.entities.Emote;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.ListedEmote;
+import net.dv8tion.jda.api.requests.RestAction;
+
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -35,12 +40,32 @@ public class Options{
 		return this.options.get(name).getLong();
 	}
 
+	public int getInt(String name){
+		return this.options.get(name).getInt();
+	}
+
 	public boolean getBoolean(String name){
 		return this.options.get(name).getBoolean();
 	}
 
 	public String getString(String name){
 		return this.options.get(name).getString();
+	}
+
+	public RestAction<ListedEmote> getEmote(Guild guild, String name){
+		return this.options.get(name).getEmote(guild);
+	}
+
+	public long getEmoteId(String name){
+		return this.options.get(name).getEmoteId();
+	}
+
+	public String getEmoteName(String name){
+		return this.options.get(name).getEmoteName();
+	}
+
+	public boolean getIsAnimatedEmote(String name){
+		return this.options.get(name).getIsAnimatedEmote();
 	}
 
 	public InteractionDataOption get(String name){

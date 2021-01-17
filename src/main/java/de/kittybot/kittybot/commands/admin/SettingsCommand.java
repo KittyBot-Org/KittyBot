@@ -7,7 +7,12 @@ import de.kittybot.kittybot.command.interaction.Options;
 import de.kittybot.kittybot.command.options.*;
 import de.kittybot.kittybot.command.response.Response;
 import de.kittybot.kittybot.modules.SettingsModule;
+import de.kittybot.kittybot.objects.Emoji;
+import de.kittybot.kittybot.utils.Colors;
+import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
+import de.kittybot.kittybot.utils.TimeUtils;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 
 @SuppressWarnings("unused")
@@ -16,14 +21,44 @@ public class SettingsCommand extends Command{
 	public SettingsCommand(){
 		super("settings", "Let's you see/change settings", Category.ADMIN);
 		addOptions(
+				new ViewCommand(),
 				new PrefixCommand(),
 				new DJRoleCommand(),
 				new AnnouncementChannelCommand(),
 				new JoinMessageCommand(),
 				new LeaveMessageCommand(),
-				new LogMessagesCommand()
+				new LogMessagesCommand(),
+				new SnipesCommand(),
+				new StreamAnnouncementsCommand()
 		);
-		addPermissions(Permission.MANAGE_SERVER);
+		//addPermissions(Permission.ADMINISTRATOR);
+	}
+
+	public static class ViewCommand extends SubCommand{
+
+
+		public ViewCommand(){
+			super("view", "Shows the current settings");
+		}
+
+		@Override
+		public void run(Options options, CommandContext ctx){
+			var guildId = ctx.getGuildId();
+			var settings = ctx.get(SettingsModule.class).getSettings(guildId);
+			ctx.reply(new EmbedBuilder()
+					.setColor(Colors.KITTYBOT_BLUE)
+					.setAuthor("Guild settings:", Config.ORIGIN_URL + "/guilds/" + guildId + "/dashboard", Emoji.SETTINGS.getUrl())
+					.addField("Command Prefix: ", "`" + settings.getPrefix() + "`", false)
+					.addField("Announcement Channel: ", settings.getAnnouncementChannel(), false)
+					.addField("DJ Role: ", settings.getDjRole(), false)
+					.addField("NSFW Enabled: ", MessageUtils.getBoolEmote(settings.isNsfwEnabled()), false)
+					.addField("Join Messages: " + MessageUtils.getBoolEmote(settings.areJoinMessagesEnabled()), settings.getJoinMessage(), false)
+					.addField("Leave Messages: " + MessageUtils.getBoolEmote(settings.areLeaveMessagesEnabled()), settings.getLeaveMessage(), false)
+					.addField("Log Messages: " + MessageUtils.getBoolEmote(settings.areLogMessagesEnabled()), settings.getLogChannel(), false)
+					.addField("Inactive Role: " + TimeUtils.formatDurationDHMS(settings.getInactiveDuration()), settings.getLogChannel(), false)
+			);
+		}
+
 	}
 
 	public static class PrefixCommand extends SubCommand{
@@ -32,13 +67,17 @@ public class SettingsCommand extends Command{
 		public PrefixCommand(){
 			super("prefix", "Sets the prefix");
 			addOptions(
-					new CommandOptionString("prefix", "The new prefix").setRequired()
+					new CommandOptionString("prefix", "The new prefix").required()
 			);
 		}
 
 		@Override
 		public void run(Options options, CommandContext ctx){
 			var prefix = options.getString("prefix");
+			if(prefix.length() > 4){
+				ctx.error("The prefix can't be longer than 4");
+				return;
+			}
 			ctx.get(SettingsModule.class).setPrefix(ctx.getGuildId(), prefix);
 			ctx.reply(new Response.Builder().setContent("Prefix set to: `" + prefix + "`").build());
 		}
@@ -50,7 +89,7 @@ public class SettingsCommand extends Command{
 		public DJRoleCommand(){
 			super("djrole", "Sets the dj role");
 			addOptions(
-					new CommandOptionRole("role", "The new dj role").setRequired()
+					new CommandOptionRole("role", "The new dj role").required()
 			);
 		}
 
@@ -68,7 +107,7 @@ public class SettingsCommand extends Command{
 		public AnnouncementChannelCommand(){
 			super("announcementchannel", "Sets the announcement channel");
 			addOptions(
-					new CommandOptionChannel("channel", "The new announcement channel").setRequired()
+					new CommandOptionChannel("channel", "The new announcement channel").required()
 			);
 		}
 
@@ -86,7 +125,7 @@ public class SettingsCommand extends Command{
 		public NSFWCommand(){
 			super("nsfw", "Sets whether nsfw commands are enabled");
 			addOptions(
-					new CommandOptionBoolean("enabled", "Whether nsfw commands are enabled").setRequired()
+					new CommandOptionBoolean("enabled", "Whether nsfw commands are enabled").required()
 			);
 		}
 
@@ -201,6 +240,69 @@ public class SettingsCommand extends Command{
 				return;
 			}
 			ctx.reply(new Response.Builder().setContent(returnMessage).build());
+		}
+
+	}
+
+	public static class SnipesCommand extends SubCommandGroup{
+
+		public SnipesCommand(){
+			super("snipes", "Used to disable snipes");
+			addOptions(
+					new ChannelCommand(),
+					new EnableCommand()
+			);
+		}
+
+		public static class ChannelCommand extends SubCommand{
+
+			public ChannelCommand(){
+				super("channel", "Used to enable/disable snipes in a specific channel");
+				addOptions(
+						new CommandOptionChannel("channel", "The channel to enable/disable snipes").required(),
+						new CommandOptionBoolean("enabled", "Whether to enable/disable snipes").required()
+				);
+			}
+
+			@Override
+			public void run(Options options, CommandContext ctx){
+				var channelId = options.getLong("channel");
+				var enabled = options.getBoolean("enabled");
+				ctx.get(SettingsModule.class).setSnipesDisabledInChannel(ctx.getGuildId(), channelId, enabled);
+				ctx.reply("Snipes `" + (enabled ? "enabled" : "disabled") + "` in " + MessageUtils.getChannelMention(channelId));
+			}
+
+		}
+
+		public static class EnableCommand extends SubCommand{
+
+			public EnableCommand(){
+				super("enable", "Used to globally disable snipes");
+				addOptions(
+						new CommandOptionBoolean("enabled", "Whether to enable/disable snipes globally")
+				);
+			}
+
+			@Override
+			public void run(Options options, CommandContext ctx){
+				var enabled = options.getBoolean("enabled");
+				ctx.get(SettingsModule.class).setSnipesEnabled(ctx.getGuildId(), enabled);
+				ctx.reply("Snipes globally `" + (enabled ? "enabled" : "disabled") + "`");
+			}
+
+		}
+
+	}
+
+	public static class StreamAnnouncementsCommand extends SubCommand{
+
+		public StreamAnnouncementsCommand(){
+			super("streamannouncements", "Used to configure stream announcements");
+		}
+
+		@Override
+		public void run(Options options, CommandContext ctx){
+
 		}
 
 	}

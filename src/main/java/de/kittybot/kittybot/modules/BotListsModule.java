@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("unused")
 public class BotListsModule extends Module{
 
 	@Override

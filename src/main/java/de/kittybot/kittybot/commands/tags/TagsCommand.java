@@ -36,8 +36,8 @@ public class TagsCommand extends Command{
 		public CreateCommand(){
 			super("create", "Used to create a tag");
 			addOptions(
-					new CommandOptionString("name", "Tag name").setRequired(),
-					new CommandOptionString("content", "Tag content").setRequired()
+					new CommandOptionString("name", "Tag name").required(),
+					new CommandOptionString("content", "Tag content").required()
 			);
 		}
 
@@ -60,8 +60,8 @@ public class TagsCommand extends Command{
 		public EditCommand(){
 			super("edit", "Used to edit a tag");
 			addOptions(
-					new CommandOptionString("name", "Tag name").setRequired(),
-					new CommandOptionString("content", "Tag content").setRequired()
+					new CommandOptionString("name", "Tag name").required(),
+					new CommandOptionString("content", "Tag content").required()
 			);
 		}
 
@@ -84,7 +84,7 @@ public class TagsCommand extends Command{
 		public DeleteCommand(){
 			super("delete", "Used to delete a tag");
 			addOptions(
-					new CommandOptionString("name", "Tag name").setRequired()
+					new CommandOptionString("name", "Tag name").required()
 			);
 		}
 
@@ -107,7 +107,7 @@ public class TagsCommand extends Command{
 		public SearchCommand(){
 			super("search", "Used to search a tag");
 			addOptions(
-					new CommandOptionString("name", "Tag name").setRequired()
+					new CommandOptionString("name", "Tag name").required()
 			);
 		}
 
@@ -164,7 +164,7 @@ public class TagsCommand extends Command{
 		public InfoCommand(){
 			super("info", "Used to get info about a tag");
 			addOptions(
-					new CommandOptionString("name", "Tag name").setRequired()
+					new CommandOptionString("name", "Tag name").required()
 			);
 		}
 

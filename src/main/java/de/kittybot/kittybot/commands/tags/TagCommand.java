@@ -16,7 +16,7 @@ public class TagCommand extends Command implements RunnableCommand{
 	public TagCommand(){
 		super("tag", "Displays a tag", Category.TAGS);
 		addOptions(
-				new CommandOptionString("name", "The tag name").setRequired()
+				new CommandOptionString("name", "The tag name").required()
 		);
 	}
 

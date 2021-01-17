@@ -44,7 +44,7 @@ public abstract class CommandOption implements CommandOptionsHolder{
 		return this;
 	}
 
-	public CommandOption setRequired(){
+	public CommandOption required(){
 		this.isRequired = true;
 		return this;
 	}

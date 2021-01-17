@@ -8,6 +8,7 @@ import de.kittybot.kittybot.command.interaction.Interaction;
 import de.kittybot.kittybot.command.interaction.InteractionOptionsHolder;
 import de.kittybot.kittybot.command.interaction.Options;
 import de.kittybot.kittybot.command.response.Response;
+import de.kittybot.kittybot.command.response.ResponseData;
 import de.kittybot.kittybot.command.response.ResponseType;
 import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.utils.Config;
@@ -36,6 +37,7 @@ public class InteractionsModule extends Module{
 	private static final String COMMANDS_URL = "https://discord.com/api/v8/applications/%d/guilds/%d/commands";
 	private static final String COMMAND_URL = "https://discord.com/api/v8/applications/%d/guilds/%d/commands/%d";
 	private static final String INTERACTION_RESPONSE_URL = "https://discord.com/api/v8/interactions/%d/%s/callback";
+	private static final String INTERACTION_FOLLOW_UP_URL = "https://discord.com/api/v8/webhooks/%d/%s";
 	private static final String COMMANDS_PACKAGE = "de.kittybot.kittybot.commands";
 
 	private List<Command> commands;
@@ -118,11 +120,27 @@ public class InteractionsModule extends Module{
 		var rqBody = RequestBody.create(response.toJSON().toJson(), MediaType.parse("application/json"));
 
 		try(var resp = post(INTERACTION_RESPONSE_URL, rqBody, interaction.getId(), interaction.getToken()).execute()){
-			var body = resp.body();
-			LOG.info("Response Body: {}", body == null ? "null" : body.string());
+			if(!resp.isSuccessful()){
+				var body = resp.body();
+				LOG.info("Response Body: {}", body == null ? "null" : body.string());
+			}
 		}
 		catch(IOException e){
 			LOG.error("Error while processing interaction response", e);
+		}
+	}
+
+	public void followUp(Interaction interaction, ResponseData response){
+		var rqBody = RequestBody.create(response.toJSON().toJson(), MediaType.parse("application/json"));
+
+		try(var resp = post(INTERACTION_FOLLOW_UP_URL, rqBody, Config.BOT_ID, interaction.getToken()).execute()){
+			if(!resp.isSuccessful()){
+				var body = resp.body();
+				LOG.info("Response Body: {}", body == null ? "null" : body.string());
+			}
+		}
+		catch(IOException e){
+			LOG.error("Error while processing interaction followup", e);
 		}
 	}
 

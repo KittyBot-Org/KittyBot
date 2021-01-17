@@ -1,5 +1,7 @@
 package de.kittybot.kittybot.objects;
 
+import java.util.Arrays;
+
 public enum Language{
 
 	AFRIKAANS("af", "Afrikaans"),
@@ -106,6 +108,7 @@ public enum Language{
 	Yiddish("yi", "Yiddish"),
 	Yoruba("yo", "Yoruba"),
 	Zulu("zu", "Zulu"),
+	AUTO("auto", "Auto"),
 	UNKNOWN("??", "Unknown");
 
 	private final String shortname, name;
@@ -113,6 +116,10 @@ public enum Language{
 	Language(String shortName, String name){
 		this.shortname = shortName;
 		this.name = name;
+	}
+
+	public static Language getFromName(String name){
+		return Arrays.stream(values()).filter(lang -> lang.name.equalsIgnoreCase(name) || lang.shortname.equalsIgnoreCase(name)).findFirst().orElse(UNKNOWN);
 	}
 
 	public String getShortname(){

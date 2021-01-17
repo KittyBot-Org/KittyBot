@@ -2,11 +2,13 @@ package de.kittybot.kittybot.objects;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeSearchProvider;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
+import com.sedmelluq.discord.lavaplayer.tools.io.ChainedInputStream;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
-import de.kittybot.kittybot.command.old.CommandContext;
+import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.modules.MusicModule;
 import de.kittybot.kittybot.modules.PaginatorModule;
@@ -60,16 +62,30 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		this.future = null;
 	}
 
-	public void loadItem(CommandContext ctx){
-		var raw = ctx.getRawMessage();
-		var query = URL_PATTERN.matcher(raw).matches() ? raw : "ytsearch:" + raw;
+	public void loadItem(CommandContext ctx, String rawQuery, SearchProvider searchProvider){
+		final String query;
+		if(URL_PATTERN.matcher(rawQuery).matches()){
+			query = rawQuery;
+		}
+		else{
+			switch(searchProvider){
+				case YOUTUBE:
+					query = "ytsearch:" + rawQuery;
+					break;
+				case SOUNDCLOUD:
+					query = "scsearch:" + rawQuery;
+					break;
+				default:
+					query = rawQuery;
+			}
+		}
 		this.link.getRestClient().loadItem(query, new AudioLoadResultHandler(){
 
 			@Override
 			public void trackLoaded(AudioTrack track){
 				connectToChannel(ctx);
 				track.setUserData(ctx.getUser().getIdLong());
-				queue(Collections.singletonList(track));
+				queue(ctx, Collections.singletonList(track));
 			}
 
 			@Override
@@ -79,25 +95,26 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 					var track = playlist.getSelectedTrack();
 					if(track != null){
 						track.setUserData(ctx.getUser().getIdLong());
-						queue(Collections.singletonList(track));
+						queue(ctx, Collections.singletonList(track));
 					}
 					return;
 				}
 				for(var track : playlist.getTracks()){
 					track.setUserData(ctx.getUser().getIdLong());
 				}
-				queue(playlist.getTracks());
+				queue(ctx, playlist.getTracks());
 			}
 
 			@Override
 			public void noMatches(){
-				ctx.sendError("No track found for:\n" + raw);
+				ctx.reply("No track found for:\n" + query);
 			}
 
 			@Override
 			public void loadFailed(FriendlyException e){
-				ctx.sendError("Failed to load track:\n" + e.getMessage());
+				ctx.reply("Failed to load track:\n" + e.getMessage());
 			}
+
 		});
 	}
 
@@ -108,20 +125,19 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		}
 	}
 
-	public void queue(List<AudioTrack> tracks){
+	public void queue(CommandContext ctx, List<AudioTrack> tracks){
 		for(var track : tracks){
 			queue.offer(track);
 		}
 		if(player.getPlayingTrack() == null){
 			player.playTrack(this.queue.poll());
 		}
-		var channel = getTextChannel();
-		channel.sendMessage(new EmbedBuilder()
+		ctx.reply(new EmbedBuilder()
 				.setColor(Colors.KITTYBOT_BLUE)
 				.setDescription("**Queued " + tracks.size() + " " + MessageUtils.pluralize("track", tracks.size()) + "**\nUse `" + this.modules.get(SettingsModule.class).getPrefix(this.guildId) + "queue` to see the current queued tracks!")
 				.setTimestamp(Instant.now())
 				.build()
-		).queue();
+		);
 	}
 
 	public void sendTracks(Collection<AudioTrack> tracks, long authorId, String baseMessage){
@@ -286,9 +302,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		if(this.future != null){
 			return;
 		}
-		this.future = this.modules.getScheduler().schedule(() ->
-			this.modules.get(MusicModule.class).destroy(this.guildId)
-		, 3, TimeUnit.MINUTES);
+		this.future = this.modules.getScheduler().schedule(() -> this.modules.get(MusicModule.class).destroy(this.guildId), 3, TimeUnit.MINUTES);
 	}
 
 	public void cancelDestroy(){
@@ -317,7 +331,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	public void setVolume(int volume){
-		player.getFilters().setVolume(volume).commit();
+		player.getFilters().setVolume((float) volume / 100).commit();
 	}
 
 	public AudioTrack getPlayingTrack(){

@@ -44,6 +44,7 @@ public class InfoCommand extends Command implements RunnableCommand{
 
 				.addField("Memory Usage:", ((runtime.totalMemory() - runtime.freeMemory()) >> 20) + "MB / " + (runtime.maxMemory() >> 20) + "MB", true)
 				.addField("Thread Count:", String.valueOf(ManagementFactory.getThreadMXBean().getThreadCount()), true)
+				.addBlankField(true)
 
 				.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
 				.setTimestamp(Instant.now())

@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS guild_tag_attachments(
+  id     BIGSERIAL PRIMARY KEY NOT NULL,
+  tag_id BIGINT NOT NULL REFERENCES guild_tags(id) ON DELETE CASCADE,
+  url    VARCHAR NOT NULL
+);

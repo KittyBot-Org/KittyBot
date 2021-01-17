@@ -14,7 +14,7 @@ public enum Category{
 	NOTIFICATION(Emoji.NOTIFICATION, "Notification"),
 	ANNOUNCEMENT(Emoji.ANNOUNCEMENT, "Announcement"),
 	TAGS(Emoji.TAGS, "Tags"),
-	BOT_OWNER(Emoji.OWNER, "Bot Owner");
+	DEV(Emoji.DEV, "Developer");
 
 	private final Emoji emoji;
 	private final String name;

@@ -2,6 +2,7 @@ package de.kittybot.kittybot.modules;
 
 import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.objects.API;
+import de.kittybot.kittybot.objects.Language;
 import de.kittybot.kittybot.utils.Config;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
@@ -92,8 +93,8 @@ public class RequestModule extends Module{
 		});
 	}
 
-	public void translateText(String text, String language, Consumer<String> callback){
-		requestBuilder.url(String.format(API.GOOGLE_TRANSLATE_API.getUrl(), "auto", language, URLEncoder.encode(text, StandardCharsets.UTF_8)));
+	public void translateText(String text, Language from, Language to, Consumer<String> callback){
+		requestBuilder.url(String.format(API.GOOGLE_TRANSLATE_API.getUrl(), from.getShortname(), to.getShortname(), URLEncoder.encode(text, StandardCharsets.UTF_8)));
 		executeAsync(requestBuilder.build(), (call, response) -> {
 			var body = response.body();
 			String newText = null;
