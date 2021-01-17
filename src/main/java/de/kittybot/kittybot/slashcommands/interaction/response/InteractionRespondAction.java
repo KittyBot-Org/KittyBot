@@ -21,6 +21,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
+import java.util.stream.Collectors;
 
 public class InteractionRespondAction extends RestActionImpl<Interaction>{
 
@@ -104,7 +105,7 @@ public class InteractionRespondAction extends RestActionImpl<Interaction>{
 
 		var obj = DataObject.empty();
 		if(!embeds.isEmpty()){
-			obj.put("embeds", this.embeds.stream().map(MessageEmbed::toData));
+			obj.put("embeds", DataArray.fromCollection(this.embeds.stream().map(MessageEmbed::toData).collect(Collectors.toSet())));
 		}
 		if(content.length() > 0){
 			obj.put("content", content.toString());
@@ -196,7 +197,7 @@ public class InteractionRespondAction extends RestActionImpl<Interaction>{
 					"Provided Message contains an empty embed or an embed with a length greater than %d characters, which is the max for bot accounts!",
 					MessageEmbed.EMBED_MAX_LENGTH_BOT);
 		}
-		this.embeds = new ArrayList<>(List.of(embeds));
+		this.embeds = List.of(embeds);
 		return this;
 	}
 

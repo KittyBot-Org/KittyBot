@@ -152,9 +152,7 @@ public class TagsCommand extends Command{
 				return;
 			}
 			// TODO add paginator
-			ctx.reply("**Following tags exist:**\n" +
-					tags.stream().map(tag -> "• `" + tag.getName() + "` (" + MessageUtils.getUserMention(tag.getUserId()) + ")").collect(Collectors.joining("\n"))
-			);
+			ctx.reply("**Following tags exist:**\n" + tags.stream().map(tag -> "• `" + tag.getName() + "` (" + MessageUtils.getUserMention(tag.getUserId()) + ")").collect(Collectors.joining("\n")));
 		}
 
 	}
