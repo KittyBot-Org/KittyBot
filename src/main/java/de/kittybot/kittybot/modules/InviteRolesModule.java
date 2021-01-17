@@ -25,6 +25,9 @@ public class InviteRolesModule extends Module{
 			return;
 		}
 		var roles = this.modules.get(SettingsModule.class).getInviteRoles(event.getGuild().getIdLong(), invite.getCode());
+		if(roles == null){
+			return;
+		}
 		for(var roleId : roles){
 			var role = event.getGuild().getRoleById(roleId);
 			if(role == null){
