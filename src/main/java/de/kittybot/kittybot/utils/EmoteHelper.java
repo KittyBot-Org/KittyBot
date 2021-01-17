@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.utils;
 
-import de.kittybot.kittybot.command.context.CommandContext;
-import de.kittybot.kittybot.command.response.InteractionResponse;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
 import net.dv8tion.jda.api.entities.Icon;
 
 import java.io.IOException;

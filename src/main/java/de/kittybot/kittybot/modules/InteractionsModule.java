@@ -1,15 +1,15 @@
 package de.kittybot.kittybot.modules;
 
 import club.minnced.discord.webhook.receive.ReadonlyMessage;
-import de.kittybot.kittybot.command.application.Command;
-import de.kittybot.kittybot.command.application.CommandOptionsHolder;
-import de.kittybot.kittybot.command.application.RunnableCommand;
-import de.kittybot.kittybot.command.context.CommandContext;
-import de.kittybot.kittybot.command.interaction.Interaction;
-import de.kittybot.kittybot.command.interaction.InteractionOptionsHolder;
-import de.kittybot.kittybot.command.interaction.Options;
-import de.kittybot.kittybot.command.response.FollowupMessage;
-import de.kittybot.kittybot.command.response.InteractionRespondAction;
+import de.kittybot.kittybot.slashcommands.application.Command;
+import de.kittybot.kittybot.slashcommands.application.CommandOptionsHolder;
+import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.interaction.Interaction;
+import de.kittybot.kittybot.slashcommands.interaction.InteractionOptionsHolder;
+import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.slashcommands.interaction.response.FollowupMessage;
+import de.kittybot.kittybot.slashcommands.interaction.response.InteractionRespondAction;
 import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.exporters.Metrics;

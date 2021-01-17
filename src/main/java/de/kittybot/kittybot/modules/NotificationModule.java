@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.modules;
 
-import de.kittybot.kittybot.command.Category;
+import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.jooq.tables.records.NotificationsRecord;
 import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.objects.Notification;

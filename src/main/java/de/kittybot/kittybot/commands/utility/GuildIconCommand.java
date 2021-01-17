@@ -1,13 +1,13 @@
 package de.kittybot.kittybot.commands.utility;
 
-import de.kittybot.kittybot.command.Category;
-import de.kittybot.kittybot.command.application.Command;
-import de.kittybot.kittybot.command.application.CommandOptionChoice;
-import de.kittybot.kittybot.command.application.RunnableCommand;
-import de.kittybot.kittybot.command.context.CommandContext;
-import de.kittybot.kittybot.command.interaction.Options;
-import de.kittybot.kittybot.command.options.CommandOptionInteger;
-import de.kittybot.kittybot.command.options.CommandOptionString;
+import de.kittybot.kittybot.slashcommands.application.Category;
+import de.kittybot.kittybot.slashcommands.application.Command;
+import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
+import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;

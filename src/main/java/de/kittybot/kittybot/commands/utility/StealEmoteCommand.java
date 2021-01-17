@@ -1,12 +1,12 @@
 package de.kittybot.kittybot.commands.utility;
 
-import de.kittybot.kittybot.command.Category;
-import de.kittybot.kittybot.command.application.Command;
-import de.kittybot.kittybot.command.context.CommandContext;
-import de.kittybot.kittybot.command.interaction.Options;
-import de.kittybot.kittybot.command.options.CommandOptionBoolean;
-import de.kittybot.kittybot.command.options.CommandOptionString;
-import de.kittybot.kittybot.command.options.SubCommand;
+import de.kittybot.kittybot.slashcommands.application.Category;
+import de.kittybot.kittybot.slashcommands.application.Command;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionBoolean;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
+import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.utils.EmoteHelper;
 import net.dv8tion.jda.api.Permission;
 

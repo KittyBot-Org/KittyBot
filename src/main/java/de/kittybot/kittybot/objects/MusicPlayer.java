@@ -6,7 +6,7 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
-import de.kittybot.kittybot.command.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.modules.MusicModule;
 import de.kittybot.kittybot.modules.PaginatorModule;

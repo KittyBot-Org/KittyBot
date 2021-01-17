@@ -3,9 +3,9 @@ package de.kittybot.kittybot.modules;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
-import de.kittybot.kittybot.command.old.CommandContext;
-import de.kittybot.kittybot.command.old.ReactiveMessage;
 import de.kittybot.kittybot.module.Module;
+import de.kittybot.kittybot.objects.ReactiveMessage;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
 
 import java.util.concurrent.TimeUnit;
 
@@ -25,7 +25,7 @@ public class ReactiveMessageModule extends Module{
 	public void add(CommandContext ctx, long responseId, long allowed){
 		reactiveMessages.put(
 				responseId,
-				new ReactiveMessage(ctx.getGuildId(), ctx.getChannelId(), ctx.getMessageId(), responseId, ctx.getUser().getIdLong(), ctx.getFullPath(),
+				new ReactiveMessage(ctx.getGuildId(), ctx.getChannelId(), -1, responseId, ctx.getUser().getIdLong(), ctx.getInteraction().getData().getName(),
 						allowed
 				)
 		);

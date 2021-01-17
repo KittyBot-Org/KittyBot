@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.web.routes.commands;
 
-import de.kittybot.kittybot.command.Category;
+import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.modules.CommandsModule;
 import de.kittybot.kittybot.utils.Config;

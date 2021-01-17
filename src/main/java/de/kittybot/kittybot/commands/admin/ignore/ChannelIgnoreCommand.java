@@ -1,10 +1,10 @@
 package de.kittybot.kittybot.commands.admin.ignore;
 
-import de.kittybot.kittybot.command.context.CommandContext;
-import de.kittybot.kittybot.command.interaction.Options;
-import de.kittybot.kittybot.command.options.CommandOptionChannel;
-import de.kittybot.kittybot.command.options.SubCommand;
-import de.kittybot.kittybot.command.options.SubCommandGroup;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionChannel;
+import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
+import de.kittybot.kittybot.slashcommands.application.options.SubCommandGroup;
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.utils.MessageUtils;
 

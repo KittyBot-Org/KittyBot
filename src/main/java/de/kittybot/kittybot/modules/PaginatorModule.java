@@ -2,7 +2,7 @@ package de.kittybot.kittybot.modules;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import de.kittybot.kittybot.command.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.objects.Emoji;
 import de.kittybot.kittybot.objects.Paginator;

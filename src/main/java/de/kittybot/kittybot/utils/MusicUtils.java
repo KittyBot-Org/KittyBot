@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.utils;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import de.kittybot.kittybot.command.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.objects.MusicPlayer;
 import net.dv8tion.jda.api.Permission;

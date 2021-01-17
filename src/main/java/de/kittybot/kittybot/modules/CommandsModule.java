@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.modules;
 
-import de.kittybot.kittybot.command.application.Command;
+import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.utils.Config;
 import io.github.classgraph.ClassGraph;
