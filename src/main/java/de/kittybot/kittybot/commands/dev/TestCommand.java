@@ -21,7 +21,6 @@ public class TestCommand extends Command{
 		addOptions(
 				new TestSubCommand()
 		);
-		devOnly();
 	}
 
 	public static class TestSubCommand extends SubCommand{
