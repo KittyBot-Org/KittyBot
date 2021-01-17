@@ -2,44 +2,45 @@ package de.kittybot.kittybot.command.response;
 
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
-import net.dv8tion.jda.api.utils.data.DataObject;
 import net.dv8tion.jda.internal.utils.Helpers;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.List;
 
-public class Response{
+public class InteractionResponse{
 
 	private static final int EPHEMERAL_FLAG = 1 << 6;
 
-	private final ResponseType type;
-	private final ResponseData data;
+	private final InteractionResponseType type;
+	private final InteractionResponseData data;
 
-	public Response(ResponseType type, ResponseData data){
+	public InteractionResponse(InteractionResponseType type, InteractionResponseData data){
 		this.type = type;
 		this.data = data;
 	}
 
-	public DataObject toJSON(){
-		var json = DataObject.empty().put("type", this.type.getType());
-		if(this.data != null){
-			json.put("data", this.data.toJSON());
-		}
-		return json;
+	public InteractionResponseType getType(){
+		return this.type;
+	}
+
+	public InteractionResponseData getData(){
+		return this.data;
 	}
 
 	public static class Builder{
 
-		private ResponseType type;
+		private final List<MessageEmbed> embeds;
+		private InteractionResponseType type;
 		private boolean tts;
 		private String content;
-		private final List<MessageEmbed> embeds;
 		private int flags;
 		private EnumSet<Message.MentionType> allowedMentions;
 
 		public Builder(){
-			this.type = ResponseType.CHANNEL_MESSAGE_WITH_SOURCE;
+			this.type = InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE;
 			this.tts = false;
 			this.content = "";
 			this.embeds = new ArrayList<>();
@@ -47,7 +48,7 @@ public class Response{
 			this.allowedMentions = EnumSet.allOf(Message.MentionType.class);
 		}
 
-		public Builder setType(ResponseType type){
+		public Builder setType(InteractionResponseType type){
 			this.type = type;
 			return this;
 		}
@@ -90,20 +91,20 @@ public class Response{
 			return this;
 		}
 
+		public Builder setAllowedMentions(@Nullable Message.MentionType... allowedMentions){
+			return setAllowedMentions(List.of(allowedMentions));
+		}
+
 		public Builder setAllowedMentions(@Nullable Collection<Message.MentionType> allowedMentions){
 			this.allowedMentions = allowedMentions == null ? EnumSet.allOf(Message.MentionType.class) : Helpers.copyEnumSet(Message.MentionType.class, allowedMentions);
 			return this;
 		}
 
-		public Builder setAllowedMentions(@Nullable Message.MentionType... allowedMentions){
-			return setAllowedMentions(List.of(allowedMentions));
-		}
-
-		public Response build(){
+		public InteractionResponse build(){
 			if(this.flags == EPHEMERAL_FLAG && !this.embeds.isEmpty()){
 				throw new IllegalArgumentException("Ephemeral messages do not support embeds");
 			}
-			return new Response(this.type, new ResponseData(this.tts, this.content, this.embeds, this.flags, this.allowedMentions));
+			return new InteractionResponse(this.type, new InteractionResponseData(this.tts, this.content, this.embeds, this.flags, this.allowedMentions));
 		}
 
 	}

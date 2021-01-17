@@ -7,12 +7,7 @@ import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.command.interaction.Options;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.Config;
-import de.kittybot.kittybot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.JDAInfo;
-
-import java.lang.management.ManagementFactory;
-import java.time.Instant;
 
 @SuppressWarnings("unused")
 public class PingCommand extends Command implements RunnableCommand{

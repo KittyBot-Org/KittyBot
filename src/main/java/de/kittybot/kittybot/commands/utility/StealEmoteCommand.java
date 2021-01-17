@@ -2,24 +2,13 @@ package de.kittybot.kittybot.commands.utility;
 
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.application.Command;
-import de.kittybot.kittybot.command.application.CommandOptionChoice;
-import de.kittybot.kittybot.command.application.RunnableCommand;
 import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.command.interaction.Options;
-import de.kittybot.kittybot.command.options.*;
-import de.kittybot.kittybot.utils.Colors;
+import de.kittybot.kittybot.command.options.CommandOptionBoolean;
+import de.kittybot.kittybot.command.options.CommandOptionString;
+import de.kittybot.kittybot.command.options.SubCommand;
 import de.kittybot.kittybot.utils.EmoteHelper;
-import de.kittybot.kittybot.utils.MessageUtils;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Icon;
-import net.dv8tion.jda.api.entities.ListedEmote;
-import net.dv8tion.jda.api.requests.RestAction;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 @SuppressWarnings("unused")
 public class StealEmoteCommand extends Command{

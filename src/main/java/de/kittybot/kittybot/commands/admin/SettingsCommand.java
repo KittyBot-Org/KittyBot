@@ -5,7 +5,7 @@ import de.kittybot.kittybot.command.application.Command;
 import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.command.interaction.Options;
 import de.kittybot.kittybot.command.options.*;
-import de.kittybot.kittybot.command.response.Response;
+import de.kittybot.kittybot.command.response.InteractionResponse;
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.objects.Emoji;
 import de.kittybot.kittybot.utils.Colors;
@@ -13,7 +13,6 @@ import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.TimeUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
 
 @SuppressWarnings("unused")
 public class SettingsCommand extends Command{
@@ -79,7 +78,7 @@ public class SettingsCommand extends Command{
 				return;
 			}
 			ctx.get(SettingsModule.class).setPrefix(ctx.getGuildId(), prefix);
-			ctx.reply(new Response.Builder().setContent("Prefix set to: `" + prefix + "`").build());
+			ctx.reply(new InteractionResponse.Builder().setContent("Prefix set to: `" + prefix + "`").build());
 		}
 
 	}
@@ -97,7 +96,7 @@ public class SettingsCommand extends Command{
 		public void run(Options options, CommandContext ctx){
 			var roleId = options.getLong("role");
 			ctx.get(SettingsModule.class).setDjRoleId(ctx.getGuildId(), roleId);
-			ctx.reply(new Response.Builder().setContent("DJ Role set to: " + MessageUtils.getRoleMention(roleId)).build());
+			ctx.reply(new InteractionResponse.Builder().setContent("DJ Role set to: " + MessageUtils.getRoleMention(roleId)).build());
 		}
 
 	}
@@ -115,7 +114,7 @@ public class SettingsCommand extends Command{
 		public void run(Options options, CommandContext ctx){
 			var channelId = options.getLong("channel");
 			ctx.get(SettingsModule.class).setAnnouncementChannelId(ctx.getGuildId(), channelId);
-			ctx.reply(new Response.Builder().setContent("Announcement channel set to: " + MessageUtils.getChannelMention(channelId)).build());
+			ctx.reply(new InteractionResponse.Builder().setContent("Announcement channel set to: " + MessageUtils.getChannelMention(channelId)).build());
 		}
 
 	}
@@ -133,7 +132,7 @@ public class SettingsCommand extends Command{
 		public void run(Options options, CommandContext ctx){
 			var enabled = options.getBoolean("enabled");
 			ctx.get(SettingsModule.class).setNsfwEnabled(ctx.getGuildId(), enabled);
-			ctx.reply(new Response.Builder().setContent("NSFW commands " + (enabled ? "enabled" : "disabled")).build());
+			ctx.reply(new InteractionResponse.Builder().setContent("NSFW commands " + (enabled ? "enabled" : "disabled")).build());
 		}
 
 	}
@@ -165,10 +164,10 @@ public class SettingsCommand extends Command{
 			}
 
 			if(returnMessage.isBlank()){
-				ctx.reply(new Response.Builder().setContent("Join message `" + (settings.areJoinMessagesEnabled(ctx.getGuildId()) ? "enabled" : "disabled")  + "` and set to:\n" + settings.getJoinMessage(ctx.getGuildId())).build());
+				ctx.reply(new InteractionResponse.Builder().setContent("Join message `" + (settings.areJoinMessagesEnabled(ctx.getGuildId()) ? "enabled" : "disabled") + "` and set to:\n" + settings.getJoinMessage(ctx.getGuildId())).build());
 				return;
 			}
-			ctx.reply(new Response.Builder().setContent(returnMessage).build());
+			ctx.reply(new InteractionResponse.Builder().setContent(returnMessage).build());
 		}
 
 	}
@@ -200,10 +199,10 @@ public class SettingsCommand extends Command{
 			}
 
 			if(returnMessage.isBlank()){
-				ctx.reply(new Response.Builder().setContent("Leave message `" + (settings.areLeaveMessagesEnabled(ctx.getGuildId()) ? "enabled" : "disabled")  + "` and set to:\n" + settings.getLeaveMessage(ctx.getGuildId())).build());
+				ctx.reply(new InteractionResponse.Builder().setContent("Leave message `" + (settings.areLeaveMessagesEnabled(ctx.getGuildId()) ? "enabled" : "disabled") + "` and set to:\n" + settings.getLeaveMessage(ctx.getGuildId())).build());
 				return;
 			}
-			ctx.reply(new Response.Builder().setContent(returnMessage).build());
+			ctx.reply(new InteractionResponse.Builder().setContent(returnMessage).build());
 		}
 
 	}
@@ -235,11 +234,11 @@ public class SettingsCommand extends Command{
 			}
 
 			if(returnMessage.isBlank()){
-				ctx.reply(new Response.Builder().setContent("Log message `" + (settings.areLogMessagesEnabled(ctx.getGuildId()) ? "enabled" : "disabled")  + "` and send to channel " +
+				ctx.reply(new InteractionResponse.Builder().setContent("Log message `" + (settings.areLogMessagesEnabled(ctx.getGuildId()) ? "enabled" : "disabled") + "` and send to channel " +
 						MessageUtils.getChannelMention(settings.getLogChannelId(ctx.getGuildId()))).build());
 				return;
 			}
-			ctx.reply(new Response.Builder().setContent(returnMessage).build());
+			ctx.reply(new InteractionResponse.Builder().setContent(returnMessage).build());
 		}
 
 	}

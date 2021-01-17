@@ -61,18 +61,12 @@ public class MusicUtils{
 		if(track == null){
 			return false;
 		}
-		if(track.getUserData(Long.class) != member.getIdLong()){
-			return false;
-		}
-		return true;
+		return track.getUserData(Long.class) == member.getIdLong();
 	}
 
 	public static boolean checkBasicMusicPermissions(CommandContext ctx, MusicPlayer player){
 		var member = ctx.getMember();
-		if(!member.hasPermission(Permission.ADMINISTRATOR) && !ctx.get(SettingsModule.class).hasDJRole(member)){
-			return false;
-		}
-		return true;
+		return member.hasPermission(Permission.ADMINISTRATOR) || ctx.get(SettingsModule.class).hasDJRole(member);
 	}
 
 }

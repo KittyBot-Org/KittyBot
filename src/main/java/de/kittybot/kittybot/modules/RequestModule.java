@@ -23,29 +23,21 @@ public class RequestModule extends Module{
 
 	private final Request.Builder requestBuilder = new Request.Builder().header("user-agent", "de.kittybot");
 
-	public String executeRequest(Request request){
-		return executeRequest(request, null);
-	}
-
-	public String executeRequest(Request request, API api){
-		var requestUrl = request.url();
-		try(var response = this.modules.getHttpClient().newCall(request).execute()){
+	public void translateText(String text, Language from, Language to, Consumer<String> callback){
+		requestBuilder.url(String.format(API.GOOGLE_TRANSLATE_API.getUrl(), from.getShortname(), to.getShortname(), URLEncoder.encode(text, StandardCharsets.UTF_8)));
+		executeAsync(requestBuilder.build(), (call, response) -> {
 			var body = response.body();
-			var code = response.code();
-			if(code != 200 || body == null){
-				var string = body == null ? null : body.string();
-				LOG.warn("Failed to send a request to {} | code: {} | response: {}", requestUrl, code, string);
-				return string;
+			String newText = null;
+			if(body != null){
+				try{
+					newText = DataArray.fromJson(body.string()).getArray(0).getArray(0).getString(0);
+				}
+				catch(IOException e){
+					LOG.error("Error while reading body", e);
+				}
 			}
-			if(api != null){
-				LOG.info("Successfully executed a stats update request to {} API", api.getName());
-			}
-			return body.string();
-		}
-		catch(Exception e){
-			LOG.error("There was an error while sending a request to {}", requestUrl, e);
-		}
-		return "";
+			callback.accept(newText);
+		}, (call, response) -> callback.accept(null));
 	}
 
 	public void executeAsync(Request request, BiConsumer<Call, Response> success, BiConsumer<Call, Response> error){
@@ -75,7 +67,8 @@ public class RequestModule extends Module{
 							stringBody = body.string();
 						}
 					}
-					catch(IOException ignored){}
+					catch(IOException ignored){
+					}
 					LOG.warn("Failed to send a request to {} | code: {} | response: {}", requestUrl, code, stringBody);
 					if(error != null){
 						error.accept(call, response);
@@ -93,29 +86,37 @@ public class RequestModule extends Module{
 		});
 	}
 
-	public void translateText(String text, Language from, Language to, Consumer<String> callback){
-		requestBuilder.url(String.format(API.GOOGLE_TRANSLATE_API.getUrl(), from.getShortname(), to.getShortname(), URLEncoder.encode(text, StandardCharsets.UTF_8)));
-		executeAsync(requestBuilder.build(), (call, response) -> {
-			var body = response.body();
-			String newText = null;
-			if(body != null){
-				try{
-					newText = DataArray.fromJson(body.string()).getArray(0).getArray(0).getString(0);
-				}
-				catch(IOException e){
-					LOG.error("Error while reading body", e);
-				}
-			}
-			callback.accept(newText);
-		}, (call, response) -> callback.accept(null));
-	}
-
 	public String getNeko(boolean nsfw, String type, String imageType){
 		var url = String.format(API.PURR_BOT.getUrl(), nsfw ? "nsfw" : "sfw", type, imageType);
 		requestBuilder.url(url);
 		requestBuilder.method("GET", null);
 		var json = DataObject.fromJson(executeRequest(requestBuilder.build()));
 		return json.getString("link");
+	}
+
+	public String executeRequest(Request request){
+		return executeRequest(request, null);
+	}
+
+	public String executeRequest(Request request, API api){
+		var requestUrl = request.url();
+		try(var response = this.modules.getHttpClient().newCall(request).execute()){
+			var body = response.body();
+			var code = response.code();
+			if(code != 200 || body == null){
+				var string = body == null ? null : body.string();
+				LOG.warn("Failed to send a request to {} | code: {} | response: {}", requestUrl, code, string);
+				return string;
+			}
+			if(api != null){
+				LOG.info("Successfully executed a stats update request to {} API", api.getName());
+			}
+			return body.string();
+		}
+		catch(Exception e){
+			LOG.error("There was an error while sending a request to {}", requestUrl, e);
+		}
+		return "";
 	}
 
 	public void postToHastebin(String content, Consumer<String> callback){

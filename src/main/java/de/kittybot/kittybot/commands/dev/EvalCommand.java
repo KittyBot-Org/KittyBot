@@ -6,7 +6,7 @@ import de.kittybot.kittybot.command.application.RunnableCommand;
 import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.command.interaction.Options;
 import de.kittybot.kittybot.command.options.CommandOptionString;
-import de.kittybot.kittybot.command.response.Response;
+import de.kittybot.kittybot.command.response.InteractionResponse;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import javax.script.ScriptEngine;
@@ -59,7 +59,7 @@ public class EvalCommand extends Command implements RunnableCommand{
 			color = Color.RED;
 			status = "Failed";
 		}
-		ctx.reply(new Response.Builder()
+		ctx.reply(new InteractionResponse.Builder()
 				.addEmbeds(new EmbedBuilder()
 						.setTitle("Eval")
 						.setColor(color)

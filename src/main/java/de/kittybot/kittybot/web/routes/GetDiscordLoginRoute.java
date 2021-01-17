@@ -27,7 +27,8 @@ public class GetDiscordLoginRoute implements Handler{
 				return;
 			}
 		}
-		catch(UnauthorizedResponse | ForbiddenResponse ignored){}
+		catch(UnauthorizedResponse | ForbiddenResponse ignored){
+		}
 		ctx.redirect(dashboardSessionModule.getOAuth2Client().generateAuthorizationURL(Config.REDIRECT_URL, DashboardSessionModule.getScopes()));
 	}
 

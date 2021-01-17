@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.main.commands.roles.roles;
 
-import de.kittybot.kittybot.command.old.Args;
 import de.kittybot.kittybot.command.Category;
+import de.kittybot.kittybot.command.old.Args;
 import de.kittybot.kittybot.command.old.Command;
 import de.kittybot.kittybot.command.old.CommandContext;
 import de.kittybot.kittybot.modules.SettingsModule;

@@ -16,14 +16,14 @@ public class CommandOptionChoice<T>{
 		this.value = value;
 	}
 
-	public DataObject toJSON(){
-		return DataObject.empty().put("name", this.name).put("value", this.value);
-	}
-
 	public static DataArray toJSON(Collection<CommandOptionChoice<?>> choices){
 		return DataArray.fromCollection(
 				choices.stream().map(CommandOptionChoice::toJSON).collect(Collectors.toList())
 		);
+	}
+
+	public DataObject toJSON(){
+		return DataObject.empty().put("name", this.name).put("value", this.value);
 	}
 
 }

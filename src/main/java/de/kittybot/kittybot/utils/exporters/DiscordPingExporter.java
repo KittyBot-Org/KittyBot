@@ -33,7 +33,7 @@ public class DiscordPingExporter{
 			shards.forEach(shard -> {
 				var ping = shard.getGatewayPing();
 
-				if (ping >= 0) {
+				if(ping >= 0){
 					GATEWAY_PING.labels(String.valueOf(shard.getShardInfo().getShardId())).set(ping);
 				}
 			});

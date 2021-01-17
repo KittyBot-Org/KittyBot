@@ -9,9 +9,9 @@ import java.util.function.BiFunction;
 public class Paginator{
 
 	private final long guildId, channelId, messageId, authorId;
-	private int currentPage;
 	private final int maxPages;
 	private final BiFunction<Integer, EmbedBuilder, EmbedBuilder> embedFunction;
+	private int currentPage;
 
 	public Paginator(Message message, long authorId, int maxPages, BiFunction<Integer, EmbedBuilder, EmbedBuilder> embedFunction){
 		this.guildId = message.getGuild().getIdLong();

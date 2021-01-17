@@ -6,10 +6,7 @@ import de.kittybot.kittybot.command.application.RunnableCommand;
 import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.command.interaction.Options;
 import de.kittybot.kittybot.modules.MusicModule;
-import de.kittybot.kittybot.utils.Colors;
-import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.MusicUtils;
-import net.dv8tion.jda.api.EmbedBuilder;
 
 @SuppressWarnings("unused")
 public class SkipCommand extends Command implements RunnableCommand{

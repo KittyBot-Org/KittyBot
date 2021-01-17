@@ -1,11 +1,7 @@
 package de.kittybot.kittybot.main.commands.roles;
 
-import de.kittybot.kittybot.command.old.Args;
 import de.kittybot.kittybot.command.Category;
-import de.kittybot.kittybot.command.old.Command;
-import de.kittybot.kittybot.command.old.CommandContext;
-import de.kittybot.kittybot.command.old.Context;
-import de.kittybot.kittybot.command.old.ReactionContext;
+import de.kittybot.kittybot.command.old.*;
 import de.kittybot.kittybot.main.commands.roles.roles.RolesAddCommand;
 import de.kittybot.kittybot.main.commands.roles.roles.RolesListCommand;
 import de.kittybot.kittybot.main.commands.roles.roles.RolesRemoveCommand;
@@ -18,7 +14,7 @@ import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.requests.RestAction;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;

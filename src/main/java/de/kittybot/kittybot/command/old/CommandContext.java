@@ -13,7 +13,7 @@ import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import org.apache.commons.collections4.Bag;
 
-import java.awt.*;
+import java.awt.Color;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;

@@ -2,30 +2,21 @@ package de.kittybot.kittybot.commands.notification;
 
 import de.kittybot.kittybot.command.Category;
 import de.kittybot.kittybot.command.application.Command;
-import de.kittybot.kittybot.command.application.RunnableCommand;
 import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.command.interaction.Options;
-import de.kittybot.kittybot.command.options.CommandOptionBoolean;
 import de.kittybot.kittybot.command.options.CommandOptionInteger;
 import de.kittybot.kittybot.command.options.CommandOptionString;
 import de.kittybot.kittybot.command.options.SubCommand;
-import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.modules.NotificationModule;
 import de.kittybot.kittybot.modules.PaginatorModule;
-import de.kittybot.kittybot.objects.Notification;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.Config;
-import de.kittybot.kittybot.utils.MusicUtils;
 import de.kittybot.kittybot.utils.TimeUtils;
-import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
 
 @SuppressWarnings("unused")
 public class NotificationCommand extends Command{

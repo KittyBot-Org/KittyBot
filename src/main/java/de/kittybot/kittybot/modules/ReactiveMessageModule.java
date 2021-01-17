@@ -3,8 +3,8 @@ package de.kittybot.kittybot.modules;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
-import de.kittybot.kittybot.command.old.ReactiveMessage;
 import de.kittybot.kittybot.command.old.CommandContext;
+import de.kittybot.kittybot.command.old.ReactiveMessage;
 import de.kittybot.kittybot.module.Module;
 
 import java.util.concurrent.TimeUnit;

@@ -1,12 +1,8 @@
 package de.kittybot.kittybot.utils;
 
 import de.kittybot.kittybot.objects.Emoji;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.utils.MiscUtil;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 public class MessageUtils{
 

@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.utils;
 
 import de.kittybot.kittybot.command.context.CommandContext;
-import de.kittybot.kittybot.command.response.Response;
+import de.kittybot.kittybot.command.response.InteractionResponse;
 import net.dv8tion.jda.api.entities.Icon;
 
 import java.io.IOException;
@@ -14,20 +14,6 @@ public class EmoteHelper{
 	private static final int MAX_EMOTE_SIZE = 256000;
 
 	private EmoteHelper(){}
-
-	public static void createEmote(CommandContext ctx, String name, InputStream inputStream){
-		ctx.reply(new Response.Builder().ephemeral().setContent("processing...").build());
-		try{
-			if(inputStream.available() > MAX_EMOTE_SIZE){
-				ctx.followup("The image provided is bigger than 256kb");
-				return;
-			}
-			ctx.getGuild().createEmote(name, Icon.from(inputStream)).queue(success -> ctx.followup("Stole emote: " + success.getAsMention()), failure -> ctx.followup("Error creating emote: " + failure.getMessage()));
-		}
-		catch(IOException e){
-			ctx.followup("Error creating emote please try again\nError: " + e.getMessage());
-		}
-	}
 
 	public static void createEmote(CommandContext ctx, String name, long emoteId, boolean animated){
 		createEmote(ctx, name, "https://cdn.discordapp.com/emojis/" + emoteId + "." + (animated ? "gif" : "png"));
@@ -44,4 +30,19 @@ public class EmoteHelper{
 			ctx.error("Error creating emote please try again\nError: " + e.getMessage());
 		}
 	}
+
+	public static void createEmote(CommandContext ctx, String name, InputStream inputStream){
+		ctx.reply(new InteractionResponse.Builder().ephemeral().setContent("processing...").build());
+		try{
+			if(inputStream.available() > MAX_EMOTE_SIZE){
+				ctx.followup("The image provided is bigger than 256kb");
+				return;
+			}
+			ctx.getGuild().createEmote(name, Icon.from(inputStream)).queue(success -> ctx.followup("Stole emote: " + success.getAsMention()), failure -> ctx.followup("Error creating emote: " + failure.getMessage()));
+		}
+		catch(IOException e){
+			ctx.followup("Error creating emote please try again\nError: " + e.getMessage());
+		}
+	}
+
 }

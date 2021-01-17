@@ -2,9 +2,7 @@ package de.kittybot.kittybot.objects;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeSearchProvider;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
-import com.sedmelluq.discord.lavaplayer.tools.io.ChainedInputStream;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
@@ -26,10 +24,8 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-import java.awt.*;
+import java.awt.Color;
 import java.time.Instant;
-import java.util.List;
-import java.util.Queue;
 import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -201,6 +197,23 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		next();
 	}
 
+	public void next(){
+		var next = this.queue.poll();
+		if(next == null){
+			planDestroy();
+			return;
+		}
+		this.player.playTrack(next);
+	}
+
+	public void planDestroy(){
+		this.player.setPaused(true);
+		if(this.future != null){
+			return;
+		}
+		this.future = this.modules.getScheduler().schedule(() -> this.modules.get(MusicModule.class).destroy(this.guildId), 3, TimeUnit.MINUTES);
+	}
+
 	public void sendMusicController(){
 		var channel = getTextChannel();
 		if(channel == null){
@@ -286,23 +299,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				break;
 		}
 		return thumbnail;
-	}
-
-	public void next(){
-		var next = this.queue.poll();
-		if(next == null){
-			planDestroy();
-			return;
-		}
-		this.player.playTrack(next);
-	}
-
-	public void planDestroy(){
-		this.player.setPaused(true);
-		if(this.future != null){
-			return;
-		}
-		this.future = this.modules.getScheduler().schedule(() -> this.modules.get(MusicModule.class).destroy(this.guildId), 3, TimeUnit.MINUTES);
 	}
 
 	public void cancelDestroy(){

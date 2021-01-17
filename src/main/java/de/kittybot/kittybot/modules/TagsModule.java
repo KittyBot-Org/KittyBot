@@ -1,6 +1,5 @@
 package de.kittybot.kittybot.modules;
 
-import de.kittybot.kittybot.exceptions.CommandException;
 import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.objects.Tag;
 

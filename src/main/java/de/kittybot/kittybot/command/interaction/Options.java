@@ -1,6 +1,5 @@
 package de.kittybot.kittybot.command.interaction;
 
-import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.ListedEmote;
 import net.dv8tion.jda.api.requests.RestAction;

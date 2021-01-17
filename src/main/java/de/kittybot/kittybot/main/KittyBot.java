@@ -4,7 +4,6 @@ import de.kittybot.kittybot.exceptions.MissingConfigValuesException;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.modules.LavalinkModule;
 import de.kittybot.kittybot.utils.Config;
-import de.kittybot.kittybot.utils.ThreadFactoryHelper;
 import net.dv8tion.jda.api.GatewayEncoding;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
@@ -16,12 +15,9 @@ import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.dv8tion.jda.internal.utils.config.ThreadingConfig;
-import okhttp3.OkHttpClient;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 public class KittyBot{
 

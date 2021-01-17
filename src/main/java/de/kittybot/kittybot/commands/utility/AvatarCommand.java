@@ -9,15 +9,9 @@ import de.kittybot.kittybot.command.interaction.Options;
 import de.kittybot.kittybot.command.options.CommandOptionInteger;
 import de.kittybot.kittybot.command.options.CommandOptionString;
 import de.kittybot.kittybot.command.options.CommandOptionUser;
-import de.kittybot.kittybot.modules.RequestModule;
-import de.kittybot.kittybot.objects.Language;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.utils.MarkdownSanitizer;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class AvatarCommand extends Command implements RunnableCommand{
@@ -52,10 +46,10 @@ public class AvatarCommand extends Command implements RunnableCommand{
 		}
 		ctx.getJDA().retrieveUserById(userId).queue(user ->
 						ctx.reply(new EmbedBuilder()
-						.setColor(Colors.KITTYBOT_BLUE)
-						.setTitle(user.getAsTag() + " Avatar")
-						.setThumbnail(user.getEffectiveAvatarUrl())
-						.setDescription(MessageUtils.maskLink(size + "px", user.getEffectiveAvatarUrl() + "?size=" + size)))
+								.setColor(Colors.KITTYBOT_BLUE)
+								.setTitle(user.getAsTag() + " Avatar")
+								.setThumbnail(user.getEffectiveAvatarUrl())
+								.setDescription(MessageUtils.maskLink(size + "px", user.getEffectiveAvatarUrl() + "?size=" + size)))
 				, error -> ctx.error("User not found"));
 	}
 

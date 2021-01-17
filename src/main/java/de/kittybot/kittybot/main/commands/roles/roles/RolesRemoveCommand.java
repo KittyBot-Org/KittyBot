@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.main.commands.roles.roles;
 
-import de.kittybot.kittybot.command.old.Args;
 import de.kittybot.kittybot.command.Category;
+import de.kittybot.kittybot.command.old.Args;
 import de.kittybot.kittybot.command.old.Command;
 import de.kittybot.kittybot.command.old.CommandContext;
 import net.dv8tion.jda.api.Permission;
@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.Permission;
 public class RolesRemoveCommand extends Command{
 
 	public RolesRemoveCommand(Command parent){
-		super(parent,"remove", "Used to remove self-assignable roles", Category.ROLES);
+		super(parent, "remove", "Used to remove self-assignable roles", Category.ROLES);
 		setUsage("<@Role>");
 		addPermissions(Permission.ADMINISTRATOR);
 	}

@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.command.response;
 
-public enum ResponseType{
+public enum InteractionResponseType{
 
 	PONG(1),
 	ACKNOWLEDGE(2),
@@ -10,7 +10,7 @@ public enum ResponseType{
 
 	private final int type;
 
-	ResponseType(int type){
+	InteractionResponseType(int type){
 		this.type = type;
 	}
 

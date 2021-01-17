@@ -1,7 +1,5 @@
 package de.kittybot.kittybot.command.interaction;
 
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.ListedEmote;
 import net.dv8tion.jda.api.entities.Message;
@@ -9,17 +7,8 @@ import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.utils.MiscUtil;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
-import net.dv8tion.jda.internal.JDAImpl;
-import net.dv8tion.jda.internal.entities.EntityBuilder;
-import net.dv8tion.jda.internal.entities.GuildImpl;
-import net.dv8tion.jda.internal.requests.DeferredRestAction;
-import net.dv8tion.jda.internal.requests.Route;
-import net.dv8tion.jda.internal.requests.restaction.AuditableRestActionImpl;
-import net.dv8tion.jda.internal.utils.Checks;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +24,21 @@ public class InteractionDataOption implements InteractionOptionsHolder{
 		this.options = options;
 	}
 
+	public static InteractionDataOption fromJSON(DataObject json){
+		return new InteractionDataOption(
+				json.getString("name"),
+				json.opt("value").orElse(null),
+				InteractionDataOption.fromJSON(json.optArray("options").orElse(null))
+		);
+	}
+
+	public static List<InteractionDataOption> fromJSON(DataArray json){
+		if(json == null){
+			return new ArrayList<>();
+		}
+		return json.stream((array, index) -> fromJSON(array.getObject(index))).collect(Collectors.toList());
+	}
+
 	public String getName(){
 		return this.name;
 	}
@@ -47,16 +51,17 @@ public class InteractionDataOption implements InteractionOptionsHolder{
 		try{
 			return Long.parseLong(getString());
 		}
-		catch(NumberFormatException ignored){}
+		catch(NumberFormatException ignored){
+		}
 		return -1;
-	}
-
-	public int getInt(){
-		return Integer.parseInt(getString());
 	}
 
 	public String getString(){
 		return String.valueOf(this.value);
+	}
+
+	public int getInt(){
+		return Integer.parseInt(getString());
 	}
 
 	public boolean getBoolean(){
@@ -88,7 +93,8 @@ public class InteractionDataOption implements InteractionOptionsHolder{
 		try{
 			return MiscUtil.parseSnowflake(matcher.group(2));
 		}
-		catch(NumberFormatException ignored){}
+		catch(NumberFormatException ignored){
+		}
 		return -1;
 	}
 
@@ -115,21 +121,6 @@ public class InteractionDataOption implements InteractionOptionsHolder{
 				", value='" + this.value + '\'' +
 				", options=" + this.options +
 				'}';
-	}
-
-	public static InteractionDataOption fromJSON(DataObject json){
-		return new InteractionDataOption(
-				json.getString("name"),
-				json.opt("value").orElse(null),
-				InteractionDataOption.fromJSON(json.optArray("options").orElse(null))
-		);
-	}
-
-	public static List<InteractionDataOption> fromJSON(DataArray json){
-		if(json == null){
-			return new ArrayList<>();
-		}
-		return json.stream((array, index) -> fromJSON(array.getObject(index))).collect(Collectors.toList());
 	}
 
 }

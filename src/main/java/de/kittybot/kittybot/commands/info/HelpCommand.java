@@ -6,9 +6,9 @@ import de.kittybot.kittybot.command.application.RunnableCommand;
 import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.command.interaction.Options;
 import de.kittybot.kittybot.command.options.CommandOptionString;
-import de.kittybot.kittybot.command.response.Response;
-import de.kittybot.kittybot.command.response.ResponseType;
-import de.kittybot.kittybot.modules.InteractionsModule;
+import de.kittybot.kittybot.command.response.InteractionResponse;
+import de.kittybot.kittybot.command.response.InteractionResponseType;
+import de.kittybot.kittybot.modules.CommandsModule;
 import de.kittybot.kittybot.modules.PaginatorModule;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.Config;
@@ -31,14 +31,14 @@ public class HelpCommand extends Command implements RunnableCommand{
 
 	@Override
 	public void run(Options options, CommandContext ctx){
-		var commands = ctx.get(InteractionsModule.class).getCommands();
+		var commands = ctx.get(CommandsModule.class).getCommands();
 		if(options.has("command")){
 			// TODO display sub-commands
 			var cmdName = options.getString("command");
 			var optCmd = commands.stream().filter(cmd -> cmd.getName().equalsIgnoreCase(cmdName)).findFirst();
 			if(optCmd.isEmpty()){
-				ctx.reply(new Response.Builder()
-						.setType(ResponseType.CHANNEL_MESSAGE)
+				ctx.reply(new InteractionResponse.Builder()
+						.setType(InteractionResponseType.CHANNEL_MESSAGE)
 						.ephemeral()
 						.setContent("Command `" + cmdName + "` not found")
 						.build()
@@ -46,7 +46,7 @@ public class HelpCommand extends Command implements RunnableCommand{
 				return;
 			}
 			var cmd = optCmd.get();
-			ctx.reply(new Response.Builder()
+			ctx.reply(new InteractionResponse.Builder()
 					.addEmbeds(new EmbedBuilder()
 							.setColor(Colors.KITTYBOT_BLUE)
 							.setAuthor("Command", Config.ORIGIN_URL + "/commands#" + cmd.getName(), ctx.getJDA().getSelfUser().getEffectiveAvatarUrl())

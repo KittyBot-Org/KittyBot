@@ -15,9 +15,9 @@ public abstract class CommandOption implements CommandOptionsHolder{
 
 	private final CommandOptionType type;
 	private final String name, description;
-	private boolean isDefault, isRequired;
 	private final List<CommandOptionChoice<?>> choices;
 	private final List<CommandOption> options;
+	private boolean isDefault, isRequired;
 
 	protected CommandOption(CommandOptionType type, String name, String description){
 		this.type = type;
@@ -27,6 +27,12 @@ public abstract class CommandOption implements CommandOptionsHolder{
 		this.isRequired = false;
 		this.choices = new ArrayList<>();
 		this.options = new ArrayList<>();
+	}
+
+	public static DataArray toJSON(Collection<CommandOption> options){
+		return DataArray.fromCollection(
+				options.stream().map(CommandOption::toJSON).collect(Collectors.toList())
+		);
 	}
 
 	public CommandOption addChoices(CommandOptionChoice<?>... choices){
@@ -96,12 +102,6 @@ public abstract class CommandOption implements CommandOptionsHolder{
 			json.put("options", CommandOption.toJSON(this.options));
 		}
 		return json;
-	}
-
-	public static DataArray toJSON(Collection<CommandOption> options){
-		return DataArray.fromCollection(
-				options.stream().map(CommandOption::toJSON).collect(Collectors.toList())
-		);
 	}
 
 }

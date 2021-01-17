@@ -16,6 +16,14 @@ public class InteractionData implements InteractionOptionsHolder{
 		this.options = options;
 	}
 
+	public static InteractionData fromJSON(DataObject json){
+		return new InteractionData(
+				json.getLong("id"),
+				json.getString("name"),
+				InteractionDataOption.fromJSON(json.optArray("options").orElse(null))
+		);
+	}
+
 	public long getId(){
 		return this.id;
 	}
@@ -26,14 +34,6 @@ public class InteractionData implements InteractionOptionsHolder{
 
 	public List<InteractionDataOption> getOptions(){
 		return this.options;
-	}
-
-	public static InteractionData fromJSON(DataObject json){
-		return new InteractionData(
-				json.getLong("id"),
-				json.getString("name"),
-				InteractionDataOption.fromJSON(json.optArray("options").orElse(null))
-		);
 	}
 
 }

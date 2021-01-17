@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.utils;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class Colors{
 

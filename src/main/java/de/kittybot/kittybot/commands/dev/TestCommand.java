@@ -1,13 +1,16 @@
 package de.kittybot.kittybot.commands.dev;
 
 import de.kittybot.kittybot.command.Category;
-import de.kittybot.kittybot.command.application.*;
+import de.kittybot.kittybot.command.application.Command;
+import de.kittybot.kittybot.command.application.CommandOptionChoice;
 import de.kittybot.kittybot.command.context.CommandContext;
-import de.kittybot.kittybot.command.interaction.Options;
-import de.kittybot.kittybot.command.options.*;
 import de.kittybot.kittybot.command.interaction.InteractionDataOption;
-import de.kittybot.kittybot.command.response.Response;
-import de.kittybot.kittybot.command.response.ResponseType;
+import de.kittybot.kittybot.command.interaction.Options;
+import de.kittybot.kittybot.command.options.CommandOptionBoolean;
+import de.kittybot.kittybot.command.options.CommandOptionString;
+import de.kittybot.kittybot.command.options.SubCommand;
+import de.kittybot.kittybot.command.response.InteractionResponse;
+import de.kittybot.kittybot.command.response.InteractionResponseType;
 import de.kittybot.kittybot.utils.Colors;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -42,19 +45,19 @@ public class TestCommand extends Command{
 		public void run(Options options, CommandContext ctx){
 			var member = ctx.getMember();
 			var content = options.stream().map(InteractionDataOption::getValue).map(Object::toString).collect(Collectors.joining(", "));
-			var response = new Response.Builder();
+			var response = new InteractionResponse.Builder();
 			switch(options.getString("type")){
 				case "acknowledge":
-					response.setType(ResponseType.ACKNOWLEDGE);
+					response.setType(InteractionResponseType.ACKNOWLEDGE);
 					break;
 				case "acknowledge_with_source":
-					response.setType(ResponseType.ACKNOWLEDGE_WITH_SOURCE);
+					response.setType(InteractionResponseType.ACKNOWLEDGE_WITH_SOURCE);
 					break;
 				case "channel_message":
-					response.setType(ResponseType.CHANNEL_MESSAGE);
+					response.setType(InteractionResponseType.CHANNEL_MESSAGE);
 					break;
 				case "channel_message_with_source":
-					response.setType(ResponseType.CHANNEL_MESSAGE_WITH_SOURCE);
+					response.setType(InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE);
 					break;
 			}
 			if(options.has("ephemeral")){

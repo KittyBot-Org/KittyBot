@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.command.interaction;
 
 import de.kittybot.kittybot.module.Modules;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.utils.data.DataObject;
@@ -17,8 +18,9 @@ public class Interaction{
 	private final String token;
 	private final int version;
 	private final Modules modules;
+	private final JDA jda;
 
-	protected Interaction(long id, InteractionType type, InteractionData data, Guild guild, long channelId, Member member, String token, int version, Modules modules){
+	protected Interaction(long id, InteractionType type, InteractionData data, Guild guild, long channelId, Member member, String token, int version, Modules modules, JDA jda){
 		this.id = id;
 		this.type = type;
 		this.data = data;
@@ -28,6 +30,25 @@ public class Interaction{
 		this.token = token;
 		this.version = version;
 		this.modules = modules;
+		this.jda = jda;
+	}
+
+	public static Interaction fromJSON(Modules modules, DataObject json, JDA jda){
+		var guildId = json.getLong("guild_id");
+		var guild = modules.getGuildById(guildId);
+		var entityBuilder = new EntityBuilder(modules.getJDA(guildId));
+		return new Interaction(
+				json.getLong("id"),
+				InteractionType.get(json.getInt("type")),
+				InteractionData.fromJSON(json.getObject("data")),
+				guild,
+				json.getLong("channel_id"),
+				entityBuilder.createMember((GuildImpl) guild, json.getObject("member")),
+				json.getString("token"),
+				json.getInt("version"),
+				modules,
+				jda
+		);
 	}
 
 	public long getId(){
@@ -66,21 +87,8 @@ public class Interaction{
 		return this.modules;
 	}
 
-	public static Interaction fromJSON(Modules modules, DataObject json){
-		var guildId = json.getLong("guild_id");
-		var guild = modules.getGuildById(guildId);
-		var entityBuilder = new EntityBuilder(modules.getJDA(guildId));
-		return new Interaction(
-				json.getLong("id"),
-				InteractionType.get(json.getInt("type")),
-				InteractionData.fromJSON(json.getObject("data")),
-				guild,
-				json.getLong("channel_id"),
-				entityBuilder.createMember((GuildImpl) guild, json.getObject("member")),
-				json.getString("token"),
-				json.getInt("version"),
-				modules
-		);
+	public JDA getJDA(){
+		return this.jda;
 	}
 
 }

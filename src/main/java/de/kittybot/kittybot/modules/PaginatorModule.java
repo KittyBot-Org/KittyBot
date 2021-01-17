@@ -29,6 +29,18 @@ public class PaginatorModule extends Module{
 				.build();
 	}
 
+	public void remove(Paginator paginator){
+		var guild = this.modules.getGuildById(paginator.getGuildId());
+		if(guild == null){
+			return;
+		}
+		var channel = guild.getTextChannelById(paginator.getChannelId());
+		if(channel == null){
+			return;
+		}
+		channel.clearReactionsById(paginator.getMessageId()).queue();
+	}
+
 	@Override
 	public void onGuildMessageReactionAdd(@NotNull GuildMessageReactionAddEvent event){
 		if(event.getUser().isBot()){
@@ -64,28 +76,9 @@ public class PaginatorModule extends Module{
 		event.getReaction().removeReaction(event.getUser()).queue();
 	}
 
-	public void remove(Paginator paginator){
-		var guild = this.modules.getGuildById(paginator.getGuildId());
-		if(guild == null){
-			return;
-		}
-		var channel = guild.getTextChannelById(paginator.getChannelId());
-		if(channel == null){
-			return;
-		}
-		channel.clearReactionsById(paginator.getMessageId()).queue();
-	}
-
 	public void create(TextChannel channel, long authorId, int maxPages, BiFunction<Integer, EmbedBuilder, EmbedBuilder> embedFunction){
 		var embedBuilder = embedFunction.apply(0, new EmbedBuilder().setFooter("Page: 1/" + maxPages)).build();
 		create(maxPages, embedFunction, embedBuilder, channel, authorId);
-	}
-
-	public void create(CommandContext ctx, int maxPages, BiFunction<Integer, EmbedBuilder, EmbedBuilder> embedFunction){
-		ctx.acknowledge(true);
-		var embedBuilder = embedFunction.apply(0, new EmbedBuilder().setFooter("Page: 1/" + maxPages)).build();
-		var channel = ctx.getChannel();
-		create(maxPages, embedFunction, embedBuilder, channel, ctx.getUserId());
 	}
 
 	public void create(int maxPages, BiFunction<Integer, EmbedBuilder, EmbedBuilder> embedFunction, MessageEmbed embedBuilder, TextChannel channel, long userId){
@@ -100,6 +93,13 @@ public class PaginatorModule extends Module{
 			}
 			this.paginators.put(paginator.getMessageId(), paginator);
 		});
+	}
+
+	public void create(CommandContext ctx, int maxPages, BiFunction<Integer, EmbedBuilder, EmbedBuilder> embedFunction){
+		ctx.acknowledge(true);
+		var embedBuilder = embedFunction.apply(0, new EmbedBuilder().setFooter("Page: 1/" + maxPages)).build();
+		var channel = ctx.getChannel();
+		create(maxPages, embedFunction, embedBuilder, channel, ctx.getUserId());
 	}
 
 }

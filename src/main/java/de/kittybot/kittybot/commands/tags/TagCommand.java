@@ -6,7 +6,7 @@ import de.kittybot.kittybot.command.application.RunnableCommand;
 import de.kittybot.kittybot.command.context.CommandContext;
 import de.kittybot.kittybot.command.interaction.Options;
 import de.kittybot.kittybot.command.options.CommandOptionString;
-import de.kittybot.kittybot.command.response.Response;
+import de.kittybot.kittybot.command.response.InteractionResponse;
 import de.kittybot.kittybot.modules.TagsModule;
 import net.dv8tion.jda.api.entities.Message;
 
@@ -29,7 +29,7 @@ public class TagCommand extends Command implements RunnableCommand{
 			ctx.error("Tag with name `" + tagName + "` not found");
 			return;
 		}
-		ctx.reply(new Response.Builder().setContent(tag.getContent())
+		ctx.reply(new InteractionResponse.Builder().setContent(tag.getContent())
 				.setAllowedMentions(Message.MentionType.EMOTE, Message.MentionType.CHANNEL)
 				.build()
 		);
