@@ -73,15 +73,7 @@ public class InteractionRespondAction extends RestActionImpl<Interaction>{
 
 	@Override
 	public RequestBody finalizeData(){
-
-		if(!isEmpty()){
-			return asJSON();
-		}
-		throw new IllegalStateException("Cannot build a message without content!");
-	}
-
-	public boolean isEmpty(){
-		return Helpers.isBlank(content) && (embeds == null || embeds.isEmpty() || !hasPermission(Permission.MESSAGE_EMBED_LINKS));
+		return asJSON();
 	}
 
 	protected RequestBody asJSON(){
@@ -103,22 +95,25 @@ public class InteractionRespondAction extends RestActionImpl<Interaction>{
 
 		json.put("type", this.type.getType());
 
-		var obj = DataObject.empty();
-		if(!embeds.isEmpty()){
-			obj.put("embeds", DataArray.fromCollection(this.embeds.stream().map(MessageEmbed::toData).collect(Collectors.toSet())));
-		}
-		if(content.length() > 0){
-			obj.put("content", content.toString());
-		}
-		if(flags != 0){
-			obj.put("flags", flags);
-		}
+		if(!embeds.isEmpty() || content.length() > 0){
+			var obj = DataObject.empty();
+			if(!embeds.isEmpty()){
+				obj.put("embeds", DataArray.fromCollection(this.embeds.stream().map(MessageEmbed::toData).collect(Collectors.toSet())));
+			}
+			if(content.length() > 0){
+				obj.put("content", content.toString());
+			}
+			if(flags != 0){
+				obj.put("flags", flags);
+			}
 
-		obj.put("tts", tts);
-		if(allowedMentions != null || !mentionableUsers.isEmpty() || !mentionableRoles.isEmpty()){
-			obj.put("allowed_mentions", getAllowedMentionsObj());
+			obj.put("tts", tts);
+			if(allowedMentions != null || !mentionableUsers.isEmpty() || !mentionableRoles.isEmpty()){
+				obj.put("allowed_mentions", getAllowedMentionsObj());
+			}
+			json.put("data", obj);
 		}
-		return json.put("data", obj);
+		return json;
 	}
 
 	@Nonnull
