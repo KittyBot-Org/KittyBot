@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 public enum StreamType{
 
-	TWITCH(1, "Twitch", "twitch.tv"),
-	YOUTUBE(2, "YouTube", "youtube.com");
+	TWITCH(0, "Twitch", "twitch.tv"),
+	YOUTUBE(1, "YouTube", "youtube.com");
 
 	private final int id;
 	private final String name, baseUrl;

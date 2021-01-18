@@ -5,6 +5,7 @@ import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.utils.Config;
 import io.github.classgraph.ClassGraph;
 import net.dv8tion.jda.api.utils.data.DataArray;
+import net.dv8tion.jda.api.utils.data.DataObject;
 import net.dv8tion.jda.internal.requests.Method;
 import net.dv8tion.jda.internal.requests.Requester;
 import net.dv8tion.jda.internal.requests.Route;
@@ -17,8 +18,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class CommandsModule extends Module{
 
@@ -38,13 +42,13 @@ public class CommandsModule extends Module{
 
 	@Override
 	public void onEnable(){
-		loadCommands();
+		scanCommands();
 	}
 
-	public void loadCommands(){
+	public void scanCommands(){
 		LOG.info("Loading commands...");
 		this.commands = new HashMap<>();
-		try(var result = new ClassGraph().acceptPackages(COMMANDS_PACKAGE).scan()){
+		try(var result = new ClassGraph().acceptPackages(COMMANDS_PACKAGE).enableRealtimeLogging().scan()){
 			for(var cls : result.getSubclasses(Command.class.getName())){
 				var instance = cls.loadClass().getDeclaredConstructors()[0].newInstance();
 				if(!(instance instanceof Command)){
@@ -60,16 +64,31 @@ public class CommandsModule extends Module{
 		}
 	}
 
-	public void registerAllCommands(long guildId){
+	public void deployDiffs(long guildId){
+		var oldCmds = readCommands(guildId).stream().collect(Collectors.toMap(cmd -> cmd.getString("name"), cmd -> cmd));
+		var newCmds = this.commands.values().stream().collect(Collectors.toMap(Command::getName, Command::toJSON));
+
+		var cmdsToCreate = oldCmds.entrySet().stream().filter(cmd -> !newCmds.containsKey(cmd.getKey()) || newCmds.get(cmd.getKey()).toString().equals(cmd.getValue().toString())).map(Map.Entry::getValue).collect(Collectors.toSet());
+		var cmdsToDelete = newCmds.keySet().stream().filter(cmd -> !oldCmds.containsKey(cmd)).map(oldCmds::get).collect(Collectors.toSet());
+
+		if(!cmdsToDelete.isEmpty()){
+			cmdsToDelete.forEach(cmd -> deleteCommand(cmd.getLong("id"), guildId));
+		}
+		if(!cmdsToCreate.isEmpty()){
+			cmdsToCreate.forEach(cmd -> deployCommand(cmd, guildId));
+		}
+	}
+
+	public void deployAllCommands(long guildId){
 		LOG.info("Registering commands...");
 		for(var cmd : this.commands.values()){
-			registerCommand(cmd, guildId);
+			deployCommand(cmd.toJSON(), guildId);
 		}
 		LOG.info("Registered " + this.commands.size() + " commands...");
 	}
 
-	public void registerCommand(Command cmd, long guildId){
-		var json = cmd.toJSON().toString();
+	public void deployCommand(DataObject obj, long guildId){
+		var json = obj.toString();
 		LOG.debug("Registering command: {}", json);
 		var rqBody = RequestBody.create(json, MediaType.parse("application/json"));
 
@@ -77,34 +96,39 @@ public class CommandsModule extends Module{
 		try(var resp = post(route, rqBody).execute()){
 			if(!resp.isSuccessful()){
 				var body = resp.body();
-				LOG.error("Registering command '" + cmd.getName() + "' failed. Body: {}", body == null ? "null" : body.string() + "\nRequest Body: " + json);
+				LOG.error("Registering command '" + obj.getString("name") + "' failed. Body: {}", body == null ? "null" : body.string() + "\nRequest Body: " + json);
 				return;
 			}
-			LOG.debug("Registered command with name: {}", cmd.getName());
+			LOG.debug("Registered command with name: {}", obj.getString("name"));
 		}
 		catch(IOException e){
 			LOG.error("Error while processing registerCommands", e);
 		}
 	}
 
-	public void deleteAllCommands(long guildId){
+	public List<DataObject> readCommands(long guildId){
 		var route = guildId == -1L ? COMMANDS_GET.compile(String.valueOf(Config.BOT_ID)) : GUILD_COMMANDS_GET.compile(String.valueOf(Config.BOT_ID), String.valueOf(guildId));
-
+		var cmds = new ArrayList<DataObject>();
 		try(var resp = get(route).execute()){
 			var body = resp.body();
-			if(body == null){
-				return;
+			if(!resp.isSuccessful() || body == null){
+				return cmds;
 			}
-			var strBody = body.string();
-			var json = DataArray.fromJson(strBody);
+			var json = DataArray.fromJson(body.string());
 			for(var i = 0; i < json.length(); i++){
-				var cmd = json.getObject(i);
-				deleteCommand(cmd.getLong("id"), guildId);
+				cmds.add(json.getObject(i));
 			}
-			LOG.debug("Loaded following commands: {}", strBody);
 		}
 		catch(IOException e){
-			LOG.error("Error while clearing commands", e);
+			LOG.error("Error while reading commands", e);
+		}
+		return cmds;
+	}
+
+	public void deleteAllCommands(long guildId){
+		var cmds = readCommands(guildId);
+		for(var cmd : cmds){
+			deleteCommand(cmd.getLong("id"), guildId);
 		}
 	}
 

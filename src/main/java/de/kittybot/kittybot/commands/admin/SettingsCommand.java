@@ -1,19 +1,23 @@
 package de.kittybot.kittybot.commands.admin;
 
+import de.kittybot.kittybot.modules.StreamAnnouncementModule;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
+import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.slashcommands.application.options.*;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.objects.Emoji;
+import de.kittybot.kittybot.streams.StreamType;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
-import de.kittybot.kittybot.utils.TimeUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class SettingsCommand extends Command{
@@ -22,11 +26,11 @@ public class SettingsCommand extends Command{
 		super("settings", "Let's you see/change settings", Category.ADMIN);
 		addOptions(
 				new ViewCommand(),
-				new PrefixCommand(),
 				new DJRoleCommand(),
 				new AnnouncementChannelCommand(),
 				new JoinMessageCommand(),
 				new LeaveMessageCommand(),
+				new NsfwCommand(),
 				new LogMessagesCommand(),
 				new SnipesCommand(),
 				new StreamAnnouncementsCommand()
@@ -46,40 +50,18 @@ public class SettingsCommand extends Command{
 			var guildId = ctx.getGuildId();
 			var settings = ctx.get(SettingsModule.class).getSettings(guildId);
 			ctx.reply(new EmbedBuilder()
-					.setColor(Colors.KITTYBOT_BLUE)
-					.setAuthor("Guild settings:", Config.ORIGIN_URL + "/guilds/" + guildId + "/dashboard", Emoji.SETTINGS.getUrl())
-					.addField("Command Prefix: ", "`" + settings.getPrefix() + "`", false)
-					.addField("Announcement Channel: ", settings.getAnnouncementChannel(), false)
-					.addField("DJ Role: ", settings.getDjRole(), false)
-					.addField("NSFW Enabled: ", MessageUtils.getBoolEmote(settings.isNsfwEnabled()), false)
-					.addField("Join Messages: " + MessageUtils.getBoolEmote(settings.areJoinMessagesEnabled()), settings.getJoinMessage(), false)
-					.addField("Leave Messages: " + MessageUtils.getBoolEmote(settings.areLeaveMessagesEnabled()), settings.getLeaveMessage(), false)
-					.addField("Log Messages: " + MessageUtils.getBoolEmote(settings.areLogMessagesEnabled()), settings.getLogChannel(), false)
-					.addField("Inactive Role: " + TimeUtils.formatDurationDHMS(settings.getInactiveDuration()), settings.getLogChannel(), false)
+							.setColor(Colors.KITTYBOT_BLUE)
+							.setAuthor("Guild settings:", Config.ORIGIN_URL + "/guilds/" + guildId + "/dashboard", Emoji.SETTINGS.getUrl())
+							.addField("Announcement Channel: ", settings.getAnnouncementChannel(), false)
+							.addField("Join Messages: " + MessageUtils.getBoolEmote(settings.areJoinMessagesEnabled()), settings.getJoinMessage(), false)
+							.addField("Leave Messages: " + MessageUtils.getBoolEmote(settings.areLeaveMessagesEnabled()), settings.getLeaveMessage(), false)
+							.addField("Stream Announcement Channel:", settings.getStreamAnnouncementChannel(), false)
+							.addField("DJ Role: ", settings.getDjRole(), false)
+							.addField("NSFW Enabled: ", MessageUtils.getBoolEmote(settings.isNsfwEnabled()), false)
+							.addField("Log Messages: " + MessageUtils.getBoolEmote(settings.areLogMessagesEnabled()), settings.getLogChannel(), false)
+							.addField("Snipes Enabled:", MessageUtils.getBoolEmote(settings.areSnipesEnabled()), false)
+					//.addField("Inactive Role: " + TimeUtils.formatDurationDHMS(settings.getInactiveDuration()), settings.getLogChannel(), false)
 			);
-		}
-
-	}
-
-	public static class PrefixCommand extends SubCommand{
-
-
-		public PrefixCommand(){
-			super("prefix", "Sets the prefix");
-			addOptions(
-					new CommandOptionString("prefix", "The new prefix").required()
-			);
-		}
-
-		@Override
-		public void run(Options options, CommandContext ctx){
-			var prefix = options.getString("prefix");
-			if(prefix.length() > 4){
-				ctx.error("The prefix can't be longer than 4");
-				return;
-			}
-			ctx.get(SettingsModule.class).setPrefix(ctx.getGuildId(), prefix);
-			ctx.reply(new InteractionResponse.Builder().setContent("Prefix set to: `" + prefix + "`").build());
 		}
 
 	}
@@ -208,6 +190,23 @@ public class SettingsCommand extends Command{
 
 	}
 
+	public static class NsfwCommand extends SubCommand{
+
+		public NsfwCommand(){
+			super("nsfw", "Enables/Disables nsfw commands");
+			addOptions(
+					new CommandOptionBoolean("enabled", "Whether nsfw commands are enabled").required()
+			);
+		}
+
+		@Override
+		public void run(Options options, CommandContext ctx){
+			var enabled = options.getBoolean("enabled");
+			ctx.get(SettingsModule.class).setNsfwEnabled(ctx.getGuildId(), enabled);
+			ctx.reply((enabled ? "Enabled" : "Disabled") + "nsfw commands");
+		}
+	}
+
 	public static class LogMessagesCommand extends SubCommand{
 
 		public LogMessagesCommand(){
@@ -294,14 +293,112 @@ public class SettingsCommand extends Command{
 
 	}
 
-	public static class StreamAnnouncementsCommand extends SubCommand{
+	public static class StreamAnnouncementsCommand extends SubCommandGroup{
 
 		public StreamAnnouncementsCommand(){
 			super("streamannouncements", "Used to configure stream announcements");
+			addOptions(
+					new AddCommand(),
+					new RemoveCommand(),
+					new ListCommand(),
+					new ChannelCommand()
+			);
 		}
 
-		@Override
-		public void run(Options options, CommandContext ctx){
+		public static class AddCommand extends SubCommand{
+
+			public AddCommand(){
+				super("add", "Adds a new stream announcement");
+				addOptions(
+						new CommandOptionInteger("service", "Which service the stream is from").required()
+								.addChoices(
+										new CommandOptionChoice<>("twitch", 0)/*,
+										new CommandOptionChoice<>("youtube", 0)*/
+								),
+						new CommandOptionString("username", "The username of the streamer").required()
+				);
+			}
+
+			@Override
+			public void run(Options options, CommandContext ctx){
+				var type = StreamType.byId(options.getInt("service"));
+				var username = options.getString("username");
+				var success = ctx.get(StreamAnnouncementModule.class).add(username, ctx.getGuildId(), type);
+				if(!success){
+					ctx.error("Could not add stream announcement for " + type.getName() + " with username: " + username + ". Did you add this one already?");
+					return;
+				}
+				ctx.reply("Stream announcement for " + type.getName() + " with username: " + username + " added");
+			}
+
+		}
+
+		public static class RemoveCommand extends SubCommand{
+
+			public RemoveCommand(){
+				super("remove", "Removes a stream announcement");
+				addOptions(
+						new CommandOptionInteger("service", "Which service the stream is from").required()
+								.addChoices(
+										new CommandOptionChoice<>("twitch", 0)/*,
+										new CommandOptionChoice<>("youtube", 0)*/
+								),
+						new CommandOptionString("username", "The username of the streamer").required()
+				);
+			}
+
+			@Override
+			public void run(Options options, CommandContext ctx){
+				var type = StreamType.byId(options.getInt("service"));
+				var username = options.getString("username");
+				var success = ctx.get(StreamAnnouncementModule.class).remove(username, ctx.getGuildId(), type);
+				if(!success){
+					ctx.error("Could not find stream announcement for " + type.getName() + " with username: " + username + ". Check your spelling");
+					return;
+				}
+				ctx.reply("Stream announcement for " + type.getName() + " with username: " + username + " removed");
+			}
+
+		}
+
+		public static class ListCommand extends SubCommand{
+
+			public ListCommand(){
+				super("list", "Lists stream announcements");
+			}
+
+			@Override
+			public void run(Options options, CommandContext ctx){
+				var streamAnnouncements = ctx.get(StreamAnnouncementModule.class).get(ctx.getGuildId());
+				if(streamAnnouncements.isEmpty()){
+					ctx.error("No stream announcements found. Create them with `/settings streamannouncements add <service> <username>`");
+					return;
+				}
+				ctx.reply("**Stream Announcements:**\n" + streamAnnouncements.stream().map(sa -> MessageUtils.maskLink(sa.getUserName(), sa.getStreamUrl()) + " on " + sa.getStreamType().getName()).collect(Collectors.joining("\n")));
+			}
+
+		}
+
+		public static class ChannelCommand extends SubCommand{
+
+			public ChannelCommand(){
+				super("channel", "Sets the stream announcement channel");
+				addOptions(
+						new CommandOptionChannel("channel", "The channel which stream announcements should get send to").required()
+				);
+			}
+
+			@Override
+			public void run(Options options, CommandContext ctx){
+				var channelId = options.getLong("channel");
+				var channel = ctx.getGuild().getTextChannelById(channelId);
+				if(channel == null){
+					ctx.error("Please provide a valid text channel. No voice channel/category");
+					return;
+				}
+				ctx.get(SettingsModule.class).setStreamAnnouncementChannelId(ctx.getGuildId(), channelId);
+				ctx.reply("Stream announcements now get send to " + MessageUtils.getChannelMention(channelId));
+			}
 
 		}
 

@@ -23,6 +23,10 @@ public class HastebinCommand extends Command implements RunnableCommand{
 
 	@Override
 	public void run(Options options, CommandContext ctx){
+		if(Config.HASTEBIN_URL.isBlank()){
+			ctx.error("No hastebin url configured");
+			return;
+		}
 		ctx.getChannel().getIterableHistory().takeAsync(25).thenAcceptAsync(messages -> {
 			var message = messages.stream().filter(msg -> !msg.getAttachments().isEmpty() && msg.getAttachments().stream().anyMatch(attachment -> !attachment.isImage() && !attachment.isVideo())).findFirst();
 			if(message.isEmpty()){
@@ -40,7 +44,6 @@ public class HastebinCommand extends Command implements RunnableCommand{
 								}
 								ctx.reply(maskLink("here is a hastebin", Config.HASTEBIN_URL + "/" + key));
 							});
-
 						}
 						catch(IOException e){
 							ctx.error("Error while creating hastebin\nError: " + e.getMessage());

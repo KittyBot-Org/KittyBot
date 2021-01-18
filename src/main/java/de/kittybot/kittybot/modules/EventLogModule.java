@@ -65,8 +65,8 @@ public class EventLogModule extends Module{
 	public void onGuildJoin(@NotNull GuildJoinEvent event){
 		var guildCount = (int) event.getJDA().getGuildCache().size();
 		var guild = event.getGuild();
-		guild.retrieveOwner().queue(owner -> send(event.getJDA(), "Join", String.format(
-				"Guild: `%s(%s) with owner: `%s`(%s) and `%d` members%nGuilds: `%d`",
+		guild.retrieveOwner().queue(owner -> send(event.getJDA(), "Guild Join", String.format(
+				"Guild: `%s`(`%s`) with owner: `%s`(`%s`) and `%d` members%nGuilds: `%d`",
 				guild.getName(),
 				guild.getId(),
 				owner.getUser().getAsTag(),
@@ -80,8 +80,8 @@ public class EventLogModule extends Module{
 	public void onGuildLeave(@NotNull GuildLeaveEvent event){
 		var guildCount = (int) event.getJDA().getGuildCache().size();
 		var guild = event.getGuild();
-		send(event.getJDA(), "Leave", String.format(
-				"Guild: `%s(%s)%nGuilds: `%d`",
+		send(event.getJDA(), "Guild Leave", String.format(
+				"Guild: `%s`(%s)%nGuilds: `%d`",
 				guild.getName(),
 				guild.getId(),
 				guildCount

@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.commands.info;
 
+import de.kittybot.kittybot.objects.Emoji;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
@@ -15,6 +16,7 @@ import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 
+import java.awt.Color;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -23,63 +25,19 @@ import java.util.stream.Collectors;
 public class HelpCommand extends Command implements RunnableCommand{
 
 	public HelpCommand(){
-		super("help", "Shows all commands", Category.INFORMATION);
-		addOptions(
-				new CommandOptionString("command", "The command you want to display help")
-		);
+		super("help", "Shows help", Category.INFORMATION);
 	}
 
 	@Override
 	public void run(Options options, CommandContext ctx){
-		var commands = ctx.get(CommandsModule.class).getCommands().values();
-		if(options.has("command")){
-			// TODO display sub-commands
-			var cmdName = options.getString("command");
-			var optCmd = commands.stream().filter(cmd -> cmd.getName().equalsIgnoreCase(cmdName)).findFirst();
-			if(optCmd.isEmpty()){
-				ctx.reply(new InteractionResponse.Builder()
-						.setType(InteractionResponseType.CHANNEL_MESSAGE)
-						.ephemeral()
-						.setContent("Command `" + cmdName + "` not found")
-						.build()
-				);
-				return;
-			}
-			var cmd = optCmd.get();
-			ctx.reply(new InteractionResponse.Builder()
-					.addEmbeds(new EmbedBuilder()
-							.setColor(Colors.KITTYBOT_BLUE)
-							.setAuthor("Command", Config.ORIGIN_URL + "/commands#" + cmd.getName(), ctx.getJDA().getSelfUser().getEffectiveAvatarUrl())
-							.setDescription("`/" + cmd.getName() + "`\n*" + cmd.getDescription() + "*")
-							.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
-							.setTimestamp(Instant.now())
-							.build()
-					)
-					.build()
-			);
-			return;
-		}
-
-		var pages = new ArrayList<String>();
-		commands.stream().collect(Collectors.groupingBy(Command::getCategory)).forEach((category, cmds) -> {
-			if(cmds.isEmpty()){
-				return;
-			}
-			var page = new StringBuilder().append("**").append(category.getEmote()).append(" ").append(category.getName()).append("**");
-
-			cmds.forEach(cmd -> page.append("\n• `/").append(cmd.getName()).append("` - *").append(cmd.getDescription()).append("*"));
-
-			pages.add(page.toString());
-		});
-
-		ctx.get(PaginatorModule.class).create(
-				ctx,
-				pages.size(),
-				(page, embedBuilder) -> embedBuilder.setColor(Colors.KITTYBOT_BLUE)
-						.setAuthor("Commands", Config.ORIGIN_URL + "/commands", ctx.getJDA().getSelfUser().getEffectiveAvatarUrl())
-						.setDescription(pages.get(page))
-						.appendDescription("\n\n*Commands can also be found " + MessageUtils.maskLink("here", Config.ORIGIN_URL + "/commands") + "*")
-						.setTimestamp(Instant.now())
+		ctx.reply(new EmbedBuilder()
+				.setColor(Colors.KITTYBOT_BLUE)
+				.setAuthor("Help", Config.ORIGIN_URL, ctx.getSelfUser().getEffectiveAvatarUrl())
+				.setDescription(
+						"Hello " + ctx.getMember().getAsMention() + "\n" +
+								"KittyBot uses the new " + Emoji.SLASH.get() + "Slash Commands by Discord!" +
+								"To see all available commands just type `/` or use `/commands`"
+				)
 		);
 	}
 

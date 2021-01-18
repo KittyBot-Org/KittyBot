@@ -136,7 +136,7 @@ public class StreamAnnouncementModule extends Module{
 		return this.streamAnnouncements.stream().filter(stream -> stream.getGuildId() == guildId).collect(Collectors.toList());
 	}
 
-	public boolean delete(String name, long guildId, StreamType type){
+	public boolean remove(String name, long guildId, StreamType type){
 		var dbModule = this.modules.get(DatabaseModule.class);
 		var rows = dbModule.getCtx().deleteFrom(STREAM_USERS).where(
 				STREAM_USERS.USER_NAME.eq(name).and(STREAM_USERS.GUILD_ID.eq(guildId)).and(STREAM_USERS.STREAM_TYPE.eq(type.getId()))).execute();
