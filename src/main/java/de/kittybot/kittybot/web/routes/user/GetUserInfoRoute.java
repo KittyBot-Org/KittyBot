@@ -36,11 +36,11 @@ public class GetUserInfoRoute implements Handler{
 		}
 		try{
 			var guildData = DataArray.fromCollection(
-					dashboardSessionModule.getGuilds(session).stream().filter(
-							guild -> this.modules.getShardManager().getGuildCache().stream().anyMatch(g -> g.getIdLong() == guild.getIdLong())
-					).map(
-							guild -> DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl())
-					).collect(Collectors.toSet())
+				dashboardSessionModule.getGuilds(session).stream().filter(
+					guild -> this.modules.getShardManager().getGuildCache().stream().anyMatch(g -> g.getIdLong() == guild.getIdLong())
+				).map(
+					guild -> DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl())
+				).collect(Collectors.toSet())
 			);
 			WebService.ok(ctx, DataObject.empty().put("name", user.getName()).put("id", userId).put("icon", user.getEffectiveAvatarUrl()).put("guilds", guildData));
 		}

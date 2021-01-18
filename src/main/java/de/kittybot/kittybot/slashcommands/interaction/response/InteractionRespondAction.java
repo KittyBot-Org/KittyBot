@@ -55,8 +55,8 @@ public class InteractionRespondAction extends RestActionImpl<Interaction>{
 
 	public static void setDefaultMentions(@Nullable Collection<Message.MentionType> allowedMentions){
 		InteractionRespondAction.defaultMentions = allowedMentions == null
-				? EnumSet.allOf(Message.MentionType.class) // Default to all mentions enabled
-				: Helpers.copyEnumSet(Message.MentionType.class, allowedMentions);
+			? EnumSet.allOf(Message.MentionType.class) // Default to all mentions enabled
+			: Helpers.copyEnumSet(Message.MentionType.class, allowedMentions);
 	}
 
 	@Nonnull
@@ -78,16 +78,6 @@ public class InteractionRespondAction extends RestActionImpl<Interaction>{
 
 	protected RequestBody asJSON(){
 		return RequestBody.create(getJSON().toJson(), Requester.MEDIA_TYPE_JSON);
-	}
-
-	public boolean hasPermission(Permission perm){
-		var channel = getChannel();
-		if(channel.getType() != ChannelType.TEXT){
-			return true;
-		}
-		TextChannel text = (TextChannel) channel;
-		Member self = text.getGuild().getSelfMember();
-		return self.hasPermission(text, perm);
 	}
 
 	protected DataObject getJSON(){
@@ -116,21 +106,16 @@ public class InteractionRespondAction extends RestActionImpl<Interaction>{
 		return json;
 	}
 
-	@Nonnull
-	public MessageChannel getChannel(){
-		return this.interaction.getGuild().getTextChannelById(this.interaction.getChannelId());
-	}
-
 	protected DataObject getAllowedMentionsObj(){
 		DataObject allowedMentionsObj = DataObject.empty();
 		DataArray parsable = DataArray.empty();
 		if(allowedMentions != null){
 			// Add parsing options
 			allowedMentions.stream()
-					.map(Message.MentionType::getParseKey)
-					.filter(Objects::nonNull)
-					.distinct()
-					.forEach(parsable::add);
+				.map(Message.MentionType::getParseKey)
+				.filter(Objects::nonNull)
+				.distinct()
+				.forEach(parsable::add);
 		}
 		if(!mentionableUsers.isEmpty()){
 			// Whitelist certain users
@@ -148,6 +133,21 @@ public class InteractionRespondAction extends RestActionImpl<Interaction>{
 	@Override
 	protected void handleSuccess(Response response, Request<Interaction> request){
 		request.onSuccess(this.interaction);
+	}
+
+	public boolean hasPermission(Permission perm){
+		var channel = getChannel();
+		if(channel.getType() != ChannelType.TEXT){
+			return true;
+		}
+		TextChannel text = (TextChannel) channel;
+		Member self = text.getGuild().getSelfMember();
+		return self.hasPermission(text, perm);
+	}
+
+	@Nonnull
+	public MessageChannel getChannel(){
+		return this.interaction.getGuild().getTextChannelById(this.interaction.getChannelId());
 	}
 
 	@Nonnull
@@ -189,8 +189,8 @@ public class InteractionRespondAction extends RestActionImpl<Interaction>{
 	public InteractionRespondAction embeds(MessageEmbed... embeds){
 		if(embeds.length > 0){
 			Checks.check(Arrays.stream(embeds).anyMatch(MessageEmbed::isSendable),
-					"Provided Message contains an empty embed or an embed with a length greater than %d characters, which is the max for bot accounts!",
-					MessageEmbed.EMBED_MAX_LENGTH_BOT);
+				"Provided Message contains an empty embed or an embed with a length greater than %d characters, which is the max for bot accounts!",
+				MessageEmbed.EMBED_MAX_LENGTH_BOT);
 		}
 		this.embeds = List.of(embeds);
 		return this;
@@ -199,8 +199,8 @@ public class InteractionRespondAction extends RestActionImpl<Interaction>{
 	@Nonnull
 	public InteractionRespondAction allowedMentions(@Nullable Collection<Message.MentionType> allowedMentions){
 		this.allowedMentions = allowedMentions == null
-				? EnumSet.allOf(Message.MentionType.class)
-				: Helpers.copyEnumSet(Message.MentionType.class, allowedMentions);
+			? EnumSet.allOf(Message.MentionType.class)
+			: Helpers.copyEnumSet(Message.MentionType.class, allowedMentions);
 		return this;
 	}
 

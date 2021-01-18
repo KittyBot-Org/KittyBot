@@ -1,11 +1,11 @@
 package de.kittybot.kittybot.commands.music;
 
+import de.kittybot.kittybot.modules.MusicModule;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
-import de.kittybot.kittybot.modules.MusicModule;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.MusicUtils;
@@ -27,8 +27,8 @@ public class HistoryCommand extends Command implements RunnableCommand{
 		var tracks = player.getHistory();
 		if(tracks.isEmpty()){
 			ctx.reply(new EmbedBuilder()
-					.setColor(Colors.KITTYBOT_BLUE)
-					.setDescription("The history is empty. Play some tracks to fill it-")
+				.setColor(Colors.KITTYBOT_BLUE)
+				.setDescription("The history is empty. Play some tracks to fill it-")
 			);
 			return;
 		}

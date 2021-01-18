@@ -3,12 +3,12 @@ package de.kittybot.kittybot.commands.dev;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
-import de.kittybot.kittybot.slashcommands.interaction.InteractionDataOption;
-import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionBoolean;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.slashcommands.interaction.InteractionDataOption;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponseType;
 import de.kittybot.kittybot.utils.Colors;
@@ -22,7 +22,7 @@ public class TestCommand extends Command{
 	public TestCommand(){
 		super("test", "Test Description", Category.DEV);
 		addOptions(
-				new TestSubCommand()
+			new TestSubCommand()
 		);
 	}
 
@@ -31,13 +31,13 @@ public class TestCommand extends Command{
 		public TestSubCommand(){
 			super("response", "Let's you choose the response type");
 			addOptions(
-					new CommandOptionString("type", "The response type you want").required().addChoices(
-							new CommandOptionChoice<>("ACKNOWLEDGE", "acknowledge"),
-							new CommandOptionChoice<>("ACKNOWLEDGE_WITH_SOURCE", "acknowledge_with_source"),
-							new CommandOptionChoice<>("CHANNEL_MESSAGE", "channel_message"),
-							new CommandOptionChoice<>("CHANNEL_MESSAGE_WITH_SOURCE", "channel_message_with_source")
-					),
-					new CommandOptionBoolean("ephemeral", "Weather the response should be a ephemeral message")
+				new CommandOptionString("type", "The response type you want").required().addChoices(
+					new CommandOptionChoice<>("ACKNOWLEDGE", "acknowledge"),
+					new CommandOptionChoice<>("ACKNOWLEDGE_WITH_SOURCE", "acknowledge_with_source"),
+					new CommandOptionChoice<>("CHANNEL_MESSAGE", "channel_message"),
+					new CommandOptionChoice<>("CHANNEL_MESSAGE_WITH_SOURCE", "channel_message_with_source")
+				),
+				new CommandOptionBoolean("ephemeral", "Weather the response should be a ephemeral message")
 			);
 		}
 
@@ -68,12 +68,12 @@ public class TestCommand extends Command{
 			}
 			else{
 				response.addEmbeds(new EmbedBuilder()
-						.setTitle("Response")
-						.setColor(Colors.KITTYBOT_BLUE)
-						.setDescription(content)
-						.setFooter(member.getEffectiveName(), member.getUser().getEffectiveAvatarUrl())
-						.setTimestamp(Instant.now())
-						.build()
+					.setTitle("Response")
+					.setColor(Colors.KITTYBOT_BLUE)
+					.setDescription(content)
+					.setFooter(member.getEffectiveName(), member.getUser().getEffectiveAvatarUrl())
+					.setTimestamp(Instant.now())
+					.build()
 				);
 			}
 			ctx.reply(response.build());

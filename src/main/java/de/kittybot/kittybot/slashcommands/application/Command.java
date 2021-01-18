@@ -61,8 +61,8 @@ public abstract class Command implements CommandOptionsHolder{
 
 	public DataObject toJSON(){
 		var json = DataObject.empty()
-				.put("name", this.name)
-				.put("description", this.description);
+			.put("name", this.name)
+			.put("description", this.description);
 		if(!this.options.isEmpty()){
 			json.put("options", CommandOption.toJSON(this.options));
 		}

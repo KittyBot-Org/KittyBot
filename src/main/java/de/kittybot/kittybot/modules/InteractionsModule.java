@@ -1,16 +1,16 @@
 package de.kittybot.kittybot.modules;
 
 import club.minnced.discord.webhook.receive.ReadonlyMessage;
+import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionsHolder;
 import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import de.kittybot.kittybot.slashcommands.interaction.InteractionOptionsHolder;
-import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.slashcommands.interaction.response.FollowupMessage;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionRespondAction;
-import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.exporters.Metrics;
 import net.dv8tion.jda.api.Permission;
@@ -53,7 +53,7 @@ public class InteractionsModule extends Module{
 			}
 
 			var data = interaction.getData();
-			var cmd =  this.modules.get(CommandsModule.class).getCommands().get(data.getName());
+			var cmd = this.modules.get(CommandsModule.class).getCommands().get(data.getName());
 			if(cmd == null){
 				LOG.error("Could not process interaction: {}", event.getPayload());
 				return;

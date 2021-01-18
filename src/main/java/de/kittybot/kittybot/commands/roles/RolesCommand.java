@@ -3,7 +3,6 @@ package de.kittybot.kittybot.commands.roles;
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.objects.Emoji;
 import de.kittybot.kittybot.objects.SelfAssignableRole;
-import de.kittybot.kittybot.objects.SelfAssignableRoleGroup;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionRole;
@@ -14,7 +13,6 @@ import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.Permission;
 
-import java.awt.desktop.PreferencesEvent;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
@@ -24,9 +22,9 @@ public class RolesCommand extends Command{
 	public RolesCommand(){
 		super("roles", "Used to configure self assignable roles", Category.ROLES);
 		addOptions(
-				new AddCommand(),
-				new RemoveCommand(),
-				new ListCommand()
+			new AddCommand(),
+			new RemoveCommand(),
+			new ListCommand()
 		);
 		addPermissions(Permission.ADMINISTRATOR);
 	}
@@ -36,9 +34,9 @@ public class RolesCommand extends Command{
 		public AddCommand(){
 			super("add", "Adds a new self assignable role");
 			addOptions(
-					new CommandOptionRole("role", "The self assignable role to add").required(),
-					new CommandOptionString("emote", "The emote for this self assignable role").required(),
-					new CommandOptionString("group", "The group which the self assignable role should be assigned to").required()
+				new CommandOptionRole("role", "The self assignable role to add").required(),
+				new CommandOptionString("emote", "The emote for this self assignable role").required(),
+				new CommandOptionString("group", "The group which the self assignable role should be assigned to").required()
 			);
 		}
 
@@ -62,7 +60,7 @@ public class RolesCommand extends Command{
 
 				ctx.get(SettingsModule.class).addSelfAssignableRoles(ctx.getGuildId(), Collections.singleton(new SelfAssignableRole(roleId, emote.getIdLong(), ctx.getGuildId(), group.get().getId())));
 				ctx.reply("Added self assignable role");
-					}, error -> ctx.error("Please proivde a valid emote")
+				}, error -> ctx.error("Please proivde a valid emote")
 			);
 
 		}
@@ -74,7 +72,7 @@ public class RolesCommand extends Command{
 		public RemoveCommand(){
 			super("remove", "Removes a self assignable role");
 			addOptions(
-					new CommandOptionRole("role", "The self assignable role to remove").required()
+				new CommandOptionRole("role", "The self assignable role to remove").required()
 			);
 		}
 
@@ -97,7 +95,7 @@ public class RolesCommand extends Command{
 		public ListCommand(){
 			super("list", "Lists all self assignable roles");
 			addOptions(
-					new CommandOptionString("group", "The group to list")
+				new CommandOptionString("group", "The group to list")
 			);
 		}
 
@@ -116,7 +114,7 @@ public class RolesCommand extends Command{
 					return "";
 				}
 				return "**Group:** `" + group.getName() + "` **Max Roles:** `" + group.getFormattedMaxRoles() + "`\n" +
-						entry.getValue().stream().map(role -> MessageUtils.getEmoteMention(role.getEmoteId()) + Emoji.BLANK.get() + Emoji.BLANK.get() + MessageUtils.getRoleMention(role.getRoleId())).collect(Collectors.joining("\n"));
+					entry.getValue().stream().map(role -> MessageUtils.getEmoteMention(role.getEmoteId()) + Emoji.BLANK.get() + Emoji.BLANK.get() + MessageUtils.getRoleMention(role.getRoleId())).collect(Collectors.joining("\n"));
 			}).collect(Collectors.joining("\n")));
 		}
 

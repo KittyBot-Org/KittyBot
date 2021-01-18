@@ -21,10 +21,10 @@ public class MemoryUsageExporter{
 	private static final Path SMAPS_ROLLUP = Path.of("/proc/self/smaps_rollup");
 
 	private static final Gauge MEMORY_USAGE = Gauge.build()
-			.name("jvm_os_memory_used_bytes")
-			.help("Memory usage (RSS, PSS) reported by the OS for the JVM")
-			.labelNames("type") // RSS/PSS
-			.create();
+		.name("jvm_os_memory_used_bytes")
+		.help("Memory usage (RSS, PSS) reported by the OS for the JVM")
+		.labelNames("type") // RSS/PSS
+		.create();
 
 	private static final Gauge.Child PSS = MEMORY_USAGE.labels("PSS");
 	private static final Gauge.Child RSS = MEMORY_USAGE.labels("RSS");
@@ -41,8 +41,8 @@ public class MemoryUsageExporter{
 		}
 
 		this.task = modules.getScheduler().scheduleAtFixedRate(
-				this::collect, 0,
-				PrometheusModule.UPDATE_PERIOD.toMillis(), TimeUnit.MILLISECONDS
+			this::collect, 0,
+			PrometheusModule.UPDATE_PERIOD.toMillis(), TimeUnit.MILLISECONDS
 		);
 	}
 

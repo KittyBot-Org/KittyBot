@@ -3,9 +3,9 @@ package de.kittybot.kittybot.commands.dev;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
-import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -24,12 +24,12 @@ public class EvalCommand extends Command implements RunnableCommand{
 	public EvalCommand(){
 		super("eval", "Evals some code", Category.DEV);
 		addOptions(
-				new CommandOptionString("code", "The code to execute").required()
+			new CommandOptionString("code", "The code to execute").required()
 		);
 		devOnly();
 		this.scriptEngine = new ScriptEngineManager().getEngineByName("groovy");
 		this.defaultImports = Arrays.asList("net.dv8tion.jda.api.entities.impl", "net.dv8tion.jda.api.managers", "net.dv8tion.jda.api.entities", "net.dv8tion.jda.api",
-				"java.io", "java.math", "java.util", "java.util.concurrent", "java.time", "java.util.stream"
+			"java.io", "java.math", "java.util", "java.util.concurrent", "java.time", "java.util.stream"
 		);
 	}
 
@@ -60,15 +60,15 @@ public class EvalCommand extends Command implements RunnableCommand{
 			status = "Failed";
 		}
 		ctx.reply(new InteractionResponse.Builder()
-				.addEmbeds(new EmbedBuilder()
-						.setTitle("Eval")
-						.setColor(color)
-						.addField("Status:", status, true)
-						.addField("Duration:", (System.currentTimeMillis() - start) + "ms", true)
-						.addField("Code:", "```java\n" + code + "\n```", false)
-						.addField("Result:", out == null ? "" : out.toString(), false)
-						.build()
-				).build()
+			.addEmbeds(new EmbedBuilder()
+				.setTitle("Eval")
+				.setColor(color)
+				.addField("Status:", status, true)
+				.addField("Duration:", (System.currentTimeMillis() - start) + "ms", true)
+				.addField("Code:", "```java\n" + code + "\n```", false)
+				.addField("Result:", out == null ? "" : out.toString(), false)
+				.build()
+			).build()
 		);
 	}
 

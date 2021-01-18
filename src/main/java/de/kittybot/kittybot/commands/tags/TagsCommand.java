@@ -1,13 +1,13 @@
 package de.kittybot.kittybot.commands.tags;
 
-import de.kittybot.kittybot.slashcommands.application.Category;
-import de.kittybot.kittybot.slashcommands.application.Command;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
-import de.kittybot.kittybot.slashcommands.context.Options;
-import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
-import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.modules.TagsModule;
 import de.kittybot.kittybot.objects.Tag;
+import de.kittybot.kittybot.slashcommands.application.Category;
+import de.kittybot.kittybot.slashcommands.application.Command;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
+import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.TimeUtils;
@@ -22,12 +22,12 @@ public class TagsCommand extends Command{
 	public TagsCommand(){
 		super("tags", "Used to create/edit/delete/search tags", Category.TAGS);
 		addOptions(
-				new CreateCommand(),
-				new EditCommand(),
-				new DeleteCommand(),
-				new SearchCommand(),
-				new ListCommand(),
-				new InfoCommand()
+			new CreateCommand(),
+			new EditCommand(),
+			new DeleteCommand(),
+			new SearchCommand(),
+			new ListCommand(),
+			new InfoCommand()
 		);
 	}
 
@@ -36,8 +36,8 @@ public class TagsCommand extends Command{
 		public CreateCommand(){
 			super("create", "Used to create a tag");
 			addOptions(
-					new CommandOptionString("name", "Tag name").required(),
-					new CommandOptionString("content", "Tag content").required()
+				new CommandOptionString("name", "Tag name").required(),
+				new CommandOptionString("content", "Tag content").required()
 			);
 		}
 
@@ -60,8 +60,8 @@ public class TagsCommand extends Command{
 		public EditCommand(){
 			super("edit", "Used to edit a tag");
 			addOptions(
-					new CommandOptionString("name", "Tag name").required(),
-					new CommandOptionString("content", "Tag content").required()
+				new CommandOptionString("name", "Tag name").required(),
+				new CommandOptionString("content", "Tag content").required()
 			);
 		}
 
@@ -84,7 +84,7 @@ public class TagsCommand extends Command{
 		public DeleteCommand(){
 			super("delete", "Used to delete a tag");
 			addOptions(
-					new CommandOptionString("name", "Tag name").required()
+				new CommandOptionString("name", "Tag name").required()
 			);
 		}
 
@@ -107,7 +107,7 @@ public class TagsCommand extends Command{
 		public SearchCommand(){
 			super("search", "Used to search a tag");
 			addOptions(
-					new CommandOptionString("name", "Tag name").required()
+				new CommandOptionString("name", "Tag name").required()
 			);
 		}
 
@@ -122,7 +122,7 @@ public class TagsCommand extends Command{
 			}
 			// TODO add paginator
 			ctx.reply("**Following tags were found for `" + tagName + "`:**\n" +
-					tags.stream().map(tag -> "• `" + tag.getName() + "` (" + MessageUtils.getUserMention(tag.getUserId()) + ")").collect(Collectors.joining("\n"))
+				tags.stream().map(tag -> "• `" + tag.getName() + "` (" + MessageUtils.getUserMention(tag.getUserId()) + ")").collect(Collectors.joining("\n"))
 			);
 		}
 
@@ -133,7 +133,7 @@ public class TagsCommand extends Command{
 		public ListCommand(){
 			super("list", "Used to list tags");
 			addOptions(
-					new CommandOptionString("user", "Filter by user")
+				new CommandOptionString("user", "Filter by user")
 			);
 		}
 
@@ -162,7 +162,7 @@ public class TagsCommand extends Command{
 		public InfoCommand(){
 			super("info", "Used to get info about a tag");
 			addOptions(
-					new CommandOptionString("name", "Tag name").required()
+				new CommandOptionString("name", "Tag name").required()
 			);
 		}
 
@@ -176,12 +176,12 @@ public class TagsCommand extends Command{
 				return;
 			}
 			ctx.reply(new EmbedBuilder()
-					.setColor(Colors.KITTYBOT_BLUE)
-					.setTitle("Tag `" + tagName + "`")
-					.addField("Owner", MessageUtils.getUserMention(tag.getUserId()), false)
-					.addField("ID", Long.toString(tag.getId()), false)
-					.addField("Created at", TimeUtils.format(tag.getCreatedAt()), false)
-					.addField("Updated at", (tag.getUpdatedAt() == null ? "not edited" : TimeUtils.format(tag.getUpdatedAt())), false)
+				.setColor(Colors.KITTYBOT_BLUE)
+				.setTitle("Tag `" + tagName + "`")
+				.addField("Owner", MessageUtils.getUserMention(tag.getUserId()), false)
+				.addField("ID", Long.toString(tag.getId()), false)
+				.addField("Created at", TimeUtils.format(tag.getCreatedAt()), false)
+				.addField("Updated at", (tag.getUpdatedAt() == null ? "not edited" : TimeUtils.format(tag.getUpdatedAt())), false)
 			);
 		}
 

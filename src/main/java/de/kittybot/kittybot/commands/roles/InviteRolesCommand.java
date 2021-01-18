@@ -8,9 +8,7 @@ import de.kittybot.kittybot.slashcommands.application.options.CommandOptionRole;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
-import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 
 import java.util.Collections;
@@ -22,10 +20,10 @@ public class InviteRolesCommand extends Command{
 	public InviteRolesCommand(){
 		super("inviteroles", "Used to map roles to invite links", Category.ROLES);
 		addOptions(
-				new AddCommand(),
-				new RemoveCommand(),
-				new ResetCommand(),
-				new ListCommand()
+			new AddCommand(),
+			new RemoveCommand(),
+			new ResetCommand(),
+			new ListCommand()
 		);
 		addPermissions(Permission.ADMINISTRATOR);
 	}
@@ -35,8 +33,8 @@ public class InviteRolesCommand extends Command{
 		public AddCommand(){
 			super("add", "Maps roles to invite links");
 			addOptions(
-					new CommandOptionRole("code", "The invite code to add a role").required(),
-					new CommandOptionRole("role", "The role to add to the invite").required()
+				new CommandOptionRole("code", "The invite code to add a role").required(),
+				new CommandOptionRole("role", "The role to add to the invite").required()
 			);
 		}
 
@@ -64,8 +62,8 @@ public class InviteRolesCommand extends Command{
 		public RemoveCommand(){
 			super("remove", "Maps roles to invite links");
 			addOptions(
-					new CommandOptionRole("code", "The invite code to remove a role").required(),
-					new CommandOptionRole("role", "The role to remove from the invite").required()
+				new CommandOptionRole("code", "The invite code to remove a role").required(),
+				new CommandOptionRole("role", "The role to remove from the invite").required()
 			);
 		}
 
@@ -93,7 +91,7 @@ public class InviteRolesCommand extends Command{
 		public ResetCommand(){
 			super("reset", "Resets roles from invites");
 			addOptions(
-					new CommandOptionRole("code", "The invite code to reset").required()
+				new CommandOptionRole("code", "The invite code to reset").required()
 			);
 		}
 
@@ -120,7 +118,7 @@ public class InviteRolesCommand extends Command{
 		public ListCommand(){
 			super("list", "Maps roles to invite links");
 			addOptions(
-					new CommandOptionRole("code", "The invite code to list roles")
+				new CommandOptionRole("code", "The invite code to list roles")
 			);
 		}
 
@@ -133,7 +131,7 @@ public class InviteRolesCommand extends Command{
 			}
 
 			ctx.reply("**Invite Roles:**\n\n" + inviteRoles.entrySet().stream().map(entry ->
-					"**" + entry.getKey() + "**" + entry.getValue().stream().map(MessageUtils::getRoleMention).collect(Collectors.joining("\n"))
+				"**" + entry.getKey() + "**" + entry.getValue().stream().map(MessageUtils::getRoleMention).collect(Collectors.joining("\n"))
 			).collect(Collectors.joining("\n")));
 		}
 

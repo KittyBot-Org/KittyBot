@@ -16,10 +16,10 @@ public class TagsModule extends Module{
 	public boolean create(String name, String content, long guildId, long userId){
 		var dbManager = this.modules.get(DatabaseModule.class);
 		var rows = dbManager.getCtx().insertInto(GUILD_TAGS)
-				.columns(GUILD_TAGS.NAME, GUILD_TAGS.GUILD_ID, GUILD_TAGS.USER_ID, GUILD_TAGS.CONTENT, GUILD_TAGS.CREATED_AT)
-				.values(name.toLowerCase(), guildId, userId, content, LocalDateTime.now())
-				.onConflictDoNothing()
-				.execute();
+			.columns(GUILD_TAGS.NAME, GUILD_TAGS.GUILD_ID, GUILD_TAGS.USER_ID, GUILD_TAGS.CONTENT, GUILD_TAGS.CREATED_AT)
+			.values(name.toLowerCase(), guildId, userId, content, LocalDateTime.now())
+			.onConflictDoNothing()
+			.execute();
 		return rows == 1;
 	}
 
@@ -66,33 +66,33 @@ public class TagsModule extends Module{
 
 	public boolean delete(String name, long guildId, long userId){
 		var rows = this.modules.get(DatabaseModule.class).getCtx().deleteFrom(GUILD_TAGS)
-				.where(GUILD_TAGS.NAME.eq(name.toLowerCase()).and(GUILD_TAGS.GUILD_ID.eq(guildId).and(GUILD_TAGS.USER_ID.eq(userId))))
-				.execute();
+			.where(GUILD_TAGS.NAME.eq(name.toLowerCase()).and(GUILD_TAGS.GUILD_ID.eq(guildId).and(GUILD_TAGS.USER_ID.eq(userId))))
+			.execute();
 		return rows == 1;
 	}
 
 	public boolean delete(long tagId){
 		var rows = this.modules.get(DatabaseModule.class).getCtx().deleteFrom(GUILD_TAGS)
-				.where(GUILD_TAGS.ID.eq(tagId))
-				.execute();
+			.where(GUILD_TAGS.ID.eq(tagId))
+			.execute();
 		return rows == 1;
 	}
 
 	public boolean edit(String name, String content, long guildId, long userId){
 		var rows = this.modules.get(DatabaseModule.class).getCtx().update(GUILD_TAGS)
-				.set(GUILD_TAGS.CONTENT, content)
-				.where(GUILD_TAGS.NAME.eq(name.toLowerCase()).and(GUILD_TAGS.GUILD_ID.eq(guildId).and(GUILD_TAGS.USER_ID.eq(userId))))
-				.execute();
+			.set(GUILD_TAGS.CONTENT, content)
+			.where(GUILD_TAGS.NAME.eq(name.toLowerCase()).and(GUILD_TAGS.GUILD_ID.eq(guildId).and(GUILD_TAGS.USER_ID.eq(userId))))
+			.execute();
 		return rows == 1;
 	}
 
 	public boolean edit(long id, String name, String content, long userId){
 		var rows = this.modules.get(DatabaseModule.class).getCtx().update(GUILD_TAGS)
-				.set(GUILD_TAGS.NAME, name)
-				.set(GUILD_TAGS.CONTENT, content)
-				.set(GUILD_TAGS.USER_ID, userId)
-				.where(GUILD_TAGS.ID.eq(id))
-				.execute();
+			.set(GUILD_TAGS.NAME, name)
+			.set(GUILD_TAGS.CONTENT, content)
+			.set(GUILD_TAGS.USER_ID, userId)
+			.where(GUILD_TAGS.ID.eq(id))
+			.execute();
 		return rows == 1;
 	}
 

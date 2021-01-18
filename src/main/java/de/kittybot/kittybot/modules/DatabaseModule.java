@@ -26,22 +26,22 @@ public class DatabaseModule extends Module{
 	public void onEnable(){
 		initConfiguration();
 		initTable("guilds",
-				"member_roles",
-				"guild_tags",
-				"guild_invites",
-				"guild_invite_roles",
-				"self_assignable_role_groups",
-				"self_assignable_roles",
-				"bot_disabled_channels",
-				"snipe_disabled_channels",
-				"bot_ignored_members",
-				"stream_users",
-				"stream_user_events",
-				"reactive_messages",
-				"notifications",
-				"user_statistics",
-				"requests",
-				"sessions"
+			"member_roles",
+			"guild_tags",
+			"guild_invites",
+			"guild_invite_roles",
+			"self_assignable_role_groups",
+			"self_assignable_roles",
+			"bot_disabled_channels",
+			"snipe_disabled_channels",
+			"bot_ignored_members",
+			"stream_users",
+			"stream_user_events",
+			"reactive_messages",
+			"notifications",
+			"user_statistics",
+			"requests",
+			"sessions"
 		);
 	}
 

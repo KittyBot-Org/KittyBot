@@ -1,8 +1,8 @@
 package de.kittybot.kittybot.modules;
 
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.objects.MusicPlayer;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.utils.Config;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;

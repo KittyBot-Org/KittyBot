@@ -26,47 +26,47 @@ public class GetGuildSettingsRoute implements Handler{
 		var selfAssignableRoles = DataArray.empty();
 		var selfAssignableRoleGroups = DataArray.empty();
 		var inviteRoles = DataArray.fromCollection(
-				settings.getInviteRoles().entrySet().stream().map(entry ->
-						DataObject.empty().put("code", entry.getKey()).put("roles", DataArray.fromCollection(
-								entry.getValue()
-						))
-				).collect(Collectors.toSet())
+			settings.getInviteRoles().entrySet().stream().map(entry ->
+				DataObject.empty().put("code", entry.getKey()).put("roles", DataArray.fromCollection(
+					entry.getValue()
+				))
+			).collect(Collectors.toSet())
 		);
 		WebService.ok(ctx, DataObject.empty()
-				.put("stream_announcement_channel_id", settings.getStreamAnnouncementChannelId())
-				.put("stream_announcement_message", settings.getStreamAnnouncementMessage())
+			.put("stream_announcement_channel_id", settings.getStreamAnnouncementChannelId())
+			.put("stream_announcement_message", settings.getStreamAnnouncementMessage())
 
-				.put("announcement_channel_id", settings.getAnnouncementChannelId())
+			.put("announcement_channel_id", settings.getAnnouncementChannelId())
 
-				.put("request_channel_id", settings.getRequestChannelId())
-				.put("requests_enabled", settings.areRequestsEnabled())
+			.put("request_channel_id", settings.getRequestChannelId())
+			.put("requests_enabled", settings.areRequestsEnabled())
 
-				.put("join_messages_enabled", settings.areJoinMessagesEnabled())
-				.put("join_messages", settings.getJoinMessage())
+			.put("join_messages_enabled", settings.areJoinMessagesEnabled())
+			.put("join_messages", settings.getJoinMessage())
 
-				.put("leave_messages_enabled", settings.areLeaveMessagesEnabled())
-				.put("leave_messages", settings.getLeaveMessage())
+			.put("leave_messages_enabled", settings.areLeaveMessagesEnabled())
+			.put("leave_messages", settings.getLeaveMessage())
 
-				.put("log_channel_id", settings.getLogChannelId())
-				.put("log_messages_enabled", settings.areLogMessagesEnabled())
+			.put("log_channel_id", settings.getLogChannelId())
+			.put("log_messages_enabled", settings.areLogMessagesEnabled())
 
-				.put("nsfw_enabled", settings.isNsfwEnabled())
+			.put("nsfw_enabled", settings.isNsfwEnabled())
 
-				.put("inactive_role_id", settings.getInactiveRoleId())
-				.put("inactive_duration", settings.getInactiveDuration().toMillis())
+			.put("inactive_role_id", settings.getInactiveRoleId())
+			.put("inactive_duration", settings.getInactiveDuration().toMillis())
 
-				.put("dj_role_id", settings.getDjRoleId())
+			.put("dj_role_id", settings.getDjRoleId())
 
-				.put("snipes_enabled", settings.areSnipesEnabled())
-				.put("snipe_disabled_channels", settings.getSnipeDisabledChannels())
+			.put("snipes_enabled", settings.areSnipesEnabled())
+			.put("snipe_disabled_channels", settings.getSnipeDisabledChannels())
 
-				.put("bot_disabled_channels", settings.getBotDisabledChannels())
-				.put("bot_ignored_users", settings.getBotIgnoredUsers())
+			.put("bot_disabled_channels", settings.getBotDisabledChannels())
+			.put("bot_ignored_users", settings.getBotIgnoredUsers())
 
-				.put("self_assignable_roles", selfAssignableRoles)
-				.put("self_assignable_role_groups", selfAssignableRoleGroups)
+			.put("self_assignable_roles", selfAssignableRoles)
+			.put("self_assignable_role_groups", selfAssignableRoleGroups)
 
-				.put("invite_roles", inviteRoles)
+			.put("invite_roles", inviteRoles)
 		);
 	}
 

@@ -38,13 +38,13 @@ public class RoleSaverModule extends Module{
 
 	private void deleteGuildUserRole(long guildId, long roleId){
 		this.modules.get(DatabaseModule.class).getCtx().deleteFrom(MEMBER_ROLES)
-				.where(MEMBER_ROLES.GUILD_ID.eq(guildId).and(MEMBER_ROLES.ROLE_ID.eq(roleId)))
-				.execute();
+			.where(MEMBER_ROLES.GUILD_ID.eq(guildId).and(MEMBER_ROLES.ROLE_ID.eq(roleId)))
+			.execute();
 	}
 
 	private void insertGuildUserRoles(long guildId, long userId, Set<Long> roles){
 		var ctxRoles = this.modules.get(DatabaseModule.class).getCtx().insertInto(MEMBER_ROLES)
-				.columns(MEMBER_ROLES.GUILD_ID, MEMBER_ROLES.USER_ID, MEMBER_ROLES.ROLE_ID);
+			.columns(MEMBER_ROLES.GUILD_ID, MEMBER_ROLES.USER_ID, MEMBER_ROLES.ROLE_ID);
 		for(var role : roles){
 			ctxRoles.values(guildId, userId, role);
 		}

@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
 
+@SuppressWarnings("unused")
 public class CommandResponseModule extends Module{
 
 	private Cache<Long, Long> commandResponses;

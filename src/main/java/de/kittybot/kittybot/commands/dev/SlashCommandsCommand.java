@@ -22,8 +22,8 @@ public class SlashCommandsCommand extends Command{
 	public SlashCommandsCommand(){
 		super("slashcommands", "Deploys/Removes slash commands for a specified environment", Category.DEV);
 		addOptions(
-				new DeployCommand(),
-				new RemoveCommand()
+			new DeployCommand(),
+			new RemoveCommand()
 		);
 		devOnly();
 	}
@@ -33,12 +33,12 @@ public class SlashCommandsCommand extends Command{
 		public DeployCommand(){
 			super("deploy", "Deploys slash commands to the specified environment");
 			addOptions(
-					new CommandOptionInteger("environment", "In which environment should the commands get deployed").required()
-							.addChoices(
-									new CommandOptionChoice<>("global", 0),
-									new CommandOptionChoice<>("guild", 1)
-							),
-					new CommandOptionString("guild", "In which guild commands should get deployed")
+				new CommandOptionInteger("environment", "In which environment should the commands get deployed").required()
+					.addChoices(
+						new CommandOptionChoice<>("global", 0),
+						new CommandOptionChoice<>("guild", 1)
+					),
+				new CommandOptionString("guild", "In which guild commands should get deployed")
 			);
 		}
 
@@ -76,12 +76,12 @@ public class SlashCommandsCommand extends Command{
 		public RemoveCommand(){
 			super("remove", "Removes slash commands from a specified environment");
 			addOptions(
-					new CommandOptionInteger("environment", "In which environment should the commands get omitted").required()
-							.addChoices(
-									new CommandOptionChoice<>("global", 0),
-									new CommandOptionChoice<>("guild", 1)
-							),
-					new CommandOptionString("guild", "In which guild commands should get omitted")
+				new CommandOptionInteger("environment", "In which environment should the commands get omitted").required()
+					.addChoices(
+						new CommandOptionChoice<>("global", 0),
+						new CommandOptionChoice<>("guild", 1)
+					),
+				new CommandOptionString("guild", "In which guild commands should get omitted")
 			);
 		}
 

@@ -2,11 +2,11 @@ package de.kittybot.kittybot.commands.admin;
 
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
-import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionRole;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.context.Options;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
@@ -23,8 +23,8 @@ public class RestrictEmoteCommand extends Command{
 	public RestrictEmoteCommand(){
 		super("restrictemote", "Used restrict emotes to certain roles", Category.ADMIN);
 		addOptions(
-				new SetCommand(),
-				new ResetCommand()
+			new SetCommand(),
+			new ResetCommand()
 		);
 		addPermissions(Permission.ADMINISTRATOR);
 	}
@@ -34,16 +34,16 @@ public class RestrictEmoteCommand extends Command{
 		public SetCommand(){
 			super("set", "description");
 			addOptions(
-					new CommandOptionString("emote", "The emote to restrict").required(),
-					new CommandOptionRole("role1", "Role which can use the emote").required(),
-					new CommandOptionRole("role2", "Role which can use the emote"),
-					new CommandOptionRole("role3", "Role which can use the emote"),
-					new CommandOptionRole("role4", "Role which can use the emote"),
-					new CommandOptionRole("role5", "Role which can use the emote"),
-					new CommandOptionRole("role6", "Role which can use the emote"),
-					new CommandOptionRole("role7", "Role which can use the emote"),
-					new CommandOptionRole("role8", "Role which can use the emote"),
-					new CommandOptionRole("role9", "Role which can use the emote")
+				new CommandOptionString("emote", "The emote to restrict").required(),
+				new CommandOptionRole("role1", "Role which can use the emote").required(),
+				new CommandOptionRole("role2", "Role which can use the emote"),
+				new CommandOptionRole("role3", "Role which can use the emote"),
+				new CommandOptionRole("role4", "Role which can use the emote"),
+				new CommandOptionRole("role5", "Role which can use the emote"),
+				new CommandOptionRole("role6", "Role which can use the emote"),
+				new CommandOptionRole("role7", "Role which can use the emote"),
+				new CommandOptionRole("role8", "Role which can use the emote"),
+				new CommandOptionRole("role9", "Role which can use the emote")
 			);
 		}
 
@@ -59,10 +59,10 @@ public class RestrictEmoteCommand extends Command{
 				return;
 			}
 			emoteAction.queue(emote -> emote.getManager().setRoles(getRoles(ctx.getGuild(), options, "role1", "role2", "role3", "role4", "role5", "role6", "role7", "role8", "role9")).queue(
-					success -> ctx.reply("Successfully set roles"),
-					error -> ctx.error("Failed to set roles")
-					),
-					error -> ctx.error("Emote not found in this guild")
+				success -> ctx.reply("Successfully set roles"),
+				error -> ctx.error("Failed to set roles")
+				),
+				error -> ctx.error("Emote not found in this guild")
 			);
 		}
 
@@ -77,7 +77,7 @@ public class RestrictEmoteCommand extends Command{
 		public ResetCommand(){
 			super("reset", "description");
 			addOptions(
-					new CommandOptionString("emote", "The emote to restrict").required()
+				new CommandOptionString("emote", "The emote to restrict").required()
 			);
 		}
 
@@ -93,10 +93,10 @@ public class RestrictEmoteCommand extends Command{
 				return;
 			}
 			emoteAction.queue(emote -> emote.getManager().setRoles(new HashSet<>()).queue(
-					success -> ctx.reply("Successfully reset emote"),
-					error -> ctx.error("Failed to reset emote")
-					),
-					error -> ctx.error("Emote not found in this guild")
+				success -> ctx.reply("Successfully reset emote"),
+				error -> ctx.error("Failed to reset emote")
+				),
+				error -> ctx.error("Emote not found in this guild")
 			);
 		}
 

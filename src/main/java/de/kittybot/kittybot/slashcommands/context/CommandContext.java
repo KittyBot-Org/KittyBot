@@ -1,13 +1,13 @@
 package de.kittybot.kittybot.slashcommands.context;
 
+import de.kittybot.kittybot.module.Modules;
+import de.kittybot.kittybot.modules.InteractionsModule;
+import de.kittybot.kittybot.objects.Emoji;
 import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import de.kittybot.kittybot.slashcommands.interaction.response.FollowupMessage;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionRespondAction;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponseType;
-import de.kittybot.kittybot.module.Modules;
-import de.kittybot.kittybot.modules.InteractionsModule;
-import de.kittybot.kittybot.objects.Emoji;
 import de.kittybot.kittybot.utils.Colors;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -44,8 +44,8 @@ public class CommandContext extends Context{
 
 	public EmbedBuilder getEmbed(){
 		return new EmbedBuilder()
-				.setFooter(getMember().getEffectiveName(), getUser().getEffectiveAvatarUrl())
-				.setTimestamp(Instant.now());
+			.setFooter(getMember().getEffectiveName(), getUser().getEffectiveAvatarUrl())
+			.setTimestamp(Instant.now());
 	}
 
 	public Member getMember(){
@@ -58,7 +58,7 @@ public class CommandContext extends Context{
 
 	public void reply(EmbedBuilder embed){
 		reply(embed.setFooter(getMember().getEffectiveName(), getUser().getEffectiveAvatarUrl())
-				.setTimestamp(Instant.now()).build());
+			.setTimestamp(Instant.now()).build());
 	}
 
 	public void reply(MessageEmbed embed){

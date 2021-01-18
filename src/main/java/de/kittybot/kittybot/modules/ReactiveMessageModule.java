@@ -24,10 +24,10 @@ public class ReactiveMessageModule extends Module{
 
 	public void add(CommandContext ctx, long responseId, long allowed){
 		reactiveMessages.put(
-				responseId,
-				new ReactiveMessage(ctx.getGuildId(), ctx.getChannelId(), -1, responseId, ctx.getUser().getIdLong(), ctx.getInteraction().getData().getName(),
-						allowed
-				)
+			responseId,
+			new ReactiveMessage(ctx.getGuildId(), ctx.getChannelId(), -1, responseId, ctx.getUser().getIdLong(), ctx.getInteraction().getData().getName(),
+				allowed
+			)
 		);
 	}
 

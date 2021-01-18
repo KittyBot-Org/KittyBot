@@ -18,9 +18,9 @@ public class InteractionData implements InteractionOptionsHolder{
 
 	public static InteractionData fromJSON(DataObject json){
 		return new InteractionData(
-				json.getLong("id"),
-				json.getString("name"),
-				InteractionDataOption.fromJSON(json.optArray("options").orElse(null))
+			json.getLong("id"),
+			json.getString("name"),
+			InteractionDataOption.fromJSON(json.optArray("options").orElse(null))
 		);
 	}
 

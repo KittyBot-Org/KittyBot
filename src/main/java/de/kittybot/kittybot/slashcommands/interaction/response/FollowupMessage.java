@@ -77,10 +77,10 @@ public class FollowupMessage{
 		if(allowedMentions != null){
 			// Add parsing options
 			allowedMentions.stream()
-					.map(Message.MentionType::getParseKey)
-					.filter(Objects::nonNull)
-					.distinct()
-					.forEach(parsable::add);
+				.map(Message.MentionType::getParseKey)
+				.filter(Objects::nonNull)
+				.distinct()
+				.forEach(parsable::add);
 		}
 		return allowedMentionsObj.put("parse", parsable);
 	}

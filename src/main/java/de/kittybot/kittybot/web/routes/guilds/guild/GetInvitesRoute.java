@@ -23,9 +23,9 @@ public class GetInvitesRoute implements Handler{
 	public void handle(@NotNull Context ctx){
 		var guild = this.modules.get(WebService.class).getGuild(ctx);
 		var invites = DataArray.fromCollection(
-				this.modules.get(InviteModule.class).getGuildInvites(guild.getIdLong()).values().stream().map(
-						invite -> DataObject.empty().put("code", invite.getCode()).put("user_id", invite.getUserId()).put("uses", invite.getUses())
-				).collect(Collectors.toSet())
+			this.modules.get(InviteModule.class).getGuildInvites(guild.getIdLong()).values().stream().map(
+				invite -> DataObject.empty().put("code", invite.getCode()).put("user_id", invite.getUserId()).put("uses", invite.getUses())
+			).collect(Collectors.toSet())
 		);
 		WebService.ok(ctx, DataObject.empty().put("invites", invites));
 	}

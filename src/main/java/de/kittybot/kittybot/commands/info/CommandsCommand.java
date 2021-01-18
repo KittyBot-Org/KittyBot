@@ -26,7 +26,7 @@ public class CommandsCommand extends Command implements RunnableCommand{
 	public CommandsCommand(){
 		super("commands", "Shows all commands", Category.INFORMATION);
 		addOptions(
-				new CommandOptionString("command", "A specific command to display")
+			new CommandOptionString("command", "A specific command to display")
 		);
 	}
 
@@ -38,24 +38,24 @@ public class CommandsCommand extends Command implements RunnableCommand{
 			var optCmd = commands.stream().filter(cmd -> cmd.getName().equalsIgnoreCase(cmdName)).findFirst();
 			if(optCmd.isEmpty()){
 				ctx.reply(new InteractionResponse.Builder()
-						.setType(InteractionResponseType.CHANNEL_MESSAGE)
-						.ephemeral()
-						.setContent("Command `" + cmdName + "` not found")
-						.build()
+					.setType(InteractionResponseType.CHANNEL_MESSAGE)
+					.ephemeral()
+					.setContent("Command `" + cmdName + "` not found")
+					.build()
 				);
 				return;
 			}
 			var cmd = optCmd.get();
 			ctx.reply(new InteractionResponse.Builder()
-					.addEmbeds(new EmbedBuilder()
-							.setColor(Colors.KITTYBOT_BLUE)
-							.setAuthor("Command", Config.ORIGIN_URL + "/commands#" + cmd.getName(), ctx.getJDA().getSelfUser().getEffectiveAvatarUrl())
-							.setDescription("`/" + cmd.getName() + "` - *" + cmd.getDescription() + "*\n\n" + cmd.getOptions().stream().filter(SubCommand.class::isInstance).map(c -> "`/" + cmd.getName() + " " + c.getName() + "` - *" + c.getDescription() + "*").collect(Collectors.joining("\n")))
-							.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
-							.setTimestamp(Instant.now())
-							.build()
-					)
+				.addEmbeds(new EmbedBuilder()
+					.setColor(Colors.KITTYBOT_BLUE)
+					.setAuthor("Commands", Config.ORIGIN_URL + "/commands#" + cmd.getName(), ctx.getJDA().getSelfUser().getEffectiveAvatarUrl())
+					.setDescription("`/" + cmd.getName() + "` - *" + cmd.getDescription() + "*\n\n" + cmd.getOptions().stream().filter(SubCommand.class::isInstance).map(c -> "`/" + cmd.getName() + " " + c.getName() + "` - *" + c.getDescription() + "*").collect(Collectors.joining("\n")))
+					.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
+					.setTimestamp(Instant.now())
 					.build()
+				)
+				.build()
 			);
 			return;
 		}
@@ -73,13 +73,13 @@ public class CommandsCommand extends Command implements RunnableCommand{
 		});
 
 		ctx.get(PaginatorModule.class).create(
-				ctx,
-				pages.size(),
-				(page, embedBuilder) -> embedBuilder.setColor(Colors.KITTYBOT_BLUE)
-						.setAuthor("Commands", Config.ORIGIN_URL + "/commands", ctx.getJDA().getSelfUser().getEffectiveAvatarUrl())
-						.setDescription(pages.get(page))
-						.appendDescription("\n\n*Commands can also be found " + MessageUtils.maskLink("here", Config.ORIGIN_URL + "/commands") + "*")
-						.setTimestamp(Instant.now())
+			ctx,
+			pages.size(),
+			(page, embedBuilder) -> embedBuilder.setColor(Colors.KITTYBOT_BLUE)
+				.setAuthor("Commands", Config.ORIGIN_URL + "/commands", ctx.getJDA().getSelfUser().getEffectiveAvatarUrl())
+				.setDescription(pages.get(page))
+				.appendDescription("\n\n*Commands can also be found " + MessageUtils.maskLink("here", Config.ORIGIN_URL + "/commands") + "*")
+				.setTimestamp(Instant.now())
 		);
 	}
 

@@ -66,7 +66,7 @@ public class StreamAnnouncementModule extends Module{
 
 	private void checkTwitch(){
 		var userNames = this.streamAnnouncements.stream().filter(streamAnnouncement -> streamAnnouncement.getStreamType() == StreamType.TWITCH).map(
-				StreamAnnouncement::getUserName).collect(Collectors.toList());
+			StreamAnnouncement::getUserName).collect(Collectors.toList());
 		var streams = this.twitchWrapper.getStreams(userNames);
 		for(var streamAnnouncement : this.streamAnnouncements){
 			var stream = streams.stream().filter(st -> st.getUserName().equals(streamAnnouncement.getUserName())).findFirst();
@@ -107,24 +107,24 @@ public class StreamAnnouncementModule extends Module{
 				break;
 			case START:
 				embed
-						.setTitle(stream.getStreamTitle(), streamAnnouncement.getStreamUrl())
-						.setImage(stream.getThumbnailUrl(320, 180))
-						.setThumbnail(stream.getGame().getThumbnailUrl(144, 192))
-						.addField("Game", stream.getGame().getName(), true);
+					.setTitle(stream.getStreamTitle(), streamAnnouncement.getStreamUrl())
+					.setImage(stream.getThumbnailUrl(320, 180))
+					.setThumbnail(stream.getGame().getThumbnailUrl(144, 192))
+					.addField("Game", stream.getGame().getName(), true);
 				break;
 		}
 		channel.sendMessage(settings.getStreamAnnouncementMessage().replace("${user}", stream.getUserName())).embed(embed
-				.setTimestamp(Instant.now())
-				.setColor(Colors.TWITCH_PURPLE)
-				.build()
+			.setTimestamp(Instant.now())
+			.setColor(Colors.TWITCH_PURPLE)
+			.build()
 		).queue();
 	}
 
 	public boolean add(String name, long guildId, StreamType type){
 		var rows = this.modules.get(DatabaseModule.class).getCtx().insertInto(STREAM_USERS)
-				.columns(STREAM_USERS.GUILD_ID, STREAM_USERS.USER_NAME, STREAM_USERS.STREAM_TYPE)
-				.values(guildId, name, type.getId())
-				.execute();
+			.columns(STREAM_USERS.GUILD_ID, STREAM_USERS.USER_NAME, STREAM_USERS.STREAM_TYPE)
+			.values(guildId, name, type.getId())
+			.execute();
 		if(rows != 1){
 			return false;
 		}
@@ -139,7 +139,7 @@ public class StreamAnnouncementModule extends Module{
 	public boolean remove(String name, long guildId, StreamType type){
 		var dbModule = this.modules.get(DatabaseModule.class);
 		var rows = dbModule.getCtx().deleteFrom(STREAM_USERS).where(
-				STREAM_USERS.USER_NAME.eq(name).and(STREAM_USERS.GUILD_ID.eq(guildId)).and(STREAM_USERS.STREAM_TYPE.eq(type.getId()))).execute();
+			STREAM_USERS.USER_NAME.eq(name).and(STREAM_USERS.GUILD_ID.eq(guildId)).and(STREAM_USERS.STREAM_TYPE.eq(type.getId()))).execute();
 		if(rows != 1){
 			return false;
 		}

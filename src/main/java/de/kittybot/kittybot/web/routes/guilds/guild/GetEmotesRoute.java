@@ -22,7 +22,7 @@ public class GetEmotesRoute implements Handler{
 	public void handle(@NotNull Context ctx){
 		var guild = this.modules.get(WebService.class).getGuild(ctx);
 		var emotes = DataArray.fromCollection(
-				guild.getEmoteCache().stream().map(emote -> DataObject.empty().put("id", emote.getId()).put("name", emote.getName()).put("url", emote.getImageUrl())).collect(Collectors.toSet())
+			guild.getEmoteCache().stream().map(emote -> DataObject.empty().put("id", emote.getId()).put("name", emote.getName()).put("url", emote.getImageUrl())).collect(Collectors.toSet())
 		);
 		WebService.ok(ctx, DataObject.empty().put("emotes", emotes));
 	}

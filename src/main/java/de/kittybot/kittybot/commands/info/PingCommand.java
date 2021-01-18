@@ -20,13 +20,13 @@ public class PingCommand extends Command implements RunnableCommand{
 	public void run(Options options, CommandContext ctx){
 		var jda = ctx.getJDA();
 		jda.getRestPing().queue(ping ->
-				ctx.reply(new EmbedBuilder()
-						.setColor(Colors.KITTYBOT_BLUE)
-						.setAuthor("KittyBot Ping", Config.ORIGIN_URL, jda.getSelfUser().getEffectiveAvatarUrl())
+			ctx.reply(new EmbedBuilder()
+				.setColor(Colors.KITTYBOT_BLUE)
+				.setAuthor("KittyBot Ping", Config.ORIGIN_URL, jda.getSelfUser().getEffectiveAvatarUrl())
 
-						.addField("Gateway Ping:", jda.getGatewayPing() + "ms", false)
-						.addField("Rest Ping:", ping + "ms", false)
-				)
+				.addField("Gateway Ping:", jda.getGatewayPing() + "ms", false)
+				.addField("Rest Ping:", ping + "ms", false)
+			)
 		);
 	}
 

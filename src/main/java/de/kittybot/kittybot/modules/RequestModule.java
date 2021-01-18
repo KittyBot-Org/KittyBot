@@ -139,10 +139,10 @@ public class RequestModule extends Module{
 
 	public void updateStats(API api, int guildCount, String token){
 		var requestBody = RequestBody.create(
-				DataObject.empty()
-						.put(api.getStatsParameter(), guildCount)
-						.toString(),
-				MediaType.parse("application/json; charset=utf-8")
+			DataObject.empty()
+				.put(api.getStatsParameter(), guildCount)
+				.toString(),
+			MediaType.parse("application/json; charset=utf-8")
 		);
 		requestBuilder.url(String.format(api.getUrl(), Config.BOT_ID));
 		requestBuilder.header("Authorization", token);

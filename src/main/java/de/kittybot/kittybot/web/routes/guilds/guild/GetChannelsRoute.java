@@ -22,7 +22,7 @@ public class GetChannelsRoute implements Handler{
 	public void handle(@NotNull Context ctx){
 		var guild = this.modules.get(WebService.class).getGuild(ctx);
 		var channels = DataArray.fromCollection(
-				guild.getTextChannelCache().stream().map(channel -> DataObject.empty().put("id", channel.getId()).put("name", channel.getName())).collect(Collectors.toSet())
+			guild.getTextChannelCache().stream().map(channel -> DataObject.empty().put("id", channel.getId()).put("name", channel.getName())).collect(Collectors.toSet())
 		);
 		WebService.ok(ctx, DataObject.empty().put("channels", channels));
 	}

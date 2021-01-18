@@ -1,11 +1,11 @@
 package de.kittybot.kittybot.commands.utility;
 
+import de.kittybot.kittybot.modules.RequestModule;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
-import de.kittybot.kittybot.modules.RequestModule;
 import de.kittybot.kittybot.utils.Config;
 import org.apache.commons.io.IOUtils;
 
@@ -34,21 +34,21 @@ public class HastebinCommand extends Command implements RunnableCommand{
 				return;
 			}
 			message.get().getAttachments().forEach(attachment ->
-					attachment.retrieveInputStream().thenAcceptAsync(inputStream -> {
-						try(inputStream){
-							var text = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-							ctx.get(RequestModule.class).postToHastebin(text, key -> {
-								if(key == null){
-									ctx.error("Unexpected error while creating hastebin");
-									return;
-								}
-								ctx.reply(maskLink("here is a hastebin", Config.HASTEBIN_URL + "/" + key));
-							});
-						}
-						catch(IOException e){
-							ctx.error("Error while creating hastebin\nError: " + e.getMessage());
-						}
-					})
+				attachment.retrieveInputStream().thenAcceptAsync(inputStream -> {
+					try(inputStream){
+						var text = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+						ctx.get(RequestModule.class).postToHastebin(text, key -> {
+							if(key == null){
+								ctx.error("Unexpected error while creating hastebin");
+								return;
+							}
+							ctx.reply(maskLink("here is a hastebin", Config.HASTEBIN_URL + "/" + key));
+						});
+					}
+					catch(IOException e){
+						ctx.error("Error while creating hastebin\nError: " + e.getMessage());
+					}
+				})
 			);
 		});
 	}

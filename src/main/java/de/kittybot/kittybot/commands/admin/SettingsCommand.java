@@ -1,15 +1,15 @@
 package de.kittybot.kittybot.commands.admin;
 
+import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.modules.StreamAnnouncementModule;
+import de.kittybot.kittybot.objects.Emoji;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
+import de.kittybot.kittybot.slashcommands.application.options.*;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
-import de.kittybot.kittybot.slashcommands.application.options.*;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
-import de.kittybot.kittybot.modules.SettingsModule;
-import de.kittybot.kittybot.objects.Emoji;
 import de.kittybot.kittybot.streams.StreamType;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.Config;
@@ -25,15 +25,15 @@ public class SettingsCommand extends Command{
 	public SettingsCommand(){
 		super("settings", "Let's you see/change settings", Category.ADMIN);
 		addOptions(
-				new ListCommand(),
-				new DJRoleCommand(),
-				new AnnouncementChannelCommand(),
-				new JoinMessageCommand(),
-				new LeaveMessageCommand(),
-				new NsfwCommand(),
-				new LogMessagesCommand(),
-				new SnipesCommand(),
-				new StreamAnnouncementsCommand()
+			new ListCommand(),
+			new DJRoleCommand(),
+			new AnnouncementChannelCommand(),
+			new JoinMessageCommand(),
+			new LeaveMessageCommand(),
+			new NsfwCommand(),
+			new LogMessagesCommand(),
+			new SnipesCommand(),
+			new StreamAnnouncementsCommand()
 		);
 		addPermissions(Permission.ADMINISTRATOR);
 	}
@@ -50,17 +50,17 @@ public class SettingsCommand extends Command{
 			var guildId = ctx.getGuildId();
 			var settings = ctx.get(SettingsModule.class).getSettings(guildId);
 			ctx.reply(new EmbedBuilder()
-							.setColor(Colors.KITTYBOT_BLUE)
-							.setAuthor("Guild settings:", Config.ORIGIN_URL + "/guilds/" + guildId + "/dashboard", Emoji.SETTINGS.getUrl())
-							.addField("Announcement Channel: ", settings.getAnnouncementChannel(), false)
-							.addField("Join Messages: " + MessageUtils.getBoolEmote(settings.areJoinMessagesEnabled()), settings.getJoinMessage(), false)
-							.addField("Leave Messages: " + MessageUtils.getBoolEmote(settings.areLeaveMessagesEnabled()), settings.getLeaveMessage(), false)
-							.addField("Stream Announcement Channel:", settings.getStreamAnnouncementChannel(), false)
-							.addField("DJ Role: ", settings.getDjRole(), false)
-							.addField("NSFW Enabled: ", MessageUtils.getBoolEmote(settings.isNsfwEnabled()), false)
-							.addField("Log Messages: " + MessageUtils.getBoolEmote(settings.areLogMessagesEnabled()), settings.getLogChannel(), false)
-							.addField("Snipes Enabled:", MessageUtils.getBoolEmote(settings.areSnipesEnabled()), false)
-					//.addField("Inactive Role: " + TimeUtils.formatDurationDHMS(settings.getInactiveDuration()), settings.getLogChannel(), false)
+					.setColor(Colors.KITTYBOT_BLUE)
+					.setAuthor("Guild settings:", Config.ORIGIN_URL + "/guilds/" + guildId + "/dashboard", Emoji.SETTINGS.getUrl())
+					.addField("Announcement Channel: ", settings.getAnnouncementChannel(), false)
+					.addField("Join Messages: " + MessageUtils.getBoolEmote(settings.areJoinMessagesEnabled()), settings.getJoinMessage(), false)
+					.addField("Leave Messages: " + MessageUtils.getBoolEmote(settings.areLeaveMessagesEnabled()), settings.getLeaveMessage(), false)
+					.addField("Stream Announcement Channel:", settings.getStreamAnnouncementChannel(), false)
+					.addField("DJ Role: ", settings.getDjRole(), false)
+					.addField("NSFW Enabled: ", MessageUtils.getBoolEmote(settings.isNsfwEnabled()), false)
+					.addField("Log Messages: " + MessageUtils.getBoolEmote(settings.areLogMessagesEnabled()), settings.getLogChannel(), false)
+					.addField("Snipes Enabled:", MessageUtils.getBoolEmote(settings.areSnipesEnabled()), false)
+				//.addField("Inactive Role: " + TimeUtils.formatDurationDHMS(settings.getInactiveDuration()), settings.getLogChannel(), false)
 			);
 		}
 
@@ -71,7 +71,7 @@ public class SettingsCommand extends Command{
 		public DJRoleCommand(){
 			super("djrole", "Sets the dj role");
 			addOptions(
-					new CommandOptionRole("role", "The new dj role").required()
+				new CommandOptionRole("role", "The new dj role").required()
 			);
 		}
 
@@ -89,7 +89,7 @@ public class SettingsCommand extends Command{
 		public AnnouncementChannelCommand(){
 			super("announcementchannel", "Sets the announcement channel");
 			addOptions(
-					new CommandOptionChannel("channel", "The new announcement channel").required()
+				new CommandOptionChannel("channel", "The new announcement channel").required()
 			);
 		}
 
@@ -107,8 +107,8 @@ public class SettingsCommand extends Command{
 		public JoinMessageCommand(){
 			super("joinmessage", "Sets or enable/disables join messages");
 			addOptions(
-					new CommandOptionBoolean("enabled", "Whether join messages are enabled"),
-					new CommandOptionString("message", "The join message template")
+				new CommandOptionBoolean("enabled", "Whether join messages are enabled"),
+				new CommandOptionString("message", "The join message template")
 			);
 		}
 
@@ -142,8 +142,8 @@ public class SettingsCommand extends Command{
 		public LeaveMessageCommand(){
 			super("leavemessage", "Sets or enable/disables leave messages");
 			addOptions(
-					new CommandOptionBoolean("enabled", "Whether leave messages are enabled"),
-					new CommandOptionString("message", "The leave message template")
+				new CommandOptionBoolean("enabled", "Whether leave messages are enabled"),
+				new CommandOptionString("message", "The leave message template")
 			);
 		}
 
@@ -177,7 +177,7 @@ public class SettingsCommand extends Command{
 		public NsfwCommand(){
 			super("nsfw", "Enables/Disables nsfw commands");
 			addOptions(
-					new CommandOptionBoolean("enabled", "Whether nsfw commands are enabled").required()
+				new CommandOptionBoolean("enabled", "Whether nsfw commands are enabled").required()
 			);
 		}
 
@@ -187,6 +187,7 @@ public class SettingsCommand extends Command{
 			ctx.get(SettingsModule.class).setNsfwEnabled(ctx.getGuildId(), enabled);
 			ctx.reply((enabled ? "Enabled" : "Disabled") + "nsfw commands");
 		}
+
 	}
 
 	private static class LogMessagesCommand extends SubCommand{
@@ -194,8 +195,8 @@ public class SettingsCommand extends Command{
 		public LogMessagesCommand(){
 			super("logmessages", "Sets the logging channel or enable/disables log messages");
 			addOptions(
-					new CommandOptionBoolean("enabled", "Whether log messages are enabled"),
-					new CommandOptionChannel("channel", "The log message channel")
+				new CommandOptionBoolean("enabled", "Whether log messages are enabled"),
+				new CommandOptionChannel("channel", "The log message channel")
 			);
 		}
 
@@ -217,7 +218,7 @@ public class SettingsCommand extends Command{
 
 			if(returnMessage.isBlank()){
 				ctx.reply(new InteractionResponse.Builder().setContent("Log message `" + (settings.areLogMessagesEnabled(ctx.getGuildId()) ? "enabled" : "disabled") + "` and send to channel " +
-						MessageUtils.getChannelMention(settings.getLogChannelId(ctx.getGuildId()))).build());
+					MessageUtils.getChannelMention(settings.getLogChannelId(ctx.getGuildId()))).build());
 				return;
 			}
 			ctx.reply(new InteractionResponse.Builder().setContent(returnMessage).build());
@@ -230,8 +231,8 @@ public class SettingsCommand extends Command{
 		public SnipesCommand(){
 			super("snipes", "Used to disable snipes");
 			addOptions(
-					new ChannelCommand(),
-					new EnableCommand()
+				new ChannelCommand(),
+				new EnableCommand()
 			);
 		}
 
@@ -240,8 +241,8 @@ public class SettingsCommand extends Command{
 			public ChannelCommand(){
 				super("channel", "Used to enable/disable snipes in a specific channel");
 				addOptions(
-						new CommandOptionChannel("channel", "The channel to enable/disable snipes").required(),
-						new CommandOptionBoolean("enabled", "Whether to enable/disable snipes").required()
+					new CommandOptionChannel("channel", "The channel to enable/disable snipes").required(),
+					new CommandOptionBoolean("enabled", "Whether to enable/disable snipes").required()
 				);
 			}
 
@@ -260,7 +261,7 @@ public class SettingsCommand extends Command{
 			public EnableCommand(){
 				super("enable", "Used to globally disable snipes");
 				addOptions(
-						new CommandOptionBoolean("enabled", "Whether to enable/disable snipes globally")
+					new CommandOptionBoolean("enabled", "Whether to enable/disable snipes globally")
 				);
 			}
 
@@ -280,11 +281,11 @@ public class SettingsCommand extends Command{
 		public StreamAnnouncementsCommand(){
 			super("streamannouncements", "Used to configure stream announcements");
 			addOptions(
-					new AddCommand(),
-					new RemoveCommand(),
-					new ListCommand(),
-					new MessageCommand(),
-					new ChannelCommand()
+				new AddCommand(),
+				new RemoveCommand(),
+				new ListCommand(),
+				new MessageCommand(),
+				new ChannelCommand()
 			);
 		}
 
@@ -293,12 +294,12 @@ public class SettingsCommand extends Command{
 			public AddCommand(){
 				super("add", "Adds a new stream announcement");
 				addOptions(
-						new CommandOptionInteger("service", "Which service the stream is from").required()
-								.addChoices(
-										new CommandOptionChoice<>("twitch", 0)/*,
+					new CommandOptionInteger("service", "Which service the stream is from").required()
+						.addChoices(
+							new CommandOptionChoice<>("twitch", 0)/*,
 										new CommandOptionChoice<>("youtube", 0)*/
-								),
-						new CommandOptionString("username", "The username of the streamer").required()
+						),
+					new CommandOptionString("username", "The username of the streamer").required()
 				);
 			}
 
@@ -321,12 +322,12 @@ public class SettingsCommand extends Command{
 			public RemoveCommand(){
 				super("remove", "Removes a stream announcement");
 				addOptions(
-						new CommandOptionInteger("service", "Which service the stream is from").required()
-								.addChoices(
-										new CommandOptionChoice<>("twitch", 1)/*,
+					new CommandOptionInteger("service", "Which service the stream is from").required()
+						.addChoices(
+							new CommandOptionChoice<>("twitch", 1)/*,
 										new CommandOptionChoice<>("youtube", 0)*/
-								),
-						new CommandOptionString("username", "The username of the streamer").required()
+						),
+					new CommandOptionString("username", "The username of the streamer").required()
 				);
 			}
 
@@ -367,7 +368,7 @@ public class SettingsCommand extends Command{
 			public MessageCommand(){
 				super("message", "Sets the stream announcement message template");
 				addOptions(
-						new CommandOptionString("message", "The message template").required()
+					new CommandOptionString("message", "The message template").required()
 				);
 			}
 
@@ -386,7 +387,7 @@ public class SettingsCommand extends Command{
 			public ChannelCommand(){
 				super("channel", "Sets the stream announcement channel");
 				addOptions(
-						new CommandOptionChannel("channel", "The channel which stream announcements should get send to").required()
+					new CommandOptionChannel("channel", "The channel which stream announcements should get send to").required()
 				);
 			}
 

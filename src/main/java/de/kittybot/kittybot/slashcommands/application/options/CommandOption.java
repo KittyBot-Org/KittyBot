@@ -31,7 +31,7 @@ public abstract class CommandOption implements CommandOptionsHolder{
 
 	public static DataArray toJSON(Collection<CommandOption> options){
 		return DataArray.fromCollection(
-				options.stream().map(CommandOption::toJSON).collect(Collectors.toList())
+			options.stream().map(CommandOption::toJSON).collect(Collectors.toList())
 		);
 	}
 
@@ -86,9 +86,9 @@ public abstract class CommandOption implements CommandOptionsHolder{
 
 	public DataObject toJSON(){
 		var json = DataObject.empty()
-				.put("type", this.type.getType())
-				.put("name", this.name)
-				.put("description", this.description);
+			.put("type", this.type.getType())
+			.put("name", this.name)
+			.put("description", this.description);
 		if(this.isDefault){
 			json.put("default", true);
 		}

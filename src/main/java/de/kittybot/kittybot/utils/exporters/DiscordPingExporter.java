@@ -11,15 +11,15 @@ public class DiscordPingExporter{
 	// ty Natan 👀 https://github.com/Mantaro/MantaroBot/blob/master/src/main/java/net/kodehawa/mantarobot/utils/exporters/DiscordLatencyExports.java
 
 	private static final Gauge GATEWAY_PING = Gauge.build()
-			.name("kittybot_gateway_ping")
-			.help("Gateway ping per shard in ms")
-			.labelNames("shard")
-			.create();
+		.name("kittybot_gateway_ping")
+		.help("Gateway ping per shard in ms")
+		.labelNames("shard")
+		.create();
 
 	private static final Gauge REST_PING = Gauge.build()
-			.name("kittybot_rest_ping")
-			.help("Rest latency in ms")
-			.create();
+		.name("kittybot_rest_ping")
+		.help("Rest latency in ms")
+		.create();
 
 	public void register(Modules modules){
 		GATEWAY_PING.register();

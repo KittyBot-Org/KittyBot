@@ -4,10 +4,10 @@ import de.kittybot.kittybot.jooq.tables.records.SelfAssignableRoleGroupsRecord;
 
 public class SelfAssignableRoleGroup{
 
-	private long id;
 	private final long guildId;
 	private final String groupName;
 	private final int maxRoles;
+	private long id;
 
 	public SelfAssignableRoleGroup(long id, long guildId, String groupName, int maxRoles){
 		this.id = id;

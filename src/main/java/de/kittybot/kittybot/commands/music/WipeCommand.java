@@ -15,14 +15,14 @@ public class WipeCommand extends Command implements RunnableCommand{
 	public WipeCommand(){
 		super("wipe", "Wipes songs from the queue", Category.MUSIC);
 		addOptions(
-				new CommandOptionInteger("from", "Queue index to delete from").required(),
-				new CommandOptionInteger("to", "Queue index inclusive to delete until. Omit for from+1")
+			new CommandOptionInteger("from", "Queue index to delete from").required(),
+			new CommandOptionInteger("to", "Queue index inclusive to delete until. Omit for from+1")
 		);
 	}
 
 	@Override
 	public void run(Options options, CommandContext ctx){
-		ctx.
+
 	}
 
 }

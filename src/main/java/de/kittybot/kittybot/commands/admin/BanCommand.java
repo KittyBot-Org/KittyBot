@@ -21,9 +21,9 @@ public class BanCommand extends Command{
 	public BanCommand(){
 		super("ban", "Bans a member", Category.ADMIN);
 		addOptions(
-				new AddCommand(),
-				new DeleteCommand(),
-				new ListCommand()
+			new AddCommand(),
+			new DeleteCommand(),
+			new ListCommand()
 		);
 		addPermissions(Permission.BAN_MEMBERS);
 	}
@@ -34,9 +34,9 @@ public class BanCommand extends Command{
 		public AddCommand(){
 			super("add", "Creates a new ban");
 			addOptions(
-					new CommandOptionUser("user", "The user to ban").required(),
-					new CommandOptionString("reason", "The ban reason"),
-					new CommandOptionInteger("del-days", "How many days of messages to delete")
+				new CommandOptionUser("user", "The user to ban").required(),
+				new CommandOptionString("reason", "The ban reason"),
+				new CommandOptionInteger("del-days", "How many days of messages to delete")
 			);
 		}
 
@@ -48,18 +48,17 @@ public class BanCommand extends Command{
 			}
 			var userId = options.getLong("user");
 			ctx.getGuild().retrieveMemberById(userId).queue(member -> {
-						if(!ctx.getSelfMember().canInteract(member)){
-							ctx.error("I can't interact with this member");
-							return;
-						}
-						var reason = options.has("reason") ? options.getString("reason") : "Banned by " + ctx.getMember().getAsMention();
-						var delDays = options.has("del-days") ? options.getInt("del-days") : 0;
-						ctx.getGuild().ban(member, delDays, reason).reason(reason).queue(success ->
-										ctx.reply("Banned `" + MarkdownSanitizer.escape(member.getUser().getAsTag()) + "` with reason: " + reason + " and deleted messages of the last " + delDays + " days"),
-								error -> ctx.error("Failed to ban " + MessageUtils.getUserMention(userId) + " for reason: `" + error.getMessage() + "`")
-						);
-			},
-					error -> ctx.error("I could not find the provided member")
+				if(!ctx.getSelfMember().canInteract(member)){
+					ctx.error("I can't interact with this member");
+					return;
+				}
+				var reason = options.has("reason") ? options.getString("reason") : "Banned by " + ctx.getMember().getAsMention();
+				var delDays = options.has("del-days") ? options.getInt("del-days") : 0;
+				ctx.getGuild().ban(member, delDays, reason).reason(reason).queue(success ->
+						ctx.reply("Banned `" + MarkdownSanitizer.escape(member.getUser().getAsTag()) + "` with reason: " + reason + " and deleted messages of the last " + delDays + " days"),
+					error -> ctx.error("Failed to ban " + MessageUtils.getUserMention(userId) + " for reason: `" + error.getMessage() + "`")
+				);
+				}, error -> ctx.error("I could not find the provided member")
 			);
 		}
 
@@ -71,8 +70,8 @@ public class BanCommand extends Command{
 		public DeleteCommand(){
 			super("delete", "Deletes a ban");
 			addOptions(
-					new CommandOptionString("user-id", "The user-id to unban").required(),
-					new CommandOptionString("reason", "The unban reason")
+				new CommandOptionString("user-id", "The user-id to unban").required(),
+				new CommandOptionString("reason", "The unban reason")
 			);
 		}
 
@@ -85,8 +84,8 @@ public class BanCommand extends Command{
 			}
 			var reason = options.has("reason") ? options.getString("reason") : "Unbanned by " + ctx.getMember().getAsMention();
 			ctx.getGuild().unban(User.fromId(userId)).reason(reason).queue(success ->
-							ctx.reply("Unbanned " + MessageUtils.getUserMention(userId) + " with reason: " + reason),
-					error -> ctx.error("Failed to unban " + MessageUtils.getUserMention(userId) + " for reason: `" + error.getMessage() + "`")
+					ctx.reply("Unbanned " + MessageUtils.getUserMention(userId) + " with reason: " + reason),
+				error -> ctx.error("Failed to unban " + MessageUtils.getUserMention(userId) + " for reason: `" + error.getMessage() + "`")
 			);
 		}
 
@@ -102,10 +101,11 @@ public class BanCommand extends Command{
 		@Override
 		public void run(Options options, CommandContext ctx){
 			ctx.getGuild().retrieveBanList().queue(bans ->
-							ctx.reply("**Banned Users:**\n" + bans.stream().map(ban -> MarkdownSanitizer.escape(ban.getUser().getAsTag()) + "(`" + ban.getUser().getId() + "`)" + " - " + ban.getReason()).collect(Collectors.joining("\n")))
-					, error -> ctx.error("I was not able to retrieve the bans. Please give me the `ban members` permission")
+					ctx.reply("**Banned Users:**\n" + bans.stream().map(ban -> MarkdownSanitizer.escape(ban.getUser().getAsTag()) + "(`" + ban.getUser().getId() + "`)" + " - " + ban.getReason()).collect(Collectors.joining("\n")))
+				, error -> ctx.error("I was not able to retrieve the bans. Please give me the `ban members` permission")
 			);
 		}
 
 	}
+
 }

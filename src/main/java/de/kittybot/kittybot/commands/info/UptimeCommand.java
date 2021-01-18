@@ -23,10 +23,10 @@ public class UptimeCommand extends Command implements RunnableCommand{
 	public void run(Options options, CommandContext ctx){
 		var jda = ctx.getJDA();
 		ctx.reply(new EmbedBuilder()
-				.setColor(Colors.KITTYBOT_BLUE)
-				.setAuthor("KittyBot Uptime", Config.ORIGIN_URL, jda.getSelfUser().getEffectiveAvatarUrl())
+			.setColor(Colors.KITTYBOT_BLUE)
+			.setAuthor("KittyBot Uptime", Config.ORIGIN_URL, jda.getSelfUser().getEffectiveAvatarUrl())
 
-				.addField("Uptime:", TimeUtils.formatDurationDHMS(ManagementFactory.getRuntimeMXBean().getUptime()), false)
+			.addField("Uptime:", TimeUtils.formatDurationDHMS(ManagementFactory.getRuntimeMXBean().getUptime()), false)
 		);
 	}
 

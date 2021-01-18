@@ -2,11 +2,11 @@ package de.kittybot.kittybot.commands.utility;
 
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
-import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionBoolean;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.utils.EmoteHelper;
 import net.dv8tion.jda.api.Permission;
 
@@ -18,9 +18,9 @@ public class StealEmoteCommand extends Command{
 	public StealEmoteCommand(){
 		super("stealemote", "Gets the avatar of a user", Category.UTILITIES);
 		addOptions(
-				new EmoteCommand(),
-				new EmoteIdCommand(),
-				new URLCommand()
+			new EmoteCommand(),
+			new EmoteIdCommand(),
+			new URLCommand()
 
 		);
 		addPermissions(Permission.MANAGE_EMOTES);
@@ -31,8 +31,8 @@ public class StealEmoteCommand extends Command{
 		public EmoteCommand(){
 			super("emote", "Steal an emote by emote");
 			addOptions(
-					new CommandOptionString("emote", "The emote to steal").required(),
-					new CommandOptionString("new-name", "The new emote name")
+				new CommandOptionString("emote", "The emote to steal").required(),
+				new CommandOptionString("new-name", "The new emote name")
 			);
 		}
 
@@ -58,9 +58,9 @@ public class StealEmoteCommand extends Command{
 		public EmoteIdCommand(){
 			super("emote-id", "Steal an emote by id");
 			addOptions(
-					new CommandOptionString("emote-id", "The emote id to steal").required(),
-					new CommandOptionString("new-name", "The new emote name"),
-					new CommandOptionBoolean("animated", "If the emote is animated")
+				new CommandOptionString("emote-id", "The emote id to steal").required(),
+				new CommandOptionString("new-name", "The new emote name"),
+				new CommandOptionBoolean("animated", "If the emote is animated")
 			);
 		}
 
@@ -86,8 +86,8 @@ public class StealEmoteCommand extends Command{
 		public URLCommand(){
 			super("url", "Steal an emote by url");
 			addOptions(
-					new CommandOptionString("url", "The image url to steal").required(),
-					new CommandOptionString("new-name", "The new emote name").required()
+				new CommandOptionString("url", "The image url to steal").required(),
+				new CommandOptionString("new-name", "The new emote name").required()
 			);
 		}
 

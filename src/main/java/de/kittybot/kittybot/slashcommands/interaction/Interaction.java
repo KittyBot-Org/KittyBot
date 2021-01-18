@@ -38,16 +38,16 @@ public class Interaction{
 		var guild = modules.getGuildById(guildId);
 		var entityBuilder = new EntityBuilder(modules.getJDA(guildId));
 		return new Interaction(
-				json.getLong("id"),
-				InteractionType.get(json.getInt("type")),
-				InteractionData.fromJSON(json.getObject("data")),
-				guild,
-				json.getLong("channel_id"),
-				entityBuilder.createMember((GuildImpl) guild, json.getObject("member")),
-				json.getString("token"),
-				json.getInt("version"),
-				modules,
-				jda
+			json.getLong("id"),
+			InteractionType.get(json.getInt("type")),
+			InteractionData.fromJSON(json.getObject("data")),
+			guild,
+			json.getLong("channel_id"),
+			entityBuilder.createMember((GuildImpl) guild, json.getObject("member")),
+			json.getString("token"),
+			json.getInt("version"),
+			modules,
+			jda
 		);
 	}
 

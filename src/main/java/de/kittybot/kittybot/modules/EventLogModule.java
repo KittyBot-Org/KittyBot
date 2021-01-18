@@ -66,13 +66,13 @@ public class EventLogModule extends Module{
 		var guildCount = (int) event.getJDA().getGuildCache().size();
 		var guild = event.getGuild();
 		guild.retrieveOwner().queue(owner -> send(event.getJDA(), "Guild Join", String.format(
-				"Guild: `%s`(`%s`) with owner: `%s`(`%s`) and `%d` members%nGuilds: `%d`",
-				guild.getName(),
-				guild.getId(),
-				owner.getUser().getAsTag(),
-				owner.getUser().getId(),
-				guild.getMemberCount(),
-				guildCount
+			"Guild: `%s`(`%s`) with owner: `%s`(`%s`) and `%d` members%nGuilds: `%d`",
+			guild.getName(),
+			guild.getId(),
+			owner.getUser().getAsTag(),
+			owner.getUser().getId(),
+			guild.getMemberCount(),
+			guildCount
 		)));
 	}
 
@@ -81,10 +81,10 @@ public class EventLogModule extends Module{
 		var guildCount = (int) event.getJDA().getGuildCache().size();
 		var guild = event.getGuild();
 		send(event.getJDA(), "Guild Leave", String.format(
-				"Guild: `%s`(%s)%nGuilds: `%d`",
-				guild.getName(),
-				guild.getId(),
-				guildCount
+			"Guild: `%s`(%s)%nGuilds: `%d`",
+			guild.getName(),
+			guild.getId(),
+			guildCount
 		));
 	}
 
@@ -100,16 +100,16 @@ public class EventLogModule extends Module{
 		var self = jda.getSelfUser();
 		var avatarUrl = self.getEffectiveAvatarUrl();
 		this.webhookClient.send(new WebhookMessageBuilder()
-				.setAvatarUrl(avatarUrl)
-				.setUsername(self.getName())
-				.addEmbeds(new WebhookEmbedBuilder()
-						.setColor(Colors.KITTYBOT_BLUE_INT)
-						.setAuthor(new WebhookEmbed.EmbedAuthor(event, avatarUrl, Config.ORIGIN_URL))
-						.setDescription(message)
-						.setFooter(new WebhookEmbed.EmbedFooter("", avatarUrl))
-						.setTimestamp(Instant.now())
-						.build()
-				).build()
+			.setAvatarUrl(avatarUrl)
+			.setUsername(self.getName())
+			.addEmbeds(new WebhookEmbedBuilder()
+				.setColor(Colors.KITTYBOT_BLUE_INT)
+				.setAuthor(new WebhookEmbed.EmbedAuthor(event, avatarUrl, Config.ORIGIN_URL))
+				.setDescription(message)
+				.setFooter(new WebhookEmbed.EmbedFooter("", avatarUrl))
+				.setTimestamp(Instant.now())
+				.build()
+			).build()
 		);
 	}
 

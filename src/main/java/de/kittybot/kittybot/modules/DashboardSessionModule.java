@@ -45,9 +45,9 @@ public class DashboardSessionModule extends Module{
 	public void onEnable(){
 		this.secretKey = Keys.hmacShaKeyFor(Config.SIGNING_KEY.getBytes(StandardCharsets.UTF_8));
 		this.sessionCache = Caffeine.newBuilder()
-				.expireAfterAccess(15, TimeUnit.MINUTES)
-				.recordStats()
-				.build(this::retrieveDashboardSession);
+			.expireAfterAccess(15, TimeUnit.MINUTES)
+			.recordStats()
+			.build(this::retrieveDashboardSession);
 		this.userSessionCache = new HashMap<>();
 		this.userGuilds = new HashMap<>();
 		init();
@@ -70,11 +70,11 @@ public class DashboardSessionModule extends Module{
 			return;
 		}
 		this.oAuth2Client = new OAuth2Client.Builder()
-				.setClientId(Config.BOT_ID)
-				.setClientSecret(Config.BOT_SECRET)
-				.setOkHttpClient(this.modules.getHttpClient())
-				.setSessionController(new DashboardSessionController(this))
-				.build();
+			.setClientId(Config.BOT_ID)
+			.setClientSecret(Config.BOT_SECRET)
+			.setOkHttpClient(this.modules.getHttpClient())
+			.setSessionController(new DashboardSessionController(this))
+			.build();
 	}
 
 	@Override
@@ -110,10 +110,10 @@ public class DashboardSessionModule extends Module{
 
 	private void saveDashboardSession(DashboardSession session){
 		this.modules.get(DatabaseModule.class).getCtx().insertInto(SESSIONS)
-				.columns(SESSIONS.USER_ID, SESSIONS.ACCESS_TOKEN, SESSIONS.REFRESH_TOKEN, SESSIONS.EXPIRATION)
-				.values(session.getUserId(), session.getAccessToken(), session.getRefreshToken(), session.getExpirationTime())
-				.onDuplicateKeyIgnore()
-				.execute();
+			.columns(SESSIONS.USER_ID, SESSIONS.ACCESS_TOKEN, SESSIONS.REFRESH_TOKEN, SESSIONS.EXPIRATION)
+			.values(session.getUserId(), session.getAccessToken(), session.getRefreshToken(), session.getExpirationTime())
+			.onDuplicateKeyIgnore()
+			.execute();
 	}
 
 	public DashboardSession get(long userId){

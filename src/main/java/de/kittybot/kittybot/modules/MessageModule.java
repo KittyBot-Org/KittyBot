@@ -22,21 +22,21 @@ public class MessageModule extends Module{
 	@Override
 	public void onEnable(){
 		this.messages = Caffeine.newBuilder()
-				.expireAfterWrite(1, TimeUnit.HOURS)
-				.recordStats()
-				.build();
+			.expireAfterWrite(1, TimeUnit.HOURS)
+			.recordStats()
+			.build();
 		this.lastDeletedMessages = Caffeine.newBuilder()
-				.expireAfterWrite(1, TimeUnit.HOURS)
-				.recordStats()
-				.build();
+			.expireAfterWrite(1, TimeUnit.HOURS)
+			.recordStats()
+			.build();
 		this.editedMessages = Caffeine.newBuilder()
-				.expireAfterWrite(1, TimeUnit.HOURS)
-				.recordStats()
-				.build();
+			.expireAfterWrite(1, TimeUnit.HOURS)
+			.recordStats()
+			.build();
 		this.lastEditedMessages = Caffeine.newBuilder()
-				.expireAfterWrite(1, TimeUnit.HOURS)
-				.recordStats()
-				.build();
+			.expireAfterWrite(1, TimeUnit.HOURS)
+			.recordStats()
+			.build();
 	}
 
 	@Override

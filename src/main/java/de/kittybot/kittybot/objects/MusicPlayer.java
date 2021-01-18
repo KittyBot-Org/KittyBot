@@ -6,11 +6,10 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.modules.MusicModule;
 import de.kittybot.kittybot.modules.PaginatorModule;
-import de.kittybot.kittybot.modules.SettingsModule;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.MusicUtils;
@@ -130,12 +129,12 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 			player.setPaused(false);
 		}
 		ctx.reply(new EmbedBuilder()
-				.setColor(Colors.KITTYBOT_BLUE)
-				.setDescription("**Queued " + tracks.size() + " " + MessageUtils.pluralize("track", tracks.size()) + "**\n\n" +
-						(tracks.size() == 1 ? MusicUtils.formatTrackWithInfo(tracks.iterator().next()) : "") +
-						"\nUse `/queue` to view the queue")
-				.setTimestamp(Instant.now())
-				.build()
+			.setColor(Colors.KITTYBOT_BLUE)
+			.setDescription("**Queued " + tracks.size() + " " + MessageUtils.pluralize("track", tracks.size()) + "**\n\n" +
+				(tracks.size() == 1 ? MusicUtils.formatTrackWithInfo(tracks.iterator().next()) : "") +
+				"\nUse `/queue` to view the queue")
+			.setTimestamp(Instant.now())
+			.build()
 		);
 	}
 
@@ -158,12 +157,12 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		pages.add(trackMessage.toString());
 
 		this.modules.get(PaginatorModule.class).create(
-				channel,
-				authorId,
-				pages.size(),
-				(page, embedBuilder) -> embedBuilder.setColor(Colors.KITTYBOT_BLUE)
-						.setDescription(pages.get(page))
-						.setTimestamp(Instant.now())
+			channel,
+			authorId,
+			pages.size(),
+			(page, embedBuilder) -> embedBuilder.setColor(Colors.KITTYBOT_BLUE)
+				.setDescription(pages.get(page))
+				.setTimestamp(Instant.now())
 		);
 	}
 
@@ -252,35 +251,35 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		var track = this.player.getPlayingTrack();
 		if(this.link.getState() == Link.State.DESTROYED){
 			embed.setColor(Color.RED)
-					.addField("Disconnected", "", false)
-					.addField("Author", "-", true)
-					.addField("Length", "-", true)
-					.addField("Requested by", "-", true);
+				.addField("Disconnected", "", false)
+				.addField("Author", "-", true)
+				.addField("Length", "-", true)
+				.addField("Requested by", "-", true);
 		}
 		else if(track == null){
 			embed.setColor(Color.RED)
-					.addField("Waiting", "Nothing to play", false)
-					.addField("Author", "-", true)
-					.addField("Length", "-", true)
-					.addField("Requested by", "-", true);
+				.addField("Waiting", "Nothing to play", false)
+				.addField("Author", "-", true)
+				.addField("Length", "-", true)
+				.addField("Requested by", "-", true);
 		}
 		else{
 			var info = track.getInfo();
 			if(this.player.isPaused()){
 				embed.setColor(Color.ORANGE)
-						.addField("Pausing", Emoji.FORWARD.get() + " " + MusicUtils.formatTrack(track), false);
+					.addField("Pausing", Emoji.FORWARD.get() + " " + MusicUtils.formatTrack(track), false);
 			}
 			else{
 				embed.setColor(Color.GREEN)
-						.addField("Playing", Emoji.FORWARD.get() + " " + MusicUtils.formatTrack(track), false);
+					.addField("Playing", Emoji.FORWARD.get() + " " + MusicUtils.formatTrack(track), false);
 			}
 			embed.setThumbnail(getThumbnail(track.getIdentifier(), track.getSourceManager()))
-					.addField("Author", info.author, true)
-					.addField("Length", TimeUtils.formatDuration(track.getDuration()), true)
-					.addField("Requested by", MessageUtils.getUserMention(track.getUserData(Long.class)), true);
+				.addField("Author", info.author, true)
+				.addField("Length", TimeUtils.formatDuration(track.getDuration()), true)
+				.addField("Requested by", MessageUtils.getUserMention(track.getUserData(Long.class)), true);
 		}
 		embed.addField("Volume", (int) (this.player.getFilters().getVolume() * 100) + "%", true)
-				.setTimestamp(Instant.now());
+			.setTimestamp(Instant.now());
 		return embed;
 	}
 

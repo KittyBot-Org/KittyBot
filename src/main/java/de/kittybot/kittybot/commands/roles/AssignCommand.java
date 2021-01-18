@@ -7,12 +7,6 @@ import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionRole;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
-import de.kittybot.kittybot.utils.Config;
-import de.kittybot.kittybot.utils.MessageUtils;
-import net.dv8tion.jda.api.entities.Role;
-
-import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class AssignCommand extends Command implements RunnableCommand{
@@ -20,7 +14,7 @@ public class AssignCommand extends Command implements RunnableCommand{
 	public AssignCommand(){
 		super("assign", "Assigns yourself a self assignable roles", Category.ROLES);
 		addOptions(
-				new CommandOptionRole("role", "The role to assign").required()
+			new CommandOptionRole("role", "The role to assign").required()
 		);
 	}
 
@@ -59,8 +53,8 @@ public class AssignCommand extends Command implements RunnableCommand{
 			return;
 		}
 		ctx.getGuild().addRoleToMember(ctx.getMember(), role)
-				.reason("self assigned with kittybot")
-				.queue(unused -> ctx.reply("Assigned " + role.getAsMention()));
+			.reason("self assigned with kittybot")
+			.queue(unused -> ctx.reply("Assigned " + role.getAsMention()));
 	}
 
 }

@@ -29,32 +29,32 @@ public class KittyBot{
 
 		RestAction.setDefaultFailure(null);
 		this.shardManager = DefaultShardManagerBuilder.create(
-				Config.BOT_TOKEN,
-				GatewayIntent.GUILD_MEMBERS,
-				GatewayIntent.GUILD_VOICE_STATES,
-				GatewayIntent.GUILD_MESSAGES,
-				GatewayIntent.GUILD_MESSAGE_REACTIONS,
-				GatewayIntent.GUILD_EMOJIS,
-				GatewayIntent.GUILD_INVITES
+			Config.BOT_TOKEN,
+			GatewayIntent.GUILD_MEMBERS,
+			GatewayIntent.GUILD_VOICE_STATES,
+			GatewayIntent.GUILD_MESSAGES,
+			GatewayIntent.GUILD_MESSAGE_REACTIONS,
+			GatewayIntent.GUILD_EMOJIS,
+			GatewayIntent.GUILD_INVITES
 		)
-				.disableCache(
-						CacheFlag.MEMBER_OVERRIDES,
-						CacheFlag.ACTIVITY,
-						CacheFlag.CLIENT_STATUS,
-						CacheFlag.ROLE_TAGS
-				)
-				.setMemberCachePolicy(MemberCachePolicy.VOICE)
-				.setChunkingFilter(ChunkingFilter.NONE)
-				.addEventListeners(modules.getModules())
-				.setRawEventsEnabled(true)
-				.setHttpClient(modules.getHttpClient())
-				.setVoiceDispatchInterceptor(modules.get(LavalinkModule.class).getVoiceInterceptor())
-				.setActivity(Activity.playing("loading..."))
-				.setStatus(OnlineStatus.DO_NOT_DISTURB)
-				.setEventPool(ThreadingConfig.newScheduler(1, () -> "KittyBot", "Events"), true)
-				.setGatewayEncoding(GatewayEncoding.ETF)
-				.setBulkDeleteSplittingEnabled(false)
-				.build();
+			.disableCache(
+				CacheFlag.MEMBER_OVERRIDES,
+				CacheFlag.ACTIVITY,
+				CacheFlag.CLIENT_STATUS,
+				CacheFlag.ROLE_TAGS
+			)
+			.setMemberCachePolicy(MemberCachePolicy.VOICE)
+			.setChunkingFilter(ChunkingFilter.NONE)
+			.addEventListeners(modules.getModules())
+			.setRawEventsEnabled(true)
+			.setHttpClient(modules.getHttpClient())
+			.setVoiceDispatchInterceptor(modules.get(LavalinkModule.class).getVoiceInterceptor())
+			.setActivity(Activity.playing("loading..."))
+			.setStatus(OnlineStatus.DO_NOT_DISTURB)
+			.setEventPool(ThreadingConfig.newScheduler(1, () -> "KittyBot", "Events"), true)
+			.setGatewayEncoding(GatewayEncoding.ETF)
+			.setBulkDeleteSplittingEnabled(false)
+			.build();
 	}
 
 	public ShardManager getShardManager(){

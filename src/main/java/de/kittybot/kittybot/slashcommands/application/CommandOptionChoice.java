@@ -18,7 +18,7 @@ public class CommandOptionChoice<T>{
 
 	public static DataArray toJSON(Collection<CommandOptionChoice<?>> choices){
 		return DataArray.fromCollection(
-				choices.stream().map(CommandOptionChoice::toJSON).collect(Collectors.toList())
+			choices.stream().map(CommandOptionChoice::toJSON).collect(Collectors.toList())
 		);
 	}
 

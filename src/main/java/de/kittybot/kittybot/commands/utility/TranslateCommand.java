@@ -1,13 +1,13 @@
 package de.kittybot.kittybot.commands.utility;
 
+import de.kittybot.kittybot.modules.RequestModule;
+import de.kittybot.kittybot.objects.Language;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
-import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
-import de.kittybot.kittybot.modules.RequestModule;
-import de.kittybot.kittybot.objects.Language;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 
@@ -17,9 +17,9 @@ public class TranslateCommand extends Command implements RunnableCommand{
 	public TranslateCommand(){
 		super("translate", "Translates text to a given language", Category.UTILITIES);
 		addOptions(
-				new CommandOptionString("to-language", "The target language").required(),
-				new CommandOptionString("text", "The text to translate").required(),
-				new CommandOptionString("from-language", "The source language")
+			new CommandOptionString("to-language", "The target language").required(),
+			new CommandOptionString("text", "The text to translate").required(),
+			new CommandOptionString("from-language", "The source language")
 		);
 	}
 

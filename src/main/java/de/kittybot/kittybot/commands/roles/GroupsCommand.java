@@ -5,7 +5,6 @@ import de.kittybot.kittybot.objects.SelfAssignableRoleGroup;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
-import de.kittybot.kittybot.slashcommands.application.options.CommandOptionRole;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
@@ -21,9 +20,9 @@ public class GroupsCommand extends Command{
 	public GroupsCommand(){
 		super("groups", "Used to configure self assignable role groups", Category.ROLES);
 		addOptions(
-				new AddCommand(),
-				new RemoveCommand(),
-				new ListCommand()
+			new AddCommand(),
+			new RemoveCommand(),
+			new ListCommand()
 		);
 		addPermissions(Permission.ADMINISTRATOR);
 	}
@@ -33,8 +32,8 @@ public class GroupsCommand extends Command{
 		public AddCommand(){
 			super("add", "Adds a new self assignable role group");
 			addOptions(
-					new CommandOptionString("name", "The self assignable role to add").required(),
-					new CommandOptionInteger("max-roles", "The amount of max roles you can get from this group")
+				new CommandOptionString("name", "The self assignable role to add").required(),
+				new CommandOptionInteger("max-roles", "The amount of max roles you can get from this group")
 			);
 		}
 
@@ -53,7 +52,7 @@ public class GroupsCommand extends Command{
 		public RemoveCommand(){
 			super("remove", "Removes a self assignable role group & its roles");
 			addOptions(
-					new CommandOptionString("name", "The self assignable role to remove").required()
+				new CommandOptionString("name", "The self assignable role to remove").required()
 			);
 		}
 

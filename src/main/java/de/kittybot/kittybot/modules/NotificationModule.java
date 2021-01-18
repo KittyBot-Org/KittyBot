@@ -1,9 +1,9 @@
 package de.kittybot.kittybot.modules;
 
-import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.jooq.tables.records.NotificationsRecord;
 import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.objects.Notification;
+import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -39,7 +39,7 @@ public class NotificationModule extends Module{
 	private Map<Long, Notification> retrieveNotifications(LocalDateTime to){
 		try(var ctx = this.modules.get(DatabaseModule.class).getCtx().selectFrom(NOTIFICATIONS)){
 			return ctx.where(NOTIFICATIONS.NOTIFICATION_TIME.lessOrEqual(to)).fetch().stream().collect(
-					Collectors.toMap(NotificationsRecord::getId, Notification::new)
+				Collectors.toMap(NotificationsRecord::getId, Notification::new)
 			);
 		}
 	}
@@ -74,15 +74,15 @@ public class NotificationModule extends Module{
 					return;
 				}
 				guild.retrieveMemberById(notification.getUserId()).flatMap(member ->
-						channel.sendMessage(member.getAsMention()).embed(
-								new EmbedBuilder()
-										.setAuthor("Notification", Category.NOTIFICATION.getUrl(), Category.NOTIFICATION.getEmoteUrl())
-										.setColor(Colors.NOTIFICATION)
-										.setDescription(notification.getContent())
-										.addField("Message", MessageUtils.maskLink("click here", MessageUtils.getMessageLink(notification.getGuildId(), notification.getChannelId(), notification.getMessageId())), false)
-										.setFooter(member.getEffectiveName(), member.getUser().getEffectiveAvatarUrl())
-										.build()
-						)
+					channel.sendMessage(member.getAsMention()).embed(
+						new EmbedBuilder()
+							.setAuthor("Notification", Category.NOTIFICATION.getUrl(), Category.NOTIFICATION.getEmoteUrl())
+							.setColor(Colors.NOTIFICATION)
+							.setDescription(notification.getContent())
+							.addField("Message", MessageUtils.maskLink("click here", MessageUtils.getMessageLink(notification.getGuildId(), notification.getChannelId(), notification.getMessageId())), false)
+							.setFooter(member.getEffectiveName(), member.getUser().getEffectiveAvatarUrl())
+							.build()
+					)
 				).queue();
 				delete(notification.getId(), notification.getUserId());
 			}, scheduleIn, TimeUnit.MILLISECONDS);
@@ -91,7 +91,7 @@ public class NotificationModule extends Module{
 
 	private Set<Notification> getAndRemoveNext(LocalDateTime to){
 		var nextNotifs = this.notifications.values().stream().filter(
-				notification -> notification.getNotificationTime().isBefore(to)
+			notification -> notification.getNotificationTime().isBefore(to)
 		).collect(Collectors.toSet());
 		this.notifications.entrySet().removeIf(entry -> nextNotifs.stream().anyMatch(notification -> notification.getId() == entry.getValue().getId()));
 		return nextNotifs;
@@ -104,8 +104,8 @@ public class NotificationModule extends Module{
 
 	private boolean deleteNotifications(long id, long userId){
 		return this.modules.get(DatabaseModule.class).getCtx().deleteFrom(NOTIFICATIONS)
-				.where(NOTIFICATIONS.ID.eq(id).and((NOTIFICATIONS.USER_ID.eq(userId))))
-				.execute() == 1;
+			.where(NOTIFICATIONS.ID.eq(id).and((NOTIFICATIONS.USER_ID.eq(userId))))
+			.execute() == 1;
 	}
 
 	public Notification create(long guildId, long channelId, long messageId, long userId, String content, LocalDateTime notificationTime){
@@ -123,23 +123,23 @@ public class NotificationModule extends Module{
 
 	private Notification insertNotification(long guildId, long channelId, long messageId, long userId, String content, LocalDateTime creationTime, LocalDateTime notificationTime){
 		var res = this.modules.get(DatabaseModule.class).getCtx().insertInto(NOTIFICATIONS)
-				.columns(
-						NOTIFICATIONS.GUILD_ID,
-						NOTIFICATIONS.CHANNEL_ID,
-						NOTIFICATIONS.MESSAGE_ID,
-						NOTIFICATIONS.USER_ID,
-						NOTIFICATIONS.CONTENT,
-						NOTIFICATIONS.CREATED_AT,
-						NOTIFICATIONS.NOTIFICATION_TIME
-				).values(
-						guildId,
-						channelId,
-						messageId,
-						userId,
-						content,
-						creationTime,
-						notificationTime
-				).returningResult(NOTIFICATIONS.ID).fetchOne();
+			.columns(
+				NOTIFICATIONS.GUILD_ID,
+				NOTIFICATIONS.CHANNEL_ID,
+				NOTIFICATIONS.MESSAGE_ID,
+				NOTIFICATIONS.USER_ID,
+				NOTIFICATIONS.CONTENT,
+				NOTIFICATIONS.CREATED_AT,
+				NOTIFICATIONS.NOTIFICATION_TIME
+			).values(
+				guildId,
+				channelId,
+				messageId,
+				userId,
+				content,
+				creationTime,
+				notificationTime
+			).returningResult(NOTIFICATIONS.ID).fetchOne();
 		if(res == null){
 			return null;
 		}

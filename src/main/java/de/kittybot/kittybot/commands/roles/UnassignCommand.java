@@ -14,7 +14,7 @@ public class UnassignCommand extends Command implements RunnableCommand{
 	public UnassignCommand(){
 		super("unassign", "Unassigns yourself a self assignable roles", Category.ROLES);
 		addOptions(
-				new CommandOptionRole("role", "The role to unassign").required()
+			new CommandOptionRole("role", "The role to unassign").required()
 		);
 	}
 
@@ -43,8 +43,8 @@ public class UnassignCommand extends Command implements RunnableCommand{
 			return;
 		}
 		ctx.getGuild().removeRoleFromMember(ctx.getMember(), role)
-				.reason("self unassigned with kittybot")
-				.queue(unused -> ctx.reply("Unassigned " + role.getAsMention()));
+			.reason("self unassigned with kittybot")
+			.queue(unused -> ctx.reply("Unassigned " + role.getAsMention()));
 	}
 
 }

@@ -2,10 +2,10 @@ package de.kittybot.kittybot.modules;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.objects.Emoji;
 import de.kittybot.kittybot.objects.Paginator;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -23,10 +23,10 @@ public class PaginatorModule extends Module{
 	@Override
 	public void onEnable(){
 		this.paginators = Caffeine.newBuilder()
-				.expireAfterWrite(10, TimeUnit.MINUTES)
-				.removalListener((messageId, value, cause) -> remove((Paginator) value))
-				.recordStats()
-				.build();
+			.expireAfterWrite(10, TimeUnit.MINUTES)
+			.removalListener((messageId, value, cause) -> remove((Paginator) value))
+			.recordStats()
+			.build();
 	}
 
 	public void remove(Paginator paginator){

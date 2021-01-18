@@ -35,17 +35,17 @@ public class Stream{
 	public static Stream fromTwitchJSON(DataObject json){
 		var lang = Arrays.stream(Language.values()).filter(l -> l.getShortname().equalsIgnoreCase(json.getString("language"))).findFirst();
 		return new Stream(
-				json.getLong("id"),
-				json.getString("title"),
-				json.getString("thumbnail_url"),
-				json.getLong("user_id"),
-				json.getString("user_name"),
-				json.getInt("game_id"),
-				new Game(json.getInt("game_id"), json.getString("game_name")),
-				json.getInt("viewer_count"),
-				Instant.parse(json.getString("started_at")),
-				lang.orElse(Language.UNKNOWN),
-				StreamType.TWITCH
+			json.getLong("id"),
+			json.getString("title"),
+			json.getString("thumbnail_url"),
+			json.getLong("user_id"),
+			json.getString("user_name"),
+			json.getInt("game_id"),
+			new Game(json.getInt("game_id"), json.getString("game_name")),
+			json.getInt("viewer_count"),
+			Instant.parse(json.getString("started_at")),
+			lang.orElse(Language.UNKNOWN),
+			StreamType.TWITCH
 		);
 	}
 

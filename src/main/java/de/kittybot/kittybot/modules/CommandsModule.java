@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.modules;
 
-import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.module.Module;
+import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.annotations.Ignore;
 import io.github.classgraph.ClassGraph;
@@ -23,20 +23,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class CommandsModule extends Module{
-
-	private static final Logger LOG = LoggerFactory.getLogger(CommandsModule.class);
 
 	public static final Route COMMAND_CREATE = Route.custom(Method.POST, "applications/{application.id}/commands");
 	public static final Route COMMANDS_GET = Route.custom(Method.GET, "applications/{application.id}/commands");
 	public static final Route COMMAND_DELETE = Route.custom(Method.DELETE, "applications/{application.id}/commands/{command.id}");
-
 	public static final Route GUILD_COMMAND_CREATE = Route.custom(Method.POST, "applications/{application.id}/guilds/{guild.id}/commands");
 	public static final Route GUILD_COMMANDS_GET = Route.custom(Method.GET, "applications/{application.id}/guilds/{guild.id}/commands");
 	public static final Route GUILD_COMMAND_DELETE = Route.custom(Method.DELETE, "applications/{application.id}/guilds/{guild.id}/commands/{command.id}");
-
+	private static final Logger LOG = LoggerFactory.getLogger(CommandsModule.class);
 	private static final String COMMANDS_PACKAGE = "de.kittybot.kittybot.commands";
 
 	private Map<String, Command> commands;
@@ -96,6 +92,23 @@ public class CommandsModule extends Module{
 		}
 	}
 
+	private Call post(Route.CompiledRoute route, RequestBody body){
+		return this.modules.getHttpClient().newCall(newBuilder(route).post(body).build());
+	}
+
+	private Request.Builder newBuilder(Route.CompiledRoute route){
+		return new Request.Builder()
+			.url(Requester.DISCORD_API_PREFIX + route.getCompiledRoute())
+			.addHeader("Authorization", "Bot " + Config.BOT_TOKEN);
+	}
+
+	public void deleteAllCommands(long guildId){
+		var cmds = readCommands(guildId);
+		for(var cmd : cmds){
+			deleteCommand(cmd.getLong("id"), guildId);
+		}
+	}
+
 	public List<DataObject> readCommands(long guildId){
 		var route = guildId == -1L ? COMMANDS_GET.compile(String.valueOf(Config.BOT_ID)) : GUILD_COMMANDS_GET.compile(String.valueOf(Config.BOT_ID), String.valueOf(guildId));
 		var cmds = new ArrayList<DataObject>();
@@ -115,13 +128,6 @@ public class CommandsModule extends Module{
 		return cmds;
 	}
 
-	public void deleteAllCommands(long guildId){
-		var cmds = readCommands(guildId);
-		for(var cmd : cmds){
-			deleteCommand(cmd.getLong("id"), guildId);
-		}
-	}
-
 	public void deleteCommand(long commandId, long guildId){
 		LOG.debug("Registering command: {}", commandId);
 		var route = guildId == -1L ? COMMAND_DELETE.compile(String.valueOf(Config.BOT_ID), String.valueOf(commandId)) : GUILD_COMMAND_DELETE.compile(String.valueOf(Config.BOT_ID), String.valueOf(guildId), String.valueOf(commandId));
@@ -135,16 +141,6 @@ public class CommandsModule extends Module{
 		catch(IOException e){
 			LOG.error("Error while deleting command", e);
 		}
-	}
-
-	private Call post(Route.CompiledRoute route, RequestBody body){
-		return this.modules.getHttpClient().newCall(newBuilder(route).post(body).build());
-	}
-
-	private Request.Builder newBuilder(Route.CompiledRoute route){
-		return new Request.Builder()
-				.url(Requester.DISCORD_API_PREFIX + route.getCompiledRoute())
-				.addHeader("Authorization", "Bot " + Config.BOT_TOKEN);
 	}
 
 	private Call get(Route.CompiledRoute route){

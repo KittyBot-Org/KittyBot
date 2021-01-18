@@ -1,12 +1,12 @@
 package de.kittybot.kittybot.commands.snipe;
 
+import de.kittybot.kittybot.modules.MessageModule;
+import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
-import de.kittybot.kittybot.modules.MessageModule;
-import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.utils.Colors;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -34,14 +34,14 @@ public class EditSnipeCommand extends Command implements RunnableCommand{
 			return;
 		}
 		ctx.getJDA().retrieveUserById(lastEditedMessage.getAuthorId()).queue(user ->
-				ctx.reply(new EmbedBuilder()
-						.setColor(Colors.KITTYBOT_BLUE)
-						.setAuthor(user.getName(), lastEditedMessage.getJumpUrl(), user.getEffectiveAvatarUrl())
-						.setDescription(lastEditedMessage.getContent())
-						.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
-						.setTimestamp(lastEditedMessage.getTimeCreated())
-						.build()
-				)
+			ctx.reply(new EmbedBuilder()
+				.setColor(Colors.KITTYBOT_BLUE)
+				.setAuthor(user.getName(), lastEditedMessage.getJumpUrl(), user.getEffectiveAvatarUrl())
+				.setDescription(lastEditedMessage.getContent())
+				.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
+				.setTimestamp(lastEditedMessage.getTimeCreated())
+				.build()
+			)
 		);
 	}
 

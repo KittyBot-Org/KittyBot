@@ -25,14 +25,14 @@ public class GetTagsRoute implements Handler{
 		var guild = this.modules.get(WebService.class).getGuild(ctx);
 		var tags = this.modules.get(TagsModule.class).get(guild.getIdLong());
 		WebService.ok(ctx, DataObject.empty().put("tags", DataArray.fromCollection(
-				tags.stream().map(tag -> DataObject.empty()
-						.put("id", tag.getId())
-						.put("name", tag.getName())
-						.put("content", tag.getContent())
-						.put("user_id", tag.getUserId())
-						.put("guild_id", tag.getGuildId())
-						.put("created_at", tag.getCreatedAt().toEpochSecond(ZoneOffset.UTC))
-				).collect(Collectors.toSet())
+			tags.stream().map(tag -> DataObject.empty()
+				.put("id", tag.getId())
+				.put("name", tag.getName())
+				.put("content", tag.getContent())
+				.put("user_id", tag.getUserId())
+				.put("guild_id", tag.getGuildId())
+				.put("created_at", tag.getCreatedAt().toEpochSecond(ZoneOffset.UTC))
+			).collect(Collectors.toSet())
 		)));
 	}
 

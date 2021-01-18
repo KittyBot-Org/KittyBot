@@ -41,9 +41,9 @@ public class TwitchWrapper{
 	private BearerToken requestBearerToken(){
 		var formBody = new FormBody.Builder().add("client_id", this.clientId).add("client_secret", this.clientSecret).add("grant_type", "client_credentials");
 		var request = new Request.Builder()
-				.url(OAUTH2_URL)
-				.method("POST", formBody.build())
-				.build();
+			.url(OAUTH2_URL)
+			.method("POST", formBody.build())
+			.build();
 		try(var resp = this.httpClient.newCall(request).execute()){
 			var body = resp.body();
 			if(!resp.isSuccessful() || body == null){
@@ -93,10 +93,10 @@ public class TwitchWrapper{
 			throw new NullPointerException("bearerToken is null");
 		}
 		return this.httpClient.newCall(new Request.Builder()
-				.url(BASE_URL + String.format(url, params))
-				.addHeader("Client-ID", this.clientId)
-				.addHeader("Authorization", this.bearerToken.getAccessToken())
-				.build()
+			.url(BASE_URL + String.format(url, params))
+			.addHeader("Client-ID", this.clientId)
+			.addHeader("Authorization", this.bearerToken.getAccessToken())
+			.build()
 		);
 	}
 

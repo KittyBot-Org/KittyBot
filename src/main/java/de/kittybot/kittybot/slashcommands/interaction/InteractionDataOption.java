@@ -26,9 +26,9 @@ public class InteractionDataOption implements InteractionOptionsHolder{
 
 	public static InteractionDataOption fromJSON(DataObject json){
 		return new InteractionDataOption(
-				json.getString("name"),
-				json.opt("value").orElse(null),
-				InteractionDataOption.fromJSON(json.optArray("options").orElse(null))
+			json.getString("name"),
+			json.opt("value").orElse(null),
+			InteractionDataOption.fromJSON(json.optArray("options").orElse(null))
 		);
 	}
 
@@ -117,10 +117,10 @@ public class InteractionDataOption implements InteractionOptionsHolder{
 	@Override
 	public String toString(){
 		return "InteractionDataOption{" +
-				"name='" + this.name + '\'' +
-				", value='" + this.value + '\'' +
-				", options=" + this.options +
-				'}';
+			"name='" + this.name + '\'' +
+			", value='" + this.value + '\'' +
+			", options=" + this.options +
+			'}';
 	}
 
 }
