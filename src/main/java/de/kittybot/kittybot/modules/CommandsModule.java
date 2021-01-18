@@ -48,7 +48,7 @@ public class CommandsModule extends Module{
 	public void scanCommands(){
 		LOG.info("Loading commands...");
 		this.commands = new HashMap<>();
-		try(var result = new ClassGraph().acceptPackages(COMMANDS_PACKAGE).enableRealtimeLogging().scan()){
+		try(var result = new ClassGraph().acceptPackages(COMMANDS_PACKAGE).verbose().scan()){
 			for(var cls : result.getSubclasses(Command.class.getName())){
 				var instance = cls.loadClass().getDeclaredConstructors()[0].newInstance();
 				if(!(instance instanceof Command)){
