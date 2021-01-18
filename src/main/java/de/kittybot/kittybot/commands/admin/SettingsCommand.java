@@ -38,7 +38,7 @@ public class SettingsCommand extends Command{
 		addPermissions(Permission.ADMINISTRATOR);
 	}
 
-	public static class ViewCommand extends SubCommand{
+	private static class ViewCommand extends SubCommand{
 
 
 		public ViewCommand(){
@@ -66,7 +66,7 @@ public class SettingsCommand extends Command{
 
 	}
 
-	public static class DJRoleCommand extends SubCommand{
+	private static class DJRoleCommand extends SubCommand{
 
 		public DJRoleCommand(){
 			super("djrole", "Sets the dj role");
@@ -84,7 +84,7 @@ public class SettingsCommand extends Command{
 
 	}
 
-	public static class AnnouncementChannelCommand extends SubCommand{
+	private static class AnnouncementChannelCommand extends SubCommand{
 
 		public AnnouncementChannelCommand(){
 			super("announcementchannel", "Sets the announcement channel");
@@ -102,25 +102,7 @@ public class SettingsCommand extends Command{
 
 	}
 
-	public static class NSFWCommand extends SubCommand{
-
-		public NSFWCommand(){
-			super("nsfw", "Sets whether nsfw commands are enabled");
-			addOptions(
-					new CommandOptionBoolean("enabled", "Whether nsfw commands are enabled").required()
-			);
-		}
-
-		@Override
-		public void run(Options options, CommandContext ctx){
-			var enabled = options.getBoolean("enabled");
-			ctx.get(SettingsModule.class).setNsfwEnabled(ctx.getGuildId(), enabled);
-			ctx.reply(new InteractionResponse.Builder().setContent("NSFW commands " + (enabled ? "enabled" : "disabled")).build());
-		}
-
-	}
-
-	public static class JoinMessageCommand extends SubCommand{
+	private static class JoinMessageCommand extends SubCommand{
 
 		public JoinMessageCommand(){
 			super("joinmessage", "Sets or enable/disables join messages");
@@ -155,7 +137,7 @@ public class SettingsCommand extends Command{
 
 	}
 
-	public static class LeaveMessageCommand extends SubCommand{
+	private static class LeaveMessageCommand extends SubCommand{
 
 		public LeaveMessageCommand(){
 			super("leavemessage", "Sets or enable/disables leave messages");
@@ -190,7 +172,7 @@ public class SettingsCommand extends Command{
 
 	}
 
-	public static class NsfwCommand extends SubCommand{
+	private static class NsfwCommand extends SubCommand{
 
 		public NsfwCommand(){
 			super("nsfw", "Enables/Disables nsfw commands");
@@ -207,7 +189,7 @@ public class SettingsCommand extends Command{
 		}
 	}
 
-	public static class LogMessagesCommand extends SubCommand{
+	private static class LogMessagesCommand extends SubCommand{
 
 		public LogMessagesCommand(){
 			super("logmessages", "Sets the logging channel or enable/disables log messages");
@@ -243,7 +225,7 @@ public class SettingsCommand extends Command{
 
 	}
 
-	public static class SnipesCommand extends SubCommandGroup{
+	private static class SnipesCommand extends SubCommandGroup{
 
 		public SnipesCommand(){
 			super("snipes", "Used to disable snipes");
@@ -253,7 +235,7 @@ public class SettingsCommand extends Command{
 			);
 		}
 
-		public static class ChannelCommand extends SubCommand{
+		private static class ChannelCommand extends SubCommand{
 
 			public ChannelCommand(){
 				super("channel", "Used to enable/disable snipes in a specific channel");
@@ -273,7 +255,7 @@ public class SettingsCommand extends Command{
 
 		}
 
-		public static class EnableCommand extends SubCommand{
+		private static class EnableCommand extends SubCommand{
 
 			public EnableCommand(){
 				super("enable", "Used to globally disable snipes");
@@ -293,7 +275,7 @@ public class SettingsCommand extends Command{
 
 	}
 
-	public static class StreamAnnouncementsCommand extends SubCommandGroup{
+	private static class StreamAnnouncementsCommand extends SubCommandGroup{
 
 		public StreamAnnouncementsCommand(){
 			super("streamannouncements", "Used to configure stream announcements");
@@ -305,7 +287,7 @@ public class SettingsCommand extends Command{
 			);
 		}
 
-		public static class AddCommand extends SubCommand{
+		private static class AddCommand extends SubCommand{
 
 			public AddCommand(){
 				super("add", "Adds a new stream announcement");
@@ -333,7 +315,7 @@ public class SettingsCommand extends Command{
 
 		}
 
-		public static class RemoveCommand extends SubCommand{
+		private static class RemoveCommand extends SubCommand{
 
 			public RemoveCommand(){
 				super("remove", "Removes a stream announcement");
@@ -361,7 +343,7 @@ public class SettingsCommand extends Command{
 
 		}
 
-		public static class ListCommand extends SubCommand{
+		private static class ListCommand extends SubCommand{
 
 			public ListCommand(){
 				super("list", "Lists stream announcements");
@@ -379,7 +361,7 @@ public class SettingsCommand extends Command{
 
 		}
 
-		public static class ChannelCommand extends SubCommand{
+		private static class ChannelCommand extends SubCommand{
 
 			public ChannelCommand(){
 				super("channel", "Sets the stream announcement channel");

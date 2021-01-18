@@ -48,7 +48,7 @@ public class CommandsModule extends Module{
 	public void scanCommands(){
 		LOG.info("Loading commands...");
 		this.commands = new HashMap<>();
-		try(var result = new ClassGraph().acceptPackages(COMMANDS_PACKAGE).verbose().scan()){
+		try(var result = new ClassGraph().acceptPackages(COMMANDS_PACKAGE).scan()){
 			for(var cls : result.getSubclasses(Command.class.getName())){
 				var instance = cls.loadClass().getDeclaredConstructors()[0].newInstance();
 				if(!(instance instanceof Command)){
@@ -61,21 +61,6 @@ public class CommandsModule extends Module{
 		}
 		catch(IllegalAccessException | InvocationTargetException | InstantiationException e){
 			LOG.error("There was an error while registering commands!", e);
-		}
-	}
-
-	public void deployDiffs(long guildId){
-		var oldCmds = readCommands(guildId).stream().collect(Collectors.toMap(cmd -> cmd.getString("name"), cmd -> cmd));
-		var newCmds = this.commands.values().stream().collect(Collectors.toMap(Command::getName, Command::toJSON));
-
-		var cmdsToCreate = oldCmds.entrySet().stream().filter(cmd -> !newCmds.containsKey(cmd.getKey()) || newCmds.get(cmd.getKey()).toString().equals(cmd.getValue().toString())).map(Map.Entry::getValue).collect(Collectors.toSet());
-		var cmdsToDelete = newCmds.keySet().stream().filter(cmd -> !oldCmds.containsKey(cmd)).map(oldCmds::get).collect(Collectors.toSet());
-
-		if(!cmdsToDelete.isEmpty()){
-			cmdsToDelete.forEach(cmd -> deleteCommand(cmd.getLong("id"), guildId));
-		}
-		if(!cmdsToCreate.isEmpty()){
-			cmdsToCreate.forEach(cmd -> deployCommand(cmd, guildId));
 		}
 	}
 

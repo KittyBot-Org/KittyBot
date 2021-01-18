@@ -28,7 +28,7 @@ public class BanCommand extends Command{
 		addPermissions(Permission.BAN_MEMBERS);
 	}
 
-	public static class AddCommand extends SubCommand{
+	private static class AddCommand extends SubCommand{
 
 
 		public AddCommand(){
@@ -65,7 +65,7 @@ public class BanCommand extends Command{
 
 	}
 
-	public static class DeleteCommand extends SubCommand{
+	private static class DeleteCommand extends SubCommand{
 
 
 		public DeleteCommand(){
@@ -92,7 +92,7 @@ public class BanCommand extends Command{
 
 	}
 
-	public static class ListCommand extends SubCommand{
+	private static class ListCommand extends SubCommand{
 
 
 		public ListCommand(){

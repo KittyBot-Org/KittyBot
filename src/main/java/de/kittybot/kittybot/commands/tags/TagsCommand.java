@@ -31,7 +31,7 @@ public class TagsCommand extends Command{
 		);
 	}
 
-	public static class CreateCommand extends SubCommand{
+	private static class CreateCommand extends SubCommand{
 
 		public CreateCommand(){
 			super("create", "Used to create a tag");
@@ -55,7 +55,7 @@ public class TagsCommand extends Command{
 
 	}
 
-	public static class EditCommand extends SubCommand{
+	private static class EditCommand extends SubCommand{
 
 		public EditCommand(){
 			super("edit", "Used to edit a tag");
@@ -79,7 +79,7 @@ public class TagsCommand extends Command{
 
 	}
 
-	public static class DeleteCommand extends SubCommand{
+	private static class DeleteCommand extends SubCommand{
 
 		public DeleteCommand(){
 			super("delete", "Used to delete a tag");
@@ -102,7 +102,7 @@ public class TagsCommand extends Command{
 
 	}
 
-	public static class SearchCommand extends SubCommand{
+	private static class SearchCommand extends SubCommand{
 
 		public SearchCommand(){
 			super("search", "Used to search a tag");
@@ -128,7 +128,7 @@ public class TagsCommand extends Command{
 
 	}
 
-	public static class ListCommand extends SubCommand{
+	private static class ListCommand extends SubCommand{
 
 		public ListCommand(){
 			super("list", "Used to list tags");
@@ -157,7 +157,7 @@ public class TagsCommand extends Command{
 
 	}
 
-	public static class InfoCommand extends SubCommand{
+	private static class InfoCommand extends SubCommand{
 
 		public InfoCommand(){
 			super("info", "Used to get info about a tag");

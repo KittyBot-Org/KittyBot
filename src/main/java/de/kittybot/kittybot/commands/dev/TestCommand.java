@@ -26,7 +26,7 @@ public class TestCommand extends Command{
 		);
 	}
 
-	public static class TestSubCommand extends SubCommand{
+	private static class TestSubCommand extends SubCommand{
 
 		public TestSubCommand(){
 			super("response", "Let's you choose the response type");

@@ -30,7 +30,7 @@ public class InviteRolesCommand extends Command{
 		addPermissions(Permission.ADMINISTRATOR);
 	}
 
-	public static class AddCommand extends SubCommand{
+	private static class AddCommand extends SubCommand{
 
 		public AddCommand(){
 			super("add", "Maps roles to invite links");
@@ -59,7 +59,7 @@ public class InviteRolesCommand extends Command{
 
 	}
 
-	public static class RemoveCommand extends SubCommand{
+	private static class RemoveCommand extends SubCommand{
 
 		public RemoveCommand(){
 			super("remove", "Maps roles to invite links");
@@ -88,7 +88,7 @@ public class InviteRolesCommand extends Command{
 
 	}
 
-	public static class ResetCommand extends SubCommand{
+	private static class ResetCommand extends SubCommand{
 
 		public ResetCommand(){
 			super("reset", "Resets roles from invites");
@@ -115,7 +115,7 @@ public class InviteRolesCommand extends Command{
 
 	}
 
-	public static class ListCommand extends SubCommand{
+	private static class ListCommand extends SubCommand{
 
 		public ListCommand(){
 			super("list", "Maps roles to invite links");

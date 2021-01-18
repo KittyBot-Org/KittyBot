@@ -11,6 +11,7 @@ import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.slashcommands.interaction.response.FollowupMessage;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
+import de.kittybot.kittybot.utils.Colors;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.concurrent.TimeUnit;
@@ -19,18 +20,18 @@ import java.util.concurrent.TimeUnit;
 public class SlashCommandsCommand extends Command{
 
 	public SlashCommandsCommand(){
-		super("slashcommands", "Deploys/Omits slash commands for the specified environment", Category.DEV);
+		super("slashcommands", "Deploys/Removes slash commands for a specified environment", Category.DEV);
 		addOptions(
 				new DeployCommand(),
-				new OmitCommand()
+				new RemoveCommand()
 		);
 		devOnly();
 	}
 
-	public static class DeployCommand extends SubCommand{
+	private static class DeployCommand extends SubCommand{
 
 		public DeployCommand(){
-			super("deploy", "Deploys slash commands for the specified environment");
+			super("deploy", "Deploys slash commands to the specified environment");
 			addOptions(
 					new CommandOptionInteger("environment", "In which environment should the commands get deployed").required()
 							.addChoices(
@@ -50,7 +51,7 @@ public class SlashCommandsCommand extends Command{
 					var commandsModule = ctx.get(CommandsModule.class);
 					commandsModule.deleteAllCommands(-1L);
 					commandsModule.deployAllCommands(-1L);
-					ctx.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setDescription("Deployed slash commands globally").build()).build());
+					ctx.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setColor(Colors.KITTYBOT_BLUE).setDescription("Deployed slash commands globally").build()).build());
 				}, 0, TimeUnit.SECONDS);
 				return;
 			}
@@ -64,16 +65,16 @@ public class SlashCommandsCommand extends Command{
 				var commandsModule = ctx.get(CommandsModule.class);
 				commandsModule.deleteAllCommands(guildId);
 				commandsModule.deployAllCommands(guildId);
-				ctx.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setDescription("Deployed slash commands for guild `" + guildId + "`").build()).build());
+				ctx.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setColor(Colors.KITTYBOT_BLUE).setDescription("Deployed slash commands for guild `" + guildId + "`").build()).build());
 			}, 0, TimeUnit.SECONDS);
 		}
 
 	}
 
-	public static class OmitCommand extends SubCommand{
+	private static class RemoveCommand extends SubCommand{
 
-		public OmitCommand(){
-			super("omit", "Omits slash commands for the specified environment");
+		public RemoveCommand(){
+			super("remove", "Removes slash commands from a specified environment");
 			addOptions(
 					new CommandOptionInteger("environment", "In which environment should the commands get omitted").required()
 							.addChoices(
@@ -92,7 +93,7 @@ public class SlashCommandsCommand extends Command{
 				ctx.getModules().getScheduler().schedule(() -> {
 					var commandsModule = ctx.get(CommandsModule.class);
 					commandsModule.deleteAllCommands(-1L);
-					ctx.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setDescription("Omitted slash commands globally").build()).build());
+					ctx.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setColor(Colors.KITTYBOT_BLUE).setDescription("Omitted slash commands globally").build()).build());
 				}, 0, TimeUnit.SECONDS);
 				return;
 			}
@@ -105,7 +106,7 @@ public class SlashCommandsCommand extends Command{
 			ctx.getModules().getScheduler().schedule(() -> {
 				var commandsModule = ctx.get(CommandsModule.class);
 				commandsModule.deleteAllCommands(guildId);
-				ctx.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setDescription("Omitted slash commands for guild `" + guildId + "`").build()).build());
+				ctx.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setColor(Colors.KITTYBOT_BLUE).setDescription("Omitted slash commands for guild `" + guildId + "`").build()).build());
 			}, 0, TimeUnit.SECONDS);
 		}
 

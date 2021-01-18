@@ -29,7 +29,7 @@ public class RestrictEmoteCommand extends Command{
 		addPermissions(Permission.ADMINISTRATOR);
 	}
 
-	public static class SetCommand extends SubCommand{
+	private static class SetCommand extends SubCommand{
 
 		public SetCommand(){
 			super("set", "description");
@@ -72,7 +72,7 @@ public class RestrictEmoteCommand extends Command{
 
 	}
 
-	public static class ResetCommand extends SubCommand{
+	private static class ResetCommand extends SubCommand{
 
 		public ResetCommand(){
 			super("reset", "description");

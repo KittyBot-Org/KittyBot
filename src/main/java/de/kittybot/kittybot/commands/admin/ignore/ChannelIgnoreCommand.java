@@ -21,7 +21,7 @@ public class ChannelIgnoreCommand extends SubCommandGroup{
 		);
 	}
 
-	public static class AddCommand extends SubCommand{
+	private static class AddCommand extends SubCommand{
 
 		public AddCommand(){
 			super("add", "Used to ignore a channel");
@@ -39,7 +39,7 @@ public class ChannelIgnoreCommand extends SubCommandGroup{
 
 	}
 
-	public static class RemoveCommand extends SubCommand{
+	private static class RemoveCommand extends SubCommand{
 
 		public RemoveCommand(){
 			super("remove", "Used to unignore a channel");
@@ -57,7 +57,7 @@ public class ChannelIgnoreCommand extends SubCommandGroup{
 
 	}
 
-	public static class ListCommand extends SubCommand{
+	private static class ListCommand extends SubCommand{
 
 		public ListCommand(){
 			super("list", "Used to list ignored a users");

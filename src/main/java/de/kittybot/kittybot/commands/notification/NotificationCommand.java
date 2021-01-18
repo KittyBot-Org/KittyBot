@@ -28,7 +28,7 @@ public class NotificationCommand extends Command{
 		);
 	}
 
-	public static class CreateCommand extends SubCommand{
+	private static class CreateCommand extends SubCommand{
 
 		public CreateCommand(){
 			super("create", "Creates a notification");
@@ -65,7 +65,7 @@ public class NotificationCommand extends Command{
 
 	}
 
-	public static class DeleteCommand extends SubCommand{
+	private static class DeleteCommand extends SubCommand{
 
 		public DeleteCommand(){
 			super("delete", "Deletes a notification");
@@ -86,7 +86,7 @@ public class NotificationCommand extends Command{
 
 	}
 
-	public static class ListCommand extends SubCommand{
+	private static class ListCommand extends SubCommand{
 
 		public ListCommand(){
 			super("list", "Lists your notifications");

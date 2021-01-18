@@ -28,7 +28,7 @@ public class GroupsCommand extends Command{
 		addPermissions(Permission.ADMINISTRATOR);
 	}
 
-	public static class AddCommand extends SubCommand{
+	private static class AddCommand extends SubCommand{
 
 		public AddCommand(){
 			super("add", "Adds a new self assignable role group");
@@ -48,7 +48,7 @@ public class GroupsCommand extends Command{
 
 	}
 
-	public static class RemoveCommand extends SubCommand{
+	private static class RemoveCommand extends SubCommand{
 
 		public RemoveCommand(){
 			super("remove", "Removes a self assignable role group & its roles");
@@ -72,7 +72,7 @@ public class GroupsCommand extends Command{
 
 	}
 
-	public static class ListCommand extends SubCommand{
+	private static class ListCommand extends SubCommand{
 
 		public ListCommand(){
 			super("list", "Lists all self assignable role groups");
