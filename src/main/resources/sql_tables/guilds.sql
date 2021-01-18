@@ -1,6 +1,5 @@
 CREATE TABLE IF NOT EXISTS guilds(
   id                             BIGINT PRIMARY KEY NOT NULL,
-  prefix                         VARCHAR(4) NOT NULL,
   announcement_channel_id        BIGINT NOT NULL DEFAULT(-1),
   join_message                   TEXT NOT NULL DEFAULT('Welcome ${user}!'),
   join_messages_enabled          BOOLEAN NOT NULL DEFAULT(false),

@@ -46,7 +46,6 @@ public class QueueCommand extends Command implements RunnableCommand{
 		}
 		var tracks = player.getQueue();
 		if(tracks.isEmpty()){
-			var prefix = ctx.get(SettingsModule.class).getPrefix(ctx.getGuildId());
 			ctx.reply(new EmbedBuilder()
 					.setColor(Colors.KITTYBOT_BLUE)
 					.setDescription("The queue is empty. You can queue new tracks with `/play <link/search-term>` or `/queue <link/search-term>`")

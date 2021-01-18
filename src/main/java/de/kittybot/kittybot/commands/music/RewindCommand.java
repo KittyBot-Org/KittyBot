@@ -6,8 +6,10 @@ import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
+import de.kittybot.kittybot.utils.annotations.Ignore;
 
 @SuppressWarnings("unused")
+@Ignore
 public class RewindCommand extends Command implements RunnableCommand{
 
 	public RewindCommand(){

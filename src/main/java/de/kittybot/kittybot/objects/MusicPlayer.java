@@ -127,10 +127,11 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		}
 		if(player.getPlayingTrack() == null){
 			player.playTrack(this.queue.poll());
+			player.setPaused(false);
 		}
 		ctx.reply(new EmbedBuilder()
 				.setColor(Colors.KITTYBOT_BLUE)
-				.setDescription("**Queued " + tracks.size() + " " + MessageUtils.pluralize("track", tracks.size()) + "**\nUse `" + this.modules.get(SettingsModule.class).getPrefix(this.guildId) + "queue` to see the current queued tracks!")
+				.setDescription("**Queued " + tracks.size() + " " + MessageUtils.pluralize("track", tracks.size()) + "**\n" + (tracks.size() == 1 ? MusicUtils.formatTrackWithInfo(tracks.get(0)) : "") + "\nUse `/queue` to see the current queued tracks!")
 				.setTimestamp(Instant.now())
 				.build()
 		);
@@ -226,13 +227,13 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		}
 		channel.sendMessage(embed.build()).queue(message -> {
 			this.controllerMessageId = message.getIdLong();
-			message.addReaction(Emoji.VOLUME_DOWN.getStripped()).queue();
+			/*message.addReaction(Emoji.VOLUME_DOWN.getStripped()).queue();
 			message.addReaction(Emoji.VOLUME_UP.getStripped()).queue();
 			message.addReaction(Emoji.ARROW_LEFT.getStripped()).queue();
 			message.addReaction(Emoji.PLAY_PAUSE.getStripped()).queue();
 			message.addReaction(Emoji.ARROW_RIGHT.getStripped()).queue();
 			message.addReaction(Emoji.SHUFFLE.getStripped()).queue();
-			message.addReaction(Emoji.X.getStripped()).queue();
+			message.addReaction(Emoji.X.getStripped()).queue();*/
 		});
 	}
 

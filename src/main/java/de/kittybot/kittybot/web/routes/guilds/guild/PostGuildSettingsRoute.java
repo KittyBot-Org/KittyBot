@@ -21,9 +21,6 @@ public class PostGuildSettingsRoute implements Handler{
 		var guildId = this.modules.get(WebService.class).getGuild(ctx).getIdLong();
 		var json = DataObject.fromJson(ctx.body());
 		var settings = this.modules.get(SettingsModule.class);
-		if(json.hasKey("prefix")){
-			settings.setPrefix(guildId, json.getString("prefix"));
-		}
 		if(json.hasKey("join_messages_enabled")){
 			settings.setJoinMessagesEnabled(guildId, json.getBoolean("join_messages_enabled"));
 		}

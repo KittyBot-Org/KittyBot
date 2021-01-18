@@ -28,7 +28,7 @@ public class HistoryCommand extends Command implements RunnableCommand{
 		if(tracks.isEmpty()){
 			ctx.reply(new EmbedBuilder()
 					.setColor(Colors.KITTYBOT_BLUE)
-					.setDescription("The history is empty. Play some tracks to fill it`")
+					.setDescription("The history is empty. Play some tracks to fill it-")
 			);
 			return;
 		}

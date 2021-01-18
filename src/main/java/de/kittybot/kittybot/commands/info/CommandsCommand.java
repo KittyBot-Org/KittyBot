@@ -6,6 +6,7 @@ import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
+import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
@@ -33,7 +34,6 @@ public class CommandsCommand extends Command implements RunnableCommand{
 	public void run(Options options, CommandContext ctx){
 		var commands = ctx.get(CommandsModule.class).getCommands().values();
 		if(options.has("command")){
-			// TODO display sub-commands
 			var cmdName = options.getString("command");
 			var optCmd = commands.stream().filter(cmd -> cmd.getName().equalsIgnoreCase(cmdName)).findFirst();
 			if(optCmd.isEmpty()){
@@ -50,7 +50,7 @@ public class CommandsCommand extends Command implements RunnableCommand{
 					.addEmbeds(new EmbedBuilder()
 							.setColor(Colors.KITTYBOT_BLUE)
 							.setAuthor("Command", Config.ORIGIN_URL + "/commands#" + cmd.getName(), ctx.getJDA().getSelfUser().getEffectiveAvatarUrl())
-							.setDescription("`/" + cmd.getName() + "`\n*" + cmd.getDescription() + "*")
+							.setDescription("`/" + cmd.getName() + "` - *" + cmd.getDescription() + "*\n\n" + cmd.getOptions().stream().filter(SubCommand.class::isInstance).map(c -> "`/" + cmd.getName() + " " + c.getName() + "` - *" + c.getDescription() + "*").collect(Collectors.joining("\n")))
 							.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
 							.setTimestamp(Instant.now())
 							.build()

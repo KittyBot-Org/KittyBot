@@ -7,8 +7,10 @@ import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
+import de.kittybot.kittybot.utils.annotations.Ignore;
 
 @SuppressWarnings("unused")
+@Ignore
 public class SearchCommand extends Command implements RunnableCommand{
 
 	public SearchCommand(){

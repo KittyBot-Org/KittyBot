@@ -3,6 +3,7 @@ package de.kittybot.kittybot.modules;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.utils.Config;
+import de.kittybot.kittybot.utils.annotations.Ignore;
 import io.github.classgraph.ClassGraph;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
@@ -48,8 +49,12 @@ public class CommandsModule extends Module{
 	public void scanCommands(){
 		LOG.info("Loading commands...");
 		this.commands = new HashMap<>();
-		try(var result = new ClassGraph().acceptPackages(COMMANDS_PACKAGE).scan()){
+		try(var result = new ClassGraph().acceptPackages(COMMANDS_PACKAGE).enableAnnotationInfo().scan()){
 			for(var cls : result.getSubclasses(Command.class.getName())){
+				if(cls.hasAnnotation(Ignore.class.getName())){
+					LOG.info("Ignoring command: {}", cls.getSimpleName());
+					continue;
+				}
 				var instance = cls.loadClass().getDeclaredConstructors()[0].newInstance();
 				if(!(instance instanceof Command)){
 					continue;

@@ -139,20 +139,8 @@ public class SettingsModule extends Module{
 		return this.guildSettings.stats();
 	}
 
-	public String getPrefix(long guildId){
-		return this.getSettings(guildId).getPrefix();
-	}
-
 	public Settings getSettings(long guildId){
 		return this.guildSettings.get(guildId);
-	}
-
-	public void setPrefix(long guildId, String prefix){
-		updateSetting(guildId, GUILDS.PREFIX, prefix);
-		var settings = getSettingsIfPresent(guildId);
-		if(settings != null){
-			settings.setPrefix(prefix);
-		}
 	}
 
 	public <T> void updateSetting(long guildId, Field<T> field, T value){

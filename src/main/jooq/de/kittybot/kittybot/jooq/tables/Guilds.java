@@ -15,7 +15,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row19;
+import org.jooq.Row18;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -52,11 +52,6 @@ public class Guilds extends TableImpl<GuildsRecord> {
      * The column <code>public.guilds.id</code>.
      */
     public final TableField<GuildsRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false), this, "");
-
-    /**
-     * The column <code>public.guilds.prefix</code>.
-     */
-    public final TableField<GuildsRecord, String> PREFIX = createField(DSL.name("prefix"), SQLDataType.VARCHAR(4).nullable(false), this, "");
 
     /**
      * The column <code>public.guilds.announcement_channel_id</code>.
@@ -218,11 +213,11 @@ public class Guilds extends TableImpl<GuildsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row19 type methods
+    // Row18 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row19<Long, String, Long, String, Boolean, String, Boolean, Long, Boolean, Long, Boolean, Long, String, Boolean, Long, YearToSecond, Boolean, Long, Boolean> fieldsRow() {
-        return (Row19) super.fieldsRow();
+    public Row18<Long, Long, String, Boolean, String, Boolean, Long, Boolean, Long, Boolean, Long, String, Boolean, Long, YearToSecond, Boolean, Long, Boolean> fieldsRow() {
+        return (Row18) super.fieldsRow();
     }
 }

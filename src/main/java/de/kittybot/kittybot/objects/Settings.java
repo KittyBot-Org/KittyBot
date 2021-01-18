@@ -18,7 +18,6 @@ public class Settings{
 	private final Set<SelfAssignableRole> selfAssignableRoles;
 	private final Set<SelfAssignableRoleGroup> selfAssignableRoleGroups;
 	private final Map<String, Set<Long>> guildInviteRoles;
-	private String prefix;
 	private long streamAnnouncementChannelId;
 	private String streamAnnouncementMessage;
 	private long announcementChannelId;
@@ -38,7 +37,6 @@ public class Settings{
 
 	public Settings(GuildsRecord record, Collection<Long> snipeDisabledChannels, Collection<Long> botDisabledChannels, Collection<Long> botIgnoredUsers, Collection<SelfAssignableRole> selfAssignableRoles, Collection<SelfAssignableRoleGroup> selfAssignableRoleGroups, Map<String, Set<Long>> guildInviteRoles){
 		this.guildId = record.getId();
-		this.prefix = record.getPrefix();
 		this.streamAnnouncementChannelId = record.getStreamAnnouncementChannelId();
 		this.streamAnnouncementMessage = record.getStreamAnnouncementMessage();
 		this.announcementChannelId = record.getAnnouncementChannelId();
@@ -65,14 +63,6 @@ public class Settings{
 
 	public long getGuildId(){
 		return this.guildId;
-	}
-
-	public String getPrefix(){
-		return this.prefix;
-	}
-
-	public void setPrefix(String prefix){
-		this.prefix = prefix;
 	}
 
 	public long getStreamAnnouncementChannelId(){

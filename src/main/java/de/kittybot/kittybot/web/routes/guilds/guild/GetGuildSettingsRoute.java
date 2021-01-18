@@ -33,8 +33,6 @@ public class GetGuildSettingsRoute implements Handler{
 				).collect(Collectors.toSet())
 		);
 		WebService.ok(ctx, DataObject.empty()
-				.put("prefix", settings.getPrefix())
-
 				.put("stream_announcement_channel_id", settings.getStreamAnnouncementChannelId())
 				.put("stream_announcement_message", settings.getStreamAnnouncementMessage())
 
