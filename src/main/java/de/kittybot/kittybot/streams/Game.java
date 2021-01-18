@@ -27,7 +27,7 @@ public class Game{
 
 	public String getThumbnailUrl(int width, int height){
 		// WHATA FUCK GIMME %20 INSTEAD OF +
-		return "https://static-cdn.jtvnw.net/ttv-boxart/" + URLEncoder.encode(this.name, StandardCharsets.UTF_8).replace("\\+", "%20") + "-" + width + "x" + height + ".jpg";
+		return "https://static-cdn.jtvnw.net/ttv-boxart/" + URLEncoder.encode(this.name, StandardCharsets.UTF_8).replace("+", "%20") + "-" + width + "x" + height + ".jpg?v=" + System.currentTimeMillis();
 	}
 
 }

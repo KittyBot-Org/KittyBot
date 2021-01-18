@@ -131,7 +131,9 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		}
 		ctx.reply(new EmbedBuilder()
 				.setColor(Colors.KITTYBOT_BLUE)
-				.setDescription("**Queued " + tracks.size() + " " + MessageUtils.pluralize("track", tracks.size()) + "**\n" + (tracks.size() == 1 ? MusicUtils.formatTrackWithInfo(tracks.get(0)) : "") + "\nUse `/queue` to see the current queued tracks!")
+				.setDescription("**Queued " + tracks.size() + " " + MessageUtils.pluralize("track", tracks.size()) + "**\n\n" +
+						(tracks.size() == 1 ? MusicUtils.formatTrackWithInfo(tracks.iterator().next()) : "") +
+						"\nUse `/queue` to view the queue")
 				.setTimestamp(Instant.now())
 				.build()
 		);

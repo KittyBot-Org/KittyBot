@@ -58,7 +58,7 @@ public class Stream{
 	}
 
 	public String getThumbnailUrl(int width, int height){
-		return this.thumbnailUrl.replace("{width}", String.valueOf(width)).replace("{height}", String.valueOf(height));
+		return this.thumbnailUrl.replace("{width}", String.valueOf(width)).replace("{height}", String.valueOf(height)) + "?v=" + System.currentTimeMillis();
 	}
 
 	public long getStreamId(){

@@ -28,9 +28,9 @@ public class SkipCommand extends Command implements RunnableCommand{
 			ctx.error("Can't skip because the queue is empty");
 			return;
 		}
+		ctx.reply("Skipped to the next song");
 		player.next();
 		player.setPaused(false);
-		ctx.reply("Skipped to the next song");
 	}
 
 }

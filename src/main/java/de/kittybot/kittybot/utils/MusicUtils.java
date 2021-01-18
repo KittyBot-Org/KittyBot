@@ -26,7 +26,7 @@ public class MusicUtils{
 
 	public static String formatTrackWithInfo(AudioTrack track){
 		var info = track.getInfo();
-		return formatTrack(track) + " - " + TimeUtils.formatDuration(info.length) + "[" + MessageUtils.getUserMention(track.getUserData(Long.class)) + "]";
+		return formatTrack(track) + " - " + TimeUtils.formatDuration(info.length) + " [" + MessageUtils.getUserMention(track.getUserData(Long.class)) + "]";
 	}
 
 	public static String formatTrack(AudioTrack track){
@@ -54,14 +54,18 @@ public class MusicUtils{
 
 	public static boolean checkMusicPermissions(CommandContext ctx, MusicPlayer player){
 		var member = ctx.getMember();
-		if(!member.hasPermission(Permission.ADMINISTRATOR) && !ctx.get(SettingsModule.class).hasDJRole(member)){
-			return false;
+		if(member.hasPermission(Permission.ADMINISTRATOR) || ctx.get(SettingsModule.class).hasDJRole(member)){
+			return true;
 		}
 		var track = player.getPlayingTrack();
 		if(track == null){
 			return false;
 		}
-		return track.getUserData(Long.class) == member.getIdLong();
+		if(track.getUserData(Long.class) != member.getIdLong()){
+			ctx.error("You are not the song requester or the DJ");
+			return false;
+		}
+		return true;
 	}
 
 	public static boolean checkBasicMusicPermissions(CommandContext ctx, MusicPlayer player){

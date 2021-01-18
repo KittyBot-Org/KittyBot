@@ -114,7 +114,7 @@ public class NotificationCommand extends Command{
 			}
 			pages.add(notifMessage.toString());
 
-			ctx.acknowledge(true);
+			ctx.sendAcknowledge(true);
 			ctx.get(PaginatorModule.class).create(
 					ctx.getChannel(),
 					ctx.getUserId(),

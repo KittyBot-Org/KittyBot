@@ -2,6 +2,7 @@ package de.kittybot.kittybot.slashcommands.context;
 
 import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import de.kittybot.kittybot.slashcommands.interaction.response.FollowupMessage;
+import de.kittybot.kittybot.slashcommands.interaction.response.InteractionRespondAction;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponseType;
 import de.kittybot.kittybot.module.Modules;
@@ -92,12 +93,16 @@ public class CommandContext extends Context{
 		return getEmbed().setColor(Color.RED);
 	}
 
-	public void acknowledge(){
-		acknowledge(true);
+	public void sendAcknowledge(){
+		sendAcknowledge(true);
 	}
 
-	public void acknowledge(boolean withSource){
-		this.modules.get(InteractionsModule.class).acknowledge(interaction, withSource).queue();
+	public void sendAcknowledge(boolean withSource){
+		acknowledge(withSource).queue();
+	}
+
+	public InteractionRespondAction acknowledge(boolean withSource){
+		return this.modules.get(InteractionsModule.class).acknowledge(interaction, withSource);
 	}
 
 }

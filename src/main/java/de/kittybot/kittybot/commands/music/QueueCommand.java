@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.commands.music;
 
+import de.kittybot.kittybot.objects.MusicPlayer;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
@@ -8,7 +9,6 @@ import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.modules.MusicModule;
-import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.objects.SearchProvider;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.MessageUtils;
@@ -52,8 +52,10 @@ public class QueueCommand extends Command implements RunnableCommand{
 			);
 			return;
 		}
-		ctx.acknowledge(true);
-		player.sendTracks(tracks, ctx.getUserId(), "Currently " + tracks.size() + " " + MessageUtils.pluralize("track", tracks) + " are queued");
+		MusicPlayer finalPlayer = player;
+		ctx.acknowledge(true).queue(success ->
+				finalPlayer.sendTracks(tracks, ctx.getUserId(), "Currently " + tracks.size() + " " + MessageUtils.pluralize("track", tracks) + " are queued")
+		);
 
 	}
 

@@ -96,10 +96,12 @@ public class PaginatorModule extends Module{
 	}
 
 	public void create(CommandContext ctx, int maxPages, BiFunction<Integer, EmbedBuilder, EmbedBuilder> embedFunction){
-		ctx.acknowledge(true);
-		var embedBuilder = embedFunction.apply(0, new EmbedBuilder().setFooter("Page: 1/" + maxPages)).build();
-		var channel = ctx.getChannel();
-		create(maxPages, embedFunction, embedBuilder, channel, ctx.getUserId());
+		ctx.acknowledge(true).queue(success -> {
+			var embedBuilder = embedFunction.apply(0, new EmbedBuilder().setFooter("Page: 1/" + maxPages)).build();
+			var channel = ctx.getChannel();
+			create(maxPages, embedFunction, embedBuilder, channel, ctx.getUserId());
+		});
+
 	}
 
 }

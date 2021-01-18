@@ -54,7 +54,7 @@ public class AssignCommand extends Command implements RunnableCommand{
 			ctx.error("This role somehow misses a self assignable role group");
 			return;
 		}
-		if(selfAssignableRoles.stream().filter(r -> r.getGroupId() == group.getId() && ctx.getMember().getRoles().stream().anyMatch(mr -> mr.getIdLong() == r.getRoleId())).count() >= group.getMaxRoles()){
+		if(group.getMaxRoles() != -1 && selfAssignableRoles.stream().filter(r -> r.getGroupId() == group.getId() && ctx.getMember().getRoles().stream().anyMatch(mr -> mr.getIdLong() == r.getRoleId())).count() >= group.getMaxRoles()){
 			ctx.error("Can't assign you " + role.getAsMention() + ". You already have the max roles of this group");
 			return;
 		}

@@ -25,7 +25,7 @@ public class SettingsCommand extends Command{
 	public SettingsCommand(){
 		super("settings", "Let's you see/change settings", Category.ADMIN);
 		addOptions(
-				new ViewCommand(),
+				new ListCommand(),
 				new DJRoleCommand(),
 				new AnnouncementChannelCommand(),
 				new JoinMessageCommand(),
@@ -38,11 +38,11 @@ public class SettingsCommand extends Command{
 		addPermissions(Permission.ADMINISTRATOR);
 	}
 
-	private static class ViewCommand extends SubCommand{
+	private static class ListCommand extends SubCommand{
 
 
-		public ViewCommand(){
-			super("view", "Shows the current settings");
+		public ListCommand(){
+			super("list", "Lists the current settings");
 		}
 
 		@Override
@@ -283,6 +283,7 @@ public class SettingsCommand extends Command{
 					new AddCommand(),
 					new RemoveCommand(),
 					new ListCommand(),
+					new MessageCommand(),
 					new ChannelCommand()
 			);
 		}
@@ -322,7 +323,7 @@ public class SettingsCommand extends Command{
 				addOptions(
 						new CommandOptionInteger("service", "Which service the stream is from").required()
 								.addChoices(
-										new CommandOptionChoice<>("twitch", 0)/*,
+										new CommandOptionChoice<>("twitch", 1)/*,
 										new CommandOptionChoice<>("youtube", 0)*/
 								),
 						new CommandOptionString("username", "The username of the streamer").required()
@@ -357,6 +358,25 @@ public class SettingsCommand extends Command{
 					return;
 				}
 				ctx.reply("**Stream Announcements:**\n" + streamAnnouncements.stream().map(sa -> MessageUtils.maskLink(sa.getUserName(), sa.getStreamUrl()) + " on " + sa.getStreamType().getName()).collect(Collectors.joining("\n")));
+			}
+
+		}
+
+		private static class MessageCommand extends SubCommand{
+
+			public MessageCommand(){
+				super("message", "Sets the stream announcement message template");
+				addOptions(
+						new CommandOptionString("message", "The message template").required()
+				);
+			}
+
+			@Override
+			public void run(Options options, CommandContext ctx){
+				var message = options.getString("message");
+
+				ctx.get(SettingsModule.class).setStreamAnnouncementMessage(ctx.getGuildId(), message);
+				ctx.reply("Set stream announcements template to:\n" + message);
 			}
 
 		}

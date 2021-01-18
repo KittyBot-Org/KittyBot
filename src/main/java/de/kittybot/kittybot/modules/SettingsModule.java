@@ -121,13 +121,11 @@ public class SettingsModule extends Module{
 		this.modules.get(DatabaseModule.class).getCtx().insertInto(GUILDS)
 				.columns(
 						GUILDS.ID,
-						GUILDS.PREFIX,
 						GUILDS.ANNOUNCEMENT_CHANNEL_ID,
 						GUILDS.INACTIVE_DURATION
 				)
 				.values(
 						guild.getIdLong(),
-						Config.DEFAULT_PREFIX,
 						guild.getDefaultChannel() == null ? -1 : guild.getDefaultChannel().getIdLong(),
 						YearToSecond.valueOf(Duration.ofDays(3))
 				)
@@ -160,6 +158,18 @@ public class SettingsModule extends Module{
 		var settings = getSettingsIfPresent(guildId);
 		if(settings != null){
 			settings.setStreamAnnouncementChannelId(channelId);
+		}
+	}
+
+	public String getStreamAnnouncementMessage(long guildId){
+		return this.getSettings(guildId).getStreamAnnouncementMessage();
+	}
+
+	public void setStreamAnnouncementMessage(long guildId, String message){
+		updateSetting(guildId, GUILDS.STREAM_ANNOUNCEMENT_MESSAGE, message);
+		var settings = getSettingsIfPresent(guildId);
+		if(settings != null){
+			settings.setStreamAnnouncementMessage(message);
 		}
 	}
 

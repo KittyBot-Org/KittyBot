@@ -108,12 +108,12 @@ public class StreamAnnouncementModule extends Module{
 			case START:
 				embed
 						.setTitle(stream.getStreamTitle(), streamAnnouncement.getStreamUrl())
-						.setImage(stream.getThumbnailUrl(854, 480))
+						.setImage(stream.getThumbnailUrl(320, 180))
 						.setThumbnail(stream.getGame().getThumbnailUrl(144, 192))
 						.addField("Game", stream.getGame().getName(), true);
 				break;
 		}
-		channel.sendMessage(settings.getStreamAnnouncementMessage()).embed(embed
+		channel.sendMessage(settings.getStreamAnnouncementMessage().replace("${user}", stream.getUserName())).embed(embed
 				.setTimestamp(Instant.now())
 				.setColor(Colors.TWITCH_PURPLE)
 				.build()
