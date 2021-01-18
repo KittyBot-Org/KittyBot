@@ -25,7 +25,7 @@ public class GroupsCommand extends Command{
 				new RemoveCommand(),
 				new ListCommand()
 		);
-		//addPermissions(Permission.ADMINISTRATOR);
+		addPermissions(Permission.ADMINISTRATOR);
 	}
 
 	public static class AddCommand extends SubCommand{

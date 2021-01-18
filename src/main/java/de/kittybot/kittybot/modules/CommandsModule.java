@@ -17,28 +17,28 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class CommandsModule extends Module{
 
-	public static final Route GUILD_COMMAND_CREATE = Route.custom(Method.POST, "applications/{application.id}/guilds/{guild.id}/commands");
-	public static final Route GUILD_COMMAND_GET = Route.custom(Method.GET, "applications/{application.id}/guilds/{guild.id}/commands");
-	public static final Route GUILD_COMMAND_DELETE = Route.custom(Method.DELETE, "applications/{application.id}/guilds/{guild.id}/commands/{command.id}");
 	private static final Logger LOG = LoggerFactory.getLogger(CommandsModule.class);
-	private static final String COMMANDS_PACKAGE = "de.kittybot.kittybot.commands";
 
-	private static final long DEV_GUILD_ID = 608506410803658753L;
+	public static final Route COMMAND_CREATE = Route.custom(Method.POST, "applications/{application.id}/commands");
+	public static final Route COMMANDS_GET = Route.custom(Method.GET, "applications/{application.id}/commands");
+	public static final Route COMMAND_DELETE = Route.custom(Method.DELETE, "applications/{application.id}/commands/{command.id}");
+
+	public static final Route GUILD_COMMAND_CREATE = Route.custom(Method.POST, "applications/{application.id}/guilds/{guild.id}/commands");
+	public static final Route GUILD_COMMANDS_GET = Route.custom(Method.GET, "applications/{application.id}/guilds/{guild.id}/commands");
+	public static final Route GUILD_COMMAND_DELETE = Route.custom(Method.DELETE, "applications/{application.id}/guilds/{guild.id}/commands/{command.id}");
+
+	private static final String COMMANDS_PACKAGE = "de.kittybot.kittybot.commands";
 
 	private Map<String, Command> commands;
 
 	@Override
 	public void onEnable(){
-		//deleteAllCommands();
 		loadCommands();
-		registerCommands();
 	}
 
 	public void loadCommands(){
@@ -60,27 +60,66 @@ public class CommandsModule extends Module{
 		}
 	}
 
-	public void registerCommands(){
+	public void registerAllCommands(long guildId){
 		LOG.info("Registering commands...");
 		for(var cmd : this.commands.values()){
-			registerCommand(cmd);
+			registerCommand(cmd, guildId);
 		}
-		LOG.info("Registered " + this.commands.size() + "commands...");
+		LOG.info("Registered " + this.commands.size() + " commands...");
 	}
 
-	public void registerCommand(Command cmd){
-		LOG.debug("Registering command: {}", cmd.toJSON());
-		var rqBody = RequestBody.create(cmd.toJSON().toString(), MediaType.parse("application/json"));
-		try(var resp = post(GUILD_COMMAND_CREATE.compile(String.valueOf(Config.BOT_ID), String.valueOf(DEV_GUILD_ID)), rqBody).execute()){
+	public void registerCommand(Command cmd, long guildId){
+		var json = cmd.toJSON().toString();
+		LOG.debug("Registering command: {}", json);
+		var rqBody = RequestBody.create(json, MediaType.parse("application/json"));
+
+		var route = guildId == -1L ? COMMAND_CREATE.compile(String.valueOf(Config.BOT_ID)) : GUILD_COMMAND_CREATE.compile(String.valueOf(Config.BOT_ID), String.valueOf(guildId));
+		try(var resp = post(route, rqBody).execute()){
 			if(!resp.isSuccessful()){
 				var body = resp.body();
-				LOG.error("Registered command failed. Body: {}", body == null ? "null" : body.string());
+				LOG.error("Registering command '" + cmd.getName() + "' failed. Body: {}", body == null ? "null" : body.string() + "\nRequest Body: " + json);
 				return;
 			}
 			LOG.debug("Registered command with name: {}", cmd.getName());
 		}
 		catch(IOException e){
 			LOG.error("Error while processing registerCommands", e);
+		}
+	}
+
+	public void deleteAllCommands(long guildId){
+		var route = guildId == -1L ? COMMANDS_GET.compile(String.valueOf(Config.BOT_ID)) : GUILD_COMMANDS_GET.compile(String.valueOf(Config.BOT_ID), String.valueOf(guildId));
+
+		try(var resp = get(route).execute()){
+			var body = resp.body();
+			if(body == null){
+				return;
+			}
+			var strBody = body.string();
+			var json = DataArray.fromJson(strBody);
+			for(var i = 0; i < json.length(); i++){
+				var cmd = json.getObject(i);
+				deleteCommand(cmd.getLong("id"), guildId);
+			}
+			LOG.debug("Loaded following commands: {}", strBody);
+		}
+		catch(IOException e){
+			LOG.error("Error while clearing commands", e);
+		}
+	}
+
+	public void deleteCommand(long commandId, long guildId){
+		LOG.debug("Registering command: {}", commandId);
+		var route = guildId == -1L ? COMMAND_DELETE.compile(String.valueOf(Config.BOT_ID), String.valueOf(commandId)) : GUILD_COMMAND_DELETE.compile(String.valueOf(Config.BOT_ID), String.valueOf(guildId), String.valueOf(commandId));
+
+		try(var resp = delete(route).execute()){
+			if(!resp.isSuccessful()){
+				var body = resp.body();
+				LOG.error("Error while deleting command: {}", body == null ? "null" : body.string());
+			}
+		}
+		catch(IOException e){
+			LOG.error("Error while deleting command", e);
 		}
 	}
 
@@ -94,40 +133,8 @@ public class CommandsModule extends Module{
 				.addHeader("Authorization", "Bot " + Config.BOT_TOKEN);
 	}
 
-	public void deleteAllCommands(){
-		try(var resp = get(GUILD_COMMAND_DELETE.compile(String.valueOf(Config.BOT_ID), String.valueOf(DEV_GUILD_ID))).execute()){
-			var body = resp.body();
-			if(body == null){
-				return;
-			}
-			var strBody = body.string();
-			var json = DataArray.fromJson(strBody);
-			for(var i = 0; i < json.length(); i++){
-				var cmd = json.getObject(i);
-				deleteCommand(DEV_GUILD_ID, cmd.getLong("id"));
-			}
-			LOG.debug("Loaded following commands: {}", strBody);
-		}
-		catch(IOException e){
-			LOG.error("Error while clearing commands", e);
-		}
-	}
-
 	private Call get(Route.CompiledRoute route){
 		return this.modules.getHttpClient().newCall(newBuilder(route).get().build());
-	}
-
-	public void deleteCommand(long guildId, long commandId){
-		LOG.debug("Registering command: {}", commandId);
-		try(var resp = delete(GUILD_COMMAND_DELETE.compile(String.valueOf(Config.BOT_ID), String.valueOf(guildId), String.valueOf(commandId))).execute()){
-			if(!resp.isSuccessful()){
-				var body = resp.body();
-				LOG.error("Error while deleting command: {}", body == null ? "null" : body.string());
-			}
-		}
-		catch(IOException e){
-			LOG.error("Error while deleting command", e);
-		}
 	}
 
 	private Call delete(Route.CompiledRoute route){

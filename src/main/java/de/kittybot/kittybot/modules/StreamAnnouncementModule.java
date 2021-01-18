@@ -1,6 +1,5 @@
 package de.kittybot.kittybot.modules;
 
-import de.kittybot.kittybot.exceptions.CommandException;
 import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.objects.AnnouncementType;
 import de.kittybot.kittybot.objects.StreamAnnouncement;
@@ -121,32 +120,32 @@ public class StreamAnnouncementModule extends Module{
 		).queue();
 	}
 
-	public void add(String name, long guildId, StreamType type) throws CommandException{
+	public boolean add(String name, long guildId, StreamType type){
 		var rows = this.modules.get(DatabaseModule.class).getCtx().insertInto(STREAM_USERS)
 				.columns(STREAM_USERS.GUILD_ID, STREAM_USERS.USER_NAME, STREAM_USERS.STREAM_TYPE)
 				.values(guildId, name, type.getId())
 				.execute();
 		if(rows != 1){
-			throw new CommandException("Stream already exists");
+			return false;
 		}
-
 		this.streamAnnouncements.add(new StreamAnnouncement(name, guildId, type));
+		return true;
 	}
 
 	public List<StreamAnnouncement> get(long guildId){
 		return this.streamAnnouncements.stream().filter(stream -> stream.getGuildId() == guildId).collect(Collectors.toList());
 	}
 
-	public void delete(String name, long guildId, StreamType type) throws CommandException{
+	public boolean delete(String name, long guildId, StreamType type){
 		var dbModule = this.modules.get(DatabaseModule.class);
 		var rows = dbModule.getCtx().deleteFrom(STREAM_USERS).where(
 				STREAM_USERS.USER_NAME.eq(name).and(STREAM_USERS.GUILD_ID.eq(guildId)).and(STREAM_USERS.STREAM_TYPE.eq(type.getId()))).execute();
 		if(rows != 1){
-			throw new CommandException("No stream found");
+			return false;
 		}
 
-		this.streamAnnouncements.removeIf(
-				stream -> stream.getUserName().equals(name) && stream.getStreamType() == type && stream.getGuildId() == guildId);
+		this.streamAnnouncements.removeIf(stream -> stream.getUserName().equals(name) && stream.getStreamType() == type && stream.getGuildId() == guildId);
+		return true;
 	}
 
 }

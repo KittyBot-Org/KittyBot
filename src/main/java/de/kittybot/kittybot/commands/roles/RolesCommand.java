@@ -12,6 +12,7 @@ import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.utils.MessageUtils;
+import net.dv8tion.jda.api.Permission;
 
 import java.awt.desktop.PreferencesEvent;
 import java.util.Collections;
@@ -27,7 +28,7 @@ public class RolesCommand extends Command{
 				new RemoveCommand(),
 				new ListCommand()
 		);
-		//addPermissions(Permission.ADMINISTRATOR);
+		addPermissions(Permission.ADMINISTRATOR);
 	}
 
 	public static class AddCommand extends SubCommand{

@@ -499,8 +499,28 @@ public class SettingsModule extends Module{
 			deleteInviteRole(guildId, code);
 			return;
 		}
-		deleteInviteRoles(guildId, code);
+		deleteInviteRole(guildId, code);
 		insertInviteRoles(guildId, code, roles);
+	}
+
+	public void addInviteRoles(long guildId, String code, Set<Long> roles){
+		var settings = getSettings(guildId);
+		if(settings != null){
+			settings.addInviteRoles(code, roles);
+		}
+		insertInviteRoles(guildId, code, roles);
+	}
+
+	public void removeInviteRoles(long guildId, String code, Set<Long> roles){
+		var settings = getSettings(guildId);
+		if(settings != null){
+			settings.removeInviteRoles(code, roles);
+		}
+		if(roles.isEmpty()){
+			deleteInviteRole(guildId, code);
+			return;
+		}
+		deleteInviteRoles(guildId, code, roles);
 	}
 
 	private void deleteInviteRole(long guildId, String code){
@@ -512,18 +532,17 @@ public class SettingsModule extends Module{
 		}
 		var guildInviteId = res.get(GUILD_INVITES.ID);
 		dbModule.getCtx().deleteFrom(GUILD_INVITE_ROLES).where(GUILD_INVITE_ROLES.GUILD_INVITE_ID.eq(guildInviteId)).execute();
-
 	}
 
-	private void deleteInviteRoles(long guildId, String code){
+	private void deleteInviteRoles(long guildId, String code, Set<Long> roles){
 		var dbModule = this.modules.get(DatabaseModule.class);
-		var res = dbModule.getCtx().selectFrom(GUILD_INVITES).where(
-				GUILD_INVITES.GUILD_ID.eq(guildId).and(GUILD_INVITES.CODE.eq(code))).fetchOne();
-		if(res == null){
-			return;
+		try(var ctx = dbModule.getCtx().selectFrom(GUILD_INVITES)){
+			var res = ctx.where(GUILD_INVITES.GUILD_ID.eq(guildId).and(GUILD_INVITES.CODE.eq(code))).fetchOne();
+			if(res == null){
+				return;
+			}
+			dbModule.getCtx().deleteFrom(GUILD_INVITE_ROLES).where(GUILD_INVITE_ROLES.GUILD_INVITE_ID.eq(res.get(GUILD_INVITES.ID)).and(GUILD_INVITE_ROLES.ROLE_ID.in(roles))).execute();
 		}
-		var guildInviteId = res.get(GUILD_INVITES.ID);
-		dbModule.getCtx().deleteFrom(GUILD_INVITE_ROLES).where(GUILD_INVITE_ROLES.GUILD_INVITE_ID.eq(guildInviteId)).execute();
 	}
 
 	private void insertInviteRoles(long guildId, String code, Set<Long> roles){
@@ -558,6 +577,8 @@ public class SettingsModule extends Module{
 		}
 		this.modules.get(DatabaseModule.class).getCtx().deleteFrom(GUILD_INVITE_ROLES).where(GUILD_INVITE_ROLES.ROLE_ID.eq(roleId)).execute();
 	}
+
+
 
 	public void removeInviteRoles(long guildId, String code){
 		var settings = getSettingsIfPresent(guildId);

@@ -23,7 +23,7 @@ public class StealEmoteCommand extends Command{
 				new URLCommand()
 
 		);
-		//addPermissions(Permission.MANAGE_EMOTES);
+		addPermissions(Permission.MANAGE_EMOTES);
 	}
 
 	private static class EmoteCommand extends SubCommand{

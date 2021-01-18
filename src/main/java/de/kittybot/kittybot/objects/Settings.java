@@ -311,6 +311,21 @@ public class Settings{
 		this.guildInviteRoles.put(code, roles);
 	}
 
+	public void addInviteRoles(String code, Set<Long> roles){
+		this.guildInviteRoles.computeIfAbsent(code, s -> new HashSet<>()).addAll(roles);
+	}
+
+	public void removeInviteRoles(String code, Set<Long> roles){
+		var inviteRoles = this.guildInviteRoles.get(code);
+		if(inviteRoles == null){
+			return;
+		}
+		inviteRoles.removeAll(roles);
+		if(inviteRoles.isEmpty()){
+			this.guildInviteRoles.remove(code);
+		}
+	}
+
 	public Set<Long> getInviteRoles(String code){
 		return this.guildInviteRoles.get(code);
 	}

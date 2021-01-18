@@ -13,6 +13,7 @@ import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.TimeUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 
 @SuppressWarnings("unused")
 public class SettingsCommand extends Command{
@@ -30,7 +31,7 @@ public class SettingsCommand extends Command{
 				new SnipesCommand(),
 				new StreamAnnouncementsCommand()
 		);
-		//addPermissions(Permission.ADMINISTRATOR);
+		addPermissions(Permission.ADMINISTRATOR);
 	}
 
 	public static class ViewCommand extends SubCommand{

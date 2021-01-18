@@ -26,7 +26,7 @@ public class RestrictEmoteCommand extends Command{
 				new SetCommand(),
 				new ResetCommand()
 		);
-		//addPermissions(Permission.MANAGE_EMOTES, Permission.MANAGE_ROLES);
+		addPermissions(Permission.ADMINISTRATOR);
 	}
 
 	public static class SetCommand extends SubCommand{
