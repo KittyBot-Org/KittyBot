@@ -8,8 +8,18 @@ import net.dv8tion.jda.api.events.role.RoleDeleteEvent;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import java.util.List;
+import java.util.Set;
 
+@SuppressWarnings("unused")
 public class InviteRolesModule extends Module{
+
+	private static final Set<Class<? extends Module>> DEPENDENCIES = Set.of(InviteModule.class);
+
+	@Override
+	public Set<Class<? extends Module>> getDependencies(){
+		return DEPENDENCIES;
+	}
 
 	@Override
 	public void onGuildInviteDelete(@Nonnull GuildInviteDeleteEvent event){

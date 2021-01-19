@@ -325,7 +325,7 @@ public class SettingsCommand extends Command{
 					new CommandOptionInteger("service", "Which service the stream is from").required()
 						.addChoices(
 							new CommandOptionChoice<>("twitch", 1)/*,
-										new CommandOptionChoice<>("youtube", 0)*/
+							new CommandOptionChoice<>("youtube", 0)*/
 						),
 					new CommandOptionString("username", "The username of the streamer").required()
 				);

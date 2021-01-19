@@ -50,7 +50,10 @@ public class CommandsCommand extends Command implements RunnableCommand{
 				.addEmbeds(new EmbedBuilder()
 					.setColor(Colors.KITTYBOT_BLUE)
 					.setAuthor("Commands", Config.ORIGIN_URL + "/commands#" + cmd.getName(), ctx.getJDA().getSelfUser().getEffectiveAvatarUrl())
-					.setDescription("`/" + cmd.getName() + "` - *" + cmd.getDescription() + "*\n\n" + cmd.getOptions().stream().filter(SubCommand.class::isInstance).map(c -> "`/" + cmd.getName() + " " + c.getName() + "` - *" + c.getDescription() + "*").collect(Collectors.joining("\n")))
+					.setDescription("`/" + cmd.getName() + "` - *" + cmd.getDescription() + "*\n\n" + cmd.getOptions().stream().filter(SubCommand.class::isInstance).map(c ->
+							"`/" + cmd.getName() + " " + c.getName() + "` - *" + c.getDescription() + "*"
+						).collect(Collectors.joining("\n"))
+					)
 					.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
 					.setTimestamp(Instant.now())
 					.build()

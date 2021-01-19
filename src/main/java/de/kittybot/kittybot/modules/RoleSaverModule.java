@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import static de.kittybot.kittybot.jooq.Tables.MEMBER_ROLES;
 
+@SuppressWarnings("unused")
 public class RoleSaverModule extends Module{
 
 	@Override

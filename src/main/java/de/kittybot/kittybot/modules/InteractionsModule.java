@@ -11,6 +11,8 @@ import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import de.kittybot.kittybot.slashcommands.interaction.InteractionOptionsHolder;
 import de.kittybot.kittybot.slashcommands.interaction.response.FollowupMessage;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionRespondAction;
+import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
+import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponseType;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.exporters.Metrics;
 import net.dv8tion.jda.api.Permission;
@@ -37,7 +39,6 @@ public class InteractionsModule extends Module{
 	public void onRawGateway(@NotNull RawGatewayEvent event){
 		if(event.getType().equals(INTERACTION_CREATE)){
 			var start = System.currentTimeMillis();
-			LOG.info("New interaction: {}", event.getPayload());
 
 			var interaction = Interaction.fromJSON(this.modules, event.getPayload(), event.getJDA());
 			var settings = this.modules.get(SettingsModule.class).getSettings(interaction.getGuild().getIdLong());
@@ -56,6 +57,7 @@ public class InteractionsModule extends Module{
 			var cmd = this.modules.get(CommandsModule.class).getCommands().get(data.getName());
 			if(cmd == null){
 				LOG.error("Could not process interaction: {}", event.getPayload());
+				reply(interaction).ephemeral().content("Nani u discovered a secret don't tell anyone(This is weired af)").queue();
 				return;
 			}
 			process(cmd, interaction, data);
@@ -76,8 +78,7 @@ public class InteractionsModule extends Module{
 
 			var missingPerms = cmd.getPermissions().stream().dropWhile(member.getPermissions()::contains).collect(Collectors.toSet());
 			if(!missingPerms.isEmpty()){
-				reply(interaction).ephemeral().content("You are missing following permissions to use this command:\n" + missingPerms.stream().map(Permission::getName).collect(Collectors.joining(", "))
-				).withSource(false).queue();
+				reply(interaction).ephemeral().content("You are missing following permissions to use this command:\n" + missingPerms.stream().map(Permission::getName).collect(Collectors.joining(", "))).withSource(false).queue();
 				return;
 			}
 		}

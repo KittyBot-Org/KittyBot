@@ -49,6 +49,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		this.link = link;
 		this.player = link.getPlayer();
 		this.player.addListener(this);
+		setVolume(20);
 		this.guildId = guildId;
 		this.channelId = channelId;
 		this.queue = new LinkedList<>();
@@ -132,7 +133,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 			.setColor(Colors.KITTYBOT_BLUE)
 			.setDescription("**Queued " + tracks.size() + " " + MessageUtils.pluralize("track", tracks.size()) + "**\n\n" +
 				(tracks.size() == 1 ? MusicUtils.formatTrackWithInfo(tracks.iterator().next()) : "") +
-				"\nUse `/queue` to view the queue")
+				"\nUse `/queue` to view the queue"
+			)
 			.setTimestamp(Instant.now())
 			.build()
 		);

@@ -4,6 +4,7 @@ import de.kittybot.kittybot.exceptions.ModuleNotFoundException;
 import de.kittybot.kittybot.main.KittyBot;
 import de.kittybot.kittybot.utils.ThreadFactoryHelper;
 import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.sharding.ShardManager;
@@ -13,10 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.stream.Collectors;
 
 public class Modules{
 
@@ -33,21 +35,39 @@ public class Modules{
 		this.httpClient = new OkHttpClient();
 		this.scheduler = new ScheduledThreadPoolExecutor(2, new ThreadFactoryHelper());
 		this.modules = new LinkedList<>();
+		loadModules();
+	}
 
+	private void loadModules(){
 		LOG.info("Loading modules...");
 		try(var result = new ClassGraph().acceptPackages(MODULE_PACKAGE).scan()){
-			for(var cls : result.getSubclasses(Module.class.getName())){
-				var instance = cls.loadClass().getDeclaredConstructors()[0].newInstance();
-				if(!(instance instanceof Module)){
+			var queue = result.getSubclasses(Module.class.getName()).stream()
+				.map(ClassInfo::loadClass)
+				.filter(Module.class::isAssignableFrom)
+				.map(clazz -> {
+					try{
+						return ((Module) clazz.getDeclaredConstructor().newInstance()).init(this);
+					}
+					catch(Exception e){
+						LOG.info("WTF?!?!?!?! Horsti what did u do to me", e);
+					}
+					return null;
+				})
+				.filter(Objects::nonNull)
+				.collect(Collectors.toCollection(LinkedList::new));
+
+			while(!queue.isEmpty()){
+				var instance = queue.remove();
+				var dependencies = instance.getDependencies();
+				if(dependencies != null && !dependencies.stream().allMatch(mod -> this.modules.stream().anyMatch(module -> mod == module.getClass()))){
+					queue.add(instance);
+					LOG.info("Added '{}' back to the queue. Dependencies: {} (Dependency circle jerk incoming!)", instance.getClass().getSimpleName(), dependencies.toString());
 					continue;
 				}
-				this.modules.add(((Module) instance).init(this));
+				instance.onEnable();
+				this.modules.add(instance);
 			}
 		}
-		catch(IllegalAccessException | InvocationTargetException | InstantiationException e){
-			LOG.error("Error while loading modules", e);
-		}
-		this.modules.forEach(Module::onEnable);
 		LOG.info("Finished loading {} modules", this.modules.size());
 	}
 

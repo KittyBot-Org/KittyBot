@@ -19,10 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CommandsModule extends Module{
 
@@ -32,8 +29,15 @@ public class CommandsModule extends Module{
 	public static final Route GUILD_COMMAND_CREATE = Route.custom(Method.POST, "applications/{application.id}/guilds/{guild.id}/commands");
 	public static final Route GUILD_COMMANDS_GET = Route.custom(Method.GET, "applications/{application.id}/guilds/{guild.id}/commands");
 	public static final Route GUILD_COMMAND_DELETE = Route.custom(Method.DELETE, "applications/{application.id}/guilds/{guild.id}/commands/{command.id}");
+
 	private static final Logger LOG = LoggerFactory.getLogger(CommandsModule.class);
 	private static final String COMMANDS_PACKAGE = "de.kittybot.kittybot.commands";
+	private static final Set<Class<? extends Module>> DEPENDENCIES = Set.of(InviteModule.class);
+
+	@Override
+	public Set<Class<? extends Module>> getDependencies(){
+		return DEPENDENCIES;
+	}
 
 	private Map<String, Command> commands;
 
