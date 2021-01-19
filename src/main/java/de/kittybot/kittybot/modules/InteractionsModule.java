@@ -4,6 +4,7 @@ import club.minnced.discord.webhook.receive.ReadonlyMessage;
 import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionsHolder;
+import de.kittybot.kittybot.slashcommands.application.PermissionHolder;
 import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
@@ -68,15 +69,15 @@ public class InteractionsModule extends Module{
 	}
 
 	public void process(CommandOptionsHolder applicationHolder, Interaction interaction, InteractionOptionsHolder holder){
-		if(applicationHolder instanceof Command){
-			var cmd = ((Command) applicationHolder);
+		if(applicationHolder instanceof PermissionHolder){
+			var permHolder = ((PermissionHolder) applicationHolder);
 			var member = interaction.getMember();
-			if(cmd.isDevOnly() && !Config.DEV_IDS.contains(member.getIdLong())){
+			if(permHolder.isDevOnly() && !Config.DEV_IDS.contains(member.getIdLong())){
 				reply(interaction).ephemeral().content("This command is developer only").withSource(false).channelMessage(false).queue();
 				return;
 			}
 
-			var missingPerms = cmd.getPermissions().stream().dropWhile(member.getPermissions()::contains).collect(Collectors.toSet());
+			var missingPerms = permHolder.getPermissions().stream().dropWhile(member.getPermissions()::contains).collect(Collectors.toSet());
 			if(!missingPerms.isEmpty()){
 				reply(interaction).ephemeral().content("You are missing following permissions to use this command:\n" + missingPerms.stream().map(Permission::getName).collect(Collectors.joining(", "))).withSource(false).queue();
 				return;

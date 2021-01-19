@@ -32,7 +32,7 @@ public class RestrictEmoteCommand extends Command{
 	private static class SetCommand extends SubCommand{
 
 		public SetCommand(){
-			super("set", "description");
+			super("set", "Sets the allowed roles for a specific emote");
 			addOptions(
 				new CommandOptionString("emote", "The emote to restrict").required(),
 				new CommandOptionRole("role1", "Role which can use the emote").required(),
@@ -75,7 +75,7 @@ public class RestrictEmoteCommand extends Command{
 	private static class ResetCommand extends SubCommand{
 
 		public ResetCommand(){
-			super("reset", "description");
+			super("reset", "Resets all allowed roles for a specific emote");
 			addOptions(
 				new CommandOptionString("emote", "The emote to restrict").required()
 			);

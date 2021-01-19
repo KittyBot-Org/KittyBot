@@ -26,7 +26,6 @@ public class RolesCommand extends Command{
 			new RemoveCommand(),
 			new ListCommand()
 		);
-		addPermissions(Permission.ADMINISTRATOR);
 	}
 
 	private static class AddCommand extends SubCommand{
@@ -38,6 +37,7 @@ public class RolesCommand extends Command{
 				new CommandOptionString("emote", "The emote for this self assignable role").required(),
 				new CommandOptionString("group", "The group which the self assignable role should be assigned to").required()
 			);
+			addPermissions(Permission.ADMINISTRATOR);
 		}
 
 		@Override
@@ -74,6 +74,7 @@ public class RolesCommand extends Command{
 			addOptions(
 				new CommandOptionRole("role", "The self assignable role to remove").required()
 			);
+			addPermissions(Permission.ADMINISTRATOR);
 		}
 
 		@Override

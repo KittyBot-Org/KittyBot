@@ -7,6 +7,7 @@ import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
+import de.kittybot.kittybot.slashcommands.application.options.SubCommandGroup;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.slashcommands.interaction.response.FollowupMessage;
@@ -17,10 +18,10 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("unused")
-public class SlashCommandsCommand extends Command{
+public class SlashCommandsCommand extends SubCommandGroup{
 
 	public SlashCommandsCommand(){
-		super("slashcommands", "Deploys/Removes slash commands for a specified environment", Category.DEV);
+		super("slashcommands", "Deploys/Removes slash commands for a specified environment");
 		addOptions(
 			new DeployCommand(),
 			new RemoveCommand()

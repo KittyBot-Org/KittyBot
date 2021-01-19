@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.slashcommands.application.options;
 
+import de.kittybot.kittybot.slashcommands.application.CommandOption;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionType;
 
 public class CommandOptionRole extends CommandOption{

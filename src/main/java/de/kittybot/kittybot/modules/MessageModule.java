@@ -5,6 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
 import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.objects.MessageData;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
@@ -41,13 +42,26 @@ public class MessageModule extends Module{
 
 	@Override
 	public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event){
-		this.messages.put(event.getMessageIdLong(), new MessageData(event.getMessage()));
+		if(event.getMessage().getContentRaw().isBlank()){
+			return;
+		}
+		cacheMessage(event.getMessage());
 	}
 
 	@Override
 	public void onGuildMessageUpdate(@NotNull GuildMessageUpdateEvent event){
-		this.editedMessages.put(event.getMessageIdLong(), new MessageData(event.getMessage()));
-		this.lastEditedMessages.put(event.getChannel().getIdLong(), event.getMessageIdLong());
+		cacheMessage(event.getMessage());
+	}
+
+	private void cacheMessage(Message message){
+		var messageId = message.getIdLong();
+		var cachedMessage = messages.getIfPresent(messageId);
+		var messageData = new MessageData(message);
+		if(cachedMessage != null){
+			this.editedMessages.put(messageId, cachedMessage.setTimeEdited(messageData.getTimeEdited()));
+			this.lastEditedMessages.put(message.getChannel().getIdLong(), messageId);
+		}
+		this.messages.put(messageId, messageData);
 	}
 
 	@Override

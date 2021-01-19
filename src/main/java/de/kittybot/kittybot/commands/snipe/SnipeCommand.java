@@ -27,7 +27,7 @@ public class SnipeCommand extends Command implements RunnableCommand{
 		if(ctx.get(SettingsModule.class).areSnipesDisabledInChannel(ctx.getGuildId(), ctx.getChannelId())){
 			ctx.error("Snipes are disabled for this channel");
 		}
-		var lastDeletedMessage = ctx.get(MessageModule.class).getLastEditedMessage(ctx.getChannelId());
+		var lastDeletedMessage = ctx.get(MessageModule.class).getLastDeletedMessage(ctx.getChannelId());
 		if(lastDeletedMessage == null){
 			ctx.reply(new EmbedBuilder().setColor(Color.RED).setDescription("There are no deleted messages to snipe"));
 			return;

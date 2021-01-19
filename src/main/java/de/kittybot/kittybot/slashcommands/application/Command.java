@@ -1,12 +1,11 @@
 package de.kittybot.kittybot.slashcommands.application;
 
-import de.kittybot.kittybot.slashcommands.application.options.CommandOption;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.utils.data.DataObject;
 
 import java.util.*;
 
-public abstract class Command implements CommandOptionsHolder{
+public abstract class Command implements CommandOptionsHolder, PermissionHolder{
 
 	private final String name, description;
 	private final Category category;
@@ -23,11 +22,11 @@ public abstract class Command implements CommandOptionsHolder{
 		this.options = new ArrayList<>();
 	}
 
-	protected void devOnly(){
+	public void devOnly(){
 		this.devOnly = true;
 	}
 
-	protected void addPermissions(Permission... permissions){
+	public void addPermissions(Permission... permissions){
 		this.permissions.addAll(Arrays.asList(permissions));
 	}
 

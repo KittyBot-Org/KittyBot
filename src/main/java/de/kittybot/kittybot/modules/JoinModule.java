@@ -3,10 +3,7 @@ package de.kittybot.kittybot.modules;
 import de.kittybot.kittybot.module.Module;
 import de.kittybot.kittybot.objects.Emoji;
 import de.kittybot.kittybot.objects.Placeholder;
-import de.kittybot.kittybot.utils.Colors;
-import de.kittybot.kittybot.utils.Config;
-import de.kittybot.kittybot.utils.MessageUtils;
-import de.kittybot.kittybot.utils.PlaceholderUtils;
+import de.kittybot.kittybot.utils.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.audit.ActionType;
 import net.dv8tion.jda.api.entities.Guild;
@@ -45,8 +42,8 @@ public class JoinModule extends Module{
 
 	@Override
 	protected void onEnable(){
-		this.randomJoinMessages = MessageUtils.loadMessageFile("join");
-		this.randomLeaveMessages = MessageUtils.loadMessageFile("leave");
+		this.randomJoinMessages = FileUtils.loadMessageFile("join");
+		this.randomLeaveMessages = FileUtils.loadMessageFile("leave");
 	}
 
 	@Override

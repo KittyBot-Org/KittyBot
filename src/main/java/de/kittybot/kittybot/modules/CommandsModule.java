@@ -5,6 +5,7 @@ import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.annotations.Ignore;
 import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import net.dv8tion.jda.internal.requests.Method;
@@ -20,6 +21,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class CommandsModule extends Module{
 
@@ -48,25 +51,24 @@ public class CommandsModule extends Module{
 
 	public void scanCommands(){
 		LOG.info("Loading commands...");
-		this.commands = new HashMap<>();
 		try(var result = new ClassGraph().acceptPackages(COMMANDS_PACKAGE).enableAnnotationInfo().scan()){
-			for(var cls : result.getSubclasses(Command.class.getName())){
-				if(cls.hasAnnotation(Ignore.class.getName())){
-					LOG.info("Ignoring command: {}", cls.getSimpleName());
-					continue;
-				}
-				var instance = cls.loadClass().getDeclaredConstructors()[0].newInstance();
-				if(!(instance instanceof Command)){
-					continue;
-				}
-				var command = (Command) instance;
-				this.commands.put(command.getName(), command);
-			}
-			LOG.info("Loaded {} commands", this.commands.size());
+			this.commands = result.getSubclasses(Command.class.getName()).stream()
+				.filter(cls -> !cls.hasAnnotation(Ignore.class.getName()))
+				.map(ClassInfo::loadClass)
+				.filter(Command.class::isAssignableFrom)
+				.map(clazz -> {
+					try{
+						return (Command) clazz.getDeclaredConstructor().newInstance();
+					}
+					catch(Exception e){
+						LOG.info("Error while registering command: '{}'", clazz.getSimpleName(), e);
+					}
+					return null;
+				})
+				.filter(Objects::nonNull)
+				.collect(Collectors.toMap(Command::getName, Function.identity()));
 		}
-		catch(IllegalAccessException | InvocationTargetException | InstantiationException e){
-			LOG.error("There was an error while registering commands!", e);
-		}
+		LOG.info("Loaded {} commands", this.commands.size());
 	}
 
 	public void deployAllCommands(long guildId){

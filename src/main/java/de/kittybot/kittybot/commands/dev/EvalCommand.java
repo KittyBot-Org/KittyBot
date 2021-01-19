@@ -4,6 +4,7 @@ import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
+import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
@@ -16,13 +17,13 @@ import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public class EvalCommand extends Command implements RunnableCommand{
+public class EvalCommand extends SubCommand{
 
 	private final ScriptEngine scriptEngine;
 	private final List<String> defaultImports;
 
 	public EvalCommand(){
-		super("eval", "Evals some code", Category.DEV);
+		super("eval", "Evals some code");
 		addOptions(
 			new CommandOptionString("code", "The code to execute").required()
 		);

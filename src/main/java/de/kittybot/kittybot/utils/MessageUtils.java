@@ -73,25 +73,4 @@ public class MessageUtils{
 		return String.format("https://discord.com/channels/%d/%d/%d", guildId, channelId, messageId);
 	}
 
-	public static List<String> loadMessageFile(String fileName){
-		var inputStream = MessageUtils.class.getClassLoader().getResourceAsStream("messages/" + fileName + "_messages.txt");
-		var list = new ArrayList<String>();
-		if(inputStream == null){
-			LOG.error("Message file not found");
-			return list;
-		}
-		var reader = new BufferedReader(new InputStreamReader((inputStream), StandardCharsets.UTF_8));
-		try{
-			String line;
-			while((line = reader.readLine()) != null){
-				list.add(line);
-			}
-			reader.close();
-		}
-		catch(IOException e){
-			LOG.error("Error reading message file", e);
-		}
-		return list;
-	}
-
 }

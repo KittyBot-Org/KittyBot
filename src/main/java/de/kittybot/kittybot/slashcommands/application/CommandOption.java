@@ -1,8 +1,5 @@
-package de.kittybot.kittybot.slashcommands.application.options;
+package de.kittybot.kittybot.slashcommands.application;
 
-import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
-import de.kittybot.kittybot.slashcommands.application.CommandOptionType;
-import de.kittybot.kittybot.slashcommands.application.CommandOptionsHolder;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
 
