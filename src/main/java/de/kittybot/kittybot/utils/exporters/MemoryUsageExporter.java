@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.utils.exporters;
 
-import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.modules.PrometheusModule;
+import de.kittybot.kittybot.objects.module.Modules;
 import io.prometheus.client.Gauge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

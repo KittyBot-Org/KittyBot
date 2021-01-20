@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.slashcommands.application;
 
-import de.kittybot.kittybot.objects.Emoji;
+import de.kittybot.kittybot.objects.enums.Emoji;
 
 public enum Category{
 

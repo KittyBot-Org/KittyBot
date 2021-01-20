@@ -1,8 +1,8 @@
 package de.kittybot.kittybot.commands.roles;
 
 import de.kittybot.kittybot.modules.SettingsModule;
-import de.kittybot.kittybot.objects.Emoji;
-import de.kittybot.kittybot.objects.SelfAssignableRole;
+import de.kittybot.kittybot.objects.enums.Emoji;
+import de.kittybot.kittybot.objects.settings.SelfAssignableRole;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionRole;

@@ -1,8 +1,8 @@
 package de.kittybot.kittybot.modules;
 
 import de.kittybot.kittybot.jooq.tables.records.NotificationsRecord;
-import de.kittybot.kittybot.module.Module;
-import de.kittybot.kittybot.objects.Notification;
+import de.kittybot.kittybot.objects.module.Module;
+import de.kittybot.kittybot.objects.settings.Notification;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.MessageUtils;

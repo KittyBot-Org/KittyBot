@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.modules;
 
-import de.kittybot.kittybot.module.Module;
-import de.kittybot.kittybot.objects.Tag;
+import de.kittybot.kittybot.objects.module.Module;
+import de.kittybot.kittybot.objects.settings.Tag;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

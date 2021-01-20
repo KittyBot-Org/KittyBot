@@ -1,12 +1,17 @@
 package de.kittybot.kittybot.modules;
 
-import de.kittybot.kittybot.module.Module;
-import de.kittybot.kittybot.objects.Emoji;
+import de.kittybot.kittybot.objects.enums.Emoji;
+import de.kittybot.kittybot.objects.module.Module;
+import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.audit.ActionType;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.GenericGuildEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 
 import javax.annotation.Nonnull;
 import java.awt.Color;
@@ -17,7 +22,7 @@ import java.util.Set;
 @SuppressWarnings("unused")
 public class GuildLoggingModule extends Module{
 
-	private static final Set<Class<? extends Module>> DEPENDENCIES = Set.of(InviteModule.class);
+	private static final Set<Class<? extends Module>> DEPENDENCIES = Set.of(InviteModule.class, MessageModule.class);
 
 	@Override
 	public Set<Class<? extends Module>> getDependencies(){
@@ -25,23 +30,70 @@ public class GuildLoggingModule extends Module{
 	}
 
 	@Override
-	public void onGuildMemberRemove(@Nonnull GuildMemberRemoveEvent event){
+	public void onGuildMessageUpdate(@Nonnull GuildMessageUpdateEvent event){
+		logEvent(event, Color.RED, null, "Message edit", "");
+	}
 
+	@Override
+	public void onGuildMessageDelete(@Nonnull GuildMessageDeleteEvent event){
+		logEvent(event, Color.RED, null, "Message delete", "");
+	}
+
+	@Override
+	public void onGuildMemberRemove(@Nonnull GuildMemberRemoveEvent event){
+		var user = event.getUser();
+		var userId = user.getIdLong();
+		if(user.isBot()){
+			event.getGuild().retrieveAuditLogs().type(ActionType.BOT_ADD).limit(5).cache(false).queue(entries -> {
+				var audit = entries.stream().filter(entry -> entry.getTargetIdLong() == Config.BOT_ID).findFirst();
+				var name = "unknown";
+				if(audit.isPresent()){
+					var auditUser = audit.get().getUser();
+					if(auditUser != null){
+						name = auditUser.getAsTag();
+					}
+				}
+				logEvent(event, Color.BLUE, user, "Bot remove", "{0} {1} has `removed` bot {2}({3}) from this server",
+					Emoji.ROBOT.get(),
+					name,
+					user.getAsTag(),
+					userId
+				);
+			});
+			return;
+		}
+		logEvent(event, Color.GREEN, user, "User leave", "{0} **{1}** ({2}) has `left` the server",
+			Emoji.OUTBOX_TRAY.get(),
+			user.getAsTag(),
+			userId
+		);
 	}
 
 	@Override
 	public void onGuildMemberJoin(@Nonnull GuildMemberJoinEvent event){
-		if(event.getUser().isBot()){
-			logEvent(event, Color.GREEN, "Bot add", "{0} {1} ({2}) has",
-				Emoji.INBOX_TRAY.get(),
-				event.getUser().getAsTag(),
-				event.getUser().getIdLong());
-			return;
-		}
 		var user = event.getUser();
 		var userId = user.getIdLong();
+		if(user.isBot()){
+			event.getGuild().retrieveAuditLogs().type(ActionType.BOT_ADD).limit(5).cache(false).queue(entries -> {
+				var audit = entries.stream().filter(entry -> entry.getTargetIdLong() == Config.BOT_ID).findFirst();
+				var name = "unknown";
+				if(audit.isPresent()){
+					var auditUser = audit.get().getUser();
+					if(auditUser != null){
+						name = auditUser.getAsTag();
+					}
+				}
+				logEvent(event, Color.BLUE, user, "Bot add", "{0} {1} has `added` bot {2}({3}) to this server",
+					Emoji.ROBOT.get(),
+					name,
+					user.getAsTag(),
+					userId
+				);
+			});
+			return;
+		}
 		var invite = this.modules.get(InviteModule.class).getUsedInvite(event.getGuild().getIdLong(), userId);
-		logEvent(event, Color.GREEN, "User join", "{0} **{1}** ({2}) has `joined` the server with invite **https://discord.gg/{3}**(**{4}**)",
+		logEvent(event, Color.GREEN, user, "User join", "{0} **{1}** ({2}) has `joined` the server with invite **https://discord.gg/{3}**(**{4}**)",
 			Emoji.INBOX_TRAY.get(),
 			user.getAsTag(),
 			userId,
@@ -50,7 +102,7 @@ public class GuildLoggingModule extends Module{
 		);
 	}
 
-	private void logEvent(GenericGuildEvent event, Color color, String eventName, String message, Object... args){
+	private void logEvent(GenericGuildEvent event, Color color, User user, String eventName, String message, Object... args){
 		var guild = event.getGuild();
 		var settings = this.modules.get(SettingsModule.class).getSettings(guild.getIdLong());
 		if(!settings.areLogMessagesEnabled()){
@@ -63,7 +115,7 @@ public class GuildLoggingModule extends Module{
 		channel.sendMessage(new EmbedBuilder()
 			.setColor(color)
 			.setDescription(MessageFormat.format(message, args))
-			.setFooter(eventName)
+			.setFooter(eventName, user == null ? "" : user.getEffectiveAvatarUrl())
 			.setTimestamp(Instant.now())
 			.build()
 		).queue();

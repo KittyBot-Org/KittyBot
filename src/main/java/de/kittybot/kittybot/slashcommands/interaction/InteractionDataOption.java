@@ -64,6 +64,10 @@ public class InteractionDataOption implements InteractionOptionsHolder{
 		return Integer.parseInt(getString());
 	}
 
+	public float getFloat(){
+		return Float.parseFloat(getString());
+	}
+
 	public boolean getBoolean(){
 		return Boolean.parseBoolean(getString());
 	}

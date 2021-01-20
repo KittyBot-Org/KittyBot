@@ -3,7 +3,7 @@ package de.kittybot.kittybot.modules;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
-import de.kittybot.kittybot.module.Module;
+import de.kittybot.kittybot.objects.module.Module;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
 import org.jetbrains.annotations.NotNull;

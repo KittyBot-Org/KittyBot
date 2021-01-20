@@ -1,8 +1,8 @@
 package de.kittybot.kittybot.main;
 
-import de.kittybot.kittybot.exceptions.MissingConfigValuesException;
-import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.modules.LavalinkModule;
+import de.kittybot.kittybot.objects.exceptions.MissingConfigValuesException;
+import de.kittybot.kittybot.objects.module.Modules;
 import de.kittybot.kittybot.utils.Config;
 import net.dv8tion.jda.api.GatewayEncoding;
 import net.dv8tion.jda.api.OnlineStatus;

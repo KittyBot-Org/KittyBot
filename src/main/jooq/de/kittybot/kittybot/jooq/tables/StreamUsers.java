@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row4;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -57,6 +57,11 @@ public class StreamUsers extends TableImpl<StreamUsersRecord> {
      * The column <code>public.stream_users.guild_id</code>.
      */
     public final TableField<StreamUsersRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>public.stream_users.user_id</code>.
+     */
+    public final TableField<StreamUsersRecord, Long> USER_ID = createField(DSL.name("user_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.stream_users.user_name</code>.
@@ -118,7 +123,7 @@ public class StreamUsers extends TableImpl<StreamUsersRecord> {
 
     @Override
     public List<UniqueKey<StreamUsersRecord>> getKeys() {
-        return Arrays.<UniqueKey<StreamUsersRecord>>asList(Keys.STREAM_USERS_PKEY, Keys.STREAM_USERS_GUILD_ID_USER_NAME_STREAM_TYPE_KEY);
+        return Arrays.<UniqueKey<StreamUsersRecord>>asList(Keys.STREAM_USERS_PKEY, Keys.STREAM_USERS_GUILD_ID_USER_ID_KEY);
     }
 
     @Override
@@ -157,11 +162,11 @@ public class StreamUsers extends TableImpl<StreamUsersRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Long, Long, String, Integer> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row5<Long, Long, Long, String, Integer> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }

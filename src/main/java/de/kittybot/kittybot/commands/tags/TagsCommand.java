@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.commands.tags;
 
 import de.kittybot.kittybot.modules.TagsModule;
-import de.kittybot.kittybot.objects.Tag;
+import de.kittybot.kittybot.objects.settings.Tag;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;

@@ -41,6 +41,10 @@ public class Options{
 		return this.options.get(name).getInt();
 	}
 
+	public float getFloat(String name){
+		return this.options.get(name).getFloat();
+	}
+
 	public boolean getBoolean(String name){
 		return this.options.get(name).getBoolean();
 	}

@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.modules;
 
-import de.kittybot.kittybot.module.Module;
+import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.utils.exporters.Metrics;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteDeleteEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;

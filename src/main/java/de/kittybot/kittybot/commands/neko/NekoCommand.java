@@ -2,7 +2,7 @@ package de.kittybot.kittybot.commands.neko;
 
 import de.kittybot.kittybot.modules.RequestModule;
 import de.kittybot.kittybot.modules.SettingsModule;
-import de.kittybot.kittybot.objects.Neko;
+import de.kittybot.kittybot.objects.enums.Neko;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.RunnableCommand;

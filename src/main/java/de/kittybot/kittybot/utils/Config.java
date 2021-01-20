@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.utils;
 
-import de.kittybot.kittybot.exceptions.MissingConfigValuesException;
-import de.kittybot.kittybot.objects.LavalinkNode;
+import de.kittybot.kittybot.objects.data.LavalinkNode;
+import de.kittybot.kittybot.objects.exceptions.MissingConfigValuesException;
 import net.dv8tion.jda.api.utils.data.DataObject;
 
 import java.io.File;

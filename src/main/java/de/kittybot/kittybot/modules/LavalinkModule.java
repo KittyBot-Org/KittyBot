@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.modules;
 
-import de.kittybot.kittybot.module.Module;
+import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.utils.Config;
 import lavalink.client.io.jda.JdaLavalink;
 import lavalink.client.io.jda.JdaLink;

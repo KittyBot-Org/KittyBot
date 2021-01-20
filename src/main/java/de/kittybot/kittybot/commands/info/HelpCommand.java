@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.commands.info;
 
-import de.kittybot.kittybot.objects.Emoji;
+import de.kittybot.kittybot.objects.enums.Emoji;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.RunnableCommand;

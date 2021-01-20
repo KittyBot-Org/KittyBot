@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.utils;
 
-import de.kittybot.kittybot.objects.Placeholder;
+import de.kittybot.kittybot.objects.data.Placeholder;
 
 public class PlaceholderUtils{
 

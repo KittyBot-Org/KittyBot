@@ -1,8 +1,8 @@
 package de.kittybot.kittybot.slashcommands.context;
 
-import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.modules.InteractionsModule;
-import de.kittybot.kittybot.objects.Emoji;
+import de.kittybot.kittybot.objects.enums.Emoji;
+import de.kittybot.kittybot.objects.module.Modules;
 import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import de.kittybot.kittybot.slashcommands.interaction.response.FollowupMessage;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionRespondAction;

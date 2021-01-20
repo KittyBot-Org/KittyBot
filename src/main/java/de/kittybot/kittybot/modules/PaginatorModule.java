@@ -2,9 +2,9 @@ package de.kittybot.kittybot.modules;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import de.kittybot.kittybot.module.Module;
-import de.kittybot.kittybot.objects.Emoji;
-import de.kittybot.kittybot.objects.Paginator;
+import de.kittybot.kittybot.objects.data.Paginator;
+import de.kittybot.kittybot.objects.enums.Emoji;
+import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;

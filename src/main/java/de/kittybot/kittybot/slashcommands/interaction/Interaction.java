@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.slashcommands.interaction;
 
-import de.kittybot.kittybot.module.Modules;
+import de.kittybot.kittybot.objects.module.Modules;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;

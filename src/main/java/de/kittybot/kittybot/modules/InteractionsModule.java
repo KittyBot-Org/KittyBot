@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.modules;
 
 import club.minnced.discord.webhook.receive.ReadonlyMessage;
-import de.kittybot.kittybot.module.Module;
+import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionsHolder;
 import de.kittybot.kittybot.slashcommands.application.PermissionHolder;
 import de.kittybot.kittybot.slashcommands.application.RunnableCommand;

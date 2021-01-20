@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.utils;
 
-import de.kittybot.kittybot.objects.Emoji;
+import de.kittybot.kittybot.objects.enums.Emoji;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

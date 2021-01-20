@@ -1,8 +1,8 @@
 package de.kittybot.kittybot.modules;
 
-import de.kittybot.kittybot.module.Module;
-import de.kittybot.kittybot.objects.Emoji;
-import de.kittybot.kittybot.objects.Placeholder;
+import de.kittybot.kittybot.objects.data.Placeholder;
+import de.kittybot.kittybot.objects.enums.Emoji;
+import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.utils.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.audit.ActionType;

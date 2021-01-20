@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.modules;
 
-import de.kittybot.kittybot.module.Module;
+import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.annotations.Ignore;

@@ -21,7 +21,7 @@ public class PauseCommand extends Command implements RunnableCommand{
 		if(!MusicUtils.checkCommandRequirements(ctx, player)){
 			return;
 		}
-		if(!MusicUtils.checkBasicMusicPermissions(ctx, player)){
+		if(!MusicUtils.checkMusicPermissions(ctx, player)){
 			return;
 		}
 		player.pause();

@@ -2,7 +2,8 @@ package de.kittybot.kittybot.commands.admin;
 
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.modules.StreamAnnouncementModule;
-import de.kittybot.kittybot.objects.Emoji;
+import de.kittybot.kittybot.objects.enums.Emoji;
+import de.kittybot.kittybot.objects.streams.StreamType;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
@@ -10,12 +11,10 @@ import de.kittybot.kittybot.slashcommands.application.options.*;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
-import de.kittybot.kittybot.streams.StreamType;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
 
 import java.util.stream.Collectors;
 
@@ -35,7 +34,7 @@ public class SettingsCommand extends Command{
 			new SnipesCommand(),
 			new StreamAnnouncementsCommand()
 		);
-		addPermissions(Permission.ADMINISTRATOR);
+		//addPermissions(Permission.ADMINISTRATOR);
 	}
 
 	private static class ListCommand extends SubCommand{
@@ -307,12 +306,12 @@ public class SettingsCommand extends Command{
 			public void run(Options options, CommandContext ctx){
 				var type = StreamType.byId(options.getInt("service"));
 				var username = options.getString("username");
-				var success = ctx.get(StreamAnnouncementModule.class).add(username, ctx.getGuildId(), type);
-				if(!success){
-					ctx.error("Could not add stream announcement for " + type.getName() + " with username: " + username + ". Did you add this one already?");
+				var user = ctx.get(StreamAnnouncementModule.class).add(username, ctx.getGuildId(), type);
+				if(user == null){
+					ctx.error("No user found with username " + username + "for " + type.getName());
 					return;
 				}
-				ctx.reply("Stream announcement for " + type.getName() + " with username: " + username + " added");
+				ctx.reply("Stream announcement for " + type.getName() + " with username: " + user.getDisplayName() + " added");
 			}
 
 		}

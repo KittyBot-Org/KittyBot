@@ -2,7 +2,7 @@ package de.kittybot.kittybot.modules;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import de.kittybot.kittybot.module.Module;
+import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.utils.Config;
 import org.apache.commons.io.IOUtils;
 import org.jooq.Configuration;

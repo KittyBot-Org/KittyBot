@@ -2,7 +2,7 @@ package de.kittybot.kittybot.utils;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.kittybot.kittybot.modules.SettingsModule;
-import de.kittybot.kittybot.objects.MusicPlayer;
+import de.kittybot.kittybot.objects.music.MusicPlayer;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import net.dv8tion.jda.api.Permission;
 
@@ -66,11 +66,6 @@ public class MusicUtils{
 			return false;
 		}
 		return true;
-	}
-
-	public static boolean checkBasicMusicPermissions(CommandContext ctx, MusicPlayer player){
-		var member = ctx.getMember();
-		return member.hasPermission(Permission.ADMINISTRATOR) || ctx.get(SettingsModule.class).hasDJRole(member);
 	}
 
 }

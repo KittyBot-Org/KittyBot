@@ -1,8 +1,8 @@
 package de.kittybot.kittybot.commands.music;
 
 import de.kittybot.kittybot.modules.MusicModule;
-import de.kittybot.kittybot.objects.MusicPlayer;
-import de.kittybot.kittybot.objects.SearchProvider;
+import de.kittybot.kittybot.objects.music.MusicPlayer;
+import de.kittybot.kittybot.objects.music.SearchProvider;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;

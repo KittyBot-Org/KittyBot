@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.main;
 
-import de.kittybot.kittybot.exceptions.MissingConfigValuesException;
+import de.kittybot.kittybot.objects.exceptions.MissingConfigValuesException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +25,7 @@ public class Main{
 				"                          __/ |                \n" +
 				"                         |___/                 \n" +
 				"\n" +
-				"         https://github.com/KittyBot-Org/KittyBot\n"
+				"        https://github.com/KittyBot-Org/KittyBot\n"
 			);
 			new KittyBot();
 		}
