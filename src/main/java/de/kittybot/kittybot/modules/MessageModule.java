@@ -53,6 +53,11 @@ public class MessageModule extends Module{
 		cacheMessage(event.getMessage());
 	}
 
+	@Override
+	public void onGuildMessageDelete(@NotNull GuildMessageDeleteEvent event){
+		this.lastDeletedMessages.put(event.getChannel().getIdLong(), event.getMessageIdLong());
+	}
+
 	private void cacheMessage(Message message){
 		var messageId = message.getIdLong();
 		var cachedMessage = messages.getIfPresent(messageId);
@@ -62,11 +67,6 @@ public class MessageModule extends Module{
 			this.lastEditedMessages.put(message.getChannel().getIdLong(), messageId);
 		}
 		this.messages.put(messageId, messageData);
-	}
-
-	@Override
-	public void onGuildMessageDelete(@NotNull GuildMessageDeleteEvent event){
-		this.lastDeletedMessages.put(event.getChannel().getIdLong(), event.getMessageIdLong());
 	}
 
 	public MessageData getLastDeletedMessage(long channelId){

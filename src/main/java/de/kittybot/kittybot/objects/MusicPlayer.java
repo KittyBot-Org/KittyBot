@@ -58,6 +58,10 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		this.future = null;
 	}
 
+	public void setVolume(int volume){
+		player.getFilters().setVolume((float) volume / 100).commit();
+	}
+
 	public void loadItem(CommandContext ctx, String rawQuery, SearchProvider searchProvider){
 		final String query;
 		if(URL_PATTERN.matcher(rawQuery).matches()){
@@ -328,10 +332,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	public void setPaused(boolean paused){
 		player.setPaused(paused);
-	}
-
-	public void setVolume(int volume){
-		player.getFilters().setVolume((float) volume / 100).commit();
 	}
 
 	public AudioTrack getPlayingTrack(){

@@ -1,7 +1,6 @@
 package de.kittybot.kittybot.modules;
 
 import de.kittybot.kittybot.module.Module;
-import de.kittybot.kittybot.module.Modules;
 import de.kittybot.kittybot.objects.InviteData;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -16,10 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 @SuppressWarnings("unused")
 public class InviteModule extends Module{
@@ -28,11 +25,6 @@ public class InviteModule extends Module{
 
 	private Map<Long, Map<String, InviteData>> invites;
 	private Map<Long, Map<Long, InviteData>> usedInvites;
-
-	@Override
-	public Set<Class<? extends Module>> getDependencies(){
-		return null;
-	}
 
 	@Override
 	public void onEnable(){

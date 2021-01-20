@@ -52,14 +52,14 @@ public class RolesCommand extends Command{
 			}
 
 			emoteAction.queue(emote -> {
-				var group = ctx.get(SettingsModule.class).getSelfAssignableRoleGroups(ctx.getGuildId()).stream().filter(g -> g.getName().equalsIgnoreCase(groupName)).findFirst();
-				if(group.isEmpty()){
-					ctx.error("Please privde a valid group");
-					return;
-				}
+					var group = ctx.get(SettingsModule.class).getSelfAssignableRoleGroups(ctx.getGuildId()).stream().filter(g -> g.getName().equalsIgnoreCase(groupName)).findFirst();
+					if(group.isEmpty()){
+						ctx.error("Please privde a valid group");
+						return;
+					}
 
-				ctx.get(SettingsModule.class).addSelfAssignableRoles(ctx.getGuildId(), Collections.singleton(new SelfAssignableRole(roleId, emote.getIdLong(), ctx.getGuildId(), group.get().getId())));
-				ctx.reply("Added self assignable role");
+					ctx.get(SettingsModule.class).addSelfAssignableRoles(ctx.getGuildId(), Collections.singleton(new SelfAssignableRole(roleId, emote.getIdLong(), ctx.getGuildId(), group.get().getId())));
+					ctx.reply("Added self assignable role");
 				}, error -> ctx.error("Please proivde a valid emote")
 			);
 

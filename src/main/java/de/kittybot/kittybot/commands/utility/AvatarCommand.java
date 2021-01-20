@@ -46,10 +46,10 @@ public class AvatarCommand extends Command implements RunnableCommand{
 		}
 		ctx.getJDA().retrieveUserById(userId).queue(user ->
 				ctx.reply(new EmbedBuilder()
-				.setColor(Colors.KITTYBOT_BLUE)
-				.setTitle(user.getAsTag() + " Avatar")
-				.setThumbnail(user.getEffectiveAvatarUrl())
-				.setDescription(MessageUtils.maskLink(size + "px", user.getEffectiveAvatarUrl() + "?size=" + size)))
+					.setColor(Colors.KITTYBOT_BLUE)
+					.setTitle(user.getAsTag() + " Avatar")
+					.setThumbnail(user.getEffectiveAvatarUrl())
+					.setDescription(MessageUtils.maskLink(size + "px", user.getEffectiveAvatarUrl() + "?size=" + size)))
 			, error -> ctx.error("User not found"));
 	}
 

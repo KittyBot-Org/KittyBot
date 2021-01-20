@@ -26,8 +26,16 @@ public abstract class Command implements CommandOptionsHolder, PermissionHolder{
 		this.devOnly = true;
 	}
 
+	public boolean isDevOnly(){
+		return this.devOnly;
+	}
+
 	public void addPermissions(Permission... permissions){
 		this.permissions.addAll(Arrays.asList(permissions));
+	}
+
+	public Set<Permission> getPermissions(){
+		return this.permissions;
 	}
 
 	protected void addOptions(CommandOption... options){
@@ -44,14 +52,6 @@ public abstract class Command implements CommandOptionsHolder, PermissionHolder{
 
 	public Category getCategory(){
 		return this.category;
-	}
-
-	public boolean isDevOnly(){
-		return this.devOnly;
-	}
-
-	public Set<Permission> getPermissions(){
-		return this.permissions;
 	}
 
 	public List<CommandOption> getOptions(){

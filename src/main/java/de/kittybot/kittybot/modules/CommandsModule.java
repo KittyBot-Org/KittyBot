@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -36,13 +35,12 @@ public class CommandsModule extends Module{
 	private static final Logger LOG = LoggerFactory.getLogger(CommandsModule.class);
 	private static final String COMMANDS_PACKAGE = "de.kittybot.kittybot.commands";
 	private static final Set<Class<? extends Module>> DEPENDENCIES = Set.of(InviteModule.class);
+	private Map<String, Command> commands;
 
 	@Override
 	public Set<Class<? extends Module>> getDependencies(){
 		return DEPENDENCIES;
 	}
-
-	private Map<String, Command> commands;
 
 	@Override
 	public void onEnable(){
