@@ -35,7 +35,7 @@ public class NotificationCommand extends Command{
 			addOptions(
 				new CommandOptionString("time", "When to notif you. Format: `HH:mm dd.MM.yyyy` or 1y2w3d4h5m6s").required(),
 				new CommandOptionString("message", "The notif message").required()/*,
-					new CommandOptionBoolean("notif-in-dms", "If I should notif you in dms")*/
+				new CommandOptionBoolean("notif-in-dms", "If I should notif you in dms")*/
 			);
 		}
 

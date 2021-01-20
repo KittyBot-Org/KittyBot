@@ -15,6 +15,7 @@ import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 
 import java.util.stream.Collectors;
 
@@ -34,7 +35,7 @@ public class SettingsCommand extends Command{
 			new SnipesCommand(),
 			new StreamAnnouncementsCommand()
 		);
-		//addPermissions(Permission.ADMINISTRATOR);
+		addPermissions(Permission.ADMINISTRATOR);
 	}
 
 	private static class ListCommand extends SubCommand{

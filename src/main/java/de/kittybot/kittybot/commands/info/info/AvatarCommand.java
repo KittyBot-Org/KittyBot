@@ -1,4 +1,4 @@
-package de.kittybot.kittybot.commands.utility;
+package de.kittybot.kittybot.commands.info.info;
 
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
@@ -6,6 +6,8 @@ import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
 import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionUser;
+import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.utils.Colors;
@@ -13,12 +15,13 @@ import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 @SuppressWarnings("unused")
-public class GuildBannerCommand extends Command implements RunnableCommand{
+public class AvatarCommand extends SubCommand{
 
-	public GuildBannerCommand(){
-		super("guildbanner", "Gets the guild banner", Category.UTILITIES);
+	public AvatarCommand(){
+		super("avatar", "Gets the avatar of a user");
 		addOptions(
-			new CommandOptionString("guild-id", "The guild id to get the banner from"),
+			new CommandOptionUser("user", "The user to get the avatar from"),
+			new CommandOptionString("user-id", "The user id to get the avatar from"),
 			new CommandOptionInteger("size", "The image size")
 				.addChoices(
 					new CommandOptionChoice<>("16", 16),
@@ -35,29 +38,20 @@ public class GuildBannerCommand extends Command implements RunnableCommand{
 
 	@Override
 	public void run(Options options, CommandContext ctx){
-		var guildId = options.has("guild-id") ? options.getLong("guild-id") : ctx.getGuildId();
+		var userId = options.has("user") ? options.getLong("user") : options.has("user-id") ? options.getLong("user-id") : ctx.getUserId();
 		var size = options.has("size") ? options.getInt("size") : 1024;
 
-		if(guildId == -1){
-			ctx.error("Please provide a valid guild id");
+		if(userId == -1){
+			ctx.error("Please provide a valid user id");
 			return;
 		}
-
-		var guild = ctx.getJDA().getGuildById(guildId);
-		if(guild == null){
-			ctx.error("Guild not found");
-			return;
-		}
-		var banner = guild.getBannerUrl();
-		if(banner == null){
-			ctx.error("Guild has no banner set");
-			return;
-		}
-		ctx.reply(new EmbedBuilder()
-			.setColor(Colors.KITTYBOT_BLUE)
-			.setTitle(guild.getName() + " Banner")
-			.setThumbnail(banner)
-			.setDescription(MessageUtils.maskLink(size + "px", banner + "?size=" + size)));
+		ctx.getJDA().retrieveUserById(userId).queue(user ->
+				ctx.reply(new EmbedBuilder()
+					.setColor(Colors.KITTYBOT_BLUE)
+					.setTitle(user.getAsTag() + " Avatar")
+					.setThumbnail(user.getEffectiveAvatarUrl())
+					.setDescription(MessageUtils.maskLink(size + "px", user.getEffectiveAvatarUrl() + "?size=" + size)))
+			, error -> ctx.error("User not found"));
 	}
 
 }

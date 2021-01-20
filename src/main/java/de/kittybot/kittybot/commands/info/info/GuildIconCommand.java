@@ -1,4 +1,4 @@
-package de.kittybot.kittybot.commands.utility;
+package de.kittybot.kittybot.commands.info.info;
 
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
@@ -6,6 +6,7 @@ import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
 import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
+import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.utils.Colors;
@@ -13,10 +14,10 @@ import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 @SuppressWarnings("unused")
-public class GuildIconCommand extends Command implements RunnableCommand{
+public class GuildIconCommand extends SubCommand{
 
 	public GuildIconCommand(){
-		super("guildicon", "Gets the guild icon", Category.UTILITIES);
+		super("guildicon", "Gets the guild icon");
 		addOptions(
 			new CommandOptionString("guild-id", "The guild id to get the icon from"),
 			new CommandOptionInteger("size", "The image size")

@@ -9,6 +9,8 @@ import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 
 public class GetInvitesRoute implements Handler{
@@ -22,8 +24,13 @@ public class GetInvitesRoute implements Handler{
 	@Override
 	public void handle(@NotNull Context ctx){
 		var guild = this.modules.get(WebService.class).getGuild(ctx);
+
+		var guildInvites = this.modules.get(InviteModule.class).getGuildInvites(guild.getIdLong());
+		if(guildInvites == null){
+			guildInvites = new HashMap<>();
+		}
 		var invites = DataArray.fromCollection(
-			this.modules.get(InviteModule.class).getGuildInvites(guild.getIdLong()).values().stream().map(
+			guildInvites.values().stream().map(
 				invite -> DataObject.empty().put("code", invite.getCode()).put("user_id", invite.getUserId()).put("uses", invite.getUses())
 			).collect(Collectors.toSet())
 		);
