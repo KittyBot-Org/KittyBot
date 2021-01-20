@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.modules;
 
+import checkers.units.quals.C;
 import de.kittybot.kittybot.objects.data.Placeholder;
 import de.kittybot.kittybot.objects.enums.Emoji;
 import de.kittybot.kittybot.objects.module.Module;
@@ -10,6 +11,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +28,7 @@ public class JoinModule extends Module{
 	private static final Logger LOG = LoggerFactory.getLogger(MessageUtils.class);
 	private static final String INVITE_CODE_PREFIX = "https://discord.gg/";
 	private static final Set<Class<? extends Module>> DEPENDENCIES = Set.of(InviteModule.class);
+	private static final List<String> oldCommands = List.of(".play", ".guildbanner", ".kiss", ".translate", ".blush", ".lick", ".hastebin", ".commands", ".dashboard", ".info", ".settings", ".pat", ".test", ".history", ".poke", ".pause", ".unassign", ".volume", ".feed", ".guildicon", ".eval", ".stop", ".restrictemote", ".tickle", ".fluff", ".downloademotes", ".senko", ".editsnipe", ".steal", ".ping", ".roles", ".privacy", ".skip", ".seek", ".bite", ".cuddle", ".forward", ".neko", ".avatar", ".snipe", ".uptime", ".kitsune", ".help", ".rewind", ".hug", ".shuffle", ".slap", ".queue", ".assign");
 
 	private List<String> randomJoinMessages;
 	private List<String> randomLeaveMessages;
@@ -131,6 +134,26 @@ public class JoinModule extends Module{
 			new Placeholder("invite_code", invite == null ? "unknown" : invite.getCode()),
 			new Placeholder("invite_link", invite == null ? "unknown" : INVITE_CODE_PREFIX + invite.getCode())
 		);
+	}
+
+	@Override
+	public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event){
+		var msg = event.getMessage().getContentRaw();
+		if(event.getAuthor().isBot()){
+			return;
+		}
+		if(oldCommands.stream().anyMatch(msg::startsWith) || msg.contains("<@" + Config.BOT_ID + ">") || msg.contains("<@!" + Config.BOT_ID + ">")){
+			event.getChannel().sendMessage(new EmbedBuilder()
+				.setColor(Colors.KITTYBOT_BLUE)
+				.setAuthor("KittyBot Slash Commands Update", event.getJDA().getSelfUser().getEffectiveAvatarUrl(), Config.ORIGIN_URL)
+				.setDescription("KittyBot now uses the new slash commands.\n" +
+					"To use them invite me again **(you don't need to kick me)** over this specific " + MessageUtils.maskLink("link", "https://discord.com/oauth2/authorize?client_id=587697058602025011&permissions=1345841383&scope=bot%20applications.commands") + " and type `/` in the chatbox.\n"
+				)
+				.setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
+				.setTimestamp(Instant.now())
+				.build()
+			).queue();
+		}
 	}
 
 	public String getRandomMessage(List<String> messages){

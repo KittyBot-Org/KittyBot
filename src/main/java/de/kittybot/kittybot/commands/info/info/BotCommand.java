@@ -19,7 +19,7 @@ import java.time.Instant;
 public class BotCommand extends SubCommand{
 
 	public BotCommand(){
-		super("info", "Shows bot info");
+		super("bot", "Shows bot info");
 	}
 
 	@Override
