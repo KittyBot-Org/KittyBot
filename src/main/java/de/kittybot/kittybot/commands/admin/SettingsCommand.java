@@ -41,7 +41,6 @@ public class SettingsCommand extends Command{
 
 	private static class ListCommand extends SubCommand{
 
-
 		public ListCommand(){
 			super("list", "Lists the current settings");
 		}
@@ -298,8 +297,8 @@ public class SettingsCommand extends Command{
 				addOptions(
 					new CommandOptionInteger("service", "Which service the stream is from").required()
 						.addChoices(
-							new CommandOptionChoice<>("twitch", 0)/*,
-										new CommandOptionChoice<>("youtube", 0)*/
+							new CommandOptionChoice<>("twitch", 1)/*,
+										new CommandOptionChoice<>("youtube", 2)*/
 						),
 					new CommandOptionString("username", "The username of the streamer").required()
 				);
