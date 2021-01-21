@@ -121,7 +121,11 @@ public class InviteModule extends Module{
 	}
 
 	public InviteData getUsedInvite(long guildId, long userId){
-		return this.usedInvites.get(guildId).get(userId);
+		var invite = this.usedInvites.get(guildId);
+		if(invite == null){
+			return null;
+		}
+		return invite.get(userId);
 	}
 
 	public Map<String, InviteData> getGuildInvites(long guildId){

@@ -12,8 +12,11 @@ import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.slashcommands.interaction.response.FollowupMessage;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
 import de.kittybot.kittybot.utils.Colors;
+import de.kittybot.kittybot.utils.Config;
+import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 
+import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("unused")
@@ -26,7 +29,8 @@ public class DevCommand extends Command{
 			new DeployCommand(),
 			new RemoveCommand(),
 			new StatsCommand(),
-			new TestCommand()
+			new TestCommand(),
+			new AnnounceCommand()
 		);
 	}
 
@@ -110,6 +114,36 @@ public class DevCommand extends Command{
 				commandsModule.deleteAllCommands(guildId);
 				ctx.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setColor(Colors.KITTYBOT_BLUE).setDescription("Omitted slash commands for guild `" + guildId + "`").build()).build());
 			}, 0, TimeUnit.SECONDS);
+		}
+
+	}
+
+	private static class AnnounceCommand extends SubCommand{
+
+		public AnnounceCommand(){
+			super("announce", "Announces a message in all servers");
+			addOptions(
+				new CommandOptionString("message", "The message to announce")
+			);
+			devOnly();
+		}
+
+		@Override
+		public void run(Options options, CommandContext ctx){
+			var message = options.getString("message");
+			var embed = new EmbedBuilder()
+				.setColor(Colors.KITTYBOT_BLUE)
+				.setAuthor("KittyBot Update", ctx.getJDA().getSelfUser().getEffectiveAvatarUrl(), Config.ORIGIN_URL)
+				.setDescription(message)
+				.setTimestamp(Instant.now())
+				.build();
+			ctx.getModules().getShardManager().getGuildCache().forEach(guild -> {
+				var channel = guild.getDefaultChannel();
+				if(channel == null){
+					return;
+				}
+				channel.sendMessage(embed).queue();
+			});
 		}
 
 	}
