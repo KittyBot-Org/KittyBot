@@ -69,6 +69,10 @@ public class MessageModule extends Module{
 		this.messages.put(messageId, messageData);
 	}
 
+	public MessageData getMessageById(long messageId){
+		return this.messages.getIfPresent(messageId);
+	}
+
 	public MessageData getLastDeletedMessage(long channelId){
 		var latest = this.lastDeletedMessages.getIfPresent(channelId);
 		return latest == null ? null : messages.getIfPresent(latest);

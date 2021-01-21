@@ -1,8 +1,8 @@
-package de.kittybot.kittybot.modules.web.routes.login;
+package de.kittybot.kittybot.web.login;
 
 import com.jagrosh.jdautilities.oauth2.exceptions.InvalidStateException;
 import de.kittybot.kittybot.modules.DashboardSessionModule;
-import de.kittybot.kittybot.modules.web.WebService;
+import de.kittybot.kittybot.modules.WebService;
 import de.kittybot.kittybot.objects.module.Modules;
 import de.kittybot.kittybot.objects.session.DashboardSession;
 import io.javalin.http.*;

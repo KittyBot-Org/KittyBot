@@ -24,7 +24,9 @@ public class NotificationCommand extends Command{
 	public NotificationCommand(){
 		super("notification", "Creates/deletes/lists notifications", Category.NOTIFICATION);
 		addOptions(
-
+			new CreateCommand(),
+			new DeleteCommand(),
+			new ListCommand()
 		);
 	}
 

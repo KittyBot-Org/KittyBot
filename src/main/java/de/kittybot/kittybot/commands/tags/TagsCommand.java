@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.commands.tags;
 
+import de.kittybot.kittybot.modules.MessageModule;
 import de.kittybot.kittybot.modules.TagsModule;
 import de.kittybot.kittybot.objects.settings.Tag;
 import de.kittybot.kittybot.slashcommands.application.Category;
@@ -12,6 +13,7 @@ import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.TimeUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,14 +39,37 @@ public class TagsCommand extends Command{
 			super("create", "Used to create a tag");
 			addOptions(
 				new CommandOptionString("name", "Tag name").required(),
-				new CommandOptionString("content", "Tag content").required()
+				new CommandOptionString("content", "Tag content"),
+				new CommandOptionString("message-id", "The message id to create a tag from")
 			);
 		}
 
 		@Override
 		public void run(Options options, CommandContext ctx){
 			var tagName = options.getString("name");
-			var created = ctx.get(TagsModule.class).create(tagName, options.getString("content"), ctx.getGuildId(), ctx.getUserId());
+			if(!options.has("content") && !options.has("message-id")){
+				ctx.reply("Please provide either content or message-id");
+				return;
+			}
+			var content = "";
+			if(options.has("content")){
+				content = options.getString("content");
+			}
+			else{
+				var messageId = options.getLong("message-id");
+				if(messageId == -1L){
+					ctx.error("Please provide a valid message id");
+					return;
+				}
+				var message = ctx.get(MessageModule.class).getMessageById(messageId);
+				if(message == null){
+					ctx.error("Please provide a recent message id");
+					return;
+				}
+				content = message.getContent();
+			}
+
+			var created = ctx.get(TagsModule.class).create(tagName, content, ctx.getGuildId(), ctx.getUserId());
 
 			if(created){
 				ctx.reply("Created tag with name `" + tagName + "`");
@@ -61,14 +86,37 @@ public class TagsCommand extends Command{
 			super("edit", "Used to edit a tag");
 			addOptions(
 				new CommandOptionString("name", "Tag name").required(),
-				new CommandOptionString("content", "Tag content").required()
+				new CommandOptionString("content", "Tag content"),
+				new CommandOptionString("message-id", "The message id to create a tag from")
 			);
 		}
 
 		@Override
 		public void run(Options options, CommandContext ctx){
 			var tagName = options.getString("name");
-			var edited = ctx.get(TagsModule.class).edit(tagName, options.getString("content"), ctx.getGuildId(), ctx.getUserId());
+			if(!options.has("content") && !options.has("message-id")){
+				ctx.reply("Please provide either content or message-id");
+				return;
+			}
+			var content = "";
+			if(options.has("content")){
+				content = options.getString("content");
+			}
+			else{
+				var messageId = options.getLong("message-id");
+				if(messageId == -1L){
+					ctx.error("Please provide a valid message id");
+					return;
+				}
+				var message = ctx.get(MessageModule.class).getMessageById(messageId);
+				if(message == null){
+					ctx.error("Please provide a recent message id");
+					return;
+				}
+				content = message.getContent();
+			}
+
+			var edited = ctx.get(TagsModule.class).edit(tagName, content, ctx.getGuildId(), ctx.getUserId());
 
 			if(edited){
 				ctx.reply("Edited tag with name `" + tagName + "`");
@@ -91,7 +139,13 @@ public class TagsCommand extends Command{
 		@Override
 		public void run(Options options, CommandContext ctx){
 			var tagName = options.getString("name");
-			var deleted = ctx.get(TagsModule.class).delete(tagName, ctx.getGuildId(), ctx.getUserId());
+			var deleted = false;
+			if(ctx.getMember().hasPermission(Permission.ADMINISTRATOR)){
+				deleted = ctx.get(TagsModule.class).delete(tagName, ctx.getGuildId(), ctx.getUserId());
+			}
+			else{
+				deleted = ctx.get(TagsModule.class).delete(tagName, ctx.getGuildId());
+			}
 
 			if(deleted){
 				ctx.reply("Deleted tag with name `" + tagName + "`");

@@ -1,16 +1,15 @@
-package de.kittybot.kittybot.modules.web;
+package de.kittybot.kittybot.modules;
 
-import de.kittybot.kittybot.modules.DashboardSessionModule;
-import de.kittybot.kittybot.modules.web.routes.GetDiscordLoginRoute;
-import de.kittybot.kittybot.modules.web.routes.commands.GetCommandsRoute;
-import de.kittybot.kittybot.modules.web.routes.guilds.GetAllGuildsRoute;
-import de.kittybot.kittybot.modules.web.routes.guilds.guild.*;
-import de.kittybot.kittybot.modules.web.routes.guilds.guild.tags.GetTagsRoute;
-import de.kittybot.kittybot.modules.web.routes.guilds.guild.tags.tag.DeleteTagRoute;
-import de.kittybot.kittybot.modules.web.routes.guilds.guild.tags.tag.PostTagRoute;
-import de.kittybot.kittybot.modules.web.routes.login.DeleteLoginRoute;
-import de.kittybot.kittybot.modules.web.routes.login.PostLoginRoute;
-import de.kittybot.kittybot.modules.web.routes.user.GetUserInfoRoute;
+import de.kittybot.kittybot.web.GetDiscordLoginRoute;
+import de.kittybot.kittybot.web.commands.GetCommandsRoute;
+import de.kittybot.kittybot.web.guilds.GetAllGuildsRoute;
+import de.kittybot.kittybot.web.guilds.guild.*;
+import de.kittybot.kittybot.web.guilds.guild.tags.GetTagsRoute;
+import de.kittybot.kittybot.web.guilds.guild.tags.tag.DeleteTagRoute;
+import de.kittybot.kittybot.web.guilds.guild.tags.tag.PostTagRoute;
+import de.kittybot.kittybot.web.login.DeleteLoginRoute;
+import de.kittybot.kittybot.web.login.PostLoginRoute;
+import de.kittybot.kittybot.web.user.GetUserInfoRoute;
 import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.Utils;

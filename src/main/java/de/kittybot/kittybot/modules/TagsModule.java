@@ -71,6 +71,13 @@ public class TagsModule extends Module{
 		return rows == 1;
 	}
 
+	public boolean delete(String name, long guildId){
+		var rows = this.modules.get(DatabaseModule.class).getCtx().deleteFrom(GUILD_TAGS)
+			.where(GUILD_TAGS.NAME.eq(name.toLowerCase()).and(GUILD_TAGS.GUILD_ID.eq(guildId)))
+			.execute();
+		return rows == 1;
+	}
+
 	public boolean delete(long tagId){
 		var rows = this.modules.get(DatabaseModule.class).getCtx().deleteFrom(GUILD_TAGS)
 			.where(GUILD_TAGS.ID.eq(tagId))

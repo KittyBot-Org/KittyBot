@@ -1,7 +1,7 @@
-package de.kittybot.kittybot.modules.web.routes.guilds.guild.tags.tag;
+package de.kittybot.kittybot.web.guilds.guild.tags.tag;
 
 import de.kittybot.kittybot.modules.TagsModule;
-import de.kittybot.kittybot.modules.web.WebService;
+import de.kittybot.kittybot.modules.WebService;
 import de.kittybot.kittybot.objects.module.Modules;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;

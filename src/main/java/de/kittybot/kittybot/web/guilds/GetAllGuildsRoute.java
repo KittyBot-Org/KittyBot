@@ -1,6 +1,6 @@
-package de.kittybot.kittybot.modules.web.routes.guilds;
+package de.kittybot.kittybot.web.guilds;
 
-import de.kittybot.kittybot.modules.web.WebService;
+import de.kittybot.kittybot.modules.WebService;
 import de.kittybot.kittybot.objects.module.Modules;
 import de.kittybot.kittybot.utils.Config;
 import io.javalin.http.Context;
