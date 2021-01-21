@@ -5,6 +5,7 @@ import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionRole;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
@@ -33,7 +34,7 @@ public class InviteRolesCommand extends Command{
 		public AddCommand(){
 			super("add", "Maps roles to invite links");
 			addOptions(
-				new CommandOptionRole("code", "The invite code to add a role").required(),
+				new CommandOptionString("code", "The invite code to add a role").required(),
 				new CommandOptionRole("role", "The role to add to the invite").required()
 			);
 		}
@@ -62,7 +63,7 @@ public class InviteRolesCommand extends Command{
 		public RemoveCommand(){
 			super("remove", "Maps roles to invite links");
 			addOptions(
-				new CommandOptionRole("code", "The invite code to remove a role").required(),
+				new CommandOptionString("code", "The invite code to remove a role").required(),
 				new CommandOptionRole("role", "The role to remove from the invite").required()
 			);
 		}
@@ -91,7 +92,7 @@ public class InviteRolesCommand extends Command{
 		public ResetCommand(){
 			super("reset", "Resets roles from invites");
 			addOptions(
-				new CommandOptionRole("code", "The invite code to reset").required()
+				new CommandOptionString("code", "The invite code to reset").required()
 			);
 		}
 
@@ -118,7 +119,7 @@ public class InviteRolesCommand extends Command{
 		public ListCommand(){
 			super("list", "Maps roles to invite links");
 			addOptions(
-				new CommandOptionRole("code", "The invite code to list roles")
+				new CommandOptionString("code", "The invite code to list roles")
 			);
 		}
 
