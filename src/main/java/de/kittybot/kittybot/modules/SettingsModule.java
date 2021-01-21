@@ -469,11 +469,12 @@ public class SettingsModule extends Module{
 			ctx.values(group.getGuildId(), group.getName(), group.getMaxRoles());
 		}
 		var res = ctx.returningResult(SELF_ASSIGNABLE_ROLE_GROUPS.ID).fetch();
-		res.forEach(group ->
-			groups.stream().filter(g ->
-				g.getId() == group.get(SELF_ASSIGNABLE_ROLE_GROUPS.ID)
-			).findFirst().ifPresent(grp -> grp.setId(group.get(SELF_ASSIGNABLE_ROLE_GROUPS.ID)))
-		);
+		
+		var i = 0;
+		for(var group : groups){
+			group.setId(res.get(i).get(SELF_ASSIGNABLE_ROLE_GROUPS.ID));
+			i++;
+		}
 		return groups;
 	}
 
