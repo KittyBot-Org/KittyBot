@@ -15,7 +15,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row18;
+import org.jooq.Row19;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -138,6 +138,11 @@ public class Guilds extends TableImpl<GuildsRecord> {
      */
     public final TableField<GuildsRecord, Boolean> SNIPES_ENABLED = createField(DSL.name("snipes_enabled"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("true", SQLDataType.BOOLEAN)), this, "");
 
+    /**
+     * The column <code>public.guilds.role_saver_enabled</code>.
+     */
+    public final TableField<GuildsRecord, Boolean> ROLE_SAVER_ENABLED = createField(DSL.name("role_saver_enabled"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("true", SQLDataType.BOOLEAN)), this, "");
+
     private Guilds(Name alias, Table<GuildsRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -213,11 +218,11 @@ public class Guilds extends TableImpl<GuildsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row18 type methods
+    // Row19 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row18<Long, Long, String, Boolean, String, Boolean, Long, Boolean, Long, Boolean, Long, String, Boolean, Long, YearToSecond, Boolean, Long, Boolean> fieldsRow() {
-        return (Row18) super.fieldsRow();
+    public Row19<Long, Long, String, Boolean, String, Boolean, Long, Boolean, Long, Boolean, Long, String, Boolean, Long, YearToSecond, Boolean, Long, Boolean, Boolean> fieldsRow() {
+        return (Row19) super.fieldsRow();
     }
 }

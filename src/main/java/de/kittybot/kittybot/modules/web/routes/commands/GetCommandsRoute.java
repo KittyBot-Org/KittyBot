@@ -34,7 +34,7 @@ public class GetCommandsRoute implements Handler{
 				))
 			).collect(Collectors.toSet())
 		);
-		WebService.ok(ctx, DataObject.empty().put("prefix", Config.DEFAULT_PREFIX).put("categories", categories));
+		WebService.ok(ctx, DataObject.empty().put("prefix", "/").put("categories", categories));
 	}
 
 

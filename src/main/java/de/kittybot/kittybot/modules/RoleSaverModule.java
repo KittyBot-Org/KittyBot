@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.modules;
 
 import de.kittybot.kittybot.objects.module.Module;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberUpdateEvent;
@@ -22,7 +23,11 @@ public class RoleSaverModule extends Module{
 	public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event){
 		var member = event.getMember();
 		var guild = event.getGuild();
-		var roles = retrieveGuildUserRoles(guild.getIdLong(), member.getIdLong());
+		var guildId = guild.getIdLong();
+		var roles = retrieveGuildUserRoles(guildId, member.getIdLong());
+		if(!guild.getSelfMember().hasPermission(Permission.MANAGE_ROLES) || this.modules.get(SettingsModule.class).isRoleSaverEnabled(guildId)){
+			return;
+		}
 		guild.modifyMemberRoles(member, roles.stream().map(guild::getRoleById).filter(Objects::nonNull).collect(Collectors.toSet()), null).queue();
 	}
 

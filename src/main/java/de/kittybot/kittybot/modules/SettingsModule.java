@@ -333,6 +333,18 @@ public class SettingsModule extends Module{
 		}
 	}
 
+	public boolean isRoleSaverEnabled(long guildId){
+		return this.getSettings(guildId).isRoleSaverEnabled();
+	}
+
+	public void setRoleSaverEnabled(long guildId, boolean enabled){
+		updateSetting(guildId, GUILDS.SNIPES_ENABLED, enabled);
+		var settings = getSettingsIfPresent(guildId);
+		if(settings != null){
+			settings.setRoleSaverEnabled(enabled);
+		}
+	}
+
 	public boolean areSnipesEnabled(long guildId){
 		return this.getSettings(guildId).areSnipesEnabled();
 	}

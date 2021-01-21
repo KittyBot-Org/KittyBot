@@ -33,7 +33,8 @@ public class SettingsCommand extends Command{
 			new NsfwCommand(),
 			new LogMessagesCommand(),
 			new SnipesCommand(),
-			new StreamAnnouncementsCommand()
+			new StreamAnnouncementsCommand(),
+			new RoleSaverCommand()
 		);
 		addPermissions(Permission.ADMINISTRATOR);
 	}
@@ -60,6 +61,7 @@ public class SettingsCommand extends Command{
 					.addField("NSFW Enabled: ", MessageUtils.getBoolEmote(settings.isNsfwEnabled()), false)
 					.addField("Log Messages: " + MessageUtils.getBoolEmote(settings.areLogMessagesEnabled()), settings.getLogChannel(), false)
 					.addField("Snipes Enabled:", MessageUtils.getBoolEmote(settings.areSnipesEnabled()), false)
+					.addField("Role Saver Enabled:", MessageUtils.getBoolEmote(settings.isRoleSaverEnabled()), false)
 				//.addField("Inactive Role: " + TimeUtils.formatDurationDHMS(settings.getInactiveDuration()), settings.getLogChannel(), false)
 			);
 		}
@@ -403,6 +405,24 @@ public class SettingsCommand extends Command{
 				ctx.reply("Stream announcements now get send to " + MessageUtils.getChannelMention(channelId));
 			}
 
+		}
+
+	}
+
+	private static class RoleSaverCommand extends SubCommand{
+
+		public RoleSaverCommand(){
+			super("rolesaver", "Enabled/Disables saving of user roles on leave");
+			addOptions(
+				new CommandOptionBoolean("enabled", "Whether role saving is enabled or disabled").required()
+			);
+		}
+
+		@Override
+		public void run(Options options, CommandContext ctx){
+			var enabled = options.getBoolean("enabled");
+			ctx.get(SettingsModule.class).setRoleSaverEnabled(ctx.getGuildId(), enabled);
+			ctx.reply((enabled ? "Enabled" : "Disabled") + " role saving");
 		}
 
 	}

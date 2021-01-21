@@ -13,7 +13,6 @@ import java.util.Set;
 
 public class Config{
 
-	public static String DEFAULT_PREFIX;
 	public static String BOT_TOKEN;
 	public static long BOT_ID;
 	public static String BOT_SECRET;
@@ -59,9 +58,8 @@ public class Config{
 			throw new IOException("Config file not found");
 		}
 		var json = DataObject.fromJson(Files.readAllBytes(config.toPath()));
-		checkMandatoryValues(json, "bot_token", "default_prefix", "dev_ids", "db_host", "db_port", "db_database", "db_user", "db_password", "signing_key", "backend_port", "origin_url", "redirect_url");
+		checkMandatoryValues(json, "bot_token", "dev_ids", "db_host", "db_port", "db_database", "db_user", "db_password", "signing_key", "backend_port", "origin_url", "redirect_url");
 
-		DEFAULT_PREFIX = json.getString("default_prefix", ".");
 
 		BOT_TOKEN = json.getString("bot_token", "");
 		if(BOT_TOKEN.isBlank()){

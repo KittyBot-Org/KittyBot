@@ -34,6 +34,7 @@ public class Settings{
 	private Duration inactiveDuration;
 	private long djRoleId;
 	private boolean snipesEnabled;
+	private boolean roleSaverEnabled;
 
 	public Settings(GuildsRecord record, Collection<Long> snipeDisabledChannels, Collection<Long> botDisabledChannels, Collection<Long> botIgnoredUsers, Collection<SelfAssignableRole> selfAssignableRoles, Collection<SelfAssignableRoleGroup> selfAssignableRoleGroups, Map<String, Set<Long>> guildInviteRoles){
 		this.guildId = record.getId();
@@ -59,6 +60,7 @@ public class Settings{
 		this.selfAssignableRoles = new HashSet<>(selfAssignableRoles);
 		this.selfAssignableRoleGroups = new HashSet<>(selfAssignableRoleGroups);
 		this.guildInviteRoles = guildInviteRoles;
+		this.roleSaverEnabled = record.getRoleSaverEnabled();
 	}
 
 	public long getGuildId(){
@@ -318,6 +320,14 @@ public class Settings{
 
 	public Set<Long> getInviteRoles(String code){
 		return this.guildInviteRoles.get(code);
+	}
+
+	public void setRoleSaverEnabled(boolean enabled){
+		this.roleSaverEnabled = enabled;
+	}
+
+	public boolean isRoleSaverEnabled(){
+		return this.roleSaverEnabled;
 	}
 
 }
