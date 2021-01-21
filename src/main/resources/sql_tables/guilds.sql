@@ -16,5 +16,6 @@ CREATE TABLE IF NOT EXISTS guilds(
   inactive_duration              INTERVAL NOT NULL,
   inactive_role_enabled          BOOLEAN NOT NULL DEFAULT(false),
   dj_role_id                     BIGINT NOT NULL DEFAULT(-1),
-  snipes_enabled                 BOOLEAN NOT NULL DEFAULT(true)
+  snipes_enabled                 BOOLEAN NOT NULL DEFAULT(true),
+  role_saver_enabled             BOOLEAN NOT NULL DEFAULT(true)
 );
