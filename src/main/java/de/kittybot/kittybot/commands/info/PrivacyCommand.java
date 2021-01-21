@@ -1,25 +1,23 @@
 package de.kittybot.kittybot.commands.info;
 
-import de.kittybot.kittybot.objects.Config;
-import de.kittybot.kittybot.objects.command.ACommand;
-import de.kittybot.kittybot.objects.command.Category;
-import de.kittybot.kittybot.objects.command.CommandContext;
+import de.kittybot.kittybot.slashcommands.application.Category;
+import de.kittybot.kittybot.slashcommands.application.Command;
+import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.utils.Config;
+import de.kittybot.kittybot.utils.MessageUtils;
 
-public class PrivacyCommand extends ACommand{
-
-	public static final String COMMAND = "privacy";
-	public static final String USAGE = "privacy";
-	public static final String DESCRIPTION = "Gives you a link to our privacy policy";
-	protected static final String[] ALIASES = {};
-	protected static final Category CATEGORY = Category.INFORMATIVE;
+@SuppressWarnings("unused")
+public class PrivacyCommand extends Command implements RunnableCommand{
 
 	public PrivacyCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
+		super("privacy", "Gives you a link to our privacy policy", Category.INFORMATION);
 	}
 
 	@Override
-	public void run(CommandContext ctx){
-		sendSuccess(ctx, "You can find our privacy policy here: " + Config.ORIGIN_URL + "/privacy");
+	public void run(Options options, CommandContext ctx){
+		ctx.reply("You can find our privacy policy " + MessageUtils.maskLink("here", Config.ORIGIN_URL + "/privacy"));
 	}
 
 }

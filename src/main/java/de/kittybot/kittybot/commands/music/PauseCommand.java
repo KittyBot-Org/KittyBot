@@ -1,42 +1,31 @@
 package de.kittybot.kittybot.commands.music;
 
-import de.kittybot.kittybot.cache.MusicPlayerCache;
-import de.kittybot.kittybot.objects.command.ACommand;
-import de.kittybot.kittybot.objects.command.Category;
-import de.kittybot.kittybot.objects.command.CommandContext;
+import de.kittybot.kittybot.modules.MusicModule;
+import de.kittybot.kittybot.slashcommands.application.Category;
+import de.kittybot.kittybot.slashcommands.application.Command;
+import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.utils.MusicUtils;
 
-public class PauseCommand extends ACommand{
-
-	public static final String COMMAND = "pause";
-	public static final String USAGE = "pause";
-	public static final String DESCRIPTION = "Pauses the current track";
-	protected static final String[] ALIASES = {};
-	protected static final Category CATEGORY = Category.MUSIC;
+@SuppressWarnings("unused")
+public class PauseCommand extends Command implements RunnableCommand{
 
 	public PauseCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
+		super("pause", "Pauses/Unpauses the currnet track", Category.MUSIC);
 	}
 
 	@Override
-	public void run(CommandContext ctx){
-		var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
-		if(musicPlayer == null){
-			sendError(ctx, "No active music player found");
+	public void run(Options options, CommandContext ctx){
+		var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
+		if(!MusicUtils.checkCommandRequirements(ctx, player)){
 			return;
 		}
-		var player = musicPlayer.getPlayer();
-		var playing = player.getPlayingTrack();
-		if(playing == null){
-			sendError(ctx, "There is currently no song playing");
+		if(!MusicUtils.checkMusicPermissions(ctx, player)){
 			return;
 		}
-		if(!musicPlayer.getRequesterId().equals(ctx.getUser().getId())){
-			sendError(ctx, "You have to be the requester of the song to control it");
-			return;
-		}
-		var paused = !player.isPaused();
-		player.setPaused(paused);
-		sendSuccess(ctx, "Track " + (paused ? "paused" : "resumed"));
+		player.pause();
+		ctx.reply("Toggled pause");
 	}
 
 }

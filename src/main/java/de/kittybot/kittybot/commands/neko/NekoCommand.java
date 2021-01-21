@@ -1,49 +1,57 @@
 package de.kittybot.kittybot.commands.neko;
 
-import de.kittybot.kittybot.cache.GuildSettingsCache;
-import de.kittybot.kittybot.database.Database;
-import de.kittybot.kittybot.objects.command.ACommand;
-import de.kittybot.kittybot.objects.command.Category;
-import de.kittybot.kittybot.objects.command.CommandContext;
-import de.kittybot.kittybot.objects.data.GuildSettings;
-import de.kittybot.kittybot.objects.requests.Requester;
+import de.kittybot.kittybot.modules.RequestModule;
+import de.kittybot.kittybot.modules.SettingsModule;
+import de.kittybot.kittybot.objects.enums.Neko;
+import de.kittybot.kittybot.slashcommands.application.Category;
+import de.kittybot.kittybot.slashcommands.application.Command;
+import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.utils.Colors;
+import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.util.Arrays;
-
-public class NekoCommand extends ACommand{
-
-	public static final String COMMAND = "neko";
-	public static final String DESCRIPTION = "Sends a random/specified neko";
-	protected static final String[] ALIASES = {};
-	protected static final Category CATEGORY = Category.NEKO;
-	private static final String[] TYPES = {"neko", "anal", "blowjob", "cum", "fuck", "pussylick", "solo", "threesome_fff", "threesome_ffm", "threesome_mmf", "yaoi", "yuri"};
-	private static final String TYPE_STRING = String.join("/", TYPES);
-	public static final String USAGE = "neko <" + TYPE_STRING + ">";
+@SuppressWarnings("unused")
+public class NekoCommand extends Command implements RunnableCommand{
 
 	public NekoCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
+		super("neko", "Sends some nekos", Category.NEKO);
+		addOptions(
+			new CommandOptionInteger("type", "The neko type")
+				.required()
+				.addChoices(
+					new NekoCommandOptionChoice(Neko.ANAL),
+					new NekoCommandOptionChoice(Neko.BLOWJOB),
+					new NekoCommandOptionChoice(Neko.CUM),
+					new NekoCommandOptionChoice(Neko.FUCK),
+					new NekoCommandOptionChoice(Neko.PUSSY_LICK),
+					new NekoCommandOptionChoice(Neko.SOLO),
+					new NekoCommandOptionChoice(Neko.THREESOME_FFF),
+					new NekoCommandOptionChoice(Neko.THREESOME_FFM),
+					//new NekoCommandOptionChoice(Neko.THREESOME_MMF),
+					new NekoCommandOptionChoice(Neko.YAOI),
+					new NekoCommandOptionChoice(Neko.YURI)
+				)
+		);
 	}
 
 	@Override
-	public void run(CommandContext ctx){
-		if(!GuildSettingsCache.isNSFWEnabled(ctx.getGuild().getId())){
-			sendError(ctx, "NSFW commands are disabled in this guild");
+	public void run(Options options, CommandContext ctx){
+		if(!ctx.get(SettingsModule.class).isNsfwEnabled(ctx.getGuildId())){
+			ctx.error("NSFW commands are disabled in this guild");
 			return;
 		}
 		if(!ctx.getChannel().isNSFW()){
-			sendError(ctx, "This command is NSFW channel only");
+			ctx.error("This command is nsfw channel only");
 			return;
 		}
-		var args = ctx.getArgs();
-		if(args.length > 0 && (args[0].equals("?") || args[0].equalsIgnoreCase("help"))){
-			sendUsage(ctx);
-			return;
-		}
-		var type = "neko";
-		if(args.length > 0 && Arrays.stream(TYPES).anyMatch(args[0]::equalsIgnoreCase)){
-			type = args[0].toLowerCase();
-		}
-		queue(ctx, image(ctx, Requester.getNeko(true, type, "gif")));
+		var nekoType = options.getInt("type");
+		var neko = Neko.byId(nekoType);
+		ctx.reply(new EmbedBuilder()
+			.setColor(Colors.KITTYBOT_BLUE)
+			.setImage(ctx.get(RequestModule.class).getNeko(neko.isNsfw(), neko.getName(), "gif"))
+		);
 	}
 
 }

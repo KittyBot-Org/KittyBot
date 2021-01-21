@@ -1,10 +1,9 @@
 CREATE TABLE IF NOT EXISTS reactive_messages(
-  channel_id varchar(18) NOT NULL,
-  message_id varchar(18) NOT NULL,
-  user_id    varchar(18) NOT NULL,
-  guild_id   varchar(18) NOT NULL,
-  command_id varchar(18) NOT NULL,
-  command    varchar(18) NOT NULL,
-  allowed    varchar(18) NOT NULL,
-PRIMARY KEY(message_id, user_id, guild_id)
+  id           BIGSERIAL PRIMARY KEY NOT NULL,
+  guild_id     BIGINT NOT NULL REFERENCES guilds(id) ON DELETE CASCADE,
+  user_id      BIGINT NOT NULL,
+  channel_id   BIGINT NOT NULL,
+  message_id   BIGINT NOT NULL,
+  command_path VARCHAR(255) NOT NULL,
+  allowed      BIGINT NOT NULL DEFAULT(-1)
 );
