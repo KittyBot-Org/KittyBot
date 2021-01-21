@@ -81,11 +81,11 @@ public class DashboardSessionModule extends Module{
 	private Set<Long> retrieveUserGuilds(long userId){
 		var action = retrieveGuilds(userId);
 		if(action == null){
-			System.out.println("null 1");
 			return null;
 		}
 		try{
-			var userGuilds = action.complete().stream().filter(guild -> guild.hasPermission(Permission.ADMINISTRATOR)).collect(Collectors.toSet());
+			var guildCache = this.modules.getShardManager().getGuildCache();
+			var userGuilds = action.complete().stream().filter(guild -> guild.hasPermission(Permission.ADMINISTRATOR) && guildCache.getElementById(guild.getIdLong()) != null).collect(Collectors.toSet());
 			userGuilds.forEach(guild -> this.guilds.put(guild.getIdLong(), new GuildData(guild)));
 			return userGuilds.stream().map(OAuth2Guild::getIdLong).collect(Collectors.toSet());
 		}
@@ -119,7 +119,6 @@ public class DashboardSessionModule extends Module{
 	public OAuth2Action<List<OAuth2Guild>> retrieveGuilds(long userId){
 		var session = get(userId);
 		if(session == null){
-			System.out.println("null 2");
 			return null;
 		}
 		return this.oAuth2Client.getGuilds(session);

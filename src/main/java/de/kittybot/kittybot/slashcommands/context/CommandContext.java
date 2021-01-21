@@ -82,7 +82,7 @@ public class CommandContext extends Context{
 	}
 
 	public void followup(FollowupMessage message){
-		this.modules.get(InteractionsModule.class).followup(this.interaction, message).queue(null, error -> System.out.println(error.getMessage()));
+		this.modules.get(InteractionsModule.class).followup(this.interaction, message).queue(null);
 	}
 
 	public void followupError(String error){

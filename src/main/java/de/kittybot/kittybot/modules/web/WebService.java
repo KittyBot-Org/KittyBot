@@ -159,7 +159,6 @@ public class WebService extends Module{
 			);
 		}
 		catch(ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | IllegalArgumentException e){
-			System.out.println(e.getMessage());
 			throw new UnauthorizedResponse("provided token is not valid");
 		}
 	}
