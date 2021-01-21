@@ -293,20 +293,20 @@ public class SettingsCommand extends Command{
 		private static class AddCommand extends SubCommand{
 
 			public AddCommand(){
-				super("add", "Adds a new stream announcement");
+				super("add", "Adds a new stream announcement for twitch");
 				addOptions(
-					new CommandOptionInteger("service", "Which service the stream is from").required()
+					/*new CommandOptionInteger("service", "Which service the stream is from").required()
 						.addChoices(
 							new CommandOptionChoice<>("twitch", 1)/*,
-										new CommandOptionChoice<>("youtube", 2)*/
-						),
+										new CommandOptionChoice<>("youtube", 2)
+						),*/
 					new CommandOptionString("username", "The username of the streamer").required()
 				);
 			}
 
 			@Override
 			public void run(Options options, CommandContext ctx){
-				var type = StreamType.byId(options.getInt("service"));
+				var type = StreamType.TWITCH;//StreamType.byId(options.getInt("service"));
 				var username = options.getString("username");
 				var user = ctx.get(StreamAnnouncementModule.class).add(username, ctx.getGuildId(), type);
 				if(user == null){
@@ -323,18 +323,18 @@ public class SettingsCommand extends Command{
 			public RemoveCommand(){
 				super("remove", "Removes a stream announcement");
 				addOptions(
-					new CommandOptionInteger("service", "Which service the stream is from").required()
+					/*new CommandOptionInteger("service", "Which service the stream is from").required()
 						.addChoices(
 							new CommandOptionChoice<>("twitch", 1)/*,
-							new CommandOptionChoice<>("youtube", 0)*/
-						),
+							new CommandOptionChoice<>("youtube", 0)
+						),*/
 					new CommandOptionString("username", "The username of the streamer").required()
 				);
 			}
 
 			@Override
 			public void run(Options options, CommandContext ctx){
-				var type = StreamType.byId(options.getInt("service"));
+				var type = StreamType.TWITCH;//StreamType.byId(options.getInt("service"));
 				var username = options.getString("username");
 				var success = ctx.get(StreamAnnouncementModule.class).remove(username, ctx.getGuildId(), type);
 				if(!success){
