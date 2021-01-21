@@ -53,14 +53,9 @@ public class WebService extends Module{
 		if(Config.BACKEND_PORT == -1){
 			return;
 		}
-		this.javalin = Javalin.create(config -> {
-			if(Config.ORIGIN_URL.isBlank()){
-				config.enableCorsForOrigin(Config.ORIGIN_URL);
-			}
-			else{
-				config.enableCorsForAllOrigins();
-			}
-		}).routes(() -> {
+		this.javalin = Javalin.create(config -> 
+			config.enableCorsForOrigin(Config.ORIGIN_URL)
+		).routes(() -> {
 			path("/discord_login", () ->
 				get(new GetDiscordLoginRoute(this.modules))
 			);
