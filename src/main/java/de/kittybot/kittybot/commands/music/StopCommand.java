@@ -1,30 +1,31 @@
 package de.kittybot.kittybot.commands.music;
 
-import de.kittybot.kittybot.cache.MusicPlayerCache;
-import de.kittybot.kittybot.objects.command.ACommand;
-import de.kittybot.kittybot.objects.command.Category;
-import de.kittybot.kittybot.objects.command.CommandContext;
+import de.kittybot.kittybot.modules.MusicModule;
+import de.kittybot.kittybot.slashcommands.application.Category;
+import de.kittybot.kittybot.slashcommands.application.Command;
+import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.utils.MusicUtils;
 
-public class StopCommand extends ACommand{
-
-	public static final String COMMAND = "stop";
-	public static final String USAGE = "stop";
-	public static final String DESCRIPTION = "Stops me from playing stuff";
-	protected static final String[] ALIASES = {"quit", "stopp", "stfu"};
-	protected static final Category CATEGORY = Category.MUSIC;
+@SuppressWarnings("unused")
+public class StopCommand extends Command implements RunnableCommand{
 
 	public StopCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
+		super("stop", "Stops playing music", Category.MUSIC);
 	}
 
 	@Override
-	public void run(CommandContext ctx){
-		if(MusicPlayerCache.getMusicPlayer(ctx.getGuild()) == null){
-			sendError(ctx, "No active music player found");
+	public void run(Options options, CommandContext ctx){
+		var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
+		if(!MusicUtils.checkCommandRequirements(ctx, player)){
 			return;
 		}
-		MusicPlayerCache.destroyMusicPlayer(ctx.getGuild());
-		sendSuccess(ctx, "Successfully disconnected");
+		if(!MusicUtils.checkMusicPermissions(ctx, player)){
+			return;
+		}
+		ctx.get(MusicModule.class).destroy(ctx.getGuildId());
+		ctx.reply("Bye bye");
 	}
 
 }

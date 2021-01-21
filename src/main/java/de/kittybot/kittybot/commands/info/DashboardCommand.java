@@ -1,26 +1,23 @@
 package de.kittybot.kittybot.commands.info;
 
-import de.kittybot.kittybot.objects.Config;
-import de.kittybot.kittybot.objects.command.ACommand;
-import de.kittybot.kittybot.objects.command.Category;
-import de.kittybot.kittybot.objects.command.CommandContext;
+import de.kittybot.kittybot.slashcommands.application.Category;
+import de.kittybot.kittybot.slashcommands.application.Command;
+import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
 
-public class DashboardCommand extends ACommand{
-
-	public static final String COMMAND = "dashboard";
-	public static final String USAGE = "dashboard";
-	public static final String DESCRIPTION = "Shows you our dashboard";
-	protected static final String[] ALIASES = {};
-	protected static final Category CATEGORY = Category.INFORMATIVE;
+@SuppressWarnings("unused")
+public class DashboardCommand extends Command implements RunnableCommand{
 
 	public DashboardCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
+		super("dashboard", "Shows you our dashboard", Category.INFORMATION);
 	}
 
 	@Override
-	public void run(CommandContext ctx){
-		sendSuccess(ctx, "You can find our dashboard " + MessageUtils.maskLink("here", Config.ORIGIN_URL));
+	public void run(Options options, CommandContext ctx){
+		ctx.reply("You can find our dashboard " + MessageUtils.maskLink("here", Config.ORIGIN_URL));
 	}
 
 }

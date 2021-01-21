@@ -18,7 +18,17 @@
         </encoder>
     </appender>
 
+    <logger name="com.github.twitch4j" level="INFO"/>
+
     <logger name="spark.http.matching.MatcherFilter" level="info"/>
+
+    <logger name="org.jooq" level="warn" additivity="false">
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+    <logger name="io.javalin" level="warn" additivity="false">
+        <appender-ref ref="STDOUT" />
+    </logger>
 
     <root level="INFO">
         <appender-ref ref="STDOUT"/>

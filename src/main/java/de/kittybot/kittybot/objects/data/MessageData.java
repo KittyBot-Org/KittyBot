@@ -6,31 +6,31 @@ import java.time.OffsetDateTime;
 
 public class MessageData{
 
-	private final String messageId;
-	private final String authorId;
+	private final long messageId;
+	private final long authorId;
 	private final String content;
-	private final String channelId;
-	private final String guildId;
+	private final long channelId;
+	private final long guildId;
 	private final String jumpUrl;
 	private final OffsetDateTime timeCreated;
 	private OffsetDateTime timeEdited;
 
-	public MessageData(final Message message){
-		this.messageId = message.getId();
-		this.authorId = message.getAuthor().getId();
+	public MessageData(Message message){
+		this.messageId = message.getIdLong();
+		this.authorId = message.getAuthor().getIdLong();
 		this.content = message.getContentRaw();
-		this.channelId = message.getTextChannel().getId();
-		this.guildId = message.getGuild().getId();
+		this.channelId = message.getTextChannel().getIdLong();
+		this.guildId = message.getGuild().getIdLong();
 		this.jumpUrl = message.getJumpUrl();
 		this.timeCreated = message.getTimeCreated();
 		this.timeEdited = message.getTimeEdited();
 	}
 
-	public String getId(){
+	public Long getId(){
 		return this.messageId;
 	}
 
-	public String getAuthorId(){
+	public Long getAuthorId(){
 		return this.authorId;
 	}
 
@@ -38,11 +38,11 @@ public class MessageData{
 		return this.content;
 	}
 
-	public String getChannelId(){
+	public Long getChannelId(){
 		return this.channelId;
 	}
 
-	public String getGuildId(){
+	public Long getGuildId(){
 		return this.guildId;
 	}
 
