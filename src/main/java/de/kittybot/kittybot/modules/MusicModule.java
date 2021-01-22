@@ -37,14 +37,22 @@ public class MusicModule extends Module implements Serializable{
 
 	@Override
 	public void onGuildMessageReactionAdd(@NotNull GuildMessageReactionAddEvent event){
-		var messageId = event.getMessageIdLong();
+		if(event.getUserIdLong() == Config.BOT_ID){
+			return;
+		}
 		var player = this.musicPlayers.get(event.getGuild().getIdLong());
 		if(player == null){
 			return;
 		}
+		var member = event.getMember();
+
+		var voiceState = member.getVoiceState();
+		if(voiceState == null || voiceState.getChannel() == null || player.getLink().getChannelId() != voiceState.getChannel().getIdLong()){
+			return;
+		}
+		var messageId = event.getMessageIdLong();
 		var currentTrack = player.getPlayingTrack();
 		var userId = event.getUserIdLong();
-		var member = event.getMember();
 		var requesterId = currentTrack == null ? -1L : currentTrack.getUserData(Long.class);
 		var settings = this.modules.get(SettingsModule.class).getSettings(event.getGuild().getIdLong());
 
