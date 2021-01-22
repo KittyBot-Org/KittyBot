@@ -53,18 +53,17 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		this.link = link;
 		this.player = link.getPlayer();
 		this.player.addListener(this);
-		setVolume(20);
 		this.guildId = guildId;
 		this.channelId = channelId;
 		this.queue = new LinkedList<>();
 		this.history = new LinkedList<>();
 		this.controllerMessageId = -1;
-		this.lastMessageId = -1;
+		this.lastMessageId = -2;
 		this.future = null;
 	}
 
 	public void setVolume(int volume){
-		player.getFilters().setVolume((float) volume / 100).commit();
+		player.getFilters().setVolume((float) volume / 100.0f).commit();
 	}
 
 	public void loadItem(CommandContext ctx, String rawQuery, SearchProvider searchProvider){
@@ -308,7 +307,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 			return;
 		}
 		var channel = getTextChannel();
-		if(channel == null){
+		if(channel == null || !channel.canTalk()){
 			return;
 		}
 		channel.deleteMessageById(this.controllerMessageId).queue();
@@ -395,8 +394,15 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	}
 
 	public void increaseVolume(int volumeStep){
-		var vol = this.player.getFilters().getVolume();
-		player.getFilters().setVolume(vol + (float) (volumeStep / 100)).commit();
+		var newVol = (int) (this.player.getFilters().getVolume() * 100) + volumeStep;
+		if(newVol <= 0){
+			newVol = 10;
+		}
+		if(newVol > 100){
+			newVol = 100;
+		}
+		player.getFilters().setVolume(newVol / 100.0f).commit();
+		updateMusicController();
 	}
 
 	public void setLastMessageId(long lastMessageId){
