@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface CommandOptionsHolder{
 
-	List<CommandOption> getOptions();
+	List<CommandOption<?>> getOptions();
 
 }

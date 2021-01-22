@@ -4,12 +4,14 @@ import de.kittybot.kittybot.slashcommands.application.CommandOption;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionType;
 import de.kittybot.kittybot.slashcommands.application.PermissionHolder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.utils.data.DataObject;
 
+import java.io.DataOutput;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SubCommandGroup extends CommandOption implements PermissionHolder{
+public class SubCommandGroup extends CommandOption<Void> implements PermissionHolder{
 
 	private final Set<Permission> permissions;
 	private boolean devOnly;
@@ -34,6 +36,11 @@ public class SubCommandGroup extends CommandOption implements PermissionHolder{
 
 	public Set<Permission> getPermissions(){
 		return this.permissions;
+	}
+
+	@Override
+	public Void parseValue(Object value){
+		throw new UnsupportedOperationException("This is SubCommand group");
 	}
 
 }

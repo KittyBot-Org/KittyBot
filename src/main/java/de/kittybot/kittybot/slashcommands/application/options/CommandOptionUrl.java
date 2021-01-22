@@ -4,19 +4,24 @@ import de.kittybot.kittybot.objects.exceptions.OptionParseException;
 import de.kittybot.kittybot.slashcommands.application.CommandOption;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionType;
 
-public class CommandOptionString extends CommandOption<String>{
+import java.net.MalformedURLException;
+import java.net.URL;
 
-	public CommandOptionString(String name, String description){
+public class CommandOptionUrl extends CommandOption<String>{
+
+	public CommandOptionUrl(String name, String description){
 		super(CommandOptionType.STRING, name, description);
 	}
 
 	@Override
 	public String parseValue(Object value){
 		try{
-			return (String) value;
+			var url = (String) value;
+			new URL(url);
+			return url;
 		}
-		catch(ClassCastException e){
-			throw new OptionParseException("Failed to parse option as string");
+		catch(ClassCastException | MalformedURLException e){
+			throw new OptionParseException("Failed to parse option as url");
 		}
 	}
 

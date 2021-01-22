@@ -4,10 +4,10 @@ import de.kittybot.kittybot.objects.exceptions.OptionParseException;
 import de.kittybot.kittybot.slashcommands.application.CommandOption;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionType;
 
-public class CommandOptionUser extends CommandOption<Long>{
+public class CommandOptionLong extends CommandOption<Long>{
 
-	public CommandOptionUser(String name, String description){
-		super(CommandOptionType.USER, name, description);
+	public CommandOptionLong(String name, String description){
+		super(CommandOptionType.STRING, name, description);
 	}
 
 	@Override
@@ -16,7 +16,7 @@ public class CommandOptionUser extends CommandOption<Long>{
 			return Long.parseLong((String) value);
 		}
 		catch(ClassCastException | NumberFormatException e){
-			throw new OptionParseException("Failed to parse option as user");
+			throw new OptionParseException("Failed to parse option as long");
 		}
 	}
 

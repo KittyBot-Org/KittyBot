@@ -16,7 +16,7 @@ public class PlayCommand extends Command implements RunnableCommand{
 	public PlayCommand(){
 		super("play", "Plays a link or searches on yt/sc", Category.MUSIC);
 		addOptions(
-			new CommandOptionString("link", "A link to play from").required(),
+			new CommandOptionString("query", "A link or search query to play from").required(),
 			new CommandOptionString("search-provider", "Which search provider use")
 				.addChoices(
 					new CommandOptionChoice<>("youtube", "yt"),
@@ -35,7 +35,7 @@ public class PlayCommand extends Command implements RunnableCommand{
 		if(options.has("search-provider")){
 			searchProvider = SearchProvider.getByShortname(options.getString("search-provider"));
 		}
-		player.loadItem(ctx, options.getString("link"), searchProvider);
+		player.loadItem(ctx, options.getString("query"), searchProvider);
 	}
 
 }

@@ -24,7 +24,6 @@ public class GroupsCommand extends Command{
 			new RemoveCommand(),
 			new ListCommand()
 		);
-		addPermissions(Permission.ADMINISTRATOR);
 	}
 
 	private static class AddCommand extends SubCommand{
@@ -35,6 +34,7 @@ public class GroupsCommand extends Command{
 				new CommandOptionString("name", "The self assignable role to add").required(),
 				new CommandOptionInteger("max-roles", "The amount of max roles you can get from this group")
 			);
+			addPermissions(Permission.ADMINISTRATOR);
 		}
 
 		@Override
@@ -54,6 +54,7 @@ public class GroupsCommand extends Command{
 			addOptions(
 				new CommandOptionString("name", "The self assignable role to remove").required()
 			);
+			addPermissions(Permission.ADMINISTRATOR);
 		}
 
 		@Override

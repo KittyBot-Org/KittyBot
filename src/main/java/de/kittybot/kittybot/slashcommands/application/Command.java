@@ -10,7 +10,7 @@ public abstract class Command implements CommandOptionsHolder, PermissionHolder{
 	private final String name, description;
 	private final Category category;
 	private final Set<Permission> permissions;
-	private final List<CommandOption> options;
+	private final List<CommandOption<?>> options;
 	private boolean devOnly;
 
 	protected Command(String name, String description, Category category){
@@ -38,7 +38,7 @@ public abstract class Command implements CommandOptionsHolder, PermissionHolder{
 		return this.permissions;
 	}
 
-	protected void addOptions(CommandOption... options){
+	protected void addOptions(CommandOption<?>... options){
 		this.options.addAll(List.of(options));
 	}
 
@@ -54,7 +54,7 @@ public abstract class Command implements CommandOptionsHolder, PermissionHolder{
 		return this.category;
 	}
 
-	public List<CommandOption> getOptions(){
+	public List<CommandOption<?>> getOptions(){
 		return this.options;
 	}
 

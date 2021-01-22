@@ -2,10 +2,7 @@ package de.kittybot.kittybot.commands.admin;
 
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
-import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
-import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
-import de.kittybot.kittybot.slashcommands.application.options.CommandOptionUser;
-import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
+import de.kittybot.kittybot.slashcommands.application.options.*;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.utils.MessageUtils;
@@ -70,7 +67,7 @@ public class BanCommand extends Command{
 		public DeleteCommand(){
 			super("delete", "Deletes a ban");
 			addOptions(
-				new CommandOptionString("user-id", "The user-id to unban").required(),
+				new CommandOptionLong("user-id", "The user-id to unban").required(),
 				new CommandOptionString("reason", "The unban reason")
 			);
 		}

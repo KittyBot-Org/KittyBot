@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.modules;
 
 import club.minnced.discord.webhook.receive.ReadonlyMessage;
+import de.kittybot.kittybot.objects.exceptions.OptionParseException;
 import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionsHolder;
 import de.kittybot.kittybot.slashcommands.application.PermissionHolder;
@@ -11,6 +12,7 @@ import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import de.kittybot.kittybot.slashcommands.interaction.InteractionOptionsHolder;
 import de.kittybot.kittybot.slashcommands.interaction.response.FollowupMessage;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionRespondAction;
+import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponseType;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.exporters.Metrics;
 import net.dv8tion.jda.api.Permission;
@@ -82,7 +84,12 @@ public class InteractionsModule extends Module{
 		}
 
 		if(applicationHolder instanceof RunnableCommand){
-			((RunnableCommand) applicationHolder).run(new Options(holder.getOptions()), new CommandContext(interaction, this.modules));
+			try{
+				((RunnableCommand) applicationHolder).run(new Options(applicationHolder.getOptions(), holder.getOptions()), new CommandContext(interaction, this.modules));
+			}
+			catch(OptionParseException e){
+				reply(interaction).ephemeral().content(e.getMessage()).type(InteractionResponseType.ACKNOWLEDGE).queue();
+			}
 			return;
 		}
 

@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -78,8 +79,9 @@ public class NotificationModule extends Module{
 							.setAuthor("Notification", Category.NOTIFICATION.getUrl(), Category.NOTIFICATION.getEmoteUrl())
 							.setColor(Colors.NOTIFICATION)
 							.setDescription(notification.getContent())
-							.addField("Message", MessageUtils.maskLink("click here", MessageUtils.getMessageLink(notification.getGuildId(), notification.getChannelId(), notification.getMessageId())), false)
+							//.addField("Message", MessageUtils.maskLink("click here", MessageUtils.getMessageLink(notification.getGuildId(), notification.getChannelId(), notification.getMessageId())), false)
 							.setFooter(member.getEffectiveName(), member.getUser().getEffectiveAvatarUrl())
+							.setTimestamp(Instant.now())
 							.build()
 					)
 				).queue();
