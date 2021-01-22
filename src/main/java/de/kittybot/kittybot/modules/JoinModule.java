@@ -135,6 +135,7 @@ public class JoinModule extends Module{
 			new Placeholder("user_tag", user.getAsTag()),
 			new Placeholder("user_name", user.getName())
 		);
+		sendAnnouncementMessage(event.getGuild(), settings.getAnnouncementChannelId(), message);
 	}
 
 	@Override
@@ -153,6 +154,7 @@ public class JoinModule extends Module{
 			new Placeholder("invite_code", invite == null ? "unknown" : invite.getCode()),
 			new Placeholder("invite_link", invite == null ? "unknown" : INVITE_CODE_PREFIX + invite.getCode())
 		);
+		sendAnnouncementMessage(event.getGuild(), settings.getAnnouncementChannelId(), message);
 	}
 
 	public String getRandomMessage(List<String> messages){

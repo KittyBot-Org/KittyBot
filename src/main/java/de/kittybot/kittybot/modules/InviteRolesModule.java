@@ -27,19 +27,24 @@ public class InviteRolesModule extends Module{
 
 	@Override
 	public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event){
-		Metrics.ACTIONS.labels("invite_roles").inc();
 		var userId = event.getUser().getIdLong();
-		var invite = this.modules.get(InviteModule.class).getUsedInvite(event.getGuild().getIdLong(), userId);
+		var guildId = event.getGuild().getIdLong();
+		var invite = this.modules.get(InviteModule.class).getUsedInvite(guildId, userId);
 		if(invite == null){
 			return;
 		}
-		var roles = this.modules.get(SettingsModule.class).getInviteRoles(event.getGuild().getIdLong(), invite.getCode());
+		var roles = this.modules.get(SettingsModule.class).getInviteRoles(guildId, invite.getCode());
 		if(roles == null){
 			return;
 		}
+		Metrics.ACTIONS.labels("invite_roles").inc();
+		var selfMember = event.getGuild().getSelfMember();
 		for(var roleId : roles){
 			var role = event.getGuild().getRoleById(roleId);
 			if(role == null){
+				continue;
+			}
+			if(!selfMember.canInteract(role)){
 				continue;
 			}
 			event.getGuild().addRoleToMember(userId, role).queue();
