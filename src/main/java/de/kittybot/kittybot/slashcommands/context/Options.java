@@ -2,7 +2,6 @@ package de.kittybot.kittybot.slashcommands.context;
 
 import de.kittybot.kittybot.slashcommands.application.CommandOption;
 import de.kittybot.kittybot.slashcommands.interaction.InteractionDataOption;
-import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.ListedEmote;
 import net.dv8tion.jda.api.requests.RestAction;
@@ -32,13 +31,13 @@ public class Options{
 		return this.options.isEmpty();
 	}
 
-	@SuppressWarnings("unchecked")
-	private  <T> T getValue(String name, Class<T> clazz){
-		return (T) this.definedOptions.get(name).parseValue(this.options.get(name).getValue());
-	}
-
 	public long getLong(String name){
 		return getValue(name, Long.class);
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T> T getValue(String name, Class<T> clazz){
+		return (T) this.definedOptions.get(name).parseValue(this.options.get(name).getValue());
 	}
 
 	public int getInt(String name){
@@ -66,12 +65,12 @@ public class Options{
 		return getValue(name, Emote.class);
 	}*/
 
-	public long getEmoteId(String name){
-		return getValue(name, Long.class);
-	}
-
 	public RestAction<ListedEmote> getEmote(Guild guild, String name){
 		return guild.retrieveEmoteById(getEmoteId(name));
+	}
+
+	public long getEmoteId(String name){
+		return getValue(name, Long.class);
 	}
 
 	/*

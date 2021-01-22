@@ -151,13 +151,13 @@ public class RequestModule extends Module{
 		executeAsync(requestBuilder.build(), api);
 	}
 
+	public void executeAsync(Request request, API api){
+		executeAsync(request, api, null, null);
+	}
+
 	public void retrieveUrlContent(String url, BiConsumer<Call, Response> success, BiConsumer<Call, Response> error){
 		this.requestBuilder.url(url).get();
 		executeAsync(this.requestBuilder.build(), success, error);
-	}
-
-	public void executeAsync(Request request, API api){
-		executeAsync(request, api, null, null);
 	}
 
 }

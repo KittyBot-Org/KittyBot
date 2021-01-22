@@ -5,7 +5,6 @@ import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.objects.settings.Notification;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.utils.Colors;
-import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import org.jetbrains.annotations.NotNull;

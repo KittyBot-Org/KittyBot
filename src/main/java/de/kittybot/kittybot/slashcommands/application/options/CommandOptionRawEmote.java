@@ -4,7 +4,6 @@ import de.kittybot.kittybot.objects.exceptions.OptionParseException;
 import de.kittybot.kittybot.slashcommands.application.CommandOption;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionType;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.utils.MiscUtil;
 
 public class CommandOptionRawEmote extends CommandOption<String>{
 

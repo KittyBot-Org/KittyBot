@@ -4,9 +4,7 @@ import de.kittybot.kittybot.slashcommands.application.CommandOption;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionType;
 import de.kittybot.kittybot.slashcommands.application.PermissionHolder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.utils.data.DataObject;
 
-import java.io.DataOutput;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;

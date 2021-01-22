@@ -13,7 +13,7 @@ public class CommandOptionChannel extends CommandOption<Long>{
 	@Override
 	public Long parseValue(Object value){
 		try{
-			return Long.parseLong((String)value);
+			return Long.parseLong((String) value);
 		}
 		catch(ClassCastException | NumberFormatException e){
 			throw new OptionParseException("Failed to parse option as channel");

@@ -11,7 +11,6 @@ import de.kittybot.kittybot.utils.Config;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import static de.kittybot.kittybot.utils.MessageUtils.maskLink;
@@ -53,7 +52,7 @@ public class HastebinCommand extends Command implements RunnableCommand{
 						ctx.error("Error while getting body data from link");
 					}
 				}
-				,(call, response) -> ctx.error("Error while retrieving data from link"));
+				, (call, response) -> ctx.error("Error while retrieving data from link"));
 			return;
 		}
 		ctx.getChannel().getIterableHistory().takeAsync(25).thenAcceptAsync(messages -> {

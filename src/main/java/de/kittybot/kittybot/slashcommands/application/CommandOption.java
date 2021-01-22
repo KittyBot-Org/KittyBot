@@ -26,13 +26,13 @@ public abstract class CommandOption<T> implements CommandOptionsHolder{
 		this.options = new ArrayList<>();
 	}
 
-	public abstract T parseValue(Object value);
-
 	public static DataArray toJSON(Collection<CommandOption<?>> options){
 		return DataArray.fromCollection(
 			options.stream().map(CommandOption::toJSON).collect(Collectors.toList())
 		);
 	}
+
+	public abstract T parseValue(Object value);
 
 	public CommandOption<?> addChoices(CommandOptionChoice<?>... choices){
 		this.choices.addAll(List.of(choices));
