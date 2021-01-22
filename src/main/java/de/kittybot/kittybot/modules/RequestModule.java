@@ -58,7 +58,6 @@ public class RequestModule extends Module{
 
 			@Override
 			public void onResponse(@NotNull Call call, @NotNull Response response){
-				var requestUrl = call.request().url();
 				var code = response.code();
 				if(code != 200){
 					var stringBody = "null";
@@ -69,10 +68,11 @@ public class RequestModule extends Module{
 					}
 					catch(IOException ignored){
 					}
-					LOG.warn("Failed to send a request to {} | code: {} | response: {}", requestUrl, code, stringBody);
+					LOG.warn("Failed to send a request to {} | code: {} | response: {}", call.request().url(), code, stringBody);
 					if(error != null){
 						error.accept(call, response);
 					}
+					response.close();
 					return;
 				}
 				if(api != null){
@@ -81,6 +81,7 @@ public class RequestModule extends Module{
 				if(success != null){
 					success.accept(call, response);
 				}
+				response.close();
 			}
 
 		});

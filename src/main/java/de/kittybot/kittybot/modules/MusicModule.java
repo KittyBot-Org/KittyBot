@@ -4,23 +4,89 @@ import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.objects.music.MusicPlayer;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.utils.Config;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MusicModule extends Module{
+public class MusicModule extends Module implements Serializable{
 
 	private Map<Long, MusicPlayer> musicPlayers;
 
 	@Override
 	public void onEnable(){
 		this.musicPlayers = new HashMap<>();
+	}
+
+	@Override
+	public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event){
+		var player = this.musicPlayers.get(event.getGuild().getIdLong());
+		if(player != null){
+			player.setLastMessageId(event.getMessageIdLong());
+		}
+	}
+
+	@Override
+	public void onGuildMessageReactionAdd(@NotNull GuildMessageReactionAddEvent event){
+		var messageId = event.getMessageIdLong();
+		var player = this.musicPlayers.get(event.getGuild().getIdLong());
+		if(player == null){
+			return;
+		}
+		var currentTrack = player.getPlayingTrack();
+		var userId = event.getUserIdLong();
+		var member = event.getMember();
+		var requesterId = currentTrack == null ? -1L : currentTrack.getUserData(Long.class);
+		var settings = this.modules.get(SettingsModule.class).getSettings(event.getGuild().getIdLong());
+
+		if(messageId != player.getControllerMessageId()){
+			return;
+		}
+		switch(event.getReactionEmote().getAsReactionCode()){
+			case "\u2B05\uFE0F":// ⬅
+				if(requesterId == userId || member.hasPermission(Permission.ADMINISTRATOR) || settings.hasDJRole(member)){
+					player.previous();
+					player.setPaused(false);
+				}
+				break;
+			case "\u27A1\uFE0F":// ➡
+				if(requesterId == userId || member.hasPermission(Permission.ADMINISTRATOR) || settings.hasDJRole(member)){
+					player.next();
+					player.setPaused(false);
+				}
+				break;
+			case "<:PlayPause:744945002416963634>"://play pause
+				if(requesterId == userId || member.hasPermission(Permission.ADMINISTRATOR) || settings.hasDJRole(member)){
+					player.pause();
+				}
+				break;
+			case "\uD83D\uDD00":// 🔀
+				if(member.hasPermission(Permission.ADMINISTRATOR) || settings.hasDJRole(member)){
+					player.shuffle();
+				}
+				break;
+			case "\uD83D\uDD09":// 🔉
+				player.increaseVolume(-10);
+				break;
+			case "\uD83D\uDD0A":// 🔊
+				player.increaseVolume(10);
+				break;
+			case "\u274C":// ❌
+				if(requesterId == userId || member.hasPermission(Permission.ADMINISTRATOR) || settings.hasDJRole(member)){
+					destroy(event.getGuild().getIdLong());
+				}
+				break;
+		}
+		event.getReaction().removeReaction(event.getUser()).queue();
 	}
 
 	@Override

@@ -45,6 +45,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	private final long guildId;
 	private final long channelId;
 	private long controllerMessageId;
+	private long lastMessageId;
 	private ScheduledFuture<?> future;
 
 	public MusicPlayer(Modules modules, JdaLink link, long guildId, long channelId){
@@ -58,6 +59,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		this.queue = new LinkedList<>();
 		this.history = new LinkedList<>();
 		this.controllerMessageId = -1;
+		this.lastMessageId = -1;
 		this.future = null;
 	}
 
@@ -227,28 +229,6 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		this.future = this.modules.getScheduler().schedule(() -> this.modules.get(MusicModule.class).destroy(this.guildId), 3, TimeUnit.MINUTES);
 	}
 
-	public void sendMusicController(){
-		var channel = getTextChannel();
-		if(channel == null){
-			return;
-		}
-		channel.deleteMessageById(this.controllerMessageId).queue();
-		var embed = buildMusicController();
-		if(!channel.canTalk()){
-			return;
-		}
-		channel.sendMessage(embed.build()).queue(message -> {
-			this.controllerMessageId = message.getIdLong();
-			/*message.addReaction(Emoji.VOLUME_DOWN.getStripped()).queue();
-			message.addReaction(Emoji.VOLUME_UP.getStripped()).queue();
-			message.addReaction(Emoji.ARROW_LEFT.getStripped()).queue();
-			message.addReaction(Emoji.PLAY_PAUSE.getStripped()).queue();
-			message.addReaction(Emoji.ARROW_RIGHT.getStripped()).queue();
-			message.addReaction(Emoji.SHUFFLE.getStripped()).queue();
-			message.addReaction(Emoji.X.getStripped()).queue();*/
-		});
-	}
-
 	public void updateMusicController(){
 		var channel = getTextChannel();
 		if(channel == null){
@@ -314,6 +294,40 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		return thumbnail;
 	}
 
+	public void previous(){
+		var previous = this.history.pollLast();
+		if(previous == null){
+			return;
+		}
+		this.player.playTrack(previous);
+	}
+
+	public void sendMusicController(){
+		if(this.lastMessageId == this.controllerMessageId){
+			updateMusicController();
+			return;
+		}
+		var channel = getTextChannel();
+		if(channel == null){
+			return;
+		}
+		channel.deleteMessageById(this.controllerMessageId).queue();
+		var embed = buildMusicController();
+		if(!channel.canTalk()){
+			return;
+		}
+		channel.sendMessage(embed.build()).queue(message -> {
+			this.controllerMessageId = message.getIdLong();
+			message.addReaction(Emoji.VOLUME_DOWN.getStripped()).queue();
+			message.addReaction(Emoji.VOLUME_UP.getStripped()).queue();
+			message.addReaction(Emoji.ARROW_LEFT.getStripped()).queue();
+			message.addReaction(Emoji.PLAY_PAUSE.getStripped()).queue();
+			message.addReaction(Emoji.ARROW_RIGHT.getStripped()).queue();
+			message.addReaction(Emoji.SHUFFLE.getStripped()).queue();
+			message.addReaction(Emoji.X.getStripped()).queue();
+		});
+	}
+
 	public void cancelDestroy(){
 		this.player.setPaused(false);
 		if(this.future == null){
@@ -364,6 +378,10 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		return removed;
 	}
 
+	public long getControllerMessageId(){
+		return this.controllerMessageId;
+	}
+
 	public LinkedList<AudioTrack> getQueue(){
 		return this.queue;
 	}
@@ -374,6 +392,15 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	public LavalinkPlayer getPlayer(){
 		return this.player;
+	}
+
+	public void increaseVolume(int volumeStep){
+		var vol = this.player.getFilters().getVolume();
+		player.getFilters().setVolume(vol + (float) (volumeStep / 100)).commit();
+	}
+
+	public void setLastMessageId(long lastMessageId){
+		this.lastMessageId = lastMessageId;
 	}
 
 }

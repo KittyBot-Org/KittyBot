@@ -469,7 +469,7 @@ public class SettingsModule extends Module{
 			ctx.values(group.getGuildId(), group.getName(), group.getMaxRoles());
 		}
 		var res = ctx.returningResult(SELF_ASSIGNABLE_ROLE_GROUPS.ID).fetch();
-		
+
 		var i = 0;
 		for(var group : groups){
 			group.setId(res.get(i).get(SELF_ASSIGNABLE_ROLE_GROUPS.ID));

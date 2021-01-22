@@ -1,5 +1,8 @@
 package de.kittybot.kittybot.modules;
 
+import de.kittybot.kittybot.objects.module.Module;
+import de.kittybot.kittybot.utils.Config;
+import de.kittybot.kittybot.utils.Utils;
 import de.kittybot.kittybot.web.GetDiscordLoginRoute;
 import de.kittybot.kittybot.web.commands.GetCommandsRoute;
 import de.kittybot.kittybot.web.guilds.GetAllGuildsRoute;
@@ -10,9 +13,6 @@ import de.kittybot.kittybot.web.guilds.guild.tags.tag.PostTagRoute;
 import de.kittybot.kittybot.web.login.DeleteLoginRoute;
 import de.kittybot.kittybot.web.login.PostLoginRoute;
 import de.kittybot.kittybot.web.user.GetUserInfoRoute;
-import de.kittybot.kittybot.objects.module.Module;
-import de.kittybot.kittybot.utils.Config;
-import de.kittybot.kittybot.utils.Utils;
 import io.javalin.Javalin;
 import io.javalin.http.*;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -52,7 +52,7 @@ public class WebService extends Module{
 		if(Config.BACKEND_PORT == -1){
 			return;
 		}
-		this.javalin = Javalin.create(config -> 
+		this.javalin = Javalin.create(config ->
 			config.enableCorsForOrigin(Config.ORIGIN_URL)
 		).routes(() -> {
 			path("/discord_login", () ->

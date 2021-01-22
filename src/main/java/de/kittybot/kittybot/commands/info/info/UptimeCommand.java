@@ -1,8 +1,5 @@
 package de.kittybot.kittybot.commands.info.info;
 
-import de.kittybot.kittybot.slashcommands.application.Category;
-import de.kittybot.kittybot.slashcommands.application.Command;
-import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;

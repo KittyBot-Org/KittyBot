@@ -28,7 +28,8 @@ public class DashboardSessionController implements SessionController<DashboardSe
 			this.dashboardSessionModule.add(session);
 			return session;
 		}
-		catch(IOException ignored){}
+		catch(IOException ignored){
+		}
 		return null;
 	}
 

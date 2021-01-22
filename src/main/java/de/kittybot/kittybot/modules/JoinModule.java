@@ -1,6 +1,5 @@
 package de.kittybot.kittybot.modules;
 
-import checkers.units.quals.C;
 import de.kittybot.kittybot.objects.data.Placeholder;
 import de.kittybot.kittybot.objects.enums.Emoji;
 import de.kittybot.kittybot.objects.module.Module;
@@ -58,6 +57,26 @@ public class JoinModule extends Module{
 	protected void onEnable(){
 		this.randomJoinMessages = FileUtils.loadMessageFile("join");
 		this.randomLeaveMessages = FileUtils.loadMessageFile("leave");
+	}
+
+	@Override
+	public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event){
+		var msg = event.getMessage().getContentRaw();
+		if(event.getAuthor().isBot()){
+			return;
+		}
+		if(oldCommands.stream().anyMatch(msg::startsWith) || msg.contains("<@" + Config.BOT_ID + ">") || msg.contains("<@!" + Config.BOT_ID + ">")){
+			event.getChannel().sendMessage(new EmbedBuilder()
+				.setColor(Colors.KITTYBOT_BLUE)
+				.setAuthor("KittyBot Slash Commands Update", event.getJDA().getSelfUser().getEffectiveAvatarUrl(), Config.ORIGIN_URL)
+				.setDescription("KittyBot now uses the new slash commands.\n" +
+					"To use them invite me again **(you don't need to kick me)** over this specific " + MessageUtils.maskLink("link", "https://discord.com/oauth2/authorize?client_id=587697058602025011&permissions=1345841383&scope=bot%20applications.commands") + " and type `/` in the chatbox.\n"
+				)
+				.setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
+				.setTimestamp(Instant.now())
+				.build()
+			).queue();
+		}
 	}
 
 	@Override
@@ -134,26 +153,6 @@ public class JoinModule extends Module{
 			new Placeholder("invite_code", invite == null ? "unknown" : invite.getCode()),
 			new Placeholder("invite_link", invite == null ? "unknown" : INVITE_CODE_PREFIX + invite.getCode())
 		);
-	}
-
-	@Override
-	public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event){
-		var msg = event.getMessage().getContentRaw();
-		if(event.getAuthor().isBot()){
-			return;
-		}
-		if(oldCommands.stream().anyMatch(msg::startsWith) || msg.contains("<@" + Config.BOT_ID + ">") || msg.contains("<@!" + Config.BOT_ID + ">")){
-			event.getChannel().sendMessage(new EmbedBuilder()
-				.setColor(Colors.KITTYBOT_BLUE)
-				.setAuthor("KittyBot Slash Commands Update", event.getJDA().getSelfUser().getEffectiveAvatarUrl(), Config.ORIGIN_URL)
-				.setDescription("KittyBot now uses the new slash commands.\n" +
-					"To use them invite me again **(you don't need to kick me)** over this specific " + MessageUtils.maskLink("link", "https://discord.com/oauth2/authorize?client_id=587697058602025011&permissions=1345841383&scope=bot%20applications.commands") + " and type `/` in the chatbox.\n"
-				)
-				.setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
-				.setTimestamp(Instant.now())
-				.build()
-			).queue();
-		}
 	}
 
 	public String getRandomMessage(List<String> messages){

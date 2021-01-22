@@ -2,6 +2,7 @@ package de.kittybot.kittybot.objects.settings;
 
 import de.kittybot.kittybot.jooq.tables.records.GuildsRecord;
 import de.kittybot.kittybot.utils.MessageUtils;
+import net.dv8tion.jda.api.entities.Member;
 
 import java.time.Duration;
 import java.util.Collection;
@@ -207,6 +208,10 @@ public class Settings{
 		this.djRoleId = djRoleId;
 	}
 
+	public boolean hasDJRole(Member member){
+		return member.getRoles().stream().anyMatch(role -> role.getIdLong() == this.djRoleId);
+	}
+
 	public String getDjRole(){
 		return MessageUtils.getRoleMention(this.djRoleId);
 	}
@@ -322,12 +327,12 @@ public class Settings{
 		return this.guildInviteRoles.get(code);
 	}
 
-	public void setRoleSaverEnabled(boolean enabled){
-		this.roleSaverEnabled = enabled;
-	}
-
 	public boolean isRoleSaverEnabled(){
 		return this.roleSaverEnabled;
+	}
+
+	public void setRoleSaverEnabled(boolean enabled){
+		this.roleSaverEnabled = enabled;
 	}
 
 }

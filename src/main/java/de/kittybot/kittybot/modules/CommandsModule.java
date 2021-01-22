@@ -93,6 +93,16 @@ public class CommandsModule extends Module{
 		LOG.info("Registered " + this.commands.size() + " commands...");
 	}
 
+	private Call put(Route.CompiledRoute route, RequestBody body){
+		return this.modules.getHttpClient().newCall(newBuilder(route).put(body).build());
+	}
+
+	private Request.Builder newBuilder(Route.CompiledRoute route){
+		return new Request.Builder()
+			.url(Requester.DISCORD_API_PREFIX + route.getCompiledRoute())
+			.addHeader("Authorization", "Bot " + Config.BOT_TOKEN);
+	}
+
 	public void deleteAllCommands(long guildId){
 		var cmds = readCommands(guildId);
 		for(var cmd : cmds){
@@ -132,17 +142,6 @@ public class CommandsModule extends Module{
 		catch(IOException e){
 			LOG.error("Error while deleting command", e);
 		}
-	}
-
-
-	private Request.Builder newBuilder(Route.CompiledRoute route){
-		return new Request.Builder()
-			.url(Requester.DISCORD_API_PREFIX + route.getCompiledRoute())
-			.addHeader("Authorization", "Bot " + Config.BOT_TOKEN);
-	}
-
-	private Call put(Route.CompiledRoute route, RequestBody body){
-		return this.modules.getHttpClient().newCall(newBuilder(route).put(body).build());
 	}
 
 	private Call get(Route.CompiledRoute route){

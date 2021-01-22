@@ -31,18 +31,17 @@ public class KickCommand extends Command implements RunnableCommand{
 		}
 		var userId = options.getLong("user");
 		ctx.getGuild().retrieveMemberById(userId).queue(member -> {
-				if(!ctx.getSelfMember().canInteract(member)){
-					ctx.error("I can't interact with this member");
-					return;
-				}
-				var reason = options.has("reason") ? options.getString("reason") : "Banned by " + ctx.getMember().getAsMention();
-				var delDays = options.has("del-days") ? options.getInt("del-days") : 0;
-				ctx.getGuild().kick(member, reason).reason(reason).queue(success ->
-						ctx.reply("Kicked `" + MarkdownSanitizer.escape(member.getUser().getAsTag()) + "` with reason: " + reason + " and deleted messages of the last " + delDays + " days"),
-					error -> ctx.error("Failed to ban " + MessageUtils.getUserMention(userId) + " for reason: `" + error.getMessage() + "`")
-				);
-			},
-			error -> ctx.error("I could not find the provided user")
+			if(!ctx.getSelfMember().canInteract(member)){
+				ctx.error("I can't interact with this member");
+				return;
+			}
+			var reason = options.has("reason") ? options.getString("reason") : "Banned by " + ctx.getMember().getAsMention();
+			var delDays = options.has("del-days") ? options.getInt("del-days") : 0;
+			ctx.getGuild().kick(member, reason).reason(reason).queue(success ->
+					ctx.reply("Kicked `" + MarkdownSanitizer.escape(member.getUser().getAsTag()) + "` with reason: " + reason + " and deleted messages of the last " + delDays + " days"),
+				error -> ctx.error("Failed to ban " + MessageUtils.getUserMention(userId) + " for reason: `" + error.getMessage() + "`")
+			);
+			}, error -> ctx.error("I could not find the provided user")
 		);
 	}
 

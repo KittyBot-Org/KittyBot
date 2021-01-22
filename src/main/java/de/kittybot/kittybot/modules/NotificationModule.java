@@ -63,7 +63,6 @@ public class NotificationModule extends Module{
 			else{
 				scheduleIn = now.until(notification.getNotificationTime(), ChronoUnit.MILLIS);
 			}
-			LOG.info("Scheduled in {}", scheduleIn);
 			this.modules.getScheduler().schedule(() -> {
 				var guild = this.modules.getGuildById(notification.getGuildId());
 				if(guild == null){
@@ -114,9 +113,11 @@ public class NotificationModule extends Module{
 		if(notif == null || notificationTime.isAfter(now.plusHours(1))){
 			return notif;
 		}
-		this.notifications.put(notif.getGuildId(), notif);
 		if(notificationTime.isBefore(now.plusMinutes(5))){
 			schedule(Collections.singleton(notif));
+		}
+		else{
+			this.notifications.put(notif.getGuildId(), notif);
 		}
 		return notif;
 	}

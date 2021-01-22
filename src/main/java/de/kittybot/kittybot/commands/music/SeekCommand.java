@@ -9,7 +9,6 @@ import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.utils.MusicUtils;
 import de.kittybot.kittybot.utils.TimeUtils;
-import de.kittybot.kittybot.utils.annotations.Ignore;
 
 @SuppressWarnings("unused")
 public class SeekCommand extends Command implements RunnableCommand{

@@ -6,7 +6,6 @@ import de.kittybot.kittybot.objects.enums.Emoji;
 import de.kittybot.kittybot.objects.streams.StreamType;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
-import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
 import de.kittybot.kittybot.slashcommands.application.options.*;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;

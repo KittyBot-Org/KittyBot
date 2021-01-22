@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.commands.music;
 
 import de.kittybot.kittybot.modules.MusicModule;
+import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
@@ -19,6 +20,10 @@ public class ShuffleCommand extends Command implements RunnableCommand{
 	public void run(Options options, CommandContext ctx){
 		var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
 		if(!MusicUtils.checkCommandRequirements(ctx, player)){
+			return;
+		}
+		if(!ctx.get(SettingsModule.class).hasDJRole(ctx.getMember())){
+			ctx.error("Only DJs are allowed to use this command");
 			return;
 		}
 		if(ctx.get(MusicModule.class).get(ctx.getGuildId()).shuffle()){
