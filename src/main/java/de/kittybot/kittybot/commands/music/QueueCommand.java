@@ -13,6 +13,7 @@ import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 
 @SuppressWarnings("unused")
 public class QueueCommand extends Command implements RunnableCommand{
@@ -31,6 +32,10 @@ public class QueueCommand extends Command implements RunnableCommand{
 
 	@Override
 	public void run(Options options, CommandContext ctx){
+		if(!ctx.getGuild().getSelfMember().hasPermission(ctx.getChannel(), Permission.MESSAGE_WRITE, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EXT_EMOJI, Permission.MESSAGE_HISTORY, Permission.VIEW_CHANNEL)){
+			ctx.error("Please make sure I have following permissions in this channel: `Send Messages`, `Add Reactions`, `Use External Emoji`, `Read Message History`, `View Channel`");
+			return;
+		}
 		var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
 
 		if(options.has("query")){

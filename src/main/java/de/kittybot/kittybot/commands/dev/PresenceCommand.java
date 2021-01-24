@@ -1,19 +1,13 @@
 package de.kittybot.kittybot.commands.dev;
 
 import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
-import de.kittybot.kittybot.slashcommands.application.options.*;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
+import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
-import de.kittybot.kittybot.slashcommands.interaction.InteractionDataOption;
-import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
-import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponseType;
-import de.kittybot.kittybot.utils.Colors;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-
-import java.time.Instant;
-import java.util.stream.Collectors;
 
 public class PresenceCommand extends SubCommand{
 
