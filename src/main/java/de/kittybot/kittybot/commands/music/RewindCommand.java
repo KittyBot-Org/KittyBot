@@ -29,7 +29,7 @@ public class RewindCommand extends Command implements RunnableCommand{
 		if(!MusicUtils.checkMusicPermissions(ctx, player)){
 			return;
 		}
-		var rewind = options.getLong("seconds") * 1000;
+		var rewind = options.getInt("seconds") * 1000;
 		var lavalinkPlayer = player.getPlayer();
 		var position = lavalinkPlayer.getTrackPosition();
 		var newPos = position - rewind;

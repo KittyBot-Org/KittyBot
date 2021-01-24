@@ -29,7 +29,7 @@ public class ForwardCommand extends Command implements RunnableCommand{
 		if(!MusicUtils.checkMusicPermissions(ctx, player)){
 			return;
 		}
-		var forward = options.getLong("seconds") * 1000;
+		var forward = options.getInt("seconds") * 1000;
 		var lavalinkPlayer = player.getPlayer();
 		var position = lavalinkPlayer.getTrackPosition();
 		var newPos = position + forward;
