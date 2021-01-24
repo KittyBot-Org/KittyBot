@@ -5,7 +5,9 @@ import de.kittybot.kittybot.modules.TagsModule;
 import de.kittybot.kittybot.objects.settings.Tag;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionLong;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionUser;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
@@ -40,7 +42,7 @@ public class TagsCommand extends Command{
 			addOptions(
 				new CommandOptionString("name", "Tag name").required(),
 				new CommandOptionString("content", "Tag content"),
-				new CommandOptionString("message-id", "The message id to create a tag from")
+				new CommandOptionLong("message-id", "The message id to create a tag from")
 			);
 		}
 
@@ -56,12 +58,7 @@ public class TagsCommand extends Command{
 				content = options.getString("content");
 			}
 			else{
-				var messageId = options.getLong("message-id");
-				if(messageId == -1L){
-					ctx.error("Please provide a valid message id");
-					return;
-				}
-				var message = ctx.get(MessageModule.class).getMessageById(messageId);
+				var message = ctx.get(MessageModule.class).getMessageById(options.getLong("message-id"));
 				if(message == null){
 					ctx.error("Please provide a recent message id");
 					return;
@@ -87,7 +84,7 @@ public class TagsCommand extends Command{
 			addOptions(
 				new CommandOptionString("name", "Tag name").required(),
 				new CommandOptionString("content", "Tag content"),
-				new CommandOptionString("message-id", "The message id to create a tag from")
+				new CommandOptionLong("message-id", "The message id to create a tag from")
 			);
 		}
 
@@ -103,12 +100,7 @@ public class TagsCommand extends Command{
 				content = options.getString("content");
 			}
 			else{
-				var messageId = options.getLong("message-id");
-				if(messageId == -1L){
-					ctx.error("Please provide a valid message id");
-					return;
-				}
-				var message = ctx.get(MessageModule.class).getMessageById(messageId);
+				var message = ctx.get(MessageModule.class).getMessageById(options.getLong("message-id"));
 				if(message == null){
 					ctx.error("Please provide a recent message id");
 					return;
@@ -187,7 +179,7 @@ public class TagsCommand extends Command{
 		public ListCommand(){
 			super("list", "Used to list tags");
 			addOptions(
-				new CommandOptionString("user", "Filter by user")
+				new CommandOptionUser("user", "Filter by user")
 			);
 		}
 

@@ -20,7 +20,7 @@ public class QueueCommand extends Command implements RunnableCommand{
 	public QueueCommand(){
 		super("queue", "Queues a link or search result from yt/sc", Category.MUSIC);
 		addOptions(
-			new CommandOptionString("link", "A link to play from"),
+			new CommandOptionString("query", "A link or search query to play from"),
 			new CommandOptionString("search-provider", "Which search provider use")
 				.addChoices(
 					new CommandOptionChoice<>("youtube", "yt"),
@@ -33,7 +33,7 @@ public class QueueCommand extends Command implements RunnableCommand{
 	public void run(Options options, CommandContext ctx){
 		var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
 
-		if(options.has("link")){
+		if(options.has("query")){
 			if(player == null){
 				player = ctx.get(MusicModule.class).create(ctx);
 			}

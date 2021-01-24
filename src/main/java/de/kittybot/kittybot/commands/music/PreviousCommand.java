@@ -9,10 +9,10 @@ import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.utils.MusicUtils;
 
 @SuppressWarnings("unused")
-public class SkipCommand extends Command implements RunnableCommand{
+public class PreviousCommand extends Command implements RunnableCommand{
 
-	public SkipCommand(){
-		super("skip", "Skips the current song", Category.MUSIC);
+	public PreviousCommand(){
+		super("previous", "Plays the previous song", Category.MUSIC);
 	}
 
 	@Override
@@ -24,8 +24,12 @@ public class SkipCommand extends Command implements RunnableCommand{
 		if(!MusicUtils.checkMusicPermissions(ctx, player)){
 			return;
 		}
-		ctx.reply("Skipped to the next song");
-		player.next();
+		if(player.getHistory().isEmpty()){
+			ctx.error("Can't go back because the history is empty");
+			return;
+		}
+		ctx.reply("Went back to the previous song");
+		player.previous();
 		player.setPaused(false);
 	}
 

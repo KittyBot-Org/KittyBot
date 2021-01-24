@@ -5,6 +5,7 @@ import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionLong;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
@@ -43,7 +44,7 @@ public class DevCommand extends Command{
 						new CommandOptionChoice<>("global", 0),
 						new CommandOptionChoice<>("guild", 1)
 					),
-				new CommandOptionString("guild", "In which guild commands should get deployed")
+				new CommandOptionLong("guild", "In which guild commands should get deployed")
 			);
 		}
 
@@ -86,7 +87,7 @@ public class DevCommand extends Command{
 						new CommandOptionChoice<>("global", 0),
 						new CommandOptionChoice<>("guild", 1)
 					),
-				new CommandOptionString("guild", "In which guild commands should get omitted")
+				new CommandOptionLong("guild", "In which guild commands should get omitted")
 			);
 		}
 

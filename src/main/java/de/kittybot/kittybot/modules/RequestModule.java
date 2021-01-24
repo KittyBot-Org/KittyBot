@@ -24,8 +24,8 @@ public class RequestModule extends Module{
 	private final Request.Builder requestBuilder = new Request.Builder().header("user-agent", "de.kittybot");
 
 	public void translateText(String text, Language from, Language to, Consumer<String> callback){
-		requestBuilder.url(String.format(API.GOOGLE_TRANSLATE_API.getUrl(), from.getShortname(), to.getShortname(), URLEncoder.encode(text, StandardCharsets.UTF_8)));
-		executeAsync(requestBuilder.build(), (call, response) -> {
+		this.requestBuilder.url(String.format(API.GOOGLE_TRANSLATE_API.getUrl(), from.getShortname(), to.getShortname(), URLEncoder.encode(text, StandardCharsets.UTF_8)));
+		executeAsync(this.requestBuilder.build(), (call, response) -> {
 			var body = response.body();
 			String newText = null;
 			if(body != null){
@@ -89,9 +89,9 @@ public class RequestModule extends Module{
 
 	public String getNeko(boolean nsfw, String type, String imageType){
 		var url = String.format(API.PURR_BOT.getUrl(), nsfw ? "nsfw" : "sfw", type, imageType);
-		requestBuilder.url(url);
-		requestBuilder.method("GET", null);
-		var json = DataObject.fromJson(executeRequest(requestBuilder.build()));
+		this.requestBuilder.url(url);
+		this.requestBuilder.method("GET", null);
+		var json = DataObject.fromJson(executeRequest(this.requestBuilder.build()));
 		return json.getString("link");
 	}
 
@@ -121,9 +121,9 @@ public class RequestModule extends Module{
 	}
 
 	public void postToHastebin(String content, Consumer<String> callback){
-		requestBuilder.url(API.HASTEBIN.getUrl() + "/documents");
-		requestBuilder.post(RequestBody.create(content, MediaType.parse("text/html; charset=utf-8")));
-		executeAsync(requestBuilder.build(), (call, response) -> {
+		this.requestBuilder.url(API.HASTEBIN.getUrl() + "/documents");
+		this.requestBuilder.post(RequestBody.create(content, MediaType.parse("text/html; charset=utf-8")));
+		executeAsync(this.requestBuilder.build(), (call, response) -> {
 			var body = response.body();
 			String key = null;
 			if(body != null){
@@ -145,14 +145,19 @@ public class RequestModule extends Module{
 				.toString(),
 			MediaType.parse("application/json; charset=utf-8")
 		);
-		requestBuilder.url(String.format(api.getUrl(), Config.BOT_ID));
-		requestBuilder.header("Authorization", token);
-		requestBuilder.post(requestBody);
+		this.requestBuilder.url(String.format(api.getUrl(), Config.BOT_ID));
+		this.requestBuilder.header("Authorization", token);
+		this.requestBuilder.post(requestBody);
 		executeAsync(requestBuilder.build(), api);
 	}
 
 	public void executeAsync(Request request, API api){
 		executeAsync(request, api, null, null);
+	}
+
+	public void retrieveUrlContent(String url, BiConsumer<Call, Response> success, BiConsumer<Call, Response> error){
+		this.requestBuilder.url(url).get();
+		executeAsync(this.requestBuilder.build(), success, error);
 	}
 
 }

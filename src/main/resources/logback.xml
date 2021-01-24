@@ -23,11 +23,11 @@
     <logger name="spark.http.matching.MatcherFilter" level="info"/>
 
     <logger name="org.jooq" level="warn" additivity="false">
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="STDOUT"/>
     </logger>
 
     <logger name="io.javalin" level="warn" additivity="false">
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="STDOUT"/>
     </logger>
 
     <root level="INFO">

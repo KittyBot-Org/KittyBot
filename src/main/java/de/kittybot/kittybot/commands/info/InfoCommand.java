@@ -14,7 +14,9 @@ public class InfoCommand extends Command{
 			new UptimeCommand(),
 			new AvatarCommand(),
 			new GuildIconCommand(),
-			new GuildBannerCommand()
+			new GuildBannerCommand(),
+			new DashboardCommand(),
+			new PrivacyCommand()
 		);
 	}
 

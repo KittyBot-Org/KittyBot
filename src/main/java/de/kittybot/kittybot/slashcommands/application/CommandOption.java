@@ -8,12 +8,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class CommandOption implements CommandOptionsHolder{
+public abstract class CommandOption<T> implements CommandOptionsHolder{
 
 	private final CommandOptionType type;
 	private final String name, description;
 	private final List<CommandOptionChoice<?>> choices;
-	private final List<CommandOption> options;
+	private final List<CommandOption<?>> options;
 	private boolean isDefault, isRequired;
 
 	protected CommandOption(CommandOptionType type, String name, String description){
@@ -26,28 +26,30 @@ public abstract class CommandOption implements CommandOptionsHolder{
 		this.options = new ArrayList<>();
 	}
 
-	public static DataArray toJSON(Collection<CommandOption> options){
+	public static DataArray toJSON(Collection<CommandOption<?>> options){
 		return DataArray.fromCollection(
 			options.stream().map(CommandOption::toJSON).collect(Collectors.toList())
 		);
 	}
 
-	public CommandOption addChoices(CommandOptionChoice<?>... choices){
+	public abstract T parseValue(Object value);
+
+	public CommandOption<?> addChoices(CommandOptionChoice<?>... choices){
 		this.choices.addAll(List.of(choices));
 		return this;
 	}
 
-	public CommandOption addOptions(CommandOption... options){
+	public CommandOption<?> addOptions(CommandOption<?>... options){
 		this.options.addAll(List.of(options));
 		return this;
 	}
 
-	public CommandOption setDefault(){
+	public CommandOption<?> setDefault(){
 		this.isDefault = true;
 		return this;
 	}
 
-	public CommandOption required(){
+	public CommandOption<?> required(){
 		this.isRequired = true;
 		return this;
 	}
@@ -77,7 +79,7 @@ public abstract class CommandOption implements CommandOptionsHolder{
 	}
 
 	@Override
-	public List<CommandOption> getOptions(){
+	public List<CommandOption<?>> getOptions(){
 		return options;
 	}
 

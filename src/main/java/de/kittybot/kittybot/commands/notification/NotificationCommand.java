@@ -6,6 +6,7 @@ import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionTime;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
@@ -35,7 +36,7 @@ public class NotificationCommand extends Command{
 		public CreateCommand(){
 			super("create", "Creates a notification");
 			addOptions(
-				new CommandOptionString("time", "When to notif you. Format: `HH:mm dd.MM.yyyy` or 1y2w3d4h5m6s").required(),
+				new CommandOptionTime("time", "When to notif you. Format: `HH:mm dd.MM.yyyy` or 1y2w3d4h5m6s").required(),
 				new CommandOptionString("message", "The notif message").required()/*,
 				new CommandOptionBoolean("notif-in-dms", "If I should notif you in dms")*/
 			);
@@ -43,8 +44,8 @@ public class NotificationCommand extends Command{
 
 		@Override
 		public void run(Options options, CommandContext ctx){
-			var time = TimeUtils.parse(options.getString("time"));
-			if(time == null || time.isBefore(LocalDateTime.now())){
+			var time = options.getTime("time");
+			if(time.isBefore(LocalDateTime.now())){
 				ctx.error("Please provide a valid time or duration in this format: ");
 				return;
 			}

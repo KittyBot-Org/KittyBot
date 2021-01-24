@@ -1,18 +1,16 @@
-package de.kittybot.kittybot.commands.info;
+package de.kittybot.kittybot.commands.info.info;
 
-import de.kittybot.kittybot.slashcommands.application.Category;
-import de.kittybot.kittybot.slashcommands.application.Command;
-import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
+import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
 
 @SuppressWarnings("unused")
-public class DashboardCommand extends Command implements RunnableCommand{
+public class DashboardCommand extends SubCommand{
 
 	public DashboardCommand(){
-		super("dashboard", "Shows you our dashboard", Category.INFORMATION);
+		super("dashboard", "Shows you our dashboard");
 	}
 
 	@Override

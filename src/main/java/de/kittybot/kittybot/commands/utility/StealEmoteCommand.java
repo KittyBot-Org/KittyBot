@@ -2,9 +2,7 @@ package de.kittybot.kittybot.commands.utility;
 
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
-import de.kittybot.kittybot.slashcommands.application.options.CommandOptionBoolean;
-import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
-import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
+import de.kittybot.kittybot.slashcommands.application.options.*;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.utils.EmoteHelper;
@@ -31,7 +29,7 @@ public class StealEmoteCommand extends Command{
 		public EmoteCommand(){
 			super("emote", "Steal an emote by emote");
 			addOptions(
-				new CommandOptionString("emote", "The emote to steal").required(),
+				new CommandOptionEmote("emote", "The emote to steal").required(),
 				new CommandOptionString("new-name", "The new emote name")
 			);
 		}
@@ -42,13 +40,8 @@ public class StealEmoteCommand extends Command{
 				ctx.error("To steal emotes I need the `" + Permission.MANAGE_EMOTES.getName() + "` permission");
 				return;
 			}
-			var emoteId = options.getEmoteId("emote");
-			if(emoteId == -1){
-				ctx.error("Please provide a valid emote id");
-				return;
-			}
-			var name = options.has("new-name") ? options.getString("new-name") : options.getEmoteName("emote");
-			EmoteHelper.createEmote(ctx, name, emoteId, options.getIsAnimatedEmote("emote"));
+			var name = options.has("new-name") ? options.getString("new-name") : options.getString("emote");
+			EmoteHelper.createEmote(ctx, name, options.getEmoteId("emote"), options.getString("emote").startsWith("<a:"));
 		}
 
 	}
@@ -58,7 +51,7 @@ public class StealEmoteCommand extends Command{
 		public EmoteIdCommand(){
 			super("emote-id", "Steal an emote by id");
 			addOptions(
-				new CommandOptionString("emote-id", "The emote id to steal").required(),
+				new CommandOptionEmote("emote-id", "The emote id to steal").required(),
 				new CommandOptionString("new-name", "The new emote name"),
 				new CommandOptionBoolean("animated", "If the emote is animated")
 			);
@@ -71,10 +64,6 @@ public class StealEmoteCommand extends Command{
 				return;
 			}
 			var emoteId = options.getLong("emote-id");
-			if(emoteId == -1){
-				ctx.error("Please provide a valid emote id");
-				return;
-			}
 			var name = options.has("new-name") ? options.getString("new-name") : Long.toString(emoteId);
 			EmoteHelper.createEmote(ctx, name, emoteId, options.has("animated") && options.getBoolean("animated"));
 		}
@@ -86,7 +75,7 @@ public class StealEmoteCommand extends Command{
 		public URLCommand(){
 			super("url", "Steal an emote by url");
 			addOptions(
-				new CommandOptionString("url", "The image url to steal").required(),
+				new CommandOptionUrl("url", "The image url to steal").required(),
 				new CommandOptionString("new-name", "The new emote name").required()
 			);
 		}
@@ -101,6 +90,5 @@ public class StealEmoteCommand extends Command{
 		}
 
 	}
-
 
 }

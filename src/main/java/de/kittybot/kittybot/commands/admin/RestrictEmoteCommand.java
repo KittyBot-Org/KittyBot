@@ -2,8 +2,8 @@ package de.kittybot.kittybot.commands.admin;
 
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionEmote;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionRole;
-import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
@@ -13,7 +13,6 @@ import net.dv8tion.jda.api.entities.Role;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -34,7 +33,7 @@ public class RestrictEmoteCommand extends Command{
 		public SetCommand(){
 			super("set", "Sets the allowed roles for a specific emote");
 			addOptions(
-				new CommandOptionString("emote", "The emote to restrict").required(),
+				new CommandOptionEmote("emote", "The emote to restrict").required(),
 				new CommandOptionRole("role1", "Role which can use the emote").required(),
 				new CommandOptionRole("role2", "Role which can use the emote"),
 				new CommandOptionRole("role3", "Role which can use the emote"),
@@ -67,7 +66,7 @@ public class RestrictEmoteCommand extends Command{
 		}
 
 		public Set<Role> getRoles(Guild guild, Options options, String... optionNames){
-			return Arrays.stream(optionNames).map(options::get).filter(Objects::nonNull).map(role -> guild.getRoleById(role.getLong())).collect(Collectors.toSet());
+			return Arrays.stream(optionNames).filter(options::has).map(options::getLong).map(guild::getRoleById).collect(Collectors.toSet());
 		}
 
 	}
@@ -77,7 +76,7 @@ public class RestrictEmoteCommand extends Command{
 		public ResetCommand(){
 			super("reset", "Resets all allowed roles for a specific emote");
 			addOptions(
-				new CommandOptionString("emote", "The emote to restrict").required()
+				new CommandOptionEmote("emote", "The emote to restrict").required()
 			);
 		}
 

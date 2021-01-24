@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SubCommandGroup extends CommandOption implements PermissionHolder{
+public class SubCommandGroup extends CommandOption<Void> implements PermissionHolder{
 
 	private final Set<Permission> permissions;
 	private boolean devOnly;
@@ -34,6 +34,11 @@ public class SubCommandGroup extends CommandOption implements PermissionHolder{
 
 	public Set<Permission> getPermissions(){
 		return this.permissions;
+	}
+
+	@Override
+	public Void parseValue(Object value){
+		throw new UnsupportedOperationException("This is SubCommand group");
 	}
 
 }

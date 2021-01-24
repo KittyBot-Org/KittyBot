@@ -23,7 +23,7 @@ public class ShuffleCommand extends Command implements RunnableCommand{
 			return;
 		}
 		if(!ctx.get(SettingsModule.class).hasDJRole(ctx.getMember())){
-			ctx.error("Only DJs are allowed to use this command");
+			ctx.error("Only DJs are allowed shuffle");
 			return;
 		}
 		if(ctx.get(MusicModule.class).get(ctx.getGuildId()).shuffle()){
