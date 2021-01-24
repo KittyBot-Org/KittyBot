@@ -30,6 +30,7 @@ public class DevCommand extends Command{
 			new RemoveCommand(),
 			new StatsCommand(),
 			new TestCommand(),
+			new PresenceCommand(),
 			new AnnounceCommand()
 		);
 	}
