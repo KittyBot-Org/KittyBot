@@ -3,6 +3,8 @@ package de.kittybot.kittybot.modules;
 import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.Utils;
+import de.kittybot.kittybot.web.GetBotInviteRoute;
+import de.kittybot.kittybot.web.GetDiscordInviteRoute;
 import de.kittybot.kittybot.web.GetDiscordLoginRoute;
 import de.kittybot.kittybot.web.commands.GetCommandsRoute;
 import de.kittybot.kittybot.web.guilds.GetAllGuildsRoute;
@@ -57,6 +59,12 @@ public class WebService extends Module{
 		).routes(() -> {
 			path("/discord_login", () ->
 				get(new GetDiscordLoginRoute(this.modules))
+			);
+			path("/bot_invite", () ->
+				get(new GetBotInviteRoute())
+			);
+			path("/discord_invite", () ->
+				get(new GetDiscordInviteRoute())
 			);
 			path("/health_check", () ->
 				get(ctx -> ctx.result("alive"))

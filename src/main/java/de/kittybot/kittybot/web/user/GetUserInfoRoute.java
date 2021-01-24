@@ -37,7 +37,7 @@ public class GetUserInfoRoute implements Handler{
 			DataObject.empty().put("id", guild.getIdString()).put("name", guild.getName()).put("icon", guild.getIconUrl())
 		).collect(Collectors.toSet()));
 
-		WebService.ok(ctx, DataObject.empty().put("name", user.getName()).put("id", userId).put("icon", user.getEffectiveAvatarUrl()).put("guilds", guildData));
+		WebService.ok(ctx, DataObject.empty().put("name", user.getName()).put("id", String.valueOf(userId)).put("icon", user.getEffectiveAvatarUrl()).put("guilds", guildData));
 	}
 
 }
