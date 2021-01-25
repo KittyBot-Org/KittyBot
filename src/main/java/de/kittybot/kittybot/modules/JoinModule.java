@@ -32,22 +32,6 @@ public class JoinModule extends Module{
 	private List<String> randomJoinMessages;
 	private List<String> randomLeaveMessages;
 
-	public static void sendAnnouncementMessage(Guild guild, long channelId, String message){
-		if(channelId == -1){
-			return;
-		}
-		var channel = guild.getTextChannelById(channelId);
-		if(channel != null && channel.canTalk()){
-			channel.sendMessage(message).queue();
-			return;
-		}
-		guild.getJDA().openPrivateChannelById(guild.getOwnerId()).flatMap(privateChannel ->
-			privateChannel.sendMessage(channel == null ?
-				"Your selected announcement channel is deleted. Please set a new one." :
-				"I lack the permission to send %s messages to " + channel.getAsMention())
-		).queue();
-	}
-
 	@Override
 	public Set<Class<? extends Module>> getDependencies(){
 		return DEPENDENCIES;
@@ -65,12 +49,15 @@ public class JoinModule extends Module{
 		if(event.getAuthor().isBot()){
 			return;
 		}
+		if(!event.getChannel().canTalk()){
+			return;
+		}
 		if(oldCommands.stream().anyMatch(msg::startsWith) || msg.contains("<@" + Config.BOT_ID + ">") || msg.contains("<@!" + Config.BOT_ID + ">")){
 			event.getChannel().sendMessage(new EmbedBuilder()
 				.setColor(Colors.KITTYBOT_BLUE)
 				.setAuthor("KittyBot Slash Commands Update", event.getJDA().getSelfUser().getEffectiveAvatarUrl(), Config.ORIGIN_URL)
 				.setDescription("KittyBot now uses the new slash commands.\n" +
-					"To use them invite me again **(you don't need to kick me)** over this specific " + MessageUtils.maskLink("link", "https://discord.com/oauth2/authorize?client_id=587697058602025011&permissions=1345841383&scope=bot%20applications.commands") + " and type `/` in the chatbox.\n"
+					"To use them invite me again **(you don't need to kick me)** over this specific " + MessageUtils.maskLink("link", Config.BOT_INVITE_URL) + " and type `/` in the chat box.\n"
 				)
 				.setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
 				.setTimestamp(Instant.now())
@@ -162,6 +149,22 @@ public class JoinModule extends Module{
 			return messages.get(ThreadLocalRandom.current().nextInt(messages.size() - 1));
 		}
 		return messages.iterator().next();
+	}
+
+	public static void sendAnnouncementMessage(Guild guild, long channelId, String message){
+		if(channelId == -1){
+			return;
+		}
+		var channel = guild.getTextChannelById(channelId);
+		if(channel != null && channel.canTalk()){
+			channel.sendMessage(message).queue();
+			return;
+		}
+		guild.getJDA().openPrivateChannelById(guild.getOwnerId()).flatMap(privateChannel ->
+			privateChannel.sendMessage(channel == null ?
+				"Your selected announcement channel is deleted. Please set a new one." :
+				"I lack the permission to send %s messages to " + channel.getAsMention())
+		).queue();
 	}
 
 }

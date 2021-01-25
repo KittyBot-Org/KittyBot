@@ -29,8 +29,6 @@ public class MemoryUsageExporter{
 	private static final Gauge.Child PSS = MEMORY_USAGE.labels("PSS");
 	private static final Gauge.Child RSS = MEMORY_USAGE.labels("RSS");
 
-	private ScheduledFuture<?> task;
-
 	public void register(Modules modules){
 		MEMORY_USAGE.register();
 
@@ -40,10 +38,7 @@ public class MemoryUsageExporter{
 			return;
 		}
 
-		this.task = modules.getScheduler().scheduleAtFixedRate(
-			this::collect, 0,
-			PrometheusModule.UPDATE_PERIOD.toMillis(), TimeUnit.MILLISECONDS
-		);
+		modules.scheduleAtFixedRate(this::collect, 0, PrometheusModule.UPDATE_PERIOD.toMillis(), TimeUnit.MILLISECONDS);
 	}
 
 	/*
@@ -81,7 +76,6 @@ public class MemoryUsageExporter{
 			RSS.set(-1);
 			PSS.set(-1);
 			log.error("Error reading smaps_rollup", e);
-			task.cancel(false);
 		}
 	}
 

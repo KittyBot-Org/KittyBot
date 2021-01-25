@@ -27,8 +27,9 @@ public class NekoCommand extends Command implements RunnableCommand{
 					new NekoCommandOptionChoice(Neko.FUCK),
 					new NekoCommandOptionChoice(Neko.PUSSY_LICK),
 					new NekoCommandOptionChoice(Neko.SOLO),
+					new NekoCommandOptionChoice(Neko.NEKO_NSFW),
 					new NekoCommandOptionChoice(Neko.THREESOME_FFF),
-					new NekoCommandOptionChoice(Neko.THREESOME_FFM),
+					//new NekoCommandOptionChoice(Neko.THREESOME_FFM),
 					//new NekoCommandOptionChoice(Neko.THREESOME_MMF),
 					new NekoCommandOptionChoice(Neko.YAOI),
 					new NekoCommandOptionChoice(Neko.YURI)

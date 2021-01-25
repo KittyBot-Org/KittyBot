@@ -23,6 +23,7 @@ import lavalink.client.player.LavalinkPlayer;
 import lavalink.client.player.event.PlayerEventListenerAdapter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -225,12 +226,15 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		if(this.future != null){
 			return;
 		}
-		this.future = this.modules.getScheduler().schedule(() -> this.modules.get(MusicModule.class).destroy(this.guildId), 3, TimeUnit.MINUTES);
+		this.future = this.modules.schedule(() -> this.modules.get(MusicModule.class).destroy(this.guildId), 3, TimeUnit.MINUTES);
 	}
 
 	public void updateMusicController(){
 		var channel = getTextChannel();
 		if(channel == null){
+			return;
+		}
+		if(!channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_HISTORY)){
 			return;
 		}
 		channel.editMessageById(this.controllerMessageId, new MessageBuilder().setEmbed(buildMusicController().build()).build()).override(true).queue();
@@ -317,6 +321,9 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		}
 		channel.sendMessage(embed.build()).queue(message -> {
 			this.controllerMessageId = message.getIdLong();
+			if(!channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_ADD_REACTION)){
+				return;
+			}
 			message.addReaction(Emoji.VOLUME_DOWN.getStripped()).queue();
 			message.addReaction(Emoji.VOLUME_UP.getStripped()).queue();
 			message.addReaction(Emoji.ARROW_LEFT.getStripped()).queue();

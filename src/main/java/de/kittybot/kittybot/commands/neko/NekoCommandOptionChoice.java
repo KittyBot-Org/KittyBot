@@ -6,7 +6,7 @@ import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
 public class NekoCommandOptionChoice extends CommandOptionChoice<Integer>{
 
 	public NekoCommandOptionChoice(Neko neko){
-		super(neko.name(), neko.getId());
+		super(neko.getName(), neko.getId());
 	}
 
 }
