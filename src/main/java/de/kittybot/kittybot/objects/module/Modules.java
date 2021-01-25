@@ -17,7 +17,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class Modules{
@@ -105,8 +107,26 @@ public class Modules{
 		return getShardManager().getGuildById(guildId);
 	}
 
-	public ScheduledExecutorService getScheduler(){
-		return this.scheduler;
+	public ScheduledFuture<?> scheduleAtFixedRate(Runnable runnable, long initDelay, long delay, TimeUnit timeUnit){
+		return this.scheduler.scheduleAtFixedRate(() -> {
+			try{
+				runnable.run();
+			}
+			catch(Exception e){
+				LOG.error("Unexpected error in scheduler", e);
+			}
+			}, initDelay, delay, timeUnit);
+	}
+
+	public ScheduledFuture<?> schedule(Runnable runnable, long delay, TimeUnit timeUnit){
+		return this.scheduler.schedule(() -> {
+			try{
+				runnable.run();
+			}
+			catch(Exception e){
+				LOG.error("Unexpected error in scheduler", e);
+			}
+		}, delay, timeUnit);
 	}
 
 	public OkHttpClient getHttpClient(){

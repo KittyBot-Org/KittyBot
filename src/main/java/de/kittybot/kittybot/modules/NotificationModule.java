@@ -29,7 +29,7 @@ public class NotificationModule extends Module{
 	@Override
 	public void onEnable(){
 		this.notifications = new HashMap<>();
-		this.modules.getScheduler().scheduleAtFixedRate(this::update, 0, 30, TimeUnit.MINUTES);
+		this.modules.scheduleAtFixedRate(this::update, 0, 30, TimeUnit.MINUTES);
 	}
 
 	private void update(){
@@ -46,7 +46,7 @@ public class NotificationModule extends Module{
 
 	@Override
 	public void onReady(@NotNull ReadyEvent event){
-		this.modules.getScheduler().scheduleAtFixedRate(this::scheduleNext, 0, 5, TimeUnit.MINUTES);
+		this.modules.scheduleAtFixedRate(this::scheduleNext, 0, 5, TimeUnit.MINUTES);
 	}
 
 	private void scheduleNext(){
@@ -63,7 +63,7 @@ public class NotificationModule extends Module{
 			else{
 				scheduleIn = now.until(notification.getNotificationTime(), ChronoUnit.MILLIS);
 			}
-			this.modules.getScheduler().schedule(() -> {
+			this.modules.schedule(() -> {
 				var guild = this.modules.getGuildById(notification.getGuildId());
 				if(guild == null){
 					return;

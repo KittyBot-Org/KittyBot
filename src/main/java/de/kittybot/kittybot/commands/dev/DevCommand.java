@@ -54,7 +54,7 @@ public class DevCommand extends Command{
 			var environment = options.getInt("environment");
 			if(environment == 0){
 				ctx.reply(new InteractionResponse.Builder().ephemeral().setContent("processing...").build());
-				ctx.getModules().getScheduler().schedule(() -> {
+				ctx.getModules().schedule(() -> {
 					var commandsModule = ctx.get(CommandsModule.class);
 					commandsModule.deleteAllCommands(-1L);
 					commandsModule.deployAllCommands(-1L);
@@ -68,7 +68,7 @@ public class DevCommand extends Command{
 				return;
 			}
 			ctx.reply(new InteractionResponse.Builder().ephemeral().setContent("processing...").build());
-			ctx.getModules().getScheduler().schedule(() -> {
+			ctx.getModules().schedule(() -> {
 				var commandsModule = ctx.get(CommandsModule.class);
 				commandsModule.deleteAllCommands(guildId);
 				commandsModule.deployAllCommands(guildId);
@@ -97,7 +97,7 @@ public class DevCommand extends Command{
 			var environment = options.getInt("environment");
 			if(environment == 0){
 				ctx.reply(new InteractionResponse.Builder().ephemeral().setContent("processing...").build());
-				ctx.getModules().getScheduler().schedule(() -> {
+				ctx.getModules().schedule(() -> {
 					var commandsModule = ctx.get(CommandsModule.class);
 					commandsModule.deleteAllCommands(-1L);
 					ctx.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setColor(Colors.KITTYBOT_BLUE).setDescription("Omitted slash commands globally").build()).build());
@@ -110,7 +110,7 @@ public class DevCommand extends Command{
 				return;
 			}
 			ctx.reply(new InteractionResponse.Builder().ephemeral().setContent("processing...").build());
-			ctx.getModules().getScheduler().schedule(() -> {
+			ctx.getModules().schedule(() -> {
 				var commandsModule = ctx.get(CommandsModule.class);
 				commandsModule.deleteAllCommands(guildId);
 				ctx.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setColor(Colors.KITTYBOT_BLUE).setDescription("Omitted slash commands for guild `" + guildId + "`").build()).build());

@@ -26,7 +26,7 @@ public class StatusModule extends Module{
 
 	@Override
 	public void onReady(@Nonnull ReadyEvent event){
-		this.modules.getScheduler().scheduleAtFixedRate(this::newRandomStatus, 0, 2, TimeUnit.MINUTES);
+		this.modules.scheduleAtFixedRate(this::newRandomStatus, 0, 2, TimeUnit.MINUTES);
 	}
 
 	public void newRandomStatus(){

@@ -28,7 +28,7 @@ import java.time.Duration;
 
 public class PrometheusModule extends Module{
 
-	public static final Duration UPDATE_PERIOD = Duration.ofSeconds(5);
+	public static final Duration UPDATE_PERIOD = Duration.ofSeconds(15);
 	// ty Natan 👀 https://github.com/Mantaro/MantaroBot/blob/master/src/main/java/net/kodehawa/mantarobot/utils/Prometheus.java
 	private static final Logger LOG = LoggerFactory.getLogger(PrometheusModule.class);
 

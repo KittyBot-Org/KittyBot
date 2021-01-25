@@ -39,7 +39,6 @@ public class EvalCommand extends SubCommand{
 		var status = "Success";
 		scriptEngine.put("ctx", ctx);
 		scriptEngine.put("options", options);
-		scriptEngine.put("scheduler", ctx.getModules().getScheduler());
 		scriptEngine.put("jda", ctx.getJDA());
 		scriptEngine.put("guild", ctx.getGuild());
 		scriptEngine.put("channel", ctx.getChannel());

@@ -226,7 +226,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		if(this.future != null){
 			return;
 		}
-		this.future = this.modules.getScheduler().schedule(() -> this.modules.get(MusicModule.class).destroy(this.guildId), 3, TimeUnit.MINUTES);
+		this.future = this.modules.schedule(() -> this.modules.get(MusicModule.class).destroy(this.guildId), 3, TimeUnit.MINUTES);
 	}
 
 	public void updateMusicController(){

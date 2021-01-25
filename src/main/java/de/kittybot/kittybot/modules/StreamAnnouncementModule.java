@@ -51,7 +51,7 @@ public class StreamAnnouncementModule extends Module{
 	@Override
 	public void onReady(@NotNull ReadyEvent event){
 		this.streamAnnouncements.addAll(loadStreamAnnouncements());
-		this.modules.getScheduler().scheduleAtFixedRate(this::checkStreams, 0, 30, TimeUnit.SECONDS);
+		this.modules.scheduleAtFixedRate(this::checkStreams, 0, 30, TimeUnit.SECONDS);
 	}
 
 	private List<StreamAnnouncement> loadStreamAnnouncements(){

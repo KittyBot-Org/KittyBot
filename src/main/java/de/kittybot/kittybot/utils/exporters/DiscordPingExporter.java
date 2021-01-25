@@ -24,7 +24,7 @@ public class DiscordPingExporter{
 	public void register(Modules modules){
 		GATEWAY_PING.register();
 		REST_PING.register();
-		modules.getScheduler().scheduleAtFixedRate(() -> {
+		modules.scheduleAtFixedRate(() -> {
 			var shardManager = modules.getShardManager();
 			if(shardManager == null){
 				return;

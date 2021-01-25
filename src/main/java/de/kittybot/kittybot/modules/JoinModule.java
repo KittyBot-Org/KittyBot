@@ -49,6 +49,9 @@ public class JoinModule extends Module{
 		if(event.getAuthor().isBot()){
 			return;
 		}
+		if(!event.getChannel().canTalk()){
+			return;
+		}
 		if(oldCommands.stream().anyMatch(msg::startsWith) || msg.contains("<@" + Config.BOT_ID + ">") || msg.contains("<@!" + Config.BOT_ID + ">")){
 			event.getChannel().sendMessage(new EmbedBuilder()
 				.setColor(Colors.KITTYBOT_BLUE)
