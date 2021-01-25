@@ -1,25 +1,45 @@
 package de.kittybot.kittybot.commands.music;
 
-import de.kittybot.kittybot.objects.command.ACommand;
-import de.kittybot.kittybot.objects.command.Category;
-import de.kittybot.kittybot.objects.command.CommandContext;
+import de.kittybot.kittybot.modules.MusicModule;
+import de.kittybot.kittybot.slashcommands.application.Category;
+import de.kittybot.kittybot.slashcommands.application.Command;
+import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.utils.MusicUtils;
+import de.kittybot.kittybot.utils.TimeUtils;
 
-public class ForwardCommand extends ACommand{
-
-	public static final String COMMAND = "forward";
-	public static final String USAGE = "forward <seconds>";
-	public static final String DESCRIPTION = "Forwards the current song by given amount of seconds";
-	protected static final String[] ALIASES = {};
-	protected static final Category CATEGORY = Category.MUSIC;
+@SuppressWarnings("unused")
+public class ForwardCommand extends Command implements RunnableCommand{
 
 	public ForwardCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
+		super("forward", "Forwards the current song by given amount of seconds", Category.MUSIC);
+		addOptions(
+			new CommandOptionInteger("seconds", "Seconds to forward").required()
+		);
 	}
 
 	@Override
-	public void run(CommandContext ctx){
-		MusicUtils.seekTrack(ctx);
+	public void run(Options options, CommandContext ctx){
+		var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
+		if(!MusicUtils.checkCommandRequirements(ctx, player)){
+			return;
+		}
+		if(!MusicUtils.checkMusicPermissions(ctx, player)){
+			return;
+		}
+		var forward = options.getInt("seconds") * 1000;
+		var lavalinkPlayer = player.getPlayer();
+		var position = lavalinkPlayer.getTrackPosition();
+		var newPos = position + forward;
+		if(newPos > player.getPlayingTrack().getDuration()){
+			player.next();
+			ctx.reply("Skipped to next track");
+			return;
+		}
+		lavalinkPlayer.seekTo(newPos);
+		ctx.reply("Forwarded track to `" + TimeUtils.formatDuration(newPos) + "`");
 	}
 
 }

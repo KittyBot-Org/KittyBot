@@ -1,52 +1,38 @@
 package de.kittybot.kittybot.commands.music;
 
-import de.kittybot.kittybot.cache.MusicPlayerCache;
-import de.kittybot.kittybot.objects.command.ACommand;
-import de.kittybot.kittybot.objects.command.Category;
-import de.kittybot.kittybot.objects.command.CommandContext;
-import de.kittybot.kittybot.utils.Utils;
+import de.kittybot.kittybot.modules.MusicModule;
+import de.kittybot.kittybot.slashcommands.application.Category;
+import de.kittybot.kittybot.slashcommands.application.Command;
+import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.utils.Colors;
+import de.kittybot.kittybot.utils.MessageUtils;
+import de.kittybot.kittybot.utils.MusicUtils;
+import net.dv8tion.jda.api.EmbedBuilder;
 
-public class HistoryCommand extends ACommand{
-
-	public static final String COMMAND = "history";
-	public static final String USAGE = "history";
-	public static final String DESCRIPTION = "Shows the current track history";
-	protected static final String[] ALIASES = {"h"};
-	protected static final Category CATEGORY = Category.MUSIC;
+@SuppressWarnings("unused")
+public class HistoryCommand extends Command implements RunnableCommand{
 
 	public HistoryCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
+		super("history", "Displays the last played tracks", Category.MUSIC);
 	}
 
 	@Override
-	public void run(CommandContext ctx){
-		var voiceState = ctx.getMember().getVoiceState();
-		if(voiceState != null && !voiceState.inVoiceChannel()){
-			sendError(ctx, "To use this command you need to be connected to a voice channel");
+	public void run(Options options, CommandContext ctx){
+		var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
+		if(!MusicUtils.checkCommandRequirements(ctx, player)){
 			return;
 		}
-		var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
-		if(musicPlayer == null){
-			sendError(ctx, "No active music player found");
+		var tracks = player.getHistory();
+		if(tracks.isEmpty()){
+			ctx.reply(new EmbedBuilder()
+				.setColor(Colors.KITTYBOT_BLUE)
+				.setDescription("The history is empty. Play some tracks to fill it-")
+			);
 			return;
 		}
-		if(ctx.getArgs().length == 0){
-			var history = musicPlayer.getHistory();
-			if(history.isEmpty()){
-				sendSuccess(ctx, "There are currently no tracks in history");
-				return;
-			}
-			var message = new StringBuilder("Currently **").append(history.size())
-					.append("** ")
-					.append(Utils.pluralize("track", history))
-					.append(" ")
-					.append(history.size() > 1 ? "are" : "is")
-					.append(" in the history:\n");
-			for(var track : history){
-				message.append(Utils.formatTrackTitle(track)).append(" ").append(Utils.formatDuration(track.getDuration())).append("\n");
-			}
-			sendSuccess(ctx, message.toString());
-		}
+		player.sendTracks(tracks, ctx.getUserId(), "Currently " + tracks.size() + " " + MessageUtils.pluralize("track", tracks) + " are in the history");
 	}
 
 }

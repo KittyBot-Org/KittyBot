@@ -1,65 +1,37 @@
 package de.kittybot.kittybot.commands.music;
 
-import de.kittybot.kittybot.cache.MusicPlayerCache;
-import de.kittybot.kittybot.objects.command.ACommand;
-import de.kittybot.kittybot.objects.command.Category;
-import de.kittybot.kittybot.objects.command.CommandContext;
+import de.kittybot.kittybot.modules.MusicModule;
+import de.kittybot.kittybot.slashcommands.application.Category;
+import de.kittybot.kittybot.slashcommands.application.Command;
+import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.utils.MusicUtils;
 
-public class VolumeCommand extends ACommand{
-
-	public static final String COMMAND = "volume";
-	public static final String USAGE = "volume <+-volume/reset>";
-	public static final String DESCRIPTION = "Sets the current volume";
-	protected static final String[] ALIASES = {"vol", "v", "lautstärke"};
-	protected static final Category CATEGORY = Category.MUSIC;
+@SuppressWarnings("unused")
+public class VolumeCommand extends Command implements RunnableCommand{
 
 	public VolumeCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
+		super("volume", "Used to set the player volume", Category.MUSIC);
+		addOptions(
+			new CommandOptionInteger("volume", "The music volume")
+		);
 	}
 
 	@Override
-	public void run(CommandContext ctx){
-		var voiceState = ctx.getMember().getVoiceState();
-		if(voiceState == null || !voiceState.inVoiceChannel()){
-			sendError(ctx, "To use this command you need to be connected to a voice channel");
+	public void run(Options options, CommandContext ctx){
+		var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
+		if(!MusicUtils.checkCommandRequirements(ctx, player)){
 			return;
 		}
-		var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
-		if(musicPlayer == null){
-			sendError(ctx, "No active music player found");
+		int volume = options.getInt("volume");
+		if(volume < 0 || volume > 100){
+			ctx.error("Volume");
 			return;
 		}
-		var player = musicPlayer.getPlayer();
-		var channel = player.getLink().getChannel();
-		if(channel == null || voiceState.getChannel() == null || !channel.equals(voiceState.getChannel().getId())){
-			sendError(ctx, "To use this command you need to be connected to the same voice channel as me");
-			return;
-		}
-		var args = ctx.getArgs();
-		if(args.length == 0){
-			sendError(ctx, "Please provide the volume to set");
-			return;
-		}
-		if(args[0].equalsIgnoreCase("reset")){
-			player.setVolume(100);
-			musicPlayer.updateMusicControlMessage(ctx.getChannel());
-			return;
-		}
-		var oldVolume = player.getVolume();
-		var newVolume = 0;
-		try{
-			newVolume = MusicUtils.parseVolume(args[0], oldVolume);
-		}
-		catch(final NumberFormatException ex){
-			sendError(ctx, "Please provide the volume to set");
-			return;
-		}
-		if(newVolume == oldVolume){
-			return;
-		}
-		player.setVolume(newVolume);
-		musicPlayer.updateMusicControlMessage(ctx.getChannel());
+		player.setVolume(volume);
+		ctx.reply("Volume set to: `" + volume + "`");
 	}
 
 }

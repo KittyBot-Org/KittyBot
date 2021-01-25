@@ -1,12 +1,13 @@
 CREATE TABLE IF NOT EXISTS user_statistics(
-  user_id       varchar(18) NOT NULL,
-  guild_id      varchar(18) NOT NULL,
-  xp            int NOT NULL,
-  level         int NOT NULL,
-  bot_calls     int NOT NULL,
-  voice_time    int NOT NULL,
-  message_count int NOT NULL,
-  emote_count   int NOT NULL,
-  last_active   varchar(20) NOT NULL,
-PRIMARY KEY(user_id, guild_id)
+  id            BIGSERIAL PRIMARY KEY NOT NULL,
+  guild_id      BIGINT NOT NULL REFERENCES guilds(id) ON DELETE CASCADE,
+  user_id       BIGINT NOT NULL,
+  xp            INT NOT NULL DEFAULT(0),
+  level         INT NOT NULL DEFAULT(0),
+  bot_calls     INT NOT NULL DEFAULT(0),
+  voice_time    INT NOT NULL DEFAULT(0),
+  message_count INT NOT NULL DEFAULT(0),
+  emote_count   INT NOT NULL DEFAULT(0),
+  last_active   TIMESTAMP NOT NULL DEFAULT(current_timestamp)
 );
+

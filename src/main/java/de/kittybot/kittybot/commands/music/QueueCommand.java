@@ -1,55 +1,67 @@
 package de.kittybot.kittybot.commands.music;
 
-import de.kittybot.kittybot.cache.MusicPlayerCache;
-import de.kittybot.kittybot.objects.command.ACommand;
-import de.kittybot.kittybot.objects.command.Category;
-import de.kittybot.kittybot.objects.command.CommandContext;
-import de.kittybot.kittybot.utils.MusicUtils;
-import de.kittybot.kittybot.utils.Utils;
+import de.kittybot.kittybot.modules.MusicModule;
+import de.kittybot.kittybot.objects.music.MusicPlayer;
+import de.kittybot.kittybot.objects.music.SearchProvider;
+import de.kittybot.kittybot.slashcommands.application.Category;
+import de.kittybot.kittybot.slashcommands.application.Command;
+import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
+import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.utils.Colors;
+import de.kittybot.kittybot.utils.MessageUtils;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 
-public class QueueCommand extends ACommand{
-
-	public static final String COMMAND = "queue";
-	public static final String USAGE = "queue <playlist/song/video>";
-	public static final String DESCRIPTION = "Queues what you want Kitty to play later";
-	protected static final String[] ALIASES = {"q"};
-	protected static final Category CATEGORY = Category.MUSIC;
+@SuppressWarnings("unused")
+public class QueueCommand extends Command implements RunnableCommand{
 
 	public QueueCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
+		super("queue", "Queues a link or search result from yt/sc", Category.MUSIC);
+		addOptions(
+			new CommandOptionString("query", "A link or search query to play from"),
+			new CommandOptionString("search-provider", "Which search provider use")
+				.addChoices(
+					new CommandOptionChoice<>("youtube", "yt"),
+					new CommandOptionChoice<>("soundcloud", "sc")
+				)
+		);
 	}
 
 	@Override
-	public void run(CommandContext ctx){
-		final var connectionFailure = MusicUtils.checkVoiceChannel(ctx);
-		if(connectionFailure != null){
-			sendError(ctx, "I can't play music as " + connectionFailure.getReason());
+	public void run(Options options, CommandContext ctx){
+		if(!ctx.getGuild().getSelfMember().hasPermission(ctx.getChannel(), Permission.MESSAGE_WRITE, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EXT_EMOJI, Permission.MESSAGE_HISTORY, Permission.VIEW_CHANNEL)){
+			ctx.error("Please make sure I have following permissions in this channel: `Send Messages`, `Add Reactions`, `Use External Emoji`, `Read Message History`, `View Channel`");
 			return;
 		}
-		var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
-		if(musicPlayer == null){
-			sendError(ctx, "No active music player found");
-			return;
-		}
-		if(ctx.getArgs().length == 0){
-			var queue = musicPlayer.getQueue();
-			if(queue.isEmpty()){
-				sendSuccess(ctx, "There are currently no tracks queued");
-				return;
+		var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
+
+		if(options.has("query")){
+			if(player == null){
+				player = ctx.get(MusicModule.class).create(ctx);
 			}
-			var message = new StringBuilder("Currently **").append(queue.size())
-					.append("** ")
-					.append(Utils.pluralize("track", queue))
-					.append(" ")
-					.append(queue.size() > 1 ? "are" : "is")
-					.append(" queued:\n");
-			for(var track : queue){
-				message.append(Utils.formatTrackTitle(track)).append(" ").append(Utils.formatDuration(track.getDuration())).append("\n");
+			var searchProvider = SearchProvider.YOUTUBE;
+			if(options.has("search-provider")){
+				searchProvider = SearchProvider.getByShortname(options.getString("search-provider"));
 			}
-			sendSuccess(ctx, message.toString());
+			player.loadItem(ctx, options.getString("link"), searchProvider);
 			return;
 		}
-		musicPlayer.loadItem(this, ctx);
+		var tracks = player.getQueue();
+		if(tracks.isEmpty()){
+			ctx.reply(new EmbedBuilder()
+				.setColor(Colors.KITTYBOT_BLUE)
+				.setDescription("The queue is empty. You can queue new tracks with `/play <link/search-term>` or `/queue <link/search-term>`")
+			);
+			return;
+		}
+		MusicPlayer finalPlayer = player;
+		ctx.acknowledge(true).queue(success ->
+			finalPlayer.sendTracks(tracks, ctx.getUserId(), "Currently " + tracks.size() + " " + MessageUtils.pluralize("track", tracks) + " are queued")
+		);
+
 	}
 
 }

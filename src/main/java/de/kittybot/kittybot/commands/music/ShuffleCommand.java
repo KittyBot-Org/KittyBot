@@ -1,35 +1,36 @@
 package de.kittybot.kittybot.commands.music;
 
-import de.kittybot.kittybot.cache.MusicPlayerCache;
-import de.kittybot.kittybot.objects.command.ACommand;
-import de.kittybot.kittybot.objects.command.Category;
-import de.kittybot.kittybot.objects.command.CommandContext;
+import de.kittybot.kittybot.modules.MusicModule;
+import de.kittybot.kittybot.modules.SettingsModule;
+import de.kittybot.kittybot.slashcommands.application.Category;
+import de.kittybot.kittybot.slashcommands.application.Command;
+import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.utils.MusicUtils;
 
-public class ShuffleCommand extends ACommand{
-
-	public static final String COMMAND = "shuffle";
-	public static final String USAGE = "shuffle";
-	public static final String DESCRIPTION = "Shuffles the current queue";
-	protected static final String[] ALIASES = {"mische"};
-	protected static final Category CATEGORY = Category.MUSIC;
+@SuppressWarnings("unused")
+public class ShuffleCommand extends Command implements RunnableCommand{
 
 	public ShuffleCommand(){
-		super(COMMAND, USAGE, DESCRIPTION, ALIASES, CATEGORY);
+		super("shuffle", "Shuffles all queued tracks", Category.MUSIC);
 	}
 
 	@Override
-	public void run(CommandContext ctx){
-		var musicPlayer = MusicPlayerCache.getMusicPlayer(ctx.getGuild());
-		if(musicPlayer == null){
-			sendError(ctx, "No active music player found");
+	public void run(Options options, CommandContext ctx){
+		var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
+		if(!MusicUtils.checkCommandRequirements(ctx, player)){
 			return;
 		}
-		if(musicPlayer.getQueue().isEmpty()){
-			sendError(ctx, "There are currently no tracks queued");
+		if(!ctx.get(SettingsModule.class).hasDJRole(ctx.getMember())){
+			ctx.error("Only DJs are allowed shuffle");
 			return;
 		}
-		musicPlayer.shuffle();
-		sendSuccess(ctx, "Queue shuffled");
+		if(ctx.get(MusicModule.class).get(ctx.getGuildId()).shuffle()){
+			ctx.reply("Queue shuffled");
+			return;
+		}
+		ctx.error("Queue is empty. Nothing to shuffle");
 	}
 
 }
