@@ -1,5 +1,7 @@
 package de.kittybot.kittybot.modules;
 
+import de.kittybot.kittybot.jooq.tables.StreamUsers;
+import de.kittybot.kittybot.jooq.tables.records.StreamUsersRecord;
 import de.kittybot.kittybot.objects.enums.AnnouncementType;
 import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.objects.settings.StreamAnnouncement;
@@ -13,9 +15,13 @@ import de.kittybot.kittybot.utils.Config;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -30,11 +36,16 @@ public class StreamAnnouncementModule extends Module{
 
 	private static final Logger LOG = LoggerFactory.getLogger(StreamAnnouncementModule.class);
 
-	private List<StreamAnnouncement> streamAnnouncements;
-	private Set<Long> activeStreams;
+	private static final Set<Class<? extends Module>> DEPENDENCIES = Set.of(DatabaseModule.class);
+
+	private List<StreamUsersRecord> streamAnnouncements;
 	private TwitchWrapper twitchWrapper;
 	private YouTubeWrapper youTubeWrapper;
 
+	@Override
+	public Set<Class<? extends Module>> getDependencies(){
+		return DEPENDENCIES;
+	}
 
 	@Override
 	public void onEnable(){
@@ -44,20 +55,16 @@ public class StreamAnnouncementModule extends Module{
 		else{
 			this.twitchWrapper = new TwitchWrapper(Config.TWITCH_CLIENT_ID, Config.TWITCH_CLIENT_SECRET, this.modules.getHttpClient());
 		}
-		this.streamAnnouncements = new ArrayList<>();
-		this.activeStreams = new HashSet<>();
+		try(var ctx = this.modules.get(DatabaseModule.class).getCtx().selectFrom(STREAM_USERS)){
+			var result = ctx.fetch();
+			result.detach();
+			this.streamAnnouncements = result;
+		}
 	}
 
 	@Override
 	public void onReady(@NotNull ReadyEvent event){
-		this.streamAnnouncements.addAll(loadStreamAnnouncements());
 		this.modules.scheduleAtFixedRate(this::checkStreams, 0, 30, TimeUnit.SECONDS);
-	}
-
-	private List<StreamAnnouncement> loadStreamAnnouncements(){
-		try(var ctx = this.modules.get(DatabaseModule.class).getCtx().selectFrom(STREAM_USERS)){
-			return ctx.fetch().stream().map(StreamAnnouncement::new).collect(Collectors.toList());
-		}
 	}
 
 	private void checkStreams(){
@@ -66,19 +73,19 @@ public class StreamAnnouncementModule extends Module{
 	}
 
 	private void checkTwitch(){
-		var userIds = this.streamAnnouncements.stream().filter(streamAnnouncement -> streamAnnouncement.getStreamType() == StreamType.TWITCH).map(
-			StreamAnnouncement::getUserId).collect(Collectors.toList());
+		var userIds = this.streamAnnouncements.stream().filter(streamAnnouncement -> streamAnnouncement.getStreamType() == StreamType.TWITCH.getId())
+			.map(StreamUsersRecord::getUserId).collect(Collectors.toList());
 		var streams = this.twitchWrapper.getStreams(userIds);
+
 		for(var streamAnnouncement : this.streamAnnouncements){
 			var stream = streams.stream().filter(st -> st.getUserId() == streamAnnouncement.getUserId()).findFirst();
-			var userId = streamAnnouncement.getUserId();
-			if(stream.isPresent() && !this.activeStreams.contains(userId)){
-				this.activeStreams.add(userId);
+			if(stream.isPresent() && !streamAnnouncement.getIsLive()){
+				setLiveStatus(streamAnnouncement, true);
 				// send online
 				sendAnnouncementMessage(streamAnnouncement, stream.get(), AnnouncementType.START);
 			}
-			if(stream.isEmpty() && this.activeStreams.contains(streamAnnouncement.getUserId())){
-				this.activeStreams.remove(userId);
+			if(stream.isEmpty() && streamAnnouncement.getIsLive()){
+				setLiveStatus(streamAnnouncement, false);
 				// send offline
 				//sendAnnouncementMessage(streamAnnouncement, null, AnnouncementType.END);
 			}
@@ -89,7 +96,7 @@ public class StreamAnnouncementModule extends Module{
 
 	}
 
-	private void sendAnnouncementMessage(StreamAnnouncement streamAnnouncement, Stream stream, AnnouncementType announcementType){
+	private void sendAnnouncementMessage(StreamUsersRecord streamAnnouncement, Stream stream, AnnouncementType announcementType){
 		var guildId = streamAnnouncement.getGuildId();
 		var guild = this.modules.getGuildById(guildId);
 		if(guild == null){
@@ -98,27 +105,42 @@ public class StreamAnnouncementModule extends Module{
 		var settings = this.modules.get(SettingsModule.class).getSettings(guildId);
 
 		var channel = guild.getTextChannelById(settings.getStreamAnnouncementChannelId());
-		if(channel == null){
+		if(channel == null || !channel.canTalk()){
 			return;
 		}
 		var embed = new EmbedBuilder();
+		var streamThumbnailUrl = stream.getThumbnailUrl(320, 180);
+		InputStream thumbnail;
+		try{
+			thumbnail = new URL(streamThumbnailUrl).openStream();
+		}
+		catch(IOException e){
+			LOG.error("Failed to get thumbnail url", e);
+			return;
+		}
 		switch(announcementType){
 			case END:
 				embed.setAuthor(stream.getUserName(), stream.getStreamUrl());
 				break;
 			case START:
-				embed
-					.setTitle(stream.getStreamTitle(), stream.getStreamUrl())
-					.setImage(stream.getThumbnailUrl(320, 180))
+				embed.setTitle(stream.getStreamTitle(), stream.getStreamUrl())
+					.setImage("attachment://thumbnail.png")
 					.setThumbnail(stream.getGame().getThumbnailUrl(144, 192))
 					.addField("Game", stream.getGame().getName(), true);
 				break;
 		}
-		channel.sendMessage(settings.getStreamAnnouncementMessage().replace("${user}", stream.getUserName())).embed(embed
-			.setTimestamp(Instant.now())
-			.setColor(Colors.TWITCH_PURPLE)
-			.build()
-		).queue();
+		channel.sendMessage(settings.getStreamAnnouncementMessage().replace("${user}", stream.getUserName()))
+			.embed(embed
+				.setTimestamp(Instant.now())
+				.setColor(Colors.TWITCH_PURPLE)
+				.build()
+			)
+			.addFile(thumbnail, "thumbnail.png")
+			.queue();
+	}
+
+	private void setLiveStatus(StreamUsersRecord streamAnnouncement, boolean status){
+		this.modules.get(DatabaseModule.class).getCtx().executeUpdate(streamAnnouncement.setIsLive(status));
 	}
 
 	public TwitchUser add(String name, long guildId, StreamType type){
@@ -126,18 +148,17 @@ public class StreamAnnouncementModule extends Module{
 		if(user == null){
 			return null;
 		}
-		var rows = this.modules.get(DatabaseModule.class).getCtx().insertInto(STREAM_USERS)
-			.columns(STREAM_USERS.GUILD_ID, STREAM_USERS.USER_ID, STREAM_USERS.USER_NAME, STREAM_USERS.STREAM_TYPE)
-			.values(guildId, user.getId(), name, type.getId())
-			.execute();
-		if(rows != 1){
-			return user;
-		}
-		this.streamAnnouncements.add(new StreamAnnouncement(user.getId(), name, guildId, type));
+		var record = new StreamUsersRecord()
+			.setUserId(user.getId())
+			.setUserName(user.getDisplayName())
+			.setGuildId(guildId)
+			.setStreamType(type.getId());
+		this.modules.get(DatabaseModule.class).getCtx().executeInsert(record);
+		this.streamAnnouncements.add(record);
 		return user;
 	}
 
-	public List<StreamAnnouncement> get(long guildId){
+	public List<StreamUsersRecord> get(long guildId){
 		return this.streamAnnouncements.stream().filter(stream -> stream.getGuildId() == guildId).collect(Collectors.toList());
 	}
 
@@ -153,7 +174,7 @@ public class StreamAnnouncementModule extends Module{
 			return false;
 		}
 
-		this.streamAnnouncements.removeIf(stream -> stream.getUserId() == user.getId() && stream.getStreamType() == type && stream.getGuildId() == guildId);
+		this.streamAnnouncements.removeIf(stream -> stream.getUserId() == user.getId() && stream.getStreamType() == type.getId() && stream.getGuildId() == guildId);
 		return true;
 	}
 

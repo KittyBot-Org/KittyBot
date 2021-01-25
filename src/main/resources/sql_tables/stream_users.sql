@@ -4,5 +4,6 @@ CREATE TABLE IF NOT EXISTS stream_users(
   user_id     BIGINT NOT NULL,
   user_name   VARCHAR(32) NOT NULL,
   stream_type INT NOT NULL,
+  is_live     BOOLEAN NOT NULL DEFAULT(false),
   UNIQUE(guild_id, user_id)
 );
