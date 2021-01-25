@@ -1,10 +1,8 @@
 watching you 👀
 watching ${total_guilds} guilds 👀
 watching ${total_users} users 👀
-mention me for help!
 playing with new slash commands
 competing with Xenia
 playing JDA
 watching JDA
 watching Discord
-
