@@ -12,9 +12,10 @@ public class Metrics{
 		.labelNames("type")
 		.register();
 
-	public static final Histogram COMMAND_LATENCY = Histogram.build()
+	public static final Gauge COMMAND_LATENCY = Gauge.build()
 		.name("kittybot_command_latency")
 		.help("Time it takes for a command to process.")
+		.labelNames("command")
 		.register();
 
 	public static final Counter COMMAND_COUNTER = Counter.build()
