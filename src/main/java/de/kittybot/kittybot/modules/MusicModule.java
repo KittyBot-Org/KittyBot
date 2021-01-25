@@ -142,7 +142,9 @@ public class MusicModule extends Module implements Serializable{
 			link.destroy();
 		}
 		var player = this.musicPlayers.remove(guildId);
-		player.updateMusicController();
+		if(player != null){
+			player.updateMusicController();
+		}
 	}
 
 	public MusicPlayer create(CommandContext ctx){
