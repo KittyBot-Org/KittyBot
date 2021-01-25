@@ -62,7 +62,7 @@ public class InteractionsModule extends Module{
 			}
 			process(cmd, interaction, data);
 
-			Metrics.COMMAND_LATENCY.observe((double) (System.currentTimeMillis() - start));
+			Metrics.COMMAND_LATENCY.labels(cmd.getName()).set(System.currentTimeMillis() - start);
 			Metrics.COMMAND_COUNTER.labels(cmd.getName()).inc();
 		}
 	}
