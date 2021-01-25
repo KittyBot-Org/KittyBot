@@ -30,7 +30,7 @@ dependencies {
     // discord/jda related
     implementation 'net.dv8tion:JDA:4.2.0_227'
     implementation 'com.jagrosh:jda-utilities:3.0.5'
-    implementation 'club.minnced:discord-webhooks:0.5.4-rc'
+    implementation 'club.minnced:discord-webhooks:0.5.4'
 
     // audio
     implementation("com.github.KittyBot-Org:Lavalink-Client:e66c406") {
