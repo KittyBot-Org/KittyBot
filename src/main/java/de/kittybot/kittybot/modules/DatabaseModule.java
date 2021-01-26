@@ -8,6 +8,7 @@ import org.apache.commons.io.IOUtils;
 import org.jooq.Configuration;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
+import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultConfiguration;
 import org.slf4j.Logger;
@@ -63,6 +64,7 @@ public class DatabaseModule extends Module{
 		config.setMaxLifetime(1800000);
 
 		var defaultConfiguration = new DefaultConfiguration();
+		defaultConfiguration.setSettings(new Settings().withReturnAllOnUpdatableRecord(true));
 		defaultConfiguration.setDataSource(new HikariDataSource(config));
 		defaultConfiguration.setSQLDialect(SQLDialect.POSTGRES);
 		this.configuration = defaultConfiguration;
@@ -86,6 +88,10 @@ public class DatabaseModule extends Module{
 
 	public DSLContext getCtx(){
 		return DSL.using(this.configuration);
+	}
+
+	public Configuration getConfiguration(){
+		return this.configuration;
 	}
 
 }

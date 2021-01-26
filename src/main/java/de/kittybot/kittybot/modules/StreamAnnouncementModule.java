@@ -1,10 +1,8 @@
 package de.kittybot.kittybot.modules;
 
-import de.kittybot.kittybot.jooq.tables.StreamUsers;
 import de.kittybot.kittybot.jooq.tables.records.StreamUsersRecord;
 import de.kittybot.kittybot.objects.enums.AnnouncementType;
 import de.kittybot.kittybot.objects.module.Module;
-import de.kittybot.kittybot.objects.settings.StreamAnnouncement;
 import de.kittybot.kittybot.objects.streams.Stream;
 import de.kittybot.kittybot.objects.streams.StreamType;
 import de.kittybot.kittybot.objects.streams.twitch.TwitchUser;
@@ -15,7 +13,6 @@ import de.kittybot.kittybot.utils.Config;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import org.jetbrains.annotations.NotNull;
-import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,8 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -139,8 +134,11 @@ public class StreamAnnouncementModule extends Module{
 			.queue();
 	}
 
-	private void setLiveStatus(StreamUsersRecord streamAnnouncement, boolean status){
-		this.modules.get(DatabaseModule.class).getCtx().executeUpdate(streamAnnouncement.setIsLive(status));
+	private void setLiveStatus(StreamUsersRecord record, boolean status){
+		record.setIsLive(status);
+		record.attach(this.modules.get(DatabaseModule.class).getConfiguration());
+		record.store();
+		record.detach();
 	}
 
 	public TwitchUser add(String name, long guildId, StreamType type){
@@ -153,7 +151,10 @@ public class StreamAnnouncementModule extends Module{
 			.setUserName(user.getDisplayName())
 			.setGuildId(guildId)
 			.setStreamType(type.getId());
-		this.modules.get(DatabaseModule.class).getCtx().executeInsert(record);
+
+		record.attach(this.modules.get(DatabaseModule.class).getConfiguration());
+		record.store();
+		record.detach();
 		this.streamAnnouncements.add(record);
 		return user;
 	}
@@ -167,14 +168,15 @@ public class StreamAnnouncementModule extends Module{
 		if(user == null){
 			return false;
 		}
-		var dbModule = this.modules.get(DatabaseModule.class);
-		var rows = dbModule.getCtx().deleteFrom(STREAM_USERS).where(
-			STREAM_USERS.USER_ID.eq(user.getId()).and(STREAM_USERS.GUILD_ID.eq(guildId)).and(STREAM_USERS.STREAM_TYPE.eq(type.getId()))).execute();
-		if(rows != 1){
+		var optionalRecord = this.streamAnnouncements.stream().filter(stream -> stream.getUserId() == user.getId() && stream.getGuildId() == guildId && stream.getStreamType() == type.getId()).findFirst();
+		if(optionalRecord.isEmpty()){
 			return false;
 		}
-
-		this.streamAnnouncements.removeIf(stream -> stream.getUserId() == user.getId() && stream.getStreamType() == type.getId() && stream.getGuildId() == guildId);
+		var record = optionalRecord.get();
+		record.attach(this.modules.get(DatabaseModule.class).getConfiguration());
+		record.delete();
+		record.detach();
+		this.streamAnnouncements.remove(record);
 		return true;
 	}
 

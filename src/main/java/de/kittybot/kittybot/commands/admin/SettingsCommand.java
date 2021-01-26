@@ -358,7 +358,7 @@ public class SettingsCommand extends Command{
 					ctx.error("No stream announcements found. Create them with `/settings streamannouncements add <service> <username>`");
 					return;
 				}
-				ctx.reply("**Stream Announcements:**\n" + streamAnnouncements.stream().map(sa -> MessageUtils.maskLink(sa.getUserName(), sa.getStreamUrl()) + " on " + sa.getStreamType().getName()).collect(Collectors.joining("\n")));
+				ctx.reply("**Stream Announcements:**\n" + streamAnnouncements.stream().map(sa -> MessageUtils.maskLink(sa.getUserName(), "https://twitch.tv/" + sa.getUserName()) + " on " + StreamType.byId(sa.getStreamType()).getName()).collect(Collectors.joining("\n")));
 			}
 
 		}

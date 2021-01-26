@@ -17,6 +17,7 @@ public class Config{
 	public static long BOT_ID;
 	public static String BOT_SECRET;
 	public static Set<Long> DEV_IDS;
+	public static Long TEST_GUILD;
 
 	public static int BACKEND_PORT;
 	public static int PROMETHEUS_PORT;
@@ -78,6 +79,7 @@ public class Config{
 				DEV_IDS.add(val.getLong(i, -1));
 			}
 		}
+		TEST_GUILD = json.getLong("test_guild", -1);
 
 		BACKEND_PORT = json.getInt("backend_port", -1);
 		PROMETHEUS_PORT = json.getInt("prometheus_port", -1);
