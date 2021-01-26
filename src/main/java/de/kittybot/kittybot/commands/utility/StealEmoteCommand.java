@@ -40,8 +40,8 @@ public class StealEmoteCommand extends Command{
 				ctx.error("To steal emotes I need the `" + Permission.MANAGE_EMOTES.getName() + "` permission");
 				return;
 			}
-			var name = options.has("new-name") ? options.getString("new-name") : options.getString("emote");
-			EmoteHelper.createEmote(ctx, name, options.getEmoteId("emote"), options.getString("emote").startsWith("<a:"));
+			var name = options.has("new-name") ? options.getString("new-name") : options.getEmoteName("emote");
+			EmoteHelper.createEmote(ctx, name, options.getEmoteId("emote"), options.getEmoteAnimated("emote"));
 		}
 
 	}
@@ -51,7 +51,7 @@ public class StealEmoteCommand extends Command{
 		public EmoteIdCommand(){
 			super("emote-id", "Steal an emote by id");
 			addOptions(
-				new CommandOptionEmote("emote-id", "The emote id to steal").required(),
+				new CommandOptionLong("emote-id", "The emote id to steal").required(),
 				new CommandOptionString("new-name", "The new emote name"),
 				new CommandOptionBoolean("animated", "If the emote is animated")
 			);

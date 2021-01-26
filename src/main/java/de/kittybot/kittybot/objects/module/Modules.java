@@ -115,7 +115,7 @@ public class Modules{
 			catch(Exception e){
 				LOG.error("Unexpected error in scheduler", e);
 			}
-			}, initDelay, delay, timeUnit);
+		}, initDelay, delay, timeUnit);
 	}
 
 	public ScheduledFuture<?> schedule(Runnable runnable, long delay, TimeUnit timeUnit){

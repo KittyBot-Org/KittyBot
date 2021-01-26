@@ -1,10 +1,13 @@
 package de.kittybot.kittybot.slashcommands.context;
 
+import de.kittybot.kittybot.objects.exceptions.OptionParseException;
 import de.kittybot.kittybot.slashcommands.application.CommandOption;
 import de.kittybot.kittybot.slashcommands.interaction.InteractionDataOption;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.ListedEmote;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.utils.MiscUtil;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -70,7 +73,25 @@ public class Options{
 	}
 
 	public long getEmoteId(String name){
-		return getValue(name, Long.class);
+		var emote = getValue(name, String.class);
+		var matcher = Message.MentionType.EMOTE.getPattern().matcher(emote);
+		if(matcher.matches()){
+			return MiscUtil.parseSnowflake(matcher.group(2));
+		}
+		throw new OptionParseException("Failed to parse emote id");
+	}
+
+	public String getEmoteName(String name){
+		var emote = getValue(name, String.class);
+		var matcher = Message.MentionType.EMOTE.getPattern().matcher(emote);
+		if(matcher.matches()){
+			return matcher.group(1);
+		}
+		throw new OptionParseException("Failed to parse emote name");
+	}
+
+	public boolean getEmoteAnimated(String name){
+		return getValue(name, String.class).startsWith("<a:");
 	}
 
 	/*
