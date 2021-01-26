@@ -4,6 +4,8 @@ import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.objects.music.MusicPlayer;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.utils.Config;
+import de.kittybot.kittybot.utils.MessageUtils;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
@@ -14,7 +16,9 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.Color;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -90,7 +94,7 @@ public class MusicModule extends Module implements Serializable{
 				break;
 			case "\u274C":// ❌
 				if(requesterId == userId || member.hasPermission(Permission.ADMINISTRATOR) || settings.hasDJRole(member)){
-					destroy(event.getGuild().getIdLong());
+					destroy(event.getGuild().getIdLong(), event.getUserIdLong());
 				}
 				break;
 		}
@@ -99,7 +103,7 @@ public class MusicModule extends Module implements Serializable{
 
 	@Override
 	public void onGuildLeave(@NotNull GuildLeaveEvent event){
-		destroy(event.getGuild().getIdLong());
+		destroy(event.getGuild().getIdLong(), -1L);
 	}
 
 	@Override
@@ -110,7 +114,7 @@ public class MusicModule extends Module implements Serializable{
 				return;
 			}
 			if(event.getEntity().getIdLong() == Config.BOT_ID){
-				this.modules.get(MusicModule.class).destroy(event.getEntity().getGuild().getIdLong());
+				this.modules.get(MusicModule.class).destroy(event.getEntity().getGuild().getIdLong(), -1L);
 				return;
 			}
 			var channel = event.getChannelLeft();
@@ -136,7 +140,7 @@ public class MusicModule extends Module implements Serializable{
 		return this.musicPlayers.get(guildId);
 	}
 
-	public void destroy(long guildId){
+	public void destroy(long guildId, long userId){
 		var link = this.modules.get(LavalinkModule.class).getExistingLink(guildId);
 		if(link != null){
 			link.destroy();
@@ -144,6 +148,12 @@ public class MusicModule extends Module implements Serializable{
 		var player = this.musicPlayers.remove(guildId);
 		if(player != null){
 			player.updateMusicController();
+			var channel = player.getTextChannel();
+			if(channel == null || !channel.canTalk()){
+				return;
+			}
+			var message = userId == -1 ? "Disconnected due to inactivity" : MessageUtils.getUserMention(userId) + " disconnected me bye bye";
+			channel.sendMessage(new EmbedBuilder().setColor(Color.RED).setDescription(message).setTimestamp(Instant.now()).build()).queue();
 		}
 	}
 

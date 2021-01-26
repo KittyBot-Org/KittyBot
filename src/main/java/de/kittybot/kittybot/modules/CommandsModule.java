@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.modules;
 
+import de.kittybot.kittybot.objects.enums.Environment;
 import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.utils.Config;
@@ -26,28 +27,23 @@ import java.util.stream.Collectors;
 public class CommandsModule extends Module{
 
 	public static final Route COMMANDS_CREATE = Route.custom(Method.PUT, "applications/{application.id}/commands");
-	public static final Route COMMANDS_GET = Route.custom(Method.GET, "applications/{application.id}/commands");
-	public static final Route COMMAND_DELETE = Route.custom(Method.DELETE, "applications/{application.id}/commands/{command.id}");
 	public static final Route GUILD_COMMANDS_CREATE = Route.custom(Method.PUT, "applications/{application.id}/guilds/{guild.id}/commands");
-	public static final Route GUILD_COMMANDS_GET = Route.custom(Method.GET, "applications/{application.id}/guilds/{guild.id}/commands");
-	public static final Route GUILD_COMMAND_DELETE = Route.custom(Method.DELETE, "applications/{application.id}/guilds/{guild.id}/commands/{command.id}");
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommandsModule.class);
 	private static final String COMMANDS_PACKAGE = "de.kittybot.kittybot.commands";
-	private static final Set<Class<? extends Module>> DEPENDENCIES = Set.of(InviteModule.class);
 	private Map<String, Command> commands;
-
-	@Override
-	public Set<Class<? extends Module>> getDependencies(){
-		return DEPENDENCIES;
-	}
 
 	@Override
 	public void onEnable(){
 		scanCommands();
-		var env = System.getenv().get("ENV");
-		if(env != null && env.equals("PRODUCTION")){
+		var env = Environment.getCurrentEnv();
+		if(env == Environment.PRODUCTION){
 			deployAllCommands(-1L);
+		}
+		else if(env == Environment.DEVELOPMENT){
+			if(Config.TEST_GUILD != -1){
+				deployAllCommands(Config.TEST_GUILD);
+			}
 		}
 	}
 
@@ -74,7 +70,7 @@ public class CommandsModule extends Module{
 	}
 
 	public void deployAllCommands(long guildId){
-		LOG.info("Registering commands...");
+		LOG.info("Registering commands {}...", guildId == -1 ? "global" : "for guild " + guildId);
 
 		var commands = DataArray.fromCollection(this.commands.values().stream().map(Command::toJSON).collect(Collectors.toList()));
 		var rqBody = RequestBody.create(commands.toJson(), MediaType.parse("application/json"));
@@ -93,6 +89,24 @@ public class CommandsModule extends Module{
 		LOG.info("Registered " + this.commands.size() + " commands...");
 	}
 
+	public void deleteAllCommands(long guildId){
+		LOG.info("Deleting commands {}...", guildId == -1 ? "global" : "for guild " + guildId);
+		var rqBody = RequestBody.create(DataArray.empty().toString(), MediaType.parse("application/json"));
+
+		var route = guildId == -1L ? COMMANDS_CREATE.compile(String.valueOf(Config.BOT_ID)) : GUILD_COMMANDS_CREATE.compile(String.valueOf(Config.BOT_ID), String.valueOf(guildId));
+		try(var resp = put(route, rqBody).execute()){
+			if(!resp.isSuccessful()){
+				var body = resp.body();
+				LOG.error("Deleting commands failed. Body: {}", body == null ? "null" : body.string());
+				return;
+			}
+		}
+		catch(IOException e){
+			LOG.error("Error while processing deleteAllCommands", e);
+		}
+		LOG.info("Deleted all commands...");
+	}
+
 	private Call put(Route.CompiledRoute route, RequestBody body){
 		return this.modules.getHttpClient().newCall(newBuilder(route).put(body).build());
 	}
@@ -101,55 +115,6 @@ public class CommandsModule extends Module{
 		return new Request.Builder()
 			.url(Requester.DISCORD_API_PREFIX + route.getCompiledRoute())
 			.addHeader("Authorization", "Bot " + Config.BOT_TOKEN);
-	}
-
-	public void deleteAllCommands(long guildId){
-		var cmds = readCommands(guildId);
-		for(var cmd : cmds){
-			deleteCommand(cmd.getLong("id"), guildId);
-		}
-	}
-
-	public List<DataObject> readCommands(long guildId){
-		var route = guildId == -1L ? COMMANDS_GET.compile(String.valueOf(Config.BOT_ID)) : GUILD_COMMANDS_GET.compile(String.valueOf(Config.BOT_ID), String.valueOf(guildId));
-		var cmds = new ArrayList<DataObject>();
-		try(var resp = get(route).execute()){
-			var body = resp.body();
-			if(!resp.isSuccessful() || body == null){
-				return cmds;
-			}
-			var json = DataArray.fromJson(body.string());
-			for(var i = 0; i < json.length(); i++){
-				cmds.add(json.getObject(i));
-			}
-		}
-		catch(IOException e){
-			LOG.error("Error while reading commands", e);
-		}
-		return cmds;
-	}
-
-	public void deleteCommand(long commandId, long guildId){
-		LOG.debug("Registering command: {}", commandId);
-		var route = guildId == -1L ? COMMAND_DELETE.compile(String.valueOf(Config.BOT_ID), String.valueOf(commandId)) : GUILD_COMMAND_DELETE.compile(String.valueOf(Config.BOT_ID), String.valueOf(guildId), String.valueOf(commandId));
-
-		try(var resp = delete(route).execute()){
-			if(!resp.isSuccessful()){
-				var body = resp.body();
-				LOG.error("Error while deleting command: {}", body == null ? "null" : body.string());
-			}
-		}
-		catch(IOException e){
-			LOG.error("Error while deleting command", e);
-		}
-	}
-
-	private Call get(Route.CompiledRoute route){
-		return this.modules.getHttpClient().newCall(newBuilder(route).get().build());
-	}
-
-	private Call delete(Route.CompiledRoute route){
-		return this.modules.getHttpClient().newCall(newBuilder(route).delete().build());
 	}
 
 	public Map<String, Command> getCommands(){

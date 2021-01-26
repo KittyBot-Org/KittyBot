@@ -3,7 +3,6 @@ package de.kittybot.kittybot.modules;
 import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.utils.FileUtils;
 import de.kittybot.kittybot.utils.Utils;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.events.ReadyEvent;
