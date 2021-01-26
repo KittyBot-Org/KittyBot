@@ -2,7 +2,6 @@ package de.kittybot.kittybot.utils.exporters;
 
 import io.prometheus.client.Counter;
 import io.prometheus.client.Gauge;
-import io.prometheus.client.Histogram;
 
 public class Metrics{
 
