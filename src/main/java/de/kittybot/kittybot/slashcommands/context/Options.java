@@ -63,11 +63,6 @@ public class Options{
 		return getValue(name, LocalDateTime.class);
 	}
 
-	/*
-	public Emote getEmote(Guild guild, String name){
-		return getValue(name, Emote.class);
-	}*/
-
 	public RestAction<ListedEmote> getEmote(Guild guild, String name){
 		return guild.retrieveEmoteById(getEmoteId(name));
 	}
@@ -93,16 +88,6 @@ public class Options{
 	public boolean getEmoteAnimated(String name){
 		return getValue(name, String.class).startsWith("<a:");
 	}
-
-	/*
-	public String getEmoteName(String name){
-		return getValue(name, String.class);
-	}*/
-
-	/*
-	public boolean getIsAnimatedEmote(String name){
-		return getValue(name, Boolean.class);
-	}*/
 
 	public boolean has(String name){
 		return this.options.containsKey(name);
