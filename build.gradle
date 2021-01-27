@@ -63,7 +63,7 @@ dependencies {
 
     // other
     implementation 'io.javalin:javalin:3.13.2'
-    implementation 'io.github.classgraph:classgraph:4.8.100'
+    implementation 'io.github.classgraph:classgraph:4.8.101'
     implementation 'com.github.ben-manes.caffeine:caffeine:2.8.8'
     implementation 'com.squareup.okhttp3:okhttp:4.9.0'
 }
