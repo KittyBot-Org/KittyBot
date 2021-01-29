@@ -1,6 +1,8 @@
 package de.kittybot.kittybot.slashcommands.application;
 
 import de.kittybot.kittybot.objects.enums.Emoji;
+import de.kittybot.kittybot.utils.Config;
+import net.dv8tion.jda.api.utils.data.DataObject;
 
 public enum Category{
 
@@ -15,20 +17,20 @@ public enum Category{
 	TAGS(Emoji.TAGS, "Tags"),
 	DEV(Emoji.DEV, "Developer");
 
-	private final Emoji emoji;
+	private final Emoji emote;
 	private final String name;
 
-	Category(Emoji emoji, String name){
-		this.emoji = emoji;
+	Category(Emoji emote, String name){
+		this.emote = emote;
 		this.name = name;
 	}
 
 	public String getEmote(){
-		return this.emoji.get();
+		return this.emote.get();
 	}
 
 	public String getEmoteUrl(){
-		return "https://cdn.discordapp.com/emojis/" + this.emoji.getId() + ".png";
+		return "https://cdn.discordapp.com/emojis/" + this.emote.getId() + ".png";
 	}
 
 	public String getName(){
@@ -36,6 +38,13 @@ public enum Category{
 	}
 
 	public String getUrl(){
-		return "http://localhost/commands#" + this.name.toLowerCase();
+		return "http://" + Config.ORIGIN_URL + "/commands#" + this.name.toLowerCase();
+	}
+
+	public DataObject toJSON(){
+		return DataObject.empty()
+			.put("name", this.name)
+			.put("url", getUrl())
+			.put("emote", getEmoteUrl());
 	}
 }
