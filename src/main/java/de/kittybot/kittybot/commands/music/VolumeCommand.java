@@ -27,7 +27,7 @@ public class VolumeCommand extends Command implements RunnableCommand{
 		}
 		int volume = options.getInt("volume");
 		if(volume < 0 || volume > 100){
-			ctx.error("Volume");
+			ctx.error("Volume needs to between 0 and 100");
 			return;
 		}
 		player.setVolume(volume);

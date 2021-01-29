@@ -200,6 +200,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	@Override
 	public void onTrackStart(IPlayer player, AudioTrack track){
 		sendMusicController();
+		cancelDestroy();
 	}
 
 	@Override
@@ -215,6 +216,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 	public void next(){
 		var next = this.queue.poll();
 		if(next == null){
+			this.player.stopTrack();
 			planDestroy();
 			return;
 		}
@@ -226,7 +228,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		if(this.future != null){
 			return;
 		}
-		this.future = this.modules.schedule(() -> this.modules.get(MusicModule.class).destroy(this.guildId, -1L), 3, TimeUnit.MINUTES);
+		this.future = this.modules.schedule(() -> this.modules.get(MusicModule.class).destroy(this.guildId, -1L), 4, TimeUnit.MINUTES);
 	}
 
 	public void updateMusicController(){
