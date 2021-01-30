@@ -108,7 +108,7 @@ public class NotificationCommand extends Command{
 			var pages = new ArrayList<String>();
 
 			for(var notif : notifs){
-				var formattedNotif = notifMessage.append("**").append(notif.getId()).append("**").append(" scheduled for `").append(TimeUtils.format(notif.getNotificationTime())).append("`").append("\n") + "\n";
+				var formattedNotif = "**" + notif.getId() + "**" + " scheduled for `" + TimeUtils.format(notif.getNotificationTime()) + "`" + "\n" + "\n";
 				if(notifMessage.length() + formattedNotif.length() >= 2048){
 					pages.add(notifMessage.toString());
 					notifMessage = new StringBuilder();
@@ -117,8 +117,7 @@ public class NotificationCommand extends Command{
 			}
 			pages.add(notifMessage.toString());
 
-			ctx.sendAcknowledge(true);
-			ctx.get(PaginatorModule.class).create(
+			ctx.acknowledge(true).queue(success -> ctx.get(PaginatorModule.class).create(
 				ctx.getChannel(),
 				ctx.getUserId(),
 				pages.size(),
@@ -127,7 +126,7 @@ public class NotificationCommand extends Command{
 					.setAuthor("Your Notifications", Config.ORIGIN_URL, Category.NOTIFICATION.getEmoteUrl())
 					.setDescription(pages.get(page))
 					.setTimestamp(Instant.now())
-			);
+			));
 		}
 
 	}
