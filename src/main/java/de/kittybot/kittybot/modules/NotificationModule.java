@@ -145,13 +145,9 @@ public class NotificationModule extends Module{
 	}
 
 	public List<Notification> get(long userId){
-		return retrieveNotifications(userId);
-	}
-
-	private List<Notification> retrieveNotifications(long userId){
 		var dbModule = this.modules.get(DatabaseModule.class);
 		try(var ctx = dbModule.getCtx().selectFrom(NOTIFICATIONS)){
-			return ctx.where(NOTIFICATIONS.USER_ID.eq(userId)).fetch().map(Notification::new);
+			return ctx.where(NOTIFICATIONS.USER_ID.eq(userId)).orderBy(NOTIFICATIONS.NOTIFICATION_TIME).fetch().map(Notification::new);
 		}
 	}
 
