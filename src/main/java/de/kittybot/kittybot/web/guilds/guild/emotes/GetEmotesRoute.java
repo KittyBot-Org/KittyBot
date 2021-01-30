@@ -1,4 +1,4 @@
-package de.kittybot.kittybot.web.guilds.guild;
+package de.kittybot.kittybot.web.guilds.guild.emotes;
 
 import de.kittybot.kittybot.modules.WebService;
 import de.kittybot.kittybot.objects.module.Modules;
@@ -10,21 +10,21 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.Collectors;
 
-public class GetChannelsRoute implements Handler{
+public class GetEmotesRoute implements Handler{
 
 	private final Modules modules;
 
-	public GetChannelsRoute(Modules modules){
+	public GetEmotesRoute(Modules modules){
 		this.modules = modules;
 	}
 
 	@Override
 	public void handle(@NotNull Context ctx){
 		var guild = this.modules.get(WebService.class).getGuild(ctx);
-		var channels = DataArray.fromCollection(
-			guild.getTextChannelCache().stream().map(channel -> DataObject.empty().put("id", channel.getId()).put("name", channel.getName())).collect(Collectors.toSet())
+		var emotes = DataArray.fromCollection(
+			guild.getEmoteCache().stream().map(emote -> DataObject.empty().put("id", emote.getId()).put("name", emote.getName()).put("url", emote.getImageUrl())).collect(Collectors.toSet())
 		);
-		WebService.ok(ctx, DataObject.empty().put("channels", channels));
+		WebService.ok(ctx, DataObject.empty().put("emotes", emotes));
 	}
 
 }

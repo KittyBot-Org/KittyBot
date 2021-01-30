@@ -1,4 +1,4 @@
-package de.kittybot.kittybot.web.guilds.guild;
+package de.kittybot.kittybot.web.guilds.guild.invites;
 
 import de.kittybot.kittybot.modules.InviteModule;
 import de.kittybot.kittybot.modules.WebService;

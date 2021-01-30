@@ -1,4 +1,4 @@
-package de.kittybot.kittybot.web;
+package de.kittybot.kittybot.web.discord.login;
 
 import de.kittybot.kittybot.modules.DashboardSessionModule;
 import de.kittybot.kittybot.modules.WebService;

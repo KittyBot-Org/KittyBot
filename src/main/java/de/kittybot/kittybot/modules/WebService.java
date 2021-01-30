@@ -3,15 +3,21 @@ package de.kittybot.kittybot.modules;
 import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.Utils;
-import de.kittybot.kittybot.web.GetBotInviteRoute;
-import de.kittybot.kittybot.web.GetDiscordInviteRoute;
-import de.kittybot.kittybot.web.GetDiscordLoginRoute;
+import de.kittybot.kittybot.web.bot.invite.GetBotInviteRoute;
+import de.kittybot.kittybot.web.discord.invite.GetDiscordInviteRoute;
+import de.kittybot.kittybot.web.discord.login.GetDiscordLoginRoute;
 import de.kittybot.kittybot.web.commands.GetCommandsRoute;
 import de.kittybot.kittybot.web.guilds.GetAllGuildsRoute;
-import de.kittybot.kittybot.web.guilds.guild.*;
+import de.kittybot.kittybot.web.guilds.guild.channels.GetChannelsRoute;
+import de.kittybot.kittybot.web.guilds.guild.emotes.GetEmotesRoute;
+import de.kittybot.kittybot.web.guilds.guild.invites.GetInvitesRoute;
+import de.kittybot.kittybot.web.guilds.guild.roles.GetRolesRoute;
+import de.kittybot.kittybot.web.guilds.guild.settings.GetGuildSettingsRoute;
+import de.kittybot.kittybot.web.guilds.guild.settings.PostGuildSettingsRoute;
 import de.kittybot.kittybot.web.guilds.guild.tags.GetTagsRoute;
 import de.kittybot.kittybot.web.guilds.guild.tags.tag.DeleteTagRoute;
 import de.kittybot.kittybot.web.guilds.guild.tags.tag.PostTagRoute;
+import de.kittybot.kittybot.web.info.GetInfoRoute;
 import de.kittybot.kittybot.web.login.DeleteLoginRoute;
 import de.kittybot.kittybot.web.login.PostLoginRoute;
 import de.kittybot.kittybot.web.user.GetUserInfoRoute;
@@ -57,6 +63,9 @@ public class WebService extends Module{
 		this.javalin = Javalin.create(config ->
 			config.enableCorsForOrigin(Config.ORIGIN_URL)
 		).routes(() -> {
+			path("/info", () ->
+				get(new GetInfoRoute(this.modules))
+			);
 			path("/discord_login", () ->
 				get(new GetDiscordLoginRoute(this.modules))
 			);

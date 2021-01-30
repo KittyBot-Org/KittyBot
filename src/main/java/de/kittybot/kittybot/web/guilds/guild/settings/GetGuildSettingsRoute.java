@@ -1,4 +1,4 @@
-package de.kittybot.kittybot.web.guilds.guild;
+package de.kittybot.kittybot.web.guilds.guild.settings;
 
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.modules.WebService;

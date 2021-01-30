@@ -1,4 +1,4 @@
-package de.kittybot.kittybot.web.guilds.guild;
+package de.kittybot.kittybot.web.guilds.guild.roles;
 
 import de.kittybot.kittybot.modules.WebService;
 import de.kittybot.kittybot.objects.module.Modules;
