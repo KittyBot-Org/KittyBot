@@ -65,7 +65,7 @@ dependencies {
     implementation 'io.javalin:javalin:3.13.3'
     implementation 'io.github.classgraph:classgraph:4.8.102'
     implementation 'com.github.ben-manes.caffeine:caffeine:2.8.8'
-    implementation 'com.squareup.okhttp3:okhttp:4.9.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.1'
 }
 
 jooq {
