@@ -91,6 +91,13 @@ public class StreamAnnouncementModule extends Module{
 
 	}
 
+	private void setLiveStatus(StreamUsersRecord record, boolean status){
+		record.setIsLive(status);
+		record.attach(this.modules.get(DatabaseModule.class).getConfiguration());
+		record.store();
+		record.detach();
+	}
+
 	private void sendAnnouncementMessage(StreamUsersRecord streamAnnouncement, Stream stream, AnnouncementType announcementType){
 		var guildId = streamAnnouncement.getGuildId();
 		var guild = this.modules.getGuildById(guildId);
@@ -132,13 +139,6 @@ public class StreamAnnouncementModule extends Module{
 			)
 			.addFile(thumbnail, "thumbnail.png")
 			.queue();
-	}
-
-	private void setLiveStatus(StreamUsersRecord record, boolean status){
-		record.setIsLive(status);
-		record.attach(this.modules.get(DatabaseModule.class).getConfiguration());
-		record.store();
-		record.detach();
 	}
 
 	public TwitchUser add(String name, long guildId, StreamType type){
