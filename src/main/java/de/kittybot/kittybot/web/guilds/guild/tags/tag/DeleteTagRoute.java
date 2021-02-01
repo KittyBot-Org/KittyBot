@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.web.guilds.guild.tags.tag;
 
 import de.kittybot.kittybot.modules.TagsModule;
-import de.kittybot.kittybot.modules.WebService;
+import de.kittybot.kittybot.modules.WebModule;
 import de.kittybot.kittybot.objects.module.Modules;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -18,10 +18,10 @@ public class DeleteTagRoute implements Handler{
 
 	@Override
 	public void handle(@NotNull Context ctx){
-		if(!this.modules.get(TagsModule.class).delete(this.modules.get(WebService.class).getTagId(ctx))){
+		if(!this.modules.get(TagsModule.class).delete(this.modules.get(WebModule.class).getTagId(ctx))){
 			throw new InternalServerErrorResponse("Error while deleting tag");
 		}
-		WebService.accepted(ctx);
+		WebModule.accepted(ctx);
 	}
 
 }

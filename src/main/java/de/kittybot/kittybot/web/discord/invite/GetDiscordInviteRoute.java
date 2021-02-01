@@ -1,4 +1,4 @@
-package de.kittybot.kittybot.web;
+package de.kittybot.kittybot.web.discord.invite;
 
 import de.kittybot.kittybot.utils.Config;
 import io.javalin.http.Context;

@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.web.login;
 
 import de.kittybot.kittybot.modules.DashboardSessionModule;
-import de.kittybot.kittybot.modules.WebService;
+import de.kittybot.kittybot.modules.WebModule;
 import de.kittybot.kittybot.objects.module.Modules;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -17,7 +17,7 @@ public class DeleteLoginRoute implements Handler{
 
 	@Override
 	public void handle(@NotNull Context ctx){
-		this.modules.get(DashboardSessionModule.class).delete(this.modules.get(WebService.class).getUserId(ctx));
+		this.modules.get(DashboardSessionModule.class).delete(this.modules.get(WebModule.class).getUserId(ctx));
 	}
 
 }

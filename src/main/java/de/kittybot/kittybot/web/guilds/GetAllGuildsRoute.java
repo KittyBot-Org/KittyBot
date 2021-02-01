@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.web.guilds;
 
-import de.kittybot.kittybot.modules.WebService;
+import de.kittybot.kittybot.modules.WebModule;
 import de.kittybot.kittybot.objects.module.Modules;
 import de.kittybot.kittybot.utils.Config;
 import io.javalin.http.Context;
@@ -22,7 +22,7 @@ public class GetAllGuildsRoute implements Handler{
 
 	@Override
 	public void handle(@NotNull Context ctx){
-		var userId = this.modules.get(WebService.class).getUserId(ctx);
+		var userId = this.modules.get(WebModule.class).getUserId(ctx);
 		if(!Config.DEV_IDS.contains(userId)){
 			throw new ForbiddenResponse("Only bot owners have access to this");
 		}
@@ -31,7 +31,7 @@ public class GetAllGuildsRoute implements Handler{
 				DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl()).put("count", guild.getMemberCount()).put("owner", guild.getOwner() == null ? null : guild.getOwner().getUser().getAsTag())
 			).collect(Collectors.toSet())
 		);
-		WebService.ok(ctx, DataObject.empty().put("guilds", data));
+		WebModule.ok(ctx, DataObject.empty().put("guilds", data));
 	}
 
 }

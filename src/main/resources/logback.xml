@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>INFO</level>
@@ -18,15 +19,11 @@
         </encoder>
     </appender>
 
-    <logger name="com.github.twitch4j" level="INFO"/>
-
-    <logger name="spark.http.matching.MatcherFilter" level="info"/>
-
-    <logger name="org.jooq" level="warn" additivity="false">
+    <logger name="org.jooq" level="warn">
         <appender-ref ref="STDOUT"/>
     </logger>
 
-    <logger name="io.javalin" level="warn" additivity="false">
+    <logger name="io.javalin" level="info">
         <appender-ref ref="STDOUT"/>
     </logger>
 

@@ -32,6 +32,12 @@ public abstract class CommandOption<T> implements CommandOptionsHolder{
 		);
 	}
 
+	public static DataArray toDetailedJSON(Collection<CommandOption<?>> options){
+		return DataArray.fromCollection(
+			options.stream().map(CommandOption::toDetailedJSON).collect(Collectors.toList())
+		);
+	}
+
 	public abstract T parseValue(Object value);
 
 	public CommandOption<?> addChoices(CommandOptionChoice<?>... choices){
@@ -101,6 +107,10 @@ public abstract class CommandOption<T> implements CommandOptionsHolder{
 			json.put("options", CommandOption.toJSON(this.options));
 		}
 		return json;
+	}
+
+	public DataObject toDetailedJSON(){
+		return toJSON();
 	}
 
 }

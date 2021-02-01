@@ -1,7 +1,7 @@
-package de.kittybot.kittybot.web.guilds.guild;
+package de.kittybot.kittybot.web.guilds.guild.settings;
 
 import de.kittybot.kittybot.modules.SettingsModule;
-import de.kittybot.kittybot.modules.WebService;
+import de.kittybot.kittybot.modules.WebModule;
 import de.kittybot.kittybot.objects.module.Modules;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -18,7 +18,7 @@ public class PostGuildSettingsRoute implements Handler{
 
 	@Override
 	public void handle(@NotNull Context ctx){
-		var guildId = this.modules.get(WebService.class).getGuild(ctx).getIdLong();
+		var guildId = this.modules.get(WebModule.class).getGuild(ctx).getIdLong();
 		var json = DataObject.fromJson(ctx.body());
 		var settings = this.modules.get(SettingsModule.class);
 		if(json.hasKey("join_messages_enabled")){
@@ -45,7 +45,7 @@ public class PostGuildSettingsRoute implements Handler{
 		if(json.hasKey("self_assignable_role_groups")){
 
 		}
-		WebService.accepted(ctx);
+		WebModule.accepted(ctx);
 	}
 
 }

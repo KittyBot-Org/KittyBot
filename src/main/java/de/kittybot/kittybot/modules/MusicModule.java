@@ -136,6 +136,10 @@ public class MusicModule extends Module implements Serializable{
 		}
 	}
 
+	public int getActivePlayers(){
+		return this.musicPlayers.size();
+	}
+
 	public MusicPlayer get(long guildId){
 		return this.musicPlayers.get(guildId);
 	}

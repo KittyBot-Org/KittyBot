@@ -47,6 +47,7 @@ public class DevCommand extends Command{
 					),
 				new CommandOptionLong("guild", "In which guild commands should get deployed")
 			);
+			devOnly();
 		}
 
 		@Override
@@ -90,6 +91,7 @@ public class DevCommand extends Command{
 					),
 				new CommandOptionLong("guild", "In which guild commands should get omitted")
 			);
+			devOnly();
 		}
 
 		@Override

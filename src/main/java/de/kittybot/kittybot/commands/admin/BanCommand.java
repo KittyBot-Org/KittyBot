@@ -27,7 +27,6 @@ public class BanCommand extends Command{
 
 	private static class AddCommand extends SubCommand{
 
-
 		public AddCommand(){
 			super("add", "Creates a new ban");
 			addOptions(
@@ -63,7 +62,6 @@ public class BanCommand extends Command{
 
 	private static class DeleteCommand extends SubCommand{
 
-
 		public DeleteCommand(){
 			super("delete", "Deletes a ban");
 			addOptions(
@@ -89,7 +87,6 @@ public class BanCommand extends Command{
 	}
 
 	private static class ListCommand extends SubCommand{
-
 
 		public ListCommand(){
 			super("list", "Lists all bans");

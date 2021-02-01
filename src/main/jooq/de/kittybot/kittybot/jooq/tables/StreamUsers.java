@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row5;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -72,6 +72,11 @@ public class StreamUsers extends TableImpl<StreamUsersRecord> {
      * The column <code>public.stream_users.stream_type</code>.
      */
     public final TableField<StreamUsersRecord, Integer> STREAM_TYPE = createField(DSL.name("stream_type"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.stream_users.is_live</code>.
+     */
+    public final TableField<StreamUsersRecord, Boolean> IS_LIVE = createField(DSL.name("is_live"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
 
     private StreamUsers(Name alias, Table<StreamUsersRecord> aliased) {
         this(alias, aliased, null);
@@ -162,11 +167,11 @@ public class StreamUsers extends TableImpl<StreamUsersRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Long, Long, Long, String, Integer> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row6<Long, Long, Long, String, Integer, Boolean> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

@@ -62,7 +62,7 @@ public class NotificationCommand extends Command{
 				ctx.error("There was an unexpected error while creating your notification");
 				return;
 			}
-			ctx.reply("Created Notification in `" + TimeUtils.formatDuration(notif.getCreatedAt().until(notif.getNotificationTime(), ChronoUnit.MILLIS)) + "` with id: `" + notif.getId() + "`");
+			ctx.reply("Notification at `" + TimeUtils.formatDuration(notif.getCreatedAt().until(notif.getNotificationTime(), ChronoUnit.MILLIS)) + "` created with id: `" + notif.getId() + "`");
 
 		}
 
@@ -108,7 +108,7 @@ public class NotificationCommand extends Command{
 			var pages = new ArrayList<String>();
 
 			for(var notif : notifs){
-				var formattedNotif = "**" + notif.getId() + "**" + " scheduled for `" + TimeUtils.format(notif.getNotificationTime()) + "`" + "\n" + "\n";
+				var formattedNotif = "**ID:** `" + notif.getId() + "` is scheduled for `" + TimeUtils.format(notif.getNotificationTime()) + "`\n";
 				if(notifMessage.length() + formattedNotif.length() >= 2048){
 					pages.add(notifMessage.toString());
 					notifMessage = new StringBuilder();

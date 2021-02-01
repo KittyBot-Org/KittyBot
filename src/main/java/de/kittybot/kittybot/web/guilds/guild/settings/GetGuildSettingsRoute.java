@@ -1,7 +1,7 @@
-package de.kittybot.kittybot.web.guilds.guild;
+package de.kittybot.kittybot.web.guilds.guild.settings;
 
 import de.kittybot.kittybot.modules.SettingsModule;
-import de.kittybot.kittybot.modules.WebService;
+import de.kittybot.kittybot.modules.WebModule;
 import de.kittybot.kittybot.objects.module.Modules;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -21,7 +21,7 @@ public class GetGuildSettingsRoute implements Handler{
 
 	@Override
 	public void handle(@NotNull Context ctx){
-		var guildId = this.modules.get(WebService.class).getGuild(ctx).getIdLong();
+		var guildId = this.modules.get(WebModule.class).getGuild(ctx).getIdLong();
 		var settings = this.modules.get(SettingsModule.class).getSettings(guildId);
 		var selfAssignableRoles = DataArray.empty();
 		var selfAssignableRoleGroups = DataArray.empty();
@@ -32,7 +32,7 @@ public class GetGuildSettingsRoute implements Handler{
 				))
 			).collect(Collectors.toSet())
 		);
-		WebService.ok(ctx, DataObject.empty()
+		WebModule.ok(ctx, DataObject.empty()
 			.put("stream_announcement_channel_id", settings.getStreamAnnouncementChannelId())
 			.put("stream_announcement_message", settings.getStreamAnnouncementMessage())
 
