@@ -4,9 +4,9 @@ import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.Utils;
 import de.kittybot.kittybot.web.bot.invite.GetBotInviteRoute;
+import de.kittybot.kittybot.web.commands.GetCommandsRoute;
 import de.kittybot.kittybot.web.discord.invite.GetDiscordInviteRoute;
 import de.kittybot.kittybot.web.discord.login.GetDiscordLoginRoute;
-import de.kittybot.kittybot.web.commands.GetCommandsRoute;
 import de.kittybot.kittybot.web.guilds.GetAllGuildsRoute;
 import de.kittybot.kittybot.web.guilds.guild.channels.GetChannelsRoute;
 import de.kittybot.kittybot.web.guilds.guild.emotes.GetEmotesRoute;
@@ -20,6 +20,7 @@ import de.kittybot.kittybot.web.guilds.guild.tags.tag.PostTagRoute;
 import de.kittybot.kittybot.web.info.GetInfoRoute;
 import de.kittybot.kittybot.web.login.DeleteLoginRoute;
 import de.kittybot.kittybot.web.login.PostLoginRoute;
+import de.kittybot.kittybot.web.shards.GetShardsRoute;
 import de.kittybot.kittybot.web.user.GetUserInfoRoute;
 import io.javalin.Javalin;
 import io.javalin.http.*;
@@ -65,6 +66,9 @@ public class WebModule extends Module{
 		).routes(() -> {
 			path("/info", () ->
 				get(new GetInfoRoute(this.modules))
+			);
+			path("/shards", () ->
+				get(new GetShardsRoute(this.modules))
 			);
 			path("/discord_login", () ->
 				get(new GetDiscordLoginRoute(this.modules))

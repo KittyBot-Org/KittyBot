@@ -136,10 +136,6 @@ public class MusicModule extends Module implements Serializable{
 		}
 	}
 
-	public int getActivePlayers(){
-		return this.musicPlayers.size();
-	}
-
 	public MusicPlayer get(long guildId){
 		return this.musicPlayers.get(guildId);
 	}
@@ -159,6 +155,10 @@ public class MusicModule extends Module implements Serializable{
 			var message = userId == -1 ? "Disconnected due to inactivity" : MessageUtils.getUserMention(userId) + " disconnected me bye bye";
 			channel.sendMessage(new EmbedBuilder().setColor(Color.RED).setDescription(message).setTimestamp(Instant.now()).build()).queue();
 		}
+	}
+
+	public int getActivePlayers(){
+		return this.musicPlayers.size();
 	}
 
 	public MusicPlayer create(CommandContext ctx){

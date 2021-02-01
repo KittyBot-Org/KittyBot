@@ -12,7 +12,8 @@ public enum Environment{
 				return valueOf(env);
 			}
 		}
-		catch(IllegalArgumentException ignored){}
+		catch(IllegalArgumentException ignored){
+		}
 		return DEVELOPMENT;
 	}
 }
