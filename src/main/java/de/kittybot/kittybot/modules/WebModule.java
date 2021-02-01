@@ -20,6 +20,7 @@ import de.kittybot.kittybot.web.guilds.guild.tags.tag.PostTagRoute;
 import de.kittybot.kittybot.web.info.GetInfoRoute;
 import de.kittybot.kittybot.web.login.DeleteLoginRoute;
 import de.kittybot.kittybot.web.login.PostLoginRoute;
+import de.kittybot.kittybot.web.shards.GetShardsRoute;
 import de.kittybot.kittybot.web.user.GetUserInfoRoute;
 import io.javalin.Javalin;
 import io.javalin.http.*;
@@ -65,6 +66,9 @@ public class WebModule extends Module{
 		).routes(() -> {
 			path("/info", () ->
 				get(new GetInfoRoute(this.modules))
+			);
+			path("/shards", () ->
+				get(new GetShardsRoute(this.modules))
 			);
 			path("/discord_login", () ->
 				get(new GetDiscordLoginRoute(this.modules))
