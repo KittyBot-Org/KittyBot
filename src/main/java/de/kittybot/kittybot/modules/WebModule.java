@@ -33,7 +33,7 @@ import net.dv8tion.jda.api.utils.data.DataObject;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
-public class WebService extends Module{
+public class WebModule extends Module{
 
 	private Javalin javalin;
 
@@ -119,7 +119,7 @@ public class WebService extends Module{
 					});
 				});
 			});
-		}).start(Config.BACKEND_PORT);
+		}).start(Config.BACKEND_HOST, Config.BACKEND_PORT);
 	}
 
 	@Override

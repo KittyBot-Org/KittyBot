@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.web.discord.login;
 
 import de.kittybot.kittybot.modules.DashboardSessionModule;
-import de.kittybot.kittybot.modules.WebService;
+import de.kittybot.kittybot.modules.WebModule;
 import de.kittybot.kittybot.objects.module.Modules;
 import de.kittybot.kittybot.utils.Config;
 import io.javalin.http.Context;
@@ -22,7 +22,7 @@ public class GetDiscordLoginRoute implements Handler{
 	public void handle(@NotNull Context ctx){
 		var dashboardSessionModule = this.modules.get(DashboardSessionModule.class);
 		try{
-			if(!dashboardSessionModule.has(this.modules.get(WebService.class).getUserId(ctx))){
+			if(!dashboardSessionModule.has(this.modules.get(WebModule.class).getUserId(ctx))){
 				ctx.redirect(Config.REDIRECT_URL);
 				return;
 			}

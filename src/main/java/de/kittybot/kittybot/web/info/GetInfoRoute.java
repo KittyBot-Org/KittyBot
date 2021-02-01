@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.web.info;
 
 import de.kittybot.kittybot.modules.MusicModule;
-import de.kittybot.kittybot.modules.WebService;
+import de.kittybot.kittybot.modules.WebModule;
 import de.kittybot.kittybot.objects.module.Modules;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -11,7 +11,6 @@ import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class GetInfoRoute implements Handler{
@@ -25,7 +24,7 @@ public class GetInfoRoute implements Handler{
 	@Override
 	public void handle(@NotNull Context ctx){
 		var shardManager = modules.getShardManager();
-		WebService.ok(ctx,
+		WebModule.ok(ctx,
 			DataObject.empty()
 				.put("shards", DataArray.fromCollection(shardManager.getShardCache().stream().map(shard -> DataObject.empty()
 						.put("id", shard.getShardInfo().getShardId())

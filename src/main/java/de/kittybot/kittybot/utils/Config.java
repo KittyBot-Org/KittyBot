@@ -20,6 +20,7 @@ public class Config{
 	public static Long TEST_GUILD;
 
 	public static int BACKEND_PORT;
+	public static String BACKEND_HOST;
 	public static int PROMETHEUS_PORT;
 
 	public static String HASTEBIN_URL;
@@ -82,6 +83,7 @@ public class Config{
 		TEST_GUILD = json.getLong("test_guild", -1);
 
 		BACKEND_PORT = json.getInt("backend_port", -1);
+		BACKEND_HOST = json.getString("backend_host", "0.0.0.0");
 		PROMETHEUS_PORT = json.getInt("prometheus_port", -1);
 
 		REDIRECT_URL = json.getString("redirect_url", "");

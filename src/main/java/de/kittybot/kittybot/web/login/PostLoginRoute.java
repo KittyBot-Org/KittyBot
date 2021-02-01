@@ -2,7 +2,7 @@ package de.kittybot.kittybot.web.login;
 
 import com.jagrosh.jdautilities.oauth2.exceptions.InvalidStateException;
 import de.kittybot.kittybot.modules.DashboardSessionModule;
-import de.kittybot.kittybot.modules.WebService;
+import de.kittybot.kittybot.modules.WebModule;
 import de.kittybot.kittybot.objects.module.Modules;
 import de.kittybot.kittybot.objects.session.DashboardSession;
 import io.javalin.http.*;
@@ -33,7 +33,7 @@ public class PostLoginRoute implements Handler{
 		try{
 			var sessionManager = this.modules.get(DashboardSessionModule.class);
 			var session = (DashboardSession) sessionManager.getOAuth2Client().startSession(code, state, "", DashboardSessionModule.getScopes()).complete();
-			WebService.accepted(ctx, DataObject.empty().put("token", Jwts.builder().setIssuedAt(new Date()).setSubject(String.valueOf(session.getUserId())).signWith(sessionManager.getSecretKey()).compact()));
+			WebModule.accepted(ctx, DataObject.empty().put("token", Jwts.builder().setIssuedAt(new Date()).setSubject(String.valueOf(session.getUserId())).signWith(sessionManager.getSecretKey()).compact()));
 		}
 		catch(HttpException e){
 			throw new BadRequestResponse("Don't spam login");

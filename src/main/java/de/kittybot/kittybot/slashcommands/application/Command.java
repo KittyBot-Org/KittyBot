@@ -1,9 +1,11 @@
 package de.kittybot.kittybot.slashcommands.application;
 
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class Command implements CommandOptionsHolder, PermissionHolder{
 
@@ -66,6 +68,24 @@ public abstract class Command implements CommandOptionsHolder, PermissionHolder{
 			json.put("options", CommandOption.toJSON(this.options));
 		}
 		return json;
+	}
+
+	public DataObject toDetailedJSON(){
+		var json = DataObject.empty()
+			.put("name", this.name)
+			.put("description", this.description)
+			.put("category", this.category.getName())
+			.put("permissions", getPermissionArray());
+		if(!this.options.isEmpty()){
+			json.put("options", CommandOption.toDetailedJSON(this.options));
+		}
+		return json;
+	}
+
+	private DataArray getPermissionArray(){
+		return DataArray.fromCollection(
+			this.permissions.stream().map(Permission::getName).collect(Collectors.toList())
+		);
 	}
 
 }

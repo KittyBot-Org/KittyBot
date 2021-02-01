@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.web.guilds.guild.tags.tag;
 
 import de.kittybot.kittybot.modules.TagsModule;
-import de.kittybot.kittybot.modules.WebService;
+import de.kittybot.kittybot.modules.WebModule;
 import de.kittybot.kittybot.objects.module.Modules;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
@@ -20,7 +20,7 @@ public class PostTagRoute implements Handler{
 
 	@Override
 	public void handle(@NotNull Context ctx){
-		var tagId = this.modules.get(WebService.class).getTagId(ctx);
+		var tagId = this.modules.get(WebModule.class).getTagId(ctx);
 		var json = DataObject.fromJson(ctx.body());
 		var name = json.getString("name", "");
 		var content = json.getString("content", "");
@@ -31,7 +31,7 @@ public class PostTagRoute implements Handler{
 		if(!this.modules.get(TagsModule.class).edit(tagId, name, content, userId)){
 			throw new InternalServerErrorResponse("Error while updating tag");
 		}
-		WebService.accepted(ctx);
+		WebModule.accepted(ctx);
 	}
 
 }

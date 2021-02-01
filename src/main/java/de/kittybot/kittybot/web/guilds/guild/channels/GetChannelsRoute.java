@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.web.guilds.guild.channels;
 
-import de.kittybot.kittybot.modules.WebService;
+import de.kittybot.kittybot.modules.WebModule;
 import de.kittybot.kittybot.objects.module.Modules;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -20,11 +20,11 @@ public class GetChannelsRoute implements Handler{
 
 	@Override
 	public void handle(@NotNull Context ctx){
-		var guild = this.modules.get(WebService.class).getGuild(ctx);
+		var guild = this.modules.get(WebModule.class).getGuild(ctx);
 		var channels = DataArray.fromCollection(
 			guild.getTextChannelCache().stream().map(channel -> DataObject.empty().put("id", channel.getId()).put("name", channel.getName())).collect(Collectors.toSet())
 		);
-		WebService.ok(ctx, DataObject.empty().put("channels", channels));
+		WebModule.ok(ctx, DataObject.empty().put("channels", channels));
 	}
 
 }
