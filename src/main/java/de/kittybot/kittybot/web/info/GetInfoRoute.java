@@ -33,7 +33,7 @@ public class GetInfoRoute implements Handler{
 						.put("ping", shard.getGatewayPing())
 					).collect(Collectors.toList()))
 				)
-				.put("guilds", shardManager.getShardCache().size())
+				.put("guilds", shardManager.getGuildCache().size())
 				.put("users", shardManager.getGuildCache().applyStream(guildStream -> guildStream.mapToInt(Guild::getMemberCount).sum()))
 				.put("jda_version", JDAInfo.VERSION)
 				.put("players", modules.get(MusicModule.class).getActivePlayers())
