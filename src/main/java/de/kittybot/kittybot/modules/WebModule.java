@@ -17,6 +17,7 @@ import de.kittybot.kittybot.web.guilds.guild.settings.PostGuildSettingsRoute;
 import de.kittybot.kittybot.web.guilds.guild.tags.GetTagsRoute;
 import de.kittybot.kittybot.web.guilds.guild.tags.tag.DeleteTagRoute;
 import de.kittybot.kittybot.web.guilds.guild.tags.tag.PostTagRoute;
+import de.kittybot.kittybot.web.guilds.guild.users.GetUsersRoute;
 import de.kittybot.kittybot.web.info.GetInfoRoute;
 import de.kittybot.kittybot.web.login.DeleteLoginRoute;
 import de.kittybot.kittybot.web.login.PostLoginRoute;
@@ -106,6 +107,9 @@ public class WebModule extends Module{
 					);
 					path("/emotes", () ->
 						get(new GetEmotesRoute(this.modules))
+					);
+					path("/users", () ->
+						get(new GetUsersRoute(this.modules))
 					);
 					path("/invites", () ->
 						get(new GetInvitesRoute(this.modules))

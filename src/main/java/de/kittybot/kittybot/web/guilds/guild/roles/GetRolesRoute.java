@@ -22,7 +22,7 @@ public class GetRolesRoute implements Handler{
 	public void handle(@NotNull Context ctx){
 		var guild = this.modules.get(WebModule.class).getGuild(ctx);
 		var roles = DataArray.fromCollection(
-			guild.getRoleCache().stream().filter(role -> !role.isPublicRole()).map(role -> DataObject.empty().put("id", role.getIdLong()).put("name", role.getName()).put("color", role.getColor() == null ? "" : "#" + Integer.toHexString(role.getColor().getRGB()).substring(2))).collect(Collectors.toSet())
+			guild.getRoleCache().stream().filter(role -> !role.isPublicRole()).map(role -> DataObject.empty().put("id", role.getId()).put("name", role.getName()).put("color", role.getColor() == null ? "" : "#" + Integer.toHexString(role.getColor().getRGB()).substring(2))).collect(Collectors.toSet())
 		);
 		WebModule.ok(ctx, DataObject.empty().put("roles", roles));
 	}
