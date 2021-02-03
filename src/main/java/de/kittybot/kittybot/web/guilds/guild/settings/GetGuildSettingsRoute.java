@@ -42,10 +42,10 @@ public class GetGuildSettingsRoute implements Handler{
 			.put("requests_enabled", settings.areRequestsEnabled())
 
 			.put("join_messages_enabled", settings.areJoinMessagesEnabled())
-			.put("join_messages", settings.getJoinMessage())
+			.put("join_message", settings.getJoinMessage())
 
 			.put("leave_messages_enabled", settings.areLeaveMessagesEnabled())
-			.put("leave_messages", settings.getLeaveMessage())
+			.put("leave_message", settings.getLeaveMessage())
 
 			.put("log_channel_id", toString(settings.getLogChannelId()))
 			.put("log_messages_enabled", settings.areLogMessagesEnabled())
