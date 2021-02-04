@@ -39,6 +39,10 @@ public class MusicUtils{
 			ctx.error("No active player found");
 			return false;
 		}
+		return checkMusicRequirements(ctx);
+	}
+
+	public static boolean checkMusicRequirements(CommandContext ctx){
 		var voiceState = ctx.getMember().getVoiceState();
 		if(voiceState == null || voiceState.getChannel() == null){
 			ctx.error("Please connect to a voice channel to use music commands");

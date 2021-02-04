@@ -281,7 +281,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	public String getThumbnail(String identifier, AudioSourceManager source){
 		if(source == null){
-			return "";
+			return null;
 		}
 		var sourceName = source.getSourceName();
 		String thumbnail;
@@ -293,7 +293,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				thumbnail = "https://static-cdn.jtvnw.net/previews-ttv/live_user_" + identifier + "-440x248.jpg";
 				break;
 			default:
-				thumbnail = "";
+				thumbnail = null;
 				break;
 		}
 		return thumbnail;
