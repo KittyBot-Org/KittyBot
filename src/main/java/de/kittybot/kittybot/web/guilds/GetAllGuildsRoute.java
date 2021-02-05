@@ -24,7 +24,7 @@ public class GetAllGuildsRoute implements Handler{
 	public void handle(@NotNull Context ctx){
 		var userId = this.modules.get(WebModule.class).getUserId(ctx);
 		if(!Config.DEV_IDS.contains(userId)){
-			throw new ForbiddenResponse("Only bot owners have access to this");
+			throw new ForbiddenResponse("Only bot devs have access to this");
 		}
 		var data = DataArray.fromCollection(
 			this.modules.getShardManager().getGuildCache().stream().map(guild ->

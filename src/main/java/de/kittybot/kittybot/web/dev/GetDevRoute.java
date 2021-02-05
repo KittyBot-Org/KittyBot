@@ -4,7 +4,9 @@ import de.kittybot.kittybot.modules.MusicModule;
 import de.kittybot.kittybot.modules.WebModule;
 import de.kittybot.kittybot.objects.module.Modules;
 import de.kittybot.kittybot.objects.music.MusicPlayer;
+import de.kittybot.kittybot.utils.Config;
 import io.javalin.http.Context;
+import io.javalin.http.ForbiddenResponse;
 import io.javalin.http.Handler;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
@@ -22,6 +24,10 @@ public class GetDevRoute implements Handler{
 
 	@Override
 	public void handle(@NotNull Context ctx){
+		var userId = this.modules.get(WebModule.class).getUserId(ctx);
+		if(!Config.DEV_IDS.contains(userId)){
+			throw new ForbiddenResponse("Only bot devs have access to this");
+		}
 		var json = DataObject.empty()
 			.put("music_players", DataArray.fromCollection(this.modules.get(MusicModule.class).getPlayers().stream().map(MusicPlayer::toJSON).collect(Collectors.toList())));
 		WebModule.ok(ctx, json.toData());
