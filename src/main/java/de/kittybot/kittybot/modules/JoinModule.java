@@ -5,6 +5,7 @@ import de.kittybot.kittybot.objects.enums.Emoji;
 import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.utils.*;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.audit.ActionType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
@@ -69,6 +70,32 @@ public class JoinModule extends Module{
 	@Override
 	public void onGuildJoin(@Nonnull GuildJoinEvent event){
 		var guild = event.getGuild();
+		var embed = new EmbedBuilder()
+			.setTitle("Hellowo and thank your for adding me to your Discord Server!")
+			.setDescription(
+				"KittyBot uses Discords new " + Emoji.SLASH.get() + " Slash Commands system! Therefore there is no need for any custom prefix or else. Also you see all commands directly by typing `/` into the message box. Go and try it out!\n" +
+					"The key features Kitty provides are self assignable roles with a nice selector or separate assign/unassign commands. Simply map each role with your custom emote to create a simple role selector!\n" +
+					"Also Kitty provides playing music from various places like youtube soundcloud & more(Spotify coming soon).\n" +
+					"Kitty can also manage stream announcements for you. Simply add them with `/settings streamannouncements <source> <username>`." +
+					"I can also log several stuff like message deletions/edits member leaves/joins etc. Set a log channel with `/settings logmessages <enabled> <channel>`" +
+					"Do you want to welcome new users and point them to your rules channel? Set the announcement channel with `/settings announcementchannel <channel>` and set a cute custom join message with `/settings joinmessage <enabled> <message>`" +
+					"Most stuff can be easily set up via the webinterface here " + MessageUtils.maskLink("here", Config.ORIGIN_URL) + ".\n\n" +
+					"To report bugs/suggest features reach out to me on " + MessageUtils.maskLink("Discord", Config.SUPPORT_GUILD_INVITE_URL) +
+					"(Username: `toπ#3141`) or on " + MessageUtils.maskLink("Twitter", "https://twitter.com/TopiSenpai")
+			)
+			.setColor(Colors.KITTYBOT_BLUE)
+			.setThumbnail(event.getJDA().getSelfUser().getEffectiveAvatarUrl())
+			.setFooter(guild.getName(), guild.getIconUrl())
+			.setTimestamp(Instant.now())
+			.build();
+		if(!event.getGuild().getSelfMember().hasPermission(Permission.VIEW_AUDIT_LOGS)){
+			var channel = guild.getDefaultChannel();
+			if(channel == null || !channel.canTalk()){
+				return;
+			}
+			channel.sendMessage(embed).queue();
+			return;
+		}
 		guild.retrieveAuditLogs().type(ActionType.BOT_ADD).limit(1).cache(false).queue(entries -> {
 			var entry = entries.get(0);
 			if(!entry.getTargetId().equals(event.getJDA().getSelfUser().getId())){
@@ -78,24 +105,7 @@ public class JoinModule extends Module{
 			if(user == null){
 				return;
 			}
-			var embed = new EmbedBuilder()
-				.setTitle("Hellowo and thank your for adding me to your Discord Server!")
-				.setDescription(
-					"KittyBot uses Discords new " + Emoji.SLASH.get() + " Slash Commands system! Therefore there is no need for any custom prefix or else. Also you see all commands directly by typing `/` into the message box. Go and try it out!\n" +
-						"The key features Kitty provides are self assignable roles with a nice selector or separate assign/unassign commands. Simply map each role with your custom emote to create a simple role selector!\n" +
-						"Also Kitty provides playing music from various places like youtube soundcloud & more(Spotify coming soon).\n" +
-						"Kitty can also manage stream announcements for you. Simply add them with `/settings streamannouncements <source> <username>`." +
-						"I can also log several stuff like message deletions/edits member leaves/joins etc. Set a log channel with `/settings logmessages <enabled> <channel>`" +
-						"Do you want to welcome new users and point them to your rules channel? Set the announcement channel with `/settings announcementchannel <channel>` and set a cute custom join message with `/settings joinmessage <enabled> <message>`" +
-						"Most stuff can be easily set up via the webinterface here " + MessageUtils.maskLink("here", Config.ORIGIN_URL) + ".\n\n" +
-						"To report bugs/suggest features reach out to me on " + MessageUtils.maskLink("Discord", Config.SUPPORT_GUILD_INVITE_URL) +
-						"(Username: `toπ#3141`) or on " + MessageUtils.maskLink("Twitter", "https://twitter.com/TopiSenpai")
-				)
-				.setColor(Colors.KITTYBOT_BLUE)
-				.setThumbnail(event.getJDA().getSelfUser().getEffectiveAvatarUrl())
-				.setFooter(guild.getName(), guild.getIconUrl())
-				.setTimestamp(Instant.now())
-				.build();
+
 			user.openPrivateChannel().flatMap(channel -> channel.sendMessage(embed)).queue(
 				null,
 				error -> {

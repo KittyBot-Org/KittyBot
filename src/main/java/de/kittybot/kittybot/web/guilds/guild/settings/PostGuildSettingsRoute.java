@@ -8,8 +8,6 @@ import io.javalin.http.Handler;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.Duration;
-
 public class PostGuildSettingsRoute implements Handler{
 
 	private final Modules modules;

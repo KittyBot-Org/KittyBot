@@ -1,7 +1,9 @@
-package de.kittybot.kittybot.web.guilds;
+package de.kittybot.kittybot.web.dev;
 
+import de.kittybot.kittybot.modules.MusicModule;
 import de.kittybot.kittybot.modules.WebModule;
 import de.kittybot.kittybot.objects.module.Modules;
+import de.kittybot.kittybot.objects.music.MusicPlayer;
 import de.kittybot.kittybot.utils.Config;
 import io.javalin.http.Context;
 import io.javalin.http.ForbiddenResponse;
@@ -12,11 +14,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.Collectors;
 
-public class GetAllGuildsRoute implements Handler{
+public class GetDevRoute implements Handler{
 
 	private final Modules modules;
 
-	public GetAllGuildsRoute(Modules modules){
+	public GetDevRoute(Modules modules){
 		this.modules = modules;
 	}
 
@@ -26,12 +28,9 @@ public class GetAllGuildsRoute implements Handler{
 		if(!Config.DEV_IDS.contains(userId)){
 			throw new ForbiddenResponse("Only bot devs have access to this");
 		}
-		var data = DataArray.fromCollection(
-			this.modules.getShardManager().getGuildCache().stream().map(guild ->
-				DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl()).put("count", guild.getMemberCount()).put("owner", guild.getOwner() == null ? null : guild.getOwner().getUser().getAsTag())
-			).collect(Collectors.toSet())
-		);
-		WebModule.ok(ctx, DataObject.empty().put("guilds", data));
+		var json = DataObject.empty()
+			.put("music_players", DataArray.fromCollection(this.modules.get(MusicModule.class).getPlayers().stream().map(MusicPlayer::toJSON).collect(Collectors.toList())));
+		WebModule.ok(ctx, json.toData());
 	}
 
 }

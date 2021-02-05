@@ -26,6 +26,8 @@ import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.utils.data.DataArray;
+import net.dv8tion.jda.api.utils.data.DataObject;
 
 import java.awt.Color;
 import java.time.Instant;
@@ -33,6 +35,7 @@ import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class MusicPlayer extends PlayerEventListenerAdapter{
 
@@ -281,7 +284,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	public String getThumbnail(String identifier, AudioSourceManager source){
 		if(source == null){
-			return "";
+			return null;
 		}
 		var sourceName = source.getSourceName();
 		String thumbnail;
@@ -293,7 +296,7 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 				thumbnail = "https://static-cdn.jtvnw.net/previews-ttv/live_user_" + identifier + "-440x248.jpg";
 				break;
 			default:
-				thumbnail = "";
+				thumbnail = null;
 				break;
 		}
 		return thumbnail;
@@ -407,8 +410,8 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 		if(newVol <= 0){
 			newVol = 10;
 		}
-		if(newVol > 100){
-			newVol = 100;
+		if(newVol > 150){
+			newVol = 150;
 		}
 		player.getFilters().setVolume(newVol / 100.0f).commit();
 		updateMusicController();
@@ -416,6 +419,30 @@ public class MusicPlayer extends PlayerEventListenerAdapter{
 
 	public void setLastMessageId(long lastMessageId){
 		this.lastMessageId = lastMessageId;
+	}
+
+	public DataObject toJSON(){
+		return DataObject.empty()
+			.put("guild_id", Long.toString(this.guildId))
+			.put("channel_id", Long.toString(this.channelId))
+			.put("queue", tracksToJSON(this.queue))
+			.put("history", tracksToJSON(this.history));
+	}
+
+	private DataArray tracksToJSON(List<AudioTrack> tracks){
+		return DataArray.fromCollection(tracks.stream().map(this::trackToJSON).collect(Collectors.toList()));
+	}
+
+	private DataObject trackToJSON(AudioTrack track){
+		var info = track.getInfo();
+		return DataObject.empty()
+			.put("identifier", info.identifier)
+			.put("uri", info.uri)
+			.put("title", info.title)
+			.put("author", info.author)
+			.put("length", info.length)
+			.put("source_name", track.getSourceManager().getSourceName())
+			.put("is_stream", info.isStream);
 	}
 
 }
