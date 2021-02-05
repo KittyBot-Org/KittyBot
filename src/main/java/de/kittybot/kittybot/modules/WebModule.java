@@ -5,6 +5,7 @@ import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.Utils;
 import de.kittybot.kittybot.web.bot.invite.GetBotInviteRoute;
 import de.kittybot.kittybot.web.commands.GetCommandsRoute;
+import de.kittybot.kittybot.web.dev.GetDevRoute;
 import de.kittybot.kittybot.web.discord.invite.GetDiscordInviteRoute;
 import de.kittybot.kittybot.web.discord.login.GetDiscordLoginRoute;
 import de.kittybot.kittybot.web.guilds.GetAllGuildsRoute;
@@ -85,6 +86,9 @@ public class WebModule extends Module{
 			);
 			path("/commands", () ->
 				get(new GetCommandsRoute(this.modules))
+			);
+			path("/dev", () ->
+				get(new GetDevRoute(this.modules))
 			);
 			path("/login", () -> {
 				post(new PostLoginRoute(this.modules));

@@ -588,7 +588,6 @@ public class SettingsModule extends Module{
 		this.modules.get(DatabaseModule.class).getCtx().deleteFrom(GUILD_INVITE_ROLES).where(GUILD_INVITE_ROLES.ROLE_ID.eq(roleId)).execute();
 	}
 
-
 	public void removeInviteRoles(long guildId, String code){
 		var settings = getSettingsIfPresent(guildId);
 		if(settings != null){

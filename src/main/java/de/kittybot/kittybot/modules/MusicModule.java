@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.Color;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -98,7 +99,9 @@ public class MusicModule extends Module implements Serializable{
 				}
 				break;
 		}
-		event.getReaction().removeReaction(event.getUser()).queue();
+		if(event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_MANAGE)){
+			event.getReaction().removeReaction(event.getUser()).queue();
+		}
 	}
 
 	@Override
@@ -155,6 +158,10 @@ public class MusicModule extends Module implements Serializable{
 			var message = userId == -1 ? "Disconnected due to inactivity" : MessageUtils.getUserMention(userId) + " disconnected me bye bye";
 			channel.sendMessage(new EmbedBuilder().setColor(Color.RED).setDescription(message).setTimestamp(Instant.now()).build()).queue();
 		}
+	}
+
+	public Collection<MusicPlayer> getPlayers(){
+		return this.musicPlayers.values();
 	}
 
 	public int getActivePlayers(){
