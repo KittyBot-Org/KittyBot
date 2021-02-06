@@ -24,8 +24,7 @@ public class StopCommand extends Command implements RunnableCommand{
 		if(!MusicUtils.checkMusicPermissions(ctx, scheduler)){
 			return;
 		}
-		ctx.acknowledge(true).queue();
-		ctx.get(MusicModule.class).destroy(ctx.getGuildId(), ctx.getUserId());
+		ctx.acknowledge(true).queue(success -> ctx.get(MusicModule.class).destroy(ctx.getGuildId(), ctx.getUserId()));
 	}
 
 }
