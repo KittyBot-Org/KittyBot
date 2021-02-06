@@ -41,7 +41,7 @@ public class WipeCommand extends Command implements RunnableCommand{
 				ctx.error("You need to be the dj");
 				return;
 			}
-			var removed = scheduler.removeQueue(0, queue.size() - 1, ctx.getMember());
+			scheduler.getQueue().clear();
 			ctx.reply("Removed all queued songs");
 			return;
 		}
