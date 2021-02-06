@@ -22,17 +22,17 @@ public class SeekCommand extends Command implements RunnableCommand{
 
 	@Override
 	public void run(Options options, CommandContext ctx){
-		var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
-		if(!MusicUtils.checkCommandRequirements(ctx, player)){
+		var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+		if(!MusicUtils.checkCommandRequirements(ctx, scheduler)){
 			return;
 		}
-		if(!MusicUtils.checkMusicPermissions(ctx, player)){
+		if(!MusicUtils.checkMusicPermissions(ctx, scheduler)){
 			return;
 		}
 		var newPos = options.getLong("seconds") * 1000;
-		var lavalinkPlayer = player.getPlayer();
-		if(newPos > player.getPlayingTrack().getDuration()){
-			player.next();
+		var lavalinkPlayer = scheduler.getPlayer();
+		if(newPos > scheduler.getPlayingTrack().getDuration()){
+			scheduler.next(true);
 			ctx.reply("Skipped to next track");
 			return;
 		}

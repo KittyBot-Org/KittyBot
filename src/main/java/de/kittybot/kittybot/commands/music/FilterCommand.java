@@ -41,8 +41,8 @@ public class FilterCommand extends Command{
 
 		@Override
 		public void run(Options options, CommandContext ctx){
-			var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ctx, player) || !MusicUtils.checkMusicPermissions(ctx, player)){
+			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
 				return;
 			}
 			var band = options.getInt("band");
@@ -55,7 +55,7 @@ public class FilterCommand extends Command{
 				ctx.error("The multiplier goes from -0.25 to 1.0");
 				return;
 			}
-			player.getPlayer().getFilters().setBand(band, multiplier).commit();
+			scheduler.getFilters().setBand(band, multiplier).commit();
 			ctx.reply("Set band " + band + " to " + multiplier);
 		}
 
@@ -75,8 +75,8 @@ public class FilterCommand extends Command{
 
 		@Override
 		public void run(Options options, CommandContext ctx){
-			var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ctx, player) || !MusicUtils.checkMusicPermissions(ctx, player)){
+			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
 				return;
 			}
 			var karaoke = new Karaoke();
@@ -92,7 +92,7 @@ public class FilterCommand extends Command{
 			if(options.has("filterWidth")){
 				karaoke = karaoke.setFilterWidth(options.getFloat("filterWidth"));
 			}
-			player.getPlayer().getFilters().setKaraoke(karaoke).commit();
+			scheduler.getFilters().setKaraoke(karaoke).commit();
 			ctx.reply("Set karaoke filter");
 		}
 
@@ -111,8 +111,8 @@ public class FilterCommand extends Command{
 
 		@Override
 		public void run(Options options, CommandContext ctx){
-			var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ctx, player) || !MusicUtils.checkMusicPermissions(ctx, player)){
+			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
 				return;
 			}
 			var timescale = new Timescale();
@@ -125,7 +125,7 @@ public class FilterCommand extends Command{
 			if(options.has("rate")){
 				timescale = timescale.setRate(options.getFloat("rate"));
 			}
-			player.getPlayer().getFilters().setTimescale(timescale).commit();
+			scheduler.getFilters().setTimescale(timescale).commit();
 			ctx.reply("Set timescale filter");
 		}
 
@@ -143,8 +143,8 @@ public class FilterCommand extends Command{
 
 		@Override
 		public void run(Options options, CommandContext ctx){
-			var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ctx, player) || !MusicUtils.checkMusicPermissions(ctx, player)){
+			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
 				return;
 			}
 			var tremolo = new Tremolo();
@@ -164,7 +164,7 @@ public class FilterCommand extends Command{
 				}
 				tremolo = tremolo.setDepth(depth);
 			}
-			player.getPlayer().getFilters().setTremolo(tremolo).commit();
+			scheduler.getFilters().setTremolo(tremolo).commit();
 			ctx.reply("Set tremolo filter");
 		}
 
@@ -182,8 +182,8 @@ public class FilterCommand extends Command{
 
 		@Override
 		public void run(Options options, CommandContext ctx){
-			var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ctx, player) || !MusicUtils.checkMusicPermissions(ctx, player)){
+			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
 				return;
 			}
 			var vibrato = new Vibrato();
@@ -203,7 +203,7 @@ public class FilterCommand extends Command{
 				}
 				vibrato = vibrato.setDepth(depth);
 			}
-			player.getPlayer().getFilters().setVibrato(vibrato).commit();
+			scheduler.getFilters().setVibrato(vibrato).commit();
 			ctx.reply("Set vibrato filter");
 		}
 
@@ -217,11 +217,11 @@ public class FilterCommand extends Command{
 
 		@Override
 		public void run(Options options, CommandContext ctx){
-			var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ctx, player) || !MusicUtils.checkMusicPermissions(ctx, player)){
+			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
 				return;
 			}
-			player.getPlayer().getFilters().clear().commit();
+			scheduler.getFilters().clear().commit();
 			ctx.reply("Cleared all filters!");
 		}
 

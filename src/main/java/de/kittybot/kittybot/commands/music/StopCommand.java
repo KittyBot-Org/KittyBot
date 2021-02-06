@@ -17,11 +17,11 @@ public class StopCommand extends Command implements RunnableCommand{
 
 	@Override
 	public void run(Options options, CommandContext ctx){
-		var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
-		if(!MusicUtils.checkCommandRequirements(ctx, player)){
+		var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+		if(!MusicUtils.checkCommandRequirements(ctx, scheduler)){
 			return;
 		}
-		if(!MusicUtils.checkMusicPermissions(ctx, player)){
+		if(!MusicUtils.checkMusicPermissions(ctx, scheduler)){
 			return;
 		}
 		ctx.acknowledge(true).queue();

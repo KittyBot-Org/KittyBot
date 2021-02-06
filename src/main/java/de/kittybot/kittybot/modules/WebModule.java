@@ -87,7 +87,7 @@ public class WebModule extends Module{
 			path("/commands", () ->
 				get(new GetCommandsRoute(this.modules))
 			);
-			path("/dev", () ->{
+			path("/dev", () -> {
 				before("/*", this::checkDiscordLogin);
 				get(new GetDevRoute(this.modules));
 			});

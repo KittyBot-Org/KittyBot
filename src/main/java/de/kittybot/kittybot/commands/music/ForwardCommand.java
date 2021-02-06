@@ -22,19 +22,19 @@ public class ForwardCommand extends Command implements RunnableCommand{
 
 	@Override
 	public void run(Options options, CommandContext ctx){
-		var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
-		if(!MusicUtils.checkCommandRequirements(ctx, player)){
+		var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+		if(!MusicUtils.checkCommandRequirements(ctx, scheduler)){
 			return;
 		}
-		if(!MusicUtils.checkMusicPermissions(ctx, player)){
+		if(!MusicUtils.checkMusicPermissions(ctx, scheduler)){
 			return;
 		}
 		var forward = options.getInt("seconds") * 1000;
-		var lavalinkPlayer = player.getPlayer();
+		var lavalinkPlayer = scheduler.getPlayer();
 		var position = lavalinkPlayer.getTrackPosition();
 		var newPos = position + forward;
-		if(newPos > player.getPlayingTrack().getDuration()){
-			player.next();
+		if(newPos > scheduler.getPlayingTrack().getDuration()){
+			scheduler.next(true);
 			ctx.reply("Skipped to next track");
 			return;
 		}

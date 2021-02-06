@@ -26,13 +26,13 @@ public class WipeCommand extends Command implements RunnableCommand{
 
 	@Override
 	public void run(Options options, CommandContext ctx){
-		var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
-		var queue = player.getQueue();
+		var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+		var queue = scheduler.getQueue();
 		if(queue.isEmpty()){
 			ctx.error("The queue is empty. Nothing to remove");
 			return;
 		}
-		if(!MusicUtils.checkCommandRequirements(ctx, player)){
+		if(!MusicUtils.checkCommandRequirements(ctx, scheduler)){
 			return;
 		}
 		if(options.has("all") && options.getBoolean("all")){
@@ -41,7 +41,7 @@ public class WipeCommand extends Command implements RunnableCommand{
 				ctx.error("You need to be the dj");
 				return;
 			}
-			var removed = player.removeQueue(0, queue.size() - 1, ctx.getMember());
+			var removed = scheduler.removeQueue(0, queue.size() - 1, ctx.getMember());
 			ctx.reply("Removed all queued songs");
 			return;
 		}
@@ -52,7 +52,7 @@ public class WipeCommand extends Command implements RunnableCommand{
 		var from = options.getInt("from");
 		var to = options.has("to") ? options.getInt("to") : from;
 
-		var removed = player.removeQueue(from, to, ctx.getMember());
+		var removed = scheduler.removeQueue(from, to, ctx.getMember());
 		ctx.reply("Removed " + removed + " " + (removed > 1 ? "entries" : "entry"));
 	}
 

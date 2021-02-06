@@ -8,6 +8,7 @@ import de.kittybot.kittybot.slashcommands.application.options.CommandOptionUrl;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.utils.Config;
+import net.dv8tion.jda.api.Permission;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -27,6 +28,10 @@ public class HastebinCommand extends Command implements RunnableCommand{
 
 	@Override
 	public void run(Options options, CommandContext ctx){
+		if(!ctx.getSelfMember().hasPermission(ctx.getChannel(), Permission.VIEW_CHANNEL, Permission.MESSAGE_HISTORY)){
+			ctx.error("Please make sure I have following permissions: `VIEW_CHANNEL`, `MESSAGE_HISTORY`");
+			return;
+		}
 		if(Config.HASTEBIN_URL.isBlank()){
 			ctx.error("No hastebin url configured");
 			return;

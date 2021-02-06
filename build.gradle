@@ -33,7 +33,7 @@ dependencies {
     implementation 'club.minnced:discord-webhooks:0.5.4'
 
     // audio
-    implementation("com.github.KittyBot-Org:Lavalink-Client:e66c406") {
+    implementation("com.github.KittyBot-Org:Lavalink-Client:2181ab8") {
         exclude group: 'com.sedmelluq', module: 'lavaplayer'
     }
     implementation 'com.sedmelluq:lavaplayer:1.3.67'

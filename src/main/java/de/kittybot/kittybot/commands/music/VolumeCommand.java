@@ -21,8 +21,8 @@ public class VolumeCommand extends Command implements RunnableCommand{
 
 	@Override
 	public void run(Options options, CommandContext ctx){
-		var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
-		if(!MusicUtils.checkCommandRequirements(ctx, player)){
+		var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+		if(!MusicUtils.checkCommandRequirements(ctx, scheduler)){
 			return;
 		}
 		int volume = options.getInt("volume");
@@ -30,7 +30,7 @@ public class VolumeCommand extends Command implements RunnableCommand{
 			ctx.error("Volume needs to between 0 and 150");
 			return;
 		}
-		player.setVolume(volume);
+		scheduler.setVolume(volume);
 		ctx.reply("Volume set to: `" + volume + "`");
 	}
 
