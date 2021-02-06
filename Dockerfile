@@ -7,4 +7,4 @@ COPY build/libs/KittyBot-all.jar KittyBot.jar
 RUN apk update && apk upgrade && apk add curl
 
 ENTRYPOINT ["java", "-jar", "KittyBot.jar"]
-CMD ["-Xmx1G"]
+CMD ["-Xmx1G", "-XX:+UseG1GC"]
