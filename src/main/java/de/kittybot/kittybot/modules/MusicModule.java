@@ -1,10 +1,8 @@
 package de.kittybot.kittybot.modules;
 
+import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import de.kittybot.kittybot.objects.module.Module;
-import de.kittybot.kittybot.objects.music.AudioLoader;
-import de.kittybot.kittybot.objects.music.MusicManager;
-import de.kittybot.kittybot.objects.music.SearchProvider;
-import de.kittybot.kittybot.objects.music.TrackScheduler;
+import de.kittybot.kittybot.objects.music.*;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
@@ -30,6 +28,7 @@ import java.util.regex.Pattern;
 public class MusicModule extends Module implements Serializable{
 
 	public static final Pattern URL_PATTERN = Pattern.compile("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]?");
+	public static final Pattern SPOTIFY_URL_PATTERN = Pattern.compile("^(https?://)?(www\\.)?open\\.spotify\\.com/(track|album|playlist)/([a-zA-Z0-9-_]+)(\\?si=[a-zA-Z0-9-_]+)?");
 
 	private Map<Long, MusicManager> musicPlayers;
 
@@ -173,7 +172,14 @@ public class MusicModule extends Module implements Serializable{
 	}
 
 	public void play(CommandContext ctx, String query, SearchProvider searchProvider){
-		var player = this.musicPlayers.computeIfAbsent(ctx.getGuildId(), guildId -> new MusicManager(this.modules, guildId, ctx.getChannelId()));
+		var manager = this.musicPlayers.computeIfAbsent(ctx.getGuildId(), guildId -> new MusicManager(this.modules, guildId, ctx.getChannelId()));
+
+		var matcher = SPOTIFY_URL_PATTERN.matcher(query);
+		if(matcher.matches()){
+			this.modules.get(SpotifyModule.class).load(ctx, manager, matcher);
+			return;
+		}
+
 		if(!URL_PATTERN.matcher(query).matches()){
 			switch(searchProvider){
 				case YOUTUBE:
@@ -184,7 +190,7 @@ public class MusicModule extends Module implements Serializable{
 					break;
 			}
 		}
-		player.getScheduler().getLink().getRestClient().loadItem(query, new AudioLoader(ctx, player));
+		manager.getScheduler().getLink().getRestClient().loadItem(query, new AudioLoader(ctx, manager));
 	}
 
 	public TrackScheduler getScheduler(long guildId){

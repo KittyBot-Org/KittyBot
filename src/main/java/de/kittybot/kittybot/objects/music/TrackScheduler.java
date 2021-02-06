@@ -15,6 +15,7 @@ import lavalink.client.player.LavalinkPlayer;
 import lavalink.client.player.event.PlayerEventListenerAdapter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.time.Instant;
@@ -95,7 +96,7 @@ public class TrackScheduler extends PlayerEventListenerAdapter{
 		}
 	}
 
-	public void queue(CommandContext ctx, AudioTrack toPlay, List<AudioTrack> tracks){
+	public MessageEmbed queue(AudioTrack toPlay, List<AudioTrack> tracks){
 		var wasEmpty = this.queue.isEmpty();
 		var shouldPlay = this.player.getPlayingTrack() == null;
 		if(!shouldPlay){
@@ -104,23 +105,30 @@ public class TrackScheduler extends PlayerEventListenerAdapter{
 		for(var track : tracks){
 			this.queue.offer(track);
 		}
-		var action = ctx.acknowledge(true);
 		if(!wasEmpty || this.queue.size() > 0){
-			action.embeds(new EmbedBuilder()
+			return new EmbedBuilder()
 				.setColor(Colors.KITTYBOT_BLUE)
 				.setDescription("**Queued " + tracks.size() + " " + MessageUtils.pluralize("track", tracks.size()) + "**\n\n" +
 					(tracks.size() == 0 ? MusicUtils.formatTrackWithInfo(toPlay) : "") +
 					"\nUse `/queue` to view the queue"
 				)
 				.setTimestamp(Instant.now())
-				.build()
-			);
+				.build();
 		}
-		action.queue(success -> tryPlay(shouldPlay, toPlay), error -> tryPlay(shouldPlay, toPlay));
+		return null;
 	}
 
-	public void tryPlay(boolean shouldPlay, AudioTrack toPlay){
-		if(shouldPlay){
+	public void queue(CommandContext ctx, AudioTrack toPlay, List<AudioTrack> tracks){
+		var embed = queue(toPlay, tracks);
+		var action = ctx.acknowledge(true);
+		if(embed != null){
+			action.embeds(embed);
+		}
+		action.queue(success -> tryPlay(toPlay), error -> tryPlay(toPlay));
+	}
+
+	public void tryPlay(AudioTrack toPlay){
+		if(this.player.getPlayingTrack() == null){
 			this.player.playTrack(toPlay);
 			this.player.setPaused(false);
 		}

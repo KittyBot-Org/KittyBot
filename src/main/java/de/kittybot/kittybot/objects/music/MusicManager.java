@@ -6,10 +6,12 @@ import de.kittybot.kittybot.modules.LavalinkModule;
 import de.kittybot.kittybot.modules.MusicModule;
 import de.kittybot.kittybot.objects.enums.Emoji;
 import de.kittybot.kittybot.objects.module.Modules;
+import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.MusicUtils;
 import de.kittybot.kittybot.utils.TimeUtils;
 import lavalink.client.io.Link;
+import lavalink.client.io.jda.JdaLink;
 import lavalink.client.player.event.PlayerEventListenerAdapter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
@@ -53,6 +55,13 @@ public class MusicManager extends PlayerEventListenerAdapter{
 		}
 		this.future.cancel(true);
 		this.future = null;
+	}
+
+	public void connectToChannel(CommandContext ctx){
+		var voiceState = ctx.getMember().getVoiceState();
+		if(voiceState != null && voiceState.getChannel() != null && this.scheduler.getLink().getChannelId() != voiceState.getChannel().getIdLong()){
+			((JdaLink) this.scheduler.getLink()).connect(voiceState.getChannel());
+		}
 	}
 
 	public EmbedBuilder buildMusicController(){

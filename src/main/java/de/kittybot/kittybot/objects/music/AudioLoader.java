@@ -23,14 +23,14 @@ public class AudioLoader implements AudioLoadResultHandler{
 
 	@Override
 	public void trackLoaded(AudioTrack track){
-		connectToChannel(ctx);
+		this.manager.connectToChannel(ctx);
 		track.setUserData(ctx.getUser().getIdLong());
 		this.manager.getScheduler().queue(ctx, track, Collections.emptyList());
 	}
 
 	@Override
 	public void playlistLoaded(AudioPlaylist playlist){
-		connectToChannel(ctx);
+		this.manager.connectToChannel(ctx);
 		for(var track : playlist.getTracks()){
 			track.setUserData(ctx.getUser().getIdLong());
 		}
@@ -54,13 +54,5 @@ public class AudioLoader implements AudioLoadResultHandler{
 	public void loadFailed(FriendlyException e){
 		ctx.reply("Failed to load track:\n" + e.getMessage());
 	}
-
-	public void connectToChannel(CommandContext ctx){
-		var voiceState = ctx.getMember().getVoiceState();
-		if(voiceState != null && voiceState.getChannel() != null && this.manager.getScheduler().getLink().getChannelId() != voiceState.getChannel().getIdLong()){
-			((JdaLink) this.manager.getScheduler().getLink()).connect(voiceState.getChannel());
-		}
-	}
-
 
 }

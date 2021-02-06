@@ -28,7 +28,7 @@ public class GetAllGuildsRoute implements Handler{
 		}
 		var data = DataArray.fromCollection(
 			this.modules.getShardManager().getGuildCache().stream().map(guild ->
-				DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl()).put("count", guild.getMemberCount()).put("owner", guild.getOwner() == null ? null : guild.getOwner().getUser().getAsTag())
+				DataObject.empty().put("id", guild.getId()).put("name", guild.getName()).put("icon", guild.getIconUrl()).put("count", guild.getMemberCount()).put("owner", guild.getOwnerId())
 			).collect(Collectors.toSet())
 		);
 		WebModule.ok(ctx, DataObject.empty().put("guilds", data));
