@@ -96,6 +96,15 @@ public class TrackScheduler extends PlayerEventListenerAdapter{
 		}
 	}
 
+	public void queue(CommandContext ctx, AudioTrack toPlay, List<AudioTrack> tracks){
+		var embed = queue(toPlay, tracks);
+		var action = ctx.acknowledge(true);
+		if(embed != null){
+			action.embeds(embed);
+		}
+		action.queue(success -> tryPlay(toPlay), error -> tryPlay(toPlay));
+	}
+
 	public MessageEmbed queue(AudioTrack toPlay, List<AudioTrack> tracks){
 		var wasEmpty = this.queue.isEmpty();
 		var shouldPlay = this.player.getPlayingTrack() == null;
@@ -116,15 +125,6 @@ public class TrackScheduler extends PlayerEventListenerAdapter{
 				.build();
 		}
 		return null;
-	}
-
-	public void queue(CommandContext ctx, AudioTrack toPlay, List<AudioTrack> tracks){
-		var embed = queue(toPlay, tracks);
-		var action = ctx.acknowledge(true);
-		if(embed != null){
-			action.embeds(embed);
-		}
-		action.queue(success -> tryPlay(toPlay), error -> tryPlay(toPlay));
 	}
 
 	public void tryPlay(AudioTrack toPlay){

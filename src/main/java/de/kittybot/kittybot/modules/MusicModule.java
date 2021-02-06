@@ -1,8 +1,10 @@
 package de.kittybot.kittybot.modules;
 
-import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import de.kittybot.kittybot.objects.module.Module;
-import de.kittybot.kittybot.objects.music.*;
+import de.kittybot.kittybot.objects.music.AudioLoader;
+import de.kittybot.kittybot.objects.music.MusicManager;
+import de.kittybot.kittybot.objects.music.SearchProvider;
+import de.kittybot.kittybot.objects.music.TrackScheduler;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;

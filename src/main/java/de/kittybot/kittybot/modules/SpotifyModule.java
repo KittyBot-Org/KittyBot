@@ -9,13 +9,13 @@ import de.kittybot.kittybot.objects.music.SearchProvider;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.interaction.response.FollowupMessage;
 import de.kittybot.kittybot.utils.Config;
+import de.kittybot.kittybot.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
@@ -108,7 +108,7 @@ public class SpotifyModule extends Module{
 	private void loadTracks(String id, CommandContext ctx, MusicManager manager, List<String> toLoad){
 		ctx.acknowledge(true).content("Loading...\nThis may take a while").ephemeral().queue();
 		var restClient = manager.getScheduler().getLink().getRestClient();
-		all(toLoad.stream().map(restClient::getYoutubeSearchResult).collect(Collectors.toList()))
+		Utils.all(toLoad.stream().map(restClient::getYoutubeSearchResult).collect(Collectors.toList()))
 			.thenAcceptAsync(results -> {
 				var tracks = results.stream().map(result -> {
 					if(result.isEmpty()){
@@ -135,16 +135,6 @@ public class SpotifyModule extends Module{
 				ctx.followupError("Something went wrong while fetching your tracks: \n" + error.getMessage());
 				return null;
 			});
-	}
-
-	public static <T> CompletableFuture<List<T>> all(List<CompletableFuture<T>> futures){
-		CompletableFuture[] cfs = futures.toArray(new CompletableFuture[futures.size()]);
-
-		return CompletableFuture.allOf(cfs)
-			.thenApply(ignored -> futures.stream()
-				.map(CompletableFuture::join)
-				.collect(Collectors.toList())
-			);
 	}
 
 }

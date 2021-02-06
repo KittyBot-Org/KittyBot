@@ -5,7 +5,6 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
-import lavalink.client.io.jda.JdaLink;
 
 import java.util.Collections;
 import java.util.stream.Collectors;
