@@ -39,6 +39,7 @@ public class DatabaseModule extends Module{
 			"stream_users",
 			"stream_user_events",
 			"reactive_messages",
+			"self_assignable_role_messages",
 			"notifications",
 			"user_statistics",
 			"requests",
