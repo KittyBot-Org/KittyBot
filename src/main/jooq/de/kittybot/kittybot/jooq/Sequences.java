@@ -66,6 +66,11 @@ public class Sequences {
     public static final Sequence<Long> SELF_ASSIGNABLE_ROLE_GROUPS_ID_SEQ = Internal.createSequence("self_assignable_role_groups_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.self_assignable_role_messages_id_seq</code>
+     */
+    public static final Sequence<Long> SELF_ASSIGNABLE_ROLE_MESSAGES_ID_SEQ = Internal.createSequence("self_assignable_role_messages_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.self_assignable_roles_id_seq</code>
      */
     public static final Sequence<Long> SELF_ASSIGNABLE_ROLES_ID_SEQ = Internal.createSequence("self_assignable_roles_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);

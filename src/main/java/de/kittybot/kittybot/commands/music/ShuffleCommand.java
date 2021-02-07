@@ -18,15 +18,15 @@ public class ShuffleCommand extends Command implements RunnableCommand{
 
 	@Override
 	public void run(Options options, CommandContext ctx){
-		var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
-		if(!MusicUtils.checkCommandRequirements(ctx, player)){
+		var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+		if(!MusicUtils.checkCommandRequirements(ctx, scheduler)){
 			return;
 		}
 		if(!ctx.get(SettingsModule.class).hasDJRole(ctx.getMember())){
 			ctx.error("Only DJs are allowed shuffle");
 			return;
 		}
-		if(ctx.get(MusicModule.class).get(ctx.getGuildId()).shuffle()){
+		if(scheduler.shuffle()){
 			ctx.reply("Queue shuffled");
 			return;
 		}

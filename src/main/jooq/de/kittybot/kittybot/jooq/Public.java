@@ -15,6 +15,7 @@ import de.kittybot.kittybot.jooq.tables.Notifications;
 import de.kittybot.kittybot.jooq.tables.ReactiveMessages;
 import de.kittybot.kittybot.jooq.tables.Requests;
 import de.kittybot.kittybot.jooq.tables.SelfAssignableRoleGroups;
+import de.kittybot.kittybot.jooq.tables.SelfAssignableRoleMessages;
 import de.kittybot.kittybot.jooq.tables.SelfAssignableRoles;
 import de.kittybot.kittybot.jooq.tables.Sessions;
 import de.kittybot.kittybot.jooq.tables.SnipeDisabledChannels;
@@ -100,6 +101,11 @@ public class Public extends SchemaImpl {
     public final SelfAssignableRoleGroups SELF_ASSIGNABLE_ROLE_GROUPS = SelfAssignableRoleGroups.SELF_ASSIGNABLE_ROLE_GROUPS;
 
     /**
+     * The table <code>public.self_assignable_role_messages</code>.
+     */
+    public final SelfAssignableRoleMessages SELF_ASSIGNABLE_ROLE_MESSAGES = SelfAssignableRoleMessages.SELF_ASSIGNABLE_ROLE_MESSAGES;
+
+    /**
      * The table <code>public.self_assignable_roles</code>.
      */
     public final SelfAssignableRoles SELF_ASSIGNABLE_ROLES = SelfAssignableRoles.SELF_ASSIGNABLE_ROLES;
@@ -155,6 +161,7 @@ public class Public extends SchemaImpl {
             Sequences.REACTIVE_MESSAGES_ID_SEQ,
             Sequences.REQUESTS_ID_SEQ,
             Sequences.SELF_ASSIGNABLE_ROLE_GROUPS_ID_SEQ,
+            Sequences.SELF_ASSIGNABLE_ROLE_MESSAGES_ID_SEQ,
             Sequences.SELF_ASSIGNABLE_ROLES_ID_SEQ,
             Sequences.SESSIONS_ID_SEQ,
             Sequences.SNIPE_DISABLED_CHANNELS_ID_SEQ,
@@ -177,6 +184,7 @@ public class Public extends SchemaImpl {
             ReactiveMessages.REACTIVE_MESSAGES,
             Requests.REQUESTS,
             SelfAssignableRoleGroups.SELF_ASSIGNABLE_ROLE_GROUPS,
+            SelfAssignableRoleMessages.SELF_ASSIGNABLE_ROLE_MESSAGES,
             SelfAssignableRoles.SELF_ASSIGNABLE_ROLES,
             Sessions.SESSIONS,
             SnipeDisabledChannels.SNIPE_DISABLED_CHANNELS,

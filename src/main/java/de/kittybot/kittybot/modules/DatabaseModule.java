@@ -39,6 +39,7 @@ public class DatabaseModule extends Module{
 			"stream_users",
 			"stream_user_events",
 			"reactive_messages",
+			"self_assignable_role_messages",
 			"notifications",
 			"user_statistics",
 			"requests",
@@ -57,8 +58,8 @@ public class DatabaseModule extends Module{
 		config.setUsername(Config.DB_USER);
 		config.setPassword(Config.DB_PASSWORD);
 
-		config.setMinimumIdle(10);
-		config.setMaximumPoolSize(90);
+		config.setMinimumIdle(2);
+		config.setMaximumPoolSize(20);
 		config.setConnectionTimeout(10000);
 		config.setIdleTimeout(600000);
 		config.setMaxLifetime(1800000);

@@ -22,7 +22,8 @@ public class PlayCommand extends Command implements RunnableCommand{
 			new CommandOptionString("search-provider", "Which search provider use")
 				.addChoices(
 					new CommandOptionChoice<>("youtube", "yt"),
-					new CommandOptionChoice<>("soundcloud", "sc")
+					new CommandOptionChoice<>("soundcloud", "sc")/*,
+					new CommandOptionChoice<>("spotify", "sp")*/
 				)
 		);
 	}
@@ -36,15 +37,12 @@ public class PlayCommand extends Command implements RunnableCommand{
 		if(!MusicUtils.checkMusicRequirements(ctx)){
 			return;
 		}
-		var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
-		if(player == null){
-			player = ctx.get(MusicModule.class).create(ctx);
-		}
+		var musicModule = ctx.get(MusicModule.class);
 		var searchProvider = SearchProvider.YOUTUBE;
 		if(options.has("search-provider")){
 			searchProvider = SearchProvider.getByShortname(options.getString("search-provider"));
 		}
-		player.loadItem(ctx, options.getString("query"), searchProvider);
+		musicModule.play(ctx, options.getString("query"), searchProvider);
 	}
 
 }

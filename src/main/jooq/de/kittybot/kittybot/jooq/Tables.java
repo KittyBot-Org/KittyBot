@@ -15,6 +15,7 @@ import de.kittybot.kittybot.jooq.tables.Notifications;
 import de.kittybot.kittybot.jooq.tables.ReactiveMessages;
 import de.kittybot.kittybot.jooq.tables.Requests;
 import de.kittybot.kittybot.jooq.tables.SelfAssignableRoleGroups;
+import de.kittybot.kittybot.jooq.tables.SelfAssignableRoleMessages;
 import de.kittybot.kittybot.jooq.tables.SelfAssignableRoles;
 import de.kittybot.kittybot.jooq.tables.Sessions;
 import de.kittybot.kittybot.jooq.tables.SnipeDisabledChannels;
@@ -83,6 +84,11 @@ public class Tables {
      * The table <code>public.self_assignable_role_groups</code>.
      */
     public static final SelfAssignableRoleGroups SELF_ASSIGNABLE_ROLE_GROUPS = SelfAssignableRoleGroups.SELF_ASSIGNABLE_ROLE_GROUPS;
+
+    /**
+     * The table <code>public.self_assignable_role_messages</code>.
+     */
+    public static final SelfAssignableRoleMessages SELF_ASSIGNABLE_ROLE_MESSAGES = SelfAssignableRoleMessages.SELF_ASSIGNABLE_ROLE_MESSAGES;
 
     /**
      * The table <code>public.self_assignable_roles</code>.

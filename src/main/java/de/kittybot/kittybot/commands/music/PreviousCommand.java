@@ -17,20 +17,20 @@ public class PreviousCommand extends Command implements RunnableCommand{
 
 	@Override
 	public void run(Options options, CommandContext ctx){
-		var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
-		if(!MusicUtils.checkCommandRequirements(ctx, player)){
+		var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+		if(!MusicUtils.checkCommandRequirements(ctx, scheduler)){
 			return;
 		}
-		if(!MusicUtils.checkMusicPermissions(ctx, player)){
+		if(!MusicUtils.checkMusicPermissions(ctx, scheduler)){
 			return;
 		}
-		if(player.getHistory().isEmpty()){
+		if(scheduler.getHistory().isEmpty()){
 			ctx.error("Can't go back because the history is empty");
 			return;
 		}
 		ctx.reply("Went back to the previous song");
-		player.previous();
-		player.setPaused(false);
+		scheduler.previous();
+		scheduler.setPaused(false);
 	}
 
 }

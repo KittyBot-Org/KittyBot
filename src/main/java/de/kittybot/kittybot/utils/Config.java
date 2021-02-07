@@ -37,6 +37,9 @@ public class Config{
 
 	public static String SIGNING_KEY;
 
+	public static String SPOTIFY_CLIENT_ID;
+	public static String SPOTIFY_CLIENT_SECRET;
+
 	public static String TOP_GG_TOKEN;
 	public static String DISCORD_EXTREME_LIST_TOKEN;
 	public static String DISCORD_BOATS_TOKEN;
@@ -99,6 +102,9 @@ public class Config{
 		TWITCH_CLIENT_SECRET = json.getString("twitch_client_secret", "");
 
 		SIGNING_KEY = json.getString("signing_key", "");
+
+		SPOTIFY_CLIENT_ID = json.getString("spotify_client_id", "");
+		SPOTIFY_CLIENT_SECRET = json.getString("spotify_client_secret", "");
 
 		DISCORD_BOTS_TOKEN = json.getString("discord_bots_token", "");
 		TOP_GG_TOKEN = json.getString("top_gg_token", "");
