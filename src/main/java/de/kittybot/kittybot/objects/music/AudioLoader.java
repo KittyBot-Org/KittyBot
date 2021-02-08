@@ -23,7 +23,7 @@ public class AudioLoader implements AudioLoadResultHandler{
 	@Override
 	public void trackLoaded(AudioTrack track){
 		this.manager.connectToChannel(ctx);
-		track.setUserData(ctx.getUser().getIdLong());
+		track.setUserData(ctx.getUserId());
 		this.manager.getScheduler().queue(ctx, track, Collections.emptyList());
 	}
 
@@ -31,11 +31,10 @@ public class AudioLoader implements AudioLoadResultHandler{
 	public void playlistLoaded(AudioPlaylist playlist){
 		this.manager.connectToChannel(ctx);
 		for(var track : playlist.getTracks()){
-			track.setUserData(ctx.getUser().getIdLong());
+			track.setUserData(ctx.getUserId());
 		}
 		var firstTrack = playlist.getTracks().get(0);
 		if(playlist.isSearchResult()){
-			firstTrack.setUserData(ctx.getUser().getIdLong());
 			this.manager.getScheduler().queue(ctx, firstTrack, Collections.emptyList());
 			return;
 		}

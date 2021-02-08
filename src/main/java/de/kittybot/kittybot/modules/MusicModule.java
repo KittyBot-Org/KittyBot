@@ -8,6 +8,7 @@ import de.kittybot.kittybot.objects.music.TrackScheduler;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
+import lavalink.client.io.Link;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
@@ -158,7 +159,7 @@ public class MusicModule extends Module implements Serializable{
 	public void destroy(MusicManager musicManager, long userId){
 		var scheduler = musicManager.getScheduler();
 		var link = scheduler.getLink();
-		if(link != null){
+		if(link != null && link.getState() != Link.State.DESTROYING && link.getState() != Link.State.DESTROYED){
 			link.destroy();
 		}
 		var player = this.musicPlayers.remove(musicManager.getScheduler().getGuildId());

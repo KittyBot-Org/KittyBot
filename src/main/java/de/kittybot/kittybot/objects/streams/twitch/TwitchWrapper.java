@@ -59,13 +59,16 @@ public class TwitchWrapper{
 		return null;
 	}
 
-	public TwitchUser getUserByUsername(String username){
+	public TwitchUser getUserByUsername(String username, boolean reTry){
 		try(var resp = newRequest("users?login=%s", username).execute()){
 			var body = resp.body();
 			if(!resp.isSuccessful() || body == null){
 				LOG.error("Url: {} Code: {} Body: {}", resp.request().url(), resp.code(), body == null ? "null" : body.string());
-				if(resp.code() == 403){
+				if(resp.code() == 401){
 					this.bearerToken = null;
+					if(!reTry){
+						return getUserByUsername(username, true);
+					}
 				}
 				return null;
 			}
@@ -86,7 +89,7 @@ public class TwitchWrapper{
 			this.bearerToken = requestBearerToken();
 			LOG.info("New Bearer Token retrieved");
 		}
-		if(bearerToken == null){
+		if(this.bearerToken == null){
 			throw new NullPointerException("bearerToken is null");
 		}
 		return this.httpClient.newCall(new Request.Builder()
@@ -97,7 +100,7 @@ public class TwitchWrapper{
 		);
 	}
 
-	public List<Stream> getStreams(List<Long> userIds){
+	public List<Stream> getStreams(List<Long> userIds, boolean reTry){
 		var streams = new ArrayList<Stream>();
 		do{
 			var users = userIds.subList(0, Math.min(userIds.size(), 100));
@@ -107,8 +110,11 @@ public class TwitchWrapper{
 				var body = resp.body();
 				if(!resp.isSuccessful() || body == null){
 					LOG.error("Url: {} Code: {} Body: {}", resp.request().url(), resp.code(), body == null ? "null" : body.string());
-					if(resp.code() == 403){
+					if(resp.code() == 401){
 						this.bearerToken = null;
+						if(!reTry){
+							return getStreams(userIds, true);
+						}
 					}
 					continue;
 				}
