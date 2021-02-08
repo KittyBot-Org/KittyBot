@@ -23,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.Color;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -204,8 +203,8 @@ public class MusicModule extends Module implements Serializable{
 		return manager.getScheduler();
 	}
 
-	public Collection<MusicManager> getPlayers(){
-		return this.musicPlayers.values();
+	public Map<Long, MusicManager> getPlayers(){
+		return this.musicPlayers;
 	}
 
 	public int getActivePlayers(){
