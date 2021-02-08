@@ -114,7 +114,7 @@ public class MusicModule extends Module implements Serializable{
 
 	@Override
 	public void onGuildLeave(@NotNull GuildLeaveEvent event){
-		destroy(event.getGuild().getIdLong(), -1L);
+		this.musicPlayers.remove(event.getGuild().getIdLong());
 	}
 
 	@Override
