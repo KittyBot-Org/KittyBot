@@ -17,8 +17,8 @@ public abstract class Module extends ListenerAdapter{
 		return null;
 	}
 
-	protected void onEnable(){}
+	public void onEnable(){}
 
-	protected void onDisable(){}
+	public void onDisable(){}
 
 }

@@ -39,7 +39,7 @@ public class JoinModule extends Module{
 	}
 
 	@Override
-	protected void onEnable(){
+	public void onEnable(){
 		this.randomJoinMessages = FileUtils.loadMessageFile("join");
 		this.randomLeaveMessages = FileUtils.loadMessageFile("leave");
 	}

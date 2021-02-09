@@ -15,7 +15,7 @@ public abstract class Command implements CommandOptionsHolder, PermissionHolder{
 	private final List<CommandOption<?>> options;
 	private boolean devOnly;
 
-	protected Command(String name, String description, Category category){
+	public Command(String name, String description, Category category){
 		this.name = name;
 		this.description = description;
 		this.category = category;

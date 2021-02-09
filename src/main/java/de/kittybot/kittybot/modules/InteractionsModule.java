@@ -28,13 +28,15 @@ import org.slf4j.LoggerFactory;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static de.kittybot.kittybot.jooq.Tables.USER_STATISTICS;
+
 @SuppressWarnings("unused")
 public class InteractionsModule extends Module{
 
 	public static final Route INTERACTION_RESPONSE = Route.custom(Method.POST, "interactions/{interaction.id}/{interaction.token}/callback");
 	public static final Route INTERACTION_FOLLOW_UP = Route.custom(Method.POST, "webhooks/{application.id}/{interaction.token}");
 	private static final Logger LOG = LoggerFactory.getLogger(InteractionsModule.class);
-	private static final Set<Class<? extends Module>> DEPENDENCIES = Set.of(CommandsModule.class);
+	private static final Set<Class<? extends Module>> DEPENDENCIES = Set.of(CommandsModule.class, DatabaseModule.class);
 	private static final String INTERACTION_CREATE = "INTERACTION_CREATE";
 
 	@Override
@@ -48,6 +50,9 @@ public class InteractionsModule extends Module{
 			var start = System.currentTimeMillis();
 
 			var interaction = Interaction.fromJSON(this.modules, event.getPayload(), event.getJDA());
+
+			this.modules.get(StatsModule.class).incrementStat(interaction.getGuild().getIdLong(), interaction.getMember().getIdLong(), USER_STATISTICS.MESSAGE_COUNT, 1);
+
 			var settings = this.modules.get(SettingsModule.class).getSettings(interaction.getGuild().getIdLong());
 
 			if(settings.isBotIgnoredUser(interaction.getMember().getIdLong())){

@@ -26,7 +26,7 @@ public class ReactionRoleModule extends Module{
 	}
 
 	@Override
-	protected void onEnable(){
+	public void onEnable(){
 		this.reactionMessages = Caffeine.newBuilder()
 			.expireAfterAccess(5, TimeUnit.MINUTES)
 			.recordStats()

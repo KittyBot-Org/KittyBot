@@ -30,7 +30,7 @@ public class SpotifyModule extends Module{
 	private int hits;
 
 	@Override
-	protected void onEnable(){
+	public void onEnable(){
 		this.spotify = new SpotifyApi.Builder().setClientId(Config.SPOTIFY_CLIENT_ID).setClientSecret(Config.SPOTIFY_CLIENT_SECRET).build();
 		this.clientCredentialsRequest = this.spotify.clientCredentials().build();
 		this.modules.scheduleAtFixedRate(this::refreshAccessToken, 0, 1, TimeUnit.HOURS);

@@ -33,8 +33,14 @@ import static de.kittybot.kittybot.jooq.Tables.*;
 public class SettingsModule extends Module{
 
 	private static final Logger LOG = LoggerFactory.getLogger(SettingsModule.class);
+	private static final Set<Class<? extends Module>> DEPENDENCIES = Set.of(DatabaseModule.class);
 
 	private LoadingCache<Long, Settings> guildSettings;
+
+	@Override
+	public Set<Class<? extends Module>> getDependencies(){
+		return DEPENDENCIES;
+	}
 
 	@Override
 	public void onEnable(){

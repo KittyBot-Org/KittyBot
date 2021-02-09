@@ -93,6 +93,16 @@ public class Options{
 		return this.options.containsKey(name);
 	}
 
+	@SuppressWarnings("unchecked")
+	public <T> T get(String name, T defaultValue){
+		try{
+			return (T) getValue(name, defaultValue.getClass());
+		}
+		catch(NullPointerException e){
+			return defaultValue;
+		}
+	}
+
 	public InteractionDataOption get(String name){
 		return this.options.get(name);
 	}

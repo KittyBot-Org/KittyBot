@@ -15,6 +15,7 @@ public enum Category{
 	ADMIN(Emoji.ADMIN, "Admin"),
 	NOTIFICATION(Emoji.NOTIFICATION, "Notification"),
 	TAGS(Emoji.TAGS, "Tags"),
+	STATISTICS(Emoji.STATISTICS, "Statistics"),
 	DEV(Emoji.DEV, "Developer");
 
 	private final Emoji emote;
