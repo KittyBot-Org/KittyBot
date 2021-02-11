@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.modules;
 
 import club.minnced.discord.webhook.receive.ReadonlyMessage;
+import de.kittybot.kittybot.objects.exceptions.MissingOptionException;
 import de.kittybot.kittybot.objects.exceptions.OptionParseException;
 import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionsHolder;
@@ -51,7 +52,7 @@ public class InteractionsModule extends Module{
 
 			var interaction = Interaction.fromJSON(this.modules, event.getPayload(), event.getJDA());
 
-			this.modules.get(StatsModule.class).incrementStat(interaction.getGuild().getIdLong(), interaction.getMember().getIdLong(), USER_STATISTICS.MESSAGE_COUNT, 1);
+			this.modules.get(StatsModule.class).incrementStat(interaction.getGuild().getIdLong(), interaction.getMember().getIdLong(), USER_STATISTICS.BOT_CALLS, 1);
 
 			var settings = this.modules.get(SettingsModule.class).getSettings(interaction.getGuild().getIdLong());
 

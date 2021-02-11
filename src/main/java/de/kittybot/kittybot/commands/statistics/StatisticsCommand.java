@@ -15,7 +15,6 @@ import de.kittybot.kittybot.utils.TimeUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.jooq.SortOrder;
 
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
@@ -54,8 +53,8 @@ public class StatisticsCommand extends Command{
 
 		@Override
 		public void run(Options options, CommandContext ctx){
-			var type = StatisticType.valueOf(options.get("stat", StatisticType.XP.name()));
-			var sortOrder = SortOrder.valueOf(options.get("sort-order", SortOrder.DESC.name()));
+			var type = StatisticType.valueOf(options.getOrDefault("stat", StatisticType.XP.name()));
+			var sortOrder = SortOrder.valueOf(options.getOrDefault("sort-order", SortOrder.DESC.name()));
 			var statistics = ctx.get(StatsModule.class).get(ctx.getGuildId(), type, sortOrder, 10);
 			ctx.reply(new EmbedBuilder()
 				.setTitle("Top 10 Statistics for `" + type + "`")
@@ -76,7 +75,7 @@ public class StatisticsCommand extends Command{
 
 		@Override
 		public void run(Options options, CommandContext ctx){
-			var userId = options.getLong("user");
+			var userId = options.getOrDefault("user", ctx.getUserId());
 			var statistics = ctx.get(StatsModule.class).get(ctx.getGuildId(), userId);
 			ctx.reply(new EmbedBuilder()
 				.setDescription("User Statistics: " + MessageUtils.getUserMention(userId) +
