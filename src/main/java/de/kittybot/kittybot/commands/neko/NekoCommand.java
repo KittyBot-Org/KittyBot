@@ -31,7 +31,8 @@ public class NekoCommand extends Command implements RunnableCommand{
 					new NekoCommandOptionChoice(Neko.THREESOME_FFF),
 					//new NekoCommandOptionChoice(Neko.THREESOME_FFM),
 					//new NekoCommandOptionChoice(Neko.THREESOME_MMF),
-					new NekoCommandOptionChoice(Neko.YAOI),
+					//new NekoCommandOptionChoice(Neko.YAOI),
+					new NekoCommandOptionChoice(Neko.KITSUNE),
 					new NekoCommandOptionChoice(Neko.YURI)
 				)
 		);

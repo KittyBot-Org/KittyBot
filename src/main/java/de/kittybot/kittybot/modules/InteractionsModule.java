@@ -100,7 +100,7 @@ public class InteractionsModule extends Module{
 			try{
 				((RunnableCommand) applicationHolder).run(new Options(applicationHolder.getOptions(), holder.getOptions()), new CommandContext(interaction, this.modules));
 			}
-			catch(OptionParseException e){
+			catch(OptionParseException | MissingOptionException e){
 				reply(interaction).ephemeral().content(e.getMessage()).type(InteractionResponseType.ACKNOWLEDGE).queue();
 			}
 			return;

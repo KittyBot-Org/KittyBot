@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.slashcommands.context;
 
+import de.kittybot.kittybot.objects.exceptions.MissingOptionException;
 import de.kittybot.kittybot.objects.exceptions.OptionParseException;
 import de.kittybot.kittybot.slashcommands.application.CommandOption;
 import de.kittybot.kittybot.slashcommands.interaction.InteractionDataOption;
@@ -40,7 +41,11 @@ public class Options{
 
 	@SuppressWarnings("unchecked")
 	private <T> T getValue(String name, Class<T> clazz){
-		return (T) this.definedOptions.get(name).parseValue(this.options.get(name).getValue());
+		var value = this.options.get(name).getValue();
+		if(value == null){
+			throw new MissingOptionException(name, clazz);
+		}
+		return (T) this.definedOptions.get(name).parseValue(value);
 	}
 
 	public int getInt(String name){
@@ -94,7 +99,7 @@ public class Options{
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T get(String name, T defaultValue){
+	public <T> T getOrDefault(String name, T defaultValue){
 		try{
 			return (T) getValue(name, defaultValue.getClass());
 		}
