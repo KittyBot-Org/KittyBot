@@ -20,6 +20,7 @@ public class Config{
 	public static Long TEST_GUILD;
 
 	public static int BACKEND_PORT;
+	public static String BACKEND_HOST;
 	public static int PROMETHEUS_PORT;
 
 	public static String HASTEBIN_URL;
@@ -35,6 +36,9 @@ public class Config{
 	public static String TWITCH_CLIENT_SECRET;
 
 	public static String SIGNING_KEY;
+
+	public static String SPOTIFY_CLIENT_ID;
+	public static String SPOTIFY_CLIENT_SECRET;
 
 	public static String TOP_GG_TOKEN;
 	public static String DISCORD_EXTREME_LIST_TOKEN;
@@ -82,6 +86,7 @@ public class Config{
 		TEST_GUILD = json.getLong("test_guild", -1);
 
 		BACKEND_PORT = json.getInt("backend_port", -1);
+		BACKEND_HOST = json.getString("backend_host", "0.0.0.0");
 		PROMETHEUS_PORT = json.getInt("prometheus_port", -1);
 
 		REDIRECT_URL = json.getString("redirect_url", "");
@@ -97,6 +102,9 @@ public class Config{
 		TWITCH_CLIENT_SECRET = json.getString("twitch_client_secret", "");
 
 		SIGNING_KEY = json.getString("signing_key", "");
+
+		SPOTIFY_CLIENT_ID = json.getString("spotify_client_id", "");
+		SPOTIFY_CLIENT_SECRET = json.getString("spotify_client_secret", "");
 
 		DISCORD_BOTS_TOKEN = json.getString("discord_bots_token", "");
 		TOP_GG_TOKEN = json.getString("top_gg_token", "");

@@ -19,13 +19,11 @@
         </encoder>
     </appender>
 
-    <logger name="spark.http.matching.MatcherFilter" level="info"/>
-
-    <logger name="org.jooq" level="warn" additivity="false">
+    <logger name="org.jooq" level="warn">
         <appender-ref ref="STDOUT"/>
     </logger>
 
-    <logger name="io.javalin" level="warn" additivity="false">
+    <logger name="io.javalin" level="info">
         <appender-ref ref="STDOUT"/>
     </logger>
 

@@ -8,8 +8,6 @@ import de.kittybot.kittybot.utils.Colors;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -21,8 +19,6 @@ import java.util.stream.Collectors;
 import static de.kittybot.kittybot.jooq.Tables.NOTIFICATIONS;
 
 public class NotificationModule extends Module{
-
-	private static final Logger LOG = LoggerFactory.getLogger(NotificationModule.class);
 
 	private Map<Long, Notification> notifications;
 
@@ -149,13 +145,9 @@ public class NotificationModule extends Module{
 	}
 
 	public List<Notification> get(long userId){
-		return retrieveNotifications(userId);
-	}
-
-	private List<Notification> retrieveNotifications(long userId){
 		var dbModule = this.modules.get(DatabaseModule.class);
 		try(var ctx = dbModule.getCtx().selectFrom(NOTIFICATIONS)){
-			return ctx.where(NOTIFICATIONS.USER_ID.eq(userId)).fetch().map(Notification::new);
+			return ctx.where(NOTIFICATIONS.USER_ID.eq(userId)).orderBy(NOTIFICATIONS.NOTIFICATION_TIME).fetch().map(Notification::new);
 		}
 	}
 

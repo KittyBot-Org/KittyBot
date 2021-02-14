@@ -4,6 +4,10 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import net.dv8tion.jda.api.utils.MiscUtil;
 
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+
 public class Utils{
 
 	private Utils(){}
@@ -21,6 +25,16 @@ public class Utils{
 		catch(NumberFormatException ignored){
 			return false;
 		}
+	}
+
+	public static <T> CompletableFuture<List<T>> all(List<CompletableFuture<T>> futures){
+		CompletableFuture[] cfs = futures.toArray(new CompletableFuture[futures.size()]);
+
+		return CompletableFuture.allOf(cfs)
+			.thenApply(ignored -> futures.stream()
+				.map(CompletableFuture::join)
+				.collect(Collectors.toList())
+			);
 	}
 
 }

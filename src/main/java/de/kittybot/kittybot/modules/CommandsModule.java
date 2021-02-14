@@ -8,7 +8,6 @@ import de.kittybot.kittybot.utils.annotations.Ignore;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import net.dv8tion.jda.api.utils.data.DataArray;
-import net.dv8tion.jda.api.utils.data.DataObject;
 import net.dv8tion.jda.internal.requests.Method;
 import net.dv8tion.jda.internal.requests.Requester;
 import net.dv8tion.jda.internal.requests.Route;
@@ -20,7 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -89,6 +89,16 @@ public class CommandsModule extends Module{
 		LOG.info("Registered " + this.commands.size() + " commands...");
 	}
 
+	private Call put(Route.CompiledRoute route, RequestBody body){
+		return this.modules.getHttpClient().newCall(newBuilder(route).put(body).build());
+	}
+
+	private Request.Builder newBuilder(Route.CompiledRoute route){
+		return new Request.Builder()
+			.url(Requester.DISCORD_API_PREFIX + route.getCompiledRoute())
+			.addHeader("Authorization", "Bot " + Config.BOT_TOKEN);
+	}
+
 	public void deleteAllCommands(long guildId){
 		LOG.info("Deleting commands {}...", guildId == -1 ? "global" : "for guild " + guildId);
 		var rqBody = RequestBody.create(DataArray.empty().toString(), MediaType.parse("application/json"));
@@ -105,16 +115,6 @@ public class CommandsModule extends Module{
 			LOG.error("Error while processing deleteAllCommands", e);
 		}
 		LOG.info("Deleted all commands...");
-	}
-
-	private Call put(Route.CompiledRoute route, RequestBody body){
-		return this.modules.getHttpClient().newCall(newBuilder(route).put(body).build());
-	}
-
-	private Request.Builder newBuilder(Route.CompiledRoute route){
-		return new Request.Builder()
-			.url(Requester.DISCORD_API_PREFIX + route.getCompiledRoute())
-			.addHeader("Authorization", "Bot " + Config.BOT_TOKEN);
 	}
 
 	public Map<String, Command> getCommands(){

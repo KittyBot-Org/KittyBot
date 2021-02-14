@@ -1,10 +1,14 @@
 package de.kittybot.kittybot.modules;
 
 import de.kittybot.kittybot.objects.module.Module;
-import de.kittybot.kittybot.objects.music.MusicPlayer;
+import de.kittybot.kittybot.objects.music.AudioLoader;
+import de.kittybot.kittybot.objects.music.MusicManager;
+import de.kittybot.kittybot.objects.music.SearchProvider;
+import de.kittybot.kittybot.objects.music.TrackScheduler;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
+import lavalink.client.io.Link;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
@@ -21,10 +25,14 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class MusicModule extends Module implements Serializable{
 
-	private Map<Long, MusicPlayer> musicPlayers;
+	public static final Pattern URL_PATTERN = Pattern.compile("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]?");
+	public static final Pattern SPOTIFY_URL_PATTERN = Pattern.compile("^(https?://)?(www\\.)?open\\.spotify\\.com/(track|album|playlist)/([a-zA-Z0-9-_]+)(\\?si=[a-zA-Z0-9-_]+)?");
+
+	private Map<Long, MusicManager> musicPlayers;
 
 	@Override
 	public void onEnable(){
@@ -33,9 +41,9 @@ public class MusicModule extends Module implements Serializable{
 
 	@Override
 	public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event){
-		var player = this.musicPlayers.get(event.getGuild().getIdLong());
-		if(player != null){
-			player.setLastMessageId(event.getMessageIdLong());
+		var manager = this.musicPlayers.get(event.getGuild().getIdLong());
+		if(manager != null){
+			manager.getScheduler().setLastMessageId(event.getMessageIdLong());
 		}
 	}
 
@@ -44,53 +52,54 @@ public class MusicModule extends Module implements Serializable{
 		if(event.getUserIdLong() == Config.BOT_ID){
 			return;
 		}
-		var player = this.musicPlayers.get(event.getGuild().getIdLong());
-		if(player == null){
+		var manager = this.musicPlayers.get(event.getGuild().getIdLong());
+		if(manager == null){
 			return;
 		}
+		var scheduler = manager.getScheduler();
 		var member = event.getMember();
 
 		var voiceState = member.getVoiceState();
-		if(voiceState == null || voiceState.getChannel() == null || player.getLink().getChannelId() != voiceState.getChannel().getIdLong()){
+		if(voiceState == null || voiceState.getChannel() == null || scheduler.getLink().getChannelId() != voiceState.getChannel().getIdLong()){
 			return;
 		}
 		var messageId = event.getMessageIdLong();
-		var currentTrack = player.getPlayingTrack();
+		var currentTrack = scheduler.getPlayingTrack();
 		var userId = event.getUserIdLong();
 		var requesterId = currentTrack == null ? -1L : currentTrack.getUserData(Long.class);
 		var settings = this.modules.get(SettingsModule.class).getSettings(event.getGuild().getIdLong());
 
-		if(messageId != player.getControllerMessageId()){
+		if(messageId != scheduler.getControllerMessageId()){
 			return;
 		}
 		switch(event.getReactionEmote().getAsReactionCode()){
 			case "\u2B05\uFE0F":// ⬅
 				if(requesterId == userId || member.hasPermission(Permission.ADMINISTRATOR) || settings.hasDJRole(member)){
-					player.previous();
-					player.setPaused(false);
+					scheduler.previous();
+					scheduler.setPaused(false);
 				}
 				break;
 			case "\u27A1\uFE0F":// ➡
 				if(requesterId == userId || member.hasPermission(Permission.ADMINISTRATOR) || settings.hasDJRole(member)){
-					player.next();
-					player.setPaused(false);
+					scheduler.next(true);
+					scheduler.setPaused(false);
 				}
 				break;
-			case "<:PlayPause:744945002416963634>"://play pause
+			case "PlayPause:744945002416963634"://play pause
 				if(requesterId == userId || member.hasPermission(Permission.ADMINISTRATOR) || settings.hasDJRole(member)){
-					player.pause();
+					scheduler.pause();
 				}
 				break;
 			case "\uD83D\uDD00":// 🔀
 				if(member.hasPermission(Permission.ADMINISTRATOR) || settings.hasDJRole(member)){
-					player.shuffle();
+					scheduler.shuffle();
 				}
 				break;
 			case "\uD83D\uDD09":// 🔉
-				player.increaseVolume(-10);
+				scheduler.increaseVolume(-10);
 				break;
 			case "\uD83D\uDD0A":// 🔊
-				player.increaseVolume(10);
+				scheduler.increaseVolume(10);
 				break;
 			case "\u274C":// ❌
 				if(requesterId == userId || member.hasPermission(Permission.ADMINISTRATOR) || settings.hasDJRole(member)){
@@ -98,34 +107,36 @@ public class MusicModule extends Module implements Serializable{
 				}
 				break;
 		}
-		event.getReaction().removeReaction(event.getUser()).queue();
+		if(event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_MANAGE)){
+			event.getReaction().removeReaction(event.getUser()).queue();
+		}
 	}
 
 	@Override
 	public void onGuildLeave(@NotNull GuildLeaveEvent event){
-		destroy(event.getGuild().getIdLong(), -1L);
+		this.musicPlayers.remove(event.getGuild().getIdLong());
 	}
 
 	@Override
 	public void onGuildVoiceUpdate(@NotNull GuildVoiceUpdateEvent event){
 		if(event instanceof GuildVoiceLeaveEvent || event instanceof GuildVoiceMoveEvent){
-			var player = get(event.getEntity().getGuild().getIdLong());
-			if(player == null){
+			var manager = get(event.getEntity().getGuild().getIdLong());
+			if(manager == null){
 				return;
 			}
 			if(event.getEntity().getIdLong() == Config.BOT_ID){
-				this.modules.get(MusicModule.class).destroy(event.getEntity().getGuild().getIdLong(), -1L);
+				this.modules.get(MusicModule.class).destroy(manager, -1L);
 				return;
 			}
 			var channel = event.getChannelLeft();
-			var currentChannel = player.getLink().getChannelId();
+			var currentChannel = manager.getScheduler().getLink().getChannelId();
 			if(channel == null || channel.getIdLong() != currentChannel){
 				return;
 			}
 			if(channel.getMembers().stream().anyMatch(member -> !member.getUser().isBot())){
 				return;
 			}
-			player.planDestroy();
+			manager.planDestroy();
 		}
 		else if(event instanceof GuildVoiceJoinEvent){
 			var player = get(event.getEntity().getGuild().getIdLong());
@@ -136,19 +147,24 @@ public class MusicModule extends Module implements Serializable{
 		}
 	}
 
-	public MusicPlayer get(long guildId){
+	public MusicManager get(long guildId){
 		return this.musicPlayers.get(guildId);
 	}
 
 	public void destroy(long guildId, long userId){
-		var link = this.modules.get(LavalinkModule.class).getExistingLink(guildId);
-		if(link != null){
+		destroy(this.musicPlayers.get(guildId), userId);
+	}
+
+	public void destroy(MusicManager musicManager, long userId){
+		var scheduler = musicManager.getScheduler();
+		var link = scheduler.getLink();
+		if(link != null && link.getState() != Link.State.DESTROYING && link.getState() != Link.State.DESTROYED){
 			link.destroy();
 		}
-		var player = this.musicPlayers.remove(guildId);
+		var player = this.musicPlayers.remove(musicManager.getScheduler().getGuildId());
 		if(player != null){
 			player.updateMusicController();
-			var channel = player.getTextChannel();
+			var channel = scheduler.getTextChannel();
 			if(channel == null || !channel.canTalk()){
 				return;
 			}
@@ -157,12 +173,42 @@ public class MusicModule extends Module implements Serializable{
 		}
 	}
 
-	public MusicPlayer create(CommandContext ctx){
-		var guildId = ctx.getGuildId();
-		var link = this.modules.get(LavalinkModule.class).getLink(guildId);
-		var player = new MusicPlayer(this.modules, link, guildId, ctx.getChannelId());
-		this.musicPlayers.put(guildId, player);
-		return player;
+	public void play(CommandContext ctx, String query, SearchProvider searchProvider){
+		var manager = this.musicPlayers.computeIfAbsent(ctx.getGuildId(), guildId -> new MusicManager(this.modules, guildId, ctx.getChannelId()));
+
+		var matcher = SPOTIFY_URL_PATTERN.matcher(query);
+		if(matcher.matches()){
+			this.modules.get(SpotifyModule.class).load(ctx, manager, matcher);
+			return;
+		}
+
+		if(!URL_PATTERN.matcher(query).matches()){
+			switch(searchProvider){
+				case YOUTUBE:
+					query = "ytsearch:" + query;
+					break;
+				case SOUNDCLOUD:
+					query = "scsearch:" + query;
+					break;
+			}
+		}
+		manager.getScheduler().getLink().getRestClient().loadItem(query, new AudioLoader(ctx, manager));
+	}
+
+	public TrackScheduler getScheduler(long guildId){
+		var manager = get(guildId);
+		if(manager == null){
+			return null;
+		}
+		return manager.getScheduler();
+	}
+
+	public Map<Long, MusicManager> getPlayers(){
+		return this.musicPlayers;
+	}
+
+	public int getActivePlayers(){
+		return this.musicPlayers.size();
 	}
 
 }

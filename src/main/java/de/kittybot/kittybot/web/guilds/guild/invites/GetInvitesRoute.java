@@ -1,7 +1,7 @@
-package de.kittybot.kittybot.web.guilds.guild;
+package de.kittybot.kittybot.web.guilds.guild.invites;
 
 import de.kittybot.kittybot.modules.InviteModule;
-import de.kittybot.kittybot.modules.WebService;
+import de.kittybot.kittybot.modules.WebModule;
 import de.kittybot.kittybot.objects.module.Modules;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -22,7 +22,7 @@ public class GetInvitesRoute implements Handler{
 
 	@Override
 	public void handle(@NotNull Context ctx){
-		var guild = this.modules.get(WebService.class).getGuild(ctx);
+		var guild = this.modules.get(WebModule.class).getGuild(ctx);
 
 		var guildInvites = this.modules.get(InviteModule.class).getGuildInvites(guild.getIdLong());
 		if(guildInvites == null){
@@ -33,7 +33,7 @@ public class GetInvitesRoute implements Handler{
 				invite -> DataObject.empty().put("code", invite.getCode()).put("user_id", invite.getUserId()).put("uses", invite.getUses())
 			).collect(Collectors.toSet())
 		);
-		WebService.ok(ctx, DataObject.empty().put("invites", invites));
+		WebModule.ok(ctx, DataObject.empty().put("invites", invites));
 	}
 
 }

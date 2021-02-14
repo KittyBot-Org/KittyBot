@@ -1,7 +1,6 @@
 package de.kittybot.kittybot.commands.music;
 
 import de.kittybot.kittybot.modules.MusicModule;
-import de.kittybot.kittybot.objects.music.MusicPlayer;
 import de.kittybot.kittybot.objects.music.SearchProvider;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
@@ -12,6 +11,7 @@ import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.MessageUtils;
+import de.kittybot.kittybot.utils.MusicUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 
@@ -25,7 +25,8 @@ public class QueueCommand extends Command implements RunnableCommand{
 			new CommandOptionString("search-provider", "Which search provider use")
 				.addChoices(
 					new CommandOptionChoice<>("youtube", "yt"),
-					new CommandOptionChoice<>("soundcloud", "sc")
+					new CommandOptionChoice<>("soundcloud", "sc")/*,
+					new CommandOptionChoice<>("spotify", "sp")*/
 				)
 		);
 	}
@@ -36,30 +37,31 @@ public class QueueCommand extends Command implements RunnableCommand{
 			ctx.error("Please make sure I have following permissions in this channel: `Send Messages`, `Add Reactions`, `Use External Emoji`, `Read Message History`, `View Channel`");
 			return;
 		}
-		var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
+		if(!MusicUtils.checkMusicRequirements(ctx)){
+			return;
+		}
+		var musicModule = ctx.get(MusicModule.class);
 
 		if(options.has("query")){
-			if(player == null){
-				player = ctx.get(MusicModule.class).create(ctx);
-			}
 			var searchProvider = SearchProvider.YOUTUBE;
 			if(options.has("search-provider")){
 				searchProvider = SearchProvider.getByShortname(options.getString("search-provider"));
 			}
-			player.loadItem(ctx, options.getString("link"), searchProvider);
+			musicModule.play(ctx, options.getString("query"), searchProvider);
 			return;
 		}
-		var tracks = player.getQueue();
+		var manager = musicModule.get(ctx.getGuildId());
+		var scheduler = manager.getScheduler();
+		var tracks = scheduler.getQueue();
 		if(tracks.isEmpty()){
 			ctx.reply(new EmbedBuilder()
 				.setColor(Colors.KITTYBOT_BLUE)
-				.setDescription("The queue is empty. You can queue new tracks with `/play <link/search-term>` or `/queue <link/search-term>`")
+				.setDescription("The queue is empty. You can queue new tracks with `/play <query/search-term>` or `/queue <query/search-term>`")
 			);
 			return;
 		}
-		MusicPlayer finalPlayer = player;
 		ctx.acknowledge(true).queue(success ->
-			finalPlayer.sendTracks(tracks, ctx.getUserId(), "Currently " + tracks.size() + " " + MessageUtils.pluralize("track", tracks) + " are queued")
+			MusicUtils.sendTracks(tracks, ctx.getModules(), ctx.getChannel(), ctx.getUserId(), "Currently " + tracks.size() + " " + MessageUtils.pluralize("track", tracks) + " are queued")
 		);
 
 	}

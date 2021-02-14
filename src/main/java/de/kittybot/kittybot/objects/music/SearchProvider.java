@@ -5,6 +5,7 @@ import java.util.Arrays;
 public enum SearchProvider{
 
 	YOUTUBE("youtube", "yt"),
+	SPOTIFY("spotify", "sp"),
 	SOUNDCLOUD("soundcloud", "sc");
 
 	private final String name, shortName;

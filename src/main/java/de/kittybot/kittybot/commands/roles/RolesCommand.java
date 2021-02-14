@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.commands.roles;
 
+import de.kittybot.kittybot.modules.ReactionRoleModule;
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.objects.enums.Emoji;
 import de.kittybot.kittybot.objects.settings.SelfAssignableRole;
@@ -11,10 +12,13 @@ import de.kittybot.kittybot.slashcommands.application.options.CommandOptionStrin
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.MessageUtils;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
@@ -48,14 +52,14 @@ public class RolesCommand extends Command{
 			var groupName = options.getString("group");
 
 			emoteAction.queue(emote -> {
-				var group = ctx.get(SettingsModule.class).getSelfAssignableRoleGroups(ctx.getGuildId()).stream().filter(g -> g.getName().equalsIgnoreCase(groupName)).findFirst();
-				if(group.isEmpty()){
-					ctx.error("Please provide a valid group");
-					return;
-				}
+					var group = ctx.get(SettingsModule.class).getSelfAssignableRoleGroups(ctx.getGuildId()).stream().filter(g -> g.getName().equalsIgnoreCase(groupName)).findFirst();
+					if(group.isEmpty()){
+						ctx.error("Please provide a valid group");
+						return;
+					}
 
-				ctx.get(SettingsModule.class).addSelfAssignableRoles(ctx.getGuildId(), Collections.singleton(new SelfAssignableRole(roleId, emote.getIdLong(), ctx.getGuildId(), group.get().getId())));
-				ctx.reply("Added self assignable role");
+					ctx.get(SettingsModule.class).addSelfAssignableRoles(ctx.getGuildId(), Collections.singleton(new SelfAssignableRole(roleId, emote.getIdLong(), ctx.getGuildId(), group.get().getId())));
+					ctx.reply("Added self assignable role");
 				}, error -> ctx.error("Please provide a valid emote from this server")
 			);
 
@@ -105,14 +109,30 @@ public class RolesCommand extends Command{
 				ctx.error("No self assignable roles configured");
 				return;
 			}
-			ctx.reply("**Self Assignable Roles:** \n\n" + roles.stream().collect(Collectors.groupingBy(SelfAssignableRole::getGroupId)).entrySet().stream().map(entry -> {
-				var group = groups.stream().filter(g -> entry.getKey() == g.getId()).findFirst().orElse(null);
-				if(group == null){
-					return "";
-				}
-				return "**Group:** `" + group.getName() + "` **Max Roles:** `" + group.getFormattedMaxRoles() + "`\n" +
-					entry.getValue().stream().map(role -> MessageUtils.getEmoteMention(role.getEmoteId()) + Emoji.BLANK.get() + Emoji.BLANK.get() + MessageUtils.getRoleMention(role.getRoleId())).collect(Collectors.joining("\n"));
-			}).collect(Collectors.joining("\n")));
+			var sortedRoles = new LinkedHashSet<>(roles);
+			var embed = new EmbedBuilder()
+				.setTitle("**Self Assignable Roles:**")
+				.setColor(Colors.KITTYBOT_BLUE)
+				.setDescription(sortedRoles.stream().collect(Collectors.groupingBy(SelfAssignableRole::getGroupId)).entrySet().stream().map(entry -> {
+						var group = groups.stream().filter(g -> entry.getKey() == g.getId()).findFirst().orElse(null);
+						if(group == null){
+							return "";
+						}
+						return "**Group:** `" + group.getName() + "` **Max Roles:** `" + group.getFormattedMaxRoles() + "`\n" +
+							entry.getValue().stream().map(role -> MessageUtils.getEmoteMention(role.getEmoteId()) + Emoji.BLANK.get() + Emoji.BLANK.get() + MessageUtils.getRoleMention(role.getRoleId())).collect(Collectors.joining("\n"));
+					}).collect(Collectors.joining("\n"))
+				).build();
+
+			if(!ctx.getSelfMember().hasPermission(Permission.MESSAGE_WRITE, Permission.MESSAGE_ADD_REACTION)){
+				ctx.reply(embed);
+				return;
+			}
+			ctx.acknowledge(true).queue(success ->
+				ctx.getChannel().sendMessage(embed).queue(message -> {
+					ctx.get(ReactionRoleModule.class).add(message.getGuild().getIdLong(), message.getIdLong());
+					sortedRoles.forEach(role -> message.addReaction("test:" + role.getEmoteId()).queue());
+				})
+			);
 		}
 
 	}

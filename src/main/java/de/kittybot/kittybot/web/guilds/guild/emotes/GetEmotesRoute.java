@@ -1,6 +1,6 @@
-package de.kittybot.kittybot.web.guilds.guild;
+package de.kittybot.kittybot.web.guilds.guild.emotes;
 
-import de.kittybot.kittybot.modules.WebService;
+import de.kittybot.kittybot.modules.WebModule;
 import de.kittybot.kittybot.objects.module.Modules;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -20,11 +20,11 @@ public class GetEmotesRoute implements Handler{
 
 	@Override
 	public void handle(@NotNull Context ctx){
-		var guild = this.modules.get(WebService.class).getGuild(ctx);
+		var guild = this.modules.get(WebModule.class).getGuild(ctx);
 		var emotes = DataArray.fromCollection(
 			guild.getEmoteCache().stream().map(emote -> DataObject.empty().put("id", emote.getId()).put("name", emote.getName()).put("url", emote.getImageUrl())).collect(Collectors.toSet())
 		);
-		WebService.ok(ctx, DataObject.empty().put("emotes", emotes));
+		WebModule.ok(ctx, DataObject.empty().put("emotes", emotes));
 	}
 
 }

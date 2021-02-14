@@ -55,13 +55,13 @@ public class Settings{
 		this.inactiveDuration = record.getInactiveDuration().toDuration();
 		this.djRoleId = record.getDjRoleId();
 		this.snipesEnabled = record.getSnipesEnabled();
+		this.roleSaverEnabled = record.getRoleSaverEnabled();
 		this.snipeDisabledChannels = new HashSet<>(snipeDisabledChannels);
 		this.botDisabledChannels = new HashSet<>(botDisabledChannels);
 		this.botIgnoredUsers = new HashSet<>(botIgnoredUsers);
 		this.selfAssignableRoles = new HashSet<>(selfAssignableRoles);
 		this.selfAssignableRoleGroups = new HashSet<>(selfAssignableRoleGroups);
 		this.guildInviteRoles = guildInviteRoles;
-		this.roleSaverEnabled = record.getRoleSaverEnabled();
 	}
 
 	public long getGuildId(){

@@ -70,7 +70,7 @@ public class StreamAnnouncementModule extends Module{
 	private void checkTwitch(){
 		var userIds = this.streamAnnouncements.stream().filter(streamAnnouncement -> streamAnnouncement.getStreamType() == StreamType.TWITCH.getId())
 			.map(StreamUsersRecord::getUserId).collect(Collectors.toList());
-		var streams = this.twitchWrapper.getStreams(userIds);
+		var streams = this.twitchWrapper.getStreams(userIds, false);
 
 		for(var streamAnnouncement : this.streamAnnouncements){
 			var stream = streams.stream().filter(st -> st.getUserId() == streamAnnouncement.getUserId()).findFirst();
@@ -89,6 +89,13 @@ public class StreamAnnouncementModule extends Module{
 
 	private void checkYouTube(){
 
+	}
+
+	private void setLiveStatus(StreamUsersRecord record, boolean status){
+		record.setIsLive(status);
+		record.attach(this.modules.get(DatabaseModule.class).getConfiguration());
+		record.store();
+		record.detach();
 	}
 
 	private void sendAnnouncementMessage(StreamUsersRecord streamAnnouncement, Stream stream, AnnouncementType announcementType){
@@ -134,15 +141,8 @@ public class StreamAnnouncementModule extends Module{
 			.queue();
 	}
 
-	private void setLiveStatus(StreamUsersRecord record, boolean status){
-		record.setIsLive(status);
-		record.attach(this.modules.get(DatabaseModule.class).getConfiguration());
-		record.store();
-		record.detach();
-	}
-
 	public TwitchUser add(String name, long guildId, StreamType type){
-		var user = this.twitchWrapper.getUserByUsername(name);
+		var user = this.twitchWrapper.getUserByUsername(name, false);
 		if(user == null){
 			return null;
 		}
@@ -164,7 +164,7 @@ public class StreamAnnouncementModule extends Module{
 	}
 
 	public boolean remove(String name, long guildId, StreamType type){
-		var user = this.twitchWrapper.getUserByUsername(name);
+		var user = this.twitchWrapper.getUserByUsername(name, false);
 		if(user == null){
 			return false;
 		}

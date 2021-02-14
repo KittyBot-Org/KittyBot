@@ -20,11 +20,11 @@ public class HistoryCommand extends Command implements RunnableCommand{
 
 	@Override
 	public void run(Options options, CommandContext ctx){
-		var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
-		if(!MusicUtils.checkCommandRequirements(ctx, player)){
+		var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+		if(!MusicUtils.checkCommandRequirements(ctx, scheduler)){
 			return;
 		}
-		var tracks = player.getHistory();
+		var tracks = scheduler.getHistory();
 		if(tracks.isEmpty()){
 			ctx.reply(new EmbedBuilder()
 				.setColor(Colors.KITTYBOT_BLUE)
@@ -32,7 +32,7 @@ public class HistoryCommand extends Command implements RunnableCommand{
 			);
 			return;
 		}
-		player.sendTracks(tracks, ctx.getUserId(), "Currently " + tracks.size() + " " + MessageUtils.pluralize("track", tracks) + " are in the history");
+		MusicUtils.sendTracks(tracks, ctx.getModules(), ctx.getChannel(), ctx.getUserId(), "Currently " + tracks.size() + " " + MessageUtils.pluralize("track", tracks) + " are in the history");
 	}
 
 }

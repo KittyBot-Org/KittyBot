@@ -9,10 +9,7 @@ import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import de.kittybot.kittybot.slashcommands.context.Options;
 import de.kittybot.kittybot.utils.MusicUtils;
-import lavalink.client.io.filters.Karaoke;
-import lavalink.client.io.filters.Timescale;
-import lavalink.client.io.filters.Tremolo;
-import lavalink.client.io.filters.Vibrato;
+import lavalink.client.io.filters.*;
 
 @SuppressWarnings("unused")
 public class FilterCommand extends Command{
@@ -25,6 +22,8 @@ public class FilterCommand extends Command{
 			new TimescaleCommand(),
 			new TremoloCommand(),
 			new VibratoCommand(),
+			new RotationCommand(),
+			new DistortionCommand(),
 			new ClearCommand()
 		);
 	}
@@ -41,8 +40,8 @@ public class FilterCommand extends Command{
 
 		@Override
 		public void run(Options options, CommandContext ctx){
-			var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ctx, player) || !MusicUtils.checkMusicPermissions(ctx, player)){
+			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
 				return;
 			}
 			var band = options.getInt("band");
@@ -55,7 +54,7 @@ public class FilterCommand extends Command{
 				ctx.error("The multiplier goes from -0.25 to 1.0");
 				return;
 			}
-			player.getPlayer().getFilters().setBand(band, multiplier).commit();
+			scheduler.getFilters().setBand(band, multiplier).commit();
 			ctx.reply("Set band " + band + " to " + multiplier);
 		}
 
@@ -75,8 +74,8 @@ public class FilterCommand extends Command{
 
 		@Override
 		public void run(Options options, CommandContext ctx){
-			var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ctx, player) || !MusicUtils.checkMusicPermissions(ctx, player)){
+			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
 				return;
 			}
 			var karaoke = new Karaoke();
@@ -92,7 +91,7 @@ public class FilterCommand extends Command{
 			if(options.has("filterWidth")){
 				karaoke = karaoke.setFilterWidth(options.getFloat("filterWidth"));
 			}
-			player.getPlayer().getFilters().setKaraoke(karaoke).commit();
+			scheduler.getFilters().setKaraoke(karaoke).commit();
 			ctx.reply("Set karaoke filter");
 		}
 
@@ -111,8 +110,8 @@ public class FilterCommand extends Command{
 
 		@Override
 		public void run(Options options, CommandContext ctx){
-			var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ctx, player) || !MusicUtils.checkMusicPermissions(ctx, player)){
+			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
 				return;
 			}
 			var timescale = new Timescale();
@@ -125,7 +124,7 @@ public class FilterCommand extends Command{
 			if(options.has("rate")){
 				timescale = timescale.setRate(options.getFloat("rate"));
 			}
-			player.getPlayer().getFilters().setTimescale(timescale).commit();
+			scheduler.getFilters().setTimescale(timescale).commit();
 			ctx.reply("Set timescale filter");
 		}
 
@@ -143,8 +142,8 @@ public class FilterCommand extends Command{
 
 		@Override
 		public void run(Options options, CommandContext ctx){
-			var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ctx, player) || !MusicUtils.checkMusicPermissions(ctx, player)){
+			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
 				return;
 			}
 			var tremolo = new Tremolo();
@@ -164,7 +163,7 @@ public class FilterCommand extends Command{
 				}
 				tremolo = tremolo.setDepth(depth);
 			}
-			player.getPlayer().getFilters().setTremolo(tremolo).commit();
+			scheduler.getFilters().setTremolo(tremolo).commit();
 			ctx.reply("Set tremolo filter");
 		}
 
@@ -182,8 +181,8 @@ public class FilterCommand extends Command{
 
 		@Override
 		public void run(Options options, CommandContext ctx){
-			var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ctx, player) || !MusicUtils.checkMusicPermissions(ctx, player)){
+			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
 				return;
 			}
 			var vibrato = new Vibrato();
@@ -203,8 +202,86 @@ public class FilterCommand extends Command{
 				}
 				vibrato = vibrato.setDepth(depth);
 			}
-			player.getPlayer().getFilters().setVibrato(vibrato).commit();
+			scheduler.getFilters().setVibrato(vibrato).commit();
 			ctx.reply("Set vibrato filter");
+		}
+
+	}
+
+	private static class RotationCommand extends SubCommand{
+
+		public RotationCommand(){
+			super("rotation", "Rotates the sound around the stereo channels/user headphones aka Audio Panning.");
+			addOptions(
+				new CommandOptionFloat("frequency", "The frequency of the audio rotating around the listener in Hz").required()
+			);
+		}
+
+		@Override
+		public void run(Options options, CommandContext ctx){
+			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
+				return;
+			}
+			var frequency = options.getFloat("frequency");
+			scheduler.getFilters().setRotation(new Rotation().setFrequency(frequency)).commit();
+			ctx.reply("Set rotation filter");
+		}
+
+	}
+
+	private static class DistortionCommand extends SubCommand{
+
+		public DistortionCommand(){
+			super("distortion", "Distortion effect. It can generate some pretty unique audio effects.");
+			addOptions(
+				new CommandOptionFloat("offset", "The offset"),
+				new CommandOptionFloat("sinOffset", "The sinOffset"),
+				new CommandOptionFloat("cosOffset", "The cosOffset"),
+				new CommandOptionFloat("tanOffset", "The tanOffset"),
+
+				new CommandOptionFloat("scale", "The scale"),
+				new CommandOptionFloat("sinScale", "The sinScale"),
+				new CommandOptionFloat("cosScale", "The cosScale"),
+				new CommandOptionFloat("tanScale", "The tanScale")
+			);
+		}
+
+		@Override
+		public void run(Options options, CommandContext ctx){
+			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
+				return;
+			}
+			var distortion = new Distortion();
+			if(options.has("offset")){
+				distortion = distortion.setOffset(options.getFloat("offset"));
+			}
+			if(options.has("sinOffset")){
+				distortion = distortion.setSinOffset(options.getFloat("sinOffset"));
+			}
+			if(options.has("cosOffset")){
+				distortion = distortion.setCosOffset(options.getFloat("cosOffset"));
+			}
+			if(options.has("tanOffset")){
+				distortion = distortion.setTanOffset(options.getFloat("tanOffset"));
+			}
+
+			if(options.has("scale")){
+				distortion = distortion.setScale(options.getFloat("scale"));
+			}
+			if(options.has("sinScale")){
+				distortion = distortion.setSinScale(options.getFloat("sinScale"));
+			}
+			if(options.has("cosScale")){
+				distortion = distortion.setCosScale(options.getFloat("cosScale"));
+			}
+			if(options.has("tanScale")){
+				distortion = distortion.setTanScale(options.getFloat("tanScale"));
+			}
+
+			scheduler.getFilters().setDistortion(distortion).commit();
+			ctx.reply("Set distortion filter");
 		}
 
 	}
@@ -217,11 +294,11 @@ public class FilterCommand extends Command{
 
 		@Override
 		public void run(Options options, CommandContext ctx){
-			var player = ctx.get(MusicModule.class).get(ctx.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ctx, player) || !MusicUtils.checkMusicPermissions(ctx, player)){
+			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
 				return;
 			}
-			player.getPlayer().getFilters().clear().commit();
+			scheduler.getFilters().clear().commit();
 			ctx.reply("Cleared all filters!");
 		}
 

@@ -250,7 +250,7 @@ public class SettingsCommand extends Command{
 			public void run(Options options, CommandContext ctx){
 				var channelId = options.getLong("channel");
 				var enabled = options.getBoolean("enabled");
-				ctx.get(SettingsModule.class).setSnipesDisabledInChannel(ctx.getGuildId(), channelId, enabled);
+				ctx.get(SettingsModule.class).setSnipesDisabledInChannel(ctx.getGuildId(), channelId, !enabled);
 				ctx.reply("Snipes `" + (enabled ? "enabled" : "disabled") + "` in " + MessageUtils.getChannelMention(channelId));
 			}
 

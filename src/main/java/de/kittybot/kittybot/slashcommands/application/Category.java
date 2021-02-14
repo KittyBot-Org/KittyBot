@@ -29,16 +29,8 @@ public enum Category{
 		return this.emote.get();
 	}
 
-	public String getEmoteUrl(){
-		return "https://cdn.discordapp.com/emojis/" + this.emote.getId() + ".png";
-	}
-
 	public String getName(){
 		return this.name;
-	}
-
-	public String getUrl(){
-		return "http://" + Config.ORIGIN_URL + "/commands#" + this.name.toLowerCase();
 	}
 
 	public DataObject toJSON(){
@@ -46,5 +38,13 @@ public enum Category{
 			.put("name", this.name)
 			.put("url", getUrl())
 			.put("emote", getEmoteUrl());
+	}
+
+	public String getUrl(){
+		return "http://" + Config.ORIGIN_URL + "/commands#" + this.name.toLowerCase();
+	}
+
+	public String getEmoteUrl(){
+		return "https://cdn.discordapp.com/emojis/" + this.emote.getId() + ".png";
 	}
 }

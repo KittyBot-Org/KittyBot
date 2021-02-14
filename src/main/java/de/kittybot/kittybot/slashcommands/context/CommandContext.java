@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.slashcommands.context;
 
+import club.minnced.discord.webhook.receive.ReadonlyMessage;
 import de.kittybot.kittybot.modules.InteractionsModule;
 import de.kittybot.kittybot.objects.enums.Emoji;
 import de.kittybot.kittybot.objects.module.Modules;
@@ -13,6 +14,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.requests.RestAction;
 
 import java.awt.Color;
 import java.time.Instant;
@@ -82,7 +84,11 @@ public class CommandContext extends Context{
 	}
 
 	public void followup(FollowupMessage message){
-		this.modules.get(InteractionsModule.class).followup(this.interaction, message).queue(null);
+		followupMessage(message).queue();
+	}
+
+	public RestAction<ReadonlyMessage> followupMessage(FollowupMessage message){
+		return this.modules.get(InteractionsModule.class).followup(this.interaction, message);
 	}
 
 	public void followupError(String error){

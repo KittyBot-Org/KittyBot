@@ -1,11 +1,16 @@
 package de.kittybot.kittybot.utils;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import de.kittybot.kittybot.modules.PaginatorModule;
 import de.kittybot.kittybot.modules.SettingsModule;
-import de.kittybot.kittybot.objects.music.MusicPlayer;
+import de.kittybot.kittybot.objects.module.Modules;
+import de.kittybot.kittybot.objects.music.TrackScheduler;
 import de.kittybot.kittybot.slashcommands.context.CommandContext;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.TextChannel;
 
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class MusicUtils{
@@ -34,11 +39,15 @@ public class MusicUtils{
 		return MessageUtils.maskLink("`" + info.title + "`", info.uri);
 	}
 
-	public static boolean checkCommandRequirements(CommandContext ctx, MusicPlayer player){
-		if(player == null){
+	public static boolean checkCommandRequirements(CommandContext ctx, TrackScheduler scheduler){
+		if(scheduler == null){
 			ctx.error("No active player found");
 			return false;
 		}
+		return checkMusicRequirements(ctx);
+	}
+
+	public static boolean checkMusicRequirements(CommandContext ctx){
 		var voiceState = ctx.getMember().getVoiceState();
 		if(voiceState == null || voiceState.getChannel() == null){
 			ctx.error("Please connect to a voice channel to use music commands");
@@ -52,12 +61,12 @@ public class MusicUtils{
 		return true;
 	}
 
-	public static boolean checkMusicPermissions(CommandContext ctx, MusicPlayer player){
+	public static boolean checkMusicPermissions(CommandContext ctx, TrackScheduler scheduler){
 		var member = ctx.getMember();
 		if(member.hasPermission(Permission.ADMINISTRATOR) || ctx.get(SettingsModule.class).hasDJRole(member)){
 			return true;
 		}
-		var track = player.getPlayingTrack();
+		var track = scheduler.getPlayingTrack();
 		if(track == null){
 			return false;
 		}
@@ -66,6 +75,35 @@ public class MusicUtils{
 			return false;
 		}
 		return true;
+	}
+
+	public static void sendTracks(Collection<AudioTrack> tracks, Modules modules, TextChannel channel, long authorId, String baseMessage){
+		if(channel == null){
+			return;
+		}
+		var trackMessage = new StringBuilder("**").append(baseMessage).append(":**\n");
+		var pages = new ArrayList<String>();
+
+		var i = 1;
+		for(var track : tracks){
+			var formattedTrack = i + ". " + MusicUtils.formatTrackWithInfo(track) + "\n";
+			if(trackMessage.length() + formattedTrack.length() >= 2048){
+				pages.add(trackMessage.toString());
+				trackMessage = new StringBuilder();
+			}
+			trackMessage.append(formattedTrack);
+			i++;
+		}
+		pages.add(trackMessage.toString());
+
+		modules.get(PaginatorModule.class).create(
+			channel,
+			authorId,
+			pages.size(),
+			(page, embedBuilder) -> embedBuilder.setColor(Colors.KITTYBOT_BLUE)
+				.setDescription(pages.get(page))
+				.setTimestamp(Instant.now())
+		);
 	}
 
 }

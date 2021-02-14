@@ -62,7 +62,7 @@ public class NotificationCommand extends Command{
 				ctx.error("There was an unexpected error while creating your notification");
 				return;
 			}
-			ctx.reply("Created Notification in `" + TimeUtils.formatDuration(notif.getCreatedAt().until(notif.getNotificationTime(), ChronoUnit.MILLIS)) + "` with id: `" + notif.getId() + "`");
+			ctx.reply("Notification at `" + TimeUtils.formatDuration(notif.getCreatedAt().until(notif.getNotificationTime(), ChronoUnit.MILLIS)) + "` created with id: `" + notif.getId() + "`");
 
 		}
 
@@ -108,7 +108,7 @@ public class NotificationCommand extends Command{
 			var pages = new ArrayList<String>();
 
 			for(var notif : notifs){
-				var formattedNotif = notifMessage.append("**").append(notif.getId()).append("**").append(" scheduled for `").append(TimeUtils.format(notif.getNotificationTime())).append("`").append("\n") + "\n";
+				var formattedNotif = "**ID:** `" + notif.getId() + "` is scheduled for `" + TimeUtils.format(notif.getNotificationTime()) + "`\n";
 				if(notifMessage.length() + formattedNotif.length() >= 2048){
 					pages.add(notifMessage.toString());
 					notifMessage = new StringBuilder();
@@ -117,8 +117,7 @@ public class NotificationCommand extends Command{
 			}
 			pages.add(notifMessage.toString());
 
-			ctx.sendAcknowledge(true);
-			ctx.get(PaginatorModule.class).create(
+			ctx.acknowledge(true).queue(success -> ctx.get(PaginatorModule.class).create(
 				ctx.getChannel(),
 				ctx.getUserId(),
 				pages.size(),
@@ -127,7 +126,7 @@ public class NotificationCommand extends Command{
 					.setAuthor("Your Notifications", Config.ORIGIN_URL, Category.NOTIFICATION.getEmoteUrl())
 					.setDescription(pages.get(page))
 					.setTimestamp(Instant.now())
-			);
+			));
 		}
 
 	}

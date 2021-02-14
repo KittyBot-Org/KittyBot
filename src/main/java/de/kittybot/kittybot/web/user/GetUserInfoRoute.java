@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.web.user;
 
 import de.kittybot.kittybot.modules.DashboardSessionModule;
-import de.kittybot.kittybot.modules.WebService;
+import de.kittybot.kittybot.modules.WebModule;
 import de.kittybot.kittybot.objects.module.Modules;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -23,7 +23,7 @@ public class GetUserInfoRoute implements Handler{
 
 	@Override
 	public void handle(@NotNull Context ctx){
-		var userId = this.modules.get(WebService.class).getUserId(ctx);
+		var userId = this.modules.get(WebModule.class).getUserId(ctx);
 		var dashboardSessionModule = this.modules.get(DashboardSessionModule.class);
 		var guilds = dashboardSessionModule.getGuilds(userId);
 		if(guilds == null){
@@ -37,7 +37,7 @@ public class GetUserInfoRoute implements Handler{
 			DataObject.empty().put("id", guild.getIdString()).put("name", guild.getName()).put("icon", guild.getIconUrl())
 		).collect(Collectors.toSet()));
 
-		WebService.ok(ctx, DataObject.empty().put("name", user.getName()).put("id", String.valueOf(userId)).put("icon", user.getEffectiveAvatarUrl()).put("guilds", guildData));
+		WebModule.ok(ctx, DataObject.empty().put("name", user.getName()).put("id", String.valueOf(userId)).put("icon", user.getEffectiveAvatarUrl()).put("guilds", guildData));
 	}
 
 }
