@@ -236,14 +236,14 @@ public class FilterCommand extends Command{
 			super("distortion", "Distortion effect. It can generate some pretty unique audio effects.");
 			addOptions(
 				new CommandOptionFloat("offset", "The offset"),
-				new CommandOptionFloat("sinOffset", "The sinOffset"),
-				new CommandOptionFloat("cosOffset", "The cosOffset"),
-				new CommandOptionFloat("tanOffset", "The tanOffset"),
+				new CommandOptionFloat("sin-offset", "The sinOffset"),
+				new CommandOptionFloat("cos-offset", "The cosOffset"),
+				new CommandOptionFloat("tan-offset", "The tanOffset"),
 
 				new CommandOptionFloat("scale", "The scale"),
-				new CommandOptionFloat("sinScale", "The sinScale"),
-				new CommandOptionFloat("cosScale", "The cosScale"),
-				new CommandOptionFloat("tanScale", "The tanScale")
+				new CommandOptionFloat("sin-scale", "The sinScale"),
+				new CommandOptionFloat("cos-scale", "The cosScale"),
+				new CommandOptionFloat("tan-scale", "The tanScale")
 			);
 		}
 
@@ -257,27 +257,31 @@ public class FilterCommand extends Command{
 			if(options.has("offset")){
 				distortion = distortion.setOffset(options.getFloat("offset"));
 			}
-			if(options.has("sinOffset")){
-				distortion = distortion.setSinOffset(options.getFloat("sinOffset"));
+			if(options.has("sin-offset")){
+				distortion = distortion.setSinOffset(options.getFloat("sin-offset"));
 			}
-			if(options.has("cosOffset")){
-				distortion = distortion.setCosOffset(options.getFloat("cosOffset"));
+			if(options.has("cos-offset")){
+				distortion = distortion.setCosOffset(options.getFloat("cos-offset"));
 			}
-			if(options.has("tanOffset")){
-				distortion = distortion.setTanOffset(options.getFloat("tanOffset"));
+			if(options.has("tan-offset")){
+				distortion = distortion.setTanOffset(options.getFloat("tan-offset"));
 			}
 
 			if(options.has("scale")){
+				System.out.println("scale" + options.getFloat("scale"));
 				distortion = distortion.setScale(options.getFloat("scale"));
 			}
-			if(options.has("sinScale")){
-				distortion = distortion.setSinScale(options.getFloat("sinScale"));
+			if(options.has("sin-scale")){
+				System.out.println("sin-scale" + options.getFloat("sin-scale"));
+				distortion = distortion.setSinScale(options.getFloat("sin-scale"));
 			}
-			if(options.has("cosScale")){
-				distortion = distortion.setCosScale(options.getFloat("cosScale"));
+			if(options.has("cos-scale")){
+				System.out.println("cos-scale" + options.getFloat("cos-scale"));
+				distortion = distortion.setCosScale(options.getFloat("cos-scale"));
 			}
-			if(options.has("tanScale")){
-				distortion = distortion.setTanScale(options.getFloat("tanScale"));
+			if(options.has("tan-scale")){
+				System.out.println("tan-scale" + options.getFloat("tan-scale"));
+				distortion = distortion.setTanScale(options.getFloat("tan-scale"));
 			}
 
 			scheduler.getFilters().setDistortion(distortion).commit();
