@@ -16,7 +16,7 @@ public class CommandOptionInteger extends CommandOption<Integer>{
 			return (int) value;
 		}
 		catch(ClassCastException e){
-			throw new OptionParseException("Failed to parse option as integer");
+			throw new OptionParseException("Failed to parse " + value + " as integer");
 		}
 	}
 

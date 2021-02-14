@@ -2,15 +2,15 @@ package de.kittybot.kittybot.web.user;
 
 import de.kittybot.kittybot.modules.DashboardSessionModule;
 import de.kittybot.kittybot.modules.WebModule;
+import de.kittybot.kittybot.objects.data.GuildData;
 import de.kittybot.kittybot.objects.module.Modules;
-import io.javalin.http.Context;
-import io.javalin.http.Handler;
-import io.javalin.http.InternalServerErrorResponse;
-import io.javalin.http.NotFoundResponse;
+import io.javalin.http.*;
+import net.dv8tion.jda.api.exceptions.HttpException;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class GetUserInfoRoute implements Handler{
@@ -25,7 +25,13 @@ public class GetUserInfoRoute implements Handler{
 	public void handle(@NotNull Context ctx){
 		var userId = this.modules.get(WebModule.class).getUserId(ctx);
 		var dashboardSessionModule = this.modules.get(DashboardSessionModule.class);
-		var guilds = dashboardSessionModule.getGuilds(userId);
+		List<GuildData> guilds;
+		try{
+			guilds = dashboardSessionModule.getGuilds(userId);
+		}
+		catch(HttpException e){
+			throw new UnauthorizedResponse("Please login again");
+		}
 		if(guilds == null){
 			throw new InternalServerErrorResponse("Failed to retrieve user guilds");
 		}

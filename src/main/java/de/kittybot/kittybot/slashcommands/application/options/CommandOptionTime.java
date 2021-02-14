@@ -20,7 +20,7 @@ public class CommandOptionTime extends CommandOption<LocalDateTime>{
 		}
 		catch(ClassCastException ignored){
 		}
-		throw new OptionParseException("Failed to parse option as time");
+		throw new OptionParseException("Failed to parse " + value + " as time");
 	}
 
 }
