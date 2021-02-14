@@ -16,7 +16,7 @@ public class CommandOptionString extends CommandOption<String>{
 			return (String) value;
 		}
 		catch(ClassCastException e){
-			throw new OptionParseException("Failed to parse option as string");
+			throw new OptionParseException("Failed to parse " + value + " as string");
 		}
 	}
 

@@ -13,9 +13,7 @@ import okhttp3.OkHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -30,13 +28,13 @@ public class Modules{
 	private final KittyBot main;
 	private final OkHttpClient httpClient;
 	private final ScheduledExecutorService scheduler;
-	private final List<Module> modules;
+	private final Map<Class<?>, Module> modules;
 
 	public Modules(KittyBot main){
 		this.main = main;
 		this.httpClient = new OkHttpClient();
 		this.scheduler = new ScheduledThreadPoolExecutor(2, new ThreadFactoryHelper());
-		this.modules = new LinkedList<>();
+		this.modules = new LinkedHashMap<>();
 		loadModules();
 	}
 
@@ -61,29 +59,29 @@ public class Modules{
 			while(!queue.isEmpty()){
 				var instance = queue.remove();
 				var dependencies = instance.getDependencies();
-				if(dependencies != null && !dependencies.stream().allMatch(mod -> this.modules.stream().anyMatch(module -> mod == module.getClass()))){
+				if(dependencies != null && !dependencies.stream().allMatch(this.modules::containsKey)){
 					queue.add(instance);
 					LOG.info("Added '{}' back to the queue. Dependencies: {} (Dependency circle jerk incoming!)", instance.getClass().getSimpleName(), dependencies.toString());
 					continue;
 				}
 				instance.onEnable();
-				this.modules.add(instance);
+				this.modules.put(instance.getClass(), instance);
 			}
 		}
 		LOG.info("Finished loading {} modules", this.modules.size());
 	}
 
 	public Object[] getModules(){
-		return this.modules.toArray();
+		return this.modules.values().toArray();
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T extends Module> T get(Class<T> clazz){
-		var module = this.modules.stream().filter(mod -> mod.getClass().equals(clazz)).findFirst();
-		if(module.isEmpty()){
+		var module = this.modules.get(clazz);
+		if(module == null){
 			throw new ModuleNotFoundException(clazz);
 		}
-		return (T) module.get();
+		return (T) module;
 	}
 
 	public JDA getJDA(long guildId){

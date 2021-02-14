@@ -14,7 +14,7 @@ public class InteractionDataOption implements InteractionOptionsHolder{
 	private final List<InteractionDataOption> options;
 
 	public InteractionDataOption(String name, Object value, List<InteractionDataOption> options){
-		this.name = name;
+		this.name = name.toLowerCase();
 		this.value = value;
 		this.options = options;
 	}

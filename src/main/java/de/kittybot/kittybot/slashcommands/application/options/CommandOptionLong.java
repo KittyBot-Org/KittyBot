@@ -16,7 +16,7 @@ public class CommandOptionLong extends CommandOption<Long>{
 			return Long.parseLong((String) value);
 		}
 		catch(ClassCastException | NumberFormatException e){
-			throw new OptionParseException("Failed to parse option as long");
+			throw new OptionParseException("Failed to parse " + value + " as long");
 		}
 	}
 

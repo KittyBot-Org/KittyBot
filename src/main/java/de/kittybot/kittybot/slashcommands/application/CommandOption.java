@@ -18,7 +18,7 @@ public abstract class CommandOption<T> implements CommandOptionsHolder{
 
 	protected CommandOption(CommandOptionType type, String name, String description){
 		this.type = type;
-		this.name = name;
+		this.name = name.toLowerCase();
 		this.description = description;
 		this.isDefault = false;
 		this.isRequired = false;

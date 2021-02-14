@@ -15,7 +15,7 @@ public class CommandOptionBoolean extends CommandOption<Boolean>{
 			return (boolean) value;
 		}
 		catch(ClassCastException e){
-			throw new OptionParseException("Failed to parse as true/false");
+			throw new OptionParseException("Failed to parse " + value + " as true/false");
 		}
 	}
 

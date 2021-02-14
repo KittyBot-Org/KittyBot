@@ -21,7 +21,7 @@ public class CommandOptionUrl extends CommandOption<String>{
 			return url;
 		}
 		catch(ClassCastException | MalformedURLException e){
-			throw new OptionParseException("Failed to parse option as url");
+			throw new OptionParseException("Failed to parse " + value + " as url");
 		}
 	}
 

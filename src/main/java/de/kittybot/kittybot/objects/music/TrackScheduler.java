@@ -197,6 +197,7 @@ public class TrackScheduler extends PlayerEventListenerAdapter{
 
 	public void setVolume(int volume){
 		this.player.getFilters().setVolume((float) volume / 100.0f).commit();
+		this.manager.updateMusicController();
 	}
 
 	public long getControllerMessageId(){
@@ -261,6 +262,7 @@ public class TrackScheduler extends PlayerEventListenerAdapter{
 
 	public void setRepeatMode(RepeatMode repeatMode){
 		this.repeatMode = repeatMode;
+		this.manager.updateMusicController();
 	}
 
 }
