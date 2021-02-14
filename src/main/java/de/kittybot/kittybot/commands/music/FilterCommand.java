@@ -46,14 +46,6 @@ public class FilterCommand extends Command{
 			}
 			var band = options.getInt("band");
 			var multiplier = options.getFloat("multiplier");
-			if(band < 0 || band > 15){
-				ctx.error("The band range goes from 0 to 15");
-				return;
-			}
-			if(multiplier < -0.25 || multiplier > 1.0){
-				ctx.error("The multiplier goes from -0.25 to 1.0");
-				return;
-			}
 			scheduler.getFilters().setBand(band, multiplier).commit();
 			ctx.reply("Set band " + band + " to " + multiplier);
 		}
@@ -149,18 +141,10 @@ public class FilterCommand extends Command{
 			var tremolo = new Tremolo();
 			if(options.has("frequency")){
 				var frequency = options.getFloat("frequency");
-				if(frequency <= 0){
-					ctx.error("The frequency needs to be bigger than 0");
-					return;
-				}
 				tremolo = tremolo.setFrequency(frequency);
 			}
 			if(options.has("depth")){
 				var depth = options.getFloat("depth");
-				if(depth <= 0 || depth > 1){
-					ctx.error("The depth needs to be between 0(excluded) and 1");
-					return;
-				}
 				tremolo = tremolo.setDepth(depth);
 			}
 			scheduler.getFilters().setTremolo(tremolo).commit();
@@ -188,18 +172,10 @@ public class FilterCommand extends Command{
 			var vibrato = new Vibrato();
 			if(options.has("frequency")){
 				var frequency = options.getFloat("frequency");
-				if(frequency <= 0 || frequency >= 14){
-					ctx.error("The frequency needs to be 0(excluded) and 14(excluded)");
-					return;
-				}
 				vibrato = vibrato.setFrequency(frequency);
 			}
 			if(options.has("depth")){
 				var depth = options.getFloat("depth");
-				if(depth <= 0 || depth > 1){
-					ctx.error("The depth needs to be between 0(excluded) and 1");
-					return;
-				}
 				vibrato = vibrato.setDepth(depth);
 			}
 			scheduler.getFilters().setVibrato(vibrato).commit();
@@ -268,19 +244,15 @@ public class FilterCommand extends Command{
 			}
 
 			if(options.has("scale")){
-				System.out.println("scale" + options.getFloat("scale"));
 				distortion = distortion.setScale(options.getFloat("scale"));
 			}
 			if(options.has("sin-scale")){
-				System.out.println("sin-scale" + options.getFloat("sin-scale"));
 				distortion = distortion.setSinScale(options.getFloat("sin-scale"));
 			}
 			if(options.has("cos-scale")){
-				System.out.println("cos-scale" + options.getFloat("cos-scale"));
 				distortion = distortion.setCosScale(options.getFloat("cos-scale"));
 			}
 			if(options.has("tan-scale")){
-				System.out.println("tan-scale" + options.getFloat("tan-scale"));
 				distortion = distortion.setTanScale(options.getFloat("tan-scale"));
 			}
 
