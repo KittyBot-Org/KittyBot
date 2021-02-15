@@ -23,6 +23,10 @@ import de.kittybot.kittybot.web.login.DeleteLoginRoute;
 import de.kittybot.kittybot.web.login.PostLoginRoute;
 import de.kittybot.kittybot.web.shards.GetShardsRoute;
 import de.kittybot.kittybot.web.user.GetUserInfoRoute;
+import de.kittybot.kittybot.web.webhooks.botlist.space.PostBotlistSpaceVoteRoute;
+import de.kittybot.kittybot.web.webhooks.botsfordiscord.com.PostBotsfordiscordComVoteRoute;
+import de.kittybot.kittybot.web.webhooks.discord.boats.PostDiscordBoatsVoteRoute;
+import de.kittybot.kittybot.web.webhooks.top.gg.PostTopGGVoteRoute;
 import io.javalin.Javalin;
 import io.javalin.http.*;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -55,6 +59,14 @@ public class WebModule extends Module{
 
 	public static void ok(Context ctx, DataObject data){
 		result(ctx, 200, data);
+	}
+
+	public static boolean verify(Context ctx, String token){
+		var header = ctx.header("Authorization");
+		if(header == null){
+			return false;
+		}
+		return header.equals(token);
 	}
 
 	@Override
@@ -93,6 +105,20 @@ public class WebModule extends Module{
 			path("/user/me", () -> {
 				before("/*", this::checkDiscordLogin);
 				get(new GetUserInfoRoute(this.modules));
+			});
+			path("/webhooks", () -> {
+				path("/top_gg", () ->
+					post(new PostTopGGVoteRoute(this.modules))
+				);
+				path("/botlist_space", () ->
+					post(new PostBotlistSpaceVoteRoute(this.modules))
+				);
+				path("/discord_boats", () ->
+					post(new PostDiscordBoatsVoteRoute(this.modules))
+				);
+				path("/botsfordiscord_com", () ->
+					post(new PostBotsfordiscordComVoteRoute(this.modules))
+				);
 			});
 			path("/guilds", () -> {
 				before("/*", this::checkDiscordLogin);
