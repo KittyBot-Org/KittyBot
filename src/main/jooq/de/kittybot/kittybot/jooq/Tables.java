@@ -22,6 +22,7 @@ import de.kittybot.kittybot.jooq.tables.SnipeDisabledChannels;
 import de.kittybot.kittybot.jooq.tables.StreamUserEvents;
 import de.kittybot.kittybot.jooq.tables.StreamUsers;
 import de.kittybot.kittybot.jooq.tables.UserStatistics;
+import de.kittybot.kittybot.jooq.tables.Voters;
 
 
 /**
@@ -119,4 +120,9 @@ public class Tables {
      * The table <code>public.user_statistics</code>.
      */
     public static final UserStatistics USER_STATISTICS = UserStatistics.USER_STATISTICS;
+
+    /**
+     * The table <code>public.voters</code>.
+     */
+    public static final Voters VOTERS = Voters.VOTERS;
 }

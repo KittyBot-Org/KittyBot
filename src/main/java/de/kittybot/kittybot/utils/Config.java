@@ -17,7 +17,6 @@ public class Config{
 	public static long BOT_ID;
 	public static String BOT_SECRET;
 	public static Set<Long> DEV_IDS;
-	public static Long TEST_GUILD;
 
 	public static int BACKEND_PORT;
 	public static String BACKEND_HOST;
@@ -28,7 +27,8 @@ public class Config{
 	public static String REDIRECT_URL;
 
 	public static String LOG_WEBHOOK_URL;
-
+	public static long SUPPORT_GUILD_ID;
+	public static long VOTER_ROLE_ID;
 	public static String SUPPORT_GUILD_INVITE_URL;
 	public static String BOT_INVITE_URL;
 
@@ -83,7 +83,6 @@ public class Config{
 				DEV_IDS.add(val.getLong(i, -1));
 			}
 		}
-		TEST_GUILD = json.getLong("test_guild", -1);
 
 		BACKEND_PORT = json.getInt("backend_port", -1);
 		BACKEND_HOST = json.getString("backend_host", "0.0.0.0");
@@ -95,6 +94,8 @@ public class Config{
 
 		LOG_WEBHOOK_URL = json.getString("log_webhook_url", "");
 
+		SUPPORT_GUILD_ID = json.getLong("support_guild_id", -1);
+		VOTER_ROLE_ID = json.getLong("voter_role_id", -1);
 		SUPPORT_GUILD_INVITE_URL = json.getString("support_guild_invite_url", "");
 		BOT_INVITE_URL = json.getString("bot_invite_url", "");
 
