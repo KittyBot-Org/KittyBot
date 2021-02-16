@@ -49,6 +49,10 @@ public class TagsCommand extends Command{
 		@Override
 		public void run(Options options, CommandContext ctx){
 			var tagName = options.getString("name");
+			if(tagName.length() > 64){
+				ctx.error("Tag names must be 64 or less characters");
+				return;
+			}
 			if(!options.has("content") && !options.has("message-id")){
 				ctx.reply("Please provide either content or message-id");
 				return;
@@ -58,12 +62,12 @@ public class TagsCommand extends Command{
 				content = options.getString("content");
 			}
 			else{
-				var message = ctx.get(MessageModule.class).getMessageById(options.getLong("message-id"));
+				var message = ctx.getChannel().retrieveMessageById(options.getLong("message-id")).complete();
 				if(message == null){
 					ctx.error("Please provide a recent message id");
 					return;
 				}
-				content = message.getContent();
+				content = message.getContentRaw();
 			}
 
 			var created = ctx.get(TagsModule.class).create(tagName, content, ctx.getGuildId(), ctx.getUserId());
