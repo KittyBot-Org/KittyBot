@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class VoteModule extends Module{
 
 	@Override
-	protected void onEnable(){
+	public void onEnable(){
 		this.modules.scheduleAtFixedRate(this::checkVoters, 0, 30, TimeUnit.MINUTES);
 	}
 

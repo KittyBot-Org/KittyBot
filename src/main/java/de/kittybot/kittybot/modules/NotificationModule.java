@@ -26,6 +26,7 @@ public class NotificationModule extends Module{
 	public void onEnable(){
 		this.notifications = new HashMap<>();
 		this.modules.scheduleAtFixedRate(this::update, 0, 30, TimeUnit.MINUTES);
+		this.modules.scheduleAtFixedRate(this::scheduleNext, 0, 5, TimeUnit.MINUTES);
 	}
 
 	private void update(){
@@ -38,11 +39,6 @@ public class NotificationModule extends Module{
 				Collectors.toMap(NotificationsRecord::getId, Notification::new)
 			);
 		}
-	}
-
-	@Override
-	public void onReady(@NotNull ReadyEvent event){
-		this.modules.scheduleAtFixedRate(this::scheduleNext, 0, 5, TimeUnit.MINUTES);
 	}
 
 	private void scheduleNext(){
