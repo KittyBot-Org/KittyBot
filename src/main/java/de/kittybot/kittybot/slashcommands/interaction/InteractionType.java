@@ -1,7 +1,5 @@
 package de.kittybot.kittybot.slashcommands.interaction;
 
-import java.util.Arrays;
-
 public enum InteractionType{
 
 	PING(1),
