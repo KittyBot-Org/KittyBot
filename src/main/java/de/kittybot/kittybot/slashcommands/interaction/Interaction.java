@@ -52,7 +52,7 @@ public class Interaction{
 
 		var guildId = json.getLong("guild_id");
 		var guild = modules.getGuildById(guildId);
-		var entityBuilder = new EntityBuilder(modules.getJDA(guildId));
+		var entityBuilder = ((JDAImpl) modules.getJDA(guildId)).getEntityBuilder();
 		return new Interaction(
 			json.getLong("id"),
 			InteractionType.get(json.getInt("type")),
