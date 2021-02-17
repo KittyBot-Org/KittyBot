@@ -26,6 +26,7 @@ import de.kittybot.kittybot.web.user.GetUserInfoRoute;
 import de.kittybot.kittybot.web.webhooks.botlist.space.PostBotlistSpaceVoteRoute;
 import de.kittybot.kittybot.web.webhooks.botsfordiscord.com.PostBotsfordiscordComVoteRoute;
 import de.kittybot.kittybot.web.webhooks.discord.boats.PostDiscordBoatsVoteRoute;
+import de.kittybot.kittybot.web.webhooks.discordbotlist.com.PostDiscordBotListComVoteRoute;
 import de.kittybot.kittybot.web.webhooks.top.gg.PostTopGGVoteRoute;
 import io.javalin.Javalin;
 import io.javalin.http.*;
