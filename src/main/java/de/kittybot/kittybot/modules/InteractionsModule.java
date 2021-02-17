@@ -47,6 +47,11 @@ public class InteractionsModule extends Module{
 			var start = System.currentTimeMillis();
 
 			var interaction = Interaction.fromJSON(this.modules, event.getPayload(), event.getJDA());
+			if(interaction.getGuild() == null){
+				reply(interaction, true).content("I currently don't support running slash commands in dms. Surruwu").queue();
+				return;
+			}
+
 			var settings = this.modules.get(SettingsModule.class).getSettings(interaction.getGuild().getIdLong());
 
 			if(settings.isBotIgnoredUser(interaction.getMember().getIdLong())){

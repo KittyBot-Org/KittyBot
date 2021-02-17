@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.utils.data.DataObject;
-import net.dv8tion.jda.internal.entities.EntityBuilder;
+import net.dv8tion.jda.internal.JDAImpl;
 import net.dv8tion.jda.internal.entities.GuildImpl;
 
 public class Interaction{
@@ -34,9 +34,24 @@ public class Interaction{
 	}
 
 	public static Interaction fromJSON(Modules modules, DataObject json, JDA jda){
+		if(!json.hasKey("guild_id")){
+			return new Interaction(
+				json.getLong("id"),
+				InteractionType.get(json.getInt("type")),
+				InteractionData.fromJSON(json.getObject("data")),
+				null,
+				json.getLong("channel_id"),
+				null,
+				json.getString("token"),
+				json.getInt("version"),
+				modules,
+				jda
+			);
+		}
+
 		var guildId = json.getLong("guild_id");
 		var guild = modules.getGuildById(guildId);
-		var entityBuilder = new EntityBuilder(modules.getJDA(guildId));
+		var entityBuilder = ((JDAImpl) modules.getJDA(guildId)).getEntityBuilder();
 		return new Interaction(
 			json.getLong("id"),
 			InteractionType.get(json.getInt("type")),
