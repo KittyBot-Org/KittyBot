@@ -113,7 +113,7 @@ public class Config{
 		DISCORD_BOATS_TOKEN = json.getString("discord_boats_token", "");
 		BOTLIST_SPACE_TOKEN = json.getString("botlist_space_token", "");
 		BOTS_FOR_DISCORD_TOKEN = json.getString("bots_for_discord_token", "");
-		BOTS_FOR_DISCORD_TOKEN = json.getString("discord_services_token", "");
+		DISCORD_SERVICES_TOKEN = json.getString("discord_services_token", "");
 
 		DB_HOST = json.getString("db_host", "");
 		DB_PORT = json.getString("db_port", "");
