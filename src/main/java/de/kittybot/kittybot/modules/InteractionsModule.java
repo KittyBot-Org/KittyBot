@@ -1,7 +1,6 @@
 package de.kittybot.kittybot.modules;
 
 import club.minnced.discord.webhook.receive.ReadonlyMessage;
-import de.kittybot.kittybot.objects.exceptions.OptionParseException;
 import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionsHolder;
 import de.kittybot.kittybot.slashcommands.application.PermissionHolder;
@@ -48,6 +47,11 @@ public class InteractionsModule extends Module{
 			var start = System.currentTimeMillis();
 
 			var interaction = Interaction.fromJSON(this.modules, event.getPayload(), event.getJDA());
+			if(interaction.getGuild() == null){
+				reply(interaction, true).content("I currently don't support running slash commands in dms. Surruwu").queue();
+				return;
+			}
+
 			var settings = this.modules.get(SettingsModule.class).getSettings(interaction.getGuild().getIdLong());
 
 			if(settings.isBotIgnoredUser(interaction.getMember().getIdLong())){

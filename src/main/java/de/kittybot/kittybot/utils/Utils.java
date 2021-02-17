@@ -28,7 +28,7 @@ public class Utils{
 	}
 
 	public static <T> CompletableFuture<List<T>> all(List<CompletableFuture<T>> futures){
-		CompletableFuture[] cfs = futures.toArray(new CompletableFuture[futures.size()]);
+		CompletableFuture<?>[] cfs = futures.toArray(new CompletableFuture<?>[]{});
 
 		return CompletableFuture.allOf(cfs)
 			.thenApply(ignored -> futures.stream()

@@ -31,15 +31,15 @@ public class KickCommand extends Command implements RunnableCommand{
 		}
 		var userId = options.getLong("user");
 		ctx.getGuild().retrieveMemberById(userId).queue(member -> {
-			if(!ctx.getSelfMember().canInteract(member)){
-				ctx.error("I can't interact with this member");
-				return;
-			}
-			var reason = options.getOrDefault("reason", "Kicked by " + ctx.getMember().getAsMention());
-			ctx.getGuild().kick(member, reason).reason(reason).queue(success ->
-					ctx.reply("Kicked `" + MarkdownSanitizer.escape(member.getUser().getAsTag()) + "` with reason: " + reason),
-				error -> ctx.error("Failed to kick " + MessageUtils.getUserMention(userId) + " for reason: `" + error.getMessage() + "`")
-			);
+				if(!ctx.getSelfMember().canInteract(member)){
+					ctx.error("I can't interact with this member");
+					return;
+				}
+				var reason = options.getOrDefault("reason", "Kicked by " + ctx.getMember().getAsMention());
+				ctx.getGuild().kick(member, reason).reason(reason).queue(success ->
+						ctx.reply("Kicked `" + MarkdownSanitizer.escape(member.getUser().getAsTag()) + "` with reason: " + reason),
+					error -> ctx.error("Failed to kick " + MessageUtils.getUserMention(userId) + " for reason: `" + error.getMessage() + "`")
+				);
 			}, error -> ctx.error("I could not find the provided user")
 		);
 	}
