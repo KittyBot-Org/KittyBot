@@ -14,7 +14,7 @@ public class StealEmoteCommand extends Command{
 	private static final int MAX_EMOTE_SIZE = 256000;
 
 	public StealEmoteCommand(){
-		super("stealemote", "Gets the avatar of a user", Category.UTILITIES);
+		super("stealemote", "Steal an emote to your server", Category.UTILITIES);
 		addOptions(
 			new EmoteCommand(),
 			new EmoteIdCommand(),
