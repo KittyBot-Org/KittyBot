@@ -1,22 +1,26 @@
 package de.kittybot.kittybot.modules;
 
-import static de.kittybot.kittybot.jooq.Tables.*;
-
 import de.kittybot.kittybot.objects.enums.BotList;
 import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
+import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
+import org.jetbrains.annotations.NotNull;
 import org.jooq.types.YearToSecond;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
+import static de.kittybot.kittybot.jooq.Tables.VOTERS;
+
 public class VoteModule extends Module{
 
 	@Override
-	public void onEnable(){
-		this.modules.scheduleAtFixedRate(this::checkVoters, 0, 30, TimeUnit.MINUTES);
+	public void onGuildReady(@NotNull GuildReadyEvent event){
+		if(event.getGuild().getIdLong() == Config.SUPPORT_GUILD_ID){
+			this.modules.scheduleAtFixedRate(this::checkVoters, 0, 30, TimeUnit.MINUTES);
+		}
 	}
 
 	private void checkVoters(){
