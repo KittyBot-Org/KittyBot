@@ -14,7 +14,13 @@ public enum InteractionType{
 	}
 
 	public static InteractionType get(int type){
-		return Arrays.stream(values()).filter(t -> t.getType() == type).findFirst().orElse(null);
+		if(type == 1){
+			return PING;
+		}
+		else if(type == 2){
+			return APPLICATION_COMMAND;
+		}
+		throw new IllegalArgumentException("Unknown InteractionType: " + type + " provided");
 	}
 
 	public int getType(){
