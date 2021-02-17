@@ -28,7 +28,6 @@ public class JoinModule extends Module{
 	private static final Logger LOG = LoggerFactory.getLogger(MessageUtils.class);
 	private static final String INVITE_CODE_PREFIX = "https://discord.gg/";
 	private static final Set<Class<? extends Module>> DEPENDENCIES = Set.of(InviteModule.class);
-	private static final List<String> oldCommands = List.of(".play", ".guildbanner", ".kiss", ".translate", ".blush", ".lick", ".hastebin", ".commands", ".dashboard", ".info", ".settings", ".pat", ".test", ".history", ".poke", ".pause", ".unassign", ".volume", ".feed", ".guildicon", ".eval", ".stop", ".restrictemote", ".tickle", ".fluff", ".downloademotes", ".senko", ".editsnipe", ".steal", ".ping", ".roles", ".privacy", ".skip", ".seek", ".bite", ".cuddle", ".forward", ".neko", ".avatar", ".snipe", ".uptime", ".kitsune", ".help", ".rewind", ".hug", ".shuffle", ".slap", ".queue", ".assign");
 
 	private List<String> randomJoinMessages;
 	private List<String> randomLeaveMessages;
@@ -46,19 +45,19 @@ public class JoinModule extends Module{
 
 	@Override
 	public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event){
-		var msg = event.getMessage().getContentRaw();
+		var msg = event.getMessage().getContentRaw().toLowerCase();
 		if(event.getAuthor().isBot()){
 			return;
 		}
 		if(!event.getChannel().canTalk()){
 			return;
 		}
-		if(oldCommands.stream().anyMatch(msg::startsWith) || msg.contains("<@" + Config.BOT_ID + ">") || msg.contains("<@!" + Config.BOT_ID + ">")){
+		if((msg.contains("<@" + Config.BOT_ID + ">") || msg.contains("<@!" + Config.BOT_ID + ">")) && msg.contains("help")){
 			event.getChannel().sendMessage(new EmbedBuilder()
 				.setColor(Colors.KITTYBOT_BLUE)
 				.setAuthor("KittyBot Slash Commands Update", event.getJDA().getSelfUser().getEffectiveAvatarUrl(), Config.ORIGIN_URL)
 				.setDescription("KittyBot now uses the new slash commands.\n" +
-					"To use them invite me again **(you don't need to kick me)** over this specific " + MessageUtils.maskLink("link", Config.BOT_INVITE_URL) + " and type `/` in the chat box.\n"
+					"To use them invite me again **(you don't need to kick me)** over this specific " + MessageUtils.maskLink("link", Config.BOT_INVITE_URL) + " and type `/` in the chat box."
 				)
 				.setFooter(event.getMember().getEffectiveName(), event.getAuthor().getEffectiveAvatarUrl())
 				.setTimestamp(Instant.now())
