@@ -107,7 +107,7 @@ public class DevCommand extends Command{
 				ctx.getModules().schedule(() -> {
 					var commandsModule = ctx.get(CommandsModule.class);
 					commandsModule.deleteAllCommands(-1L);
-					ctx.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setColor(Colors.KITTYBOT_BLUE).setDescription("emoved slash commands globally").build()).build());
+					ctx.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setColor(Colors.KITTYBOT_BLUE).setDescription("Removed slash commands globally").build()).build());
 				}, 0, TimeUnit.SECONDS);
 				return;
 			}
@@ -120,7 +120,7 @@ public class DevCommand extends Command{
 			ctx.getModules().schedule(() -> {
 				var commandsModule = ctx.get(CommandsModule.class);
 				commandsModule.deleteAllCommands(guildId);
-				ctx.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setColor(Colors.KITTYBOT_BLUE).setDescription("Omitted slash commands for guild `" + guildId + "`").build()).build());
+				ctx.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setColor(Colors.KITTYBOT_BLUE).setDescription("Removed slash commands for guild `" + guildId + "`").build()).build());
 			}, 0, TimeUnit.SECONDS);
 		}
 
