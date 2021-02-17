@@ -22,7 +22,7 @@ public class CommandOptionEmote extends CommandOption<String>{
 		}
 		catch(ClassCastException | NumberFormatException ignored){
 		}
-		throw new OptionParseException("Failed to parse option as emote");
+		throw new OptionParseException("Failed to parse " + value + " as emote");
 	}
 
 }

@@ -33,11 +33,11 @@ dependencies {
     implementation 'club.minnced:discord-webhooks:0.5.4'
 
     // audio
-    implementation("com.github.KittyBot-Org:Lavalink-Client:f7369d5") {
+    implementation("com.github.KittyBot-Org:Lavalink-Client:94660b3") {
         exclude group: 'com.sedmelluq', module: 'lavaplayer'
     }
-    implementation 'com.sedmelluq:lavaplayer:1.3.69'
-    implementation 'se.michaelthelin.spotify:spotify-web-api-java:6.3.0'
+    implementation 'com.sedmelluq:lavaplayer:1.3.71'
+    implementation 'se.michaelthelin.spotify:spotify-web-api-java:6.5.1'
 
     // database
     implementation 'com.zaxxer:HikariCP:4.0.2'

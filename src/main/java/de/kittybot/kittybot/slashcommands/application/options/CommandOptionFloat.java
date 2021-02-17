@@ -16,7 +16,7 @@ public class CommandOptionFloat extends CommandOption<Float>{
 			return Float.parseFloat((String) value);
 		}
 		catch(ClassCastException | NumberFormatException e){
-			throw new OptionParseException("Failed to parse option as float");
+			throw new OptionParseException("Failed to parse " + value + " as float");
 		}
 	}
 

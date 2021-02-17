@@ -35,11 +35,10 @@ public class KickCommand extends Command implements RunnableCommand{
 					ctx.error("I can't interact with this member");
 					return;
 				}
-				var reason = options.has("reason") ? options.getString("reason") : "Banned by " + ctx.getMember().getAsMention();
-				var delDays = options.has("del-days") ? options.getInt("del-days") : 0;
+				var reason = options.getOrDefault("reason", "Kicked by " + ctx.getMember().getAsMention());
 				ctx.getGuild().kick(member, reason).reason(reason).queue(success ->
-						ctx.reply("Kicked `" + MarkdownSanitizer.escape(member.getUser().getAsTag()) + "` with reason: " + reason + " and deleted messages of the last " + delDays + " days"),
-					error -> ctx.error("Failed to ban " + MessageUtils.getUserMention(userId) + " for reason: `" + error.getMessage() + "`")
+						ctx.reply("Kicked `" + MarkdownSanitizer.escape(member.getUser().getAsTag()) + "` with reason: " + reason),
+					error -> ctx.error("Failed to kick " + MessageUtils.getUserMention(userId) + " for reason: `" + error.getMessage() + "`")
 				);
 			}, error -> ctx.error("I could not find the provided user")
 		);

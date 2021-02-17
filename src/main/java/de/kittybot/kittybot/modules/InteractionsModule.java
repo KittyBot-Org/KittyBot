@@ -1,8 +1,6 @@
 package de.kittybot.kittybot.modules;
 
 import club.minnced.discord.webhook.receive.ReadonlyMessage;
-import de.kittybot.kittybot.objects.exceptions.MissingOptionException;
-import de.kittybot.kittybot.objects.exceptions.OptionParseException;
 import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionsHolder;
 import de.kittybot.kittybot.slashcommands.application.PermissionHolder;
@@ -51,7 +49,10 @@ public class InteractionsModule extends Module{
 			var start = System.currentTimeMillis();
 
 			var interaction = Interaction.fromJSON(this.modules, event.getPayload(), event.getJDA());
-
+			if(interaction.getGuild() == null){
+				reply(interaction, true).content("I currently don't support running slash commands in dms. Surruwu").queue();
+				return;
+			}
 			this.modules.get(StatsModule.class).incrementStat(interaction.getGuild().getIdLong(), interaction.getMember().getIdLong(), USER_STATISTICS.BOT_CALLS, 1);
 
 			var settings = this.modules.get(SettingsModule.class).getSettings(interaction.getGuild().getIdLong());
@@ -100,7 +101,7 @@ public class InteractionsModule extends Module{
 			try{
 				((RunnableCommand) applicationHolder).run(new Options(applicationHolder.getOptions(), holder.getOptions()), new CommandContext(interaction, this.modules));
 			}
-			catch(OptionParseException | MissingOptionException e){
+			catch(Exception e){
 				reply(interaction).ephemeral().content(e.getMessage()).type(InteractionResponseType.ACKNOWLEDGE).queue();
 			}
 			return;

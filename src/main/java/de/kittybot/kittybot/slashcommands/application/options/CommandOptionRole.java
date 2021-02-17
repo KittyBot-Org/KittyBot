@@ -13,10 +13,10 @@ public class CommandOptionRole extends CommandOption<Long>{
 	@Override
 	public Long parseValue(Object value){
 		try{
-			return Long.parseLong((String) value);
+			return value instanceof Long ? (Long) value : Long.parseLong((String) value);
 		}
 		catch(ClassCastException | NumberFormatException e){
-			throw new OptionParseException("Failed to parse option as role");
+			throw new OptionParseException("Failed to parse " + value + " as role");
 		}
 	}
 
