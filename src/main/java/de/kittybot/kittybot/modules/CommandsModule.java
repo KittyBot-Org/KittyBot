@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,14 @@ public class CommandsModule extends Module{
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommandsModule.class);
 	private static final String COMMANDS_PACKAGE = "de.kittybot.kittybot.commands";
+	private static final Set<Class<? extends Module>> DEPENDENCIES = Set.of(RequestModule.class);
+
 	private Map<String, Command> commands;
+
+	@Override
+	public Set<Class<? extends Module>> getDependencies(){
+		return DEPENDENCIES;
+	}
 
 	@Override
 	public void onEnable(){
@@ -85,6 +93,9 @@ public class CommandsModule extends Module{
 		}
 		catch(IOException e){
 			LOG.error("Error while processing registerCommands", e);
+		}
+		if(guildId == -1L && !Config.DISCORD_SERVICES_TOKEN.isBlank()){
+			this.modules.get(RequestModule.class).uploadCommands(this.commands);
 		}
 		LOG.info("Registered " + this.commands.size() + " commands...");
 	}

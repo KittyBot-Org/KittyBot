@@ -30,6 +30,8 @@
     "discord_boats_token": "",
     "botlist_space": "",
     "bots_for_discord_token": "",
+    "discordbotlist_token": "",
+    "discord_services_token": "",
     
     "db_host": "",
     "db_port": "",
