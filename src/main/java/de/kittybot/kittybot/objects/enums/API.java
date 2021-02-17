@@ -12,6 +12,7 @@ public enum API{
 	BOTS_FOR_DISCORD("botsfordiscord.com", "https://botsfordiscord.com/api/bot/%s", "server_count"),
 	BOTLIST_SPACE("botlist.space", "https://botsfordiscord.com/api/bot/%s", "server_count"),
 	DISCORDBOTLIST_COM("discordbotlist.com", "https://discordbotlist.com/api/v1/bots/%s/stats", "guilds"),
+	DISCORDSERVICES_COM("discordservices.com", "https://api.discordservices.net/bot/%s/stats", "servers"),
 
 	// other
 	PURR_BOT("purr bot", "https://purrbot.site/api/img/%s/%s/%s"),

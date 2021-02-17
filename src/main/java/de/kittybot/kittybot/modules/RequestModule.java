@@ -3,6 +3,7 @@ package de.kittybot.kittybot.modules;
 import de.kittybot.kittybot.objects.enums.API;
 import de.kittybot.kittybot.objects.enums.Language;
 import de.kittybot.kittybot.objects.module.Module;
+import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.utils.Config;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
@@ -14,8 +15,10 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class RequestModule extends Module{
 
@@ -158,6 +161,23 @@ public class RequestModule extends Module{
 	public void retrieveUrlContent(String url, BiConsumer<Call, Response> success, BiConsumer<Call, Response> error){
 		this.requestBuilder.url(url).get();
 		executeAsync(this.requestBuilder.build(), success, error);
+	}
+
+	public void uploadCommands(Map<String, Command> commands){
+		var json = DataArray.fromCollection(commands.values().stream().map(Command::toDiscordServicesJSON).collect(Collectors.toList()));
+
+		this.requestBuilder.url("https://api.discordservices.net/bot/" + Config.BOT_ID + "/commands");
+		this.requestBuilder.post(RequestBody.create(json.toJson(), MediaType.parse("application/json")));
+		this.requestBuilder.header("Authorization", Config.DISCORDSERVICES_TOKEN);
+		executeAsync(this.requestBuilder.build(), (call, response) -> {}, (call, response) -> {
+			var body = response.body();
+			try{
+				LOG.error("Uploading commands to discordservices failed. Body: {}", body == null ? "null" : body.string());
+			}
+			catch(IOException e){
+				LOG.error("Uploading commands to discordservices failed", e);
+			}
+		});
 	}
 
 }

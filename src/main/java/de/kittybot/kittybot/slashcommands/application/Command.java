@@ -82,6 +82,13 @@ public abstract class Command implements CommandOptionsHolder, PermissionHolder{
 		return json;
 	}
 
+	public DataObject toDiscordServicesJSON(){
+		return DataObject.empty()
+			.put("command", "/" + this.name)
+			.put("desc", this.description)
+			.put("category", this.category.getName());
+	}
+
 	private DataArray getPermissionArray(){
 		return DataArray.fromCollection(
 			this.permissions.stream().map(Permission::getName).collect(Collectors.toList())
