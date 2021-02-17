@@ -94,7 +94,7 @@ public class CommandsModule extends Module{
 		catch(IOException e){
 			LOG.error("Error while processing registerCommands", e);
 		}
-		if(guildId == -1L && !Config.DISCORDSERVICES_TOKEN.isBlank()){
+		if(guildId == -1L && !Config.DISCORD_SERVICES_TOKEN.isBlank()){
 			this.modules.get(RequestModule.class).uploadCommands(this.commands);
 		}
 		LOG.info("Registered " + this.commands.size() + " commands...");

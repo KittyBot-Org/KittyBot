@@ -168,7 +168,7 @@ public class RequestModule extends Module{
 
 		this.requestBuilder.url("https://api.discordservices.net/bot/" + Config.BOT_ID + "/commands");
 		this.requestBuilder.post(RequestBody.create(json.toJson(), MediaType.parse("application/json")));
-		this.requestBuilder.header("Authorization", Config.DISCORDSERVICES_TOKEN);
+		this.requestBuilder.header("Authorization", Config.DISCORD_SERVICES_TOKEN);
 		executeAsync(this.requestBuilder.build(), (call, response) -> {}, (call, response) -> {
 			var body = response.body();
 			try{
