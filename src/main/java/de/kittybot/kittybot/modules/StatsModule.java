@@ -1,6 +1,5 @@
 package de.kittybot.kittybot.modules;
 
-import de.kittybot.kittybot.jooq.Keys;
 import de.kittybot.kittybot.objects.data.Statistics;
 import de.kittybot.kittybot.objects.data.VoiceMember;
 import de.kittybot.kittybot.objects.enums.StatisticType;
@@ -46,6 +45,18 @@ public class StatsModule extends Module{
 		this.voiceMembers.forEach((userId, voiceMember) -> incrementStat(voiceMember.getGuildId(), userId, USER_STATISTICS.VOICE_TIME, voiceMember.getVoiceTime()));
 	}
 
+	public <T extends Number> void incrementStat(long guildId, long userId, Field<T> field, T value){
+		this.modules.get(DatabaseModule.class).getCtx()
+			.insertInto(USER_STATISTICS)
+			.columns(USER_STATISTICS.GUILD_ID, USER_STATISTICS.USER_ID, field)
+			.values(guildId, userId, value)
+			.onConflict(USER_STATISTICS.GUILD_ID, USER_STATISTICS.USER_ID)
+			.doUpdate()
+			.set(field, field.add(value))
+			.where(USER_STATISTICS.GUILD_ID.eq(guildId).and(USER_STATISTICS.USER_ID.eq(userId)))
+			.execute();
+	}
+
 	@Override
 	public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event){
 		var stats = new HashMap<Field<? extends Number>, Number>();
@@ -65,11 +76,6 @@ public class StatsModule extends Module{
 	}
 
 	@Override
-	public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event){
-		updateVoiceStat(event, event.getMember());
-	}
-
-	@Override
 	public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent event){
 		var afkChannel = event.getGuild().getAfkChannel();
 		if(afkChannel == null){
@@ -82,6 +88,11 @@ public class StatsModule extends Module{
 		this.voiceMembers.putIfAbsent(event.getMember().getIdLong(), new VoiceMember(event.getGuild().getIdLong()));
 	}
 
+	@Override
+	public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event){
+		updateVoiceStat(event, event.getMember());
+	}
+
 	private void updateVoiceStat(GenericGuildEvent event, Member member){
 		var voiceMember = this.voiceMembers.remove(member.getIdLong());
 		if(voiceMember == null){
@@ -90,24 +101,8 @@ public class StatsModule extends Module{
 		incrementStat(event, member, USER_STATISTICS.VOICE_TIME, voiceMember.getVoiceTime());
 	}
 
-	public <T extends Number> void incrementStat(GenericGuildEvent event, User user, Field<T> field, T value){
-		incrementStat(event.getGuild().getIdLong(), user.getIdLong(), field, value);
-	}
-
 	public <T extends Number> void incrementStat(GenericGuildEvent event, Member member, Field<T> field, T value){
 		incrementStat(event.getGuild().getIdLong(), member.getIdLong(), field, value);
-	}
-
-	public <T extends Number> void incrementStat(long guildId, long userId, Field<T> field, T value){
-		this.modules.get(DatabaseModule.class).getCtx()
-			.insertInto(USER_STATISTICS)
-			.columns(USER_STATISTICS.GUILD_ID, USER_STATISTICS.USER_ID, field)
-			.values(guildId, userId, value)
-			.onConflict(USER_STATISTICS.GUILD_ID, USER_STATISTICS.USER_ID)
-			.doUpdate()
-			.set(field, field.add(value))
-			.where(USER_STATISTICS.GUILD_ID.eq(guildId).and(USER_STATISTICS.USER_ID.eq(userId)))
-			.execute();
 	}
 
 	public void incrementStats(long guildId, long userId, Map<Field<? extends Number>, Number> values){
@@ -123,6 +118,10 @@ public class StatsModule extends Module{
 			.set(values.entrySet().stream().map(entry -> Map.entry(entry.getKey(), entry.getKey().add(entry.getValue()))).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
 			.where(USER_STATISTICS.GUILD_ID.eq(guildId).and(USER_STATISTICS.USER_ID.eq(userId)))
 			.execute();
+	}
+
+	public <T extends Number> void incrementStat(GenericGuildEvent event, User user, Field<T> field, T value){
+		incrementStat(event.getGuild().getIdLong(), user.getIdLong(), field, value);
 	}
 
 	public List<Statistics> get(long guildId, StatisticType type, SortOrder sortOrder, int limit){

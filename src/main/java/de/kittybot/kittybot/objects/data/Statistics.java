@@ -36,18 +36,6 @@ public class Statistics{
 		return this.xp;
 	}
 
-	public long getRestXp(){
-		return this.xp - getRequiredXp(getLevel());
-	}
-
-	public long getRequiredXp(int level){
-		return (long) level * level * 100;
-	}
-
-	public int getLevel(){
-		return (int) Math.sqrt(this.xp) / 10;
-	}
-
 	public int getBotCalls(){
 		return this.botCalls;
 	}
@@ -85,6 +73,18 @@ public class Statistics{
 			default:
 				return "undefined stat type";
 		}
+	}
+
+	public int getLevel(){
+		return (int) Math.sqrt(this.xp) / 10;
+	}
+
+	public long getRestXp(){
+		return this.xp - getRequiredXp(getLevel());
+	}
+
+	public long getRequiredXp(int level){
+		return (long) level * level * 100;
 	}
 
 }
