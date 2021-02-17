@@ -119,6 +119,9 @@ public class WebModule extends Module{
 				path("/botsfordiscord_com", () ->
 					post(new PostBotsfordiscordComVoteRoute(this.modules))
 				);
+				path("/discordbotlist_com", () ->
+					post(new PostDiscordBotListComVoteRoute(this.modules))
+				);
 			});
 			path("/guilds", () -> {
 				before("/*", this::checkDiscordLogin);
