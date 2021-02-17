@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.commands.dev;
 
 import de.kittybot.kittybot.modules.CommandsModule;
+import de.kittybot.kittybot.objects.enums.Environment;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
@@ -84,12 +85,12 @@ public class DevCommand extends Command{
 		public RemoveCommand(){
 			super("remove", "Removes slash commands from a specified environment");
 			addOptions(
-				new CommandOptionInteger("environment", "In which environment should the commands get omitted").required()
+				new CommandOptionInteger("environment", "In which environment should the commands get removed").required()
 					.addChoices(
 						new CommandOptionChoice<>("global", 0),
 						new CommandOptionChoice<>("guild", 1)
 					),
-				new CommandOptionLong("guild", "In which guild commands should get omitted")
+				new CommandOptionLong("guild", "In which guild commands should get removed")
 			);
 			devOnly();
 		}
@@ -98,11 +99,15 @@ public class DevCommand extends Command{
 		public void run(Options options, CommandContext ctx){
 			var environment = options.getInt("environment");
 			if(environment == 0){
+				if(Environment.getCurrentEnv() == Environment.PRODUCTION){
+					ctx.reply(new InteractionResponse.Builder().ephemeral().setContent("Removing commands globally in production is not allowed sorry :3").build());
+					return;
+				}
 				ctx.reply(new InteractionResponse.Builder().ephemeral().setContent("processing...").build());
 				ctx.getModules().schedule(() -> {
 					var commandsModule = ctx.get(CommandsModule.class);
 					commandsModule.deleteAllCommands(-1L);
-					ctx.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setColor(Colors.KITTYBOT_BLUE).setDescription("Omitted slash commands globally").build()).build());
+					ctx.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setColor(Colors.KITTYBOT_BLUE).setDescription("emoved slash commands globally").build()).build());
 				}, 0, TimeUnit.SECONDS);
 				return;
 			}
