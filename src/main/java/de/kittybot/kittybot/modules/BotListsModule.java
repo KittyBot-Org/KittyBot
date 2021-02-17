@@ -2,18 +2,11 @@ package de.kittybot.kittybot.modules;
 
 import de.kittybot.kittybot.objects.enums.API;
 import de.kittybot.kittybot.objects.module.Module;
-import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.utils.Config;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
-import net.dv8tion.jda.api.utils.data.DataArray;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class BotListsModule extends Module{
