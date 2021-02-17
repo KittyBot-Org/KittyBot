@@ -57,8 +57,8 @@ public class BotListsModule extends Module{
 		if(!Config.DISCORDBOTLIST_TOKEN.isBlank()){
 			requestModule.updateStats(API.DISCORDBOTLIST_COM, guildCount, Config.DISCORDBOTLIST_TOKEN);
 		}
-		if(!Config.DISCORDSERVICES_TOKEN.isBlank()){
-			requestModule.updateStats(API.DISCORDSERVICES_COM, guildCount, Config.DISCORDSERVICES_TOKEN);
+		if(!Config.DISCORD_SERVICES_TOKEN.isBlank()){
+			requestModule.updateStats(API.DISCORD_SERVICES, guildCount, Config.DISCORD_SERVICES_TOKEN);
 		}
 	}
 

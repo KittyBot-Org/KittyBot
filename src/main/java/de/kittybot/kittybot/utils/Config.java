@@ -47,7 +47,7 @@ public class Config{
 	public static String BOTLIST_SPACE_TOKEN;
 	public static String BOTS_FOR_DISCORD_TOKEN;
 	public static String DISCORDBOTLIST_TOKEN;
-	public static String DISCORDSERVICES_TOKEN;
+	public static String DISCORD_SERVICES_TOKEN;
 
 	public static String DB_HOST;
 	public static String DB_PORT;
@@ -115,7 +115,7 @@ public class Config{
 		BOTLIST_SPACE_TOKEN = json.getString("botlist_space_token", "");
 		BOTS_FOR_DISCORD_TOKEN = json.getString("bots_for_discord_token", "");
 		DISCORDBOTLIST_TOKEN = json.getString("discordbotlist_token", "");
-		DISCORDSERVICES_TOKEN = json.getString("discordservices_token", "");
+		DISCORD_SERVICES_TOKEN = json.getString("discord_services_token", "");
 
 		DB_HOST = json.getString("db_host", "");
 		DB_PORT = json.getString("db_port", "");
