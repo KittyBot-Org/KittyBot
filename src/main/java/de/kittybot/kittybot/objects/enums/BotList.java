@@ -9,7 +9,8 @@ public enum BotList{
 	BOTS_FOR_DISCORD_COM("Bots For Discord", "https://botsfordiscord.com/", 1, ChronoUnit.DAYS),
 	DISCORD_BOTS_GG("Discord Bots", "https://discord.bots.gg/"),
 	TOP_GG("Top.gg", "https://top.gg", 12, ChronoUnit.HOURS),
-	DISCORD_EXTREME_LIST_XYZ("Delly", "https://discordextremelist.xyz");
+	DISCORD_EXTREME_LIST_XYZ("Delly", "https://discordextremelist.xyz"),
+	DISCORD_BOT_LIST_COM("DISCORD BOT LIST ", "https://discordbotlist.com", 12, ChronoUnit.HOURS);
 
 	private final String name, url;
 	private final long voteCooldown;
