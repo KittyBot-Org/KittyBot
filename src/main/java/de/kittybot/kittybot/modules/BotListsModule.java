@@ -48,7 +48,7 @@ public class BotListsModule extends Module{
 			requestModule.updateStats(API.BOTS_FOR_DISCORD, guildCount, Config.BOTS_FOR_DISCORD_TOKEN);
 		}
 		if(!Config.DISCORD_SERVICES_TOKEN.isBlank()){
-			requestModule.updateStats(API.BOTS_FOR_DISCORD, guildCount, Config.DISCORD_SERVICES_TOKEN);
+			requestModule.updateStats(API.DISCORD_SERVICES, guildCount, Config.DISCORD_SERVICES_TOKEN);
 		}
 	}
 
