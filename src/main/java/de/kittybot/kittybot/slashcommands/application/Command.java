@@ -88,4 +88,11 @@ public abstract class Command implements CommandOptionsHolder, PermissionHolder{
 		);
 	}
 
+	public DataObject toDiscordServicesJSON(){
+		return DataObject.empty()
+			.put("command", "/" + this.name)
+			.put("desc", this.description)
+			.put("category", this.category.getName());
+	}
+
 }
