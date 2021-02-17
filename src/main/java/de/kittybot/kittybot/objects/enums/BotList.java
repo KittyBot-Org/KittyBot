@@ -1,7 +1,6 @@
 package de.kittybot.kittybot.objects.enums;
 
 import java.time.temporal.ChronoUnit;
-import java.util.concurrent.TimeUnit;
 
 public enum BotList{
 

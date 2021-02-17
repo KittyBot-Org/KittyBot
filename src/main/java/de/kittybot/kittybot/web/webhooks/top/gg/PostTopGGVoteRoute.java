@@ -3,7 +3,6 @@ package de.kittybot.kittybot.web.webhooks.top.gg;
 import de.kittybot.kittybot.modules.WebModule;
 import de.kittybot.kittybot.objects.module.Modules;
 import de.kittybot.kittybot.utils.Config;
-import edu.umd.cs.findbugs.annotations.Confidence;
 import io.javalin.http.Context;
 import io.javalin.http.ForbiddenResponse;
 import io.javalin.http.Handler;
@@ -35,7 +34,6 @@ public class PostTopGGVoteRoute implements Handler{
 		}
 		*/
 	}
-
 
 
 }

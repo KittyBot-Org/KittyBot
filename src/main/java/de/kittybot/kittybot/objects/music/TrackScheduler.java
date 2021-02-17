@@ -91,7 +91,7 @@ public class TrackScheduler extends PlayerEventListenerAdapter{
 			return;
 		}
 		this.player.playTrack(next);
-		if(repeatMode == RepeatMode.QUEUE && track != null){
+		if(this.repeatMode == RepeatMode.QUEUE && track != null){
 			this.queue.offer(track.makeClone());
 		}
 	}

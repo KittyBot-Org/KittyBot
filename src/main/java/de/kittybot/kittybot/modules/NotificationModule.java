@@ -6,8 +6,6 @@ import de.kittybot.kittybot.objects.settings.Notification;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.utils.Colors;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.events.ReadyEvent;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -33,16 +31,16 @@ public class NotificationModule extends Module{
 		this.notifications.putAll(retrieveNotifications(LocalDateTime.now().plus(60, ChronoUnit.MINUTES)));
 	}
 
+	private void scheduleNext(){
+		schedule(getAndRemoveNext(LocalDateTime.now().plus(5, ChronoUnit.MINUTES)));
+	}
+
 	private Map<Long, Notification> retrieveNotifications(LocalDateTime to){
 		try(var ctx = this.modules.get(DatabaseModule.class).getCtx().selectFrom(NOTIFICATIONS)){
 			return ctx.where(NOTIFICATIONS.NOTIFICATION_TIME.lessOrEqual(to)).fetch().stream().collect(
 				Collectors.toMap(NotificationsRecord::getId, Notification::new)
 			);
 		}
-	}
-
-	private void scheduleNext(){
-		schedule(getAndRemoveNext(LocalDateTime.now().plus(5, ChronoUnit.MINUTES)));
 	}
 
 	private void schedule(Set<Notification> notifs){
