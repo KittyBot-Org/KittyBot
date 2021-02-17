@@ -24,7 +24,7 @@ public class HelpCommand extends Command implements RunnableCommand{
 			.setAuthor("Help", Config.ORIGIN_URL, ctx.getSelfUser().getEffectiveAvatarUrl())
 			.setDescription(
 				"Hello " + ctx.getMember().getAsMention() + "\n" +
-					"KittyBot uses the new " + Emoji.SLASH.get() + "Slash Commands by Discord!" +
+					"KittyBot uses the new " + Emoji.SLASH.get() + " Slash Commands by Discord!\n" +
 					"To see all available commands just type `/` or use `/commands`"
 			)
 		);
