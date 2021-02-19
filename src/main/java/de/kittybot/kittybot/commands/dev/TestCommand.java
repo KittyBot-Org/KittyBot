@@ -31,10 +31,10 @@ public class TestCommand extends SubCommandGroup{
 			super("response", "Let's you choose the response type");
 			addOptions(
 				new CommandOptionString("type", "The response type you want").required().addChoices(
-					new CommandOptionChoice<>("ACKNOWLEDGE", "acknowledge"),
-					new CommandOptionChoice<>("ACKNOWLEDGE_WITH_SOURCE", "acknowledge_with_source"),
-					new CommandOptionChoice<>("CHANNEL_MESSAGE", "channel_message"),
-					new CommandOptionChoice<>("CHANNEL_MESSAGE_WITH_SOURCE", "channel_message_with_source")
+					new CommandOptionChoice<>(InteractionResponseType.ACKNOWLEDGE.name(), InteractionResponseType.ACKNOWLEDGE),
+					new CommandOptionChoice<>(InteractionResponseType.ACKNOWLEDGE_WITH_SOURCE.name(), InteractionResponseType.ACKNOWLEDGE_WITH_SOURCE),
+					new CommandOptionChoice<>(InteractionResponseType.CHANNEL_MESSAGE.name(), InteractionResponseType.CHANNEL_MESSAGE),
+					new CommandOptionChoice<>(InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE.name(), InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE)
 				),
 				new CommandOptionBoolean("ephemeral", "Weather the response should be a ephemeral message")
 			);
@@ -45,20 +45,7 @@ public class TestCommand extends SubCommandGroup{
 			var member = ctx.getMember();
 			var content = options.stream().map(InteractionDataOption::getValue).map(Object::toString).collect(Collectors.joining(", "));
 			var response = new InteractionResponse.Builder();
-			switch(options.getString("type")){
-				case "acknowledge":
-					response.setType(InteractionResponseType.ACKNOWLEDGE);
-					break;
-				case "acknowledge_with_source":
-					response.setType(InteractionResponseType.ACKNOWLEDGE_WITH_SOURCE);
-					break;
-				case "channel_message":
-					response.setType(InteractionResponseType.CHANNEL_MESSAGE);
-					break;
-				case "channel_message_with_source":
-					response.setType(InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE);
-					break;
-			}
+			response.setType(InteractionResponseType.valueOf(options.getString("type")));
 			if(options.has("ephemeral")){
 				response.setEphemeral(options.getBoolean("ephemeral"));
 			}

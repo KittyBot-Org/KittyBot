@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.commands.neko;
 
 import de.kittybot.kittybot.modules.RequestModule;
+import de.kittybot.kittybot.objects.enums.Neko;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
@@ -15,10 +16,12 @@ import net.dv8tion.jda.api.EmbedBuilder;
 @Ignore
 public abstract class ReactionCommand extends Command implements RunnableCommand{
 
+	private final Neko neko;
 	private final String text;
 
-	protected ReactionCommand(String name, String description, String text){
-		super(name, description, Category.NEKO);
+	protected ReactionCommand(Neko neko, String description, String text){
+		super(neko.getName(), description, Category.NEKO);
+		this.neko = neko;
 		this.text = text;
 		addOptions(
 			new CommandOptionUser("user", "The user to interact with").required()
@@ -42,14 +45,14 @@ public abstract class ReactionCommand extends Command implements RunnableCommand
 			message
 				.append(ctx.getUser().getAsMention())
 				.append(" ")
-				.append(text)
+				.append(this.text)
 				.append(" ")
 				.append(MessageUtils.getUserMention(userId));
 		}
 		ctx.reply(new EmbedBuilder()
 			.setColor(Colors.KITTYBOT_BLUE)
 			.setDescription(message)
-			.setImage(ctx.get(RequestModule.class).getNeko(false, getName(), "gif"))
+			.setImage(ctx.get(RequestModule.class).getNeko(this.neko))
 		);
 	}
 

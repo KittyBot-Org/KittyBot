@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.slashcommands.interaction;
 
+import de.kittybot.kittybot.slashcommands.application.CommandOptionType;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
 
@@ -10,11 +11,13 @@ import java.util.stream.Collectors;
 public class InteractionDataOption implements InteractionOptionsHolder{
 
 	private final String name;
+	private final CommandOptionType type;
 	private final Object value;
 	private final List<InteractionDataOption> options;
 
-	public InteractionDataOption(String name, Object value, List<InteractionDataOption> options){
+	public InteractionDataOption(String name, CommandOptionType type, Object value, List<InteractionDataOption> options){
 		this.name = name.toLowerCase();
+		this.type = type;
 		this.value = value;
 		this.options = options;
 	}
@@ -22,6 +25,7 @@ public class InteractionDataOption implements InteractionOptionsHolder{
 	public static InteractionDataOption fromJSON(DataObject json){
 		return new InteractionDataOption(
 			json.getString("name"),
+			CommandOptionType.get(json.getInt("type")),
 			json.opt("value").orElse(null),
 			InteractionDataOption.fromJSON(json.optArray("options").orElse(null))
 		);
@@ -36,6 +40,10 @@ public class InteractionDataOption implements InteractionOptionsHolder{
 
 	public String getName(){
 		return this.name;
+	}
+
+	public CommandOptionType getType(){
+		return this.type;
 	}
 
 	public Object getValue(){

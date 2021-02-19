@@ -1,10 +1,12 @@
 package de.kittybot.kittybot.commands.neko;
 
+import de.kittybot.kittybot.objects.enums.Neko;
+
 @SuppressWarnings("unused")
 public class LickCommand extends ReactionCommand{
 
 	public LickCommand(){
-		super("lick", "Licks a user", "licks");
+		super(Neko.LICK, "Licks a user", "licks");
 	}
 
 }
