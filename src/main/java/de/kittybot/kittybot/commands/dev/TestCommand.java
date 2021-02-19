@@ -21,13 +21,13 @@ public class TestCommand extends SubCommandGroup{
 	public TestCommand(){
 		super("test", "Test Description");
 		addOptions(
-			new TestSubCommand()
+			new ResponseCommand()
 		);
 	}
 
-	private static class TestSubCommand extends SubCommand{
+	private static class ResponseCommand extends SubCommand{
 
-		public TestSubCommand(){
+		public ResponseCommand(){
 			super("response", "Let's you choose the response type");
 			addOptions(
 				new CommandOptionString("type", "The response type you want").required().addChoices(

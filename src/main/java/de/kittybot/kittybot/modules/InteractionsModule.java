@@ -44,6 +44,7 @@ public class InteractionsModule extends Module{
 	@Override
 	public void onRawGateway(@NotNull RawGatewayEvent event){
 		if(event.getType().equals(INTERACTION_CREATE)){
+			System.out.println(event.getPayload().toString());
 			var start = System.currentTimeMillis();
 
 			var interaction = Interaction.fromJSON(this.modules, event.getPayload(), event.getJDA());

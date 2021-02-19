@@ -87,7 +87,7 @@ public class CommandsModule extends Module{
 		try(var resp = put(route, rqBody).execute()){
 			if(!resp.isSuccessful()){
 				var body = resp.body();
-				LOG.error("Registering commands failed. Body: {}", body == null ? "null" : body.string());
+				LOG.error("Registering commands failed. Request Body: {}, Response Body: {}", commands.toString(), body == null ? "null" : body.string());
 				return;
 			}
 		}
