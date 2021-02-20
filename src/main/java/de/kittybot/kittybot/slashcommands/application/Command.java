@@ -14,6 +14,7 @@ public abstract class Command implements CommandOptionsHolder, PermissionHolder{
 	private final Set<Permission> permissions;
 	private final List<CommandOption<?>> options;
 	private boolean devOnly;
+	private boolean guildOnly;
 
 	protected Command(String name, String description, Category category){
 		this.name = name;
@@ -30,6 +31,14 @@ public abstract class Command implements CommandOptionsHolder, PermissionHolder{
 
 	public boolean isDevOnly(){
 		return this.devOnly;
+	}
+
+	public void guildOnly(){
+		this.guildOnly = true;
+	}
+
+	public boolean isGuildOnly(){
+		return this.guildOnly;
 	}
 
 	public void addPermissions(Permission... permissions){

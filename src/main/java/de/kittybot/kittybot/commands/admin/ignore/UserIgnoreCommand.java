@@ -2,10 +2,10 @@ package de.kittybot.kittybot.commands.admin.ignore;
 
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionUser;
-import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
+import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommandGroup;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
-import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
+import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.MessageUtils;
 
 import java.util.Collections;
@@ -22,7 +22,7 @@ public class UserIgnoreCommand extends SubCommandGroup{
 		);
 	}
 
-	private static class AddCommand extends SubCommand{
+	private static class AddCommand extends GuildSubCommand{
 
 		public AddCommand(){
 			super("add", "Used to ignore a user");
@@ -32,15 +32,15 @@ public class UserIgnoreCommand extends SubCommandGroup{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
+		public void run(Options options, GuildInteraction ia){
 			var userId = options.getLong("user");
-			ctx.get(SettingsModule.class).addBotIgnoredUsers(ctx.getGuildId(), Collections.singleton(userId));
-			ctx.reply("Disabled commands for " + MessageUtils.getUserMention(userId));
+			ia.get(SettingsModule.class).addBotIgnoredUsers(ia.getGuildId(), Collections.singleton(userId));
+			ia.reply("Disabled commands for " + MessageUtils.getUserMention(userId));
 		}
 
 	}
 
-	private static class RemoveCommand extends SubCommand{
+	private static class RemoveCommand extends GuildSubCommand{
 
 		public RemoveCommand(){
 			super("remove", "Used to unignore a user");
@@ -50,25 +50,25 @@ public class UserIgnoreCommand extends SubCommandGroup{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
+		public void run(Options options, GuildInteraction ia){
 			var userId = options.getLong("user");
-			ctx.get(SettingsModule.class).removeBotIgnoredUsers(ctx.getGuildId(), Collections.singleton(userId));
-			ctx.reply("Enabled commands for " + MessageUtils.getUserMention(userId));
+			ia.get(SettingsModule.class).removeBotIgnoredUsers(ia.getGuildId(), Collections.singleton(userId));
+			ia.reply("Enabled commands for " + MessageUtils.getUserMention(userId));
 
 		}
 
 	}
 
-	private static class ListCommand extends SubCommand{
+	private static class ListCommand extends GuildSubCommand{
 
 		public ListCommand(){
 			super("list", "Used to list ignored a users");
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
-			var users = ctx.get(SettingsModule.class).getBotIgnoredUsers(ctx.getGuildId());
-			ctx.reply("**Commands are disabled for following users:**\n" + users.stream().map(MessageUtils::getUserMention).collect(Collectors.joining(", ")));
+		public void run(Options options, GuildInteraction ia){
+			var users = ia.get(SettingsModule.class).getBotIgnoredUsers(ia.getGuildId());
+			ia.reply("**Commands are disabled for following users:**\n" + users.stream().map(MessageUtils::getUserMention).collect(Collectors.joining(", ")));
 		}
 
 	}

@@ -5,15 +5,14 @@ import de.kittybot.kittybot.slashcommands.application.options.CommandOptionBoole
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommandGroup;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
-import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import de.kittybot.kittybot.slashcommands.interaction.InteractionDataOption;
+import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponseType;
 import de.kittybot.kittybot.utils.Colors;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.time.Instant;
 import java.util.stream.Collectors;
 
 public class TestCommand extends SubCommandGroup{
@@ -41,8 +40,7 @@ public class TestCommand extends SubCommandGroup{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
-			var member = ctx.getMember();
+		public void run(Options options, Interaction ia){
 			var content = options.stream().map(InteractionDataOption::getValue).map(Object::toString).collect(Collectors.joining(", "));
 			var response = new InteractionResponse.Builder();
 			response.setType(InteractionResponseType.valueOf(options.getString("type")));
@@ -53,16 +51,14 @@ public class TestCommand extends SubCommandGroup{
 				response.setContent(content);
 			}
 			else{
-				response.addEmbeds(new EmbedBuilder()
-					.setTitle("Response")
-					.setColor(Colors.KITTYBOT_BLUE)
-					.setDescription(content)
-					.setFooter(member.getEffectiveName(), member.getUser().getEffectiveAvatarUrl())
-					.setTimestamp(Instant.now())
-					.build()
+				response.addEmbeds(ia.applyDefaultStyle(new EmbedBuilder()
+						.setTitle("Response")
+						.setColor(Colors.KITTYBOT_BLUE)
+						.setDescription(content)
+					).build()
 				);
 			}
-			ctx.reply(response.build());
+			ia.reply(response.build());
 		}
 
 	}

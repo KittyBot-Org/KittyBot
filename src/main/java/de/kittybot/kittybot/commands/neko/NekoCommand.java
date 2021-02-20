@@ -4,17 +4,16 @@ import de.kittybot.kittybot.modules.RequestModule;
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.objects.enums.Neko;
 import de.kittybot.kittybot.slashcommands.application.Category;
-import de.kittybot.kittybot.slashcommands.application.Command;
-import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
-import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
+import de.kittybot.kittybot.slashcommands.application.RunCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
-import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
+import de.kittybot.kittybot.slashcommands.interaction.Interaction;
+import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.Colors;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 @SuppressWarnings("unused")
-public class NekoCommand extends Command implements RunnableCommand{
+public class NekoCommand extends RunCommand{
 
 	public NekoCommand(){
 		super("neko", "Sends a random image/gif from a specific category", Category.NEKO);
@@ -48,22 +47,25 @@ public class NekoCommand extends Command implements RunnableCommand{
 	}
 
 	@Override
-	public void run(Options options, CommandContext ctx){
+	public void run(Options options, Interaction ia){
 		var nekoType = options.getString("type");
 		var neko = Neko.valueOf(nekoType);
 		if(neko.isNsfw()){
-			if(!ctx.get(SettingsModule.class).isNsfwEnabled(ctx.getGuildId())){
-				ctx.error("NSFW commands are disabled in this guild");
-				return;
-			}
-			if(!ctx.getChannel().isNSFW()){
-				ctx.error("This command is nsfw channel only");
-				return;
+			if(ia.isFromGuild()){
+				var guildIa = (GuildInteraction) ia;
+				if(!ia.get(SettingsModule.class).isNsfwEnabled(guildIa.getGuildId())){
+					ia.error("NSFW commands are disabled in this guild");
+					return;
+				}
+				if(!guildIa.getChannel().isNSFW()){
+					ia.error("This command is nsfw channel only");
+					return;
+				}
 			}
 		}
-		ctx.reply(new EmbedBuilder()
+		ia.reply(new EmbedBuilder()
 			.setColor(Colors.KITTYBOT_BLUE)
-			.setImage(ctx.get(RequestModule.class).getNeko(neko))
+			.setImage(ia.get(RequestModule.class).getNeko(neko))
 		);
 	}
 

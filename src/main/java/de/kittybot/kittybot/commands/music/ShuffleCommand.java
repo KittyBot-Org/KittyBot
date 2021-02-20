@@ -3,34 +3,33 @@ package de.kittybot.kittybot.commands.music;
 import de.kittybot.kittybot.modules.MusicModule;
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.slashcommands.application.Category;
-import de.kittybot.kittybot.slashcommands.application.Command;
-import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
-import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.slashcommands.application.RunGuildCommand;
+import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
+import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.MusicUtils;
 
 @SuppressWarnings("unused")
-public class ShuffleCommand extends Command implements RunnableCommand{
+public class ShuffleCommand extends RunGuildCommand{
 
 	public ShuffleCommand(){
 		super("shuffle", "Shuffles all queued tracks", Category.MUSIC);
 	}
 
 	@Override
-	public void run(Options options, CommandContext ctx){
-		var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
-		if(!MusicUtils.checkCommandRequirements(ctx, scheduler)){
+	public void run(Options options, GuildInteraction ia){
+		var scheduler = ia.get(MusicModule.class).getScheduler(ia.getGuildId());
+		if(!MusicUtils.checkCommandRequirements(ia, scheduler)){
 			return;
 		}
-		if(!ctx.get(SettingsModule.class).hasDJRole(ctx.getMember())){
-			ctx.error("Only DJs are allowed shuffle");
+		if(!ia.get(SettingsModule.class).hasDJRole(ia.getMember())){
+			ia.error("Only DJs are allowed shuffle");
 			return;
 		}
 		if(scheduler.shuffle()){
-			ctx.reply("Queue shuffled");
+			ia.reply("Queue shuffled");
 			return;
 		}
-		ctx.error("Queue is empty. Nothing to shuffle");
+		ia.error("Queue is empty. Nothing to shuffle");
 	}
 
 }

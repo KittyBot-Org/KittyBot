@@ -58,7 +58,7 @@ public class CommandsModule extends Module{
 	public void scanCommands(){
 		LOG.info("Loading commands...");
 		try(var result = new ClassGraph().acceptPackages(COMMANDS_PACKAGE).enableAnnotationInfo().scan()){
-			this.commands = result.getSubclasses(Command.class.getName()).stream()
+			this.commands = result.getAllClasses().stream()
 				.filter(cls -> !cls.hasAnnotation(Ignore.class.getName()))
 				.map(ClassInfo::loadClass)
 				.filter(Command.class::isAssignableFrom)

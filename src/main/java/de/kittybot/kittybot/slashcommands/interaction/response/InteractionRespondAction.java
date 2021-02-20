@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.slashcommands.interaction.response;
 
+import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
 import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
@@ -147,7 +148,7 @@ public class InteractionRespondAction extends RestActionImpl<Interaction>{
 
 	@Nonnull
 	public MessageChannel getChannel(){
-		return this.interaction.getGuild().getTextChannelById(this.interaction.getChannelId());
+		return this.interaction.getChannel();
 	}
 
 	@Nonnull

@@ -5,9 +5,9 @@ import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionFloat;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
-import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
-import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
+import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
+import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.MusicUtils;
 import lavalink.client.io.filters.*;
 
@@ -28,7 +28,7 @@ public class FilterCommand extends Command{
 		);
 	}
 
-	private static class EqualizerCommand extends SubCommand{
+	private static class EqualizerCommand extends GuildSubCommand{
 
 		public EqualizerCommand(){
 			super("equalizer", "Lets you set each band(0 to 15) individually from -0.25 to 1.0");
@@ -39,20 +39,20 @@ public class FilterCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
-			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
+		public void run(Options options, GuildInteraction ia){
+			var scheduler = ia.get(MusicModule.class).getScheduler(ia.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ia, scheduler) || !MusicUtils.checkMusicPermissions(ia, scheduler)){
 				return;
 			}
 			var band = options.getInt("band");
 			var multiplier = options.getFloat("multiplier");
 			scheduler.getFilters().setBand(band, multiplier).commit();
-			ctx.reply("Set band " + band + " to " + multiplier);
+			ia.reply("Set band " + band + " to " + multiplier);
 		}
 
 	}
 
-	private static class KaraokeCommand extends SubCommand{
+	private static class KaraokeCommand extends GuildSubCommand{
 
 		public KaraokeCommand(){
 			super("karaoke", "Uses equalization to eliminate part of a band, usually targeting vocals");
@@ -65,9 +65,9 @@ public class FilterCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
-			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
+		public void run(Options options, GuildInteraction ia){
+			var scheduler = ia.get(MusicModule.class).getScheduler(ia.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ia, scheduler) || !MusicUtils.checkMusicPermissions(ia, scheduler)){
 				return;
 			}
 			var karaoke = new Karaoke();
@@ -84,12 +84,12 @@ public class FilterCommand extends Command{
 				karaoke = karaoke.setFilterWidth(options.getFloat("filterWidth"));
 			}
 			scheduler.getFilters().setKaraoke(karaoke).commit();
-			ctx.reply("Set karaoke filter");
+			ia.reply("Set karaoke filter");
 		}
 
 	}
 
-	private static class TimescaleCommand extends SubCommand{
+	private static class TimescaleCommand extends GuildSubCommand{
 
 		public TimescaleCommand(){
 			super("timescale", "Changes the speed, pitch, and rate. All default to 1");
@@ -101,9 +101,9 @@ public class FilterCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
-			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
+		public void run(Options options, GuildInteraction ia){
+			var scheduler = ia.get(MusicModule.class).getScheduler(ia.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ia, scheduler) || !MusicUtils.checkMusicPermissions(ia, scheduler)){
 				return;
 			}
 			var timescale = new Timescale();
@@ -117,12 +117,12 @@ public class FilterCommand extends Command{
 				timescale = timescale.setRate(options.getFloat("rate"));
 			}
 			scheduler.getFilters().setTimescale(timescale).commit();
-			ctx.reply("Set timescale filter");
+			ia.reply("Set timescale filter");
 		}
 
 	}
 
-	private static class TremoloCommand extends SubCommand{
+	private static class TremoloCommand extends GuildSubCommand{
 
 		public TremoloCommand(){
 			super("tremolo", "Uses amplification to create a shuddering effect, where the volume quickly oscillates.");
@@ -133,9 +133,9 @@ public class FilterCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
-			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
+		public void run(Options options, GuildInteraction ia){
+			var scheduler = ia.get(MusicModule.class).getScheduler(ia.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ia, scheduler) || !MusicUtils.checkMusicPermissions(ia, scheduler)){
 				return;
 			}
 			var tremolo = new Tremolo();
@@ -148,12 +148,12 @@ public class FilterCommand extends Command{
 				tremolo = tremolo.setDepth(depth);
 			}
 			scheduler.getFilters().setTremolo(tremolo).commit();
-			ctx.reply("Set tremolo filter");
+			ia.reply("Set tremolo filter");
 		}
 
 	}
 
-	private static class VibratoCommand extends SubCommand{
+	private static class VibratoCommand extends GuildSubCommand{
 
 		public VibratoCommand(){
 			super("vibrato", "Similar to tremolo. While tremolo oscillates the volume, vibrato oscillates the pitch.");
@@ -164,9 +164,9 @@ public class FilterCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
-			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
+		public void run(Options options, GuildInteraction ia){
+			var scheduler = ia.get(MusicModule.class).getScheduler(ia.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ia, scheduler) || !MusicUtils.checkMusicPermissions(ia, scheduler)){
 				return;
 			}
 			var vibrato = new Vibrato();
@@ -179,12 +179,12 @@ public class FilterCommand extends Command{
 				vibrato = vibrato.setDepth(depth);
 			}
 			scheduler.getFilters().setVibrato(vibrato).commit();
-			ctx.reply("Set vibrato filter");
+			ia.reply("Set vibrato filter");
 		}
 
 	}
 
-	private static class RotationCommand extends SubCommand{
+	private static class RotationCommand extends GuildSubCommand{
 
 		public RotationCommand(){
 			super("rotation", "Rotates the sound around the stereo channels/user headphones aka Audio Panning.");
@@ -194,19 +194,19 @@ public class FilterCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
-			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
+		public void run(Options options, GuildInteraction ia){
+			var scheduler = ia.get(MusicModule.class).getScheduler(ia.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ia, scheduler) || !MusicUtils.checkMusicPermissions(ia, scheduler)){
 				return;
 			}
 			var frequency = options.getFloat("frequency");
 			scheduler.getFilters().setRotation(new Rotation().setFrequency(frequency)).commit();
-			ctx.reply("Set rotation filter");
+			ia.reply("Set rotation filter");
 		}
 
 	}
 
-	private static class DistortionCommand extends SubCommand{
+	private static class DistortionCommand extends GuildSubCommand{
 
 		public DistortionCommand(){
 			super("distortion", "Distortion effect. It can generate some pretty unique audio effects.");
@@ -224,9 +224,9 @@ public class FilterCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
-			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
+		public void run(Options options, GuildInteraction ia){
+			var scheduler = ia.get(MusicModule.class).getScheduler(ia.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ia, scheduler) || !MusicUtils.checkMusicPermissions(ia, scheduler)){
 				return;
 			}
 			var distortion = new Distortion();
@@ -257,25 +257,25 @@ public class FilterCommand extends Command{
 			}
 
 			scheduler.getFilters().setDistortion(distortion).commit();
-			ctx.reply("Set distortion filter");
+			ia.reply("Set distortion filter");
 		}
 
 	}
 
-	private static class ClearCommand extends SubCommand{
+	private static class ClearCommand extends GuildSubCommand{
 
 		public ClearCommand(){
 			super("clear", "Clears all filters including volume");
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
-			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
+		public void run(Options options, GuildInteraction ia){
+			var scheduler = ia.get(MusicModule.class).getScheduler(ia.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ia, scheduler) || !MusicUtils.checkMusicPermissions(ia, scheduler)){
 				return;
 			}
 			scheduler.getFilters().clear().commit();
-			ctx.reply("Cleared all filters!");
+			ia.reply("Cleared all filters!");
 		}
 
 	}

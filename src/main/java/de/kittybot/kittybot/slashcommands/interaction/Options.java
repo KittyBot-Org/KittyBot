@@ -1,4 +1,4 @@
-package de.kittybot.kittybot.slashcommands.context;
+package de.kittybot.kittybot.slashcommands.interaction;
 
 import de.kittybot.kittybot.objects.exceptions.MissingOptionException;
 import de.kittybot.kittybot.objects.exceptions.OptionParseException;
