@@ -72,10 +72,6 @@ public class InteractionsModule extends Module{
 				reply(interaction).ephemeral().content("Nani u discovered a secret don't tell anyone(This command does not exist anymore)").queue();
 				return;
 			}
-			if(!(interaction instanceof GuildInteraction) && cmd.isGuildOnly()){
-				reply(interaction, true).content("This slash command is not available in dms. Surruwu").queue();
-				return;
-			}
 			process(cmd, interaction, data);
 
 			Metrics.COMMAND_LATENCY.labels(cmd.getName()).set(System.currentTimeMillis() - start);
@@ -111,7 +107,7 @@ public class InteractionsModule extends Module{
 					((RunnableGuildCommand) applicationHolder).run(options, (GuildInteraction) interaction);
 				}
 				else{
-					throw new RuntimeException("Could not decide if interaction is global or guild. command: " + applicationHolder.getClass().getSimpleName() + " interaction: " + interaction.getClass().getSimpleName());
+					reply(interaction, true).content("This slash command is not available in dms. Surruwu").queue();
 				}
 			}
 			catch(Exception e){

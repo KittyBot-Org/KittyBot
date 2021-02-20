@@ -58,9 +58,7 @@ public class DevCommand extends Command{
 			if(environment == 0){
 				ia.reply(new InteractionResponse.Builder().ephemeral().setContent("processing...").build());
 				ia.getModules().schedule(() -> {
-					var commandsModule = ia.get(CommandsModule.class);
-					commandsModule.deleteAllCommands(-1L);
-					commandsModule.deployAllCommands(-1L);
+					ia.get(CommandsModule.class).deployAllCommands(-1L);
 					ia.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setColor(Colors.KITTYBOT_BLUE).setDescription("Deployed slash commands globally").build()).build());
 				}, 0, TimeUnit.SECONDS);
 				return;
@@ -72,9 +70,7 @@ public class DevCommand extends Command{
 			}
 			ia.reply(new InteractionResponse.Builder().ephemeral().setContent("processing...").build());
 			ia.getModules().schedule(() -> {
-				var commandsModule = ia.get(CommandsModule.class);
-				commandsModule.deleteAllCommands(guildId);
-				commandsModule.deployAllCommands(guildId);
+				ia.get(CommandsModule.class).deployAllCommands(guildId);
 				ia.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setColor(Colors.KITTYBOT_BLUE).setDescription("Deployed slash commands for guild `" + guildId + "`").build()).build());
 			}, 0, TimeUnit.SECONDS);
 		}
