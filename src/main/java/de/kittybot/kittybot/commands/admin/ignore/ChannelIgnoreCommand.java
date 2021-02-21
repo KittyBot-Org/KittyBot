@@ -7,6 +7,8 @@ import de.kittybot.kittybot.slashcommands.application.options.SubCommandGroup;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.MessageUtils;
+import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.stream.Collectors;
 
@@ -32,9 +34,9 @@ public class ChannelIgnoreCommand extends SubCommandGroup{
 
 		@Override
 		public void run(Options options, GuildInteraction ia){
-			var channelId = options.getLong("channel");
-			ia.get(SettingsModule.class).setBotDisabledInChannel(ia.getGuildId(), channelId, true);
-			ia.reply("Disabled commands in " + MessageUtils.getChannelMention(channelId));
+			var channel = options.getTextChannel("channel");
+			ia.get(SettingsModule.class).setBotDisabledInChannel(ia.getGuildId(), channel.getIdLong(), true);
+			ia.reply("Disabled commands in " + channel.getAsMention());
 		}
 
 	}
@@ -50,9 +52,9 @@ public class ChannelIgnoreCommand extends SubCommandGroup{
 
 		@Override
 		public void run(Options options, GuildInteraction ia){
-			var channelId = options.getLong("channel");
-			ia.get(SettingsModule.class).setBotDisabledInChannel(ia.getGuildId(), channelId, false);
-			ia.reply("Enabled commands in " + MessageUtils.getChannelMention(channelId));
+			var channel = options.getTextChannel("channel");
+			ia.get(SettingsModule.class).setBotDisabledInChannel(ia.getGuildId(), channel.getIdLong(), false);
+			ia.reply("Enabled commands in " + channel.getAsMention());
 		}
 
 	}

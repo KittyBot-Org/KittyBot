@@ -33,9 +33,9 @@ public class UserIgnoreCommand extends SubCommandGroup{
 
 		@Override
 		public void run(Options options, GuildInteraction ia){
-			var userId = options.getLong("user");
-			ia.get(SettingsModule.class).addBotIgnoredUsers(ia.getGuildId(), Collections.singleton(userId));
-			ia.reply("Disabled commands for " + MessageUtils.getUserMention(userId));
+			var user = options.getUser("user");
+			ia.get(SettingsModule.class).addBotIgnoredUsers(ia.getGuildId(), Collections.singleton(user.getIdLong()));
+			ia.reply("Disabled commands for " + user.getAsMention());
 		}
 
 	}
@@ -51,10 +51,9 @@ public class UserIgnoreCommand extends SubCommandGroup{
 
 		@Override
 		public void run(Options options, GuildInteraction ia){
-			var userId = options.getLong("user");
-			ia.get(SettingsModule.class).removeBotIgnoredUsers(ia.getGuildId(), Collections.singleton(userId));
-			ia.reply("Enabled commands for " + MessageUtils.getUserMention(userId));
-
+			var user = options.getUser("user");
+			ia.get(SettingsModule.class).removeBotIgnoredUsers(ia.getGuildId(), Collections.singleton(user.getIdLong()));
+			ia.reply("Enabled commands for " + user.getAsMention());
 		}
 
 	}

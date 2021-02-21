@@ -30,10 +30,10 @@ public class TestCommand extends SubCommandGroup{
 			super("response", "Let's you choose the response type");
 			addOptions(
 				new CommandOptionString("type", "The response type you want").required().addChoices(
-					new CommandOptionChoice<>(InteractionResponseType.ACKNOWLEDGE.name(), InteractionResponseType.ACKNOWLEDGE),
-					new CommandOptionChoice<>(InteractionResponseType.ACKNOWLEDGE_WITH_SOURCE.name(), InteractionResponseType.ACKNOWLEDGE_WITH_SOURCE),
-					new CommandOptionChoice<>(InteractionResponseType.CHANNEL_MESSAGE.name(), InteractionResponseType.CHANNEL_MESSAGE),
-					new CommandOptionChoice<>(InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE.name(), InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE)
+					new CommandOptionChoice<>(InteractionResponseType.ACKNOWLEDGE),
+					new CommandOptionChoice<>(InteractionResponseType.ACKNOWLEDGE_WITH_SOURCE),
+					new CommandOptionChoice<>(InteractionResponseType.CHANNEL_MESSAGE),
+					new CommandOptionChoice<>(InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE)
 				),
 				new CommandOptionBoolean("ephemeral", "Weather the response should be a ephemeral message")
 			);
@@ -42,8 +42,8 @@ public class TestCommand extends SubCommandGroup{
 		@Override
 		public void run(Options options, Interaction ia){
 			var content = options.stream().map(InteractionDataOption::getValue).map(Object::toString).collect(Collectors.joining(", "));
-			var response = new InteractionResponse.Builder();
-			response.setType(InteractionResponseType.valueOf(options.getString("type")));
+			var response = new InteractionResponse.Builder()
+				.setType(InteractionResponseType.valueOf(options.getString("type")));
 			if(options.has("ephemeral")){
 				response.setEphemeral(options.getBoolean("ephemeral"));
 			}

@@ -21,7 +21,7 @@ public class PresenceCommand extends SubCommand{
 				new CommandOptionChoice<>(OnlineStatus.INVISIBLE)
 			),
 			new CommandOptionString("activity", "The online status").addChoices(
-				new CommandOptionChoice<>(Activity.ActivityType.COMPETING.toString()),
+				new CommandOptionChoice<>(Activity.ActivityType.COMPETING),
 				new CommandOptionChoice<>(Activity.ActivityType.LISTENING),
 				new CommandOptionChoice<>(Activity.ActivityType.WATCHING),
 				new CommandOptionChoice<>(Activity.ActivityType.STREAMING),

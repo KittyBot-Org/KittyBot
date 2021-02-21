@@ -36,13 +36,13 @@ public class Interaction{
 	protected final Modules modules;
 	protected final JDA jda;
 
-	protected Interaction(DataObject json, User user, MessageChannel channel,  Modules modules, JDA jda){
+	protected Interaction(DataObject json, InteractionData data, User user, MessageChannel channel, Modules modules, JDA jda){
 		this.id = json.getLong("id");
 		this.type = InteractionType.get(json.getInt("type"));
-		this.data = InteractionData.fromJSON(json.getObject("data"));
 		this.channelId = json.getLong("channel_id");
 		this.token = json.getString("token");
 		this.version = json.getInt("version");
+		this.data = data;
 		this.user = user;
 		this.channel = channel;
 		this.modules = modules;
@@ -55,6 +55,7 @@ public class Interaction{
 		if(!json.hasKey("guild_id")){
 			return new Interaction(
 				json,
+				InteractionData.fromJSON(json.getObject("data"), entityBuilder, null),
 				entityBuilder.createUser(json.getObject("user")),
 				jda.getPrivateChannelById(json.getLong("channel_id")),
 				modules,
@@ -69,6 +70,7 @@ public class Interaction{
 		}
 		return new GuildInteraction(
 			json,
+			InteractionData.fromJSON(json.getObject("data"), entityBuilder, guild),
 			guild,
 			entityBuilder.createMember(guild, json.getObject("member")),
 			guild.getTextChannelById(json.getLong("channel_id")),

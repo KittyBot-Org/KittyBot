@@ -47,7 +47,7 @@ public class RolesCommand extends Command{
 
 		@Override
 		public void run(Options options, GuildInteraction ia){
-			var roleId = options.getLong("role");
+			var role = options.getRole("role");
 			var emoteAction = options.getEmote(ia.getGuild(), "emote");
 			var groupName = options.getString("group");
 
@@ -58,7 +58,7 @@ public class RolesCommand extends Command{
 						return;
 					}
 
-					ia.get(SettingsModule.class).addSelfAssignableRoles(ia.getGuildId(), Collections.singleton(new SelfAssignableRole(roleId, emote.getIdLong(), ia.getGuildId(), group.get().getId())));
+					ia.get(SettingsModule.class).addSelfAssignableRoles(ia.getGuildId(), Collections.singleton(new SelfAssignableRole(role.getIdLong(), emote.getIdLong(), ia.getGuildId(), group.get().getId())));
 					ia.reply("Added self assignable role");
 				}, error -> ia.error("Please provide a valid emote from this server")
 			);
@@ -79,13 +79,13 @@ public class RolesCommand extends Command{
 
 		@Override
 		public void run(Options options, GuildInteraction ia){
-			var roleId = options.getLong("role");
+			var role = options.getRole("role");
 			var settings = ia.get(SettingsModule.class);
-			if(settings.getSelfAssignableRoles(ia.getGuildId()).stream().noneMatch(role -> role.getRoleId() == roleId)){
+			if(settings.getSelfAssignableRoles(ia.getGuildId()).stream().noneMatch(r -> r.getRoleId() == role.getIdLong())){
 				ia.error("This role is not self assignable");
 				return;
 			}
-			settings.removeSelfAssignableRoles(ia.getGuildId(), Collections.singleton(roleId));
+			settings.removeSelfAssignableRoles(ia.getGuildId(), Collections.singleton(role.getIdLong()));
 			ia.reply("Removed self assignable role");
 		}
 

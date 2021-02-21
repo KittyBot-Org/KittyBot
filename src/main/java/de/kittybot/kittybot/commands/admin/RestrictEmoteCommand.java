@@ -66,7 +66,7 @@ public class RestrictEmoteCommand extends Command{
 		}
 
 		public Set<Role> getRoles(Guild guild, Options options, String... optionNames){
-			return Arrays.stream(optionNames).filter(options::has).map(options::getLong).map(guild::getRoleById).collect(Collectors.toSet());
+			return Arrays.stream(optionNames).filter(options::has).map(options::getRole).collect(Collectors.toSet());
 		}
 
 	}

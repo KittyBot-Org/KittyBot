@@ -29,9 +29,9 @@ public abstract class ReactionCommand extends RunCommand{
 
 	@Override
 	public void run(Options options, Interaction ia){
-		var userId = options.getLong("user");
+		var user = options.getUser("user");
 		var message = new StringBuilder();
-		if(userId == ia.getUserId()){
+		if(user.getIdLong() == ia.getUserId()){
 			message
 				.append("You are not allowed to ")
 				.append(getName())
@@ -46,7 +46,7 @@ public abstract class ReactionCommand extends RunCommand{
 				.append(" ")
 				.append(this.text)
 				.append(" ")
-				.append(MessageUtils.getUserMention(userId));
+				.append(user.getAsMention());
 		}
 		ia.reply(new EmbedBuilder()
 			.setColor(Colors.KITTYBOT_BLUE)

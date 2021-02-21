@@ -45,7 +45,6 @@ public class InteractionsModule extends Module{
 	@Override
 	public void onRawGateway(@NotNull RawGatewayEvent event){
 		if(event.getType().equals(INTERACTION_CREATE)){
-			System.out.println(event.getPayload().toString());
 			var start = System.currentTimeMillis();
 
 			var interaction = Interaction.fromJSON(this.modules, event.getPayload(), event.getJDA());
@@ -99,7 +98,7 @@ public class InteractionsModule extends Module{
 
 		if(applicationHolder instanceof RunnableCommand || applicationHolder instanceof RunnableGuildCommand){
 			try{
-				var options = new Options(applicationHolder.getOptions(), holder.getOptions());
+				var options = new Options(applicationHolder.getOptions(), holder.getOptions(), interaction.getData().getResolvedMentions());
 				if(applicationHolder instanceof RunnableCommand){
 					((RunnableCommand) applicationHolder).run(options, interaction);
 				}

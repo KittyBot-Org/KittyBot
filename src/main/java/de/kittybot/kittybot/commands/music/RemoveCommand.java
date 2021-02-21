@@ -12,10 +12,10 @@ import de.kittybot.kittybot.utils.MusicUtils;
 import net.dv8tion.jda.api.Permission;
 
 @SuppressWarnings("unused")
-public class WipeCommand extends RunGuildCommand{
+public class RemoveCommand extends RunGuildCommand{
 
-	public WipeCommand(){
-		super("wipe", "Wipes songs from the queue", Category.MUSIC);
+	public RemoveCommand(){
+		super("remove", "Removes songs from the queue", Category.MUSIC);
 		addOptions(
 			new CommandOptionBoolean("all", "Queue index inclusive to delete until. Omit for from+1"),
 			new CommandOptionInteger("from", "Deletes all queued songs"),

@@ -15,6 +15,7 @@ import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.stream.Collectors;
 
@@ -77,9 +78,9 @@ public class SettingsCommand extends Command{
 
 		@Override
 		public void run(Options options, GuildInteraction ia){
-			var roleId = options.getLong("role");
-			ia.get(SettingsModule.class).setDjRoleId(ia.getGuildId(), roleId);
-			ia.reply(new InteractionResponse.Builder().setContent("DJ Role set to: " + MessageUtils.getRoleMention(roleId)).build());
+			var role = options.getRole("role");
+			ia.get(SettingsModule.class).setDjRoleId(ia.getGuildId(), role.getIdLong());
+			ia.reply(new InteractionResponse.Builder().setContent("DJ Role set to: " + role.getAsMention()).build());
 		}
 
 	}
@@ -95,9 +96,9 @@ public class SettingsCommand extends Command{
 
 		@Override
 		public void run(Options options, GuildInteraction ia){
-			var channelId = options.getLong("channel");
-			ia.get(SettingsModule.class).setAnnouncementChannelId(ia.getGuildId(), channelId);
-			ia.reply(new InteractionResponse.Builder().setContent("Announcement channel set to: " + MessageUtils.getChannelMention(channelId)).build());
+			var channel = options.getTextChannel("channel");
+			ia.get(SettingsModule.class).setAnnouncementChannelId(ia.getGuildId(), channel.getIdLong());
+			ia.reply(new InteractionResponse.Builder().setContent("Announcement channel set to: " + channel.getAsMention()).build());
 		}
 
 	}
@@ -211,9 +212,9 @@ public class SettingsCommand extends Command{
 			}
 
 			if(options.has("channel")){
-				var channelId = options.getLong("channel");
-				settings.setLogChannelId(ia.getGuildId(), channelId);
-				returnMessage += "Log channel to:\n" + MessageUtils.getChannelMention(channelId) + "\n";
+				var channel = options.getTextChannel("channel");
+				settings.setLogChannelId(ia.getGuildId(), channel.getIdLong());
+				returnMessage += "Log channel to:\n" + channel.getAsMention() + "\n";
 			}
 
 			if(returnMessage.isBlank()){
@@ -248,10 +249,10 @@ public class SettingsCommand extends Command{
 
 			@Override
 			public void run(Options options, GuildInteraction ia){
-				var channelId = options.getLong("channel");
+				var channel = options.getTextChannel("channel");
 				var enabled = options.getBoolean("enabled");
-				ia.get(SettingsModule.class).setSnipesDisabledInChannel(ia.getGuildId(), channelId, !enabled);
-				ia.reply("Snipes `" + (enabled ? "enabled" : "disabled") + "` in " + MessageUtils.getChannelMention(channelId));
+				ia.get(SettingsModule.class).setSnipesDisabledInChannel(ia.getGuildId(), channel.getIdLong(), !enabled);
+				ia.reply("Snipes `" + (enabled ? "enabled" : "disabled") + "` in " + channel.getAsMention());
 			}
 
 		}
@@ -393,14 +394,9 @@ public class SettingsCommand extends Command{
 
 			@Override
 			public void run(Options options, GuildInteraction ia){
-				var channelId = options.getLong("channel");
-				var channel = ia.getGuild().getTextChannelById(channelId);
-				if(channel == null){
-					ia.error("Please provide a valid text channel. No voice channel/category");
-					return;
-				}
-				ia.get(SettingsModule.class).setStreamAnnouncementChannelId(ia.getGuildId(), channelId);
-				ia.reply("Stream announcements now get send to " + MessageUtils.getChannelMention(channelId));
+				var channel = options.getTextChannel("channel");
+				ia.get(SettingsModule.class).setStreamAnnouncementChannelId(ia.getGuildId(), channel.getIdLong());
+				ia.reply("Stream announcements now get send to " + channel.getAsMention());
 			}
 
 		}

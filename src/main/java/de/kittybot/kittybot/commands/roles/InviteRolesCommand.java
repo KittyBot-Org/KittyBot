@@ -42,7 +42,7 @@ public class InviteRolesCommand extends Command{
 		@Override
 		public void run(Options options, GuildInteraction ia){
 			var code = options.getString("code");
-			var role = options.getLong("role");
+			var role = options.getRole("role");
 			var invites = ia.get(InviteModule.class).getGuildInvites(ia.getGuildId());
 			if(invites == null || invites.isEmpty()){
 				ia.error("No invites found for this guild");
@@ -52,8 +52,8 @@ public class InviteRolesCommand extends Command{
 				ia.error("No invite with code '" + code + "' found");
 				return;
 			}
-			ia.get(SettingsModule.class).addInviteRoles(ia.getGuildId(), code, Collections.singleton(role));
-			ia.reply("Role added to invite");
+			ia.get(SettingsModule.class).addInviteRoles(ia.getGuildId(), code, Collections.singleton(role.getIdLong()));
+			ia.reply("Added role " + role.getAsMention() + " to invite `" + code + "`");
 		}
 
 	}
@@ -71,7 +71,7 @@ public class InviteRolesCommand extends Command{
 		@Override
 		public void run(Options options, GuildInteraction ia){
 			var code = options.getString("code");
-			var role = options.getLong("role");
+			var role = options.getRole("role");
 			var invites = ia.get(InviteModule.class).getGuildInvites(ia.getGuildId());
 			if(invites == null || invites.isEmpty()){
 				ia.error("No invites found for this guild");
@@ -81,8 +81,8 @@ public class InviteRolesCommand extends Command{
 				ia.error("No invite with code '" + code + "' found");
 				return;
 			}
-			ia.get(SettingsModule.class).removeInviteRoles(ia.getGuildId(), code, Collections.singleton(role));
-			ia.reply("Role removed to invite");
+			ia.get(SettingsModule.class).removeInviteRoles(ia.getGuildId(), code, Collections.singleton(role.getIdLong()));
+			ia.reply("Removed role " + role.getAsMention() + " from invite `"  + code + "`");
 		}
 
 	}
@@ -109,7 +109,7 @@ public class InviteRolesCommand extends Command{
 				return;
 			}
 			ia.get(SettingsModule.class).removeInviteRoles(ia.getGuildId(), code);
-			ia.reply("Roles reset from invite");
+			ia.reply("Roles reset from invite `" + code + "`");
 		}
 
 	}
