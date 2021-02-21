@@ -5,7 +5,7 @@ import de.kittybot.kittybot.objects.music.AudioLoader;
 import de.kittybot.kittybot.objects.music.MusicManager;
 import de.kittybot.kittybot.objects.music.SearchProvider;
 import de.kittybot.kittybot.objects.music.TrackScheduler;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
 import lavalink.client.io.Link;
@@ -173,12 +173,12 @@ public class MusicModule extends Module implements Serializable{
 		}
 	}
 
-	public void play(CommandContext ctx, String query, SearchProvider searchProvider){
-		var manager = this.musicPlayers.computeIfAbsent(ctx.getGuildId(), guildId -> new MusicManager(this.modules, guildId, ctx.getChannelId()));
+	public void play(GuildInteraction ia, String query, SearchProvider searchProvider){
+		var manager = this.musicPlayers.computeIfAbsent(ia.getGuildId(), guildId -> new MusicManager(this.modules, guildId, ia.getChannelId()));
 
 		var matcher = SPOTIFY_URL_PATTERN.matcher(query);
 		if(matcher.matches()){
-			this.modules.get(SpotifyModule.class).load(ctx, manager, matcher);
+			this.modules.get(SpotifyModule.class).load(ia, manager, matcher);
 			return;
 		}
 
@@ -192,7 +192,7 @@ public class MusicModule extends Module implements Serializable{
 					break;
 			}
 		}
-		manager.getScheduler().getLink().getRestClient().loadItem(query, new AudioLoader(ctx, manager));
+		manager.getScheduler().getLink().getRestClient().loadItem(query, new AudioLoader(ia, manager));
 	}
 
 	public TrackScheduler getScheduler(long guildId){

@@ -4,8 +4,9 @@ import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionLong;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
-import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
+import de.kittybot.kittybot.slashcommands.interaction.Interaction;
+import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -32,21 +33,25 @@ public class GuildBannerCommand extends SubCommand{
 	}
 
 	@Override
-	public void run(Options options, CommandContext ctx){
-		var guildId = options.has("guild-id") ? options.getLong("guild-id") : ctx.getGuildId();
+	public void run(Options options, Interaction ia){
+		var guildId = options.getOrDefault("guild-id", ia instanceof GuildInteraction ? ((GuildInteraction) ia).getGuildId() : -1L);
+		if(guildId == -1L){
+			ia.error("Please provide a guild id");
+			return;
+		}
 		var size = options.has("size") ? options.getInt("size") : 1024;
 
-		var guild = ctx.getJDA().getGuildById(guildId);
+		var guild = ia.getJDA().getGuildById(guildId);
 		if(guild == null){
-			ctx.error("Guild not found");
+			ia.error("Guild not found in my cache");
 			return;
 		}
 		var banner = guild.getBannerUrl();
 		if(banner == null){
-			ctx.error("Guild has no banner set");
+			ia.error("Guild has no banner set");
 			return;
 		}
-		ctx.reply(new EmbedBuilder()
+		ia.reply(new EmbedBuilder()
 			.setColor(Colors.KITTYBOT_BLUE)
 			.setTitle(guild.getName() + " Banner")
 			.setThumbnail(banner)

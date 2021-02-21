@@ -4,11 +4,11 @@ import de.kittybot.kittybot.modules.CommandsModule;
 import de.kittybot.kittybot.modules.PaginatorModule;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
-import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
+import de.kittybot.kittybot.slashcommands.application.RunCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
-import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
-import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
+import de.kittybot.kittybot.slashcommands.interaction.Interaction;
+import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponseType;
 import de.kittybot.kittybot.utils.Colors;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
-public class CommandsCommand extends Command implements RunnableCommand{
+public class CommandsCommand extends RunCommand{
 
 	public CommandsCommand(){
 		super("commands", "Shows all commands", Category.INFORMATION);
@@ -31,13 +31,13 @@ public class CommandsCommand extends Command implements RunnableCommand{
 	}
 
 	@Override
-	public void run(Options options, CommandContext ctx){
-		var commands = ctx.get(CommandsModule.class).getCommands().values();
+	public void run(Options options, Interaction ia){
+		var commands = ia.get(CommandsModule.class).getCommands().values();
 		if(options.has("command")){
 			var cmdName = options.getString("command");
 			var optCmd = commands.stream().filter(cmd -> cmd.getName().equalsIgnoreCase(cmdName)).findFirst();
 			if(optCmd.isEmpty()){
-				ctx.reply(new InteractionResponse.Builder()
+				ia.reply(new InteractionResponse.Builder()
 					.setType(InteractionResponseType.CHANNEL_MESSAGE)
 					.ephemeral()
 					.setContent("Command `" + cmdName + "` not found")
@@ -46,15 +46,15 @@ public class CommandsCommand extends Command implements RunnableCommand{
 				return;
 			}
 			var cmd = optCmd.get();
-			ctx.reply(new InteractionResponse.Builder()
+			ia.reply(new InteractionResponse.Builder()
 				.addEmbeds(new EmbedBuilder()
 					.setColor(Colors.KITTYBOT_BLUE)
-					.setAuthor("Commands", Config.ORIGIN_URL + "/commands#" + cmd.getName(), ctx.getJDA().getSelfUser().getEffectiveAvatarUrl())
-					.setDescription("`/" + cmd.getName() + "` - *" + cmd.getDescription() + "*\n\n" + cmd.getOptions().stream().filter(SubCommand.class::isInstance).map(c ->
+					.setAuthor("Commands", Config.ORIGIN_URL + "/commands#" + cmd.getName(), ia.getSelfUser().getEffectiveAvatarUrl())
+					.setDescription("`/" + cmd.getName() + "` - *" + cmd.getDescription() + "*\n\n" + cmd.getOptions().stream().filter(GuildSubCommand.class::isInstance).map(c ->
 							"`/" + cmd.getName() + " " + c.getName() + "` - *" + c.getDescription() + "*"
 						).collect(Collectors.joining("\n"))
 					)
-					.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
+					.setFooter(ia.getUser().getName(), ia.getUser().getEffectiveAvatarUrl())
 					.setTimestamp(Instant.now())
 					.build()
 				)
@@ -75,11 +75,11 @@ public class CommandsCommand extends Command implements RunnableCommand{
 			pages.add(page.toString());
 		});
 
-		ctx.get(PaginatorModule.class).create(
-			ctx,
+		ia.get(PaginatorModule.class).create(
+			ia,
 			pages.size(),
 			(page, embedBuilder) -> embedBuilder.setColor(Colors.KITTYBOT_BLUE)
-				.setAuthor("Commands", Config.ORIGIN_URL + "/commands", ctx.getJDA().getSelfUser().getEffectiveAvatarUrl())
+				.setAuthor("Commands", Config.ORIGIN_URL + "/commands", ia.getJDA().getSelfUser().getEffectiveAvatarUrl())
 				.setDescription(pages.get(page))
 				.appendDescription("\n\n*Commands can also be found " + MessageUtils.maskLink("here", Config.ORIGIN_URL + "/commands") + "*")
 				.setTimestamp(Instant.now())
