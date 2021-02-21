@@ -39,31 +39,31 @@ public class MusicUtils{
 		return MessageUtils.maskLink("`" + info.title + "`", info.uri);
 	}
 
-	public static boolean checkCommandRequirements(GuildInteraction interaction, TrackScheduler scheduler){
+	public static boolean checkCommandRequirements(GuildInteraction ia, TrackScheduler scheduler){
 		if(scheduler == null){
-			interaction.error("No active player found");
+			ia.error("No active player found");
 			return false;
 		}
-		return checkMusicRequirements(interaction);
+		return checkMusicRequirements(ia);
 	}
 
-	public static boolean checkMusicRequirements(GuildInteraction interaction){
-		var voiceState = interaction.getMember().getVoiceState();
+	public static boolean checkMusicRequirements(GuildInteraction ia){
+		var voiceState = ia.getMember().getVoiceState();
 		if(voiceState == null || voiceState.getChannel() == null){
-			interaction.error("Please connect to a voice channel to use music commands");
+			ia.error("Please connect to a voice channel to use music commands");
 			return false;
 		}
-		var myVoiceState = interaction.getSelfMember().getVoiceState();
+		var myVoiceState = ia.getSelfMember().getVoiceState();
 		if(myVoiceState != null && myVoiceState.getChannel() != null && voiceState.getChannel().getIdLong() != myVoiceState.getChannel().getIdLong()){
-			interaction.error("Please connect to the same voice channel as me to use music commands");
+			ia.error("Please connect to the same voice channel as me to use music commands");
 			return false;
 		}
 		return true;
 	}
 
-	public static boolean checkMusicPermissions(GuildInteraction interaction, TrackScheduler scheduler){
-		var member = interaction.getMember();
-		if(member.hasPermission(Permission.ADMINISTRATOR) || interaction.get(SettingsModule.class).hasDJRole(member)){
+	public static boolean checkMusicPermissions(GuildInteraction ia, TrackScheduler scheduler){
+		var member = ia.getMember();
+		if(member.hasPermission(Permission.ADMINISTRATOR) || ia.get(SettingsModule.class).hasDJRole(member)){
 			return true;
 		}
 		var track = scheduler.getPlayingTrack();
@@ -71,7 +71,7 @@ public class MusicUtils{
 			return false;
 		}
 		if(track.getUserData(Long.class) != member.getIdLong()){
-			interaction.error("You are not the song requester or the DJ");
+			ia.error("You are not the song requester or the DJ");
 			return false;
 		}
 		return true;
