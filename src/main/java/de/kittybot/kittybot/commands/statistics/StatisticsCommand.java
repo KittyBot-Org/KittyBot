@@ -7,9 +7,10 @@ import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionUser;
+import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
-import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
+import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.TimeUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -29,7 +30,7 @@ public class StatisticsCommand extends Command{
 		);
 	}
 
-	private static class TopCommand extends SubCommand{
+	private static class TopCommand extends GuildSubCommand{
 
 		public TopCommand(){
 			super("top", "Shows top stats");
@@ -52,11 +53,11 @@ public class StatisticsCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
+		public void run(Options options, GuildInteraction ia){
 			var type = StatisticType.valueOf(options.getOrDefault("stat", StatisticType.XP.name()));
 			var sortOrder = SortOrder.valueOf(options.getOrDefault("sort-order", SortOrder.DESC.name()));
-			var statistics = ctx.get(StatsModule.class).get(ctx.getGuildId(), type, sortOrder, 10);
-			ctx.reply(new EmbedBuilder()
+			var statistics = ia.get(StatsModule.class).get(ia.getGuildId(), type, sortOrder, 10);
+			ia.reply(new EmbedBuilder()
 				.setTitle("Top 10 Statistics for `" + type + "`")
 				.setDescription(statistics.stream().map(statistic -> MessageUtils.getUserMention(statistic.getUserId()) + " - `" + statistic.get(type) + "`").collect(Collectors.joining("\n")))
 			);
@@ -64,7 +65,7 @@ public class StatisticsCommand extends Command{
 
 	}
 
-	private static class UserCommand extends SubCommand{
+	private static class UserCommand extends GuildSubCommand{
 
 		public UserCommand(){
 			super("user", "Shows user stats");
@@ -74,10 +75,10 @@ public class StatisticsCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
-			var userId = options.getOrDefault("user", ctx.getUserId());
-			var statistics = ctx.get(StatsModule.class).get(ctx.getGuildId(), userId);
-			ctx.reply(new EmbedBuilder()
+		public void run(Options options, GuildInteraction ia){
+			var userId = options.getOrDefault("user", ia.getUserId());
+			var statistics = ia.get(StatsModule.class).get(ia.getGuildId(), userId);
+			ia.reply(new EmbedBuilder()
 				.setDescription("User Statistics: " + MessageUtils.getUserMention(userId) +
 					"\n**Level:** " + statistics.getLevel() +
 					"\n**XP:** " + statistics.getRestXp() +
@@ -92,17 +93,17 @@ public class StatisticsCommand extends Command{
 
 	}
 
-	private static class XPCommand extends SubCommand{
+	private static class XPCommand extends GuildSubCommand{
 
 		public XPCommand(){
 			super("xp", "Shows user stats");
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
-			var statistics = ctx.get(StatsModule.class).get(ctx.getGuildId(), ctx.getUserId());
+		public void run(Options options, GuildInteraction ia){
+			var statistics = ia.get(StatsModule.class).get(ia.getGuildId(), ia.getUserId());
 			var level = statistics.getLevel();
-			ctx.reply(new EmbedBuilder()
+			ia.reply(new EmbedBuilder()
 				.setDescription("**Level:** " + statistics.getLevel() +
 					"\n**XP:** `" + statistics.getXp() + "/" + statistics.getRequiredXp(level + 1) + "`"
 				)
