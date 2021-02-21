@@ -2,11 +2,13 @@ package de.kittybot.kittybot.commands.admin.ignore;
 
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionChannel;
-import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
+import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommandGroup;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
-import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
+import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.MessageUtils;
+import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.stream.Collectors;
 
@@ -21,7 +23,7 @@ public class ChannelIgnoreCommand extends SubCommandGroup{
 		);
 	}
 
-	private static class AddCommand extends SubCommand{
+	private static class AddCommand extends GuildSubCommand{
 
 		public AddCommand(){
 			super("add", "Used to ignore a channel");
@@ -31,15 +33,15 @@ public class ChannelIgnoreCommand extends SubCommandGroup{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
-			var channelId = options.getLong("channel");
-			ctx.get(SettingsModule.class).setBotDisabledInChannel(ctx.getGuildId(), channelId, true);
-			ctx.reply("Disabled commands in " + MessageUtils.getChannelMention(channelId));
+		public void run(Options options, GuildInteraction ia){
+			var channel = options.getTextChannel("channel");
+			ia.get(SettingsModule.class).setBotDisabledInChannel(ia.getGuildId(), channel.getIdLong(), true);
+			ia.reply("Disabled commands in " + channel.getAsMention());
 		}
 
 	}
 
-	private static class RemoveCommand extends SubCommand{
+	private static class RemoveCommand extends GuildSubCommand{
 
 		public RemoveCommand(){
 			super("remove", "Used to unignore a channel");
@@ -49,24 +51,24 @@ public class ChannelIgnoreCommand extends SubCommandGroup{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
-			var channelId = options.getLong("channel");
-			ctx.get(SettingsModule.class).setBotDisabledInChannel(ctx.getGuildId(), channelId, false);
-			ctx.reply("Enabled commands in " + MessageUtils.getChannelMention(channelId));
+		public void run(Options options, GuildInteraction ia){
+			var channel = options.getTextChannel("channel");
+			ia.get(SettingsModule.class).setBotDisabledInChannel(ia.getGuildId(), channel.getIdLong(), false);
+			ia.reply("Enabled commands in " + channel.getAsMention());
 		}
 
 	}
 
-	private static class ListCommand extends SubCommand{
+	private static class ListCommand extends GuildSubCommand{
 
 		public ListCommand(){
 			super("list", "Used to list ignored a users");
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
-			var channels = ctx.get(SettingsModule.class).getBotDisabledChannels(ctx.getGuildId());
-			ctx.reply("**Commands are disabled in following channels:**\n" + channels.stream().map(MessageUtils::getChannelMention).collect(Collectors.joining(", ")));
+		public void run(Options options, GuildInteraction ia){
+			var channels = ia.get(SettingsModule.class).getBotDisabledChannels(ia.getGuildId());
+			ia.reply("**Commands are disabled in following channels:**\n" + channels.stream().map(MessageUtils::getChannelMention).collect(Collectors.joining(", ")));
 		}
 
 	}

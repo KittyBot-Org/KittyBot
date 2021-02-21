@@ -8,9 +8,9 @@ import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionLong;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionUser;
-import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
-import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
+import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
+import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.TimeUtils;
@@ -35,7 +35,7 @@ public class TagsCommand extends Command{
 		);
 	}
 
-	private static class CreateCommand extends SubCommand{
+	private static class CreateCommand extends GuildSubCommand{
 
 		public CreateCommand(){
 			super("create", "Used to create a tag");
@@ -47,14 +47,14 @@ public class TagsCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
+		public void run(Options options, GuildInteraction ia){
 			var tagName = options.getString("name");
 			if(tagName.length() > 64){
-				ctx.error("Tag names must be 64 or less characters");
+				ia.error("Tag names must be 64 or less characters");
 				return;
 			}
 			if(!options.has("content") && !options.has("message-id")){
-				ctx.reply("Please provide either content or message-id");
+				ia.reply("Please provide either content or message-id");
 				return;
 			}
 			var content = "";
@@ -62,26 +62,26 @@ public class TagsCommand extends Command{
 				content = options.getString("content");
 			}
 			else{
-				var message = ctx.getChannel().retrieveMessageById(options.getLong("message-id")).complete();
+				var message = ia.getChannel().retrieveMessageById(options.getLong("message-id")).complete();
 				if(message == null){
-					ctx.error("Please provide a recent message id");
+					ia.error("Please provide a recent message id");
 					return;
 				}
 				content = message.getContentRaw();
 			}
 
-			var created = ctx.get(TagsModule.class).create(tagName, content, ctx.getGuildId(), ctx.getUserId());
+			var created = ia.get(TagsModule.class).create(tagName, content, ia.getGuildId(), ia.getUserId());
 
 			if(created){
-				ctx.reply("Created tag with name `" + tagName + "`");
+				ia.reply("Created tag with name `" + tagName + "`");
 				return;
 			}
-			ctx.error("A tag with the name `" + tagName + "` already exists");
+			ia.error("A tag with the name `" + tagName + "` already exists");
 		}
 
 	}
 
-	private static class EditCommand extends SubCommand{
+	private static class EditCommand extends GuildSubCommand{
 
 		public EditCommand(){
 			super("edit", "Used to edit a tag");
@@ -93,10 +93,10 @@ public class TagsCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
+		public void run(Options options, GuildInteraction ia){
 			var tagName = options.getString("name");
 			if(!options.has("content") && !options.has("message-id")){
-				ctx.reply("Please provide either content or message-id");
+				ia.reply("Please provide either content or message-id");
 				return;
 			}
 			var content = "";
@@ -104,26 +104,26 @@ public class TagsCommand extends Command{
 				content = options.getString("content");
 			}
 			else{
-				var message = ctx.get(MessageModule.class).getMessageById(options.getLong("message-id"));
+				var message = ia.get(MessageModule.class).getMessageById(options.getLong("message-id"));
 				if(message == null){
-					ctx.error("Please provide a recent message id");
+					ia.error("Please provide a recent message id");
 					return;
 				}
 				content = message.getContent();
 			}
 
-			var edited = ctx.get(TagsModule.class).edit(tagName, content, ctx.getGuildId(), ctx.getUserId());
+			var edited = ia.get(TagsModule.class).edit(tagName, content, ia.getGuildId(), ia.getUserId());
 
 			if(edited){
-				ctx.reply("Edited tag with name `" + tagName + "`");
+				ia.reply("Edited tag with name `" + tagName + "`");
 				return;
 			}
-			ctx.error("Tag `" + tagName + "` does not exist or is not owned by you");
+			ia.error("Tag `" + tagName + "` does not exist or is not owned by you");
 		}
 
 	}
 
-	private static class DeleteCommand extends SubCommand{
+	private static class DeleteCommand extends GuildSubCommand{
 
 		public DeleteCommand(){
 			super("delete", "Used to delete a tag");
@@ -133,26 +133,26 @@ public class TagsCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
+		public void run(Options options, GuildInteraction ia){
 			var tagName = options.getString("name");
 			var deleted = false;
-			if(ctx.getMember().hasPermission(Permission.ADMINISTRATOR)){
-				deleted = ctx.get(TagsModule.class).delete(tagName, ctx.getGuildId(), ctx.getUserId());
+			if(ia.getMember().hasPermission(Permission.ADMINISTRATOR)){
+				deleted = ia.get(TagsModule.class).delete(tagName, ia.getGuildId(), ia.getUserId());
 			}
 			else{
-				deleted = ctx.get(TagsModule.class).delete(tagName, ctx.getGuildId());
+				deleted = ia.get(TagsModule.class).delete(tagName, ia.getGuildId());
 			}
 
 			if(deleted){
-				ctx.reply("Deleted tag with name `" + tagName + "`");
+				ia.reply("Deleted tag with name `" + tagName + "`");
 				return;
 			}
-			ctx.error("Tag `" + tagName + "` does not exist or is not owned by you");
+			ia.error("Tag `" + tagName + "` does not exist or is not owned by you");
 		}
 
 	}
 
-	private static class SearchCommand extends SubCommand{
+	private static class SearchCommand extends GuildSubCommand{
 
 		public SearchCommand(){
 			super("search", "Used to search a tag");
@@ -162,23 +162,23 @@ public class TagsCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
+		public void run(Options options, GuildInteraction ia){
 			var tagName = options.getString("name");
-			var tags = ctx.get(TagsModule.class).search(tagName, ctx.getGuildId(), ctx.getUserId());
+			var tags = ia.get(TagsModule.class).search(tagName, ia.getGuildId(), ia.getUserId());
 
 			if(tags.isEmpty()){
-				ctx.reply("No tags found for `" + tagName + "`");
+				ia.reply("No tags found for `" + tagName + "`");
 				return;
 			}
 			// TODO add paginator
-			ctx.reply("**Following tags were found for `" + tagName + "`:**\n" +
+			ia.reply("**Following tags were found for `" + tagName + "`:**\n" +
 				tags.stream().map(tag -> "• `" + tag.getName() + "` (" + MessageUtils.getUserMention(tag.getUserId()) + ")").collect(Collectors.joining("\n"))
 			);
 		}
 
 	}
 
-	private static class ListCommand extends SubCommand{
+	private static class ListCommand extends GuildSubCommand{
 
 		public ListCommand(){
 			super("list", "Used to list tags");
@@ -188,26 +188,26 @@ public class TagsCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
+		public void run(Options options, GuildInteraction ia){
 			List<Tag> tags;
 			if(options.has("user")){
-				tags = ctx.get(TagsModule.class).get(ctx.getGuildId(), options.getLong("user"));
+				tags = ia.get(TagsModule.class).get(ia.getGuildId(), options.getLong("user"));
 			}
 			else{
-				tags = ctx.get(TagsModule.class).get(ctx.getGuildId());
+				tags = ia.get(TagsModule.class).get(ia.getGuildId());
 			}
 
 			if(tags.isEmpty()){
-				ctx.reply("No tags created yet");
+				ia.reply("No tags created yet");
 				return;
 			}
 			// TODO add paginator
-			ctx.reply("**Following tags exist:**\n" + tags.stream().map(tag -> "• `" + tag.getName() + "` (" + MessageUtils.getUserMention(tag.getUserId()) + ")").collect(Collectors.joining("\n")));
+			ia.reply("**Following tags exist:**\n" + tags.stream().map(tag -> "• `" + tag.getName() + "` (" + MessageUtils.getUserMention(tag.getUserId()) + ")").collect(Collectors.joining("\n")));
 		}
 
 	}
 
-	private static class InfoCommand extends SubCommand{
+	private static class InfoCommand extends GuildSubCommand{
 
 		public InfoCommand(){
 			super("info", "Used to get info about a tag");
@@ -217,15 +217,15 @@ public class TagsCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
+		public void run(Options options, GuildInteraction ia){
 			var tagName = options.getString("name");
-			var tag = ctx.get(TagsModule.class).get(tagName, ctx.getGuildId());
+			var tag = ia.get(TagsModule.class).get(tagName, ia.getGuildId());
 
 			if(tag == null){
-				ctx.error("Tag with name `" + tagName + "` not found");
+				ia.error("Tag with name `" + tagName + "` not found");
 				return;
 			}
-			ctx.reply(new EmbedBuilder()
+			ia.reply(new EmbedBuilder()
 				.setColor(Colors.KITTYBOT_BLUE)
 				.setTitle("Tag `" + tagName + "`")
 				.addField("Owner", MessageUtils.getUserMention(tag.getUserId()), false)

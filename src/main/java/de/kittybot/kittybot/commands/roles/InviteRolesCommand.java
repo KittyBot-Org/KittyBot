@@ -6,9 +6,9 @@ import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionRole;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
-import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
-import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
+import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
+import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.Permission;
 
@@ -29,7 +29,7 @@ public class InviteRolesCommand extends Command{
 		addPermissions(Permission.ADMINISTRATOR);
 	}
 
-	private static class AddCommand extends SubCommand{
+	private static class AddCommand extends GuildSubCommand{
 
 		public AddCommand(){
 			super("add", "Maps roles to invite links");
@@ -40,25 +40,25 @@ public class InviteRolesCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
+		public void run(Options options, GuildInteraction ia){
 			var code = options.getString("code");
-			var role = options.getLong("role");
-			var invites = ctx.get(InviteModule.class).getGuildInvites(ctx.getGuildId());
+			var role = options.getRole("role");
+			var invites = ia.get(InviteModule.class).getGuildInvites(ia.getGuildId());
 			if(invites == null || invites.isEmpty()){
-				ctx.error("No invites found for this guild");
+				ia.error("No invites found for this guild");
 				return;
 			}
 			if(!invites.containsKey(code)){
-				ctx.error("No invite with code '" + code + "' found");
+				ia.error("No invite with code '" + code + "' found");
 				return;
 			}
-			ctx.get(SettingsModule.class).addInviteRoles(ctx.getGuildId(), code, Collections.singleton(role));
-			ctx.reply("Role added to invite");
+			ia.get(SettingsModule.class).addInviteRoles(ia.getGuildId(), code, Collections.singleton(role.getIdLong()));
+			ia.reply("Added role " + role.getAsMention() + " to invite `" + code + "`");
 		}
 
 	}
 
-	private static class RemoveCommand extends SubCommand{
+	private static class RemoveCommand extends GuildSubCommand{
 
 		public RemoveCommand(){
 			super("remove", "Maps roles to invite links");
@@ -69,25 +69,25 @@ public class InviteRolesCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
+		public void run(Options options, GuildInteraction ia){
 			var code = options.getString("code");
-			var role = options.getLong("role");
-			var invites = ctx.get(InviteModule.class).getGuildInvites(ctx.getGuildId());
+			var role = options.getRole("role");
+			var invites = ia.get(InviteModule.class).getGuildInvites(ia.getGuildId());
 			if(invites == null || invites.isEmpty()){
-				ctx.error("No invites found for this guild");
+				ia.error("No invites found for this guild");
 				return;
 			}
 			if(!invites.containsKey(code)){
-				ctx.error("No invite with code '" + code + "' found");
+				ia.error("No invite with code '" + code + "' found");
 				return;
 			}
-			ctx.get(SettingsModule.class).removeInviteRoles(ctx.getGuildId(), code, Collections.singleton(role));
-			ctx.reply("Role removed to invite");
+			ia.get(SettingsModule.class).removeInviteRoles(ia.getGuildId(), code, Collections.singleton(role.getIdLong()));
+			ia.reply("Removed role " + role.getAsMention() + " from invite `"  + code + "`");
 		}
 
 	}
 
-	private static class ResetCommand extends SubCommand{
+	private static class ResetCommand extends GuildSubCommand{
 
 		public ResetCommand(){
 			super("reset", "Resets roles from invites");
@@ -97,24 +97,24 @@ public class InviteRolesCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
+		public void run(Options options, GuildInteraction ia){
 			var code = options.getString("code");
-			var invites = ctx.get(InviteModule.class).getGuildInvites(ctx.getGuildId());
+			var invites = ia.get(InviteModule.class).getGuildInvites(ia.getGuildId());
 			if(invites == null || invites.isEmpty()){
-				ctx.error("No invites found for this guild");
+				ia.error("No invites found for this guild");
 				return;
 			}
 			if(!invites.containsKey(code)){
-				ctx.error("No invite with code '" + code + "' found");
+				ia.error("No invite with code '" + code + "' found");
 				return;
 			}
-			ctx.get(SettingsModule.class).removeInviteRoles(ctx.getGuildId(), code);
-			ctx.reply("Roles reset from invite");
+			ia.get(SettingsModule.class).removeInviteRoles(ia.getGuildId(), code);
+			ia.reply("Roles reset from invite `" + code + "`");
 		}
 
 	}
 
-	private static class ListCommand extends SubCommand{
+	private static class ListCommand extends GuildSubCommand{
 
 		public ListCommand(){
 			super("list", "Maps roles to invite links");
@@ -124,14 +124,14 @@ public class InviteRolesCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
-			var inviteRoles = ctx.get(SettingsModule.class).getInviteRoles(ctx.getGuildId());
+		public void run(Options options, GuildInteraction ia){
+			var inviteRoles = ia.get(SettingsModule.class).getInviteRoles(ia.getGuildId());
 			if(inviteRoles.isEmpty()){
-				ctx.error("No invite roles found");
+				ia.error("No invite roles found");
 				return;
 			}
 
-			ctx.reply("**Invite Roles:**\n\n" + inviteRoles.entrySet().stream().map(entry ->
+			ia.reply("**Invite Roles:**\n\n" + inviteRoles.entrySet().stream().map(entry ->
 				"**" + entry.getKey() + "**" + entry.getValue().stream().map(MessageUtils::getRoleMention).collect(Collectors.joining("\n"))
 			).collect(Collectors.joining("\n")));
 		}

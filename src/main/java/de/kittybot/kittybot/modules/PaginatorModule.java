@@ -5,9 +5,11 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import de.kittybot.kittybot.objects.data.Paginator;
 import de.kittybot.kittybot.objects.enums.Emoji;
 import de.kittybot.kittybot.objects.module.Module;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.GuildChannel;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
@@ -81,25 +83,26 @@ public class PaginatorModule extends Module{
 		create(maxPages, embedFunction, embedBuilder, channel, authorId);
 	}
 
-	public void create(int maxPages, BiFunction<Integer, EmbedBuilder, EmbedBuilder> embedFunction, MessageEmbed embedBuilder, TextChannel channel, long userId){
+	public void create(int maxPages, BiFunction<Integer, EmbedBuilder, EmbedBuilder> embedFunction, MessageEmbed embedBuilder, MessageChannel channel, long userId){
 		channel.sendMessage(embedBuilder).queue(message -> {
 			var paginator = new Paginator(message, userId, maxPages, embedFunction);
-			if(channel.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_HISTORY, Permission.MESSAGE_ADD_REACTION)){
-				if(maxPages > 1){
-					message.addReaction(Emoji.ARROW_LEFT.get()).queue();
-					message.addReaction(Emoji.ARROW_RIGHT.get()).queue();
-				}
-				message.addReaction(Emoji.WASTEBASKET.get()).queue();
-			}
 			this.paginators.put(paginator.getMessageId(), paginator);
+			if(channel instanceof GuildChannel && !((GuildChannel) channel).getGuild().getSelfMember().hasPermission(Permission.MESSAGE_HISTORY, Permission.MESSAGE_ADD_REACTION)){
+				return;
+			}
+			if(maxPages > 1){
+				message.addReaction(Emoji.ARROW_LEFT.get()).queue();
+				message.addReaction(Emoji.ARROW_RIGHT.get()).queue();
+			}
+			message.addReaction(Emoji.WASTEBASKET.get()).queue();
 		});
 	}
 
-	public void create(CommandContext ctx, int maxPages, BiFunction<Integer, EmbedBuilder, EmbedBuilder> embedFunction){
-		ctx.acknowledge(true).queue(success -> {
+	public void create(Interaction ia, int maxPages, BiFunction<Integer, EmbedBuilder, EmbedBuilder> embedFunction){
+		ia.acknowledge(true).queue(success -> {
 			var embedBuilder = embedFunction.apply(0, new EmbedBuilder().setFooter("Page: 1/" + maxPages)).build();
-			var channel = ctx.getChannel();
-			create(maxPages, embedFunction, embedBuilder, channel, ctx.getUserId());
+			var channel = ia.getChannel();
+			create(maxPages, embedFunction, embedBuilder, channel, ia.getUserId());
 		});
 
 	}

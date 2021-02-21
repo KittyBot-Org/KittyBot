@@ -5,8 +5,9 @@ import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionsHolder;
 import de.kittybot.kittybot.slashcommands.application.PermissionHolder;
 import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
-import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.slashcommands.application.RunnableGuildCommand;
+import de.kittybot.kittybot.slashcommands.interaction.Options;
+import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
 import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import de.kittybot.kittybot.slashcommands.interaction.InteractionOptionsHolder;
 import de.kittybot.kittybot.slashcommands.interaction.response.FollowupMessage;
@@ -47,28 +48,27 @@ public class InteractionsModule extends Module{
 			var start = System.currentTimeMillis();
 
 			var interaction = Interaction.fromJSON(this.modules, event.getPayload(), event.getJDA());
-			if(interaction.getGuild() == null){
-				reply(interaction, true).content("I currently don't support running slash commands in dms. Surruwu").queue();
-				return;
-			}
 
-			var settings = this.modules.get(SettingsModule.class).getSettings(interaction.getGuild().getIdLong());
+			if(interaction instanceof GuildInteraction){
+				var guildInteraction = (GuildInteraction) interaction;
+				var settings = this.modules.get(SettingsModule.class).getSettings(guildInteraction.getGuild().getIdLong());
 
-			if(settings.isBotIgnoredUser(interaction.getMember().getIdLong())){
-				reply(interaction, false).content("I ignore u baka").ephemeral().queue();
-				return;
-			}
+				if(settings.isBotIgnoredUser(guildInteraction.getMember().getIdLong())){
+					reply(interaction, false).content("I ignore u baka").ephemeral().queue();
+					return;
+				}
 
-			if(settings.isBotDisabledInChannel(interaction.getChannelId())){
-				reply(interaction, false).content("I'm disabled in this channel").ephemeral().queue();
-				return;
+				if(settings.isBotDisabledInChannel(interaction.getChannelId())){
+					reply(interaction, false).content("I'm disabled in this channel").ephemeral().queue();
+					return;
+				}
 			}
 
 			var data = interaction.getData();
 			var cmd = this.modules.get(CommandsModule.class).getCommands().get(data.getName());
 			if(cmd == null){
 				LOG.error("Could not process interaction: {}", event.getPayload());
-				reply(interaction).ephemeral().content("Nani u discovered a secret don't tell anyone(This is weired af)").queue();
+				reply(interaction).ephemeral().content("Nani u discovered a secret don't tell anyone(This command does not exist anymore)").queue();
 				return;
 			}
 			process(cmd, interaction, data);
@@ -81,22 +81,33 @@ public class InteractionsModule extends Module{
 	public void process(CommandOptionsHolder applicationHolder, Interaction interaction, InteractionOptionsHolder holder){
 		if(applicationHolder instanceof PermissionHolder){
 			var permHolder = ((PermissionHolder) applicationHolder);
-			var member = interaction.getMember();
-			if(permHolder.isDevOnly() && !Config.DEV_IDS.contains(member.getIdLong())){
-				reply(interaction).ephemeral().content("This command is developer only").withSource(false).channelMessage(false).queue();
+			var user = interaction.getUser();
+			if(permHolder.isDevOnly() && !Config.DEV_IDS.contains(user.getIdLong())){
+				reply(interaction).ephemeral().content("This command is developer only").type(InteractionResponseType.ACKNOWLEDGE).queue();
 				return;
 			}
-
-			var missingPerms = permHolder.getPermissions().stream().dropWhile(member.getPermissions()::contains).collect(Collectors.toSet());
-			if(!missingPerms.isEmpty()){
-				reply(interaction).ephemeral().content("You are missing following permissions to use this command:\n" + missingPerms.stream().map(Permission::getName).collect(Collectors.joining(", "))).withSource(false).queue();
-				return;
+			if(interaction instanceof GuildInteraction){
+				var guildInteraction = (GuildInteraction) interaction;
+				var missingPerms = permHolder.getPermissions().stream().dropWhile(guildInteraction.getMember().getPermissions()::contains).collect(Collectors.toSet());
+				if(!missingPerms.isEmpty()){
+					reply(interaction).ephemeral().content("You are missing following permissions to use this command:\n" + missingPerms.stream().map(Permission::getName).collect(Collectors.joining(", "))).withSource(false).queue();
+					return;
+				}
 			}
 		}
 
-		if(applicationHolder instanceof RunnableCommand){
+		if(applicationHolder instanceof RunnableCommand || applicationHolder instanceof RunnableGuildCommand){
 			try{
-				((RunnableCommand) applicationHolder).run(new Options(applicationHolder.getOptions(), holder.getOptions()), new CommandContext(interaction, this.modules));
+				var options = new Options(applicationHolder.getOptions(), holder.getOptions(), interaction.getData().getResolvedMentions());
+				if(applicationHolder instanceof RunnableCommand){
+					((RunnableCommand) applicationHolder).run(options, interaction);
+				}
+				else if(interaction instanceof GuildInteraction){
+					((RunnableGuildCommand) applicationHolder).run(options, (GuildInteraction) interaction);
+				}
+				else{
+					reply(interaction, true).content("This slash command is not available in dms. Surruwu").queue();
+				}
 			}
 			catch(Exception e){
 				reply(interaction).ephemeral().content(e.getMessage()).type(InteractionResponseType.ACKNOWLEDGE).queue();

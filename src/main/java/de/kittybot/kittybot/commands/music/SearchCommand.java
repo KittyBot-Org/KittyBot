@@ -1,17 +1,16 @@
 package de.kittybot.kittybot.commands.music;
 
 import de.kittybot.kittybot.slashcommands.application.Category;
-import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
-import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
+import de.kittybot.kittybot.slashcommands.application.RunGuildCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
-import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
+import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.annotations.Ignore;
 
 @SuppressWarnings("unused")
 @Ignore
-public class SearchCommand extends Command implements RunnableCommand{
+public class SearchCommand extends RunGuildCommand{
 
 	public SearchCommand(){
 		super("search", "Searched for a given search-term on yt/sc", Category.MUSIC);
@@ -26,9 +25,9 @@ public class SearchCommand extends Command implements RunnableCommand{
 	}
 
 	@Override
-	public void run(Options options, CommandContext ctx){
+	public void run(Options options, GuildInteraction ia){
 		// TODO implement
-		ctx.error("not implemented yet");
+		ia.error("not implemented yet");
 	}
 
 }

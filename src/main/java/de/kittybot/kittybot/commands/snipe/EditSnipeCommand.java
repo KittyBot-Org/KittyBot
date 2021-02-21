@@ -3,42 +3,41 @@ package de.kittybot.kittybot.commands.snipe;
 import de.kittybot.kittybot.modules.MessageModule;
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.slashcommands.application.Category;
-import de.kittybot.kittybot.slashcommands.application.Command;
-import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
-import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.slashcommands.application.RunGuildCommand;
+import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
+import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.Colors;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.Color;
 
 @SuppressWarnings("unused")
-public class EditSnipeCommand extends Command implements RunnableCommand{
+public class EditSnipeCommand extends RunGuildCommand{
 
 	public EditSnipeCommand(){
 		super("editsnipe", "Snipes the last edited message", Category.SNIPE);
 	}
 
 	@Override
-	public void run(Options options, CommandContext ctx){
-		var settings = ctx.get(SettingsModule.class).getSettings(ctx.getGuildId());
+	public void run(Options options, GuildInteraction ia){
+		var settings = ia.get(SettingsModule.class).getSettings(ia.getGuildId());
 		if(!settings.areSnipesEnabled()){
-			ctx.error("Snipes are disabled for this guild");
+			ia.error("Snipes are disabled for this guild");
 		}
-		if(settings.areSnipesDisabledInChannel(ctx.getChannelId())){
-			ctx.error("Snipes are disabled for this channel");
+		if(settings.areSnipesDisabledInChannel(ia.getChannelId())){
+			ia.error("Snipes are disabled for this channel");
 		}
-		var lastEditedMessage = ctx.get(MessageModule.class).getLastEditedMessage(ctx.getChannelId());
+		var lastEditedMessage = ia.get(MessageModule.class).getLastEditedMessage(ia.getChannelId());
 		if(lastEditedMessage == null){
-			ctx.reply(new EmbedBuilder().setColor(Color.RED).setDescription("There are no edited messages to snipe"));
+			ia.reply(new EmbedBuilder().setColor(Color.RED).setDescription("There are no edited messages to snipe"));
 			return;
 		}
-		ctx.getJDA().retrieveUserById(lastEditedMessage.getAuthorId()).queue(user ->
-			ctx.reply(new EmbedBuilder()
+		ia.getJDA().retrieveUserById(lastEditedMessage.getAuthorId()).queue(user ->
+			ia.reply(new EmbedBuilder()
 				.setColor(Colors.KITTYBOT_BLUE)
 				.setAuthor(user.getName(), lastEditedMessage.getJumpUrl(), user.getEffectiveAvatarUrl())
 				.setDescription(lastEditedMessage.getContent())
-				.setFooter(ctx.getMember().getEffectiveName(), ctx.getUser().getEffectiveAvatarUrl())
+				.setFooter(ia.getMember().getEffectiveName(), ia.getUser().getEffectiveAvatarUrl())
 				.setTimestamp(lastEditedMessage.getTimeCreated())
 				.build()
 			)
