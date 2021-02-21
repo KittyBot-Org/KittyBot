@@ -37,7 +37,7 @@ dependencies {
         exclude group: 'com.sedmelluq', module: 'lavaplayer'
     }
     implementation 'com.sedmelluq:lavaplayer:1.3.71'
-    implementation 'se.michaelthelin.spotify:spotify-web-api-java:6.5.1'
+    implementation 'se.michaelthelin.spotify:spotify-web-api-java:6.5.2'
 
     // database
     implementation 'com.zaxxer:HikariCP:4.0.2'
