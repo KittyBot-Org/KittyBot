@@ -102,7 +102,7 @@ public class InteractionsModule extends Module{
 				if(applicationHolder instanceof RunnableCommand){
 					((RunnableCommand) applicationHolder).run(options, interaction);
 				}
-				else if(interaction instanceof  GuildInteraction){
+				else if(interaction instanceof GuildInteraction){
 					((RunnableGuildCommand) applicationHolder).run(options, (GuildInteraction) interaction);
 				}
 				else{
