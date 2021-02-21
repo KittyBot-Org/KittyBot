@@ -9,8 +9,9 @@ import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteg
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionLong;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
-import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
+import de.kittybot.kittybot.slashcommands.interaction.Interaction;
+import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.slashcommands.interaction.response.FollowupMessage;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
 import de.kittybot.kittybot.utils.Colors;
@@ -52,29 +53,25 @@ public class DevCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
+		public void run(Options options, Interaction ia){
 			var environment = options.getInt("environment");
 			if(environment == 0){
-				ctx.reply(new InteractionResponse.Builder().ephemeral().setContent("processing...").build());
-				ctx.getModules().schedule(() -> {
-					var commandsModule = ctx.get(CommandsModule.class);
-					commandsModule.deleteAllCommands(-1L);
-					commandsModule.deployAllCommands(-1L);
-					ctx.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setColor(Colors.KITTYBOT_BLUE).setDescription("Deployed slash commands globally").build()).build());
+				ia.reply(new InteractionResponse.Builder().ephemeral().setContent("processing...").build());
+				ia.getModules().schedule(() -> {
+					ia.get(CommandsModule.class).deployAllCommands(-1L);
+					ia.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setColor(Colors.KITTYBOT_BLUE).setDescription("Deployed slash commands globally").build()).build());
 				}, 0, TimeUnit.SECONDS);
 				return;
 			}
-			var guildId = options.has("guild") ? options.getLong("guild") : ctx.getGuildId();
-			if(guildId == -1){
-				ctx.error("Please provide a valid guild id");
+			var guildId = options.has("guild") ? options.getLong("guild") : ia instanceof GuildInteraction ? ((GuildInteraction)ia).getGuildId() : -1L;
+			if(guildId == -1L){
+				ia.error("Please provide a valid guild id");
 				return;
 			}
-			ctx.reply(new InteractionResponse.Builder().ephemeral().setContent("processing...").build());
-			ctx.getModules().schedule(() -> {
-				var commandsModule = ctx.get(CommandsModule.class);
-				commandsModule.deleteAllCommands(guildId);
-				commandsModule.deployAllCommands(guildId);
-				ctx.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setColor(Colors.KITTYBOT_BLUE).setDescription("Deployed slash commands for guild `" + guildId + "`").build()).build());
+			ia.reply(new InteractionResponse.Builder().ephemeral().setContent("processing...").build());
+			ia.getModules().schedule(() -> {
+				ia.get(CommandsModule.class).deployAllCommands(guildId);
+				ia.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setColor(Colors.KITTYBOT_BLUE).setDescription("Deployed slash commands for guild `" + guildId + "`").build()).build());
 			}, 0, TimeUnit.SECONDS);
 		}
 
@@ -96,31 +93,31 @@ public class DevCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
+		public void run(Options options, Interaction ia){
 			var environment = options.getInt("environment");
 			if(environment == 0){
 				if(Environment.getCurrentEnv() == Environment.PRODUCTION){
-					ctx.reply(new InteractionResponse.Builder().ephemeral().setContent("Removing commands globally in production is not allowed sorry :3").build());
+					ia.reply(new InteractionResponse.Builder().ephemeral().setContent("Removing commands globally in production is not allowed sorry :3").build());
 					return;
 				}
-				ctx.reply(new InteractionResponse.Builder().ephemeral().setContent("processing...").build());
-				ctx.getModules().schedule(() -> {
-					var commandsModule = ctx.get(CommandsModule.class);
+				ia.reply(new InteractionResponse.Builder().ephemeral().setContent("processing...").build());
+				ia.getModules().schedule(() -> {
+					var commandsModule = ia.get(CommandsModule.class);
 					commandsModule.deleteAllCommands(-1L);
-					ctx.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setColor(Colors.KITTYBOT_BLUE).setDescription("Removed slash commands globally").build()).build());
+					ia.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setColor(Colors.KITTYBOT_BLUE).setDescription("Removed slash commands globally").build()).build());
 				}, 0, TimeUnit.SECONDS);
 				return;
 			}
-			var guildId = options.has("guild") ? options.getLong("guild") : ctx.getGuildId();
+			var guildId = options.has("guild") ? options.getLong("guild") : ia instanceof GuildInteraction ? ((GuildInteraction)ia).getGuildId() : -1L;
 			if(guildId == -1){
-				ctx.error("Please provide a valid guild id");
+				ia.error("Please provide a valid guild id");
 				return;
 			}
-			ctx.reply(new InteractionResponse.Builder().ephemeral().setContent("processing...").build());
-			ctx.getModules().schedule(() -> {
-				var commandsModule = ctx.get(CommandsModule.class);
+			ia.reply(new InteractionResponse.Builder().ephemeral().setContent("processing...").build());
+			ia.getModules().schedule(() -> {
+				var commandsModule = ia.get(CommandsModule.class);
 				commandsModule.deleteAllCommands(guildId);
-				ctx.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setColor(Colors.KITTYBOT_BLUE).setDescription("Removed slash commands for guild `" + guildId + "`").build()).build());
+				ia.followup(new FollowupMessage.Builder().setEmbeds(new EmbedBuilder().setColor(Colors.KITTYBOT_BLUE).setDescription("Removed slash commands for guild `" + guildId + "`").build()).build());
 			}, 0, TimeUnit.SECONDS);
 		}
 
@@ -137,15 +134,15 @@ public class DevCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
+		public void run(Options options, Interaction ia){
 			var message = options.getString("message");
 			var embed = new EmbedBuilder()
 				.setColor(Colors.KITTYBOT_BLUE)
-				.setAuthor("KittyBot Update", ctx.getJDA().getSelfUser().getEffectiveAvatarUrl(), Config.ORIGIN_URL)
+				.setAuthor("KittyBot Update", ia.getJDA().getSelfUser().getEffectiveAvatarUrl(), Config.ORIGIN_URL)
 				.setDescription(message)
 				.setTimestamp(Instant.now())
 				.build();
-			ctx.getModules().getShardManager().getGuildCache().forEach(guild -> {
+			ia.getModules().getShardManager().getGuildCache().forEach(guild -> {
 				var channel = guild.getDefaultChannel();
 				if(channel == null){
 					return;

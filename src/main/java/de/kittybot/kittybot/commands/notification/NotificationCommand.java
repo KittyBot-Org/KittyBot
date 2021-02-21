@@ -7,9 +7,9 @@ import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionTime;
-import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
-import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
+import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
+import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.TimeUtils;
@@ -31,7 +31,7 @@ public class NotificationCommand extends Command{
 		);
 	}
 
-	private static class CreateCommand extends SubCommand{
+	private static class CreateCommand extends GuildSubCommand{
 
 		public CreateCommand(){
 			super("create", "Creates a notification");
@@ -43,32 +43,32 @@ public class NotificationCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
+		public void run(Options options, GuildInteraction ia){
 			var time = options.getTime("time");
 			if(time.isBefore(LocalDateTime.now())){
-				ctx.error("Please provide a valid time or duration in this format: ");
+				ia.error("Please provide a valid time or duration in this format: ");
 				return;
 			}
 			var message = options.getString("message");
-			var notif = ctx.get(NotificationModule.class).create(
-				ctx.getGuildId(),
-				ctx.getChannelId(),
+			var notif = ia.get(NotificationModule.class).create(
+				ia.getGuildId(),
+				ia.getChannelId(),
 				-1,
-				ctx.getUser().getIdLong(),
+				ia.getUser().getIdLong(),
 				message,
 				time
 			);
 			if(notif == null){
-				ctx.error("There was an unexpected error while creating your notification");
+				ia.error("There was an unexpected error while creating your notification");
 				return;
 			}
-			ctx.reply("Notification at `" + TimeUtils.formatDuration(notif.getCreatedAt().until(notif.getNotificationTime(), ChronoUnit.MILLIS)) + "` created with id: `" + notif.getId() + "`");
+			ia.reply("Notification at `" + TimeUtils.formatDuration(notif.getCreatedAt().until(notif.getNotificationTime(), ChronoUnit.MILLIS)) + "` created with id: `" + notif.getId() + "`");
 
 		}
 
 	}
 
-	private static class DeleteCommand extends SubCommand{
+	private static class DeleteCommand extends GuildSubCommand{
 
 		public DeleteCommand(){
 			super("delete", "Deletes a notification");
@@ -78,29 +78,29 @@ public class NotificationCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
+		public void run(Options options, GuildInteraction ia){
 			var notificationId = options.getLong("notification-id");
-			if(ctx.get(NotificationModule.class).delete(notificationId, ctx.getUserId())){
-				ctx.reply("Deleted your notification with id `" + notificationId + "`");
+			if(ia.get(NotificationModule.class).delete(notificationId, ia.getUserId())){
+				ia.reply("Deleted your notification with id `" + notificationId + "`");
 				return;
 			}
-			ctx.error("Notification either does not exist or does not belong to you");
+			ia.error("Notification either does not exist or does not belong to you");
 		}
 
 	}
 
-	private static class ListCommand extends SubCommand{
+	private static class ListCommand extends GuildSubCommand{
 
 		public ListCommand(){
 			super("list", "Lists your notifications");
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
-			var notifs = ctx.get(NotificationModule.class).get(ctx.getUserId());
+		public void run(Options options, GuildInteraction ia){
+			var notifs = ia.get(NotificationModule.class).get(ia.getUserId());
 
 			if(notifs.isEmpty()){
-				ctx.reply("You have no notifications");
+				ia.reply("You have no notifications");
 				return;
 			}
 
@@ -117,9 +117,9 @@ public class NotificationCommand extends Command{
 			}
 			pages.add(notifMessage.toString());
 
-			ctx.acknowledge(true).queue(success -> ctx.get(PaginatorModule.class).create(
-				ctx.getChannel(),
-				ctx.getUserId(),
+			ia.acknowledge(true).queue(success -> ia.get(PaginatorModule.class).create(
+				ia.getChannel(),
+				ia.getUserId(),
 				pages.size(),
 				(page, embedBuilder) -> embedBuilder
 					.setColor(Colors.KITTYBOT_BLUE)

@@ -2,6 +2,7 @@ package de.kittybot.kittybot.modules;
 
 import de.kittybot.kittybot.objects.enums.API;
 import de.kittybot.kittybot.objects.enums.Language;
+import de.kittybot.kittybot.objects.enums.Neko;
 import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.utils.Config;
@@ -90,8 +91,8 @@ public class RequestModule extends Module{
 		});
 	}
 
-	public String getNeko(boolean nsfw, String type, String imageType){
-		var url = String.format(API.PURR_BOT.getUrl(), nsfw ? "nsfw" : "sfw", type, imageType);
+	public String getNeko(Neko neko){
+		var url = String.format(API.PURR_BOT.getUrl(), neko.isNsfw() ? "nsfw" : "sfw", neko.getName(), neko.isGIF() ? "gif" : "img");
 		this.requestBuilder.url(url);
 		this.requestBuilder.method("GET", null);
 		var json = DataObject.fromJson(executeRequest(this.requestBuilder.build()));

@@ -58,7 +58,7 @@ public class CommandsModule extends Module{
 	public void scanCommands(){
 		LOG.info("Loading commands...");
 		try(var result = new ClassGraph().acceptPackages(COMMANDS_PACKAGE).enableAnnotationInfo().scan()){
-			this.commands = result.getSubclasses(Command.class.getName()).stream()
+			this.commands = result.getAllClasses().stream()
 				.filter(cls -> !cls.hasAnnotation(Ignore.class.getName()))
 				.map(ClassInfo::loadClass)
 				.filter(Command.class::isAssignableFrom)
@@ -87,7 +87,7 @@ public class CommandsModule extends Module{
 		try(var resp = put(route, rqBody).execute()){
 			if(!resp.isSuccessful()){
 				var body = resp.body();
-				LOG.error("Registering commands failed. Body: {}", body == null ? "null" : body.string());
+				LOG.error("Registering commands failed. Request Body: {}, Response Body: {}", commands.toString(), body == null ? "null" : body.string());
 				return;
 			}
 		}
