@@ -16,7 +16,8 @@ public class InfoCommand extends Command{
 			new GuildIconCommand(),
 			new GuildBannerCommand(),
 			new DashboardCommand(),
-			new PrivacyCommand()
+			new PrivacyCommand(),
+			new PingCommand()
 		);
 	}
 
