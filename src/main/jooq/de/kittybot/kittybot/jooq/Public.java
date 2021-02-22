@@ -22,6 +22,7 @@ import de.kittybot.kittybot.jooq.tables.SnipeDisabledChannels;
 import de.kittybot.kittybot.jooq.tables.StreamUserEvents;
 import de.kittybot.kittybot.jooq.tables.StreamUsers;
 import de.kittybot.kittybot.jooq.tables.UserStatistics;
+import de.kittybot.kittybot.jooq.tables.Voters;
 
 import java.util.Arrays;
 import java.util.List;
@@ -136,6 +137,11 @@ public class Public extends SchemaImpl {
     public final UserStatistics USER_STATISTICS = UserStatistics.USER_STATISTICS;
 
     /**
+     * The table <code>public.voters</code>.
+     */
+    public final Voters VOTERS = Voters.VOTERS;
+
+    /**
      * No further instances allowed
      */
     private Public() {
@@ -167,7 +173,8 @@ public class Public extends SchemaImpl {
             Sequences.SNIPE_DISABLED_CHANNELS_ID_SEQ,
             Sequences.STREAM_USER_EVENTS_ID_SEQ,
             Sequences.STREAM_USERS_ID_SEQ,
-            Sequences.USER_STATISTICS_ID_SEQ);
+            Sequences.USER_STATISTICS_ID_SEQ,
+            Sequences.VOTERS_ID_SEQ);
     }
 
     @Override
@@ -190,6 +197,7 @@ public class Public extends SchemaImpl {
             SnipeDisabledChannels.SNIPE_DISABLED_CHANNELS,
             StreamUserEvents.STREAM_USER_EVENTS,
             StreamUsers.STREAM_USERS,
-            UserStatistics.USER_STATISTICS);
+            UserStatistics.USER_STATISTICS,
+            Voters.VOTERS);
     }
 }
