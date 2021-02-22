@@ -1,4 +1,4 @@
-package de.kittybot.kittybot.web.webhooks.top.gg;
+package de.kittybot.kittybot.web.webhooks.votes;
 
 import de.kittybot.kittybot.modules.WebModule;
 import de.kittybot.kittybot.objects.module.Modules;
@@ -9,11 +9,11 @@ import io.javalin.http.Handler;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.jetbrains.annotations.NotNull;
 
-public class PostTopGGVoteRoute implements Handler{
+public class PostVotesTopGGRoute implements Handler{
 
 	private final Modules modules;
 
-	public PostTopGGVoteRoute(Modules modules){
+	public PostVotesTopGGRoute(Modules modules){
 		this.modules = modules;
 	}
 

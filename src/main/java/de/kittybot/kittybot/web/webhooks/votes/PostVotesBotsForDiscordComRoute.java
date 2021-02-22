@@ -1,4 +1,4 @@
-package de.kittybot.kittybot.web.webhooks.botsfordiscord.com;
+package de.kittybot.kittybot.web.webhooks.votes;
 
 import de.kittybot.kittybot.objects.module.Modules;
 import io.javalin.http.Context;
@@ -6,11 +6,11 @@ import io.javalin.http.Handler;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.jetbrains.annotations.NotNull;
 
-public class PostBotsfordiscordComVoteRoute implements Handler{
+public class PostVotesBotsForDiscordComRoute implements Handler{
 
 	private final Modules modules;
 
-	public PostBotsfordiscordComVoteRoute(Modules modules){
+	public PostVotesBotsForDiscordComRoute(Modules modules){
 		this.modules = modules;
 	}
 

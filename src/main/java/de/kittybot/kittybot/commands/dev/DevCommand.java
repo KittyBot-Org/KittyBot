@@ -96,7 +96,7 @@ public class DevCommand extends Command{
 		public void run(Options options, Interaction ia){
 			var environment = options.getInt("environment");
 			if(environment == 0){
-				if(Environment.getCurrentEnv() == Environment.PRODUCTION){
+				if(Environment.getCurrent() == Environment.PRODUCTION){
 					ia.reply(new InteractionResponse.Builder().ephemeral().setContent("Removing commands globally in production is not allowed sorry :3").build());
 					return;
 				}

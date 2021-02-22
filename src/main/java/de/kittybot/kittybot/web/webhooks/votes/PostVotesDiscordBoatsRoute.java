@@ -1,4 +1,4 @@
-package de.kittybot.kittybot.web.webhooks.discord.boats;
+package de.kittybot.kittybot.web.webhooks.votes;
 
 import de.kittybot.kittybot.objects.module.Modules;
 import io.javalin.http.Context;
@@ -6,11 +6,11 @@ import io.javalin.http.Handler;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.jetbrains.annotations.NotNull;
 
-public class PostDiscordBoatsVoteRoute implements Handler{
+public class PostVotesDiscordBoatsRoute implements Handler{
 
 	private final Modules modules;
 
-	public PostDiscordBoatsVoteRoute(Modules modules){
+	public PostVotesDiscordBoatsRoute(Modules modules){
 		this.modules = modules;
 	}
 

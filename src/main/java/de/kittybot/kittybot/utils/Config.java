@@ -109,14 +109,14 @@ public class Config{
 		SPOTIFY_CLIENT_ID = json.getString("spotify_client_id", "");
 		SPOTIFY_CLIENT_SECRET = json.getString("spotify_client_secret", "");
 
-		DISCORD_BOTS_TOKEN = json.getString("discord_bots_token", "");
-		TOP_GG_TOKEN = json.getString("top_gg_token", "");
-		DISCORD_EXTREME_LIST_TOKEN = json.getString("discord_extreme_list_token", "");
-		DISCORD_BOATS_TOKEN = json.getString("discord_boats_token", "");
-		BOTLIST_SPACE_TOKEN = json.getString("botlist_space_token", "");
-		BOTS_FOR_DISCORD_TOKEN = json.getString("bots_for_discord_token", "");
-		DISCORDBOTLIST_TOKEN = json.getString("discordbotlist_token", "");
-		DISCORD_SERVICES_TOKEN = json.getString("discord_services_token", "");
+		DISCORD_BOTS_TOKEN = getBotListToken(json, "discord_bots_token");
+		TOP_GG_TOKEN = getBotListToken(json, "top_gg_token");
+		DISCORD_EXTREME_LIST_TOKEN = getBotListToken(json, "discord_extreme_list_token");
+		DISCORD_BOATS_TOKEN = getBotListToken(json, "discord_boats_token");
+		BOTLIST_SPACE_TOKEN = getBotListToken(json, "botlist_space_token");
+		BOTS_FOR_DISCORD_TOKEN = getBotListToken(json, "bots_for_discord_token");
+		DISCORDBOTLIST_TOKEN = getBotListToken(json, "discordbotlist_token");
+		DISCORD_SERVICES_TOKEN = getBotListToken(json, "discord_services_token");
 
 		DB_HOST = json.getString("db_host", "");
 		DB_PORT = json.getString("db_port", "");
@@ -156,5 +156,12 @@ public class Config{
 		);
 	}
 
+	private static String getBotListToken(DataObject json, String key){
+		var token = json.getString(key, "");
+		if(token.isBlank()){
+			return "some-totally-not-empty-token-cane";
+		}
+		return token;
+	}
 
 }

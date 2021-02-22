@@ -1,4 +1,4 @@
-package de.kittybot.kittybot.web.webhooks.botlist.space;
+package de.kittybot.kittybot.web.webhooks.votes;
 
 import de.kittybot.kittybot.objects.module.Modules;
 import io.javalin.http.Context;
@@ -6,17 +6,18 @@ import io.javalin.http.Handler;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.jetbrains.annotations.NotNull;
 
-public class PostBotlistSpaceVoteRoute implements Handler{
+public class PostVotesBotlistSpaceRoute implements Handler{
 
 	private final Modules modules;
 
-	public PostBotlistSpaceVoteRoute(Modules modules){
+	public PostVotesBotlistSpaceRoute(Modules modules){
 		this.modules = modules;
 	}
 
 	@Override
 	public void handle(@NotNull Context ctx){
 		var json = DataObject.fromJson(ctx.bodyAsBytes());
+
 		// every 24h
 		/*
 		{

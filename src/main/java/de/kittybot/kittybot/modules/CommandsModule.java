@@ -48,7 +48,7 @@ public class CommandsModule extends Module{
 	@Override
 	public void onEnable(){
 		scanCommands();
-		var env = Environment.getCurrentEnv();
+		var env = Environment.getCurrent();
 		if(env == Environment.PRODUCTION){
 			deployAllCommands(-1L);
 		}

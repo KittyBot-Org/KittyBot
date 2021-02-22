@@ -23,11 +23,11 @@ import de.kittybot.kittybot.web.login.DeleteLoginRoute;
 import de.kittybot.kittybot.web.login.PostLoginRoute;
 import de.kittybot.kittybot.web.shards.GetShardsRoute;
 import de.kittybot.kittybot.web.user.GetUserInfoRoute;
-import de.kittybot.kittybot.web.webhooks.botlist.space.PostBotlistSpaceVoteRoute;
-import de.kittybot.kittybot.web.webhooks.botsfordiscord.com.PostBotsfordiscordComVoteRoute;
-import de.kittybot.kittybot.web.webhooks.discord.boats.PostDiscordBoatsVoteRoute;
-import de.kittybot.kittybot.web.webhooks.discordbotlist.com.PostDiscordBotListComVoteRoute;
-import de.kittybot.kittybot.web.webhooks.top.gg.PostTopGGVoteRoute;
+import de.kittybot.kittybot.web.webhooks.votes.PostVotesBotlistSpaceRoute;
+import de.kittybot.kittybot.web.webhooks.votes.PostVotesBotsForDiscordComRoute;
+import de.kittybot.kittybot.web.webhooks.votes.PostVotesDiscordBoatsRoute;
+import de.kittybot.kittybot.web.webhooks.votes.PostVotesDiscordBotListComRoute;
+import de.kittybot.kittybot.web.webhooks.votes.PostVotesTopGGRoute;
 import io.javalin.Javalin;
 import io.javalin.http.*;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -107,23 +107,15 @@ public class WebModule extends Module{
 				before("/*", this::checkDiscordLogin);
 				get(new GetUserInfoRoute(this.modules));
 			});
-			path("/webhooks", () -> {
-				path("/top_gg", () ->
-					post(new PostTopGGVoteRoute(this.modules))
-				);
-				path("/botlist_space", () ->
-					post(new PostBotlistSpaceVoteRoute(this.modules))
-				);
-				path("/discord_boats", () ->
-					post(new PostDiscordBoatsVoteRoute(this.modules))
-				);
-				path("/botsfordiscord_com", () ->
-					post(new PostBotsfordiscordComVoteRoute(this.modules))
-				);
-				path("/discordbotlist_com", () ->
-					post(new PostDiscordBotListComVoteRoute(this.modules))
-				);
-			});
+			path("/webhooks", () ->
+				path("/votes", () -> {
+					post("top_gg", new PostVotesTopGGRoute(this.modules));
+					post("/botlist_space", new PostVotesBotlistSpaceRoute(this.modules));
+					post("/discord_boats", new PostVotesDiscordBoatsRoute(this.modules));
+					post("/bots_for_discord_com", new PostVotesBotsForDiscordComRoute(this.modules));
+					post("/discord_bot_list_com", new PostVotesDiscordBotListComRoute(this.modules));
+				})
+			);
 			path("/guilds", () -> {
 				before("/*", this::checkDiscordLogin);
 				get(new GetAllGuildsRoute(this.modules));
