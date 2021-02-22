@@ -22,7 +22,7 @@ public enum Neko{
 	POKE("poke", false, true),
 	SENKO("senko", false, false),
 	SLAP("slap", false, true),
-	SMILE( "smile", false, true),
+	SMILE("smile", false, true),
 	TAIL("tail", false, true),
 	FLUFF("fluff", false, true),
 

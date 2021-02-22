@@ -3,7 +3,6 @@ package de.kittybot.kittybot.slashcommands.interaction;
 import club.minnced.discord.webhook.receive.ReadonlyMessage;
 import de.kittybot.kittybot.modules.InteractionsModule;
 import de.kittybot.kittybot.objects.enums.Emoji;
-import de.kittybot.kittybot.objects.exceptions.ModuleNotFoundException;
 import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.objects.module.Modules;
 import de.kittybot.kittybot.slashcommands.interaction.response.FollowupMessage;
@@ -135,6 +134,14 @@ public class Interaction{
 		return this.jda;
 	}
 
+	public void reply(String message){
+		this.modules.get(InteractionsModule.class).reply(this).embeds(getSuccessEmbed().setDescription(message).build()).queue();
+	}
+
+	public EmbedBuilder getSuccessEmbed(){
+		return getEmbed().setColor(Colors.KITTYBOT_BLUE);
+	}
+
 	public EmbedBuilder getEmbed(){
 		return applyDefaultStyle(new EmbedBuilder());
 	}
@@ -148,14 +155,6 @@ public class Interaction{
 			name = user.getName();
 		}
 		return embedBuilder.setFooter(name, user.getEffectiveAvatarUrl()).setTimestamp(Instant.now());
-	}
-
-	public EmbedBuilder getSuccessEmbed(){
-		return getEmbed().setColor(Colors.KITTYBOT_BLUE);
-	}
-
-	public void reply(String message){
-		this.modules.get(InteractionsModule.class).reply(this).embeds(getSuccessEmbed().setDescription(message).build()).queue();
 	}
 
 	public void reply(EmbedBuilder embed){

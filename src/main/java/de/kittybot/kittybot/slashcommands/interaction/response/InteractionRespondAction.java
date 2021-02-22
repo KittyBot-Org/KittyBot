@@ -1,6 +1,5 @@
 package de.kittybot.kittybot.slashcommands.interaction.response;
 
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
 import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;

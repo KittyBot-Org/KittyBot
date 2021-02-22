@@ -6,10 +6,10 @@ import de.kittybot.kittybot.slashcommands.application.CommandOptionsHolder;
 import de.kittybot.kittybot.slashcommands.application.PermissionHolder;
 import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
 import de.kittybot.kittybot.slashcommands.application.RunnableGuildCommand;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
 import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import de.kittybot.kittybot.slashcommands.interaction.InteractionOptionsHolder;
+import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.slashcommands.interaction.response.FollowupMessage;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionRespondAction;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponseType;
@@ -44,38 +44,48 @@ public class InteractionsModule extends Module{
 
 	@Override
 	public void onRawGateway(@NotNull RawGatewayEvent event){
-		if(event.getType().equals(INTERACTION_CREATE)){
-			var start = System.currentTimeMillis();
+		if(!event.getType().equals(INTERACTION_CREATE)){
+			return;
+		}
+		System.out.println(event.getPayload().toString());
+		var start = System.currentTimeMillis();
 
-			var interaction = Interaction.fromJSON(this.modules, event.getPayload(), event.getJDA());
+		var interaction = Interaction.fromJSON(this.modules, event.getPayload(), event.getJDA());
 
-			if(interaction instanceof GuildInteraction){
-				var guildInteraction = (GuildInteraction) interaction;
-				var settings = this.modules.get(SettingsModule.class).getSettings(guildInteraction.getGuild().getIdLong());
+		if(interaction instanceof GuildInteraction){
+			var guildInteraction = (GuildInteraction) interaction;
+			var settings = this.modules.get(SettingsModule.class).getSettings(guildInteraction.getGuild().getIdLong());
 
-				if(settings.isBotIgnoredUser(guildInteraction.getMember().getIdLong())){
-					reply(interaction, false).content("I ignore u baka").ephemeral().queue();
-					return;
-				}
-
-				if(settings.isBotDisabledInChannel(interaction.getChannelId())){
-					reply(interaction, false).content("I'm disabled in this channel").ephemeral().queue();
-					return;
-				}
-			}
-
-			var data = interaction.getData();
-			var cmd = this.modules.get(CommandsModule.class).getCommands().get(data.getName());
-			if(cmd == null){
-				LOG.error("Could not process interaction: {}", event.getPayload());
-				reply(interaction).ephemeral().content("Nani u discovered a secret don't tell anyone(This command does not exist anymore)").queue();
+			if(settings.isBotIgnoredUser(guildInteraction.getMember().getIdLong())){
+				reply(interaction, false).content("I ignore u baka").ephemeral().queue();
 				return;
 			}
-			process(cmd, interaction, data);
 
+			if(settings.isBotDisabledInChannel(interaction.getChannelId())){
+				reply(interaction, false).content("I'm disabled in this channel").ephemeral().queue();
+				return;
+			}
+		}
+
+		var data = interaction.getData();
+		var cmd = this.modules.get(CommandsModule.class).getCommands().get(data.getName());
+		if(cmd != null){
+			process(cmd, interaction, data);
 			Metrics.COMMAND_LATENCY.labels(cmd.getName()).set(System.currentTimeMillis() - start);
 			Metrics.COMMAND_COUNTER.labels(cmd.getName()).inc();
+			return;
 		}
+		var tag = this.modules.get(TagsModule.class).getPublishedTagById(data.getId());
+		if(tag != null){
+			if(!(interaction instanceof GuildInteraction)){
+				LOG.error("Guild Tag command received from dms???? guild: {} command: {}", tag.getGuildId(), tag.getCommandId());
+				return;
+			}
+			tag.process((GuildInteraction) interaction);
+			return;
+		}
+		LOG.error("Could not process interaction: {}", event.getPayload());
+		reply(interaction).ephemeral().content("Nani u discovered a secret don't tell anyone(This command does not exist anymore)").queue();
 	}
 
 	public void process(CommandOptionsHolder applicationHolder, Interaction interaction, InteractionOptionsHolder holder){
@@ -89,7 +99,7 @@ public class InteractionsModule extends Module{
 			if(interaction instanceof GuildInteraction){
 				var guildInteraction = (GuildInteraction) interaction;
 				var missingPerms = permHolder.getPermissions().stream().dropWhile(guildInteraction.getMember().getPermissions()::contains).collect(Collectors.toSet());
-				if(!missingPerms.isEmpty()){
+				if(!missingPerms.isEmpty() && Config.DEV_IDS.contains(interaction.getUserId())){
 					reply(interaction).ephemeral().content("You are missing following permissions to use this command:\n" + missingPerms.stream().map(Permission::getName).collect(Collectors.joining(", "))).withSource(false).queue();
 					return;
 				}

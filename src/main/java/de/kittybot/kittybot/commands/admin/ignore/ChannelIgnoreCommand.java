@@ -7,8 +7,6 @@ import de.kittybot.kittybot.slashcommands.application.options.SubCommandGroup;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.MessageUtils;
-import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.stream.Collectors;
 
