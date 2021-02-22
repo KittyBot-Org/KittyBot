@@ -9,7 +9,7 @@ public enum BotList{
 
 	DISCORD_BOATS("Discord Boats", "https://discord.boats", Config.DISCORD_BOATS_TOKEN, 12, ChronoUnit.HOURS, "/bot/%s"),
 	BOTLIST_SPACE("botlist.space", "https://botlist.space", Config.BOTLIST_SPACE_TOKEN, 1, ChronoUnit.DAYS, "/bot/%s"),
-	BOTS_FOR_DISCORD_COM("Bots For Discord", "https://botsfordiscord.com", Config.BOTS_FOR_DISCORD_TOKEN, 1, ChronoUnit.DAYS, "/bot/%s"),
+	BOTS_FOR_DISCORD_COM("Bots For Discord", "https://botsfordiscord.com", Config.BOTS_FOR_DISCORD_WEBHOOK_TOKEN, 1, ChronoUnit.DAYS, "/bot/%s"),
 	DISCORD_BOTS_GG("Discord Bots", "https://discord.bots.gg"),
 	TOP_GG("Top.gg", "https://top.gg", Config.TOP_GG_TOKEN, 12, ChronoUnit.HOURS, "/bot/%s"),
 	DISCORD_EXTREME_LIST_XYZ("Delly", "https://discordextremelist.xyz"),
