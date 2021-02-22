@@ -99,4 +99,9 @@ public class Sequences {
      * The sequence <code>public.user_statistics_id_seq</code>
      */
     public static final Sequence<Long> USER_STATISTICS_ID_SEQ = Internal.createSequence("user_statistics_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.voters_id_seq</code>
+     */
+    public static final Sequence<Long> VOTERS_ID_SEQ = Internal.createSequence("voters_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 }

@@ -40,7 +40,6 @@ public class LavalinkModule extends Module{
 		return this.lavalink.getExistingLink(guildId);
 	}
 
-
 	public JdaLavalink getLavalink(){
 		return this.lavalink;
 	}
