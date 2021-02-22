@@ -41,6 +41,9 @@ public abstract class CommandOption<T> implements CommandOptionsHolder{
 	public abstract T parseValue(Object value);
 
 	public CommandOption<?> addChoices(CommandOptionChoice<?>... choices){
+		if(this.choices.size() + choices.length > 25){
+			throw new IllegalArgumentException("Options can have up to 25 choices");
+		}
 		this.choices.addAll(List.of(choices));
 		return this;
 	}

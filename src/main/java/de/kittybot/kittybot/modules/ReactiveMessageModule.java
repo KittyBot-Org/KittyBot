@@ -5,7 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
 import de.kittybot.kittybot.objects.data.ReactiveMessage;
 import de.kittybot.kittybot.objects.module.Module;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
+import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
 
 import java.util.concurrent.TimeUnit;
 
@@ -22,10 +22,10 @@ public class ReactiveMessageModule extends Module{
 		reactiveMessages.invalidate(responseId);
 	}
 
-	public void add(CommandContext ctx, long responseId, long allowed){
+	public void add(GuildInteraction ia, long responseId, long allowed){
 		reactiveMessages.put(
 			responseId,
-			new ReactiveMessage(ctx.getGuildId(), ctx.getChannelId(), -1, responseId, ctx.getUser().getIdLong(), ctx.getInteraction().getData().getName(),
+			new ReactiveMessage(ia.getGuildId(), ia.getChannelId(), -1, responseId, ia.getUser().getIdLong(), ia.getData().getName(),
 				allowed
 			)
 		);

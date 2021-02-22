@@ -1,12 +1,9 @@
-package de.kittybot.kittybot.slashcommands.context;
+package de.kittybot.kittybot.slashcommands.interaction;
 
 import de.kittybot.kittybot.objects.exceptions.MissingOptionException;
 import de.kittybot.kittybot.objects.exceptions.OptionParseException;
 import de.kittybot.kittybot.slashcommands.application.CommandOption;
-import de.kittybot.kittybot.slashcommands.interaction.InteractionDataOption;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.ListedEmote;
-import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.utils.MiscUtil;
 
@@ -21,10 +18,12 @@ public class Options{
 
 	private final Map<String, CommandOption<?>> definedOptions;
 	private final Map<String, InteractionDataOption> options;
+	private final ResolvedMentions resolvedMentions;
 
-	public Options(List<CommandOption<?>> definedOptions, List<InteractionDataOption> options){
+	public Options(List<CommandOption<?>> definedOptions, List<InteractionDataOption> options, ResolvedMentions resolvedMentions){
 		this.definedOptions = definedOptions.stream().collect(Collectors.toMap(CommandOption::getName, Function.identity()));
 		this.options = options.stream().collect(Collectors.toMap(InteractionDataOption::getName, Function.identity()));
+		this.resolvedMentions = resolvedMentions;
 	}
 
 	public int size(){
@@ -35,8 +34,8 @@ public class Options{
 		return this.options.isEmpty();
 	}
 
-	public long getLong(String name){
-		return getValue(name, Long.class);
+	public String getString(String name){
+		return getValue(name, String.class);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -60,8 +59,32 @@ public class Options{
 		return getValue(name, Boolean.class);
 	}
 
-	public String getString(String name){
-		return getValue(name, String.class);
+	public Member getMember(String name){
+		return this.resolvedMentions.getMentionedMembers().get(getLong(name));
+	}
+
+	public long getLong(String name){
+		return getValue(name, Long.class);
+	}
+
+	public User getUser(String name){
+		return this.resolvedMentions.getMentionedUsers().get(getLong(name));
+	}
+
+	public GuildChannel getChannel(String name){
+		return this.resolvedMentions.getMentionedChannels().get(getLong(name));
+	}
+
+	public TextChannel getTextChannel(String name){
+		var channel = this.resolvedMentions.getMentionedChannels().get(getLong(name));
+		if(channel instanceof TextChannel){
+			return (TextChannel) channel;
+		}
+		throw new OptionParseException("Please provide a valid text channel");
+	}
+
+	public Role getRole(String name){
+		return this.resolvedMentions.getMentionedRoles().get(getLong(name));
 	}
 
 	public LocalDateTime getTime(String name){

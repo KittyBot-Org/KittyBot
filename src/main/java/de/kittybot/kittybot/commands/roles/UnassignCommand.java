@@ -2,14 +2,13 @@ package de.kittybot.kittybot.commands.roles;
 
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.slashcommands.application.Category;
-import de.kittybot.kittybot.slashcommands.application.Command;
-import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
+import de.kittybot.kittybot.slashcommands.application.RunGuildCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionRole;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
-import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
+import de.kittybot.kittybot.slashcommands.interaction.Options;
 
 @SuppressWarnings("unused")
-public class UnassignCommand extends Command implements RunnableCommand{
+public class UnassignCommand extends RunGuildCommand{
 
 	public UnassignCommand(){
 		super("unassign", "Unassigns yourself a self assignable roles", Category.ROLES);
@@ -19,32 +18,32 @@ public class UnassignCommand extends Command implements RunnableCommand{
 	}
 
 	@Override
-	public void run(Options options, CommandContext ctx){
-		var role = ctx.getGuild().getRoleById(options.getLong("role"));
+	public void run(Options options, GuildInteraction ia){
+		var role = options.getRole("role");
 		if(role == null){
-			ctx.error("Unknown role provided");
+			ia.error("Unknown role provided");
 			return;
 		}
-		var settings = ctx.get(SettingsModule.class).getSettings(ctx.getGuildId());
+		var settings = ia.get(SettingsModule.class).getSettings(ia.getGuildId());
 		var selfAssignableRoles = settings.getSelfAssignableRoles();
 		if(selfAssignableRoles == null || selfAssignableRoles.isEmpty()){
-			ctx.error("No self assignable roles configured");
+			ia.error("No self assignable roles configured");
 			return;
 		}
 
 		var selfAssignableRole = selfAssignableRoles.stream().filter(r -> role.getIdLong() == r.getRoleId()).findFirst().orElse(null);
 		if(selfAssignableRole == null){
-			ctx.error("This role is not self assignable");
+			ia.error("This role is not self assignable");
 			return;
 		}
 
-		if(!ctx.getSelfMember().canInteract(role)){
-			ctx.error("I don't have the permissions to unassign you this role");
+		if(!ia.getSelfMember().canInteract(role)){
+			ia.error("I don't have the permissions to unassign you this role");
 			return;
 		}
-		ctx.getGuild().removeRoleFromMember(ctx.getMember(), role)
+		ia.getGuild().removeRoleFromMember(ia.getMember(), role)
 			.reason("self unassigned with kittybot")
-			.queue(unused -> ctx.reply("Unassigned " + role.getAsMention()));
+			.queue(unused -> ia.reply("Unassigned " + role.getAsMention()));
 	}
 
 }

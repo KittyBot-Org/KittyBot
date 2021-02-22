@@ -147,7 +147,7 @@ public class InteractionRespondAction extends RestActionImpl<Interaction>{
 
 	@Nonnull
 	public MessageChannel getChannel(){
-		return this.interaction.getGuild().getTextChannelById(this.interaction.getChannelId());
+		return this.interaction.getChannel();
 	}
 
 	@Nonnull

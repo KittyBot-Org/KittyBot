@@ -1,10 +1,12 @@
 package de.kittybot.kittybot.commands.neko;
 
+import de.kittybot.kittybot.objects.enums.Neko;
+
 @SuppressWarnings("unused")
 public class KissCommand extends ReactionCommand{
 
 	public KissCommand(){
-		super("kiss", "Kisses a user", "kisses");
+		super(Neko.KISS, "Kisses a user", "kisses");
 	}
 
 }

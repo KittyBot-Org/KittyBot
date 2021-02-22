@@ -16,6 +16,11 @@ public class CommandOptionChoice<T>{
 		this.value = value;
 	}
 
+	public CommandOptionChoice(T tEnum){
+		this.name = tEnum.toString();
+		this.value = tEnum;
+	}
+
 	public static DataArray toJSON(Collection<CommandOptionChoice<?>> choices){
 		return DataArray.fromCollection(
 			choices.stream().map(CommandOptionChoice::toJSON).collect(Collectors.toList())

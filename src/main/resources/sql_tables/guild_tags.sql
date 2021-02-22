@@ -6,5 +6,6 @@ CREATE TABLE IF NOT EXISTS guild_tags(
   content    TEXT NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT(current_timestamp),
   updated_at TIMESTAMP,
+  command_id BIGINT NOT NULL DEFAULT(-1),
   UNIQUE(name, guild_id)
 );

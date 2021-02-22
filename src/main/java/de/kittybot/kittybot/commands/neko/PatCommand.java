@@ -1,10 +1,12 @@
 package de.kittybot.kittybot.commands.neko;
 
+import de.kittybot.kittybot.objects.enums.Neko;
+
 @SuppressWarnings("unused")
 public class PatCommand extends ReactionCommand{
 
 	public PatCommand(){
-		super("pat", "Pats a user", "pats");
+		super(Neko.PAT, "Pats a user", "pats");
 	}
 
 }

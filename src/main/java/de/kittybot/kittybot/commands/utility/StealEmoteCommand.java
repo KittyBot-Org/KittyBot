@@ -3,8 +3,8 @@ package de.kittybot.kittybot.commands.utility;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.options.*;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
-import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
+import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.EmoteHelper;
 import net.dv8tion.jda.api.Permission;
 
@@ -24,7 +24,7 @@ public class StealEmoteCommand extends Command{
 		addPermissions(Permission.MANAGE_EMOTES);
 	}
 
-	private static class EmoteCommand extends SubCommand{
+	private static class EmoteCommand extends GuildSubCommand{
 
 		public EmoteCommand(){
 			super("emote", "Steal an emote by emote");
@@ -35,18 +35,18 @@ public class StealEmoteCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
-			if(!ctx.getSelfMember().hasPermission(Permission.MANAGE_EMOTES)){
-				ctx.error("To steal emotes I need the `" + Permission.MANAGE_EMOTES.getName() + "` permission");
+		public void run(Options options, GuildInteraction ia){
+			if(!ia.getSelfMember().hasPermission(Permission.MANAGE_EMOTES)){
+				ia.error("To steal emotes I need the `" + Permission.MANAGE_EMOTES.getName() + "` permission");
 				return;
 			}
 			var name = options.has("new-name") ? options.getString("new-name") : options.getEmoteName("emote");
-			EmoteHelper.createEmote(ctx, name, options.getEmoteId("emote"), options.getEmoteAnimated("emote"));
+			EmoteHelper.createEmote(ia, name, options.getEmoteId("emote"), options.getEmoteAnimated("emote"));
 		}
 
 	}
 
-	private static class EmoteIdCommand extends SubCommand{
+	private static class EmoteIdCommand extends GuildSubCommand{
 
 		public EmoteIdCommand(){
 			super("emote-id", "Steal an emote by id");
@@ -58,19 +58,19 @@ public class StealEmoteCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
-			if(!ctx.getSelfMember().hasPermission(Permission.MANAGE_EMOTES)){
-				ctx.error("To steal emotes I need the `" + Permission.MANAGE_EMOTES.getName() + "` permission");
+		public void run(Options options, GuildInteraction ia){
+			if(!ia.getSelfMember().hasPermission(Permission.MANAGE_EMOTES)){
+				ia.error("To steal emotes I need the `" + Permission.MANAGE_EMOTES.getName() + "` permission");
 				return;
 			}
 			var emoteId = options.getLong("emote-id");
 			var name = options.has("new-name") ? options.getString("new-name") : Long.toString(emoteId);
-			EmoteHelper.createEmote(ctx, name, emoteId, options.has("animated") && options.getBoolean("animated"));
+			EmoteHelper.createEmote(ia, name, emoteId, options.has("animated") && options.getBoolean("animated"));
 		}
 
 	}
 
-	private static class URLCommand extends SubCommand{
+	private static class URLCommand extends GuildSubCommand{
 
 		public URLCommand(){
 			super("url", "Steal an emote by url");
@@ -81,12 +81,12 @@ public class StealEmoteCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, CommandContext ctx){
-			if(!ctx.getSelfMember().hasPermission(Permission.MANAGE_EMOTES)){
-				ctx.error("To steal emotes I need the `" + Permission.MANAGE_EMOTES.getName() + "` permission");
+		public void run(Options options, GuildInteraction ia){
+			if(!ia.getSelfMember().hasPermission(Permission.MANAGE_EMOTES)){
+				ia.error("To steal emotes I need the `" + Permission.MANAGE_EMOTES.getName() + "` permission");
 				return;
 			}
-			EmoteHelper.createEmote(ctx, options.getString("new-name"), options.getString("url"));
+			EmoteHelper.createEmote(ia, options.getString("new-name"), options.getString("url"));
 		}
 
 	}

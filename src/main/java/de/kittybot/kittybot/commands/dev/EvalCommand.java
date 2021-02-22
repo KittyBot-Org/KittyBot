@@ -2,8 +2,9 @@ package de.kittybot.kittybot.commands.dev;
 
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
-import de.kittybot.kittybot.slashcommands.context.CommandContext;
-import de.kittybot.kittybot.slashcommands.context.Options;
+import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
+import de.kittybot.kittybot.slashcommands.interaction.Interaction;
+import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -32,31 +33,35 @@ public class EvalCommand extends SubCommand{
 	}
 
 	@Override
-	public void run(Options options, CommandContext ctx){
+	public void run(Options options, Interaction ia){
 		var code = options.getString("code");
 		Object out;
 		var color = Color.GREEN;
 		var status = "Success";
-		scriptEngine.put("ctx", ctx);
-		scriptEngine.put("options", options);
-		scriptEngine.put("jda", ctx.getJDA());
-		scriptEngine.put("guild", ctx.getGuild());
-		scriptEngine.put("channel", ctx.getChannel());
-		scriptEngine.put("user", ctx.getUser());
-		scriptEngine.put("member", ctx.getMember());
+		this.scriptEngine.put("ia", ia);
+		this.scriptEngine.put("options", options);
+		this.scriptEngine.put("jda", ia.getJDA());
+
+		this.scriptEngine.put("channel", ia.getChannel());
+		this.scriptEngine.put("user", ia.getUser());
+		if(ia instanceof GuildInteraction){
+			var guildIa = (GuildInteraction) ia;
+			this.scriptEngine.put("guild", guildIa.getGuild());
+			this.scriptEngine.put("member", guildIa.getMember());
+		}
 
 		var imports = new StringBuilder();
-		defaultImports.forEach(imp -> imports.append("import ").append(imp).append(".*; "));
+		this.defaultImports.forEach(imp -> imports.append("import ").append(imp).append(".*; "));
 		long start = System.currentTimeMillis();
 		try{
-			out = scriptEngine.eval(imports + code);
+			out = this.scriptEngine.eval(imports + code);
 		}
 		catch(Exception e){
 			out = e.getMessage();
 			color = Color.RED;
 			status = "Failed";
 		}
-		ctx.reply(new InteractionResponse.Builder()
+		ia.reply(new InteractionResponse.Builder()
 			.addEmbeds(new EmbedBuilder()
 				.setTitle("Eval")
 				.setColor(color)

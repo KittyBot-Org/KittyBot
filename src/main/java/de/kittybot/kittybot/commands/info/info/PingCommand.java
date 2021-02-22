@@ -5,24 +5,26 @@ import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.Config;
-import de.kittybot.kittybot.utils.TimeUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.lang.management.ManagementFactory;
-
 @SuppressWarnings("unused")
-public class UptimeCommand extends SubCommand{
+public class PingCommand extends SubCommand{
 
-	public UptimeCommand(){
-		super("uptime", "Shows the bots uptime");
+	public PingCommand(){
+		super("ping", "Shows the bots ping");
 	}
 
 	@Override
 	public void run(Options options, Interaction ia){
-		ia.reply(new EmbedBuilder()
-			.setColor(Colors.KITTYBOT_BLUE)
-			.setAuthor("KittyBot Uptime", Config.ORIGIN_URL, ia.getSelfUser().getEffectiveAvatarUrl())
-			.addField("Uptime:", TimeUtils.formatDurationDHMS(ManagementFactory.getRuntimeMXBean().getUptime()), false)
+		var jda = ia.getJDA();
+		jda.getRestPing().queue(ping ->
+			ia.reply(new EmbedBuilder()
+				.setColor(Colors.KITTYBOT_BLUE)
+				.setAuthor("KittyBot Ping", Config.ORIGIN_URL, jda.getSelfUser().getEffectiveAvatarUrl())
+
+				.addField("Gateway Ping:", jda.getGatewayPing() + "ms", false)
+				.addField("Rest Ping:", ping + "ms", false)
+			)
 		);
 	}
 
