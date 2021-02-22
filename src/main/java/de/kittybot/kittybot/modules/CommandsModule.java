@@ -8,6 +8,7 @@ import de.kittybot.kittybot.utils.annotations.Ignore;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import net.dv8tion.jda.api.utils.data.DataArray;
+import net.dv8tion.jda.api.utils.data.DataObject;
 import net.dv8tion.jda.internal.requests.Method;
 import net.dv8tion.jda.internal.requests.Requester;
 import net.dv8tion.jda.internal.requests.Route;
@@ -29,6 +30,9 @@ public class CommandsModule extends Module{
 
 	public static final Route COMMANDS_CREATE = Route.custom(Method.PUT, "applications/{application.id}/commands");
 	public static final Route GUILD_COMMANDS_CREATE = Route.custom(Method.PUT, "applications/{application.id}/guilds/{guild.id}/commands");
+	public static final Route GUILD_COMMANDS = Route.custom(Method.GET, "applications/{application.id}/guilds/{guild.id}/commands");
+	public static final Route GUILD_COMMAND_CREATE = Route.custom(Method.POST, "applications/{application.id}/guilds/{guild.id}/commands");
+	public static final Route GUILD_COMMAND_DELETE = Route.custom(Method.DELETE, "applications/{application.id}/guilds/{guild.id}/commands/{command.id}");
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommandsModule.class);
 	private static final String COMMANDS_PACKAGE = "de.kittybot.kittybot.commands";
@@ -84,7 +88,7 @@ public class CommandsModule extends Module{
 		var rqBody = RequestBody.create(commands.toJson(), MediaType.parse("application/json"));
 
 		var route = guildId == -1L ? COMMANDS_CREATE.compile(String.valueOf(Config.BOT_ID)) : GUILD_COMMANDS_CREATE.compile(String.valueOf(Config.BOT_ID), String.valueOf(guildId));
-		try(var resp = put(route, rqBody).execute()){
+		try(var resp = newCall(route, rqBody).execute()){
 			if(!resp.isSuccessful()){
 				var body = resp.body();
 				LOG.error("Registering commands failed. Request Body: {}, Response Body: {}", commands.toString(), body == null ? "null" : body.string());
@@ -100,8 +104,8 @@ public class CommandsModule extends Module{
 		LOG.info("Registered " + this.commands.size() + " commands...");
 	}
 
-	private Call put(Route.CompiledRoute route, RequestBody body){
-		return this.modules.getHttpClient().newCall(newBuilder(route).put(body).build());
+	private Call newCall(Route.CompiledRoute route, RequestBody body){
+		return this.modules.getHttpClient().newCall(newBuilder(route).method(route.getMethod().name(), body).build());
 	}
 
 	private Request.Builder newBuilder(Route.CompiledRoute route){
@@ -110,12 +114,71 @@ public class CommandsModule extends Module{
 			.addHeader("Authorization", "Bot " + Config.BOT_TOKEN);
 	}
 
+	public long registerGuildCommand(long guildId, DataObject command){
+		var rqBody = RequestBody.create(command.toJson(), MediaType.parse("application/json"));
+
+		var route = GUILD_COMMAND_CREATE.compile(String.valueOf(Config.BOT_ID), String.valueOf(guildId));
+		try(var resp = newCall(route, rqBody).execute()){
+			if(!resp.isSuccessful()){
+				var body = resp.body();
+				LOG.error("Registering command failed. Request Body: {}, Response Body: {}", command.toString(), body == null ? "null" : body.string());
+				return -1L;
+			}
+			var body = resp.body();
+			if(body == null){
+				LOG.error("empty body received");
+				return -1L;
+			}
+			LOG.info("Registered command");
+			return DataObject.fromJson(body.byteStream()).getLong("id");
+		}
+		catch(IOException e){
+			LOG.error("Error while processing registerGuildCommand", e);
+		}
+		return -1L;
+	}
+
+	public boolean deleteGuildCommand(long guildId, long commandId){
+		var route = GUILD_COMMAND_DELETE.compile(String.valueOf(Config.BOT_ID), String.valueOf(guildId), String.valueOf(commandId));
+		try(var resp = newCall(route, null).execute()){
+			if(resp.code() == 204){
+				LOG.info("Deleted command");
+				return true;
+			}
+			var body = resp.body();
+			LOG.error("Registering command failed. Command ID: {}, Response Body: {}", commandId, body == null ? "null" : body.string());
+		}
+		catch(IOException e){
+			LOG.error("Error while processing deleteGuildCommand", e);
+		}
+		return false;
+	}
+
+	public DataArray getGuildCommands(long guildId){
+		var route = GUILD_COMMANDS.compile(String.valueOf(Config.BOT_ID), String.valueOf(guildId));
+		try(var resp = newCall(route, null).execute()){
+			var body = resp.body();
+			if(!resp.isSuccessful()){
+				LOG.error("Registering command failed. Guild ID: {}, Response Body: {}", guildId, body == null ? "null" : body.string());
+				return null;
+			}
+			if(body == null){
+				return null;
+			}
+			return DataArray.fromJson(body.byteStream());
+		}
+		catch(IOException e){
+			LOG.error("Error while processing deleteGuildCommand", e);
+		}
+		return null;
+	}
+
 	public void deleteAllCommands(long guildId){
 		LOG.info("Deleting commands {}...", guildId == -1 ? "global" : "for guild " + guildId);
 		var rqBody = RequestBody.create(DataArray.empty().toString(), MediaType.parse("application/json"));
 
 		var route = guildId == -1L ? COMMANDS_CREATE.compile(String.valueOf(Config.BOT_ID)) : GUILD_COMMANDS_CREATE.compile(String.valueOf(Config.BOT_ID), String.valueOf(guildId));
-		try(var resp = put(route, rqBody).execute()){
+		try(var resp = newCall(route, rqBody).execute()){
 			if(!resp.isSuccessful()){
 				var body = resp.body();
 				LOG.error("Deleting commands failed. Body: {}", body == null ? "null" : body.string());

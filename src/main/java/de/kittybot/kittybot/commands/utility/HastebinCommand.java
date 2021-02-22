@@ -28,7 +28,7 @@ public class HastebinCommand extends RunCommand{
 
 	@Override
 	public void run(Options options, Interaction ia){
-		if(ia instanceof GuildInteraction &&  !((GuildInteraction) ia).getSelfMember().hasPermission(((GuildInteraction) ia).getChannel(), Permission.VIEW_CHANNEL, Permission.MESSAGE_HISTORY)){
+		if(ia instanceof GuildInteraction && !((GuildInteraction) ia).getSelfMember().hasPermission(((GuildInteraction) ia).getChannel(), Permission.VIEW_CHANNEL, Permission.MESSAGE_HISTORY)){
 			ia.error("Please make sure I have following permissions: `VIEW_CHANNEL`, `MESSAGE_HISTORY`");
 			return;
 		}

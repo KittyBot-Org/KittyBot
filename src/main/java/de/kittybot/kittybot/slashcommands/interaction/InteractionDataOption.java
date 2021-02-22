@@ -25,7 +25,7 @@ public class InteractionDataOption implements InteractionOptionsHolder{
 	public static InteractionDataOption fromJSON(DataObject json){
 		return new InteractionDataOption(
 			json.getString("name"),
-			CommandOptionType.get(json.getInt("type")),
+			CommandOptionType.get(json.getInt("type", 0)),
 			json.opt("value").orElse(null),
 			InteractionDataOption.fromJSON(json.optArray("options").orElse(null))
 		);

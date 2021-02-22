@@ -2,7 +2,6 @@ package de.kittybot.kittybot.commands.roles;
 
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.slashcommands.application.Category;
-import de.kittybot.kittybot.slashcommands.application.RunCommand;
 import de.kittybot.kittybot.slashcommands.application.RunGuildCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionRole;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;

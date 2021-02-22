@@ -16,8 +16,10 @@ import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.TimeUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
@@ -31,7 +33,9 @@ public class TagsCommand extends Command{
 			new DeleteCommand(),
 			new SearchCommand(),
 			new ListCommand(),
-			new InfoCommand()
+			new InfoCommand(),
+			new PublishCommand(),
+			new RemoveCommand()
 		);
 	}
 
@@ -233,6 +237,80 @@ public class TagsCommand extends Command{
 				.addField("Created at", TimeUtils.format(tag.getCreatedAt()), false)
 				.addField("Updated at", (tag.getUpdatedAt() == null ? "not edited" : TimeUtils.format(tag.getUpdatedAt())), false)
 			);
+		}
+
+	}
+
+	private static class PublishCommand extends GuildSubCommand{
+
+		private static final Pattern COMMAND_NAME_PATTERN = Pattern.compile("^[\\w-]{1,32}$");
+
+		public PublishCommand(){
+			super("publish", "Publishes a tag as slash command for this guild");
+			addOptions(
+				new CommandOptionString("name", "Tag name").required(),
+				new CommandOptionString("description", "Description of the tag").required()
+			);
+			addPermissions(Permission.MANAGE_SERVER);
+		}
+
+		@Override
+		public void run(Options options, GuildInteraction ia){
+			var name = options.getString("name");
+			var tagsModule = ia.get(TagsModule.class);
+			var tag = tagsModule.get(name, ia.getGuildId());
+			if(tag == null){
+				ia.error("Tag with name `" + MarkdownSanitizer.escape(name) + "` not found");
+				return;
+			}
+			if(!COMMAND_NAME_PATTERN.matcher(name).matches()){
+				ia.error("Please make sure your tag name only contains letters, numbers & -");
+				return;
+			}
+
+			if(!tagsModule.canPublishTag(ia.getGuildId())){
+				ia.error("You reached the maximum of 50 guild commands due to discords limitations");
+				return;
+			}
+			var res = tagsModule.publishTag(name, options.getString("description"), ia.getGuildId());
+			if(!res){
+				ia.error("Something went wrong while publishing your tag to slash commands");
+				return;
+			}
+			ia.reply("Successfully published your tag to slash commands");
+		}
+
+	}
+
+	private static class RemoveCommand extends GuildSubCommand{
+
+		public RemoveCommand(){
+			super("remove", "Removes a published tag from slash commands");
+			addOptions(
+				new CommandOptionString("name", "Tag name").required()
+			);
+			addPermissions(Permission.MANAGE_SERVER);
+		}
+
+		@Override
+		public void run(Options options, GuildInteraction ia){
+			var name = options.getString("name");
+			var tagsModule = ia.get(TagsModule.class);
+			var tag = tagsModule.get(name, ia.getGuildId());
+			if(tag == null){
+				ia.error("Tag with name `" + MarkdownSanitizer.escape(name) + "` not found");
+				return;
+			}
+			if(tag.getCommandId() == -1L){
+				ia.error("Tag with name `" + MarkdownSanitizer.escape(name) + "` is not published");
+				return;
+			}
+			var res = tagsModule.removePublishedTag(ia.getGuildId(), tag.getCommandId());
+			if(!res){
+				ia.error("Something went wrong while removing your tag from slash commands");
+				return;
+			}
+			ia.reply("Successfully removed tag from slash commands");
 		}
 
 	}

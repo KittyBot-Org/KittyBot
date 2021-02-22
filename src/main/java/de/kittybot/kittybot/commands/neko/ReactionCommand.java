@@ -8,7 +8,6 @@ import de.kittybot.kittybot.slashcommands.application.options.CommandOptionUser;
 import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.Colors;
-import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.annotations.Ignore;
 import net.dv8tion.jda.api.EmbedBuilder;
 
