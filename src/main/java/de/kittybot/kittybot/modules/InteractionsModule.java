@@ -47,7 +47,6 @@ public class InteractionsModule extends Module{
 		if(!event.getType().equals(INTERACTION_CREATE)){
 			return;
 		}
-		System.out.println(event.getPayload().toString());
 		var start = System.currentTimeMillis();
 
 		var interaction = Interaction.fromJSON(this.modules, event.getPayload(), event.getJDA());
