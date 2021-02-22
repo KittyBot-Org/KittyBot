@@ -54,7 +54,7 @@ public class VoteModule extends Module{
 			.execute();
 
 		var jda = this.modules.getJDA();
-		jda.retrieveUserById(userId).queue(user -> this.modules.get(EventLogModule.class).send(jda, "Vote", "`" + user.getAsTag() + "`(`" + user.getId() + "`) voted on " + MessageUtils.maskLink("`" + botList.getName() + "`", botList.getUrl())));
+		jda.retrieveUserById(userId).queue(user -> this.modules.get(EventLogModule.class).send(jda, "Vote", "`" + user.getAsTag() + "`(`" + user.getId() + "`) voted on " + MessageUtils.maskLink(botList.getName(), botList.getUrl())));
 
 		var guild = this.modules.getGuildById(Config.SUPPORT_GUILD_ID);
 		if(guild == null){
