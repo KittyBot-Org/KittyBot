@@ -5,6 +5,7 @@ import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.types.YearToSecond;
 import org.slf4j.Logger;
@@ -22,8 +23,28 @@ public class VoteModule extends Module{
 
 	@Override
 	public void onGuildReady(@NotNull GuildReadyEvent event){
-		if(event.getGuild().getIdLong() == Config.SUPPORT_GUILD_ID){
-			this.modules.scheduleAtFixedRate(this::checkVoters, 0, 30, TimeUnit.MINUTES);
+		if(event.getGuild().getIdLong() != Config.SUPPORT_GUILD_ID){
+			return;
+		}
+		this.modules.scheduleAtFixedRate(this::checkVoters, 0, 30, TimeUnit.MINUTES);
+	}
+
+	@Override
+	public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event){
+		var guild = event.getGuild();
+		if(guild.getIdLong() != Config.SUPPORT_GUILD_ID){
+			return;
+		}
+		try(var ctx = this.modules.get(DatabaseModule.class).getCtx().selectFrom(VOTERS)){
+			var res = ctx.where(VOTERS.USER_ID.eq(event.getUser().getIdLong())).fetchOne();
+			if(res == null){
+				return;
+			}
+			var role = guild.getRoleById(Config.VOTER_ROLE_ID);
+			if(role == null){
+				return;
+			}
+			guild.addRoleToMember(res.getUserId(), role).queue();
 		}
 	}
 
@@ -43,7 +64,7 @@ public class VoteModule extends Module{
 	}
 
 	public void addVote(long userId, BotList botList, int voteMultiplier){
-		var voteDuration = Duration.of(botList.getVoteCooldown(), botList.getTimeUnit()).multipliedBy(voteMultiplier);
+		var voteDuration = Duration.of((long) (botList.getVoteCooldown() * 1.5), botList.getTimeUnit()).multipliedBy(voteMultiplier);
 
 		this.modules.get(DatabaseModule.class).getCtx().insertInto(VOTERS)
 			.columns(VOTERS.USER_ID, VOTERS.VOTE_EXPIRY)
@@ -54,7 +75,7 @@ public class VoteModule extends Module{
 			.execute();
 
 		var jda = this.modules.getJDA();
-		jda.retrieveUserById(userId).queue(user -> this.modules.get(EventLogModule.class).send(jda, "Vote", "`" + user.getAsTag() + "`(`" + user.getId() + "`) voted on " + MessageUtils.maskLink("`" + botList.getName() + "`", botList.getUrl())));
+		jda.retrieveUserById(userId).queue(user -> this.modules.get(EventLogModule.class).send(jda, "Vote", "`" + user.getAsTag() + "`(`" + user.getId() + "`) voted on " + MessageUtils.maskLink(botList.getName(), botList.getUrl())));
 
 		var guild = this.modules.getGuildById(Config.SUPPORT_GUILD_ID);
 		if(guild == null){

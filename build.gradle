@@ -48,7 +48,7 @@ dependencies {
 
     // logging
     implementation 'ch.qos.logback:logback-classic:1.3.0-alpha5'
-    implementation 'io.sentry:sentry-logback:4.1.0'
+    implementation 'io.sentry:sentry-logback:4.2.0'
 
     // eval
     implementation 'org.codehaus.groovy:groovy-jsr223:3.0.7'
