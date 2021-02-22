@@ -2,12 +2,13 @@ package de.kittybot.kittybot.commands.admin;
 
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
-import de.kittybot.kittybot.slashcommands.application.options.*;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionUser;
+import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
-import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 
 import java.util.stream.Collectors;
@@ -63,7 +64,7 @@ public class BanCommand extends Command{
 	private static class RemoveCommand extends GuildSubCommand{
 
 		public RemoveCommand(){
-			super("removed", "Removes a ban");
+			super("remove", "Removes a ban");
 			addOptions(
 				new CommandOptionUser("user", "The user to unban").required(),
 				new CommandOptionString("reason", "The unban reason")
@@ -95,11 +96,11 @@ public class BanCommand extends Command{
 		@Override
 		public void run(Options options, GuildInteraction ia){
 			ia.getGuild().retrieveBanList().queue(bans -> {
-				if(bans.isEmpty()){
-					ia.reply("There are no banned users yet");
-					return;
-				}
-				ia.reply("**Banned Users:**\n" + bans.stream().map(ban -> MarkdownSanitizer.escape(ban.getUser().getAsTag()) + "(`" + ban.getUser().getId() + "`)" + " - " + ban.getReason()).collect(Collectors.joining("\n")));
+					if(bans.isEmpty()){
+						ia.reply("There are no banned users yet");
+						return;
+					}
+					ia.reply("**Banned Users:**\n" + bans.stream().map(ban -> MarkdownSanitizer.escape(ban.getUser().getAsTag()) + "(`" + ban.getUser().getId() + "`)" + " - " + ban.getReason()).collect(Collectors.joining("\n")));
 				}, error -> ia.error("I was not able to retrieve the bans. Please give me the `ban members` permission")
 			);
 		}

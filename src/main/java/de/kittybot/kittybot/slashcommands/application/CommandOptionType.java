@@ -11,7 +11,8 @@ public enum CommandOptionType{
 	BOOLEAN(5),
 	USER(6),
 	CHANNEL(7),
-	ROLE(8);
+	ROLE(8),
+	UNKNOWN(0);
 
 	private final int type;
 

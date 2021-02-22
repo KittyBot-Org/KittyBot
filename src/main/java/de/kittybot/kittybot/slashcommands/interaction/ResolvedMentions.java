@@ -2,7 +2,6 @@ package de.kittybot.kittybot.slashcommands.interaction;
 
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.utils.data.DataObject;
-import net.dv8tion.jda.internal.JDAImpl;
 import net.dv8tion.jda.internal.entities.EntityBuilder;
 import net.dv8tion.jda.internal.entities.GuildImpl;
 
@@ -16,18 +15,14 @@ public class ResolvedMentions{
 
 	private final EntityBuilder entityBuilder;
 	private final GuildImpl guild;
-
-	private Map<Long, GuildChannel> channels;
 	private final DataObject rawChannels;
-
-	private Map<Long, Member> members;
 	private final DataObject rawMembers;
-
-	private Map<Long, Role> roles;
 	private final DataObject rawRoles;
-
-	private Map<Long, User> users;
 	private final DataObject rawUsers;
+	private Map<Long, GuildChannel> channels;
+	private Map<Long, Member> members;
+	private Map<Long, Role> roles;
+	private Map<Long, User> users;
 
 	public ResolvedMentions(DataObject json, EntityBuilder entityBuilder, GuildImpl guild){
 		this.entityBuilder = entityBuilder;

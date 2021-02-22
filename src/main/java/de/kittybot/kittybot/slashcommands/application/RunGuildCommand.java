@@ -5,4 +5,5 @@ public abstract class RunGuildCommand extends Command implements RunnableGuildCo
 	protected RunGuildCommand(String name, String description, Category category){
 		super(name, description, category);
 	}
+
 }
