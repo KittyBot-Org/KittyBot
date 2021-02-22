@@ -82,7 +82,7 @@ public class InviteRolesCommand extends Command{
 				return;
 			}
 			ia.get(SettingsModule.class).removeInviteRoles(ia.getGuildId(), code, Collections.singleton(role.getIdLong()));
-			ia.reply("Removed role " + role.getAsMention() + " from invite `"  + code + "`");
+			ia.reply("Removed role " + role.getAsMention() + " from invite `" + code + "`");
 		}
 
 	}

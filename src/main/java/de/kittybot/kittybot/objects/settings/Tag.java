@@ -1,12 +1,15 @@
 package de.kittybot.kittybot.objects.settings;
 
 import de.kittybot.kittybot.jooq.tables.records.GuildTagsRecord;
+import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
+import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
+import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponseType;
 
 import java.time.LocalDateTime;
 
 public class Tag{
 
-	private final long id, guildId, userId;
+	private final long id, guildId, userId, commandId;
 	private final String name, content;
 	private final LocalDateTime createdAt, updatedAt;
 
@@ -18,6 +21,7 @@ public class Tag{
 		this.content = record.getContent();
 		this.createdAt = record.getCreatedAt();
 		this.updatedAt = record.getUpdatedAt();
+		this.commandId = record.getCommandId();
 	}
 
 	public long getId(){
@@ -46,6 +50,14 @@ public class Tag{
 
 	public LocalDateTime getUpdatedAt(){
 		return this.updatedAt;
+	}
+
+	public long getCommandId(){
+		return this.commandId;
+	}
+
+	public void process(GuildInteraction ia){
+		ia.reply(new InteractionResponse.Builder().setType(InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE).setContent(this.content).build());
 	}
 
 }

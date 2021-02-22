@@ -63,7 +63,7 @@ public class DevCommand extends Command{
 				}, 0, TimeUnit.SECONDS);
 				return;
 			}
-			var guildId = options.has("guild") ? options.getLong("guild") : ia instanceof GuildInteraction ? ((GuildInteraction)ia).getGuildId() : -1L;
+			var guildId = options.has("guild") ? options.getLong("guild") : ia instanceof GuildInteraction ? ((GuildInteraction) ia).getGuildId() : -1L;
 			if(guildId == -1L){
 				ia.error("Please provide a valid guild id");
 				return;
@@ -108,7 +108,7 @@ public class DevCommand extends Command{
 				}, 0, TimeUnit.SECONDS);
 				return;
 			}
-			var guildId = options.has("guild") ? options.getLong("guild") : ia instanceof GuildInteraction ? ((GuildInteraction)ia).getGuildId() : -1L;
+			var guildId = options.has("guild") ? options.getLong("guild") : ia instanceof GuildInteraction ? ((GuildInteraction) ia).getGuildId() : -1L;
 			if(guildId == -1){
 				ia.error("Please provide a valid guild id");
 				return;

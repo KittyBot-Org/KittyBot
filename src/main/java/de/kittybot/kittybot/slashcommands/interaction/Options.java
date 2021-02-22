@@ -3,7 +3,6 @@ package de.kittybot.kittybot.slashcommands.interaction;
 import de.kittybot.kittybot.objects.exceptions.MissingOptionException;
 import de.kittybot.kittybot.objects.exceptions.OptionParseException;
 import de.kittybot.kittybot.slashcommands.application.CommandOption;
-import de.kittybot.kittybot.slashcommands.interaction.InteractionDataOption;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.utils.MiscUtil;
@@ -35,6 +34,10 @@ public class Options{
 		return this.options.isEmpty();
 	}
 
+	public String getString(String name){
+		return getValue(name, String.class);
+	}
+
 	@SuppressWarnings("unchecked")
 	private <T> T getValue(String name, Class<T> clazz){
 		var value = this.options.get(name).getValue();
@@ -42,14 +45,6 @@ public class Options{
 			throw new MissingOptionException(name, clazz);
 		}
 		return (T) this.definedOptions.get(name).parseValue(value);
-	}
-
-	public String getString(String name){
-		return getValue(name, String.class);
-	}
-
-	public long getLong(String name){
-		return getValue(name, Long.class);
 	}
 
 	public int getInt(String name){
@@ -66,6 +61,10 @@ public class Options{
 
 	public Member getMember(String name){
 		return this.resolvedMentions.getMentionedMembers().get(getLong(name));
+	}
+
+	public long getLong(String name){
+		return getValue(name, Long.class);
 	}
 
 	public User getUser(String name){

@@ -3,7 +3,6 @@ package de.kittybot.kittybot.slashcommands.application.options;
 import de.kittybot.kittybot.slashcommands.application.CommandOption;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionType;
 import de.kittybot.kittybot.slashcommands.application.PermissionHolder;
-import de.kittybot.kittybot.slashcommands.application.RunnableCommand;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.utils.data.DataObject;
 

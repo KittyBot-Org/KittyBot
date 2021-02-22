@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -83,6 +83,11 @@ public class GuildTags extends TableImpl<GuildTagsRecord> {
      * The column <code>public.guild_tags.updated_at</code>.
      */
     public final TableField<GuildTagsRecord, LocalDateTime> UPDATED_AT = createField(DSL.name("updated_at"), SQLDataType.LOCALDATETIME(6), this, "");
+
+    /**
+     * The column <code>public.guild_tags.command_id</code>.
+     */
+    public final TableField<GuildTagsRecord, Long> COMMAND_ID = createField(DSL.name("command_id"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("'-1'::integer", SQLDataType.BIGINT)), this, "");
 
     private GuildTags(Name alias, Table<GuildTagsRecord> aliased) {
         this(alias, aliased, null);
@@ -173,11 +178,11 @@ public class GuildTags extends TableImpl<GuildTagsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Long, String, Long, Long, String, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<Long, String, Long, Long, String, LocalDateTime, LocalDateTime, Long> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }
