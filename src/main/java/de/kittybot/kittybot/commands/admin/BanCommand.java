@@ -64,7 +64,7 @@ public class BanCommand extends Command{
 	private static class RemoveCommand extends GuildSubCommand{
 
 		public RemoveCommand(){
-			super("removed", "Removes a ban");
+			super("remove", "Removes a ban");
 			addOptions(
 				new CommandOptionUser("user", "The user to unban").required(),
 				new CommandOptionString("reason", "The unban reason")
