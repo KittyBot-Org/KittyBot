@@ -31,6 +31,7 @@ public class KittyBot{
 		Config.init("./config.json");
 		var modules = new Modules(this);
 		var botListHandler = new BLHBuilder()
+			.setUnavailableEventsEnabled(false)
 			.setDevModePredicate(jda -> Environment.is(Environment.DEVELOPMENT))
 			.addBotList(BotList.TOP_GG, Config.TOP_GG_TOKEN)
 			.addBotList(BotList.DBOATS, Config.DISCORD_BOATS_TOKEN)
