@@ -5,6 +5,10 @@ public enum Environment{
 	PRODUCTION,
 	DEVELOPMENT;
 
+	public static boolean is(Environment environment){
+		return getCurrent() == environment;
+	}
+
 	public static Environment getCurrent(){
 		try{
 			var env = System.getenv("ENV");
@@ -15,9 +19,5 @@ public enum Environment{
 		catch(IllegalArgumentException ignored){
 		}
 		return DEVELOPMENT;
-	}
-
-	public static boolean is(Environment environment){
-		return getCurrent() == environment;
 	}
 }

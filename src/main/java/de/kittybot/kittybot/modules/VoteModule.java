@@ -5,6 +5,7 @@ import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.types.YearToSecond;
 import org.slf4j.Logger;
@@ -22,8 +23,28 @@ public class VoteModule extends Module{
 
 	@Override
 	public void onGuildReady(@NotNull GuildReadyEvent event){
-		if(event.getGuild().getIdLong() == Config.SUPPORT_GUILD_ID){
-			this.modules.scheduleAtFixedRate(this::checkVoters, 0, 30, TimeUnit.MINUTES);
+		if(event.getGuild().getIdLong() != Config.SUPPORT_GUILD_ID){
+			return;
+		}
+		this.modules.scheduleAtFixedRate(this::checkVoters, 0, 30, TimeUnit.MINUTES);
+	}
+
+	@Override
+	public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event){
+		var guild = event.getGuild();
+		if(guild.getIdLong() != Config.SUPPORT_GUILD_ID){
+			return;
+		}
+		try(var ctx = this.modules.get(DatabaseModule.class).getCtx().selectFrom(VOTERS)){
+			var res = ctx.where(VOTERS.USER_ID.eq(event.getUser().getIdLong())).fetchOne();
+			if(res == null){
+				return;
+			}
+			var role = guild.getRoleById(Config.VOTER_ROLE_ID);
+			if(role == null){
+				return;
+			}
+			guild.addRoleToMember(res.getUserId(), role).queue();
 		}
 	}
 
