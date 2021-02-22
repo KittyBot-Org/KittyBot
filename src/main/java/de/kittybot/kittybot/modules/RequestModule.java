@@ -142,19 +142,6 @@ public class RequestModule extends Module{
 		}, (call, response) -> callback.accept(null));
 	}
 
-	public void updateStats(API api, int guildCount, String token){
-		var requestBody = RequestBody.create(
-			DataObject.empty()
-				.put(api.getStatsParameter(), guildCount)
-				.toString(),
-			MediaType.parse("application/json; charset=utf-8")
-		);
-		this.requestBuilder.url(String.format(api.getUrl(), Config.BOT_ID));
-		this.requestBuilder.header("Authorization", token);
-		this.requestBuilder.post(requestBody);
-		executeAsync(requestBuilder.build(), api);
-	}
-
 	public void executeAsync(Request request, API api){
 		executeAsync(request, api, null, null);
 	}

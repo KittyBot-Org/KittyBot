@@ -48,13 +48,13 @@ public class CommandsModule extends Module{
 	@Override
 	public void onEnable(){
 		scanCommands();
-		var env = Environment.getCurrentEnv();
+		var env = Environment.getCurrent();
 		if(env == Environment.PRODUCTION){
 			deployAllCommands(-1L);
 		}
 		else if(env == Environment.DEVELOPMENT){
-			if(Config.TEST_GUILD != -1){
-				deployAllCommands(Config.TEST_GUILD);
+			if(Config.SUPPORT_GUILD_ID != -1){
+				deployAllCommands(Config.SUPPORT_GUILD_ID);
 			}
 		}
 	}

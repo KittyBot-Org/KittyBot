@@ -6,8 +6,6 @@ import de.kittybot.kittybot.objects.settings.Notification;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.utils.Colors;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.events.ReadyEvent;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -26,10 +24,15 @@ public class NotificationModule extends Module{
 	public void onEnable(){
 		this.notifications = new HashMap<>();
 		this.modules.scheduleAtFixedRate(this::update, 0, 30, TimeUnit.MINUTES);
+		this.modules.scheduleAtFixedRate(this::scheduleNext, 0, 5, TimeUnit.MINUTES);
 	}
 
 	private void update(){
 		this.notifications.putAll(retrieveNotifications(LocalDateTime.now().plus(60, ChronoUnit.MINUTES)));
+	}
+
+	private void scheduleNext(){
+		schedule(getAndRemoveNext(LocalDateTime.now().plus(5, ChronoUnit.MINUTES)));
 	}
 
 	private Map<Long, Notification> retrieveNotifications(LocalDateTime to){
@@ -38,15 +41,6 @@ public class NotificationModule extends Module{
 				Collectors.toMap(NotificationsRecord::getId, Notification::new)
 			);
 		}
-	}
-
-	@Override
-	public void onReady(@NotNull ReadyEvent event){
-		this.modules.scheduleAtFixedRate(this::scheduleNext, 0, 5, TimeUnit.MINUTES);
-	}
-
-	private void scheduleNext(){
-		schedule(getAndRemoveNext(LocalDateTime.now().plus(5, ChronoUnit.MINUTES)));
 	}
 
 	private void schedule(Set<Notification> notifs){
