@@ -43,7 +43,7 @@ public class VoteModule extends Module{
 	}
 
 	public void addVote(long userId, BotList botList, int voteMultiplier){
-		var voteDuration = Duration.of(botList.getVoteCooldown(), botList.getTimeUnit()).multipliedBy(voteMultiplier);
+		var voteDuration = Duration.of((long) (botList.getVoteCooldown() * 1.5), botList.getTimeUnit()).multipliedBy(voteMultiplier);
 
 		this.modules.get(DatabaseModule.class).getCtx().insertInto(VOTERS)
 			.columns(VOTERS.USER_ID, VOTERS.VOTE_EXPIRY)
