@@ -9,8 +9,12 @@ import io.javalin.http.NotFoundResponse;
 import io.javalin.http.UnauthorizedResponse;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PostVotesRoute implements Handler{
+
+	private static final Logger LOG = LoggerFactory.getLogger(PostVotesRoute.class);
 
 	private final Modules modules;
 
@@ -20,6 +24,7 @@ public class PostVotesRoute implements Handler{
 
 	@Override
 	public void handle(@NotNull Context ctx){
+		LOG.info("Received webhook on: " + ctx.url());
 		var rawBotlist = ctx.pathParam("botlist");
 		if(rawBotlist.isBlank()){
 			return;
@@ -59,6 +64,7 @@ public class PostVotesRoute implements Handler{
 			throw new NotFoundResponse("botlist not found");
 		}
 		if(!botlist.verify(ctx)){
+			LOG.error("Unauthorized webhook url received on: " + ctx.url());
 			throw new UnauthorizedResponse("You are not authorized to use this endpoint");
 		}
 		this.modules.get(VoteModule.class).addVote(userId, botlist, multiplier);
