@@ -95,12 +95,14 @@ public class InteractionsModule extends Module{
 				reply(interaction).ephemeral().content("This command is developer only").type(InteractionResponseType.ACKNOWLEDGE).queue();
 				return;
 			}
-			if(interaction instanceof GuildInteraction){
-				var guildInteraction = (GuildInteraction) interaction;
-				var missingPerms = permHolder.getPermissions().stream().dropWhile(guildInteraction.getMember().getPermissions()::contains).collect(Collectors.toSet());
-				if(!missingPerms.isEmpty() && Config.DEV_IDS.contains(interaction.getUserId())){
-					reply(interaction).ephemeral().content("You are missing following permissions to use this command:\n" + missingPerms.stream().map(Permission::getName).collect(Collectors.joining(", "))).withSource(false).queue();
-					return;
+			if(!Config.DEV_IDS.contains(interaction.getUserId())){
+				if(interaction instanceof GuildInteraction){
+					var guildInteraction = (GuildInteraction) interaction;
+					var missingPerms = permHolder.getPermissions().stream().dropWhile(guildInteraction.getMember().getPermissions()::contains).collect(Collectors.toSet());
+					if(!missingPerms.isEmpty()){
+						reply(interaction).ephemeral().content("You are missing following permissions to use this command:\n" + missingPerms.stream().map(Permission::getName).collect(Collectors.joining(", "))).withSource(false).queue();
+						return;
+					}
 				}
 			}
 		}
