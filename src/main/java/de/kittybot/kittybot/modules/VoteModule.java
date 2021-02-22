@@ -7,6 +7,8 @@ import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.types.YearToSecond;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -15,6 +17,8 @@ import java.util.concurrent.TimeUnit;
 import static de.kittybot.kittybot.jooq.Tables.VOTERS;
 
 public class VoteModule extends Module{
+
+	private static final Logger LOG = LoggerFactory.getLogger(VoteModule.class);
 
 	@Override
 	public void onGuildReady(@NotNull GuildReadyEvent event){
@@ -42,8 +46,8 @@ public class VoteModule extends Module{
 		var voteDuration = Duration.of(botList.getVoteCooldown(), botList.getTimeUnit()).multipliedBy(voteMultiplier);
 
 		this.modules.get(DatabaseModule.class).getCtx().insertInto(VOTERS)
-			.columns(VOTERS.USER_ID)
-			.values(userId)
+			.columns(VOTERS.USER_ID, VOTERS.VOTE_EXPIRY)
+			.values(userId, LocalDateTime.now().plus(voteDuration))
 			.onConflict(VOTERS.USER_ID)
 			.doUpdate()
 			.set(VOTERS.VOTE_EXPIRY, VOTERS.VOTE_EXPIRY.add(YearToSecond.valueOf(voteDuration)))
@@ -58,6 +62,10 @@ public class VoteModule extends Module{
 		}
 		var role = guild.getRoleById(Config.VOTER_ROLE_ID);
 		if(role == null){
+			return;
+		}
+		if(!guild.getSelfMember().canInteract(role)){
+			LOG.error("I can't interact with the provided voter role: {}", role.getId());
 			return;
 		}
 		guild.addRoleToMember(userId, role).reason("voted on " + botList.getName()).queue();

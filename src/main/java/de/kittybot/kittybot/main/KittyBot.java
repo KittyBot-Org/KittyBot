@@ -37,7 +37,7 @@ public class KittyBot{
 			.addBotList(BotList.BOTLIST_SPACE, Config.BOTLIST_SPACE_TOKEN)
 			.addBotList(BotList.BOTS_FOR_DISCORD, Config.BOTS_FOR_DISCORD_TOKEN)
 			.addBotList(BotList.DSERVICES, Config.DISCORD_SERVICES_TOKEN)
-			.addBotList(BotList.DBL, Config.DISCORDBOTLIST_TOKEN)
+			.addBotList(BotList.DBL, Config.DISCORD_BOT_LIST_TOKEN)
 			.addBotList(BotList.DEL, Config.DISCORD_EXTREME_LIST_TOKEN)
 			.addBotList(BotList.DBOTS_GG, Config.DISCORD_BOTS_TOKEN)
 			.build();
