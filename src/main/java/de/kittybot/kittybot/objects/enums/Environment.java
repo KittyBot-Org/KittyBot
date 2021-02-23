@@ -5,7 +5,11 @@ public enum Environment{
 	PRODUCTION,
 	DEVELOPMENT;
 
-	public static Environment getCurrentEnv(){
+	public static boolean is(Environment environment){
+		return getCurrent() == environment;
+	}
+
+	public static Environment getCurrent(){
 		try{
 			var env = System.getenv("ENV");
 			if(env != null){

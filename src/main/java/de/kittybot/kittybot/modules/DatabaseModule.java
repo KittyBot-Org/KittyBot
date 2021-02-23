@@ -29,6 +29,7 @@ public class DatabaseModule extends Module{
 		initTable("guilds",
 			"member_roles",
 			"guild_tags",
+			"voters",
 			"guild_invites",
 			"guild_invite_roles",
 			"self_assignable_role_groups",

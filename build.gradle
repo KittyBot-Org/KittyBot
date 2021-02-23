@@ -31,6 +31,7 @@ dependencies {
     implementation 'net.dv8tion:JDA:4.2.0_228'
     implementation 'com.jagrosh:jda-utilities:3.0.5'
     implementation 'club.minnced:discord-webhooks:0.5.4'
+    implementation 'com.github.caneleex:BotListHandler:1.0.7'
 
     // audio
     implementation("com.github.KittyBot-Org:Lavalink-Client:94660b3") {
@@ -47,7 +48,7 @@ dependencies {
 
     // logging
     implementation 'ch.qos.logback:logback-classic:1.3.0-alpha5'
-    implementation 'io.sentry:sentry-logback:4.1.0'
+    implementation 'io.sentry:sentry-logback:4.2.0'
 
     // eval
     implementation 'org.codehaus.groovy:groovy-jsr223:3.0.7'

@@ -11,20 +11,18 @@ public class Stream{
 
 	private final String userName, streamTitle, thumbnailUrl;
 	private final long streamId, userId;
-	private final int gameId;
 	private final int viewerCount;
 	private final Instant startedAt;
 	private final Language language;
 	private final StreamType type;
 	private Game game;
 
-	public Stream(long streamId, String streamTitle, String thumbnailUrl, long userId, String userName, int gameId, Game game, int viewerCount, Instant startedAt, Language language, StreamType type){
+	public Stream(long streamId, String streamTitle, String thumbnailUrl, long userId, String userName, Game game, int viewerCount, Instant startedAt, Language language, StreamType type){
 		this.streamId = streamId;
 		this.streamTitle = streamTitle;
 		this.thumbnailUrl = thumbnailUrl;
 		this.userId = userId;
 		this.userName = userName;
-		this.gameId = gameId;
 		this.game = game;
 		this.viewerCount = viewerCount;
 		this.startedAt = startedAt;
@@ -40,7 +38,6 @@ public class Stream{
 			json.getString("thumbnail_url"),
 			json.getLong("user_id"),
 			json.getString("user_name"),
-			json.getInt("game_id"),
 			new Game(json.getInt("game_id"), json.getString("game_name")),
 			json.getInt("viewer_count"),
 			Instant.parse(json.getString("started_at")),
@@ -67,10 +64,6 @@ public class Stream{
 
 	public long getUserId(){
 		return this.userId;
-	}
-
-	public int getGameId(){
-		return this.gameId;
 	}
 
 	public Game getGame(){

@@ -96,6 +96,10 @@ public class Modules{
 		return this.main.getShardManager().getShardById(shardId);
 	}
 
+	public JDA getJDA(){
+		return this.main.getShardManager().getShardCache().iterator().next();
+	}
+
 	public Guild getGuildById(long guildId){
 		return getShardManager().getGuildById(guildId);
 	}

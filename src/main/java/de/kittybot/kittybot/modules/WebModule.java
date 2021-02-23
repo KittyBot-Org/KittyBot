@@ -23,6 +23,7 @@ import de.kittybot.kittybot.web.login.DeleteLoginRoute;
 import de.kittybot.kittybot.web.login.PostLoginRoute;
 import de.kittybot.kittybot.web.shards.GetShardsRoute;
 import de.kittybot.kittybot.web.user.GetUserInfoRoute;
+import de.kittybot.kittybot.web.webhooks.votes.PostVotesRoute;
 import io.javalin.Javalin;
 import io.javalin.http.*;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -94,6 +95,9 @@ public class WebModule extends Module{
 				before("/*", this::checkDiscordLogin);
 				get(new GetUserInfoRoute(this.modules));
 			});
+			path("/webhooks/votes/:botlist", () ->
+				post(new PostVotesRoute(this.modules))
+			);
 			path("/guilds", () -> {
 				before("/*", this::checkDiscordLogin);
 				get(new GetAllGuildsRoute(this.modules));

@@ -17,7 +17,6 @@ public class Config{
 	public static long BOT_ID;
 	public static String BOT_SECRET;
 	public static Set<Long> DEV_IDS;
-	public static Long TEST_GUILD;
 
 	public static int BACKEND_PORT;
 	public static String BACKEND_HOST;
@@ -28,7 +27,8 @@ public class Config{
 	public static String REDIRECT_URL;
 
 	public static String LOG_WEBHOOK_URL;
-
+	public static long SUPPORT_GUILD_ID;
+	public static long VOTER_ROLE_ID;
 	public static String SUPPORT_GUILD_INVITE_URL;
 	public static String BOT_INVITE_URL;
 
@@ -46,7 +46,8 @@ public class Config{
 	public static String DISCORD_BOTS_TOKEN;
 	public static String BOTLIST_SPACE_TOKEN;
 	public static String BOTS_FOR_DISCORD_TOKEN;
-	public static String DISCORDBOTLIST_TOKEN;
+	public static String BOTS_FOR_DISCORD_WEBHOOK_TOKEN;
+	public static String DISCORD_BOT_LIST_TOKEN;
 	public static String DISCORD_SERVICES_TOKEN;
 
 	public static String DB_HOST;
@@ -85,7 +86,6 @@ public class Config{
 				DEV_IDS.add(val.getLong(i, -1));
 			}
 		}
-		TEST_GUILD = json.getLong("test_guild", -1);
 
 		BACKEND_PORT = json.getInt("backend_port", -1);
 		BACKEND_HOST = json.getString("backend_host", "0.0.0.0");
@@ -97,6 +97,8 @@ public class Config{
 
 		LOG_WEBHOOK_URL = json.getString("log_webhook_url", "");
 
+		SUPPORT_GUILD_ID = json.getLong("support_guild_id", -1);
+		VOTER_ROLE_ID = json.getLong("voter_role_id", -1);
 		SUPPORT_GUILD_INVITE_URL = json.getString("support_guild_invite_url", "");
 		BOT_INVITE_URL = json.getString("bot_invite_url", "");
 
@@ -108,14 +110,15 @@ public class Config{
 		SPOTIFY_CLIENT_ID = json.getString("spotify_client_id", "");
 		SPOTIFY_CLIENT_SECRET = json.getString("spotify_client_secret", "");
 
-		DISCORD_BOTS_TOKEN = json.getString("discord_bots_token", "");
-		TOP_GG_TOKEN = json.getString("top_gg_token", "");
-		DISCORD_EXTREME_LIST_TOKEN = json.getString("discord_extreme_list_token", "");
-		DISCORD_BOATS_TOKEN = json.getString("discord_boats_token", "");
-		BOTLIST_SPACE_TOKEN = json.getString("botlist_space_token", "");
-		BOTS_FOR_DISCORD_TOKEN = json.getString("bots_for_discord_token", "");
-		DISCORDBOTLIST_TOKEN = json.getString("discordbotlist_token", "");
-		DISCORD_SERVICES_TOKEN = json.getString("discord_services_token", "");
+		DISCORD_BOTS_TOKEN = getBotListToken(json, "discord_bots_token");
+		TOP_GG_TOKEN = getBotListToken(json, "top_gg_token");
+		DISCORD_EXTREME_LIST_TOKEN = getBotListToken(json, "discord_extreme_list_token");
+		DISCORD_BOATS_TOKEN = getBotListToken(json, "discord_boats_token");
+		BOTLIST_SPACE_TOKEN = getBotListToken(json, "botlist_space_token");
+		BOTS_FOR_DISCORD_TOKEN = getBotListToken(json, "bots_for_discord_token");
+		BOTS_FOR_DISCORD_WEBHOOK_TOKEN = json.getString("bots_for_discord_webhook_token", "");
+		DISCORD_BOT_LIST_TOKEN = getBotListToken(json, "discord_bot_list_token");
+		DISCORD_SERVICES_TOKEN = getBotListToken(json, "discord_services_token");
 
 		DB_HOST = json.getString("db_host", "");
 		DB_PORT = json.getString("db_port", "");
@@ -155,5 +158,12 @@ public class Config{
 		);
 	}
 
+	private static String getBotListToken(DataObject json, String key){
+		var token = json.getString(key, "");
+		if(token.isBlank()){
+			return "some-totally-not-empty-token-cane";
+		}
+		return token;
+	}
 
 }
