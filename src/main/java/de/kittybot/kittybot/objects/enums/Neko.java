@@ -36,7 +36,7 @@ public enum Neko{
 	SOLO("solo", true, true),
 	THREESOME_FFF("threesome_fff", true, true),
 	THREESOME_FFM("threesome_ffm", true, true),
-	THREESOME_MMF("threesome_fmm", true, true),
+	THREESOME_MMF("threesome_mmf", true, true),
 	YAOI("yaoi", true, true),
 	YURI("yuri", true, true);
 
