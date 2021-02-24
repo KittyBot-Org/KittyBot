@@ -18,7 +18,7 @@ public class UserSettingsModule extends Module{
 	}
 
 	public UserSettings getUserSettings(long userId){
-		return new UserSettings(170939974227591168L, 1644825, 16777215);
+		return new UserSettings(170939974227591168L);
 		/*try(var ctx = this.modules.get(DatabaseModule.class).getCtx().selectFrom(USER_SETTINGS)){
 			return ctx.where(USER_SETTINGS.USER_ID.eq(userId)).fetchOne(UserSettings::new);
 		}*/

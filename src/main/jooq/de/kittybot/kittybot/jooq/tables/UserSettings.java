@@ -15,7 +15,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row3;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -53,14 +53,29 @@ public class UserSettings extends TableImpl<UserSettingsRecord> {
     public final TableField<UserSettingsRecord, Long> USER_ID = createField(DSL.name("user_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
-     * The column <code>public.user_settings.level_card_color</code>.
+     * The column <code>public.user_settings.level_card_background_url</code>.
      */
-    public final TableField<UserSettingsRecord, Integer> LEVEL_CARD_COLOR = createField(DSL.name("level_card_color"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<UserSettingsRecord, String> LEVEL_CARD_BACKGROUND_URL = createField(DSL.name("level_card_background_url"), SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>public.user_settings.level_card_background_color</code>.
+     */
+    public final TableField<UserSettingsRecord, Integer> LEVEL_CARD_BACKGROUND_COLOR = createField(DSL.name("level_card_background_color"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("3289650", SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>public.user_settings.level_card_primary_color</code>.
+     */
+    public final TableField<UserSettingsRecord, Integer> LEVEL_CARD_PRIMARY_COLOR = createField(DSL.name("level_card_primary_color"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("6053866", SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>public.user_settings.level_card_border_color</code>.
+     */
+    public final TableField<UserSettingsRecord, Integer> LEVEL_CARD_BORDER_COLOR = createField(DSL.name("level_card_border_color"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("16711679", SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.user_settings.level_card_font_color</code>.
      */
-    public final TableField<UserSettingsRecord, Integer> LEVEL_CARD_FONT_COLOR = createField(DSL.name("level_card_font_color"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<UserSettingsRecord, Integer> LEVEL_CARD_FONT_COLOR = createField(DSL.name("level_card_font_color"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("16711679", SQLDataType.INTEGER)), this, "");
 
     private UserSettings(Name alias, Table<UserSettingsRecord> aliased) {
         this(alias, aliased, null);
@@ -137,11 +152,11 @@ public class UserSettings extends TableImpl<UserSettingsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<Long, Integer, Integer> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row6<Long, String, Integer, Integer, Integer, Integer> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }
