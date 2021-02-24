@@ -2,6 +2,7 @@
 .gradle/
 .idea/
 build/
+out/
 config.json
 .idea
 gradle.properties
