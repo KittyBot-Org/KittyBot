@@ -70,6 +70,9 @@ public class StreamAnnouncementModule extends Module{
 	private void checkTwitch(){
 		var userIds = this.streamAnnouncements.stream().filter(streamAnnouncement -> streamAnnouncement.getStreamType() == StreamType.TWITCH.getId())
 			.map(StreamUsersRecord::getUserId).collect(Collectors.toList());
+		if(userIds.isEmpty()){
+			return;
+		}
 		var streams = this.twitchWrapper.getStreams(userIds, false);
 
 		for(var streamAnnouncement : this.streamAnnouncements){
