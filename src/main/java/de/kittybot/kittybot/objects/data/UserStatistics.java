@@ -6,14 +6,14 @@ import de.kittybot.kittybot.objects.enums.StatisticType;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-public class Statistics{
+public class UserStatistics{
 
 	private final long userId, guildId, xp;
 	private final int botCalls, messageCount, emoteCount;
 	private final Duration voiceTime;
 	private final LocalDateTime lastActive;
 
-	public Statistics(UserStatisticsRecord record){
+	public UserStatistics(UserStatisticsRecord record){
 		this.userId = record.getUserId();
 		this.guildId = record.getGuildId();
 		this.xp = record.getXp();
@@ -84,6 +84,11 @@ public class Statistics{
 	}
 
 	public long getRequiredXp(int level){
+		return (long) level * level * 100;
+	}
+
+	public long getNextLevelXp(){
+		var level = getLevel() + 1;
 		return (long) level * level * 100;
 	}
 

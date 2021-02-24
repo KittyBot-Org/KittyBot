@@ -52,10 +52,6 @@ public class InteractionsModule extends Module{
 		var start = System.currentTimeMillis();
 
 		var interaction = Interaction.fromJSON(this.modules, event.getPayload(), event.getJDA());
-			if(interaction instanceof GuildInteraction){
-				var guildInteraction = (GuildInteraction) interaction;
-				
-
 		if(interaction instanceof GuildInteraction){
 			var guildInteraction = (GuildInteraction) interaction;
 			this.modules.get(StatsModule.class).incrementStat(guildInteraction.getGuildId(), guildInteraction.getUserId(), USER_STATISTICS.BOT_CALLS, 1);
@@ -127,6 +123,7 @@ public class InteractionsModule extends Module{
 				}
 			}
 			catch(Exception e){
+				e.printStackTrace();
 				reply(interaction).ephemeral().content(e.getMessage()).type(InteractionResponseType.ACKNOWLEDGE).queue();
 			}
 			return;

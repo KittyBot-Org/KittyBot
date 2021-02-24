@@ -21,6 +21,7 @@ import de.kittybot.kittybot.jooq.tables.Sessions;
 import de.kittybot.kittybot.jooq.tables.SnipeDisabledChannels;
 import de.kittybot.kittybot.jooq.tables.StreamUserEvents;
 import de.kittybot.kittybot.jooq.tables.StreamUsers;
+import de.kittybot.kittybot.jooq.tables.UserSettings;
 import de.kittybot.kittybot.jooq.tables.UserStatistics;
 import de.kittybot.kittybot.jooq.tables.Voters;
 import de.kittybot.kittybot.jooq.tables.records.BotDisabledChannelsRecord;
@@ -40,6 +41,7 @@ import de.kittybot.kittybot.jooq.tables.records.SessionsRecord;
 import de.kittybot.kittybot.jooq.tables.records.SnipeDisabledChannelsRecord;
 import de.kittybot.kittybot.jooq.tables.records.StreamUserEventsRecord;
 import de.kittybot.kittybot.jooq.tables.records.StreamUsersRecord;
+import de.kittybot.kittybot.jooq.tables.records.UserSettingsRecord;
 import de.kittybot.kittybot.jooq.tables.records.UserStatisticsRecord;
 import de.kittybot.kittybot.jooq.tables.records.VotersRecord;
 
@@ -93,6 +95,7 @@ public class Keys {
     public static final UniqueKey<StreamUserEventsRecord> STREAM_USER_EVENTS_STREAM_USER_ID_EVENT_KEY = Internal.createUniqueKey(StreamUserEvents.STREAM_USER_EVENTS, DSL.name("stream_user_events_stream_user_id_event_key"), new TableField[] { StreamUserEvents.STREAM_USER_EVENTS.STREAM_USER_ID, StreamUserEvents.STREAM_USER_EVENTS.EVENT }, true);
     public static final UniqueKey<StreamUsersRecord> STREAM_USERS_GUILD_ID_USER_ID_KEY = Internal.createUniqueKey(StreamUsers.STREAM_USERS, DSL.name("stream_users_guild_id_user_id_key"), new TableField[] { StreamUsers.STREAM_USERS.GUILD_ID, StreamUsers.STREAM_USERS.USER_ID }, true);
     public static final UniqueKey<StreamUsersRecord> STREAM_USERS_PKEY = Internal.createUniqueKey(StreamUsers.STREAM_USERS, DSL.name("stream_users_pkey"), new TableField[] { StreamUsers.STREAM_USERS.ID }, true);
+    public static final UniqueKey<UserSettingsRecord> USER_SETTINGS_PKEY = Internal.createUniqueKey(UserSettings.USER_SETTINGS, DSL.name("user_settings_pkey"), new TableField[] { UserSettings.USER_SETTINGS.USER_ID }, true);
     public static final UniqueKey<UserStatisticsRecord> USER_STATISTICS_GUILD_ID_USER_ID_KEY = Internal.createUniqueKey(UserStatistics.USER_STATISTICS, DSL.name("user_statistics_guild_id_user_id_key"), new TableField[] { UserStatistics.USER_STATISTICS.GUILD_ID, UserStatistics.USER_STATISTICS.USER_ID }, true);
     public static final UniqueKey<UserStatisticsRecord> USER_STATISTICS_PKEY = Internal.createUniqueKey(UserStatistics.USER_STATISTICS, DSL.name("user_statistics_pkey"), new TableField[] { UserStatistics.USER_STATISTICS.ID }, true);
     public static final UniqueKey<VotersRecord> VOTERS_PKEY = Internal.createUniqueKey(Voters.VOTERS, DSL.name("voters_pkey"), new TableField[] { Voters.VOTERS.ID }, true);

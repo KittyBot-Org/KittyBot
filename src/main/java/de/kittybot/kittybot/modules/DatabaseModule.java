@@ -44,7 +44,8 @@ public class DatabaseModule extends Module{
 			"notifications",
 			"user_statistics",
 			"requests",
-			"sessions"
+			"sessions",
+			"user_settings"
 		);
 	}
 

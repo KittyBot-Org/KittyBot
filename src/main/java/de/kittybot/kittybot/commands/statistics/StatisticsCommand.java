@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.commands.statistics;
 
 import de.kittybot.kittybot.modules.StatsModule;
+import de.kittybot.kittybot.modules.UserSettingsModule;
 import de.kittybot.kittybot.objects.enums.StatisticType;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
@@ -8,12 +9,12 @@ import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionUser;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
-import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.TimeUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
 import org.jooq.SortOrder;
 
 import java.util.stream.Collectors;
@@ -26,7 +27,8 @@ public class StatisticsCommand extends Command{
 		addOptions(
 			new UserCommand(),
 			new TopCommand(),
-			new XPCommand()
+			new XPCommand(),
+			new CardCommand()
 		);
 	}
 
@@ -89,6 +91,28 @@ public class StatisticsCommand extends Command{
 					"\n**Last Time Active:** " + TimeUtils.format(statistics.getLastActive())
 				)
 			);
+		}
+
+	}
+
+	private static class CardCommand extends GuildSubCommand{
+
+
+		public CardCommand(){
+			super("card", "Sends your level card");
+			addOptions(
+				new CommandOptionUser("user", "The user to get the card from")
+			);
+		}
+
+		@Override
+		public void run(Options options, GuildInteraction ia){
+			var statsModule = ia.get(StatsModule.class);
+			var userStats = statsModule.get(ia.getGuildId(), ia.getUserId());
+			var userSettings = ia.get(UserSettingsModule.class).getUserSettings(ia.getUserId());
+			var card = statsModule.generateLevelCard(userStats, userSettings, options.has("user") ? options.getUser("user") : ia.getUser());
+			ia.sendAcknowledge();
+			ia.getChannel().sendFile(card, "card.png").queue();
 		}
 
 	}
