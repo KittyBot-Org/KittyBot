@@ -1,4 +1,4 @@
-package de.kittybot.kittybot.commands.statistics;
+package de.kittybot.kittybot.commands.user;
 
 import de.kittybot.kittybot.modules.StatsModule;
 import de.kittybot.kittybot.modules.UserSettingsModule;
@@ -15,15 +15,14 @@ import de.kittybot.kittybot.utils.ImageUtils;
 import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.TimeUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.MessageBuilder;
 import org.jooq.SortOrder;
 
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
-public class StatisticsCommand extends Command{
+public class UserStatisticsCommand extends Command{
 
-	public StatisticsCommand(){
+	public UserStatisticsCommand(){
 		super("stats", "Shows Stats", Category.STATISTICS);
 		addOptions(
 			new UserCommand(),
@@ -84,7 +83,7 @@ public class StatisticsCommand extends Command{
 			ia.reply(new EmbedBuilder()
 				.setDescription("User Statistics: " + MessageUtils.getUserMention(userId) +
 					"\n**Level:** " + statistics.getLevel() +
-					"\n**XP:** " + statistics.getRestXp() +
+					"\n**XP:** " + statistics.getXp() + "/" + statistics.getThisLevelXp() +
 					"\n**Bot Calls:** " + statistics.getBotCalls() +
 					"\n**Total Voice Time:** " + TimeUtils.formatDurationDHMS(statistics.getVoiceTime()) +
 					"\n**Messages Sent:** " + statistics.getMessageCount() +

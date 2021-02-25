@@ -4,10 +4,14 @@ import de.kittybot.kittybot.objects.data.UserStatistics;
 import de.kittybot.kittybot.objects.data.VoiceMember;
 import de.kittybot.kittybot.objects.enums.StatisticType;
 import de.kittybot.kittybot.objects.module.Module;
+import de.kittybot.kittybot.utils.Config;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.GenericGuildEvent;
+import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
@@ -45,7 +49,22 @@ public class StatsModule extends Module{
 	}
 
 	@Override
+	public void onGuildReady(@NotNull GuildReadyEvent event){
+		var guildId = event.getGuild().getIdLong();
+		for(var voiceState : event.getGuild().getVoiceStates()){
+			var userId = voiceState.getMember().getIdLong();
+			if(this.voiceMembers.containsKey(userId)){
+				continue;
+			}
+			this.voiceMembers.put(userId, new VoiceMember(guildId));
+		}
+	}
+
+	@Override
 	public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event){
+		if(event.getAuthor().getIdLong() == Config.BOT_ID){
+			return;
+		}
 		var stats = new HashMap<Field<? extends Number>, Number>();
 
 		stats.put(USER_STATISTICS.MESSAGE_COUNT, 1);
@@ -53,16 +72,30 @@ public class StatsModule extends Module{
 		if(!emotes.isEmpty()){
 			stats.put(USER_STATISTICS.EMOTE_COUNT, emotes.size());
 		}
-		incrementStats(event.getGuild().getIdLong(), event.getAuthor().getIdLong(), stats);
+		var newStats = incrementStats(event.getGuild().getIdLong(), event.getAuthor().getIdLong(), stats);
+		if(!newStats.checkIfLevelUp()){
+			return;
+		}
+		var channel = event.getChannel();
+		if(!event.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE)){
+			return;
+		}
+		channel.sendMessage(event.getAuthor().getAsMention() + " leveled up to level " + newStats.getLevel() + " yay!").queue();
 	}
 
 	@Override
 	public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event){
+		if(event.getMember().getIdLong() == Config.BOT_ID){
+			return;
+		}
 		this.voiceMembers.put(event.getMember().getIdLong(), new VoiceMember(event.getGuild().getIdLong()));
 	}
 
 	@Override
 	public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent event){
+		if(event.getMember().getIdLong() == Config.BOT_ID){
+			return;
+		}
 		var afkChannel = event.getGuild().getAfkChannel();
 		if(afkChannel == null){
 			return;
@@ -76,6 +109,9 @@ public class StatsModule extends Module{
 
 	@Override
 	public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event){
+		if(event.getMember().getIdLong() == Config.BOT_ID){
+			return;
+		}
 		updateVoiceStat(event, event.getMember());
 	}
 
@@ -137,7 +173,7 @@ public class StatsModule extends Module{
 
 		var updateValues = new HashMap<>();
 		values.forEach((field, number) -> updateValues.put(field, field.add(number)));
-		updateValues.put(USER_STATISTICS.XP, xpGain);
+		updateValues.put(USER_STATISTICS.XP, USER_STATISTICS.XP.add(xpGain));
 
 		var record = this.modules.get(DatabaseModule.class).getCtx()
 			.insertInto(USER_STATISTICS)
@@ -152,7 +188,7 @@ public class StatsModule extends Module{
 		if(record == null){
 			return null;
 		}
-		return new UserStatistics(record);
+		return new UserStatistics(record).setLastXpGain(xpGain);
 	}
 
 	public List<UserStatistics> get(long guildId, StatisticType type, SortOrder sortOrder, int limit){

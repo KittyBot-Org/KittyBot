@@ -12,6 +12,7 @@ public class UserStatistics{
 	private final int botCalls, messageCount, emoteCount;
 	private final Duration voiceTime;
 	private final LocalDateTime lastActive;
+	private long lastXpGain;
 
 	public UserStatistics(UserStatisticsRecord record){
 		this.userId = record.getUserId();
@@ -22,6 +23,7 @@ public class UserStatistics{
 		this.emoteCount = record.getEmoteCount();
 		this.voiceTime = record.getVoiceTime().toDuration();
 		this.lastActive = record.getLastActive();
+		this.lastXpGain = 0;
 	}
 
 	public long getUserId(){
@@ -54,6 +56,15 @@ public class UserStatistics{
 
 	public LocalDateTime getLastActive(){
 		return this.lastActive;
+	}
+
+	public long getLastXpGain(){
+		return this.lastXpGain;
+	}
+
+	public UserStatistics setLastXpGain(long xpGain){
+		this.lastXpGain = xpGain;
+		return this;
 	}
 
 	public String get(StatisticType type){
@@ -92,14 +103,32 @@ public class UserStatistics{
 		return (long) level * level * 100;
 	}
 
+	public long getThisLevelXp(){
+		var level = getLevel();
+		return (long) level * level * 100;
+	}
+
 	public long getPreviousLevelXp(){
 		var level = getLevel() - 1;
 		return (long) level * level * 100;
 	}
 
-	public boolean checkIfLevelUp(long xp){
-		var previousXp = getPreviousLevelXp();
-		if(this.xp -)
+	@Override
+	public String toString(){
+		return "UserStatistics{" +
+			"userId=" + userId +
+			", guildId=" + guildId +
+			", xp=" + xp +
+			", botCalls=" + botCalls +
+			", messageCount=" + messageCount +
+			", emoteCount=" + emoteCount +
+			", voiceTime=" + voiceTime +
+			", lastActive=" + lastActive +
+			'}';
+	}
+
+	public boolean checkIfLevelUp(){
+		return this.xp - this.lastXpGain < getThisLevelXp();
 	}
 
 }

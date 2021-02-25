@@ -1,4 +1,4 @@
-package de.kittybot.kittybot.commands.statistics.user.settings.level.card;
+package de.kittybot.kittybot.commands.user.user.settings.level.card;
 
 import de.kittybot.kittybot.modules.UserSettingsModule;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionUrl;

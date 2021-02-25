@@ -1,6 +1,6 @@
-package de.kittybot.kittybot.commands.statistics.user.settings;
+package de.kittybot.kittybot.commands.user.user.settings;
 
-import de.kittybot.kittybot.commands.statistics.user.settings.level.card.*;
+import de.kittybot.kittybot.commands.user.user.settings.level.card.*;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommandGroup;
 
 public class LevelCardCommand extends SubCommandGroup{

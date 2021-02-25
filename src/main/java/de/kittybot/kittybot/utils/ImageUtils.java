@@ -124,7 +124,7 @@ public class ImageUtils{
 
 			// draw xp
 			var currentXp = statistics.getRestXp();
-			var neededXp = statistics.getNextLevelXp();
+			var neededXp = statistics.getThisLevelXp();
 			g.setFont(g.getFont().deriveFont(FONT_SIZE).deriveFont(Font.BOLD));
 			g.setColor(new Color(settings.getLevelCardFontColor()));
 			var xpString = currentXp + " / " + neededXp + " XP";

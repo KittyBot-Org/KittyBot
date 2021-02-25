@@ -1,4 +1,4 @@
-package de.kittybot.kittybot.commands.statistics.user.settings.level.card;
+package de.kittybot.kittybot.commands.user.user.settings.level.card;
 
 import de.kittybot.kittybot.modules.UserSettingsModule;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionColor;
@@ -11,12 +11,12 @@ import net.dv8tion.jda.api.EmbedBuilder;
 
 import static de.kittybot.kittybot.jooq.Tables.USER_SETTINGS;
 
-public class PrimaryColorCommand extends SubCommand{
+public class BackgroundColorCommand extends SubCommand{
 
-	public PrimaryColorCommand(){
-		super("primary-color", "Lets you set the primary color of your level card");
+	public BackgroundColorCommand(){
+		super("background-color", "Lets you set the background color of your level card");
 		addOptions(
-			new CommandOptionColor("color", "The primary color of level card background")
+			new CommandOptionColor("color", "The background color of level card background")
 		);
 	}
 
@@ -27,7 +27,7 @@ public class PrimaryColorCommand extends SubCommand{
 		ia.sendAcknowledge();
 		ia.getChannel().sendMessage(ia.applyDefaultStyle(new EmbedBuilder()
 				.setColor(Colors.KITTYBOT_BLUE)
-				.setDescription("Set primary color to")
+				.setDescription("Set background color to")
 				.setThumbnail("attachment://color.png")
 			).build()
 		).addFile(ImageUtils.generateColorImage(color), "color.png").queue();
