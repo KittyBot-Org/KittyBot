@@ -14,7 +14,7 @@ public class PauseCommand extends RunGuildCommand{
 	public PauseCommand(){
 		super("pause", "Pauses/Unpauses the current track", Category.MUSIC);
 		addOptions(
-			new CommandOptionBoolean("pause", "If it should pause or resume. Emit for toggle")
+			new CommandOptionBoolean("pause", "If it should pause or resume. Omit for toggle")
 		);
 	}
 
