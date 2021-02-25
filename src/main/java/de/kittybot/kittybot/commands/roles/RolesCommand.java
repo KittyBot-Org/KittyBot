@@ -123,8 +123,8 @@ public class RolesCommand extends Command{
 					}).collect(Collectors.joining("\n"))
 				).build();
 
-			if(!ia.getSelfMember().hasPermission(Permission.MESSAGE_WRITE, Permission.MESSAGE_ADD_REACTION)){
-				ia.reply(embed);
+			if(!ia.getSelfMember().hasPermission(ia.getChannel(), Permission.MESSAGE_WRITE, Permission.MESSAGE_ADD_REACTION)){
+				ia.error("To list roles make sure I have the following permissions: `MESSAGE_WRITE` & `MESSAGE_ADD_REACTION`");
 				return;
 			}
 			ia.acknowledge(true).queue(success ->
