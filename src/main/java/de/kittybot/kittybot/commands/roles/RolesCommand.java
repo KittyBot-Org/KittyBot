@@ -47,7 +47,7 @@ public class RolesCommand extends Command{
 
 		@Override
 		public void run(Options options, GuildInteraction ia){
-			var role = options.getRole("role");
+			var role = ia.getGuild().getRoleById(options.getLong("role"));
 			var emoteAction = options.getEmote(ia.getGuild(), "emote");
 			var groupName = options.getString("group");
 
@@ -79,7 +79,7 @@ public class RolesCommand extends Command{
 
 		@Override
 		public void run(Options options, GuildInteraction ia){
-			var role = options.getRole("role");
+			var role = ia.getGuild().getRoleById(options.getLong("role"));
 			var settings = ia.get(SettingsModule.class);
 			if(settings.getSelfAssignableRoles(ia.getGuildId()).stream().noneMatch(r -> r.getRoleId() == role.getIdLong())){
 				ia.error("This role is not self assignable");

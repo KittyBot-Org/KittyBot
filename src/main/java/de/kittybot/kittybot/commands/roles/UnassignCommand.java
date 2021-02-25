@@ -19,7 +19,7 @@ public class UnassignCommand extends RunGuildCommand{
 
 	@Override
 	public void run(Options options, GuildInteraction ia){
-		var role = options.getRole("role");
+		var role = ia.getGuild().getRoleById(options.getLong("role"));
 		if(role == null){
 			ia.error("Unknown role provided");
 			return;
