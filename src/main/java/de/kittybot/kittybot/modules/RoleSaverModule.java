@@ -25,7 +25,7 @@ public class RoleSaverModule extends Module{
 		var guild = event.getGuild();
 		var guildId = guild.getIdLong();
 		var roles = retrieveGuildUserRoles(guildId, member.getIdLong());
-		if(!guild.getSelfMember().hasPermission(Permission.MANAGE_ROLES) || this.modules.get(SettingsModule.class).isRoleSaverEnabled(guildId)){
+		if(!guild.getSelfMember().hasPermission(Permission.MANAGE_ROLES) || this.modules.get(GuildSettingsModule.class).isRoleSaverEnabled(guildId)){
 			return;
 		}
 		guild.modifyMemberRoles(member, roles.stream().map(guild::getRoleById).filter(Objects::nonNull).collect(Collectors.toSet()), null).queue();

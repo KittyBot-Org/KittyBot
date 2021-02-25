@@ -12,12 +12,12 @@ import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 @SuppressWarnings("unused")
-public class GuildBannerCommand extends SubCommand{
+public class ServerBannerCommand extends SubCommand{
 
-	public GuildBannerCommand(){
-		super("guildbanner", "Gets the guild banner");
+	public ServerBannerCommand(){
+		super("serverbanner", "Gets the guild banner");
 		addOptions(
-			new CommandOptionLong("guild-id", "The guild id to get the banner from"),
+			new CommandOptionLong("server-id", "The guild id to get the banner from"),
 			new CommandOptionInteger("size", "The image size")
 				.addChoices(
 					new CommandOptionChoice<>("16", 16),
@@ -34,7 +34,7 @@ public class GuildBannerCommand extends SubCommand{
 
 	@Override
 	public void run(Options options, Interaction ia){
-		var guildId = options.getOrDefault("guild-id", ia instanceof GuildInteraction ? ((GuildInteraction) ia).getGuildId() : -1L);
+		var guildId = options.getOrDefault("server-id", ia instanceof GuildInteraction ? ((GuildInteraction) ia).getGuildId() : -1L);
 		if(guildId == -1L){
 			ia.error("Please provide a guild id");
 			return;

@@ -30,16 +30,15 @@ import java.util.stream.Collectors;
 
 import static de.kittybot.kittybot.jooq.Tables.*;
 
-public class SettingsModule extends Module{
+public class GuildSettingsModule extends Module{
 
-	private static final Logger LOG = LoggerFactory.getLogger(SettingsModule.class);
-	private static final Set<Class<? extends Module>> DEPENDENCIES = Set.of(DatabaseModule.class);
+	private static final Logger LOG = LoggerFactory.getLogger(GuildSettingsModule.class);
 
 	private LoadingCache<Long, Settings> guildSettings;
 
 	@Override
 	public Set<Class<? extends Module>> getDependencies(){
-		return DEPENDENCIES;
+		return Set.of(DatabaseModule.class);
 	}
 
 	@Override

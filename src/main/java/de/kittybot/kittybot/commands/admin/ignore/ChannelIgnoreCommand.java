@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.commands.admin.ignore;
 
-import de.kittybot.kittybot.modules.SettingsModule;
+import de.kittybot.kittybot.modules.GuildSettingsModule;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionChannel;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommandGroup;
@@ -33,7 +33,7 @@ public class ChannelIgnoreCommand extends SubCommandGroup{
 		@Override
 		public void run(Options options, GuildInteraction ia){
 			var channel = options.getTextChannel("channel");
-			ia.get(SettingsModule.class).setBotDisabledInChannel(ia.getGuildId(), channel.getIdLong(), true);
+			ia.get(GuildSettingsModule.class).setBotDisabledInChannel(ia.getGuildId(), channel.getIdLong(), true);
 			ia.reply("Disabled commands in " + channel.getAsMention());
 		}
 
@@ -51,7 +51,7 @@ public class ChannelIgnoreCommand extends SubCommandGroup{
 		@Override
 		public void run(Options options, GuildInteraction ia){
 			var channel = options.getTextChannel("channel");
-			ia.get(SettingsModule.class).setBotDisabledInChannel(ia.getGuildId(), channel.getIdLong(), false);
+			ia.get(GuildSettingsModule.class).setBotDisabledInChannel(ia.getGuildId(), channel.getIdLong(), false);
 			ia.reply("Enabled commands in " + channel.getAsMention());
 		}
 
@@ -65,7 +65,7 @@ public class ChannelIgnoreCommand extends SubCommandGroup{
 
 		@Override
 		public void run(Options options, GuildInteraction ia){
-			var channels = ia.get(SettingsModule.class).getBotDisabledChannels(ia.getGuildId());
+			var channels = ia.get(GuildSettingsModule.class).getBotDisabledChannels(ia.getGuildId());
 			ia.reply("**Commands are disabled in following channels:**\n" + channels.stream().map(MessageUtils::getChannelMention).collect(Collectors.joining(", ")));
 		}
 

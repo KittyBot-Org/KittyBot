@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.commands.admin;
 
-import de.kittybot.kittybot.modules.SettingsModule;
+import de.kittybot.kittybot.modules.GuildSettingsModule;
 import de.kittybot.kittybot.modules.StreamAnnouncementModule;
 import de.kittybot.kittybot.objects.enums.Emoji;
 import de.kittybot.kittybot.objects.streams.StreamType;
@@ -47,7 +47,7 @@ public class SettingsCommand extends Command{
 		@Override
 		public void run(Options options, GuildInteraction ia){
 			var guildId = ia.getGuildId();
-			var settings = ia.get(SettingsModule.class).getSettings(guildId);
+			var settings = ia.get(GuildSettingsModule.class).getSettings(guildId);
 			ia.reply(new EmbedBuilder()
 					.setColor(Colors.KITTYBOT_BLUE)
 					.setAuthor("Guild settings:", Config.ORIGIN_URL + "/guilds/" + guildId + "/dashboard", Emoji.SETTINGS.getUrl())
@@ -78,7 +78,7 @@ public class SettingsCommand extends Command{
 		@Override
 		public void run(Options options, GuildInteraction ia){
 			var role = options.getRole("role");
-			ia.get(SettingsModule.class).setDjRoleId(ia.getGuildId(), role.getIdLong());
+			ia.get(GuildSettingsModule.class).setDjRoleId(ia.getGuildId(), role.getIdLong());
 			ia.reply(new InteractionResponse.Builder().setContent("DJ Role set to: " + role.getAsMention()).build());
 		}
 
@@ -96,7 +96,7 @@ public class SettingsCommand extends Command{
 		@Override
 		public void run(Options options, GuildInteraction ia){
 			var channel = options.getTextChannel("channel");
-			ia.get(SettingsModule.class).setAnnouncementChannelId(ia.getGuildId(), channel.getIdLong());
+			ia.get(GuildSettingsModule.class).setAnnouncementChannelId(ia.getGuildId(), channel.getIdLong());
 			ia.reply(new InteractionResponse.Builder().setContent("Announcement channel set to: " + channel.getAsMention()).build());
 		}
 
@@ -114,7 +114,7 @@ public class SettingsCommand extends Command{
 
 		@Override
 		public void run(Options options, GuildInteraction ia){
-			var settings = ia.get(SettingsModule.class);
+			var settings = ia.get(GuildSettingsModule.class);
 			var returnMessage = "";
 			if(options.has("enabled")){
 				var enabled = options.getBoolean("enabled");
@@ -149,7 +149,7 @@ public class SettingsCommand extends Command{
 
 		@Override
 		public void run(Options options, GuildInteraction ia){
-			var settings = ia.get(SettingsModule.class);
+			var settings = ia.get(GuildSettingsModule.class);
 			var returnMessage = "";
 			if(options.has("enabled")){
 				var enabled = options.getBoolean("enabled");
@@ -184,7 +184,7 @@ public class SettingsCommand extends Command{
 		@Override
 		public void run(Options options, GuildInteraction ia){
 			var enabled = options.getBoolean("enabled");
-			ia.get(SettingsModule.class).setNsfwEnabled(ia.getGuildId(), enabled);
+			ia.get(GuildSettingsModule.class).setNsfwEnabled(ia.getGuildId(), enabled);
 			ia.reply((enabled ? "Enabled" : "Disabled") + "nsfw commands");
 		}
 
@@ -202,7 +202,7 @@ public class SettingsCommand extends Command{
 
 		@Override
 		public void run(Options options, GuildInteraction ia){
-			var settings = ia.get(SettingsModule.class);
+			var settings = ia.get(GuildSettingsModule.class);
 			var returnMessage = "";
 			if(options.has("enabled")){
 				var enabled = options.getBoolean("enabled");
@@ -250,7 +250,7 @@ public class SettingsCommand extends Command{
 			public void run(Options options, GuildInteraction ia){
 				var channel = options.getTextChannel("channel");
 				var enabled = options.getBoolean("enabled");
-				ia.get(SettingsModule.class).setSnipesDisabledInChannel(ia.getGuildId(), channel.getIdLong(), !enabled);
+				ia.get(GuildSettingsModule.class).setSnipesDisabledInChannel(ia.getGuildId(), channel.getIdLong(), !enabled);
 				ia.reply("Snipes `" + (enabled ? "enabled" : "disabled") + "` in " + channel.getAsMention());
 			}
 
@@ -268,7 +268,7 @@ public class SettingsCommand extends Command{
 			@Override
 			public void run(Options options, GuildInteraction ia){
 				var enabled = options.getBoolean("enabled");
-				ia.get(SettingsModule.class).setSnipesEnabled(ia.getGuildId(), enabled);
+				ia.get(GuildSettingsModule.class).setSnipesEnabled(ia.getGuildId(), enabled);
 				ia.reply("Snipes globally `" + (enabled ? "enabled" : "disabled") + "`");
 			}
 
@@ -376,7 +376,7 @@ public class SettingsCommand extends Command{
 			public void run(Options options, GuildInteraction ia){
 				var message = options.getString("message");
 
-				ia.get(SettingsModule.class).setStreamAnnouncementMessage(ia.getGuildId(), message);
+				ia.get(GuildSettingsModule.class).setStreamAnnouncementMessage(ia.getGuildId(), message);
 				ia.reply("Set stream announcements template to:\n" + message);
 			}
 
@@ -394,7 +394,7 @@ public class SettingsCommand extends Command{
 			@Override
 			public void run(Options options, GuildInteraction ia){
 				var channel = options.getTextChannel("channel");
-				ia.get(SettingsModule.class).setStreamAnnouncementChannelId(ia.getGuildId(), channel.getIdLong());
+				ia.get(GuildSettingsModule.class).setStreamAnnouncementChannelId(ia.getGuildId(), channel.getIdLong());
 				ia.reply("Stream announcements now get send to " + channel.getAsMention());
 			}
 
@@ -414,7 +414,7 @@ public class SettingsCommand extends Command{
 		@Override
 		public void run(Options options, GuildInteraction ia){
 			var enabled = options.getBoolean("enabled");
-			ia.get(SettingsModule.class).setRoleSaverEnabled(ia.getGuildId(), enabled);
+			ia.get(GuildSettingsModule.class).setRoleSaverEnabled(ia.getGuildId(), enabled);
 			ia.reply((enabled ? "Enabled" : "Disabled") + " role saving");
 		}
 

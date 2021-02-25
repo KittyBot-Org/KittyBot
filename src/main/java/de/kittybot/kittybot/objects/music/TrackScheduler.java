@@ -2,7 +2,7 @@ package de.kittybot.kittybot.objects.music;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
-import de.kittybot.kittybot.modules.SettingsModule;
+import de.kittybot.kittybot.modules.GuildSettingsModule;
 import de.kittybot.kittybot.objects.module.Modules;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
 import de.kittybot.kittybot.utils.Colors;
@@ -139,7 +139,7 @@ public class TrackScheduler extends PlayerEventListenerAdapter{
 	}
 
 	public int removeQueue(int from, int to, Member member){
-		var settings = this.modules.get(SettingsModule.class);
+		var settings = this.modules.get(GuildSettingsModule.class);
 		var userId = member.getIdLong();
 		var iterator = this.queue.iterator();
 		var i = 1;

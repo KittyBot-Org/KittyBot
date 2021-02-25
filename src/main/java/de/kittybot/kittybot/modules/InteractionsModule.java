@@ -55,7 +55,7 @@ public class InteractionsModule extends Module{
 		if(interaction instanceof GuildInteraction){
 			var guildInteraction = (GuildInteraction) interaction;
 			this.modules.get(StatsModule.class).incrementStat(guildInteraction.getGuildId(), guildInteraction.getUserId(), USER_STATISTICS.BOT_CALLS, 1);
-			var settings = this.modules.get(SettingsModule.class).getSettings(guildInteraction.getGuildId());
+			var settings = this.modules.get(GuildSettingsModule.class).getSettings(guildInteraction.getGuildId());
 
 			if(settings.isBotIgnoredUser(guildInteraction.getMember().getIdLong())){
 				reply(interaction, false).content("I ignore u baka").ephemeral().queue();

@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.utils.MiscUtil;
 
+import java.awt.Color;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,10 @@ public class Options{
 
 	public String getString(String name){
 		return getValue(name, String.class);
+	}
+
+	public Color getColor(String name){
+		return getValue(name, Color.class);
 	}
 
 	@SuppressWarnings("unchecked")

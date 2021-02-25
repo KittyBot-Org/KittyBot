@@ -146,13 +146,17 @@ public class StatsModule extends Module{
 		var insert = new HashMap<>(values);
 		insert.put(USER_STATISTICS.GUILD_ID, guildId);
 		insert.put(USER_STATISTICS.USER_ID, userId);
+
+		var updateValues = new HashMap<>();
+		values.forEach((field, number) -> updateValues.put(field, field.add(number)));
+
 		this.modules.get(DatabaseModule.class).getCtx()
 			.insertInto(USER_STATISTICS)
 			.columns(insert.keySet())
 			.values(insert.values())
 			.onConflict(USER_STATISTICS.GUILD_ID, USER_STATISTICS.USER_ID)
 			.doUpdate()
-			.set(values.entrySet().stream().map(entry -> Map.entry(entry.getKey(), entry.getKey().add(entry.getValue()))).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
+			.set(updateValues)
 			.where(USER_STATISTICS.GUILD_ID.eq(guildId).and(USER_STATISTICS.USER_ID.eq(userId)))
 			.execute();
 	}
@@ -181,6 +185,7 @@ public class StatsModule extends Module{
 	}
 
 	public byte[] generateLevelCard(UserStatistics statistics, UserSettings settings, User user){
+		System.out.println(settings);
 		try{
 			var avatar = ImageIO.read(new URL(user.getEffectiveAvatarUrl() + "?size=" + RAW_AVATAR_SIZE));
 

@@ -54,7 +54,7 @@ public class CommandsModule extends Module{
 		}
 		else if(env == Environment.DEVELOPMENT){
 			if(Config.SUPPORT_GUILD_ID != -1){
-				//deployAllCommands(Config.SUPPORT_GUILD_ID);
+				deployAllCommands(Config.SUPPORT_GUILD_ID);
 			}
 		}
 	}

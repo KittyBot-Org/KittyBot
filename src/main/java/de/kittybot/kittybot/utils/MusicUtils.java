@@ -2,7 +2,7 @@ package de.kittybot.kittybot.utils;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.kittybot.kittybot.modules.PaginatorModule;
-import de.kittybot.kittybot.modules.SettingsModule;
+import de.kittybot.kittybot.modules.GuildSettingsModule;
 import de.kittybot.kittybot.objects.module.Modules;
 import de.kittybot.kittybot.objects.music.TrackScheduler;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
@@ -63,7 +63,7 @@ public class MusicUtils{
 
 	public static boolean checkMusicPermissions(GuildInteraction ia, TrackScheduler scheduler){
 		var member = ia.getMember();
-		if(member.hasPermission(Permission.ADMINISTRATOR) || ia.get(SettingsModule.class).hasDJRole(member)){
+		if(member.hasPermission(Permission.ADMINISTRATOR) || ia.get(GuildSettingsModule.class).hasDJRole(member)){
 			return true;
 		}
 		var track = scheduler.getPlayingTrack();

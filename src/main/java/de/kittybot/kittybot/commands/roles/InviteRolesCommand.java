@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.commands.roles;
 
 import de.kittybot.kittybot.modules.InviteModule;
-import de.kittybot.kittybot.modules.SettingsModule;
+import de.kittybot.kittybot.modules.GuildSettingsModule;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionRole;
@@ -52,7 +52,7 @@ public class InviteRolesCommand extends Command{
 				ia.error("No invite with code '" + code + "' found");
 				return;
 			}
-			ia.get(SettingsModule.class).addInviteRoles(ia.getGuildId(), code, Collections.singleton(role.getIdLong()));
+			ia.get(GuildSettingsModule.class).addInviteRoles(ia.getGuildId(), code, Collections.singleton(role.getIdLong()));
 			ia.reply("Added role " + role.getAsMention() + " to invite `" + code + "`");
 		}
 
@@ -81,7 +81,7 @@ public class InviteRolesCommand extends Command{
 				ia.error("No invite with code '" + code + "' found");
 				return;
 			}
-			ia.get(SettingsModule.class).removeInviteRoles(ia.getGuildId(), code, Collections.singleton(role.getIdLong()));
+			ia.get(GuildSettingsModule.class).removeInviteRoles(ia.getGuildId(), code, Collections.singleton(role.getIdLong()));
 			ia.reply("Removed role " + role.getAsMention() + " from invite `" + code + "`");
 		}
 
@@ -108,7 +108,7 @@ public class InviteRolesCommand extends Command{
 				ia.error("No invite with code '" + code + "' found");
 				return;
 			}
-			ia.get(SettingsModule.class).removeInviteRoles(ia.getGuildId(), code);
+			ia.get(GuildSettingsModule.class).removeInviteRoles(ia.getGuildId(), code);
 			ia.reply("Roles reset from invite `" + code + "`");
 		}
 
@@ -125,7 +125,7 @@ public class InviteRolesCommand extends Command{
 
 		@Override
 		public void run(Options options, GuildInteraction ia){
-			var inviteRoles = ia.get(SettingsModule.class).getInviteRoles(ia.getGuildId());
+			var inviteRoles = ia.get(GuildSettingsModule.class).getInviteRoles(ia.getGuildId());
 			if(inviteRoles.isEmpty()){
 				ia.error("No invite roles found");
 				return;

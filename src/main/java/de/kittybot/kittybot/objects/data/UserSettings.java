@@ -17,15 +17,6 @@ public class UserSettings{
 		this.levelCardFontColor = record.getLevelCardFontColor();
 	}
 
-	public UserSettings(long userId){
-		this.userId = userId;
-		this.levelCardBackgroundUrl = "https://i.imgur.com/q4ueQpS.png";
-		this.levelCardBackgroundColor = 3289650;
-		this.levelCardPrimaryColor = 6053866;
-		this.levelCardBorderColor = 16711679;
-		this.levelCardFontColor = 16711679;
-	}
-
 	public long getUserId(){
 		return this.userId;
 	}
@@ -41,7 +32,6 @@ public class UserSettings{
 	public int getLevelCardPrimaryColor(){
 		return this.levelCardPrimaryColor;
 	}
-
 
 	public int getLevelCardBorderColor(){
 		return this.levelCardBorderColor;

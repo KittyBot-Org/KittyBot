@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.commands.admin.ignore;
 
-import de.kittybot.kittybot.modules.SettingsModule;
+import de.kittybot.kittybot.modules.GuildSettingsModule;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionUser;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommandGroup;
@@ -34,7 +34,7 @@ public class UserIgnoreCommand extends SubCommandGroup{
 		@Override
 		public void run(Options options, GuildInteraction ia){
 			var user = options.getUser("user");
-			ia.get(SettingsModule.class).addBotIgnoredUsers(ia.getGuildId(), Collections.singleton(user.getIdLong()));
+			ia.get(GuildSettingsModule.class).addBotIgnoredUsers(ia.getGuildId(), Collections.singleton(user.getIdLong()));
 			ia.reply("Disabled commands for " + user.getAsMention());
 		}
 
@@ -52,7 +52,7 @@ public class UserIgnoreCommand extends SubCommandGroup{
 		@Override
 		public void run(Options options, GuildInteraction ia){
 			var user = options.getUser("user");
-			ia.get(SettingsModule.class).removeBotIgnoredUsers(ia.getGuildId(), Collections.singleton(user.getIdLong()));
+			ia.get(GuildSettingsModule.class).removeBotIgnoredUsers(ia.getGuildId(), Collections.singleton(user.getIdLong()));
 			ia.reply("Enabled commands for " + user.getAsMention());
 		}
 
@@ -66,7 +66,7 @@ public class UserIgnoreCommand extends SubCommandGroup{
 
 		@Override
 		public void run(Options options, GuildInteraction ia){
-			var users = ia.get(SettingsModule.class).getBotIgnoredUsers(ia.getGuildId());
+			var users = ia.get(GuildSettingsModule.class).getBotIgnoredUsers(ia.getGuildId());
 			ia.reply("**Commands are disabled for following users:**\n" + users.stream().map(MessageUtils::getUserMention).collect(Collectors.joining(", ")));
 		}
 

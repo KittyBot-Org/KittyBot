@@ -23,7 +23,7 @@ public class StatsCommand extends SubCommand{
 			.setAuthor("KittyBot Internal Cache Stats", Config.ORIGIN_URL, ia.getSelfUser().getEffectiveAvatarUrl())
 
 			.addField("Command Response Cache:", ia.get(CommandResponseModule.class).getStats().toString(), false)
-			.addField("Guild Settings Cache:", ia.get(SettingsModule.class).getStats().toString(), false)
+			.addField("Guild Settings Cache:", ia.get(GuildSettingsModule.class).getStats().toString(), false)
 			.addField("Reactive Messages Cache:", ia.get(ReactiveMessageModule.class).getStats().toString(), false)
 			.addField("Dashboard Session Cache:", ia.get(DashboardSessionModule.class).getStats().toString(), false)
 			.addField("Message Cache 1:", ia.get(MessageModule.class).getStats1().toString(), false)

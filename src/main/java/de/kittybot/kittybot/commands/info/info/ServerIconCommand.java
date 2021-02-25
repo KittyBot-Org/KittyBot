@@ -12,12 +12,12 @@ import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 @SuppressWarnings("unused")
-public class GuildIconCommand extends SubCommand{
+public class ServerIconCommand extends SubCommand{
 
-	public GuildIconCommand(){
-		super("guildicon", "Gets the guild icon");
+	public ServerIconCommand(){
+		super("servericon", "Gets the server icon");
 		addOptions(
-			new CommandOptionLong("guild-id", "The guild id to get the icon from").required(),
+			new CommandOptionLong("server-id", "The server id to get the icon from").required(),
 			new CommandOptionInteger("size", "The image size")
 				.addChoices(
 					new CommandOptionChoice<>("16", 16),
@@ -34,16 +34,16 @@ public class GuildIconCommand extends SubCommand{
 
 	@Override
 	public void run(Options options, Interaction ia){
-		var guildId = options.getOrDefault("guild-id", ia instanceof GuildInteraction ? ((GuildInteraction) ia).getGuildId() : -1L);
+		var guildId = options.getOrDefault("server-id", ia instanceof GuildInteraction ? ((GuildInteraction) ia).getGuildId() : -1L);
 		if(guildId == -1L){
-			ia.error("Please provide a guild id");
+			ia.error("Please provide a server id");
 			return;
 		}
 		var size = options.has("size") ? options.getInt("size") : 1024;
 
 		var guild = ia.getJDA().getGuildById(guildId);
 		if(guild == null){
-			ia.error("Guild not found");
+			ia.error("I'm not in  not found");
 			return;
 		}
 		var icon = guild.getIconUrl();

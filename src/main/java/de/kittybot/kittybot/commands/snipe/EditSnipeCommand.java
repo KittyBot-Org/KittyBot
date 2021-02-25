@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.commands.snipe;
 
 import de.kittybot.kittybot.modules.MessageModule;
-import de.kittybot.kittybot.modules.SettingsModule;
+import de.kittybot.kittybot.modules.GuildSettingsModule;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.RunGuildCommand;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
@@ -20,7 +20,7 @@ public class EditSnipeCommand extends RunGuildCommand{
 
 	@Override
 	public void run(Options options, GuildInteraction ia){
-		var settings = ia.get(SettingsModule.class).getSettings(ia.getGuildId());
+		var settings = ia.get(GuildSettingsModule.class).getSettings(ia.getGuildId());
 		if(!settings.areSnipesEnabled()){
 			ia.error("Snipes are disabled for this guild");
 		}

@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.commands.roles;
 
 import de.kittybot.kittybot.modules.ReactionRoleModule;
-import de.kittybot.kittybot.modules.SettingsModule;
+import de.kittybot.kittybot.modules.GuildSettingsModule;
 import de.kittybot.kittybot.objects.enums.Emoji;
 import de.kittybot.kittybot.objects.settings.SelfAssignableRole;
 import de.kittybot.kittybot.slashcommands.application.Category;
@@ -52,13 +52,13 @@ public class RolesCommand extends Command{
 			var groupName = options.getString("group");
 
 			emoteAction.queue(emote -> {
-					var group = ia.get(SettingsModule.class).getSelfAssignableRoleGroups(ia.getGuildId()).stream().filter(g -> g.getName().equalsIgnoreCase(groupName)).findFirst();
+					var group = ia.get(GuildSettingsModule.class).getSelfAssignableRoleGroups(ia.getGuildId()).stream().filter(g -> g.getName().equalsIgnoreCase(groupName)).findFirst();
 					if(group.isEmpty()){
 						ia.error("Please provide a valid group");
 						return;
 					}
 
-					ia.get(SettingsModule.class).addSelfAssignableRoles(ia.getGuildId(), Collections.singleton(new SelfAssignableRole(role.getIdLong(), emote.getIdLong(), ia.getGuildId(), group.get().getId())));
+					ia.get(GuildSettingsModule.class).addSelfAssignableRoles(ia.getGuildId(), Collections.singleton(new SelfAssignableRole(role.getIdLong(), emote.getIdLong(), ia.getGuildId(), group.get().getId())));
 					ia.reply("Added self assignable role");
 				}, error -> ia.error("Please provide a valid emote from this server")
 			);
@@ -80,7 +80,7 @@ public class RolesCommand extends Command{
 		@Override
 		public void run(Options options, GuildInteraction ia){
 			var role = options.getRole("role");
-			var settings = ia.get(SettingsModule.class);
+			var settings = ia.get(GuildSettingsModule.class);
 			if(settings.getSelfAssignableRoles(ia.getGuildId()).stream().noneMatch(r -> r.getRoleId() == role.getIdLong())){
 				ia.error("This role is not self assignable");
 				return;
@@ -102,7 +102,7 @@ public class RolesCommand extends Command{
 
 		@Override
 		public void run(Options options, GuildInteraction ia){
-			var settings = ia.get(SettingsModule.class).getSettings(ia.getGuildId());
+			var settings = ia.get(GuildSettingsModule.class).getSettings(ia.getGuildId());
 			var roles = settings.getSelfAssignableRoles();
 			var groups = settings.getSelfAssignableRoleGroups();
 			if(roles == null || roles.isEmpty()){

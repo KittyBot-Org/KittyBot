@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.commands.roles;
 
-import de.kittybot.kittybot.modules.SettingsModule;
+import de.kittybot.kittybot.modules.GuildSettingsModule;
 import de.kittybot.kittybot.objects.settings.SelfAssignableRoleGroup;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
@@ -41,7 +41,7 @@ public class GroupsCommand extends Command{
 		public void run(Options options, GuildInteraction ia){
 			var name = options.getString("name");
 			var maxRoles = options.has("max-roles") ? options.getInt("max-roles") : -1;
-			ia.get(SettingsModule.class).addSelfAssignableRoleGroups(ia.getGuildId(), Collections.singleton(new SelfAssignableRoleGroup(-1, ia.getGuildId(), name, maxRoles)));
+			ia.get(GuildSettingsModule.class).addSelfAssignableRoleGroups(ia.getGuildId(), Collections.singleton(new SelfAssignableRoleGroup(-1, ia.getGuildId(), name, maxRoles)));
 			ia.reply("New group added");
 		}
 
@@ -60,7 +60,7 @@ public class GroupsCommand extends Command{
 		@Override
 		public void run(Options options, GuildInteraction ia){
 			var name = options.getString("name");
-			var settings = ia.get(SettingsModule.class);
+			var settings = ia.get(GuildSettingsModule.class);
 			var group = settings.getSelfAssignableRoleGroups(ia.getGuildId()).stream().filter(g -> g.getName().equalsIgnoreCase(name)).findFirst();
 			if(group.isEmpty()){
 				ia.error("Group with name `" + name + "` not found");
@@ -80,7 +80,7 @@ public class GroupsCommand extends Command{
 
 		@Override
 		public void run(Options options, GuildInteraction ia){
-			var settings = ia.get(SettingsModule.class).getSettings(ia.getGuildId());
+			var settings = ia.get(GuildSettingsModule.class).getSettings(ia.getGuildId());
 			var groups = settings.getSelfAssignableRoleGroups();
 			if(groups.isEmpty()){
 				ia.error("There are not groups defined.\nYou can add them with `/groups add <name> <max-roles>`");

@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.commands.roles;
 
-import de.kittybot.kittybot.modules.SettingsModule;
+import de.kittybot.kittybot.modules.GuildSettingsModule;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.RunGuildCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionRole;
@@ -24,7 +24,7 @@ public class UnassignCommand extends RunGuildCommand{
 			ia.error("Unknown role provided");
 			return;
 		}
-		var settings = ia.get(SettingsModule.class).getSettings(ia.getGuildId());
+		var settings = ia.get(GuildSettingsModule.class).getSettings(ia.getGuildId());
 		var selfAssignableRoles = settings.getSelfAssignableRoles();
 		if(selfAssignableRoles == null || selfAssignableRoles.isEmpty()){
 			ia.error("No self assignable roles configured");

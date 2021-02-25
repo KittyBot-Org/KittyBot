@@ -120,7 +120,7 @@ public class JoinModule extends Module{
 
 	@Override
 	public void onGuildMemberRemove(@NotNull GuildMemberRemoveEvent event){
-		var settings = this.modules.get(SettingsModule.class).getSettings(event.getGuild().getIdLong());
+		var settings = this.modules.get(GuildSettingsModule.class).getSettings(event.getGuild().getIdLong());
 		if(!settings.areLeaveMessagesEnabled()){
 			return;
 		}
@@ -136,7 +136,7 @@ public class JoinModule extends Module{
 
 	@Override
 	public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event){
-		var settings = this.modules.get(SettingsModule.class).getSettings(event.getGuild().getIdLong());
+		var settings = this.modules.get(GuildSettingsModule.class).getSettings(event.getGuild().getIdLong());
 		if(!settings.areJoinMessagesEnabled()){
 			return;
 		}

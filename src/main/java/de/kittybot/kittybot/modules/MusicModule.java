@@ -67,7 +67,7 @@ public class MusicModule extends Module implements Serializable{
 		var currentTrack = scheduler.getPlayingTrack();
 		var userId = event.getUserIdLong();
 		var requesterId = currentTrack == null ? -1L : currentTrack.getUserData(Long.class);
-		var settings = this.modules.get(SettingsModule.class).getSettings(event.getGuild().getIdLong());
+		var settings = this.modules.get(GuildSettingsModule.class).getSettings(event.getGuild().getIdLong());
 
 		if(messageId != scheduler.getControllerMessageId()){
 			return;

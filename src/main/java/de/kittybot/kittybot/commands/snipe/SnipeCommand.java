@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.commands.snipe;
 
 import de.kittybot.kittybot.modules.MessageModule;
-import de.kittybot.kittybot.modules.SettingsModule;
+import de.kittybot.kittybot.modules.GuildSettingsModule;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.RunGuildCommand;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
@@ -20,10 +20,10 @@ public class SnipeCommand extends RunGuildCommand{
 
 	@Override
 	public void run(Options options, GuildInteraction ia){
-		if(!ia.get(SettingsModule.class).areSnipesEnabled(ia.getGuildId())){
+		if(!ia.get(GuildSettingsModule.class).areSnipesEnabled(ia.getGuildId())){
 			ia.error("Snipes are disabled for this guild");
 		}
-		if(ia.get(SettingsModule.class).areSnipesDisabledInChannel(ia.getGuildId(), ia.getChannelId())){
+		if(ia.get(GuildSettingsModule.class).areSnipesDisabledInChannel(ia.getGuildId(), ia.getChannelId())){
 			ia.error("Snipes are disabled for this channel");
 		}
 		var lastDeletedMessage = ia.get(MessageModule.class).getLastDeletedMessage(ia.getChannelId());
