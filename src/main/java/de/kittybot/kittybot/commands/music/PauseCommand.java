@@ -3,6 +3,7 @@ package de.kittybot.kittybot.commands.music;
 import de.kittybot.kittybot.modules.MusicModule;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.RunGuildCommand;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionBoolean;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.MusicUtils;
@@ -11,7 +12,10 @@ import de.kittybot.kittybot.utils.MusicUtils;
 public class PauseCommand extends RunGuildCommand{
 
 	public PauseCommand(){
-		super("pause", "Pauses/Unpauses the currnet track", Category.MUSIC);
+		super("pause", "Pauses/Unpauses the current track", Category.MUSIC);
+		addOptions(
+			new CommandOptionBoolean("pause", "If it should pause or resume. Emit for toggle")
+		);
 	}
 
 	@Override
@@ -23,7 +27,14 @@ public class PauseCommand extends RunGuildCommand{
 		if(!MusicUtils.checkMusicPermissions(ia, scheduler)){
 			return;
 		}
-		scheduler.pause();
+		boolean pause;
+		if(options.has("pause")){
+			pause = options.getBoolean("pause");
+		}
+		else{
+			pause = !scheduler.isPaused();
+		}
+		scheduler.setPaused(pause);
 		ia.reply("Toggled pause");
 	}
 
