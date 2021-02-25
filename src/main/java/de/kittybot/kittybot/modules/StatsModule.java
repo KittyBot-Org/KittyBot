@@ -41,7 +41,7 @@ public class StatsModule extends Module{
 	private static final long MESSAGE_XP = 20L;
 
 	private static final int CARD_WIDTH = 1200;
-	private static final int CARD_HEIGHT = 300;
+	private static final int CARD_HEIGHT = CARD_WIDTH / 4;
 	private static final int CARD_RATIO = CARD_WIDTH / CARD_HEIGHT;
 
 	private static final float FONT_SIZE = 60f;
@@ -214,9 +214,6 @@ public class StatsModule extends Module{
 			// prepare level card
 			var rankCard = new BufferedImage(CARD_WIDTH, CARD_HEIGHT, BufferedImage.TYPE_INT_ARGB);
 			var g = rankCard.createGraphics();
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-			g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
 
 			g.setColor(new Color(settings.getLevelCardBackgroundColor()));
 			g.fillRect(0, 0, CARD_WIDTH, CARD_HEIGHT);
@@ -238,6 +235,10 @@ public class StatsModule extends Module{
 				}
 				g.drawImage(image.getSubimage(0, 0, drawWidth, drawHeight), 0, 0, CARD_WIDTH, CARD_HEIGHT, null);
 			}
+
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+			g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
 
 			g.drawImage(downscaledAvatar, BORDER_SIZE, BORDER_SIZE, AVATAR_SIZE, AVATAR_SIZE, null);
 
