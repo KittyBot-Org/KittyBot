@@ -126,7 +126,9 @@ public class ResolvedMentions{
 	}
 
 	private Role createRole(String key){
-		return this.entityBuilder.createRole(this.guild, this.rawRoles.getObject(key), this.guild.getIdLong());
+		var role = this.rawRoles.getObject(key);
+		role.put("permissions_new", role.getLong("permissions"));
+		return this.entityBuilder.createRole(this.guild, role, this.guild.getIdLong());
 	}
 
 }

@@ -42,7 +42,7 @@ public class InviteRolesCommand extends Command{
 		@Override
 		public void run(Options options, GuildInteraction ia){
 			var code = options.getString("code");
-			var role = ia.getGuild().getRoleById(options.getLong("role"));
+			var role = options.getRole("role");
 			var invites = ia.get(InviteModule.class).getGuildInvites(ia.getGuildId());
 			if(invites == null || invites.isEmpty()){
 				ia.error("No invites found for this guild");
@@ -71,7 +71,7 @@ public class InviteRolesCommand extends Command{
 		@Override
 		public void run(Options options, GuildInteraction ia){
 			var code = options.getString("code");
-			var role = ia.getGuild().getRoleById(options.getLong("role"));
+			var role = options.getRole("role");
 			var invites = ia.get(InviteModule.class).getGuildInvites(ia.getGuildId());
 			if(invites == null || invites.isEmpty()){
 				ia.error("No invites found for this guild");

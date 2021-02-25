@@ -77,7 +77,7 @@ public class SettingsCommand extends Command{
 
 		@Override
 		public void run(Options options, GuildInteraction ia){
-			var role = ia.getGuild().getRoleById(options.getLong("role"));
+			var role = options.getRole("role");
 			ia.get(SettingsModule.class).setDjRoleId(ia.getGuildId(), role.getIdLong());
 			ia.reply(new InteractionResponse.Builder().setContent("DJ Role set to: " + role.getAsMention()).build());
 		}

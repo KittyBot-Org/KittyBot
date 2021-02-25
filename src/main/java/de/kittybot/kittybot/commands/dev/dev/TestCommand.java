@@ -1,4 +1,4 @@
-package de.kittybot.kittybot.commands.dev;
+package de.kittybot.kittybot.commands.dev.dev;
 
 import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionBoolean;

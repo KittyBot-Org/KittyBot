@@ -47,7 +47,7 @@ public class RolesCommand extends Command{
 
 		@Override
 		public void run(Options options, GuildInteraction ia){
-			var role = ia.getGuild().getRoleById(options.getLong("role"));
+			var role = options.getRole("role");
 			var emoteAction = options.getEmote(ia.getGuild(), "emote");
 			var groupName = options.getString("group");
 
@@ -79,7 +79,7 @@ public class RolesCommand extends Command{
 
 		@Override
 		public void run(Options options, GuildInteraction ia){
-			var role = ia.getGuild().getRoleById(options.getLong("role"));
+			var role = options.getRole("role");
 			var settings = ia.get(SettingsModule.class);
 			if(settings.getSelfAssignableRoles(ia.getGuildId()).stream().noneMatch(r -> r.getRoleId() == role.getIdLong())){
 				ia.error("This role is not self assignable");
@@ -123,8 +123,8 @@ public class RolesCommand extends Command{
 					}).collect(Collectors.joining("\n"))
 				).build();
 
-			if(!ia.getSelfMember().hasPermission(Permission.MESSAGE_WRITE, Permission.MESSAGE_ADD_REACTION)){
-				ia.reply(embed);
+			if(!ia.getSelfMember().hasPermission(ia.getChannel(), Permission.MESSAGE_WRITE, Permission.MESSAGE_ADD_REACTION)){
+				ia.error("To list roles make sure I have the following permissions: `MESSAGE_WRITE` & `MESSAGE_ADD_REACTION`");
 				return;
 			}
 			ia.acknowledge(true).queue(success ->
