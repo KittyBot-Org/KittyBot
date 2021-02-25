@@ -92,4 +92,14 @@ public class UserStatistics{
 		return (long) level * level * 100;
 	}
 
+	public long getPreviousLevelXp(){
+		var level = getLevel() - 1;
+		return (long) level * level * 100;
+	}
+
+	public boolean checkIfLevelUp(long xp){
+		var previousXp = getPreviousLevelXp();
+		if(this.xp -)
+	}
+
 }

@@ -5,7 +5,7 @@ import de.kittybot.kittybot.slashcommands.application.options.CommandOptionUrl;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
-import de.kittybot.kittybot.utils.ColorUtils;
+import de.kittybot.kittybot.utils.ImageUtils;
 import de.kittybot.kittybot.utils.Colors;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -30,7 +30,7 @@ public class BorderColorCommand extends SubCommand{
 				.setDescription("Set border color to")
 				.setThumbnail("attachment://color.png")
 			).build()
-		).addFile(ColorUtils.generateColorImage(color), "color.png").queue();
+		).addFile(ImageUtils.generateColorImage(color), "color.png").queue();
 	}
 
 }

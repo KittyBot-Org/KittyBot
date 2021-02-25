@@ -2,15 +2,12 @@ package de.kittybot.kittybot.commands.statistics.user.settings.level.card;
 
 import de.kittybot.kittybot.modules.UserSettingsModule;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionColor;
-import de.kittybot.kittybot.slashcommands.application.options.CommandOptionUrl;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
-import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponseData;
-import de.kittybot.kittybot.utils.ColorUtils;
+import de.kittybot.kittybot.utils.ImageUtils;
 import de.kittybot.kittybot.utils.Colors;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.MessageBuilder;
 
 import static de.kittybot.kittybot.jooq.Tables.USER_SETTINGS;
 
@@ -33,7 +30,7 @@ public class BackgroundColorCommand extends SubCommand{
 				.setDescription("Set background color to")
 				.setThumbnail("attachment://color.png")
 			).build()
-		).addFile(ColorUtils.generateColorImage(color), "color.png").queue();
+		).addFile(ImageUtils.generateColorImage(color), "color.png").queue();
 	}
 
 }

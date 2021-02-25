@@ -11,6 +11,7 @@ import de.kittybot.kittybot.slashcommands.application.options.CommandOptionUser;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
+import de.kittybot.kittybot.utils.ImageUtils;
 import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.TimeUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -107,10 +108,9 @@ public class StatisticsCommand extends Command{
 
 		@Override
 		public void run(Options options, GuildInteraction ia){
-			var statsModule = ia.get(StatsModule.class);
-			var userStats = statsModule.get(ia.getGuildId(), ia.getUserId());
+			var userStats = ia.get(StatsModule.class).get(ia.getGuildId(), ia.getUserId());
 			var userSettings = ia.get(UserSettingsModule.class).getUserSettings(ia.getUserId());
-			var card = statsModule.generateLevelCard(userStats, userSettings, options.has("user") ? options.getUser("user") : ia.getUser());
+			var card = ImageUtils.generateLevelCard(userStats, userSettings, options.has("user") ? options.getUser("user") : ia.getUser());
 			ia.sendAcknowledge();
 			ia.getChannel().sendFile(card, "card.png").queue();
 		}
