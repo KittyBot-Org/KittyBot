@@ -11,13 +11,11 @@ import de.kittybot.kittybot.utils.MessageUtils;
 import lavalink.client.io.Link;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +26,6 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class MusicModule extends Module implements Serializable{
 
@@ -120,24 +117,14 @@ public class MusicModule extends Module implements Serializable{
 		this.musicPlayers.remove(event.getGuild().getIdLong());
 	}
 
-	private boolean isAlone(VoiceChannel channel){
-		return channel.getMembers().stream().allMatch(member -> member.getUser().isBot());
-	}
-
 	@Override
-	public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event){
-		var manager = get(event.getGuild().getIdLong());
+	public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event){
+		var manager = get(event.getEntity().getGuild().getIdLong());
 		if(manager == null){
 			return;
 		}
-		if(event.getEntity().getIdLong() == Config.BOT_ID){
-			destroy(manager, "Disconnected due to kick");
-		}
-		var channelLeft = event.getChannelLeft();
-		if(channelLeft.getIdLong() == manager.getScheduler().getLink().getChannelId()){
-			if(isAlone(channelLeft)){
-				manager.planDestroy();
-			}
+		if(event.getChannelJoined().getIdLong() == manager.getScheduler().getLink().getChannelId()){
+			manager.cancelDestroy();
 		}
 	}
 
@@ -166,18 +153,28 @@ public class MusicModule extends Module implements Serializable{
 	}
 
 	@Override
-	public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event){
-		var manager = get(event.getEntity().getGuild().getIdLong());
+	public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event){
+		var manager = get(event.getGuild().getIdLong());
 		if(manager == null){
 			return;
 		}
-		if(event.getChannelJoined().getIdLong() == manager.getScheduler().getLink().getChannelId()){
-			manager.cancelDestroy();
+		if(event.getEntity().getIdLong() == Config.BOT_ID){
+			destroy(manager, "Disconnected due to kick");
+		}
+		var channelLeft = event.getChannelLeft();
+		if(channelLeft.getIdLong() == manager.getScheduler().getLink().getChannelId()){
+			if(isAlone(channelLeft)){
+				manager.planDestroy();
+			}
 		}
 	}
 
 	public MusicManager get(long guildId){
 		return this.musicPlayers.get(guildId);
+	}
+
+	private boolean isAlone(VoiceChannel channel){
+		return channel.getMembers().stream().allMatch(member -> member.getUser().isBot());
 	}
 
 	public void destroy(long guildId, long userId){

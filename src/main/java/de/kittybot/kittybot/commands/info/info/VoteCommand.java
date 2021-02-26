@@ -1,8 +1,6 @@
 package de.kittybot.kittybot.commands.info.info;
 
 import de.kittybot.kittybot.objects.enums.BotList;
-import de.kittybot.kittybot.slashcommands.application.Category;
-import de.kittybot.kittybot.slashcommands.application.RunCommand;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
