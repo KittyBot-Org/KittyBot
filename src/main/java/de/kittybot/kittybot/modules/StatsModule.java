@@ -12,16 +12,16 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.GenericGuildEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
+import net.dv8tion.jda.api.events.guild.voice.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.SortOrder;
 import org.jooq.TableField;
+import org.jooq.types.YearToSecond;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,30 +49,19 @@ public class StatsModule extends Module{
 	}
 
 	@Override
-	public void onGuildReady(@NotNull GuildReadyEvent event){
-		var guildId = event.getGuild().getIdLong();
-		for(var voiceState : event.getGuild().getVoiceStates()){
-			var userId = voiceState.getMember().getIdLong();
-			if(this.voiceMembers.containsKey(userId)){
-				continue;
-			}
-			this.voiceMembers.put(userId, new VoiceMember(guildId));
-		}
-	}
-
-	@Override
 	public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event){
-		if(event.getAuthor().getIdLong() == Config.BOT_ID){
+		var userId = event.getAuthor().getIdLong();
+		if(userId == Config.BOT_ID){
 			return;
 		}
 		var stats = new HashMap<Field<? extends Number>, Number>();
 
-		stats.put(USER_STATISTICS.MESSAGE_COUNT, 1);
+		stats.put(USER_STATISTICS.MESSAGES_SENT, 1);
 		var emotes = event.getMessage().getEmotes();
 		if(!emotes.isEmpty()){
-			stats.put(USER_STATISTICS.EMOTE_COUNT, emotes.size());
+			stats.put(USER_STATISTICS.EMOTES_SENT, emotes.size());
 		}
-		var newStats = incrementStats(event.getGuild().getIdLong(), event.getAuthor().getIdLong(), stats);
+		var newStats = incrementStats(event.getGuild().getIdLong(), userId, stats);
 		if(!newStats.checkIfLevelUp()){
 			return;
 		}
@@ -84,62 +73,92 @@ public class StatsModule extends Module{
 	}
 
 	@Override
-	public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event){
-		if(event.getMember().getIdLong() == Config.BOT_ID){
-			return;
+	public void onGuildReady(@NotNull GuildReadyEvent event){
+		for(var voiceState : event.getGuild().getVoiceStates()){
+			var userId = voiceState.getMember().getIdLong();
+			if(userId == Config.BOT_ID || this.voiceMembers.containsKey(userId)){
+				continue;
+			}
+			this.voiceMembers.put(userId, new VoiceMember(voiceState));
 		}
-		this.voiceMembers.put(event.getMember().getIdLong(), new VoiceMember(event.getGuild().getIdLong()));
 	}
 
 	@Override
-	public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent event){
-		if(event.getMember().getIdLong() == Config.BOT_ID){
+	public void onGenericGuildVoice(@NotNull GenericGuildVoiceEvent event){
+		var userId = event.getMember().getIdLong();
+		if(userId == Config.BOT_ID){
 			return;
 		}
-		var afkChannel = event.getGuild().getAfkChannel();
-		if(afkChannel == null){
-			return;
-		}
-		if(event.getChannelJoined().getIdLong() == afkChannel.getIdLong()){
-			updateVoiceStat(event, event.getMember());
-			return;
-		}
-		this.voiceMembers.putIfAbsent(event.getMember().getIdLong(), new VoiceMember(event.getGuild().getIdLong()));
-	}
-
-	@Override
-	public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event){
-		if(event.getMember().getIdLong() == Config.BOT_ID){
-			return;
-		}
-		updateVoiceStat(event, event.getMember());
-	}
-
-	private void updateVoiceStat(GenericGuildEvent event, Member member){
-		var voiceMember = this.voiceMembers.remove(member.getIdLong());
+		var voiceMember = this.voiceMembers.get(userId);
 		if(voiceMember == null){
 			return;
 		}
-		incrementStat(event, member, USER_STATISTICS.VOICE_TIME, voiceMember.getVoiceTime());
+		if(event instanceof GuildVoiceMuteEvent || event instanceof GuildVoiceDeafenEvent || event instanceof GuildVoiceSuppressEvent){
+			var voiceState = event.getVoiceState();
+			if(voiceState.isMuted() || voiceState.isDeafened() || voiceState.isSuppressed()){
+				incrementStat(event.getGuild().getIdLong(), userId, USER_STATISTICS.VOICE_TIME, voiceMember.getVoiceTime());
+				voiceMember.setVoice(false);
+				return;
+			}
+			voiceMember.setVoice(true);
+		}
+		else if(event instanceof GuildVoiceStreamEvent){
+			if(((GuildVoiceStreamEvent) event).isStream()){
+				voiceMember.setStreaming(true);
+				return;
+			}
+			incrementStat(event.getGuild().getIdLong(), userId, USER_STATISTICS.STREAM_TIME, voiceMember.getStreamTime());
+			voiceMember.setStreaming(false);
+		}
 	}
 
-	public long calculateXpGain(Map<Field<? extends Number>, Number> values){
+	@Override
+	public void onGuildVoiceUpdate(@NotNull GuildVoiceUpdateEvent event){
+		var userId = event.getEntity().getIdLong();
+		if(userId == Config.BOT_ID){
+			return;
+		}
+		var guildId = event.getEntity().getGuild().getIdLong();
+		if(event instanceof GuildVoiceJoinEvent){
+			this.voiceMembers.put(userId, new VoiceMember(((GuildVoiceJoinEvent) event).getVoiceState()));
+		}
+		else if(event instanceof GuildVoiceLeaveEvent){
+			var voiceMember = this.voiceMembers.remove(userId);
+			if(voiceMember == null){
+				return;
+			}
+			var stats = new HashMap<Field<? extends Number>, Number>();
+			if(voiceMember.isVoice()){
+				stats.put(USER_STATISTICS.VOICE_TIME, voiceMember.getVoiceTime());
+			}
+			if(voiceMember.isStreaming()){
+				stats.put(USER_STATISTICS.STREAM_TIME, voiceMember.getStreamTime());
+			}
+			if(!stats.isEmpty()){
+				incrementStats(guildId, userId, stats);
+			}
+		}
+	}
+
+	public long calculateXpGain(Map<Field<? extends Number>, ? extends Number> values){
 		var xp = 0L;
 		for(var entry : values.entrySet()){
 			var field = entry.getKey();
 			var value = entry.getValue();
-			if(USER_STATISTICS.BOT_CALLS.equals(field)){
+			if(USER_STATISTICS.COMMANDS_USED.equals(field)){
 				xp += value.intValue() * 20L;
 			}
-			else if(USER_STATISTICS.EMOTE_COUNT.equals(field)){
+			else if(USER_STATISTICS.EMOTES_SENT.equals(field)){
 				xp += value.intValue() * 20L;
 			}
-			else if(USER_STATISTICS.MESSAGE_COUNT.equals(field)){
+			else if(USER_STATISTICS.MESSAGES_SENT.equals(field)){
 				xp += value.intValue() * 20L;
 			}
 			else if(USER_STATISTICS.VOICE_TIME.equals(field)){
-				xp += value.longValue() / 60000;
-				System.out.println("xp: " + xp);
+				xp += value.longValue() / 30000;
+			}
+			else if(USER_STATISTICS.STREAM_TIME.equals(field)){
+				xp += value.longValue() / 7000;
 			}
 			else if(USER_STATISTICS.XP.equals(field)){
 				xp += value.longValue();
@@ -148,23 +167,13 @@ public class StatsModule extends Module{
 		return xp;
 	}
 
-	public <T extends Number> UserStatistics incrementStat(GenericGuildEvent event, Member member, Field<T> field, T value){
-		return incrementStat(event, member.getUser(), field, value);
-	}
-
-	public <T extends Number> UserStatistics incrementStat(GenericGuildEvent event, User user, Field<T> field, T value){
-		return incrementStat(event, user.getIdLong(), field, value);
-	}
-
-	public <T extends Number> UserStatistics incrementStat(GenericGuildEvent event, long userId, Field<T> field, T value){
-		return incrementStat(event.getGuild().getIdLong(), userId, field, value);
-	}
-
 	public <T extends Number> UserStatistics incrementStat(long guildId, long userId, Field<T> field, T value){
 		return incrementStats(guildId, userId, Map.of(field, value));
 	}
 
 	public UserStatistics incrementStats(long guildId, long userId, Map<Field<? extends Number>, Number> values){
+		System.out.println(values);
+
 		var xpGain = calculateXpGain(values);
 		var insert = new HashMap<>(values);
 		insert.put(USER_STATISTICS.GUILD_ID, guildId);
@@ -174,6 +183,7 @@ public class StatsModule extends Module{
 		var updateValues = new HashMap<>();
 		values.forEach((field, number) -> updateValues.put(field, field.add(number)));
 		updateValues.put(USER_STATISTICS.XP, USER_STATISTICS.XP.add(xpGain));
+		updateValues.put(USER_STATISTICS.LAST_ACTIVE, LocalDateTime.now());
 
 		var record = this.modules.get(DatabaseModule.class).getCtx()
 			.insertInto(USER_STATISTICS)

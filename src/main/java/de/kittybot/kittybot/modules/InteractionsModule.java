@@ -54,7 +54,7 @@ public class InteractionsModule extends Module{
 		var interaction = Interaction.fromJSON(this.modules, event.getPayload(), event.getJDA());
 		if(interaction instanceof GuildInteraction){
 			var guildInteraction = (GuildInteraction) interaction;
-			this.modules.get(StatsModule.class).incrementStat(guildInteraction.getGuildId(), guildInteraction.getUserId(), USER_STATISTICS.BOT_CALLS, 1);
+			this.modules.get(StatsModule.class).incrementStat(guildInteraction.getGuildId(), guildInteraction.getUserId(), USER_STATISTICS.COMMANDS_USED, 1);
 			var settings = this.modules.get(GuildSettingsModule.class).getSettings(guildInteraction.getGuildId());
 
 			if(settings.isBotIgnoredUser(guildInteraction.getMember().getIdLong())){

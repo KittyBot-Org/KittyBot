@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 public class UserStatistics{
 
 	private final long userId, guildId, xp;
-	private final int botCalls, messageCount, emoteCount;
-	private final Duration voiceTime;
+	private final int commandsUsed, messagesSent, emotesSent, stickersSent;
+	private final Duration voiceTime, streamTime;
 	private final LocalDateTime lastActive;
 	private long lastXpGain;
 
@@ -18,10 +18,12 @@ public class UserStatistics{
 		this.userId = record.getUserId();
 		this.guildId = record.getGuildId();
 		this.xp = record.getXp();
-		this.botCalls = record.getBotCalls();
-		this.messageCount = record.getMessageCount();
-		this.emoteCount = record.getEmoteCount();
+		this.commandsUsed = record.getCommandsUsed();
+		this.messagesSent = record.getMessagesSent();
+		this.emotesSent = record.getEmotesSent();
+		this.stickersSent = record.getStickersSent();
 		this.voiceTime = record.getVoiceTime().toDuration();
+		this.streamTime = record.getStreamTime().toDuration();
 		this.lastActive = record.getLastActive();
 		this.lastXpGain = 0;
 	}
@@ -38,20 +40,28 @@ public class UserStatistics{
 		return this.xp;
 	}
 
-	public int getBotCalls(){
-		return this.botCalls;
+	public int getCommandsUsed(){
+		return this.commandsUsed;
 	}
 
-	public int getMessageCount(){
-		return this.messageCount;
+	public int getMessagesSent(){
+		return this.messagesSent;
 	}
 
-	public int getEmoteCount(){
-		return this.emoteCount;
+	public int getEmotesSent(){
+		return this.emotesSent;
+	}
+
+	public int getStickersSent(){
+		return this.stickersSent;
 	}
 
 	public Duration getVoiceTime(){
 		return this.voiceTime;
+	}
+
+	public Duration getStreamTime(){
+		return this.streamTime;
 	}
 
 	public LocalDateTime getLastActive(){
@@ -71,12 +81,14 @@ public class UserStatistics{
 		switch(type){
 			case XP:
 				return "Level " + getLevel() + " Xp: " + getRestXp();
-			case BOT_CALLS:
-				return Integer.toString(this.botCalls);
-			case MESSAGE_COUNT:
-				return Integer.toString(this.messageCount);
-			case EMOTE_COUNT:
-				return Integer.toString(this.emoteCount);
+			case COMMANDS_USED:
+				return Integer.toString(this.commandsUsed);
+			case MESSAGES_SENT:
+				return Integer.toString(this.messagesSent);
+			case EMOTES_SENT:
+				return Integer.toString(this.emotesSent);
+			case STICKERS_SENT:
+				return Integer.toString(this.stickersSent);
 			case VOICE_TIME:
 				return this.voiceTime.toString();
 			case LAST_ACTIVE:
@@ -119,10 +131,11 @@ public class UserStatistics{
 			"userId=" + userId +
 			", guildId=" + guildId +
 			", xp=" + xp +
-			", botCalls=" + botCalls +
-			", messageCount=" + messageCount +
-			", emoteCount=" + emoteCount +
+			", commandsUsed=" + commandsUsed +
+			", messagesSent=" + messagesSent +
+			", emotesSent=" + emotesSent +
 			", voiceTime=" + voiceTime +
+			", streamTime=" + streamTime +
 			", lastActive=" + lastActive +
 			'}';
 	}

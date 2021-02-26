@@ -40,10 +40,10 @@ public class UserStatisticsCommand extends Command{
 				new CommandOptionString("stat", "The stats to sort for xp by default")
 					.addChoices(
 						new CommandOptionChoice<>("xp", StatisticType.XP),
-						new CommandOptionChoice<>("bot calls", StatisticType.BOT_CALLS),
+						new CommandOptionChoice<>("bot calls", StatisticType.COMMANDS_USED),
 						new CommandOptionChoice<>("voice time", StatisticType.VOICE_TIME),
-						new CommandOptionChoice<>("messages", StatisticType.MESSAGE_COUNT),
-						new CommandOptionChoice<>("emotes", StatisticType.EMOTE_COUNT),
+						new CommandOptionChoice<>("messages", StatisticType.MESSAGES_SENT),
+						new CommandOptionChoice<>("emotes", StatisticType.EMOTES_SENT),
 						new CommandOptionChoice<>("last active", StatisticType.LAST_ACTIVE)
 					),
 				new CommandOptionString("sort-order", "The sort order descending by default")
@@ -84,10 +84,12 @@ public class UserStatisticsCommand extends Command{
 				.setDescription("User Statistics: " + MessageUtils.getUserMention(userId) +
 					"\n**Level:** " + statistics.getLevel() +
 					"\n**XP:** " + statistics.getXp() + "/" + statistics.getThisLevelXp() +
-					"\n**Bot Calls:** " + statistics.getBotCalls() +
+					"\n**Commands Used:** " + statistics.getCommandsUsed() +
 					"\n**Total Voice Time:** " + TimeUtils.formatDurationDHMS(statistics.getVoiceTime()) +
-					"\n**Messages Sent:** " + statistics.getMessageCount() +
-					"\n**Emotes Sent:** " + statistics.getEmoteCount() +
+					"\n**Total Stream Time:** " + TimeUtils.formatDurationDHMS(statistics.getStreamTime()) +
+					"\n**Messages Sent:** " + statistics.getMessagesSent() +
+					"\n**Emotes Sent:** " + statistics.getEmotesSent() +
+					"\n**Stickers Sent:** " + statistics.getStickersSent() +
 					"\n**Last Time Active:** " + TimeUtils.format(statistics.getLastActive())
 				)
 			);
