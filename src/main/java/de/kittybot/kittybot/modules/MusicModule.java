@@ -11,6 +11,8 @@ import de.kittybot.kittybot.utils.MessageUtils;
 import lavalink.client.io.Link;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
@@ -26,6 +28,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class MusicModule extends Module implements Serializable{
 
@@ -117,47 +120,59 @@ public class MusicModule extends Module implements Serializable{
 		this.musicPlayers.remove(event.getGuild().getIdLong());
 	}
 
+	private boolean isAlone(VoiceChannel channel){
+		return channel.getMembers().stream().allMatch(member -> member.getUser().isBot());
+	}
+
 	@Override
-	public void onGuildVoiceUpdate(@NotNull GuildVoiceUpdateEvent event){
+	public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event){
+		var manager = get(event.getGuild().getIdLong());
+		if(manager == null){
+			return;
+		}
+		if(event.getEntity().getIdLong() == Config.BOT_ID){
+			destroy(manager, "Disconnected due to kick");
+		}
+		var channelLeft = event.getChannelLeft();
+		if(channelLeft.getIdLong() == manager.getScheduler().getLink().getChannelId()){
+			if(isAlone(channelLeft)){
+				manager.planDestroy();
+			}
+		}
+	}
+
+	@Override
+	public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent event){
+		var manager = get(event.getGuild().getIdLong());
+		if(manager == null){
+			return;
+		}
+		var currentChannelId = manager.getScheduler().getLink().getChannelId();
+		VoiceChannel channel;
+		if(event.getChannelLeft().getIdLong() == currentChannelId){
+			channel = event.getChannelLeft();
+		}
+		else if(event.getChannelJoined().getIdLong() == currentChannelId){
+			channel = event.getChannelJoined();
+		}
+		else{
+			return;
+		}
+		if(isAlone(channel)){
+			manager.planDestroy();
+			return;
+		}
+		manager.cancelDestroy();
+	}
+
+	@Override
+	public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event){
 		var manager = get(event.getEntity().getGuild().getIdLong());
 		if(manager == null){
 			return;
 		}
-		var userId = event.getEntity().getIdLong();
-		var currentChannelId = manager.getScheduler().getLink().getChannelId();
-		if(event instanceof GuildVoiceLeaveEvent){
-			if(userId == Config.BOT_ID){
-				destroy(manager, "Disconnected due to kick");
-			}
-			var channelLeft = event.getChannelLeft();
-			if(channelLeft != null && channelLeft.getIdLong() == currentChannelId){
-				if(channelLeft.getMembers().size() == 1 && channelLeft.getMembers().get(0).getIdLong() == Config.BOT_ID){
-					manager.planDestroy();
-				}
-			}
-		}
-		else if(event instanceof GuildVoiceMoveEvent){
-			var guildVoiceMoveEvent = (GuildVoiceMoveEvent) event;
-			var leftChannel = guildVoiceMoveEvent.getChannelLeft();
-			var joinedChannel = guildVoiceMoveEvent.getChannelJoined();
-			if(leftChannel.getIdLong() != currentChannelId && joinedChannel.getIdLong() != currentChannelId){
-				return;
-			}
-			var channel = guildVoiceMoveEvent.getGuild().getVoiceChannelById(currentChannelId);
-			if(channel == null){
-				return;
-			}
-			var members = channel.getMembers();
-			if(members.size() == 1){
-				manager.planDestroy();
-				return;
-			}
+		if(event.getChannelJoined().getIdLong() == manager.getScheduler().getLink().getChannelId()){
 			manager.cancelDestroy();
-		}
-		else if(event instanceof GuildVoiceJoinEvent){
-			if(event.getChannelJoined() != null && event.getChannelJoined().getIdLong() == currentChannelId){
-				manager.cancelDestroy();
-			}
 		}
 	}
 
