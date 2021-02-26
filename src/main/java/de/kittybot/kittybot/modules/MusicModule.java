@@ -11,11 +11,11 @@ import de.kittybot.kittybot.utils.MessageUtils;
 import lavalink.client.io.Link;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import org.jetbrains.annotations.NotNull;
@@ -42,7 +42,7 @@ public class MusicModule extends Module implements Serializable{
 	@Override
 	public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event){
 		var manager = this.musicPlayers.get(event.getGuild().getIdLong());
-		if(manager != null){
+		if(manager != null && manager.getScheduler().getChannelId() == event.getChannel().getIdLong()){
 			manager.getScheduler().setLastMessageId(event.getMessageIdLong());
 		}
 	}
@@ -118,32 +118,54 @@ public class MusicModule extends Module implements Serializable{
 	}
 
 	@Override
-	public void onGuildVoiceUpdate(@NotNull GuildVoiceUpdateEvent event){
-		if(event instanceof GuildVoiceLeaveEvent || event instanceof GuildVoiceMoveEvent){
-			var manager = get(event.getEntity().getGuild().getIdLong());
-			if(manager == null){
-				return;
-			}
-			if(event.getEntity().getIdLong() == Config.BOT_ID){
-				this.modules.get(MusicModule.class).destroy(manager, -1L);
-				return;
-			}
-			var channel = event.getChannelLeft();
-			var currentChannel = manager.getScheduler().getLink().getChannelId();
-			if(channel == null || channel.getIdLong() != currentChannel){
-				return;
-			}
-			if(channel.getMembers().stream().anyMatch(member -> !member.getUser().isBot())){
-				return;
-			}
-			manager.planDestroy();
+	public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event){
+		var manager = get(event.getEntity().getGuild().getIdLong());
+		if(manager == null){
+			return;
 		}
-		else if(event instanceof GuildVoiceJoinEvent){
-			var player = get(event.getEntity().getGuild().getIdLong());
-			if(player == null){
-				return;
+		if(event.getChannelJoined().getIdLong() == manager.getScheduler().getLink().getChannelId()){
+			manager.cancelDestroy();
+		}
+	}
+
+	@Override
+	public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent event){
+		var manager = get(event.getGuild().getIdLong());
+		if(manager == null){
+			return;
+		}
+		var currentChannelId = manager.getScheduler().getLink().getChannelId();
+		VoiceChannel channel;
+		if(event.getChannelLeft().getIdLong() == currentChannelId){
+			channel = event.getChannelLeft();
+		}
+		else if(event.getChannelJoined().getIdLong() == currentChannelId){
+			channel = event.getChannelJoined();
+		}
+		else{
+			return;
+		}
+		if(isAlone(channel)){
+			manager.planDestroy();
+			return;
+		}
+		manager.cancelDestroy();
+	}
+
+	@Override
+	public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event){
+		var manager = get(event.getGuild().getIdLong());
+		if(manager == null){
+			return;
+		}
+		if(event.getEntity().getIdLong() == Config.BOT_ID){
+			destroy(manager, "Disconnected due to kick");
+		}
+		var channelLeft = event.getChannelLeft();
+		if(channelLeft.getIdLong() == manager.getScheduler().getLink().getChannelId()){
+			if(isAlone(channelLeft)){
+				manager.planDestroy();
 			}
-			player.cancelDestroy();
 		}
 	}
 
@@ -151,11 +173,15 @@ public class MusicModule extends Module implements Serializable{
 		return this.musicPlayers.get(guildId);
 	}
 
-	public void destroy(long guildId, long userId){
-		destroy(this.musicPlayers.get(guildId), userId);
+	private boolean isAlone(VoiceChannel channel){
+		return channel.getMembers().stream().allMatch(member -> member.getUser().isBot());
 	}
 
-	public void destroy(MusicManager musicManager, long userId){
+	public void destroy(long guildId, long userId){
+		destroy(this.musicPlayers.get(guildId), MessageUtils.getUserMention(userId) + " disconnected me");
+	}
+
+	public void destroy(MusicManager musicManager, String reason){
 		var scheduler = musicManager.getScheduler();
 		var link = scheduler.getLink();
 		if(link != null && link.getState() != Link.State.DESTROYING && link.getState() != Link.State.DESTROYED){
@@ -168,8 +194,7 @@ public class MusicModule extends Module implements Serializable{
 			if(channel == null || !channel.canTalk()){
 				return;
 			}
-			var message = userId == -1 ? "Disconnected due to inactivity" : MessageUtils.getUserMention(userId) + " disconnected me bye bye";
-			channel.sendMessage(new EmbedBuilder().setColor(Color.RED).setDescription(message).setTimestamp(Instant.now()).build()).queue();
+			channel.sendMessage(new EmbedBuilder().setColor(Color.RED).setDescription(reason).setTimestamp(Instant.now()).build()).queue();
 		}
 	}
 

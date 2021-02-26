@@ -184,7 +184,7 @@ public class TrackScheduler extends PlayerEventListenerAdapter{
 	}
 
 	public void increaseVolume(int volumeStep){
-		var newVol = (int) (this.player.getFilters().getVolume() * 100) + volumeStep;
+		var newVol = ((int) this.player.getFilters().getVolume()) * 100 + volumeStep;
 		if(newVol <= 0){
 			newVol = 10;
 		}
@@ -196,7 +196,7 @@ public class TrackScheduler extends PlayerEventListenerAdapter{
 	}
 
 	public void setVolume(int volume){
-		this.player.getFilters().setVolume((float) volume / 100.0f).commit();
+		this.player.getFilters().setVolume(volume / 100.0f).commit();
 		this.manager.updateMusicController();
 	}
 
