@@ -38,12 +38,12 @@ public class EventLogModule extends Module{
 
 	@Override
 	public void onResumed(@Nonnull ResumedEvent event){
-		sendShard(event, "Resumed", "resumed");
+		//sendShard(event, "Resumed", "resumed");
 	}
 
 	@Override
 	public void onReconnected(@Nonnull ReconnectedEvent event){
-		//sendShard(event, "Reconnected", "reconnected");
+		sendShard(event, "Reconnected", "reconnected");
 	}
 
 	@Override
