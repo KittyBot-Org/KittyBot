@@ -6,6 +6,7 @@ import de.kittybot.kittybot.objects.enums.Emoji;
 import de.kittybot.kittybot.objects.settings.SelfAssignableRole;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
+import de.kittybot.kittybot.slashcommands.application.GenericHelpCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionEmote;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionRole;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
@@ -29,7 +30,13 @@ public class RolesCommand extends Command{
 		addOptions(
 			new AddCommand(),
 			new RemoveCommand(),
-			new ListCommand()
+			new ListCommand(),
+			new GroupsCommand(),
+			new GenericHelpCommand("To configure self assignable roles you need first need to create a group with `/roles groups add <group name> <max-roles-from-group>`.\n" +
+				"Then you can add a role to this group by doing `/roles add <@role> <custom-emote> <group-name>`.\n" +
+				"You can add as much as you like but only 20 of them are assignable by reactions via the specific emote.\n" +
+				"Use `/roles list` to view all roles with groups in a nice message"
+			)
 		);
 	}
 
