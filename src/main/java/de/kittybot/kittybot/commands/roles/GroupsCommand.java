@@ -4,9 +4,11 @@ import de.kittybot.kittybot.modules.GuildSettingsModule;
 import de.kittybot.kittybot.objects.settings.SelfAssignableRoleGroup;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
+import de.kittybot.kittybot.slashcommands.application.GenericHelpCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
+import de.kittybot.kittybot.slashcommands.application.options.SubCommandGroup;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
 import net.dv8tion.jda.api.Permission;
@@ -15,10 +17,10 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
-public class GroupsCommand extends Command{
+public class GroupsCommand extends SubCommandGroup{
 
 	public GroupsCommand(){
-		super("groups", "Used to configure self assignable role groups", Category.ROLES);
+		super("groups", "Used to configure self assignable role groups");
 		addOptions(
 			new AddCommand(),
 			new RemoveCommand(),
