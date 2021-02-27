@@ -3,6 +3,8 @@ package de.kittybot.kittybot.objects.data;
 import net.dv8tion.jda.api.entities.Message;
 
 import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MessageData{
 
@@ -14,6 +16,7 @@ public class MessageData{
 	private final String jumpUrl;
 	private final OffsetDateTime timeCreated;
 	private OffsetDateTime timeEdited;
+	private final List<String> attachments;
 
 	public MessageData(Message message){
 		this.messageId = message.getIdLong();
@@ -24,6 +27,7 @@ public class MessageData{
 		this.jumpUrl = message.getJumpUrl();
 		this.timeCreated = message.getTimeCreated();
 		this.timeEdited = message.getTimeEdited();
+		this.attachments = message.getAttachments().stream().map(Message.Attachment::getProxyUrl).collect(Collectors.toList());
 	}
 
 	public long getId(){
@@ -61,6 +65,10 @@ public class MessageData{
 	public MessageData setTimeEdited(final OffsetDateTime timeEdited){
 		this.timeEdited = timeEdited;
 		return this;
+	}
+
+	public List<String> getAttachments(){
+		return this.attachments;
 	}
 
 }

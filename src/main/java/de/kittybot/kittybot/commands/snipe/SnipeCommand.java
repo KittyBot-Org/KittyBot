@@ -32,12 +32,16 @@ public class SnipeCommand extends RunGuildCommand{
 			return;
 		}
 		ia.getJDA().retrieveUserById(lastDeletedMessage.getAuthorId()).queue(user ->
-			ia.reply(builder -> builder
-				.setAuthor("Sniped " + user.getName(), lastDeletedMessage.getJumpUrl())
-				.setDescription(lastDeletedMessage.getContent())
-				.setFooter("from " + user.getName(), user.getEffectiveAvatarUrl())
-				.setTimestamp(lastDeletedMessage.getTimeCreated())
-			)
+			ia.reply(builder -> {
+				builder
+					.setAuthor("Sniped " + user.getName(), lastDeletedMessage.getJumpUrl())
+					.setDescription(lastDeletedMessage.getContent())
+					.setFooter("from " + user.getName(), user.getEffectiveAvatarUrl())
+					.setTimestamp(lastDeletedMessage.getTimeCreated());
+				if(!lastDeletedMessage.getAttachments().isEmpty()){
+					lastDeletedMessage.getAttachments().forEach(attachment -> builder.addField("Attachment", attachment, true));
+				}
+			})
 		);
 	}
 
