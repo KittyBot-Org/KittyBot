@@ -9,7 +9,7 @@ public class UserSettingsCommand extends Command{
 
 
 	public UserSettingsCommand(){
-		super("usersettings", "description", Category.STATISTICS);
+		super("usersettings", "description", Category.USER);
 		addOptions(
 			new LevelCardCommand()
 		);

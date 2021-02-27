@@ -6,7 +6,7 @@ import de.kittybot.kittybot.objects.enums.StatisticType;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-public class UserStatistics{
+public class UserStats{
 
 	private final long userId, guildId, xp;
 	private final int commandsUsed, messagesSent, emotesSent, stickersSent;
@@ -14,7 +14,7 @@ public class UserStatistics{
 	private final LocalDateTime lastActive;
 	private long lastXpGain;
 
-	public UserStatistics(UserStatisticsRecord record){
+	public UserStats(UserStatisticsRecord record){
 		this.userId = record.getUserId();
 		this.guildId = record.getGuildId();
 		this.xp = record.getXp();
@@ -72,7 +72,7 @@ public class UserStatistics{
 		return this.lastXpGain;
 	}
 
-	public UserStatistics setLastXpGain(long xpGain){
+	public UserStats setLastXpGain(long xpGain){
 		this.lastXpGain = xpGain;
 		return this;
 	}
@@ -123,6 +123,10 @@ public class UserStatistics{
 	public long getPreviousLevelXp(){
 		var level = getLevel() - 1;
 		return (long) level * level * 100;
+	}
+
+	public long getNeededXp(){
+		return getNextLevelXp() - getThisLevelXp();
 	}
 
 	@Override

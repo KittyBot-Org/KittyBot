@@ -2,7 +2,7 @@ package de.kittybot.kittybot.utils;
 
 import de.kittybot.kittybot.modules.StatsModule;
 import de.kittybot.kittybot.objects.data.UserSettings;
-import de.kittybot.kittybot.objects.data.UserStatistics;
+import de.kittybot.kittybot.objects.data.UserStats;
 import net.dv8tion.jda.api.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,8 +50,7 @@ public class ImageUtils{
 		}
 	}
 
-	public static byte[] generateLevelCard(UserStatistics statistics, UserSettings settings, User user){
-		System.out.println(settings);
+	public static byte[] generateLevelCard(UserStats stats, UserSettings settings, User user){
 		try{
 			var avatar = ImageIO.read(new URL(user.getEffectiveAvatarUrl() + "?size=" + RAW_AVATAR_SIZE));
 
@@ -123,8 +122,8 @@ public class ImageUtils{
 			g.drawString("#" + user.getDiscriminator(), AVATAR_SIZE + BORDER_SIZE * 2 + nameWidth, CARD_HEIGHT - BORDER_SIZE * 2 - XP_BAR_HEIGHT);
 
 			// draw xp
-			var currentXp = statistics.getRestXp();
-			var neededXp = statistics.getThisLevelXp();
+			var currentXp = stats.getRestXp();
+			var neededXp = stats.getNeededXp();
 			g.setFont(g.getFont().deriveFont(FONT_SIZE).deriveFont(Font.BOLD));
 			g.setColor(new Color(settings.getLevelCardFontColor()));
 			var xpString = currentXp + " / " + neededXp + " XP";
@@ -132,7 +131,7 @@ public class ImageUtils{
 
 			// draw level
 			g.setColor(new Color(settings.getLevelCardPrimaryColor()));
-			var levelString = "Level: " + statistics.getLevel();
+			var levelString = "Level: " + stats.getLevel();
 			g.drawString(levelString, CARD_WIDTH - BORDER_SIZE - g.getFontMetrics().stringWidth(levelString), BORDER_SIZE + FONT_SIZE);
 
 			// draw empty xp bar

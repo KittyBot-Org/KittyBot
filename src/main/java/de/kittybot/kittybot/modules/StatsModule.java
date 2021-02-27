@@ -1,25 +1,17 @@
 package de.kittybot.kittybot.modules;
 
-import de.kittybot.kittybot.objects.data.UserStatistics;
+import de.kittybot.kittybot.objects.data.UserStats;
 import de.kittybot.kittybot.objects.data.VoiceMember;
 import de.kittybot.kittybot.objects.enums.StatisticType;
 import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.utils.Config;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.GuildVoiceState;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.guild.GenericGuildEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.guild.voice.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.Field;
-import org.jooq.Record;
 import org.jooq.SortOrder;
-import org.jooq.TableField;
-import org.jooq.types.YearToSecond;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -167,13 +159,11 @@ public class StatsModule extends Module{
 		return xp;
 	}
 
-	public <T extends Number> UserStatistics incrementStat(long guildId, long userId, Field<T> field, T value){
+	public <T extends Number> UserStats incrementStat(long guildId, long userId, Field<T> field, T value){
 		return incrementStats(guildId, userId, Map.of(field, value));
 	}
 
-	public UserStatistics incrementStats(long guildId, long userId, Map<Field<? extends Number>, Number> values){
-		System.out.println(values);
-
+	public UserStats incrementStats(long guildId, long userId, Map<Field<? extends Number>, Number> values){
 		var xpGain = calculateXpGain(values);
 		var insert = new HashMap<>(values);
 		insert.put(USER_STATISTICS.GUILD_ID, guildId);
@@ -198,25 +188,25 @@ public class StatsModule extends Module{
 		if(record == null){
 			return null;
 		}
-		return new UserStatistics(record).setLastXpGain(xpGain);
+		return new UserStats(record).setLastXpGain(xpGain);
 	}
 
-	public List<UserStatistics> get(long guildId, StatisticType type, SortOrder sortOrder, int limit){
+	public List<UserStats> get(long guildId, StatisticType type, SortOrder sortOrder, int limit){
 		try(var ctx = this.modules.get(DatabaseModule.class).getCtx().selectFrom(USER_STATISTICS)){
 			return ctx.where(USER_STATISTICS.GUILD_ID.eq(guildId))
 				.orderBy(type.getField().sort(sortOrder))
 				.limit(limit)
-				.fetch().map(UserStatistics::new);
+				.fetch().map(UserStats::new);
 		}
 	}
 
-	public UserStatistics get(long guildId, long userId){
+	public UserStats get(long guildId, long userId){
 		try(var ctx = this.modules.get(DatabaseModule.class).getCtx().selectFrom(USER_STATISTICS)){
 			var result = ctx.where(USER_STATISTICS.GUILD_ID.eq(guildId).and(USER_STATISTICS.USER_ID.eq(userId))).fetchOne();
 			if(result == null){
 				return null;
 			}
-			return new UserStatistics(result);
+			return new UserStats(result);
 		}
 	}
 
