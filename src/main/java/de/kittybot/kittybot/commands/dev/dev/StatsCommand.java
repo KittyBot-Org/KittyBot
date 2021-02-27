@@ -18,8 +18,7 @@ public class StatsCommand extends SubCommand{
 
 	@Override
 	public void run(Options options, Interaction ia){
-		ia.reply(new EmbedBuilder()
-			.setColor(Colors.KITTYBOT_BLUE)
+		ia.reply(builder -> builder
 			.setAuthor("KittyBot Internal Cache Stats", Config.ORIGIN_URL, ia.getSelfUser().getEffectiveAvatarUrl())
 
 			.addField("Command Response Cache:", ia.get(CommandResponseModule.class).getStats().toString(), false)

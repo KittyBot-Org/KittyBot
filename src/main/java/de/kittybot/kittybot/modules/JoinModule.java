@@ -70,6 +70,7 @@ public class JoinModule extends Module{
 	public void onGuildJoin(@Nonnull GuildJoinEvent event){
 		var guild = event.getGuild();
 		var embed = new EmbedBuilder()
+			.setColor(Colors.KITTYBOT_BLUE)
 			.setTitle("Hellowo and thank your for adding me to your Discord Server!")
 			.setDescription(
 				"KittyBot uses Discords new " + Emoji.SLASH.get() + " Slash Commands system! Therefore there is no need for any custom prefix or else. Also you see all commands directly by typing `/` into the message box. Go and try it out!\n" +
@@ -82,7 +83,6 @@ public class JoinModule extends Module{
 					"To report bugs/suggest features reach out to me on " + MessageUtils.maskLink("Discord", Config.SUPPORT_GUILD_INVITE_URL) +
 					"(Username: `toπ#3141`) or on " + MessageUtils.maskLink("Twitter", "https://twitter.com/TopiSenpai")
 			)
-			.setColor(Colors.KITTYBOT_BLUE)
 			.setThumbnail(event.getJDA().getSelfUser().getEffectiveAvatarUrl())
 			.setFooter(guild.getName(), guild.getIconUrl())
 			.setTimestamp(Instant.now())

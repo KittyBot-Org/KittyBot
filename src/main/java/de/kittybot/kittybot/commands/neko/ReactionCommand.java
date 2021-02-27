@@ -47,8 +47,7 @@ public abstract class ReactionCommand extends RunCommand{
 				.append(" ")
 				.append(user.getAsMention());
 		}
-		ia.reply(new EmbedBuilder()
-			.setColor(Colors.KITTYBOT_BLUE)
+		ia.reply(builder -> builder
 			.setDescription(message)
 			.setImage(ia.get(RequestModule.class).getNeko(this.neko))
 		);

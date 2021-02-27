@@ -121,12 +121,12 @@ public class RolesCommand extends Command{
 				.setTitle("**Self Assignable Roles:**")
 				.setColor(Colors.KITTYBOT_BLUE)
 				.setDescription(sortedRoles.stream().collect(Collectors.groupingBy(SelfAssignableRole::getGroupId)).entrySet().stream().map(entry -> {
-						var group = groups.stream().filter(g -> entry.getKey() == g.getId()).findFirst().orElse(null);
-						if(group == null){
-							return "";
-						}
-						return "**Group:** `" + group.getName() + "` **Max Roles:** `" + group.getFormattedMaxRoles() + "`\n" +
-							entry.getValue().stream().map(role -> MessageUtils.getEmoteMention(role.getEmoteId()) + Emoji.BLANK.get() + Emoji.BLANK.get() + MessageUtils.getRoleMention(role.getRoleId())).collect(Collectors.joining("\n"));
+					var group = groups.stream().filter(g -> entry.getKey() == g.getId()).findFirst().orElse(null);
+					if(group == null){
+						return "";
+					}
+					return "**Group:** `" + group.getName() + "` **Max Roles:** `" + group.getFormattedMaxRoles() + "`\n" +
+						entry.getValue().stream().map(role -> MessageUtils.getEmoteMention(role.getEmoteId()) + Emoji.BLANK.get() + Emoji.BLANK.get() + MessageUtils.getRoleMention(role.getRoleId())).collect(Collectors.joining("\n"));
 					}).collect(Collectors.joining("\n"))
 				).build();
 

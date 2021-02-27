@@ -25,10 +25,7 @@ public class HistoryCommand extends RunGuildCommand{
 		}
 		var tracks = scheduler.getHistory();
 		if(tracks.isEmpty()){
-			ia.reply(new EmbedBuilder()
-				.setColor(Colors.KITTYBOT_BLUE)
-				.setDescription("The history is empty. Play some tracks to fill it-")
-			);
+			ia.reply("The history is empty. Play some tracks to fill it");
 			return;
 		}
 		MusicUtils.sendTracks(tracks, ia.getModules(), ia.getChannel(), ia.getUserId(), "Currently " + tracks.size() + " " + MessageUtils.pluralize("track", tracks) + " are in the history");

@@ -37,28 +37,17 @@ public class CommandsCommand extends RunCommand{
 			var cmdName = options.getString("command");
 			var optCmd = commands.stream().filter(cmd -> cmd.getName().equalsIgnoreCase(cmdName)).findFirst();
 			if(optCmd.isEmpty()){
-				ia.reply(new InteractionResponse.Builder()
-					.setType(InteractionResponseType.CHANNEL_MESSAGE)
-					.ephemeral()
-					.setContent("Command `" + cmdName + "` not found")
-					.build()
-				);
+				ia.error("Command `" + cmdName + "` not found");
 				return;
 			}
 			var cmd = optCmd.get();
-			ia.reply(new InteractionResponse.Builder()
-				.addEmbeds(new EmbedBuilder()
-					.setColor(Colors.KITTYBOT_BLUE)
-					.setAuthor("Commands", Config.ORIGIN_URL + "/commands#" + cmd.getName(), ia.getSelfUser().getEffectiveAvatarUrl())
-					.setDescription("`/" + cmd.getName() + "` - *" + cmd.getDescription() + "*\n\n" + cmd.getOptions().stream().filter(GuildSubCommand.class::isInstance).map(c ->
-							"`/" + cmd.getName() + " " + c.getName() + "` - *" + c.getDescription() + "*"
-						).collect(Collectors.joining("\n"))
-					)
-					.setFooter(ia.getUser().getName(), ia.getUser().getEffectiveAvatarUrl())
-					.setTimestamp(Instant.now())
-					.build()
+			ia.reply(builder -> builder
+				.setAuthor("Commands", Config.ORIGIN_URL + "/commands#" + cmd.getName(), ia.getSelfUser().getEffectiveAvatarUrl())
+				.setDescription("`/" + cmd.getName() + "` - *" + cmd.getDescription() + "*\n\n" + cmd.getOptions().stream()
+					.filter(GuildSubCommand.class::isInstance)
+					.map(c ->"`/" + cmd.getName() + " " + c.getName() + "` - *" + c.getDescription() + "*")
+					.collect(Collectors.joining("\n"))
 				)
-				.build()
 			);
 			return;
 		}

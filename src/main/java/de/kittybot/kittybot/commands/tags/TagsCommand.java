@@ -229,8 +229,7 @@ public class TagsCommand extends Command{
 				ia.error("Tag with name `" + tagName + "` not found");
 				return;
 			}
-			ia.reply(new EmbedBuilder()
-				.setColor(Colors.KITTYBOT_BLUE)
+			ia.reply(builder -> builder
 				.setTitle("Tag `" + tagName + "`")
 				.addField("Owner", MessageUtils.getUserMention(tag.getUserId()), false)
 				.addField("ID", Long.toString(tag.getId()), false)

@@ -9,7 +9,6 @@ import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.MessageUtils;
-import net.dv8tion.jda.api.EmbedBuilder;
 
 @SuppressWarnings("unused")
 public class ServerBannerCommand extends SubCommand{
@@ -51,8 +50,7 @@ public class ServerBannerCommand extends SubCommand{
 			ia.error("Guild has no banner set");
 			return;
 		}
-		ia.reply(new EmbedBuilder()
-			.setColor(Colors.KITTYBOT_BLUE)
+		ia.reply(builder -> builder
 			.setTitle(guild.getName() + " Banner")
 			.setThumbnail(banner)
 			.setDescription(MessageUtils.maskLink(size + "px", banner + "?size=" + size)));

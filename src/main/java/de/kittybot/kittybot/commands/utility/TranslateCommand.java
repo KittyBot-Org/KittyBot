@@ -44,7 +44,7 @@ public class TranslateCommand extends RunCommand{
 				ia.error("Error while trying to translate text");
 				return;
 			}
-			ia.reply(new EmbedBuilder().setDescription("Translated text to `" + toLang.getName() + "`:\n```\n" + MarkdownSanitizer.escape(translatedText) + "\n```"));
+			ia.reply("Translated text to `" + toLang.getName() + "`:\n```\n" + MarkdownSanitizer.escape(translatedText) + "\n```");
 		});
 	}
 

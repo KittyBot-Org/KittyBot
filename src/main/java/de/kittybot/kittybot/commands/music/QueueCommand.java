@@ -53,10 +53,7 @@ public class QueueCommand extends RunGuildCommand{
 		var scheduler = manager.getScheduler();
 		var tracks = scheduler.getQueue();
 		if(tracks.isEmpty()){
-			ia.reply(new EmbedBuilder()
-				.setColor(Colors.KITTYBOT_BLUE)
-				.setDescription("The queue is empty. You can queue new tracks with `/play <query/search-term>` or `/queue <query/search-term>`")
-			);
+			ia.reply("The queue is empty. You can queue new tracks with `/play <query/search-term>` or `/queue <query/search-term>`");
 			return;
 		}
 		ia.acknowledge(true).queue(success ->
