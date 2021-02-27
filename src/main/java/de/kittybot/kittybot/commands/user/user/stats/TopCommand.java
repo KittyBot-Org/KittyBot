@@ -40,7 +40,7 @@ public class TopCommand extends GuildSubCommand{
 		var type = StatisticType.valueOf(options.getOrDefault("stat", StatisticType.XP.name()));
 		var sortOrder = SortOrder.valueOf(options.getOrDefault("sort-order", SortOrder.DESC.name()));
 		var statistics = ia.get(StatsModule.class).get(ia.getGuildId(), type, sortOrder, 10);
-		ia.reply(new EmbedBuilder()
+		ia.reply(builder -> builder
 			.setTitle("Top 10 Statistics for `" + type + "`")
 			.setDescription(statistics.stream().map(statistic -> MessageUtils.getUserMention(statistic.getUserId()) + " - `" + statistic.get(type) + "`").collect(Collectors.joining("\n")))
 		);

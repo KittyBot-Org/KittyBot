@@ -6,7 +6,9 @@ import de.kittybot.kittybot.slashcommands.application.options.CommandOptionUser;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
+import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.ImageUtils;
+import net.dv8tion.jda.api.EmbedBuilder;
 
 public class CardCommand extends GuildSubCommand{
 
@@ -23,8 +25,9 @@ public class CardCommand extends GuildSubCommand{
 		var userStats = ia.get(StatsModule.class).get(ia.getGuildId(), ia.getUserId());
 		var userSettings = ia.get(UserSettingsModule.class).getUserSettings(ia.getUserId());
 		var card = ImageUtils.generateLevelCard(userStats, userSettings, options.has("user") ? options.getUser("user") : ia.getUser());
-		ia.sendAcknowledge();
-		ia.getChannel().sendFile(card, "card.png").queue();
+		ia.acknowledge(true).queue(success ->
+			ia.getChannel().sendFile(card, "card.png").queue()
+		);
 	}
 
 }

@@ -23,10 +23,10 @@ public class BackgroundUrlCommand extends SubCommand{
 	public void run(Options options, Interaction ia){
 		var url = options.getString("url");
 		ia.get(UserSettingsModule.class).setUserSetting(ia.getUserId(), USER_SETTINGS.LEVEL_CARD_BACKGROUND_URL, url);
-		ia.reply(new EmbedBuilder()
-			.setColor(Colors.KITTYBOT_BLUE)
+		ia.reply(builder -> builder
 			.setDescription("Set background url to")
-			.setImage(url));
+			.setImage(url)
+		);
 	}
 
 }

@@ -24,13 +24,14 @@ public class BorderColorCommand extends SubCommand{
 	public void run(Options options, Interaction ia){
 		var color = options.getColor("color");
 		ia.get(UserSettingsModule.class).setUserSetting(ia.getUserId(), USER_SETTINGS.LEVEL_CARD_BACKGROUND_COLOR, color.getRGB());
-		ia.sendAcknowledge(true);
-		ia.getChannel().sendMessage(ia.applyDefaultStyle(new EmbedBuilder()
-				.setColor(Colors.KITTYBOT_BLUE)
-				.setDescription("Set border color to")
-				.setThumbnail("attachment://color.png")
-			).build()
-		).addFile(ImageUtils.generateColorImage(color), "color.png").queue();
+		ia.acknowledge(true).queue(success ->
+			ia.getChannel().sendMessage(ia.applyDefaultStyle(new EmbedBuilder()
+					.setColor(Colors.KITTYBOT_BLUE)
+					.setDescription("Set border color to")
+					.setThumbnail("attachment://color.png")
+				).build()
+			).addFile(ImageUtils.generateColorImage(color), "color.png").queue()
+		);
 	}
 
 }
