@@ -28,17 +28,15 @@ public class SnipeCommand extends RunGuildCommand{
 		}
 		var lastDeletedMessage = ia.get(MessageModule.class).getLastDeletedMessage(ia.getChannelId());
 		if(lastDeletedMessage == null){
-			ia.reply(new EmbedBuilder().setColor(Color.RED).setDescription("There are no deleted messages to snipe"));
+			ia.reply(builder -> builder.setColor(Color.RED).setDescription("There are no deleted messages to snipe"));
 			return;
 		}
 		ia.getJDA().retrieveUserById(lastDeletedMessage.getAuthorId()).queue(user ->
-			ia.reply(new EmbedBuilder()
-				.setColor(Colors.KITTYBOT_BLUE)
-				.setAuthor(user.getName(), lastDeletedMessage.getJumpUrl(), user.getEffectiveAvatarUrl())
+			ia.reply(builder -> builder
+				.setAuthor("Sniped " + user.getName(), lastDeletedMessage.getJumpUrl())
 				.setDescription(lastDeletedMessage.getContent())
-				.setFooter(ia.getMember().getEffectiveName(), ia.getUser().getEffectiveAvatarUrl())
+				.setFooter("from " + user.getName(), user.getEffectiveAvatarUrl())
 				.setTimestamp(lastDeletedMessage.getTimeCreated())
-				.build()
 			)
 		);
 	}

@@ -51,8 +51,7 @@ public class GuildIconCommand extends SubCommand{
 			ia.error("Guild has no icon set");
 			return;
 		}
-		ia.reply(new EmbedBuilder()
-			.setColor(Colors.KITTYBOT_BLUE)
+		ia.reply(builder -> builder
 			.setTitle(guild.getName() + " Icon")
 			.setThumbnail(icon)
 			.setDescription(MessageUtils.maskLink(size + "px", icon + "?size=" + size)));

@@ -36,8 +36,7 @@ public class AvatarCommand extends SubCommand{
 		var user = options.has("user") ? options.getUser("user") : ia.getUser();
 		var size = options.has("size") ? options.getInt("size") : 1024;
 
-		ia.reply(new EmbedBuilder()
-			.setColor(Colors.KITTYBOT_BLUE)
+		ia.reply(builder -> builder
 			.setTitle(user.getAsTag() + " Avatar")
 			.setThumbnail(user.getEffectiveAvatarUrl())
 			.setDescription(MessageUtils.maskLink(size + "px", user.getEffectiveAvatarUrl() + "?size=" + size))

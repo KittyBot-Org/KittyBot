@@ -19,8 +19,7 @@ public class HelpCommand extends RunCommand{
 
 	@Override
 	public void run(Options options, Interaction ia){
-		ia.reply(new EmbedBuilder()
-			.setColor(Colors.KITTYBOT_BLUE)
+		ia.reply(builder -> builder
 			.setAuthor("Help", Config.ORIGIN_URL, ia.getSelfUser().getEffectiveAvatarUrl())
 			.setThumbnail(ia.getSelfUser().getEffectiveAvatarUrl())
 			.setDescription(

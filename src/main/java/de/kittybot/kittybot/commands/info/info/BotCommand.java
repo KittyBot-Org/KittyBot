@@ -23,8 +23,7 @@ public class BotCommand extends SubCommand{
 	public void run(Options options, Interaction ia){
 		var shardManager = ia.getModules().getShardManager();
 		var runtime = Runtime.getRuntime();
-		ia.reply(new EmbedBuilder()
-			.setColor(Colors.KITTYBOT_BLUE)
+		ia.reply(builder -> builder
 			.setAuthor("KittyBot Information", Config.ORIGIN_URL, Category.INFORMATION.getEmoteUrl())
 
 			.addField("JVM Version:", System.getProperty("java.version"), true)

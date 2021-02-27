@@ -18,8 +18,7 @@ public class PingCommand extends SubCommand{
 	public void run(Options options, Interaction ia){
 		var jda = ia.getJDA();
 		jda.getRestPing().queue(ping ->
-			ia.reply(new EmbedBuilder()
-				.setColor(Colors.KITTYBOT_BLUE)
+			ia.reply(builder -> builder
 				.setAuthor("KittyBot Ping", Config.ORIGIN_URL, jda.getSelfUser().getEffectiveAvatarUrl())
 
 				.addField("Gateway Ping:", jda.getGatewayPing() + "ms", false)

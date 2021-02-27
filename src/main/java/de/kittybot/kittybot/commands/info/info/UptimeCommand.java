@@ -19,8 +19,7 @@ public class UptimeCommand extends SubCommand{
 
 	@Override
 	public void run(Options options, Interaction ia){
-		ia.reply(new EmbedBuilder()
-			.setColor(Colors.KITTYBOT_BLUE)
+		ia.reply(builder -> builder
 			.setAuthor("KittyBot Uptime", Config.ORIGIN_URL, ia.getSelfUser().getEffectiveAvatarUrl())
 			.addField("Uptime:", TimeUtils.formatDurationDHMS(ManagementFactory.getRuntimeMXBean().getUptime()), false)
 		);

@@ -48,8 +48,7 @@ public class SettingsCommand extends Command{
 		public void run(Options options, GuildInteraction ia){
 			var guildId = ia.getGuildId();
 			var settings = ia.get(SettingsModule.class).getSettings(guildId);
-			ia.reply(new EmbedBuilder()
-					.setColor(Colors.KITTYBOT_BLUE)
+			ia.reply(builder -> builder
 					.setAuthor("Guild settings:", Config.ORIGIN_URL + "/guilds/" + guildId + "/dashboard", Emoji.SETTINGS.getUrl())
 					.addField("Announcement Channel: ", settings.getAnnouncementChannel(), false)
 					.addField("Join Messages: " + MessageUtils.getBoolEmote(settings.areJoinMessagesEnabled()), settings.getJoinMessage(), false)

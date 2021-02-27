@@ -26,11 +26,11 @@ public class MessageData{
 		this.timeEdited = message.getTimeEdited();
 	}
 
-	public Long getId(){
+	public long getId(){
 		return this.messageId;
 	}
 
-	public Long getAuthorId(){
+	public long getAuthorId(){
 		return this.authorId;
 	}
 
@@ -38,11 +38,11 @@ public class MessageData{
 		return this.content;
 	}
 
-	public Long getChannelId(){
+	public long getChannelId(){
 		return this.channelId;
 	}
 
-	public Long getGuildId(){
+	public long getGuildId(){
 		return this.guildId;
 	}
 
