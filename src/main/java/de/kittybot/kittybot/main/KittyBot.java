@@ -33,6 +33,7 @@ public class KittyBot{
 		var botListHandler = new BLHBuilder()
 			.setUnavailableEventsEnabled(false)
 			.setDevModePredicate(jda -> Environment.is(Environment.DEVELOPMENT))
+			.setSuccessLoggingEnabled(false)
 			.addBotList(BotList.TOP_GG, Config.TOP_GG_TOKEN)
 			.addBotList(BotList.DBOATS, Config.DISCORD_BOATS_TOKEN)
 			.addBotList(BotList.BOTLIST_SPACE, Config.BOTLIST_SPACE_TOKEN)
