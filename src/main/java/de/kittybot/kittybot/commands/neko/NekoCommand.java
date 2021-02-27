@@ -63,8 +63,7 @@ public class NekoCommand extends RunCommand{
 				}
 			}
 		}
-		ia.reply(new EmbedBuilder()
-			.setColor(Colors.KITTYBOT_BLUE)
+		ia.reply(builder -> builder
 			.setImage(ia.get(RequestModule.class).getNeko(neko))
 		);
 	}

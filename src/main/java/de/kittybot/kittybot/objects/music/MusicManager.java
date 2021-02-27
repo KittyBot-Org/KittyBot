@@ -45,14 +45,14 @@ public class MusicManager extends PlayerEventListenerAdapter{
 		if(this.future != null){
 			return;
 		}
-		this.future = this.modules.schedule(() -> this.modules.get(MusicModule.class).destroy(this, -1L), 4, TimeUnit.MINUTES);
+		this.future = this.modules.schedule(() -> this.modules.get(MusicModule.class).destroy(this, "Disconnected due to inactivity"), 4, TimeUnit.MINUTES);
 	}
 
 	public void cancelDestroy(){
-		this.scheduler.setPaused(false);
 		if(this.future == null){
 			return;
 		}
+		this.scheduler.setPaused(false);
 		this.future.cancel(true);
 		this.future = null;
 	}

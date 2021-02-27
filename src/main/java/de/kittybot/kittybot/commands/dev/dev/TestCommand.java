@@ -53,7 +53,6 @@ public class TestCommand extends SubCommandGroup{
 			else{
 				response.addEmbeds(ia.applyDefaultStyle(new EmbedBuilder()
 						.setTitle("Response")
-						.setColor(Colors.KITTYBOT_BLUE)
 						.setDescription(content)
 					).build()
 				);

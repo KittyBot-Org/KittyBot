@@ -22,6 +22,8 @@ import net.dv8tion.jda.internal.entities.GuildImpl;
 
 import java.awt.Color;
 import java.time.Instant;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class Interaction{
 
@@ -135,11 +137,7 @@ public class Interaction{
 	}
 
 	public void reply(String message){
-		this.modules.get(InteractionsModule.class).reply(this).embeds(getSuccessEmbed().setDescription(message).build()).queue();
-	}
-
-	public EmbedBuilder getSuccessEmbed(){
-		return getEmbed().setColor(Colors.KITTYBOT_BLUE);
+		this.modules.get(InteractionsModule.class).reply(this).embeds(getEmbed().setDescription(message).build()).queue();
 	}
 
 	public EmbedBuilder getEmbed(){
@@ -154,23 +152,17 @@ public class Interaction{
 		else{
 			name = user.getName();
 		}
-		return embedBuilder.setFooter(name, user.getEffectiveAvatarUrl()).setTimestamp(Instant.now());
+		return embedBuilder.setColor(Colors.KITTYBOT_BLUE).setFooter(name, user.getEffectiveAvatarUrl()).setTimestamp(Instant.now());
 	}
 
-	public void reply(EmbedBuilder embed){
-		reply(applyDefaultStyle(embed).build());
-	}
-
-	public void reply(MessageEmbed embed){
-		this.modules.get(InteractionsModule.class).reply(this).embeds(embed).queue();
+	public void reply(Consumer<EmbedBuilder> consumer){
+		var embedBuilder = applyDefaultStyle(new EmbedBuilder());
+		consumer.accept(embedBuilder);
+		this.modules.get(InteractionsModule.class).reply(this).embeds(embedBuilder.build()).queue();
 	}
 
 	public void reply(InteractionResponse response){
 		this.modules.get(InteractionsModule.class).reply(this).fromData(response).queue();
-	}
-
-	public void reply(InteractionResponse data, boolean withSource){
-		this.modules.get(InteractionsModule.class).reply(this, withSource).fromData(data).queue();
 	}
 
 	public void error(String error){
@@ -178,7 +170,7 @@ public class Interaction{
 	}
 
 	public void followup(String message){
-		followup(new FollowupMessage.Builder().setEmbeds(getSuccessEmbed().setDescription(message).build()).build());
+		followup(new FollowupMessage.Builder().setEmbeds(getEmbed().setDescription(message).build()).build());
 	}
 
 	public void followup(FollowupMessage message){
@@ -195,14 +187,6 @@ public class Interaction{
 
 	public EmbedBuilder getErrorEmbed(){
 		return getEmbed().setColor(Color.RED);
-	}
-
-	public void sendAcknowledge(){
-		sendAcknowledge(true);
-	}
-
-	public void sendAcknowledge(boolean withSource){
-		acknowledge(withSource).queue();
 	}
 
 	public InteractionRespondAction acknowledge(boolean withSource){
