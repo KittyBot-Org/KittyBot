@@ -43,7 +43,7 @@ public class EditCommand extends GuildSubCommand{
 			content = null;
 		}
 
-		var edited  = ia.get(TagsModule.class).edit(tagName, content, ia.getGuildId(), ia.getUserId(), options.has("new-name") ? options.getString("new-name") : null);
+		var edited = ia.get(TagsModule.class).edit(tagName, content, ia.getGuildId(), ia.getUserId(), options.has("new-name") ? options.getString("new-name") : null);
 		if(edited){
 			ia.reply("Edited tag with name `" + tagName + "`");
 			return;

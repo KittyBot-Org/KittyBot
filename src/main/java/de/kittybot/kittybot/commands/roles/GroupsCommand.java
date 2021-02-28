@@ -2,9 +2,6 @@ package de.kittybot.kittybot.commands.roles;
 
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.objects.settings.SelfAssignableRoleGroup;
-import de.kittybot.kittybot.slashcommands.application.Category;
-import de.kittybot.kittybot.slashcommands.application.Command;
-import de.kittybot.kittybot.slashcommands.application.GenericHelpCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;

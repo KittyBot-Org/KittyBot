@@ -10,8 +10,6 @@ import de.kittybot.kittybot.slashcommands.application.options.CommandOptionStrin
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
 import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
-import de.kittybot.kittybot.utils.Colors;
-import net.dv8tion.jda.api.EmbedBuilder;
 
 @SuppressWarnings("unused")
 public class NekoCommand extends RunCommand{

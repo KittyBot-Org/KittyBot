@@ -15,8 +15,8 @@ public class MessageData{
 	private final long guildId;
 	private final String jumpUrl;
 	private final OffsetDateTime timeCreated;
-	private OffsetDateTime timeEdited;
 	private final List<String> attachments;
+	private OffsetDateTime timeEdited;
 
 	public MessageData(Message message){
 		this.messageId = message.getIdLong();

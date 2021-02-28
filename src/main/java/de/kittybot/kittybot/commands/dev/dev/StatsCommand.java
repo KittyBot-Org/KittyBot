@@ -4,9 +4,7 @@ import de.kittybot.kittybot.modules.*;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
-import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.Config;
-import net.dv8tion.jda.api.EmbedBuilder;
 
 @SuppressWarnings("unused")
 public class StatsCommand extends SubCommand{

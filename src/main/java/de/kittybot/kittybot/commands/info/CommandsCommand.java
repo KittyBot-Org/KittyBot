@@ -9,12 +9,9 @@ import de.kittybot.kittybot.slashcommands.application.options.CommandOptionStrin
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
 import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
-import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
-import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponseType;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
-import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -45,7 +42,7 @@ public class CommandsCommand extends RunCommand{
 				.setAuthor("Commands", Config.ORIGIN_URL + "/commands#" + cmd.getName(), ia.getSelfUser().getEffectiveAvatarUrl())
 				.setDescription("`/" + cmd.getName() + "` - *" + cmd.getDescription() + "*\n\n" + cmd.getOptions().stream()
 					.filter(GuildSubCommand.class::isInstance)
-					.map(c ->"`/" + cmd.getName() + " " + c.getName() + "` - *" + c.getDescription() + "*")
+					.map(c -> "`/" + cmd.getName() + " " + c.getName() + "` - *" + c.getDescription() + "*")
 					.collect(Collectors.joining("\n"))
 				)
 			);
