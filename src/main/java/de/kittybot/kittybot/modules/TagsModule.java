@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.utils.data.DataObject;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -133,12 +134,26 @@ public class TagsModule extends Module{
 		return rows == 1;
 	}
 
-	public boolean edit(String name, String content, long guildId, long userId){
-		var rows = this.modules.get(DatabaseModule.class).getCtx().update(GUILD_TAGS)
-			.set(GUILD_TAGS.CONTENT, content)
+	public boolean edit(String name, String content, long guildId, long userId, String newName){
+		var values = new HashMap<>();
+		if(content != null){
+			values.put(GUILD_TAGS.CONTENT, content);
+		}
+		if(newName != null){
+			values.put(GUILD_TAGS.NAME, newName);
+		}
+		var record = this.modules.get(DatabaseModule.class).getCtx().update(GUILD_TAGS)
+			.set(values)
 			.where(GUILD_TAGS.NAME.equalIgnoreCase(name).and(GUILD_TAGS.GUILD_ID.eq(guildId).and(GUILD_TAGS.USER_ID.eq(userId))))
-			.execute();
-		return rows == 1;
+			.returning()
+			.fetchOne();
+		if(record == null){
+			return false;
+		}
+		if(record.getCommandId() != -1){
+			this.modules.get(CommandsModule.class).editGuildCommand(guildId, record.getCommandId(), DataObject.empty().put("name", newName));
+		}
+		return true;
 	}
 
 	public boolean edit(long id, String name, String content, long userId){

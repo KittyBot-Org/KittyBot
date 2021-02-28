@@ -5,10 +5,8 @@ import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.RunCommand;
 import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
-import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
-import net.dv8tion.jda.api.EmbedBuilder;
 
 @SuppressWarnings("unused")
 public class HelpCommand extends RunCommand{

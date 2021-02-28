@@ -7,7 +7,6 @@ import de.kittybot.kittybot.slashcommands.application.RunCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 
 @SuppressWarnings("unused")

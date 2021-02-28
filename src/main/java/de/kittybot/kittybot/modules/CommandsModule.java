@@ -32,6 +32,7 @@ public class CommandsModule extends Module{
 	public static final Route GUILD_COMMANDS_CREATE = Route.custom(Method.PUT, "applications/{application.id}/guilds/{guild.id}/commands");
 	public static final Route GUILD_COMMANDS = Route.custom(Method.GET, "applications/{application.id}/guilds/{guild.id}/commands");
 	public static final Route GUILD_COMMAND_CREATE = Route.custom(Method.POST, "applications/{application.id}/guilds/{guild.id}/commands");
+	public static final Route GUILD_COMMAND_EDIT = Route.custom(Method.PATCH, "applications/{application.id}/guilds/{guild.id}/commands/{command.id}");
 	public static final Route GUILD_COMMAND_DELETE = Route.custom(Method.DELETE, "applications/{application.id}/guilds/{guild.id}/commands/{command.id}");
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommandsModule.class);
@@ -146,10 +147,28 @@ public class CommandsModule extends Module{
 				return true;
 			}
 			var body = resp.body();
-			LOG.error("Registering command failed. Command ID: {}, Response Body: {}", commandId, body == null ? "null" : body.string());
+			LOG.error("Deleting command failed. Command ID: {}, Response Body: {}", commandId, body == null ? "null" : body.string());
 		}
 		catch(IOException e){
 			LOG.error("Error while processing deleteGuildCommand", e);
+		}
+		return false;
+	}
+
+	public boolean editGuildCommand(long guildId, long commandId, DataObject command){
+		var rqBody = RequestBody.create(command.toJson(), MediaType.parse("application/json"));
+
+		var route = GUILD_COMMAND_EDIT.compile(String.valueOf(Config.BOT_ID), String.valueOf(guildId), String.valueOf(commandId));
+		try(var resp = newCall(route, rqBody).execute()){
+			if(resp.code() == 200){
+				LOG.info("Edited command");
+				return true;
+			}
+			var body = resp.body();
+			LOG.error("Editing command failed. Command ID: {}, Response Body: {}", commandId, body == null ? "null" : body.string());
+		}
+		catch(IOException e){
+			LOG.error("Error while processing editGuildCommand", e);
 		}
 		return false;
 	}

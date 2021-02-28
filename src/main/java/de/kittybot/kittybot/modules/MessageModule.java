@@ -42,7 +42,7 @@ public class MessageModule extends Module{
 
 	@Override
 	public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event){
-		if(event.getMessage().getContentRaw().isBlank()){
+		if(event.getAuthor().isBot()){
 			return;
 		}
 		cacheMessage(event.getMessage());
@@ -50,6 +50,9 @@ public class MessageModule extends Module{
 
 	@Override
 	public void onGuildMessageUpdate(@NotNull GuildMessageUpdateEvent event){
+		if(event.getAuthor().isBot()){
+			return;
+		}
 		cacheMessage(event.getMessage());
 	}
 

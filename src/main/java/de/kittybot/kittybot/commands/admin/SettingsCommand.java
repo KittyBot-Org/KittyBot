@@ -10,10 +10,8 @@ import de.kittybot.kittybot.slashcommands.application.options.*;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
-import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 
 import java.util.stream.Collectors;

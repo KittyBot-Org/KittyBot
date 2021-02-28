@@ -13,7 +13,6 @@ import de.kittybot.kittybot.utils.Colors;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.utils.data.DataObject;
@@ -23,7 +22,6 @@ import net.dv8tion.jda.internal.entities.GuildImpl;
 import java.awt.Color;
 import java.time.Instant;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class Interaction{
 

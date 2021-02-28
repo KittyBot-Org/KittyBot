@@ -3,10 +3,8 @@ package de.kittybot.kittybot.commands.info.info;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
-import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.TimeUtils;
-import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.lang.management.ManagementFactory;
 

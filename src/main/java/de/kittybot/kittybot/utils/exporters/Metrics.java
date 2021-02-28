@@ -2,6 +2,7 @@ package de.kittybot.kittybot.utils.exporters;
 
 import io.prometheus.client.Counter;
 import io.prometheus.client.Gauge;
+import io.prometheus.client.Summary;
 
 public class Metrics{
 
@@ -11,7 +12,7 @@ public class Metrics{
 		.labelNames("type")
 		.register();
 
-	public static final Gauge COMMAND_LATENCY = Gauge.build()
+	public static final Summary COMMAND_LATENCY = Summary.build()
 		.name("kittybot_command_latency")
 		.help("Time it takes for a command to process.")
 		.labelNames("command")

@@ -70,7 +70,7 @@ public class InteractionsModule extends Module{
 		var cmd = this.modules.get(CommandsModule.class).getCommands().get(data.getName());
 		if(cmd != null){
 			process(cmd, interaction, data);
-			Metrics.COMMAND_LATENCY.labels(cmd.getName()).set(System.currentTimeMillis() - start);
+			Metrics.COMMAND_LATENCY.labels(cmd.getName()).observe(System.currentTimeMillis() - start);
 			Metrics.COMMAND_COUNTER.labels(cmd.getName()).inc();
 			return;
 		}
