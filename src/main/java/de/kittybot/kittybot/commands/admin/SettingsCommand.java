@@ -76,7 +76,7 @@ public class SettingsCommand extends Command{
 		public void run(Options options, GuildInteraction ia){
 			var role = options.getRole("role");
 			ia.get(SettingsModule.class).setDjRoleId(ia.getGuildId(), role.getIdLong());
-			ia.reply(new InteractionResponse.Builder().setContent("DJ Role set to: " + role.getAsMention()).build());
+			ia.reply("DJ Role set to: " + role.getAsMention());
 		}
 
 	}
@@ -94,7 +94,7 @@ public class SettingsCommand extends Command{
 		public void run(Options options, GuildInteraction ia){
 			var channel = options.getTextChannel("channel");
 			ia.get(SettingsModule.class).setAnnouncementChannelId(ia.getGuildId(), channel.getIdLong());
-			ia.reply(new InteractionResponse.Builder().setContent("Announcement channel set to: " + channel.getAsMention()).build());
+			ia.reply("Announcement channel set to: " + channel.getAsMention());
 		}
 
 	}
@@ -126,10 +126,10 @@ public class SettingsCommand extends Command{
 			}
 
 			if(returnMessage.isBlank()){
-				ia.reply(new InteractionResponse.Builder().setContent("Join message `" + (settings.areJoinMessagesEnabled(ia.getGuildId()) ? "enabled" : "disabled") + "` and set to:\n" + settings.getJoinMessage(ia.getGuildId())).build());
+				ia.reply("Join message `" + (settings.areJoinMessagesEnabled(ia.getGuildId()) ? "enabled" : "disabled") + "` and set to:\n" + settings.getJoinMessage(ia.getGuildId()));
 				return;
 			}
-			ia.reply(new InteractionResponse.Builder().setContent(returnMessage).build());
+			ia.reply(returnMessage);
 		}
 
 	}
@@ -161,10 +161,10 @@ public class SettingsCommand extends Command{
 			}
 
 			if(returnMessage.isBlank()){
-				ia.reply(new InteractionResponse.Builder().setContent("Leave message `" + (settings.areLeaveMessagesEnabled(ia.getGuildId()) ? "enabled" : "disabled") + "` and set to:\n" + settings.getLeaveMessage(ia.getGuildId())).build());
+				ia.reply("Leave message `" + (settings.areLeaveMessagesEnabled(ia.getGuildId()) ? "enabled" : "disabled") + "` and set to:\n" + settings.getLeaveMessage(ia.getGuildId()));
 				return;
 			}
-			ia.reply(new InteractionResponse.Builder().setContent(returnMessage).build());
+			ia.reply(returnMessage);
 		}
 
 	}
