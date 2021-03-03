@@ -86,11 +86,6 @@ public class Sequences {
     public static final Sequence<Long> SNIPE_DISABLED_CHANNELS_ID_SEQ = Internal.createSequence("snipe_disabled_channels_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.stream_user_events_id_seq</code>
-     */
-    public static final Sequence<Long> STREAM_USER_EVENTS_ID_SEQ = Internal.createSequence("stream_user_events_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
      * The sequence <code>public.stream_users_id_seq</code>
      */
     public static final Sequence<Long> STREAM_USERS_ID_SEQ = Internal.createSequence("stream_users_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);

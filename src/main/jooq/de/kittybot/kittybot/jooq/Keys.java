@@ -19,7 +19,6 @@ import de.kittybot.kittybot.jooq.tables.SelfAssignableRoleMessages;
 import de.kittybot.kittybot.jooq.tables.SelfAssignableRoles;
 import de.kittybot.kittybot.jooq.tables.Sessions;
 import de.kittybot.kittybot.jooq.tables.SnipeDisabledChannels;
-import de.kittybot.kittybot.jooq.tables.StreamUserEvents;
 import de.kittybot.kittybot.jooq.tables.StreamUsers;
 import de.kittybot.kittybot.jooq.tables.UserStatistics;
 import de.kittybot.kittybot.jooq.tables.Voters;
@@ -38,7 +37,6 @@ import de.kittybot.kittybot.jooq.tables.records.SelfAssignableRoleMessagesRecord
 import de.kittybot.kittybot.jooq.tables.records.SelfAssignableRolesRecord;
 import de.kittybot.kittybot.jooq.tables.records.SessionsRecord;
 import de.kittybot.kittybot.jooq.tables.records.SnipeDisabledChannelsRecord;
-import de.kittybot.kittybot.jooq.tables.records.StreamUserEventsRecord;
 import de.kittybot.kittybot.jooq.tables.records.StreamUsersRecord;
 import de.kittybot.kittybot.jooq.tables.records.UserStatisticsRecord;
 import de.kittybot.kittybot.jooq.tables.records.VotersRecord;
@@ -61,7 +59,6 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<BotDisabledChannelsRecord> BOT_DISABLED_CHANNELS_CHANNEL_ID_KEY = Internal.createUniqueKey(BotDisabledChannels.BOT_DISABLED_CHANNELS, DSL.name("bot_disabled_channels_channel_id_key"), new TableField[] { BotDisabledChannels.BOT_DISABLED_CHANNELS.CHANNEL_ID }, true);
     public static final UniqueKey<BotDisabledChannelsRecord> BOT_DISABLED_CHANNELS_GUILD_ID_CHANNEL_ID_KEY = Internal.createUniqueKey(BotDisabledChannels.BOT_DISABLED_CHANNELS, DSL.name("bot_disabled_channels_guild_id_channel_id_key"), new TableField[] { BotDisabledChannels.BOT_DISABLED_CHANNELS.GUILD_ID, BotDisabledChannels.BOT_DISABLED_CHANNELS.CHANNEL_ID }, true);
     public static final UniqueKey<BotDisabledChannelsRecord> BOT_DISABLED_CHANNELS_PKEY = Internal.createUniqueKey(BotDisabledChannels.BOT_DISABLED_CHANNELS, DSL.name("bot_disabled_channels_pkey"), new TableField[] { BotDisabledChannels.BOT_DISABLED_CHANNELS.ID }, true);
     public static final UniqueKey<BotIgnoredMembersRecord> BOT_IGNORED_MEMBERS_GUILD_ID_USER_ID_KEY = Internal.createUniqueKey(BotIgnoredMembers.BOT_IGNORED_MEMBERS, DSL.name("bot_ignored_members_guild_id_user_id_key"), new TableField[] { BotIgnoredMembers.BOT_IGNORED_MEMBERS.GUILD_ID, BotIgnoredMembers.BOT_IGNORED_MEMBERS.USER_ID }, true);
@@ -89,9 +86,7 @@ public class Keys {
     public static final UniqueKey<SessionsRecord> SESSIONS_USER_ID_KEY = Internal.createUniqueKey(Sessions.SESSIONS, DSL.name("sessions_user_id_key"), new TableField[] { Sessions.SESSIONS.USER_ID }, true);
     public static final UniqueKey<SnipeDisabledChannelsRecord> SNIPE_DISABLED_CHANNELS_GUILD_ID_CHANNEL_ID_KEY = Internal.createUniqueKey(SnipeDisabledChannels.SNIPE_DISABLED_CHANNELS, DSL.name("snipe_disabled_channels_guild_id_channel_id_key"), new TableField[] { SnipeDisabledChannels.SNIPE_DISABLED_CHANNELS.GUILD_ID, SnipeDisabledChannels.SNIPE_DISABLED_CHANNELS.CHANNEL_ID }, true);
     public static final UniqueKey<SnipeDisabledChannelsRecord> SNIPE_DISABLED_CHANNELS_PKEY = Internal.createUniqueKey(SnipeDisabledChannels.SNIPE_DISABLED_CHANNELS, DSL.name("snipe_disabled_channels_pkey"), new TableField[] { SnipeDisabledChannels.SNIPE_DISABLED_CHANNELS.ID }, true);
-    public static final UniqueKey<StreamUserEventsRecord> STREAM_USER_EVENTS_PKEY = Internal.createUniqueKey(StreamUserEvents.STREAM_USER_EVENTS, DSL.name("stream_user_events_pkey"), new TableField[] { StreamUserEvents.STREAM_USER_EVENTS.ID }, true);
-    public static final UniqueKey<StreamUserEventsRecord> STREAM_USER_EVENTS_STREAM_USER_ID_EVENT_KEY = Internal.createUniqueKey(StreamUserEvents.STREAM_USER_EVENTS, DSL.name("stream_user_events_stream_user_id_event_key"), new TableField[] { StreamUserEvents.STREAM_USER_EVENTS.STREAM_USER_ID, StreamUserEvents.STREAM_USER_EVENTS.EVENT }, true);
-    public static final UniqueKey<StreamUsersRecord> STREAM_USERS_GUILD_ID_USER_ID_KEY = Internal.createUniqueKey(StreamUsers.STREAM_USERS, DSL.name("stream_users_guild_id_user_id_key"), new TableField[] { StreamUsers.STREAM_USERS.GUILD_ID, StreamUsers.STREAM_USERS.USER_ID }, true);
+    public static final UniqueKey<StreamUsersRecord> STREAM_USERS_GUILD_ID_USER_ID_STREAM_TYPE_KEY = Internal.createUniqueKey(StreamUsers.STREAM_USERS, DSL.name("stream_users_guild_id_user_id_stream_type_key"), new TableField[] { StreamUsers.STREAM_USERS.GUILD_ID, StreamUsers.STREAM_USERS.USER_ID, StreamUsers.STREAM_USERS.STREAM_TYPE }, true);
     public static final UniqueKey<StreamUsersRecord> STREAM_USERS_PKEY = Internal.createUniqueKey(StreamUsers.STREAM_USERS, DSL.name("stream_users_pkey"), new TableField[] { StreamUsers.STREAM_USERS.ID }, true);
     public static final UniqueKey<UserStatisticsRecord> USER_STATISTICS_PKEY = Internal.createUniqueKey(UserStatistics.USER_STATISTICS, DSL.name("user_statistics_pkey"), new TableField[] { UserStatistics.USER_STATISTICS.ID }, true);
     public static final UniqueKey<VotersRecord> VOTERS_PKEY = Internal.createUniqueKey(Voters.VOTERS, DSL.name("voters_pkey"), new TableField[] { Voters.VOTERS.ID }, true);
@@ -115,7 +110,6 @@ public class Keys {
     public static final ForeignKey<SelfAssignableRolesRecord, SelfAssignableRoleGroupsRecord> SELF_ASSIGNABLE_ROLES__SELF_ASSIGNABLE_ROLES_GROUP_ID_FKEY = Internal.createForeignKey(SelfAssignableRoles.SELF_ASSIGNABLE_ROLES, DSL.name("self_assignable_roles_group_id_fkey"), new TableField[] { SelfAssignableRoles.SELF_ASSIGNABLE_ROLES.GROUP_ID }, Keys.SELF_ASSIGNABLE_ROLE_GROUPS_PKEY, new TableField[] { SelfAssignableRoleGroups.SELF_ASSIGNABLE_ROLE_GROUPS.ID }, true);
     public static final ForeignKey<SelfAssignableRolesRecord, GuildsRecord> SELF_ASSIGNABLE_ROLES__SELF_ASSIGNABLE_ROLES_GUILD_ID_FKEY = Internal.createForeignKey(SelfAssignableRoles.SELF_ASSIGNABLE_ROLES, DSL.name("self_assignable_roles_guild_id_fkey"), new TableField[] { SelfAssignableRoles.SELF_ASSIGNABLE_ROLES.GUILD_ID }, Keys.GUILDS_PKEY, new TableField[] { Guilds.GUILDS.ID }, true);
     public static final ForeignKey<SnipeDisabledChannelsRecord, GuildsRecord> SNIPE_DISABLED_CHANNELS__SNIPE_DISABLED_CHANNELS_GUILD_ID_FKEY = Internal.createForeignKey(SnipeDisabledChannels.SNIPE_DISABLED_CHANNELS, DSL.name("snipe_disabled_channels_guild_id_fkey"), new TableField[] { SnipeDisabledChannels.SNIPE_DISABLED_CHANNELS.GUILD_ID }, Keys.GUILDS_PKEY, new TableField[] { Guilds.GUILDS.ID }, true);
-    public static final ForeignKey<StreamUserEventsRecord, StreamUsersRecord> STREAM_USER_EVENTS__STREAM_USER_EVENTS_STREAM_USER_ID_FKEY = Internal.createForeignKey(StreamUserEvents.STREAM_USER_EVENTS, DSL.name("stream_user_events_stream_user_id_fkey"), new TableField[] { StreamUserEvents.STREAM_USER_EVENTS.STREAM_USER_ID }, Keys.STREAM_USERS_PKEY, new TableField[] { StreamUsers.STREAM_USERS.ID }, true);
     public static final ForeignKey<StreamUsersRecord, GuildsRecord> STREAM_USERS__STREAM_USERS_GUILD_ID_FKEY = Internal.createForeignKey(StreamUsers.STREAM_USERS, DSL.name("stream_users_guild_id_fkey"), new TableField[] { StreamUsers.STREAM_USERS.GUILD_ID }, Keys.GUILDS_PKEY, new TableField[] { Guilds.GUILDS.ID }, true);
     public static final ForeignKey<UserStatisticsRecord, GuildsRecord> USER_STATISTICS__USER_STATISTICS_GUILD_ID_FKEY = Internal.createForeignKey(UserStatistics.USER_STATISTICS, DSL.name("user_statistics_guild_id_fkey"), new TableField[] { UserStatistics.USER_STATISTICS.GUILD_ID }, Keys.GUILDS_PKEY, new TableField[] { Guilds.GUILDS.ID }, true);
 }

@@ -19,7 +19,6 @@ import de.kittybot.kittybot.jooq.tables.SelfAssignableRoleMessages;
 import de.kittybot.kittybot.jooq.tables.SelfAssignableRoles;
 import de.kittybot.kittybot.jooq.tables.Sessions;
 import de.kittybot.kittybot.jooq.tables.SnipeDisabledChannels;
-import de.kittybot.kittybot.jooq.tables.StreamUserEvents;
 import de.kittybot.kittybot.jooq.tables.StreamUsers;
 import de.kittybot.kittybot.jooq.tables.UserStatistics;
 import de.kittybot.kittybot.jooq.tables.Voters;
@@ -122,11 +121,6 @@ public class Public extends SchemaImpl {
     public final SnipeDisabledChannels SNIPE_DISABLED_CHANNELS = SnipeDisabledChannels.SNIPE_DISABLED_CHANNELS;
 
     /**
-     * The table <code>public.stream_user_events</code>.
-     */
-    public final StreamUserEvents STREAM_USER_EVENTS = StreamUserEvents.STREAM_USER_EVENTS;
-
-    /**
      * The table <code>public.stream_users</code>.
      */
     public final StreamUsers STREAM_USERS = StreamUsers.STREAM_USERS;
@@ -171,7 +165,6 @@ public class Public extends SchemaImpl {
             Sequences.SELF_ASSIGNABLE_ROLES_ID_SEQ,
             Sequences.SESSIONS_ID_SEQ,
             Sequences.SNIPE_DISABLED_CHANNELS_ID_SEQ,
-            Sequences.STREAM_USER_EVENTS_ID_SEQ,
             Sequences.STREAM_USERS_ID_SEQ,
             Sequences.USER_STATISTICS_ID_SEQ,
             Sequences.VOTERS_ID_SEQ);
@@ -195,7 +188,6 @@ public class Public extends SchemaImpl {
             SelfAssignableRoles.SELF_ASSIGNABLE_ROLES,
             Sessions.SESSIONS,
             SnipeDisabledChannels.SNIPE_DISABLED_CHANNELS,
-            StreamUserEvents.STREAM_USER_EVENTS,
             StreamUsers.STREAM_USERS,
             UserStatistics.USER_STATISTICS,
             Voters.VOTERS);

@@ -34,6 +34,8 @@ public class Config{
 
 	public static String TWITCH_CLIENT_ID;
 	public static String TWITCH_CLIENT_SECRET;
+	public static String TWITCH_WEBHOOK_SECRET;
+	public static String TWITCH_WEBHOOK_CALLBACK;
 
 	public static String SIGNING_KEY;
 
@@ -104,6 +106,8 @@ public class Config{
 
 		TWITCH_CLIENT_ID = json.getString("twitch_client_id", "");
 		TWITCH_CLIENT_SECRET = json.getString("twitch_client_secret", "");
+		TWITCH_WEBHOOK_SECRET = json.getString("twitch_webhook_secret", "");
+		TWITCH_WEBHOOK_CALLBACK = json.getString("twitch_webhook_callback", "");
 
 		SIGNING_KEY = json.getString("signing_key", "");
 

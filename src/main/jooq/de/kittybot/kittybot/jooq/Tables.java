@@ -19,7 +19,6 @@ import de.kittybot.kittybot.jooq.tables.SelfAssignableRoleMessages;
 import de.kittybot.kittybot.jooq.tables.SelfAssignableRoles;
 import de.kittybot.kittybot.jooq.tables.Sessions;
 import de.kittybot.kittybot.jooq.tables.SnipeDisabledChannels;
-import de.kittybot.kittybot.jooq.tables.StreamUserEvents;
 import de.kittybot.kittybot.jooq.tables.StreamUsers;
 import de.kittybot.kittybot.jooq.tables.UserStatistics;
 import de.kittybot.kittybot.jooq.tables.Voters;
@@ -105,11 +104,6 @@ public class Tables {
      * The table <code>public.snipe_disabled_channels</code>.
      */
     public static final SnipeDisabledChannels SNIPE_DISABLED_CHANNELS = SnipeDisabledChannels.SNIPE_DISABLED_CHANNELS;
-
-    /**
-     * The table <code>public.stream_user_events</code>.
-     */
-    public static final StreamUserEvents STREAM_USER_EVENTS = StreamUserEvents.STREAM_USER_EVENTS;
 
     /**
      * The table <code>public.stream_users</code>.

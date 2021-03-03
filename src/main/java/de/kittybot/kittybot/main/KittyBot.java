@@ -61,7 +61,7 @@ public class KittyBot{
 				CacheFlag.ROLE_TAGS
 			)
 			.setMemberCachePolicy(MemberCachePolicy.VOICE)
-			.setChunkingFilter(ChunkingFilter.NONE)
+			.setChunkingFilter(ChunkingFilter.include(123456789L))
 			.addEventListeners(modules.getModules())
 			.addEventListeners(new BLHEventListener(botListHandler))
 			.setRawEventsEnabled(true)

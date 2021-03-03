@@ -8,7 +8,6 @@ public class StreamAnnouncement{
 	private final long id, userId, guildId;
 	private final String userName;
 	private final StreamType streamType;
-	private boolean isLive;
 
 	public StreamAnnouncement(long userId, String userName, long guildId, StreamType streamType){
 		this.id = -1;
@@ -16,7 +15,6 @@ public class StreamAnnouncement{
 		this.userName = userName;
 		this.guildId = guildId;
 		this.streamType = streamType;
-		this.isLive = false;
 	}
 
 	public StreamAnnouncement(StreamUsersRecord record){
@@ -25,7 +23,6 @@ public class StreamAnnouncement{
 		this.userName = record.getUserName();
 		this.guildId = record.getGuildId();
 		this.streamType = StreamType.byId(record.getStreamType());
-		this.isLive = record.getIsLive();
 	}
 
 	public long getId(){
@@ -46,14 +43,6 @@ public class StreamAnnouncement{
 
 	public StreamType getStreamType(){
 		return this.streamType;
-	}
-
-	public boolean isLive(){
-		return this.isLive;
-	}
-
-	public void setLive(boolean isLive){
-		this.isLive = isLive;
 	}
 
 	public String getStreamUrl(){

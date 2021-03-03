@@ -11,6 +11,7 @@ import org.jooq.SQLDialect;
 import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultConfiguration;
+import org.jooq.tools.jdbc.JDBCUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,6 @@ public class DatabaseModule extends Module{
 			"snipe_disabled_channels",
 			"bot_ignored_members",
 			"stream_users",
-			"stream_user_events",
 			"reactive_messages",
 			"self_assignable_role_messages",
 			"notifications",

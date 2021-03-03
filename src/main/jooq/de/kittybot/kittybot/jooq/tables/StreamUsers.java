@@ -69,14 +69,14 @@ public class StreamUsers extends TableImpl<StreamUsersRecord> {
     public final TableField<StreamUsersRecord, String> USER_NAME = createField(DSL.name("user_name"), SQLDataType.VARCHAR(32).nullable(false), this, "");
 
     /**
+     * The column <code>public.stream_users.subscription_id</code>.
+     */
+    public final TableField<StreamUsersRecord, String> SUBSCRIPTION_ID = createField(DSL.name("subscription_id"), SQLDataType.VARCHAR(64).nullable(false), this, "");
+
+    /**
      * The column <code>public.stream_users.stream_type</code>.
      */
     public final TableField<StreamUsersRecord, Integer> STREAM_TYPE = createField(DSL.name("stream_type"), SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>public.stream_users.is_live</code>.
-     */
-    public final TableField<StreamUsersRecord, Boolean> IS_LIVE = createField(DSL.name("is_live"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
 
     private StreamUsers(Name alias, Table<StreamUsersRecord> aliased) {
         this(alias, aliased, null);
@@ -128,7 +128,7 @@ public class StreamUsers extends TableImpl<StreamUsersRecord> {
 
     @Override
     public List<UniqueKey<StreamUsersRecord>> getKeys() {
-        return Arrays.<UniqueKey<StreamUsersRecord>>asList(Keys.STREAM_USERS_PKEY, Keys.STREAM_USERS_GUILD_ID_USER_ID_KEY);
+        return Arrays.<UniqueKey<StreamUsersRecord>>asList(Keys.STREAM_USERS_PKEY, Keys.STREAM_USERS_GUILD_ID_USER_ID_STREAM_TYPE_KEY);
     }
 
     @Override
@@ -171,7 +171,7 @@ public class StreamUsers extends TableImpl<StreamUsersRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Long, Long, Long, String, Integer, Boolean> fieldsRow() {
+    public Row6<Long, Long, Long, String, String, Integer> fieldsRow() {
         return (Row6) super.fieldsRow();
     }
 }
