@@ -32,10 +32,11 @@ public class Interaction{
 	protected final int version;
 	protected final User user;
 	protected final MessageChannel channel;
+	protected final boolean isFromGuild;
 	protected final Modules modules;
 	protected final JDA jda;
 
-	protected Interaction(DataObject json, InteractionData data, User user, MessageChannel channel, Modules modules, JDA jda){
+	protected Interaction(DataObject json, InteractionData data, User user, MessageChannel channel, boolean isFromGuild, Modules modules, JDA jda){
 		this.id = json.getLong("id");
 		this.type = InteractionType.get(json.getInt("type"));
 		this.channelId = json.getLong("channel_id");
@@ -43,6 +44,7 @@ public class Interaction{
 		this.version = json.getInt("version");
 		this.data = data;
 		this.user = user;
+		this.isFromGuild = isFromGuild;
 		this.channel = channel;
 		this.modules = modules;
 		this.jda = jda;
@@ -51,22 +53,20 @@ public class Interaction{
 	public static Interaction fromJSON(Modules modules, DataObject json, JDA jda){
 		var entityBuilder = ((JDAImpl) jda).getEntityBuilder();
 
-		if(!json.hasKey("guild_id")){
+		var guildId = json.getLong("guild_id", -1L);
+		var guild = (GuildImpl) jda.getGuildById(guildId);
+		if(guildId == -1L || guild == null){
 			return new Interaction(
 				json,
 				InteractionData.fromJSON(json.getObject("data"), entityBuilder, null),
-				entityBuilder.createUser(json.getObject("user")),
+				entityBuilder.createUser(json.optObject("user").orElse(json.getObject("member").getObject("user"))),
 				jda.getPrivateChannelById(json.getLong("channel_id")),
+				json.hasKey("guild_id"),
 				modules,
 				jda
 			);
 		}
 
-		var guildId = json.getLong("guild_id");
-		var guild = (GuildImpl) jda.getGuildById(guildId);
-		if(guild == null){
-			throw new RuntimeException("Guild for interaction not found");
-		}
 		return new GuildInteraction(
 			json,
 			InteractionData.fromJSON(json.getObject("data"), entityBuilder, guild),
@@ -76,10 +76,6 @@ public class Interaction{
 			modules,
 			jda
 		);
-	}
-
-	public boolean isFromGuild(){
-		return this instanceof GuildInteraction;
 	}
 
 	public long getId(){
@@ -120,6 +116,10 @@ public class Interaction{
 
 	public MessageChannel getChannel(){
 		return this.channel;
+	}
+
+	public boolean isFromGuild(){
+		return this.isFromGuild;
 	}
 
 	public Modules getModules(){
