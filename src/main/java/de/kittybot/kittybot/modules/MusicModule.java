@@ -8,6 +8,7 @@ import de.kittybot.kittybot.objects.music.TrackScheduler;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
+import de.kittybot.kittybot.utils.MusicUtils;
 import lavalink.client.io.Link;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -26,6 +27,8 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import static de.kittybot.kittybot.jooq.Tables.*;
 
 public class MusicModule extends Module implements Serializable{
 
@@ -67,31 +70,31 @@ public class MusicModule extends Module implements Serializable{
 		var currentTrack = scheduler.getPlayingTrack();
 		var userId = event.getUserIdLong();
 		var requesterId = currentTrack == null ? -1L : currentTrack.getUserData(Long.class);
-		var settings = this.modules.get(GuildSettingsModule.class).getSettings(event.getGuild().getIdLong());
+		var settings = this.modules.get(GuildSettingsModule.class).get(event.getGuild().getIdLong());
 
 		if(messageId != scheduler.getControllerMessageId()){
 			return;
 		}
 		switch(event.getReactionEmote().getAsReactionCode()){
 			case "\u2B05\uFE0F":// ⬅
-				if(requesterId == userId || member.hasPermission(Permission.ADMINISTRATOR) || settings.hasDJRole(member)){
+				if(requesterId == userId || member.hasPermission(Permission.ADMINISTRATOR) || MusicUtils.hasDJRole(member, settings)){
 					scheduler.previous();
 					scheduler.setPaused(false);
 				}
 				break;
 			case "\u27A1\uFE0F":// ➡
-				if(requesterId == userId || member.hasPermission(Permission.ADMINISTRATOR) || settings.hasDJRole(member)){
+				if(requesterId == userId || member.hasPermission(Permission.ADMINISTRATOR) || MusicUtils.hasDJRole(member, settings)){
 					scheduler.next(true);
 					scheduler.setPaused(false);
 				}
 				break;
 			case "PlayPause:744945002416963634"://play pause
-				if(requesterId == userId || member.hasPermission(Permission.ADMINISTRATOR) || settings.hasDJRole(member)){
+				if(requesterId == userId || member.hasPermission(Permission.ADMINISTRATOR) || MusicUtils.hasDJRole(member, settings)){
 					scheduler.pause();
 				}
 				break;
 			case "\uD83D\uDD00":// 🔀
-				if(member.hasPermission(Permission.ADMINISTRATOR) || settings.hasDJRole(member)){
+				if(member.hasPermission(Permission.ADMINISTRATOR) || MusicUtils.hasDJRole(member, settings)){
 					scheduler.shuffle();
 				}
 				break;
@@ -102,7 +105,7 @@ public class MusicModule extends Module implements Serializable{
 				scheduler.increaseVolume(10);
 				break;
 			case "\u274C":// ❌
-				if(requesterId == userId || member.hasPermission(Permission.ADMINISTRATOR) || settings.hasDJRole(member)){
+				if(requesterId == userId || member.hasPermission(Permission.ADMINISTRATOR) || MusicUtils.hasDJRole(member, settings)){
 					destroy(event.getGuild().getIdLong(), event.getUserIdLong());
 				}
 				break;

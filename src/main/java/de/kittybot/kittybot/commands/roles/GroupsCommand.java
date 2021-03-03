@@ -82,7 +82,7 @@ public class GroupsCommand extends SubCommandGroup{
 
 		@Override
 		public void run(Options options, GuildInteraction ia){
-			var settings = ia.get(GuildSettingsModule.class).getSettings(ia.getGuildId());
+			var settings = ia.get(GuildSettingsModule.class).get(ia.getGuildId());
 			var groups = settings.getSelfAssignableRoleGroups();
 			if(groups.isEmpty()){
 				ia.error("There are not groups defined.\nYou can add them with `/groups add <name> <max-roles>`");

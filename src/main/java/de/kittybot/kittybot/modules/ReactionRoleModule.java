@@ -50,7 +50,7 @@ public class ReactionRoleModule extends Module{
 				event.getReaction().removeReaction(event.getUser()).queue();
 				return;
 			}
-			var settings = this.modules.get(GuildSettingsModule.class).getSettings(guildId);
+			var settings = this.modules.get(GuildSettingsModule.class).get(guildId);
 			var roles = settings.getSelfAssignableRoles();
 			var emoteId = event.getReactionEmote().getEmote().getIdLong();
 			var selfAssignableRole = roles.stream().filter(r -> r.getEmoteId() == emoteId).findFirst().orElse(null);

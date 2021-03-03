@@ -23,7 +23,7 @@ public class GetGuildSettingsRoute implements Handler{
 	@Override
 	public void handle(@NotNull Context ctx){
 		var guildId = this.modules.get(WebModule.class).getGuild(ctx).getIdLong();
-		var settings = this.modules.get(GuildSettingsModule.class).getSettings(guildId);
+		var settings = this.modules.get(GuildSettingsModule.class).get(guildId);
 		var selfAssignableRoleGroups = DataArray.empty();
 		var inviteRoles = DataArray.fromCollection(
 			settings.getInviteRoles().entrySet().stream().map(entry ->

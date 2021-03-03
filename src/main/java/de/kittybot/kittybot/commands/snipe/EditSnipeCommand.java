@@ -6,10 +6,6 @@ import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.RunGuildCommand;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
-import de.kittybot.kittybot.utils.Colors;
-import de.kittybot.kittybot.utils.MessageUtils;
-import de.kittybot.kittybot.utils.TimeUtils;
-import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.Color;
 
@@ -22,8 +18,8 @@ public class EditSnipeCommand extends RunGuildCommand{
 
 	@Override
 	public void run(Options options, GuildInteraction ia){
-		var settings = ia.get(GuildSettingsModule.class).getSettings(ia.getGuildId());
-		if(!settings.areSnipesEnabled()){
+		var settings = ia.get(GuildSettingsModule.class).get(ia.getGuildId());
+		if(!settings.get(GUILDS.SNIPES_ENABLED)){
 			ia.error("Snipes are disabled for this guild");
 		}
 		if(settings.areSnipesDisabledInChannel(ia.getChannelId())){

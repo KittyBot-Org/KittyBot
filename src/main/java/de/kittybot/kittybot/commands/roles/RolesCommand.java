@@ -109,7 +109,7 @@ public class RolesCommand extends Command{
 
 		@Override
 		public void run(Options options, GuildInteraction ia){
-			var settings = ia.get(GuildSettingsModule.class).getSettings(ia.getGuildId());
+			var settings = ia.get(GuildSettingsModule.class).get(ia.getGuildId());
 			var roles = settings.getSelfAssignableRoles();
 			var groups = settings.getSelfAssignableRoleGroups();
 			if(roles == null || roles.isEmpty()){

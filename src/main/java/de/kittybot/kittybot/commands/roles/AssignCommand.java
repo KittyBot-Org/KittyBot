@@ -24,7 +24,7 @@ public class AssignCommand extends RunGuildCommand{
 			ia.error("Unknown role provided");
 			return;
 		}
-		var settings = ia.get(GuildSettingsModule.class).getSettings(ia.getGuildId());
+		var settings = ia.get(GuildSettingsModule.class).get(ia.getGuildId());
 		var selfAssignableRoles = settings.getSelfAssignableRoles();
 		if(selfAssignableRoles == null || selfAssignableRoles.isEmpty()){
 			ia.error("No self assignable roles configured");

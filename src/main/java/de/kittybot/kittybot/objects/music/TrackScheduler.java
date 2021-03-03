@@ -139,14 +139,14 @@ public class TrackScheduler extends PlayerEventListenerAdapter{
 	}
 
 	public int removeQueue(int from, int to, Member member){
-		var settings = this.modules.get(GuildSettingsModule.class);
+		var settings = this.modules.get(GuildSettingsModule.class).get(member.getGuild().getIdLong());
 		var userId = member.getIdLong();
 		var iterator = this.queue.iterator();
 		var i = 1;
 		var removed = 0;
 		while(iterator.hasNext()){
 			var track = iterator.next();
-			if(i >= from && i <= to && (track.getUserData(Long.class) == userId || settings.hasDJRole(member))){
+			if(i >= from && i <= to && (track.getUserData(Long.class) == userId || MusicUtils.hasDJRole(member, settings))){
 				iterator.remove();
 				removed++;
 			}
