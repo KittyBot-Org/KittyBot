@@ -1,6 +1,7 @@
-package de.kittybot.kittybot.commands.info.info;
+package de.kittybot.kittybot.commands.info;
 
 import de.kittybot.kittybot.slashcommands.application.Category;
+import de.kittybot.kittybot.slashcommands.application.RunCommand;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
@@ -11,10 +12,10 @@ import net.dv8tion.jda.api.JDAInfo;
 import java.lang.management.ManagementFactory;
 
 @SuppressWarnings("unused")
-public class BotCommand extends SubCommand{
+public class BotCommand extends RunCommand{
 
 	public BotCommand(){
-		super("bot", "Shows bot info");
+		super("bot", "Shows bot info", Category.INFORMATION);
 	}
 
 	@Override

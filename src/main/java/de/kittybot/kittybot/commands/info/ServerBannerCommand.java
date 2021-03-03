@@ -1,6 +1,8 @@
-package de.kittybot.kittybot.commands.info.info;
+package de.kittybot.kittybot.commands.info;
 
+import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
+import de.kittybot.kittybot.slashcommands.application.RunCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionLong;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
@@ -10,10 +12,10 @@ import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.MessageUtils;
 
 @SuppressWarnings("unused")
-public class GuildBannerCommand extends SubCommand{
+public class ServerBannerCommand extends RunCommand{
 
-	public GuildBannerCommand(){
-		super("guildbanner", "Gets the guild banner");
+	public ServerBannerCommand(){
+		super("serverbanner", "Gets the guild banner", Category.INFORMATION);
 		addOptions(
 			new CommandOptionLong("guild-id", "The guild id to get the banner from"),
 			new CommandOptionInteger("size", "The image size")

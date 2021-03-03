@@ -1,6 +1,8 @@
-package de.kittybot.kittybot.commands.info.info;
+package de.kittybot.kittybot.commands.info;
 
+import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
+import de.kittybot.kittybot.slashcommands.application.RunCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionUser;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
@@ -9,10 +11,10 @@ import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.MessageUtils;
 
 @SuppressWarnings("unused")
-public class AvatarCommand extends SubCommand{
+public class AvatarCommand extends RunCommand{
 
 	public AvatarCommand(){
-		super("avatar", "Gets the avatar of a user");
+		super("avatar", "Gets the avatar of a user", Category.INFORMATION);
 		addOptions(
 			new CommandOptionUser("user", "The user to get the avatar from"),
 			new CommandOptionInteger("size", "The image size")

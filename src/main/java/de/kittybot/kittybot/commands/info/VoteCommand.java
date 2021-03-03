@@ -1,6 +1,9 @@
-package de.kittybot.kittybot.commands.info.info;
+package de.kittybot.kittybot.commands.info;
 
 import de.kittybot.kittybot.objects.enums.BotList;
+import de.kittybot.kittybot.slashcommands.application.Category;
+import de.kittybot.kittybot.slashcommands.application.Command;
+import de.kittybot.kittybot.slashcommands.application.RunCommand;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
@@ -10,10 +13,10 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
-public class VoteCommand extends SubCommand{
+public class VoteCommand extends RunCommand{
 
 	public VoteCommand(){
-		super("vote", "Displays all info about voting for kitty");
+		super("vote", "Displays all info about voting for kitty", Category.INFORMATION);
 	}
 
 	@Override
