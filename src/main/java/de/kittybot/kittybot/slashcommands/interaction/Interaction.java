@@ -53,9 +53,8 @@ public class Interaction{
 	public static Interaction fromJSON(Modules modules, DataObject json, JDA jda){
 		var entityBuilder = ((JDAImpl) jda).getEntityBuilder();
 
-		var guildId = json.getLong("guild_id", -1L);
-		var guild = (GuildImpl) jda.getGuildById(guildId);
-		if(guildId == -1L || guild == null){
+		var guild = (GuildImpl) jda.getGuildById(json.getLong("guild_id", -1L));
+		if(guild == null){
 			return new Interaction(
 				json,
 				InteractionData.fromJSON(json.getObject("data"), entityBuilder, null),
