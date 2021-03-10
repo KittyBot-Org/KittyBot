@@ -28,7 +28,7 @@ repositories {
 
 dependencies {
     // discord/jda related
-    implementation('net.dv8tion:JDA:4.2.0_231') {
+    implementation('net.dv8tion:JDA:4.2.0_240') {
         exclude group: 'club.minnced', module: 'opus-java'
     }
     implementation 'com.jagrosh:jda-utilities:3.0.5'
@@ -39,7 +39,7 @@ dependencies {
     implementation('com.github.KittyBot-Org:Lavalink-Client:67371c0') {
         exclude group: 'com.sedmelluq', module: 'lavaplayer'
     }
-    implementation 'com.sedmelluq:lavaplayer:1.3.72'
+    implementation 'com.sedmelluq:lavaplayer:1.3.73'
     implementation 'se.michaelthelin.spotify:spotify-web-api-java:6.5.2'
 
     // database
@@ -50,7 +50,7 @@ dependencies {
 
     // logging
     implementation 'ch.qos.logback:logback-classic:1.3.0-alpha5'
-    implementation 'io.sentry:sentry-logback:4.2.0'
+    implementation 'io.sentry:sentry-logback:4.3.0'
 
     // eval
     implementation 'org.codehaus.groovy:groovy-jsr223:3.0.7'
