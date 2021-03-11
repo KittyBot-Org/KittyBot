@@ -17,7 +17,10 @@ import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.exporters.Metrics;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.RawGatewayEvent;
+import net.dv8tion.jda.api.events.guild.UnavailableGuildJoinedEvent;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.internal.requests.Method;
 import net.dv8tion.jda.internal.requests.RestActionImpl;
@@ -41,6 +44,54 @@ public class InteractionsModule extends Module{
 	@Override
 	public Set<Class<? extends Module>> getDependencies(){
 		return DEPENDENCIES;
+	}
+
+	/*
+	@Override
+	public void onSlashCommand(SlashCommandEvent event) {
+
+	}*/
+
+	@Override
+	public void onGenericEvent(@NotNull GenericEvent genericEvent){
+		if(!(genericEvent instanceof SlashCommandEvent)){
+			return;
+		}
+		var start = System.currentTimeMillis();
+		var event = (SlashCommandEvent) genericEvent;
+
+		var guild = event.getGuild();
+		if(guild != null){
+			var settings = this.modules.get(SettingsModule.class).getSettings(guild.getIdLong());
+
+			if(settings.isBotIgnoredUser(event.getMember().getIdLong())){
+				event.reply("I ignore u baka").setEphemeral(true).queue();
+				return;
+			}
+
+			if(settings.isBotDisabledInChannel(event.getChannel().getIdLong())){
+				event.reply("I'm disabled in this channel").setEphemeral(true).queue();
+				return;
+			}
+		}
+		var cmd = this.modules.get(CommandsModule.class).getCommands().get(event.getName());
+		if(cmd != null){
+			process(cmd, event, event);
+			Metrics.COMMAND_LATENCY.labels(event.getName()).observe(System.currentTimeMillis() - start);
+			Metrics.COMMAND_COUNTER.labels(event.getName()).inc();
+			return;
+		}
+		var tag = this.modules.get(TagsModule.class).getPublishedTagById(data.getId());
+		if(tag != null){
+			if(!(interaction instanceof GuildInteraction)){
+				LOG.error("Guild Tag command received from dms???? guild: {} command: {}", tag.getGuildId(), tag.getCommandId());
+				return;
+			}
+			tag.process((GuildInteraction) interaction);
+			return;
+		}
+		LOG.error("Could not process interaction: {}", event.getPayload());
+		interaction.error("Nani u discovered a secret don't tell anyone(This command does not exist anymore)");
 	}
 
 	@Override
