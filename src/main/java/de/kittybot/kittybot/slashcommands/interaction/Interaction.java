@@ -58,7 +58,7 @@ public class Interaction{
 			return new Interaction(
 				json,
 				InteractionData.fromJSON(json.getObject("data"), entityBuilder, null),
-				entityBuilder.createUser(json.optObject("user").orElse(json.getObject("member").getObject("user"))),
+				entityBuilder.createUser(json.optObject("user").orElseGet(() -> json.getObject("member").getObject("user"))),
 				jda.getPrivateChannelById(json.getLong("channel_id")),
 				json.hasKey("guild_id"),
 				modules,
