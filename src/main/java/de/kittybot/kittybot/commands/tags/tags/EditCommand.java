@@ -2,11 +2,11 @@ package de.kittybot.kittybot.commands.tags.tags;
 
 import de.kittybot.kittybot.modules.MessageModule;
 import de.kittybot.kittybot.modules.TagsModule;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionLong;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
 
 public class EditCommand extends GuildSubCommand{
 
@@ -21,10 +21,10 @@ public class EditCommand extends GuildSubCommand{
 	}
 
 	@Override
-	public void run(Options options, GuildInteraction ia){
+	public void run(Options options, GuildCommandContext ctx){
 		var tagName = options.getString("name");
 		if(!options.has("content") && !options.has("message-id") && !options.has("new-name")){
-			ia.error("Please provide either content, message-id or new-name");
+			ctx.error("Please provide either content, message-id or new-name");
 			return;
 		}
 		String content;
@@ -32,9 +32,9 @@ public class EditCommand extends GuildSubCommand{
 			content = options.getString("content");
 		}
 		else if(options.has("message-id")){
-			var message = ia.get(MessageModule.class).getMessageById(options.getLong("message-id"));
+			var message = ctx.get(MessageModule.class).getMessageById(options.getLong("message-id"));
 			if(message == null){
-				ia.error("Please provide a recent message id");
+				ctx.error("Please provide a recent message id");
 				return;
 			}
 			content = message.getContent();
@@ -43,12 +43,12 @@ public class EditCommand extends GuildSubCommand{
 			content = null;
 		}
 
-		var edited = ia.get(TagsModule.class).edit(tagName, content, ia.getGuildId(), ia.getUserId(), options.has("new-name") ? options.getString("new-name") : null);
+		var edited = ctx.get(TagsModule.class).edit(tagName, content, ctx.getGuildId(), ctx.getUserId(), options.has("new-name") ? options.getString("new-name") : null);
 		if(edited){
-			ia.reply("Edited tag with name `" + tagName + "`");
+			ctx.reply("Edited tag with name `" + tagName + "`");
 			return;
 		}
-		ia.error("Tag `" + tagName + "` does not exist or is not owned by you");
+		ctx.error("Tag `" + tagName + "` does not exist or is not owned by you");
 	}
 
 }

@@ -2,10 +2,10 @@ package de.kittybot.kittybot.commands.snipe;
 
 import de.kittybot.kittybot.modules.MessageModule;
 import de.kittybot.kittybot.modules.SettingsModule;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.RunGuildCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
 
 import java.awt.Color;
 
@@ -17,21 +17,21 @@ public class EditSnipeCommand extends RunGuildCommand{
 	}
 
 	@Override
-	public void run(Options options, GuildInteraction ia){
-		var settings = ia.get(SettingsModule.class).getSettings(ia.getGuildId());
+	public void run(Options options, GuildCommandContext ctx){
+		var settings = ctx.get(SettingsModule.class).getSettings(ctx.getGuildId());
 		if(!settings.areSnipesEnabled()){
-			ia.error("Snipes are disabled for this guild");
+			ctx.error("Snipes are disabled for this guild");
 		}
-		if(settings.areSnipesDisabledInChannel(ia.getChannelId())){
-			ia.error("Snipes are disabled for this channel");
+		if(settings.areSnipesDisabledInChannel(ctx.getChannelId())){
+			ctx.error("Snipes are disabled for this channel");
 		}
-		var lastEditedMessage = ia.get(MessageModule.class).getLastEditedMessage(ia.getChannelId());
+		var lastEditedMessage = ctx.get(MessageModule.class).getLastEditedMessage(ctx.getChannelId());
 		if(lastEditedMessage == null){
-			ia.reply(builder -> builder.setColor(Color.RED).setDescription("There are no edited messages to snipe"));
+			ctx.reply(builder -> builder.setColor(Color.RED).setDescription("There are no edited messages to snipe"));
 			return;
 		}
-		ia.getJDA().retrieveUserById(lastEditedMessage.getAuthorId()).queue(user ->
-			ia.reply(builder -> {
+		ctx.getJDA().retrieveUserById(lastEditedMessage.getAuthorId()).queue(user ->
+			ctx.reply(builder -> {
 				builder
 					.setAuthor("Edit Sniped " + user.getName(), lastEditedMessage.getJumpUrl())
 					.setDescription(lastEditedMessage.getContent())

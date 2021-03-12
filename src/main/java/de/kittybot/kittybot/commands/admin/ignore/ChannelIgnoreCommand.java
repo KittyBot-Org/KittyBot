@@ -1,11 +1,11 @@
 package de.kittybot.kittybot.commands.admin.ignore;
 
 import de.kittybot.kittybot.modules.SettingsModule;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionChannel;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommandGroup;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.MessageUtils;
 
 import java.util.stream.Collectors;
@@ -31,10 +31,10 @@ public class ChannelIgnoreCommand extends SubCommandGroup{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
+		public void run(Options options, GuildCommandContext ctx){
 			var channel = options.getTextChannel("channel");
-			ia.get(SettingsModule.class).setBotDisabledInChannel(ia.getGuildId(), channel.getIdLong(), true);
-			ia.reply("Disabled commands in " + channel.getAsMention());
+			ctx.get(SettingsModule.class).setBotDisabledInChannel(ctx.getGuildId(), channel.getIdLong(), true);
+			ctx.reply("Disabled commands in " + channel.getAsMention());
 		}
 
 	}
@@ -49,10 +49,10 @@ public class ChannelIgnoreCommand extends SubCommandGroup{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
+		public void run(Options options, GuildCommandContext ctx){
 			var channel = options.getTextChannel("channel");
-			ia.get(SettingsModule.class).setBotDisabledInChannel(ia.getGuildId(), channel.getIdLong(), false);
-			ia.reply("Enabled commands in " + channel.getAsMention());
+			ctx.get(SettingsModule.class).setBotDisabledInChannel(ctx.getGuildId(), channel.getIdLong(), false);
+			ctx.reply("Enabled commands in " + channel.getAsMention());
 		}
 
 	}
@@ -64,9 +64,9 @@ public class ChannelIgnoreCommand extends SubCommandGroup{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
-			var channels = ia.get(SettingsModule.class).getBotDisabledChannels(ia.getGuildId());
-			ia.reply("**Commands are disabled in following channels:**\n" + channels.stream().map(MessageUtils::getChannelMention).collect(Collectors.joining(", ")));
+		public void run(Options options, GuildCommandContext ctx){
+			var channels = ctx.get(SettingsModule.class).getBotDisabledChannels(ctx.getGuildId());
+			ctx.reply("**Commands are disabled in following channels:**\n" + channels.stream().map(MessageUtils::getChannelMention).collect(Collectors.joining(", ")));
 		}
 
 	}

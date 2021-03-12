@@ -20,9 +20,9 @@ public class TagsCommand extends Command{
 			new PublishCommand(),
 			new RemoveCommand(),
 			new GenericHelpCommand("Tags lets anyone create shortcuts to certain information.\n" +
-				"You can create them via `/tags create <name> <content>` or  `/tags create <name> <message-id>` to mirror the content of an already sent message.\n" +
+				"You can create them vctx `/tags create <name> <content>` or  `/tags create <name> <message-id>` to mirror the content of an already sent message.\n" +
 				"Members with the `MANAGE_SERVER` permission can also add up to 50 tags as server commands with `/tags publish <tag-name> <command description>`\n" +
-				"You can remove them again via `/tags remove <tag-name>`"
+				"You can remove them again vctx `/tags remove <tag-name>`"
 			)
 		);
 	}

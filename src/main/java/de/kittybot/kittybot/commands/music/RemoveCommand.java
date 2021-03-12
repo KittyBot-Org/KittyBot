@@ -2,12 +2,12 @@ package de.kittybot.kittybot.commands.music;
 
 import de.kittybot.kittybot.modules.MusicModule;
 import de.kittybot.kittybot.modules.SettingsModule;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.RunGuildCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionBoolean;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.MusicUtils;
 import net.dv8tion.jda.api.Permission;
 
@@ -24,35 +24,35 @@ public class RemoveCommand extends RunGuildCommand{
 	}
 
 	@Override
-	public void run(Options options, GuildInteraction ia){
-		var scheduler = ia.get(MusicModule.class).getScheduler(ia.getGuildId());
+	public void run(Options options, GuildCommandContext ctx){
+		var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
 		var queue = scheduler.getQueue();
 		if(queue.isEmpty()){
-			ia.error("The queue is empty. Nothing to remove");
+			ctx.error("The queue is empty. Nothing to remove");
 			return;
 		}
-		if(!MusicUtils.checkCommandRequirements(ia, scheduler)){
+		if(!MusicUtils.checkCommandRequirements(ctx, scheduler)){
 			return;
 		}
 		if(options.has("all") && options.getBoolean("all")){
-			var member = ia.getMember();
-			if(!member.hasPermission(Permission.ADMINISTRATOR) && !ia.get(SettingsModule.class).hasDJRole(member)){
-				ia.error("You need to be the dj");
+			var member = ctx.getMember();
+			if(!member.hasPermission(Permission.ADMINISTRATOR) && !ctx.get(SettingsModule.class).hasDJRole(member)){
+				ctx.error("You need to be the dj");
 				return;
 			}
 			scheduler.getQueue().clear();
-			ia.reply("Removed all queued songs");
+			ctx.reply("Removed all queued songs");
 			return;
 		}
 		if(!options.has("from")){
-			ia.error("Please specify from");
+			ctx.error("Please specify from");
 			return;
 		}
 		var from = options.getInt("from");
 		var to = options.has("to") ? options.getInt("to") : from;
 
-		var removed = scheduler.removeQueue(from, to, ia.getMember());
-		ia.reply("Removed " + removed + " " + (removed > 1 ? "entries" : "entry"));
+		var removed = scheduler.removeQueue(from, to, ctx.getMember());
+		ctx.reply("Removed " + removed + " " + (removed > 1 ? "entries" : "entry"));
 	}
 
 }

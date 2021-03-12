@@ -14,12 +14,22 @@ import java.util.stream.Collectors;
 public abstract class SubBaseCommand extends CommandOption<Void> implements PermissionHolder{
 
 	private final Set<Permission> permissions;
+	private boolean guildOnly;
 	private boolean devOnly;
 
-	public SubBaseCommand(String name, String description){
+	public SubBaseCommand(String name, String description, boolean guildOnly){
 		super(CommandOptionType.SUB_COMMAND, name, description);
+		this.guildOnly = guildOnly;
 		this.devOnly = false;
 		this.permissions = new HashSet<>();
+	}
+
+	public void guildOnly() {
+		this.guildOnly = true;
+	}
+
+	public boolean isGuildOnly(){
+		return this.guildOnly;
 	}
 
 	public void devOnly(){

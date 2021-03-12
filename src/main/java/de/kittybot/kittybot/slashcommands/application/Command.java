@@ -13,15 +13,25 @@ public abstract class Command implements CommandOptionsHolder, PermissionHolder{
 	private final Category category;
 	private final Set<Permission> permissions;
 	private final List<CommandOption<?>> options;
+	private boolean guildOnly;
 	private boolean devOnly;
 
 	public Command(String name, String description, Category category){
 		this.name = name;
 		this.description = description;
 		this.category = category;
+		this.guildOnly = false;
 		this.devOnly = false;
 		this.permissions = new HashSet<>();
 		this.options = new ArrayList<>();
+	}
+
+	public void guildOnly(){
+		this.guildOnly = true;
+	}
+
+	public boolean isGuildOnly(){
+		return this.guildOnly;
 	}
 
 	public void devOnly(){

@@ -3,13 +3,13 @@ package de.kittybot.kittybot.commands.neko;
 import de.kittybot.kittybot.modules.RequestModule;
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.objects.enums.Neko;
+import de.kittybot.kittybot.slashcommands.CommandContext;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
 import de.kittybot.kittybot.slashcommands.application.RunCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Interaction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
 
 @SuppressWarnings("unused")
 public class NekoCommand extends RunCommand{
@@ -46,23 +46,23 @@ public class NekoCommand extends RunCommand{
 	}
 
 	@Override
-	public void run(Options options, Interaction ia){
+	public void run(Options options, CommandContext ctx){
 		var neko = Neko.valueOf(options.getString("type"));
 		if(neko.isNsfw()){
-			if(ia.isFromGuild()){
-				var guildIa = (GuildInteraction) ia;
-				if(!ia.get(SettingsModule.class).isNsfwEnabled(guildIa.getGuildId())){
-					ia.error("NSFW commands are disabled in this guild");
+			if(ctx.isFromGuild()){
+				var guildCtx = (GuildCommandContext) ctx;
+				if(!ctx.get(SettingsModule.class).isNsfwEnabled(guildCtx.getGuildId())){
+					ctx.error("NSFW commands are disabled in this guild");
 					return;
 				}
-				if(!guildIa.getChannel().isNSFW()){
-					ia.error("This command is nsfw channel only");
+				if(!guildCtx.getChannel().isNSFW()){
+					ctx.error("This command is nsfw channel only");
 					return;
 				}
 			}
 		}
-		ia.reply(builder -> builder
-			.setImage(ia.get(RequestModule.class).getNeko(neko))
+		ctx.reply(builder -> builder
+			.setImage(ctx.get(RequestModule.class).getNeko(neko))
 		);
 	}
 

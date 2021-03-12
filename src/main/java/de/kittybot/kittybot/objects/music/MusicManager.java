@@ -6,7 +6,7 @@ import de.kittybot.kittybot.modules.LavalinkModule;
 import de.kittybot.kittybot.modules.MusicModule;
 import de.kittybot.kittybot.objects.enums.Emoji;
 import de.kittybot.kittybot.objects.module.Modules;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
 import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.MusicUtils;
 import de.kittybot.kittybot.utils.TimeUtils;
@@ -57,8 +57,8 @@ public class MusicManager extends PlayerEventListenerAdapter{
 		this.future = null;
 	}
 
-	public void connectToChannel(GuildInteraction ia){
-		var voiceState = ia.getMember().getVoiceState();
+	public void connectToChannel(GuildCommandContext ctx){
+		var voiceState = ctx.getMember().getVoiceState();
 		if(voiceState != null && voiceState.getChannel() != null && this.scheduler.getLink().getChannelId() != voiceState.getChannel().getIdLong()){
 			((JdaLink) this.scheduler.getLink()).connect(voiceState.getChannel());
 		}

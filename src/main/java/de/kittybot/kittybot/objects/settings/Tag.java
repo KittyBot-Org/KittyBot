@@ -1,9 +1,7 @@
 package de.kittybot.kittybot.objects.settings;
 
 import de.kittybot.kittybot.jooq.tables.records.GuildTagsRecord;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
-import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponseType;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 
 import java.time.LocalDateTime;
 
@@ -56,8 +54,8 @@ public class Tag{
 		return this.commandId;
 	}
 
-	public void process(GuildInteraction ia){
-		ia.reply(new InteractionResponse.Builder().setType(InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE).setContent(this.content).build());
+	public void process(SlashCommandEvent event){
+		event.reply(this.content).queue();
 	}
 
 }

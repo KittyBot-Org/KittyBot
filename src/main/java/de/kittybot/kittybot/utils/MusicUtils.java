@@ -5,7 +5,7 @@ import de.kittybot.kittybot.modules.PaginatorModule;
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.objects.module.Modules;
 import de.kittybot.kittybot.objects.music.TrackScheduler;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -39,31 +39,31 @@ public class MusicUtils{
 		return MessageUtils.maskLink("`" + info.title + "`", info.uri);
 	}
 
-	public static boolean checkCommandRequirements(GuildInteraction ia, TrackScheduler scheduler){
+	public static boolean checkCommandRequirements(GuildCommandContext ctx, TrackScheduler scheduler){
 		if(scheduler == null){
-			ia.error("No active player found");
+			ctx.error("No active player found");
 			return false;
 		}
-		return checkMusicRequirements(ia);
+		return checkMusicRequirements(ctx);
 	}
 
-	public static boolean checkMusicRequirements(GuildInteraction ia){
-		var voiceState = ia.getMember().getVoiceState();
+	public static boolean checkMusicRequirements(GuildCommandContext ctx){
+		var voiceState = ctx.getMember().getVoiceState();
 		if(voiceState == null || voiceState.getChannel() == null){
-			ia.error("Please connect to a voice channel to use music commands");
+			ctx.error("Please connect to a voice channel to use music commands");
 			return false;
 		}
-		var myVoiceState = ia.getSelfMember().getVoiceState();
+		var myVoiceState = ctx.getSelfMember().getVoiceState();
 		if(myVoiceState != null && myVoiceState.getChannel() != null && voiceState.getChannel().getIdLong() != myVoiceState.getChannel().getIdLong()){
-			ia.error("Please connect to the same voice channel as me to use music commands");
+			ctx.error("Please connect to the same voice channel as me to use music commands");
 			return false;
 		}
 		return true;
 	}
 
-	public static boolean checkMusicPermissions(GuildInteraction ia, TrackScheduler scheduler){
-		var member = ia.getMember();
-		if(member.hasPermission(Permission.ADMINISTRATOR) || ia.get(SettingsModule.class).hasDJRole(member)){
+	public static boolean checkMusicPermissions(GuildCommandContext ctx, TrackScheduler scheduler){
+		var member = ctx.getMember();
+		if(member.hasPermission(Permission.ADMINISTRATOR) || ctx.get(SettingsModule.class).hasDJRole(member)){
 			return true;
 		}
 		var track = scheduler.getPlayingTrack();
@@ -71,7 +71,7 @@ public class MusicUtils{
 			return false;
 		}
 		if(track.getUserData(Long.class) != member.getIdLong()){
-			ia.error("You are not the song requester or the DJ");
+			ctx.error("You are not the song requester or the DJ");
 			return false;
 		}
 		return true;

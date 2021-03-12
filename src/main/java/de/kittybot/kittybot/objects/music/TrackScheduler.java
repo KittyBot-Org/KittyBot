@@ -4,7 +4,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.objects.module.Modules;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.MusicUtils;
@@ -96,11 +96,11 @@ public class TrackScheduler extends PlayerEventListenerAdapter{
 		}
 	}
 
-	public void queue(GuildInteraction ia, AudioTrack toPlay, List<AudioTrack> tracks){
+	public void queue(GuildCommandContext ctx, AudioTrack toPlay, List<AudioTrack> tracks){
 		var embed = queue(toPlay, tracks);
-		var action = ia.acknowledge(true);
+		var action = ctx.acknowledge(true);
 		if(embed != null){
-			action.embeds(embed);
+			action = action.addEmbeds(embed);
 		}
 		action.queue(success -> tryPlay(toPlay), error -> tryPlay(toPlay));
 	}

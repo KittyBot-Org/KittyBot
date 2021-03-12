@@ -31,7 +31,7 @@ dependencies {
     /*implementation('net.dv8tion:JDA:f7b942') {
         exclude group: 'club.minnced', module: 'opus-java'
     }*/
-    implementation files('libs/JDA-4.2.0_Slash-commands.jar')
+    implementation 'com.github.DV8FromTheWorld:JDA:f720c458ce'
     implementation 'com.jagrosh:jda-utilities:3.0.5'
     implementation 'club.minnced:discord-webhooks:0.5.4'
     implementation 'com.github.caneleex:BotListHandler:1.0.12'

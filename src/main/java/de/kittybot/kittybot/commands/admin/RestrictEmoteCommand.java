@@ -1,12 +1,12 @@
 package de.kittybot.kittybot.commands.admin;
 
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionEmote;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionRole;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
@@ -47,21 +47,21 @@ public class RestrictEmoteCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
-			if(!ia.getSelfMember().hasPermission(Permission.MANAGE_EMOTES)){
-				ia.error("I can't manage emotes due to lack of permissions. Please give me the `MANAGE_EMOTES` permission to use this command.");
+		public void run(Options options, GuildCommandContext ctx){
+			if(!ctx.getSelfMember().hasPermission(Permission.MANAGE_EMOTES)){
+				ctx.error("I can't manage emotes due to lack of permissions. Please give me the `MANAGE_EMOTES` permission to use this command.");
 				return;
 			}
-			var emoteAction = options.getEmote(ia.getGuild(), "emote");
+			var emoteAction = options.getEmote(ctx.getGuild(), "emote");
 			if(emoteAction == null){
-				ia.error("Failed to parse emote: `" + options.getString("emote") + "`");
+				ctx.error("Failed to parse emote: `" + options.getString("emote") + "`");
 				return;
 			}
-			emoteAction.queue(emote -> emote.getManager().setRoles(getRoles(ia.getGuild(), options, "role1", "role2", "role3", "role4", "role5", "role6", "role7", "role8", "role9")).queue(
-				success -> ia.reply("Successfully set roles"),
-				error -> ia.error("Failed to set roles")
+			emoteAction.queue(emote -> emote.getManager().setRoles(getRoles(ctx.getGuild(), options, "role1", "role2", "role3", "role4", "role5", "role6", "role7", "role8", "role9")).queue(
+				success -> ctx.reply("Successfully set roles"),
+				error -> ctx.error("Failed to set roles")
 				),
-				error -> ia.error("Emote not found in this guild")
+				error -> ctx.error("Emote not found in this guild")
 			);
 		}
 
@@ -81,21 +81,21 @@ public class RestrictEmoteCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
-			if(!ia.getSelfMember().hasPermission(Permission.MANAGE_EMOTES)){
-				ia.error("I can't manage emotes due to lack of permissions. Please give me the `MANAGE_EMOTES` permission to use this command.");
+		public void run(Options options, GuildCommandContext ctx){
+			if(!ctx.getSelfMember().hasPermission(Permission.MANAGE_EMOTES)){
+				ctx.error("I can't manage emotes due to lack of permissions. Please give me the `MANAGE_EMOTES` permission to use this command.");
 				return;
 			}
-			var emoteAction = options.getEmote(ia.getGuild(), "emote");
+			var emoteAction = options.getEmote(ctx.getGuild(), "emote");
 			if(emoteAction == null){
-				ia.error("Failed to parse emote: `" + options.getString("emote") + "`");
+				ctx.error("Failed to parse emote: `" + options.getString("emote") + "`");
 				return;
 			}
 			emoteAction.queue(emote -> emote.getManager().setRoles(new HashSet<>()).queue(
-				success -> ia.reply("Successfully reset emote"),
-				error -> ia.error("Failed to reset emote")
+				success -> ctx.reply("Successfully reset emote"),
+				error -> ctx.error("Failed to reset emote")
 				),
-				error -> ia.error("Emote not found in this guild")
+				error -> ctx.error("Emote not found in this guild")
 			);
 		}
 

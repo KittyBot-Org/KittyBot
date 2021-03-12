@@ -1,11 +1,11 @@
 package de.kittybot.kittybot.commands.info.info;
 
+import de.kittybot.kittybot.slashcommands.CommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionUser;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.Interaction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.MessageUtils;
 
 @SuppressWarnings("unused")
@@ -30,11 +30,11 @@ public class AvatarCommand extends SubCommand{
 	}
 
 	@Override
-	public void run(Options options, Interaction ia){
-		var user = options.has("user") ? options.getUser("user") : ia.getUser();
-		var size = options.has("size") ? options.getInt("size") : 1024;
+	public void run(Options options, CommandContext ctx){
+		var user = options.getUser("user", ctx.getUser());
+		var size = options.getInt("size", 1024);
 
-		ia.reply(builder -> builder
+		ctx.reply(builder -> builder
 			.setTitle(user.getAsTag() + " Avatar")
 			.setThumbnail(user.getEffectiveAvatarUrl())
 			.setDescription(MessageUtils.maskLink(size + "px", user.getEffectiveAvatarUrl() + "?size=" + size))

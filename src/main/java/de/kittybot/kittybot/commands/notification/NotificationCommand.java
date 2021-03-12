@@ -2,14 +2,14 @@ package de.kittybot.kittybot.commands.notification;
 
 import de.kittybot.kittybot.modules.NotificationModule;
 import de.kittybot.kittybot.modules.PaginatorModule;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionTime;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.TimeUtils;
@@ -43,26 +43,26 @@ public class NotificationCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
+		public void run(Options options, GuildCommandContext ctx){
 			var time = options.getTime("time");
 			if(time.isBefore(LocalDateTime.now())){
-				ia.error("Please provide a valid time or duration in this format: ");
+				ctx.error("Please provide a valid time or duration in this format: ");
 				return;
 			}
 			var message = options.getString("message");
-			var notif = ia.get(NotificationModule.class).create(
-				ia.getGuildId(),
-				ia.getChannelId(),
+			var notif = ctx.get(NotificationModule.class).create(
+				ctx.getGuildId(),
+				ctx.getChannelId(),
 				-1,
-				ia.getUser().getIdLong(),
+				ctx.getUser().getIdLong(),
 				message,
 				time
 			);
 			if(notif == null){
-				ia.error("There was an unexpected error while creating your notification");
+				ctx.error("There was an unexpected error while creating your notification");
 				return;
 			}
-			ia.reply("Notification at `" + TimeUtils.formatDuration(notif.getCreatedAt().until(notif.getNotificationTime(), ChronoUnit.MILLIS)) + "` created with id: `" + notif.getId() + "`");
+			ctx.reply("Notification at `" + TimeUtils.formatDuration(notif.getCreatedAt().until(notif.getNotificationTime(), ChronoUnit.MILLIS)) + "` created with id: `" + notif.getId() + "`");
 
 		}
 
@@ -78,13 +78,13 @@ public class NotificationCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
+		public void run(Options options, GuildCommandContext ctx){
 			var notificationId = options.getLong("notification-id");
-			if(ia.get(NotificationModule.class).delete(notificationId, ia.getUserId())){
-				ia.reply("Deleted your notification with id `" + notificationId + "`");
+			if(ctx.get(NotificationModule.class).delete(notificationId, ctx.getUserId())){
+				ctx.reply("Deleted your notification with id `" + notificationId + "`");
 				return;
 			}
-			ia.error("Notification either does not exist or does not belong to you");
+			ctx.error("Notification either does not exist or does not belong to you");
 		}
 
 	}
@@ -96,11 +96,11 @@ public class NotificationCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
-			var notifs = ia.get(NotificationModule.class).get(ia.getUserId());
+		public void run(Options options, GuildCommandContext ctx){
+			var notifs = ctx.get(NotificationModule.class).get(ctx.getUserId());
 
 			if(notifs.isEmpty()){
-				ia.reply("You have no notifications");
+				ctx.reply("You have no notifications");
 				return;
 			}
 
@@ -117,9 +117,9 @@ public class NotificationCommand extends Command{
 			}
 			pages.add(notifMessage.toString());
 
-			ia.acknowledge(true).queue(success -> ia.get(PaginatorModule.class).create(
-				ia.getChannel(),
-				ia.getUserId(),
+			ctx.acknowledge(true).queue(success -> ctx.get(PaginatorModule.class).create(
+				ctx.getChannel(),
+				ctx.getUserId(),
 				pages.size(),
 				(page, embedBuilder) -> embedBuilder
 					.setColor(Colors.KITTYBOT_BLUE)

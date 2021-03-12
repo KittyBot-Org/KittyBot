@@ -1,10 +1,10 @@
 package de.kittybot.kittybot.commands.info;
 
 import de.kittybot.kittybot.objects.enums.Emoji;
+import de.kittybot.kittybot.slashcommands.CommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.RunCommand;
-import de.kittybot.kittybot.slashcommands.interaction.Interaction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
 
@@ -16,12 +16,12 @@ public class HelpCommand extends RunCommand{
 	}
 
 	@Override
-	public void run(Options options, Interaction ia){
-		ia.reply(builder -> builder
-			.setAuthor("Help", Config.ORIGIN_URL, ia.getSelfUser().getEffectiveAvatarUrl())
-			.setThumbnail(ia.getSelfUser().getEffectiveAvatarUrl())
+	public void run(Options options, CommandContext ctx){
+		ctx.reply(builder -> builder
+			.setAuthor("Help", Config.ORIGIN_URL, ctx.getSelfUser().getEffectiveAvatarUrl())
+			.setThumbnail(ctx.getSelfUser().getEffectiveAvatarUrl())
 			.setDescription(
-				"Hello " + ia.getUser().getAsMention() + "\n" +
+				"Hello " + ctx.getUser().getAsMention() + "\n" +
 					"KittyBot uses the new " + Emoji.SLASH.get() + " Slash Commands by Discord!\n" +
 					"To see all available commands just type `/` or use `/commands`\n\n" +
 					MessageUtils.maskLink("Website", Config.ORIGIN_URL) + " | " +

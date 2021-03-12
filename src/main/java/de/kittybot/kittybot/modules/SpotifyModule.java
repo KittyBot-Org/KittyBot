@@ -6,13 +6,13 @@ import com.wrapper.spotify.requests.authorization.client_credentials.ClientCrede
 import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.objects.music.MusicManager;
 import de.kittybot.kittybot.objects.music.SearchProvider;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.response.FollowupMessage;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -54,44 +54,44 @@ public class SpotifyModule extends Module{
 		}
 	}
 
-	public void load(GuildInteraction ia, MusicManager manager, Matcher matcher){
+	public void load(GuildCommandContext ctx, MusicManager manager, Matcher matcher){
 		switch(matcher.group(3)){
 			case "album":
-				loadAlbum(matcher.group(4), ia, manager);
+				loadAlbum(matcher.group(4), ctx, manager);
 				break;
 			case "track":
-				loadTrack(matcher.group(4), ia, manager);
+				loadTrack(matcher.group(4), ctx, manager);
 				break;
 			case "playlist":
-				loadPlaylist(matcher.group(4), ia, manager);
+				loadPlaylist(matcher.group(4), ctx, manager);
 				break;
 		}
 	}
 
-	private void loadAlbum(String id, GuildInteraction ia, MusicManager manager){
+	private void loadAlbum(String id, GuildCommandContext ctx, MusicManager manager){
 		this.spotify.getAlbumsTracks(id).build().executeAsync().thenAcceptAsync(tracks -> {
 			var items = tracks.getItems();
 			var toLoad = new ArrayList<String>();
 			for(var track : items){
 				toLoad.add("ytsearch:" + track.getArtists()[0].getName() + " " + track.getName());
 			}
-			loadTracks(id, ia, manager, toLoad);
+			loadTracks(id, ctx, manager, toLoad);
 		}).exceptionally(throwable -> {
-			ia.error(throwable.getMessage().contains("invalid id") ? "Album not found" : "There was an error while loading the album");
+			ctx.error(throwable.getMessage().contains("invalid id") ? "Album not found" : "There was an error while loading the album");
 			return null;
 		});
 	}
 
-	private void loadTrack(String id, GuildInteraction ia, MusicManager manager){
+	private void loadTrack(String id, GuildCommandContext ctx, MusicManager manager){
 		this.spotify.getTrack(id).build().executeAsync().thenAcceptAsync(track ->
-			this.modules.get(MusicModule.class).play(ia, track.getArtists()[0].getName() + " " + track.getName(), SearchProvider.YOUTUBE)
+			this.modules.get(MusicModule.class).play(ctx, track.getArtists()[0].getName() + " " + track.getName(), SearchProvider.YOUTUBE)
 		).exceptionally(throwable -> {
-			ia.error(throwable.getMessage().contains("invalid id") ? "Track not found" : "There was an error while loading the track");
+			ctx.error(throwable.getMessage().contains("invalid id") ? "Track not found" : "There was an error while loading the track");
 			return null;
 		});
 	}
 
-	private void loadPlaylist(String id, GuildInteraction ia, MusicManager manager){
+	private void loadPlaylist(String id, GuildCommandContext ctx, MusicManager manager){
 		this.spotify.getPlaylistsItems(id).build().executeAsync().thenAcceptAsync(tracks -> {
 			var items = tracks.getItems();
 			var toLoad = new ArrayList<String>();
@@ -99,15 +99,15 @@ public class SpotifyModule extends Module{
 				var track = (Track) item.getTrack();
 				toLoad.add("ytsearch:" + track.getArtists()[0].getName() + " " + track.getName());
 			}
-			loadTracks(id, ia, manager, toLoad);
+			loadTracks(id, ctx, manager, toLoad);
 		}).exceptionally(throwable -> {
-			ia.error(throwable.getMessage().contains("Invalid playlist Id") ? "Playlist not found" : "There was an error while loading the playlist");
+			ctx.error(throwable.getMessage().contains("Invalid playlist Id") ? "Playlist not found" : "There was an error while loading the playlist");
 			return null;
 		});
 	}
 
-	private void loadTracks(String id, GuildInteraction ia, MusicManager manager, List<String> toLoad){
-		ia.acknowledge(true).content("Loading...\nThis may take a while").ephemeral().queue();
+	private void loadTracks(String id, GuildCommandContext ctx, MusicManager manager, List<String> toLoad){
+		ctx.reply("Loading tracks...\nThis may take a while");
 		var restClient = manager.getScheduler().getLink().getRestClient();
 		Utils.all(toLoad.stream().map(restClient::getYoutubeSearchResult).collect(Collectors.toList()))
 			.thenAcceptAsync(results -> {
@@ -116,24 +116,25 @@ public class SpotifyModule extends Module{
 						return null;
 					}
 					var track = result.get(0);
-					track.setUserData(ia.getUserId());
+					track.setUserData(ctx.getUserId());
 					return track;
 				}).filter(Objects::nonNull).collect(Collectors.toList());
 				if(tracks.isEmpty()){
-					ia.followupError("No tracks on youtube found");
+					ctx.getThread().sendMessage("No tracks on youtube found").queue();
 					return;
 				}
-				manager.connectToChannel(ia);
+				manager.connectToChannel(ctx);
 				var toPlay = tracks.remove(0);
 				var embed = manager.getScheduler().queue(toPlay, tracks);
 				if(embed == null){
 					return;
 				}
-				ia.followupMessage(new FollowupMessage.Builder().setEmbeds(embed).build())
+				ctx.getThread().editOriginal("").addEmbeds(embed)
 					.queue(success -> manager.getScheduler().tryPlay(toPlay), error -> manager.getScheduler().tryPlay(toPlay));
 			})
 			.exceptionally(error -> {
-				ia.followupError("Something went wrong while fetching your tracks: \n" + error.getMessage());
+				ctx.getThread().editOriginal("")
+					.addEmbeds(ctx.getEmbed().setColor(Color.RED).setDescription("Something went wrong while fetching your tracks: \n" + error.getMessage()).build()).queue();
 				return null;
 			});
 	}

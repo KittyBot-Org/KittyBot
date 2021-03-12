@@ -4,12 +4,11 @@ import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.modules.StreamAnnouncementModule;
 import de.kittybot.kittybot.objects.enums.Emoji;
 import de.kittybot.kittybot.objects.streams.StreamType;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.options.*;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
-import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.Permission;
@@ -43,10 +42,10 @@ public class SettingsCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
-			var guildId = ia.getGuildId();
-			var settings = ia.get(SettingsModule.class).getSettings(guildId);
-			ia.reply(builder -> builder
+		public void run(Options options, GuildCommandContext ctx){
+			var guildId = ctx.getGuildId();
+			var settings = ctx.get(SettingsModule.class).getSettings(guildId);
+			ctx.reply(builder -> builder
 					.setAuthor("Guild settings:", Config.ORIGIN_URL + "/guilds/" + guildId + "/dashboard", Emoji.SETTINGS.getUrl())
 					.addField("Announcement Channel: ", settings.getAnnouncementChannel(), false)
 					.addField("Join Messages: " + MessageUtils.getBoolEmote(settings.areJoinMessagesEnabled()), settings.getJoinMessage(), false)
@@ -73,10 +72,10 @@ public class SettingsCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
+		public void run(Options options, GuildCommandContext ctx){
 			var role = options.getRole("role");
-			ia.get(SettingsModule.class).setDjRoleId(ia.getGuildId(), role.getIdLong());
-			ia.reply("DJ Role set to: " + role.getAsMention());
+			ctx.get(SettingsModule.class).setDjRoleId(ctx.getGuildId(), role.getIdLong());
+			ctx.reply("DJ Role set to: " + role.getAsMention());
 		}
 
 	}
@@ -91,10 +90,10 @@ public class SettingsCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
+		public void run(Options options, GuildCommandContext ctx){
 			var channel = options.getTextChannel("channel");
-			ia.get(SettingsModule.class).setAnnouncementChannelId(ia.getGuildId(), channel.getIdLong());
-			ia.reply("Announcement channel set to: " + channel.getAsMention());
+			ctx.get(SettingsModule.class).setAnnouncementChannelId(ctx.getGuildId(), channel.getIdLong());
+			ctx.reply("Announcement channel set to: " + channel.getAsMention());
 		}
 
 	}
@@ -110,26 +109,26 @@ public class SettingsCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
-			var settings = ia.get(SettingsModule.class);
+		public void run(Options options, GuildCommandContext ctx){
+			var settings = ctx.get(SettingsModule.class);
 			var returnMessage = "";
 			if(options.has("enabled")){
 				var enabled = options.getBoolean("enabled");
-				settings.setJoinMessagesEnabled(ia.getGuildId(), enabled);
+				settings.setJoinMessagesEnabled(ctx.getGuildId(), enabled);
 				returnMessage += "Join messages `" + (enabled ? "enabled" : "disabled") + "`\n";
 			}
 
 			if(options.has("message")){
 				var message = options.getString("message");
-				settings.setJoinMessage(ia.getGuildId(), message);
+				settings.setJoinMessage(ctx.getGuildId(), message);
 				returnMessage += "Join message to:\n" + message + "\n";
 			}
 
 			if(returnMessage.isBlank()){
-				ia.reply("Join message `" + (settings.areJoinMessagesEnabled(ia.getGuildId()) ? "enabled" : "disabled") + "` and set to:\n" + settings.getJoinMessage(ia.getGuildId()));
+				ctx.reply("Join message `" + (settings.areJoinMessagesEnabled(ctx.getGuildId()) ? "enabled" : "disabled") + "` and set to:\n" + settings.getJoinMessage(ctx.getGuildId()));
 				return;
 			}
-			ia.reply(returnMessage);
+			ctx.reply(returnMessage);
 		}
 
 	}
@@ -145,26 +144,26 @@ public class SettingsCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
-			var settings = ia.get(SettingsModule.class);
+		public void run(Options options, GuildCommandContext ctx){
+			var settings = ctx.get(SettingsModule.class);
 			var returnMessage = "";
 			if(options.has("enabled")){
 				var enabled = options.getBoolean("enabled");
-				settings.setLeaveMessagesEnabled(ia.getGuildId(), enabled);
+				settings.setLeaveMessagesEnabled(ctx.getGuildId(), enabled);
 				returnMessage += "Leave messages `" + (enabled ? "enabled" : "disabled") + "`\n";
 			}
 
 			if(options.has("message")){
 				var message = options.getString("message");
-				settings.setLeaveMessage(ia.getGuildId(), message);
+				settings.setLeaveMessage(ctx.getGuildId(), message);
 				returnMessage += "Leave message to:\n" + message + "\n";
 			}
 
 			if(returnMessage.isBlank()){
-				ia.reply("Leave message `" + (settings.areLeaveMessagesEnabled(ia.getGuildId()) ? "enabled" : "disabled") + "` and set to:\n" + settings.getLeaveMessage(ia.getGuildId()));
+				ctx.reply("Leave message `" + (settings.areLeaveMessagesEnabled(ctx.getGuildId()) ? "enabled" : "disabled") + "` and set to:\n" + settings.getLeaveMessage(ctx.getGuildId()));
 				return;
 			}
-			ia.reply(returnMessage);
+			ctx.reply(returnMessage);
 		}
 
 	}
@@ -179,10 +178,10 @@ public class SettingsCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
+		public void run(Options options, GuildCommandContext ctx){
 			var enabled = options.getBoolean("enabled");
-			ia.get(SettingsModule.class).setNsfwEnabled(ia.getGuildId(), enabled);
-			ia.reply((enabled ? "Enabled" : "Disabled") + "nsfw commands");
+			ctx.get(SettingsModule.class).setNsfwEnabled(ctx.getGuildId(), enabled);
+			ctx.reply((enabled ? "Enabled" : "Disabled") + "nsfw commands");
 		}
 
 	}
@@ -198,27 +197,27 @@ public class SettingsCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
-			var settings = ia.get(SettingsModule.class);
+		public void run(Options options, GuildCommandContext ctx){
+			var settings = ctx.get(SettingsModule.class);
 			var returnMessage = "";
 			if(options.has("enabled")){
 				var enabled = options.getBoolean("enabled");
-				settings.setLogMessagesEnabled(ia.getGuildId(), enabled);
+				settings.setLogMessagesEnabled(ctx.getGuildId(), enabled);
 				returnMessage += "Log messages `" + (enabled ? "enabled" : "disabled") + "`\n";
 			}
 
 			if(options.has("channel")){
 				var channel = options.getTextChannel("channel");
-				settings.setLogChannelId(ia.getGuildId(), channel.getIdLong());
+				settings.setLogChannelId(ctx.getGuildId(), channel.getIdLong());
 				returnMessage += "Log channel to:\n" + channel.getAsMention() + "\n";
 			}
 
 			if(returnMessage.isBlank()){
-				ia.reply(new InteractionResponse.Builder().setContent("Log message `" + (settings.areLogMessagesEnabled(ia.getGuildId()) ? "enabled" : "disabled") + "` and send to channel " +
-					MessageUtils.getChannelMention(settings.getLogChannelId(ia.getGuildId()))).build());
+				ctx.reply("Log message `" + (settings.areLogMessagesEnabled(ctx.getGuildId()) ? "enabled" : "disabled") + "` and send to channel " +
+					MessageUtils.getChannelMention(settings.getLogChannelId(ctx.getGuildId())));
 				return;
 			}
-			ia.reply(new InteractionResponse.Builder().setContent(returnMessage).build());
+			ctx.reply(returnMessage);
 		}
 
 	}
@@ -244,11 +243,11 @@ public class SettingsCommand extends Command{
 			}
 
 			@Override
-			public void run(Options options, GuildInteraction ia){
+			public void run(Options options, GuildCommandContext ctx){
 				var channel = options.getTextChannel("channel");
 				var enabled = options.getBoolean("enabled");
-				ia.get(SettingsModule.class).setSnipesDisabledInChannel(ia.getGuildId(), channel.getIdLong(), !enabled);
-				ia.reply("Snipes `" + (enabled ? "enabled" : "disabled") + "` in " + channel.getAsMention());
+				ctx.get(SettingsModule.class).setSnipesDisabledInChannel(ctx.getGuildId(), channel.getIdLong(), !enabled);
+				ctx.reply("Snipes `" + (enabled ? "enabled" : "disabled") + "` in " + channel.getAsMention());
 			}
 
 		}
@@ -263,10 +262,10 @@ public class SettingsCommand extends Command{
 			}
 
 			@Override
-			public void run(Options options, GuildInteraction ia){
+			public void run(Options options, GuildCommandContext ctx){
 				var enabled = options.getBoolean("enabled");
-				ia.get(SettingsModule.class).setSnipesEnabled(ia.getGuildId(), enabled);
-				ia.reply("Snipes globally `" + (enabled ? "enabled" : "disabled") + "`");
+				ctx.get(SettingsModule.class).setSnipesEnabled(ctx.getGuildId(), enabled);
+				ctx.reply("Snipes globally `" + (enabled ? "enabled" : "disabled") + "`");
 			}
 
 		}
@@ -301,15 +300,15 @@ public class SettingsCommand extends Command{
 			}
 
 			@Override
-			public void run(Options options, GuildInteraction ia){
+			public void run(Options options, GuildCommandContext ctx){
 				var type = StreamType.TWITCH;//StreamType.byId(options.getInt("service"));
 				var username = options.getString("username");
-				var user = ia.get(StreamAnnouncementModule.class).add(username, ia.getGuildId(), type);
+				var user = ctx.get(StreamAnnouncementModule.class).add(username, ctx.getGuildId(), type);
 				if(user == null){
-					ia.error("No user found with username " + username + "for " + type.getName());
+					ctx.error("No user found with username " + username + "for " + type.getName());
 					return;
 				}
-				ia.reply("Stream announcement for " + type.getName() + " with username: " + user.getDisplayName() + " added");
+				ctx.reply("Stream announcement for " + type.getName() + " with username: " + user.getDisplayName() + " added");
 			}
 
 		}
@@ -329,15 +328,15 @@ public class SettingsCommand extends Command{
 			}
 
 			@Override
-			public void run(Options options, GuildInteraction ia){
+			public void run(Options options, GuildCommandContext ctx){
 				var type = StreamType.TWITCH;//StreamType.byId(options.getInt("service"));
 				var username = options.getString("username");
-				var success = ia.get(StreamAnnouncementModule.class).remove(username, ia.getGuildId(), type);
+				var success = ctx.get(StreamAnnouncementModule.class).remove(username, ctx.getGuildId(), type);
 				if(!success){
-					ia.error("Could not find stream announcement for " + type.getName() + " with username: " + username + ". Check your spelling");
+					ctx.error("Could not find stream announcement for " + type.getName() + " with username: " + username + ". Check your spelling");
 					return;
 				}
-				ia.reply("Stream announcement for " + type.getName() + " with username: " + username + " removed");
+				ctx.reply("Stream announcement for " + type.getName() + " with username: " + username + " removed");
 			}
 
 		}
@@ -349,13 +348,13 @@ public class SettingsCommand extends Command{
 			}
 
 			@Override
-			public void run(Options options, GuildInteraction ia){
-				var streamAnnouncements = ia.get(StreamAnnouncementModule.class).get(ia.getGuildId());
+			public void run(Options options, GuildCommandContext ctx){
+				var streamAnnouncements = ctx.get(StreamAnnouncementModule.class).get(ctx.getGuildId());
 				if(streamAnnouncements.isEmpty()){
-					ia.error("No stream announcements found. Create them with `/settings streamannouncements add <service> <username>`");
+					ctx.error("No stream announcements found. Create them with `/settings streamannouncements add <service> <username>`");
 					return;
 				}
-				ia.reply("**Stream Announcements:**\n" + streamAnnouncements.stream().map(sa -> MessageUtils.maskLink(sa.getUserName(), "https://twitch.tv/" + sa.getUserName()) + " on " + StreamType.byId(sa.getStreamType()).getName()).collect(Collectors.joining("\n")));
+				ctx.reply("**Stream Announcements:**\n" + streamAnnouncements.stream().map(sa -> MessageUtils.maskLink(sa.getUserName(), "https://twitch.tv/" + sa.getUserName()) + " on " + StreamType.byId(sa.getStreamType()).getName()).collect(Collectors.joining("\n")));
 			}
 
 		}
@@ -370,11 +369,11 @@ public class SettingsCommand extends Command{
 			}
 
 			@Override
-			public void run(Options options, GuildInteraction ia){
+			public void run(Options options, GuildCommandContext ctx){
 				var message = options.getString("message");
 
-				ia.get(SettingsModule.class).setStreamAnnouncementMessage(ia.getGuildId(), message);
-				ia.reply("Set stream announcements template to:\n" + message);
+				ctx.get(SettingsModule.class).setStreamAnnouncementMessage(ctx.getGuildId(), message);
+				ctx.reply("Set stream announcements template to:\n" + message);
 			}
 
 		}
@@ -389,10 +388,10 @@ public class SettingsCommand extends Command{
 			}
 
 			@Override
-			public void run(Options options, GuildInteraction ia){
+			public void run(Options options, GuildCommandContext ctx){
 				var channel = options.getTextChannel("channel");
-				ia.get(SettingsModule.class).setStreamAnnouncementChannelId(ia.getGuildId(), channel.getIdLong());
-				ia.reply("Stream announcements now get send to " + channel.getAsMention());
+				ctx.get(SettingsModule.class).setStreamAnnouncementChannelId(ctx.getGuildId(), channel.getIdLong());
+				ctx.reply("Stream announcements now get send to " + channel.getAsMention());
 			}
 
 		}
@@ -409,10 +408,10 @@ public class SettingsCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
+		public void run(Options options, GuildCommandContext ctx){
 			var enabled = options.getBoolean("enabled");
-			ia.get(SettingsModule.class).setRoleSaverEnabled(ia.getGuildId(), enabled);
-			ia.reply((enabled ? "Enabled" : "Disabled") + " role saving");
+			ctx.get(SettingsModule.class).setRoleSaverEnabled(ctx.getGuildId(), enabled);
+			ctx.reply((enabled ? "Enabled" : "Disabled") + " role saving");
 		}
 
 	}

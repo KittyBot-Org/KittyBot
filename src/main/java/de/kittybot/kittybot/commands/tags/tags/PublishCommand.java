@@ -1,10 +1,10 @@
 package de.kittybot.kittybot.commands.tags.tags;
 
 import de.kittybot.kittybot.modules.TagsModule;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 
@@ -24,29 +24,29 @@ public class PublishCommand extends GuildSubCommand{
 	}
 
 	@Override
-	public void run(Options options, GuildInteraction ia){
+	public void run(Options options, GuildCommandContext ctx){
 		var name = options.getString("name");
-		var tagsModule = ia.get(TagsModule.class);
-		var tag = tagsModule.get(name, ia.getGuildId());
+		var tagsModule = ctx.get(TagsModule.class);
+		var tag = tagsModule.get(name, ctx.getGuildId());
 		if(tag == null){
-			ia.error("Tag with name `" + MarkdownSanitizer.escape(name) + "` not found");
+			ctx.error("Tag with name `" + MarkdownSanitizer.escape(name) + "` not found");
 			return;
 		}
 		if(!COMMAND_NAME_PATTERN.matcher(name).matches()){
-			ia.error("Please make sure your tag name only contains letters, numbers & -");
+			ctx.error("Please make sure your tag name only contains letters, numbers & -");
 			return;
 		}
 
-		if(!tagsModule.canPublishTag(ia.getGuildId())){
-			ia.error("You reached the maximum of 50 guild commands due to discords limitations");
+		if(!tagsModule.canPublishTag(ctx.getGuildId())){
+			ctx.error("You reached the maximum of 50 guild commands due to discords limitations");
 			return;
 		}
-		var res = tagsModule.publishTag(name, options.getString("description"), ia.getGuildId());
+		var res = tagsModule.publishTag(name, options.getString("description"), ctx.getGuildId());
 		if(!res){
-			ia.error("Something went wrong while publishing your tag to slash commands");
+			ctx.error("Something went wrong while publishing your tag to slash commands");
 			return;
 		}
-		ia.reply("Successfully published your tag to slash commands");
+		ctx.reply("Successfully published your tag to slash commands");
 	}
 
 }

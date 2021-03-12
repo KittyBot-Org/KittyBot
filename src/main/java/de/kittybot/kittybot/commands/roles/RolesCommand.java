@@ -4,6 +4,8 @@ import de.kittybot.kittybot.modules.ReactionRoleModule;
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.objects.enums.Emoji;
 import de.kittybot.kittybot.objects.settings.SelfAssignableRole;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.GenericHelpCommand;
@@ -11,8 +13,6 @@ import de.kittybot.kittybot.slashcommands.application.options.CommandOptionEmote
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionRole;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -34,7 +34,7 @@ public class RolesCommand extends Command{
 			new GroupsCommand(),
 			new GenericHelpCommand("To configure self assignable roles you need first need to create a group with `/roles groups add <group name> <max-roles-from-group>`.\n" +
 				"Then you can add a role to this group by doing `/roles add <@role> <custom-emote> <group-name>`.\n" +
-				"You can add as much as you like but only 20 of them are assignable by reactions via the specific emote.\n" +
+				"You can add as much as you like but only 20 of them are assignable by reactions vctx the specific emote.\n" +
 				"Use `/roles list` to view all roles with groups in a nice message"
 			)
 		);
@@ -53,21 +53,21 @@ public class RolesCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
+		public void run(Options options, GuildCommandContext ctx){
 			var role = options.getRole("role");
-			var emoteAction = options.getEmote(ia.getGuild(), "emote");
+			var emoteAction = options.getEmote(ctx.getGuild(), "emote");
 			var groupName = options.getString("group");
 
 			emoteAction.queue(emote -> {
-					var group = ia.get(SettingsModule.class).getSelfAssignableRoleGroups(ia.getGuildId()).stream().filter(g -> g.getName().equalsIgnoreCase(groupName)).findFirst();
+					var group = ctx.get(SettingsModule.class).getSelfAssignableRoleGroups(ctx.getGuildId()).stream().filter(g -> g.getName().equalsIgnoreCase(groupName)).findFirst();
 					if(group.isEmpty()){
-						ia.error("Please provide a valid group");
+						ctx.error("Please provide a valid group");
 						return;
 					}
 
-					ia.get(SettingsModule.class).addSelfAssignableRoles(ia.getGuildId(), Collections.singleton(new SelfAssignableRole(role.getIdLong(), emote.getIdLong(), ia.getGuildId(), group.get().getId())));
-					ia.reply("Added self assignable role");
-				}, error -> ia.error("Please provide a valid emote from this server")
+					ctx.get(SettingsModule.class).addSelfAssignableRoles(ctx.getGuildId(), Collections.singleton(new SelfAssignableRole(role.getIdLong(), emote.getIdLong(), ctx.getGuildId(), group.get().getId())));
+					ctx.reply("Added self assignable role");
+				}, error -> ctx.error("Please provide a valid emote from this server")
 			);
 
 		}
@@ -85,15 +85,15 @@ public class RolesCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
+		public void run(Options options, GuildCommandContext ctx){
 			var role = options.getRole("role");
-			var settings = ia.get(SettingsModule.class);
-			if(settings.getSelfAssignableRoles(ia.getGuildId()).stream().noneMatch(r -> r.getRoleId() == role.getIdLong())){
-				ia.error("This role is not self assignable");
+			var settings = ctx.get(SettingsModule.class);
+			if(settings.getSelfAssignableRoles(ctx.getGuildId()).stream().noneMatch(r -> r.getRoleId() == role.getIdLong())){
+				ctx.error("This role is not self assignable");
 				return;
 			}
-			settings.removeSelfAssignableRoles(ia.getGuildId(), Collections.singleton(role.getIdLong()));
-			ia.reply("Removed self assignable role");
+			settings.removeSelfAssignableRoles(ctx.getGuildId(), Collections.singleton(role.getIdLong()));
+			ctx.reply("Removed self assignable role");
 		}
 
 	}
@@ -108,12 +108,12 @@ public class RolesCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
-			var settings = ia.get(SettingsModule.class).getSettings(ia.getGuildId());
+		public void run(Options options, GuildCommandContext ctx){
+			var settings = ctx.get(SettingsModule.class).getSettings(ctx.getGuildId());
 			var roles = settings.getSelfAssignableRoles();
 			var groups = settings.getSelfAssignableRoleGroups();
 			if(roles == null || roles.isEmpty()){
-				ia.error("No self assignable roles configured");
+				ctx.error("No self assignable roles configured");
 				return;
 			}
 			var sortedRoles = new LinkedHashSet<>(roles);
@@ -130,13 +130,13 @@ public class RolesCommand extends Command{
 					}).collect(Collectors.joining("\n"))
 				).build();
 
-			if(!ia.getSelfMember().hasPermission(ia.getChannel(), Permission.MESSAGE_WRITE, Permission.MESSAGE_ADD_REACTION)){
-				ia.error("To list roles make sure I have the following permissions: `MESSAGE_WRITE` & `MESSAGE_ADD_REACTION`");
+			if(!ctx.getSelfMember().hasPermission(ctx.getChannel(), Permission.MESSAGE_WRITE, Permission.MESSAGE_ADD_REACTION)){
+				ctx.error("To list roles make sure I have the following permissions: `MESSAGE_WRITE` & `MESSAGE_ADD_REACTION`");
 				return;
 			}
-			ia.acknowledge(true).queue(success ->
-				ia.getChannel().sendMessage(embed).queue(message -> {
-					ia.get(ReactionRoleModule.class).add(message.getGuild().getIdLong(), message.getIdLong());
+			ctx.acknowledge(true).queue(success ->
+				ctx.getChannel().sendMessage(embed).queue(message -> {
+					ctx.get(ReactionRoleModule.class).add(message.getGuild().getIdLong(), message.getIdLong());
 					sortedRoles.forEach(role -> message.addReaction("test:" + role.getEmoteId()).queue());
 				})
 			);

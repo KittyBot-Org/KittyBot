@@ -5,7 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import de.kittybot.kittybot.objects.data.Paginator;
 import de.kittybot.kittybot.objects.enums.Emoji;
 import de.kittybot.kittybot.objects.module.Module;
-import de.kittybot.kittybot.slashcommands.interaction.Interaction;
+import de.kittybot.kittybot.slashcommands.CommandContext;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.GuildChannel;
@@ -98,11 +98,11 @@ public class PaginatorModule extends Module{
 		});
 	}
 
-	public void create(Interaction ia, int maxPages, BiFunction<Integer, EmbedBuilder, EmbedBuilder> embedFunction){
-		ia.acknowledge(true).queue(success -> {
+	public void create(CommandContext ctx, int maxPages, BiFunction<Integer, EmbedBuilder, EmbedBuilder> embedFunction){
+		ctx.acknowledge(true).queue(success -> {
 			var embedBuilder = embedFunction.apply(0, new EmbedBuilder().setFooter("Page: 1/" + maxPages)).build();
-			var channel = ia.getChannel();
-			create(maxPages, embedFunction, embedBuilder, channel, ia.getUserId());
+			var channel = ctx.getChannel();
+			create(maxPages, embedFunction, embedBuilder, channel, ctx.getUserId());
 		});
 
 	}

@@ -1,8 +1,8 @@
 package de.kittybot.kittybot.commands.info.info;
 
+import de.kittybot.kittybot.slashcommands.CommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.Interaction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.Config;
 
 @SuppressWarnings("unused")
@@ -13,10 +13,10 @@ public class PingCommand extends SubCommand{
 	}
 
 	@Override
-	public void run(Options options, Interaction ia){
-		var jda = ia.getJDA();
+	public void run(Options options, CommandContext ctx){
+		var jda = ctx.getJDA();
 		jda.getRestPing().queue(ping ->
-			ia.reply(builder -> builder
+			ctx.reply(builder -> builder
 				.setAuthor("KittyBot Ping", Config.ORIGIN_URL, jda.getSelfUser().getEffectiveAvatarUrl())
 
 				.addField("Gateway Ping:", jda.getGatewayPing() + "ms", false)
