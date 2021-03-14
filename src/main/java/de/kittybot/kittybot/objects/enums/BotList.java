@@ -14,7 +14,7 @@ public enum BotList{
 	TOP_GG("Top.gg", "https://top.gg", Config.TOP_GG_TOKEN, 12, ChronoUnit.HOURS, "/bot/%s"),
 	DISCORD_EXTREME_LIST_XYZ("Delly", "https://discordextremelist.xyz"),
 	DISCORD_BOT_LIST_COM("Discord Bot List ", "https://discordbotlist.com", Config.DISCORD_BOT_LIST_TOKEN, 12, ChronoUnit.HOURS, "/bots/%s"),
-	DISCORD_SERVICES_COM("Discord Services ", "https://discordservices.net");
+	DISCORD_SERVICES_NET("Discord Services ", "https://discordservices.net", Config.DISCORD_SERVICES_TOKEN, 12, ChronoUnit.HOURS, "/bot/%s");
 
 	private final String name, url, token, botUrl;
 	private final long voteCooldown;

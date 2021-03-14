@@ -53,13 +53,12 @@ public class Interaction{
 	public static Interaction fromJSON(Modules modules, DataObject json, JDA jda){
 		var entityBuilder = ((JDAImpl) jda).getEntityBuilder();
 
-		var guildId = json.getLong("guild_id", -1L);
-		var guild = (GuildImpl) jda.getGuildById(guildId);
-		if(guildId == -1L || guild == null){
+		var guild = (GuildImpl) jda.getGuildById(json.getLong("guild_id", -1L));
+		if(guild == null){
 			return new Interaction(
 				json,
 				InteractionData.fromJSON(json.getObject("data"), entityBuilder, null),
-				entityBuilder.createUser(json.optObject("user").orElse(json.getObject("member").getObject("user"))),
+				entityBuilder.createUser(json.optObject("user").orElseGet(() -> json.getObject("member").getObject("user"))),
 				jda.getPrivateChannelById(json.getLong("channel_id")),
 				json.hasKey("guild_id"),
 				modules,

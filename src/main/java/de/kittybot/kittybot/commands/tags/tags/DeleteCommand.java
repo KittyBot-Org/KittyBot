@@ -21,10 +21,10 @@ public class DeleteCommand extends GuildSubCommand{
 		var tagName = options.getString("name");
 		var deleted = false;
 		if(ia.getMember().hasPermission(Permission.ADMINISTRATOR)){
-			deleted = ia.get(TagsModule.class).delete(tagName, ia.getGuildId(), ia.getUserId());
+			deleted = ia.get(TagsModule.class).delete(tagName, ia.getGuildId());
 		}
 		else{
-			deleted = ia.get(TagsModule.class).delete(tagName, ia.getGuildId());
+			deleted = ia.get(TagsModule.class).delete(tagName, ia.getGuildId(), ia.getUserId());
 		}
 
 		if(deleted){
