@@ -36,11 +36,11 @@ public class LogMessagesCommand extends GuildSubCommand{
 		}
 
 		if(returnMessage.isBlank()){
-			ia.reply(new InteractionResponse.Builder().setContent("Log message `" + (settings.areLogMessagesEnabled(ia.getGuildId()) ? "enabled" : "disabled") + "` and send to channel " +
-				MessageUtils.getChannelMention(settings.getLogChannelId(ia.getGuildId()))).build());
+			ia.reply("Log message `" + (settings.areLogMessagesEnabled(ia.getGuildId()) ? "enabled" : "disabled") + "` and send to channel " +
+				MessageUtils.getChannelMention(settings.getLogChannelId(ia.getGuildId())));
 			return;
 		}
-		ia.reply(new InteractionResponse.Builder().setContent(returnMessage).build());
+		ia.reply(returnMessage);
 	}
 
 }
