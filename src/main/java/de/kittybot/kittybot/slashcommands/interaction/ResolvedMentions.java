@@ -53,9 +53,10 @@ public class ResolvedMentions{
 	}
 
 	private GuildChannel createChannel(String key){
-		GuildChannel channel;
+		//GuildChannel channel;
 		var json = this.rawChannels.getObject(key);
-		switch(ChannelType.fromId(json.getInt("type"))){
+		return guild.getGuildChannelById(json.getLong("id"));
+		/*switch(ChannelType.fromId(json.getInt("type"))){
 			case CATEGORY:
 				channel = this.entityBuilder.createCategory(guild, json, guild.getIdLong());
 				break;
@@ -72,7 +73,7 @@ public class ResolvedMentions{
 				channel = null;
 				break;
 		}
-		return channel;
+		return channel;*/
 	}
 
 	public Map<Long, Member> getMentionedMembers(){

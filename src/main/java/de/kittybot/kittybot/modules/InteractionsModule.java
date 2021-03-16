@@ -14,6 +14,7 @@ import de.kittybot.kittybot.slashcommands.interaction.response.FollowupMessage;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionRespondAction;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponseType;
 import de.kittybot.kittybot.utils.Config;
+import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.exporters.Metrics;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.RawGatewayEvent;
@@ -50,7 +51,6 @@ public class InteractionsModule extends Module{
 			return;
 		}
 		var start = System.currentTimeMillis();
-
 		var interaction = Interaction.fromJSON(this.modules, event.getPayload(), event.getJDA());
 		if(interaction instanceof GuildInteraction){
 			var guildInteraction = (GuildInteraction) interaction;
@@ -58,12 +58,12 @@ public class InteractionsModule extends Module{
 			var settings = this.modules.get(GuildSettingsModule.class).get(guildInteraction.getGuildId());
 
 			if(settings.isBotIgnoredUser(guildInteraction.getMember().getIdLong())){
-				reply(interaction, false).content("I ignore u baka").ephemeral().queue();
+				interaction.error("I ignore u baka");
 				return;
 			}
 
 			if(settings.isBotDisabledInChannel(interaction.getChannelId())){
-				reply(interaction, false).content("I'm disabled in this channel").ephemeral().queue();
+				interaction.error("I'm disabled in this channel");
 				return;
 			}
 		}
@@ -72,7 +72,7 @@ public class InteractionsModule extends Module{
 		var cmd = this.modules.get(CommandsModule.class).getCommands().get(data.getName());
 		if(cmd != null){
 			process(cmd, interaction, data);
-			Metrics.COMMAND_LATENCY.labels(cmd.getName()).set(System.currentTimeMillis() - start);
+			Metrics.COMMAND_LATENCY.labels(cmd.getName()).observe(System.currentTimeMillis() - start);
 			Metrics.COMMAND_COUNTER.labels(cmd.getName()).inc();
 			return;
 		}
@@ -86,7 +86,7 @@ public class InteractionsModule extends Module{
 			return;
 		}
 		LOG.error("Could not process interaction: {}", event.getPayload());
-		reply(interaction).ephemeral().content("Nani u discovered a secret don't tell anyone(This command does not exist anymore)").queue();
+		interaction.error("Nani u discovered a secret don't tell anyone(This command does not exist anymore)");
 	}
 
 	public void process(CommandOptionsHolder applicationHolder, Interaction interaction, InteractionOptionsHolder holder){
@@ -102,7 +102,7 @@ public class InteractionsModule extends Module{
 					var guildInteraction = (GuildInteraction) interaction;
 					var missingPerms = permHolder.getPermissions().stream().dropWhile(guildInteraction.getMember().getPermissions()::contains).collect(Collectors.toSet());
 					if(!missingPerms.isEmpty()){
-						reply(interaction).ephemeral().content("You are missing following permissions to use this command:\n" + missingPerms.stream().map(Permission::getName).collect(Collectors.joining(", "))).withSource(false).queue();
+						interaction.error("You are missing following permissions to use this command:\n" + missingPerms.stream().map(Permission::getName).collect(Collectors.joining(", ")));
 						return;
 					}
 				}
@@ -118,13 +118,15 @@ public class InteractionsModule extends Module{
 				else if(interaction instanceof GuildInteraction){
 					((RunnableGuildCommand) applicationHolder).run(options, (GuildInteraction) interaction);
 				}
+				else if(interaction.isFromGuild()){
+					interaction.reply("This slash command is not available without inviting Kitty. You can do this " + MessageUtils.maskLink("here", Config.BOT_INVITE_URL));
+				}
 				else{
-					reply(interaction, true).content("This slash command is not available in dms. Surruwu").queue();
+					interaction.reply("This slash command is not available in dms. Surruwu");
 				}
 			}
 			catch(Exception e){
-				e.printStackTrace();
-				reply(interaction).ephemeral().content(e.getMessage()).type(InteractionResponseType.ACKNOWLEDGE).queue();
+				interaction.error(e.getMessage());
 			}
 			return;
 		}

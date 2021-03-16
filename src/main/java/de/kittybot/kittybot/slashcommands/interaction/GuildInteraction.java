@@ -13,7 +13,7 @@ public class GuildInteraction extends Interaction{
 	private final Member member;
 
 	public GuildInteraction(DataObject json, InteractionData data, Guild guild, Member member, TextChannel channel, Modules modules, JDA jda){
-		super(json, data, member.getUser(), channel, modules, jda);
+		super(json, data, member.getUser(), channel, true, modules, jda);
 		this.guild = guild;
 		this.member = member;
 	}

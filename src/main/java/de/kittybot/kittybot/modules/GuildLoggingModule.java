@@ -25,20 +25,18 @@ import java.util.stream.Collectors;
 @SuppressWarnings("unused")
 public class GuildLoggingModule extends Module{
 
-	private static final Set<Class<? extends Module>> DEPENDENCIES = Set.of(InviteModule.class, MessageModule.class);
-
 	@Override
 	public Set<Class<? extends Module>> getDependencies(){
-		return DEPENDENCIES;
+		return Set.of(InviteModule.class, MessageModule.class);
 	}
 
-	@Override
+	/*@Override
 	public void onGuildMessageUpdate(@Nonnull GuildMessageUpdateEvent event){
 		var settings = this.modules.get(GuildSettingsModule.class).get(event.getGuild().getIdLong());
 		if(!settings.get()){
 			return;
 		}
-		logEvent(event, Color.RED, null, "Message edit", "");
+		logEvent(event, Color.RED, event.getAuthor(), "Message edit", "");
 	}
 
 	@Override
@@ -48,7 +46,7 @@ public class GuildLoggingModule extends Module{
 			return;
 		}
 		logEvent(event, Color.RED, null, "Message delete", "");
-	}
+	}*/
 
 	@Override
 	public void onGuildMemberRemove(@Nonnull GuildMemberRemoveEvent event){
@@ -131,7 +129,7 @@ public class GuildLoggingModule extends Module{
 		channel.sendMessage(new EmbedBuilder()
 			.setColor(color)
 			.setDescription(MessageFormat.format(message, args))
-			.setFooter(eventName, user == null ? "" : user.getEffectiveAvatarUrl())
+			.setFooter(eventName, user == null ? null : user.getEffectiveAvatarUrl())
 			.setTimestamp(Instant.now())
 			.build()
 		).queue();

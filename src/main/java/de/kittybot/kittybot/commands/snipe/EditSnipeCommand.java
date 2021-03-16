@@ -31,12 +31,16 @@ public class EditSnipeCommand extends RunGuildCommand{
 			return;
 		}
 		ia.getJDA().retrieveUserById(lastEditedMessage.getAuthorId()).queue(user ->
-			ia.reply(builder -> builder
-				.setAuthor("Edit Sniped " + user.getName(), lastEditedMessage.getJumpUrl())
-				.setDescription(lastEditedMessage.getContent())
-				.setFooter("from " + user.getName(), user.getEffectiveAvatarUrl())
-				.setTimestamp(lastEditedMessage.getTimeCreated())
-			)
+			ia.reply(builder -> {
+				builder
+					.setAuthor("Edit Sniped " + user.getName(), lastEditedMessage.getJumpUrl())
+					.setDescription(lastEditedMessage.getContent())
+					.setFooter("from " + user.getName(), user.getEffectiveAvatarUrl())
+					.setTimestamp(lastEditedMessage.getTimeCreated());
+				if(!lastEditedMessage.getAttachments().isEmpty()){
+					lastEditedMessage.getAttachments().forEach(attachment -> builder.addField("Attachment", attachment, true));
+				}
+			})
 		);
 	}
 

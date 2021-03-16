@@ -56,6 +56,10 @@ public class PostVotesRoute implements Handler{
 				botlist = BotList.DISCORD_BOT_LIST_COM;
 				userId = json.getLong("id");
 				break;
+			case "discordservices_net":
+				botlist = BotList.DISCORD_SERVICES_NET;
+				userId = json.getObject("user").getLong("id");
+				break;
 			default:
 				botlist = null;
 				userId = -1L;

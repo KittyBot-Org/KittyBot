@@ -172,12 +172,12 @@ public class MusicModule extends Module implements Serializable{
 		}
 	}
 
-	public MusicManager get(long guildId){
-		return this.musicPlayers.get(guildId);
-	}
-
 	private boolean isAlone(VoiceChannel channel){
 		return channel.getMembers().stream().allMatch(member -> member.getUser().isBot());
+	}
+
+	public MusicManager get(long guildId){
+		return this.musicPlayers.get(guildId);
 	}
 
 	public void destroy(long guildId, long userId){
