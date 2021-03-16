@@ -28,11 +28,11 @@ repositories {
 
 dependencies {
     // discord/jda related
-    implementation('net.dv8tion:JDA:4.2.0_240') {
+    implementation('net.dv8tion:JDA:4.2.0_241') {
         exclude group: 'club.minnced', module: 'opus-java'
     }
     implementation 'com.jagrosh:jda-utilities:3.0.5'
-    implementation 'club.minnced:discord-webhooks:0.5.4'
+    implementation 'club.minnced:discord-webhooks:0.5.6'
     implementation 'com.github.caneleex:BotListHandler:1.0.12'
 
     // audio
@@ -66,7 +66,7 @@ dependencies {
     implementation 'io.prometheus:simpleclient_httpserver:0.10.0'
 
     // other
-    implementation 'io.javalin:javalin:3.13.3'
+    implementation 'io.javalin:javalin:3.13.4'
     implementation 'io.github.classgraph:classgraph:4.8.102'
     implementation 'com.github.ben-manes.caffeine:caffeine:2.8.8'
     implementation 'com.squareup.okhttp3:okhttp:4.9.1'
