@@ -23,7 +23,6 @@ public class InviteModule extends Module{
 
 	private static final Logger LOG = LoggerFactory.getLogger(InviteModule.class);
 
-	// TODO add caffeine impl
 	private Map<Long, Map<String, InviteData>> invites;
 	private Map<Long, Map<Long, InviteData>> usedInvites;
 
