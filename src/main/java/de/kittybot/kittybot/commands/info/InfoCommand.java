@@ -12,10 +12,10 @@ import net.dv8tion.jda.api.JDAInfo;
 import java.lang.management.ManagementFactory;
 
 @SuppressWarnings("unused")
-public class BotCommand extends RunCommand{
+public class InfoCommand extends RunCommand{
 
-	public BotCommand(){
-		super("bot", "Shows bot info", Category.INFORMATION);
+	public InfoCommand(){
+		super("info", "Shows some bot info", Category.INFORMATION);
 	}
 
 	@Override

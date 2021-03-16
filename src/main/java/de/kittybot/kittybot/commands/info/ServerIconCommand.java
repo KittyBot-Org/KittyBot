@@ -17,7 +17,7 @@ public class ServerIconCommand extends RunCommand{
 	public ServerIconCommand(){
 		super("servericon", "Gets the server icon", Category.INFORMATION);
 		addOptions(
-			new CommandOptionLong("guild-id", "The guild id to get the icon from").required(),
+			new CommandOptionLong("server-id", "The server id to get the icon from").required(),
 			new CommandOptionInteger("size", "The image size")
 				.addChoices(
 					new CommandOptionChoice<>("16", 16),
@@ -34,21 +34,21 @@ public class ServerIconCommand extends RunCommand{
 
 	@Override
 	public void run(Options options, Interaction ia){
-		var guildId = options.getOrDefault("guild-id", ia instanceof GuildInteraction ? ((GuildInteraction) ia).getGuildId() : -1L);
+		var guildId = options.getOrDefault("server-id", ia instanceof GuildInteraction ? ((GuildInteraction) ia).getGuildId() : -1L);
 		if(guildId == -1L){
-			ia.error("Please provide a guild id");
+			ia.error("Please provide a server id");
 			return;
 		}
 		var size = options.has("size") ? options.getInt("size") : 1024;
 
 		var guild = ia.getJDA().getGuildById(guildId);
 		if(guild == null){
-			ia.error("Guild not found");
+			ia.error("Server not found");
 			return;
 		}
 		var icon = guild.getIconUrl();
 		if(icon == null){
-			ia.error("Guild has no icon set");
+			ia.error("Server has no icon set");
 			return;
 		}
 		ia.reply(builder -> builder

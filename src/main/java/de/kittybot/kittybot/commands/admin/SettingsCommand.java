@@ -1,7 +1,6 @@
 package de.kittybot.kittybot.commands.admin;
 
 import de.kittybot.kittybot.commands.admin.settings.*;
-import de.kittybot.kittybot.commands.streams.StreamAnnouncementsCommand;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import net.dv8tion.jda.api.Permission;
@@ -20,7 +19,6 @@ public class SettingsCommand extends Command{
 			new NsfwCommand(),
 			new LogMessagesCommand(),
 			new SnipesCommand(),
-			new StreamAnnouncementsCommand(),
 			new RoleSaverCommand()
 		);
 		addPermissions(Permission.ADMINISTRATOR);

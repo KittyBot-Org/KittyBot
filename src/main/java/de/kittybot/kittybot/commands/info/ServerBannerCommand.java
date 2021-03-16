@@ -15,9 +15,9 @@ import de.kittybot.kittybot.utils.MessageUtils;
 public class ServerBannerCommand extends RunCommand{
 
 	public ServerBannerCommand(){
-		super("serverbanner", "Gets the guild banner", Category.INFORMATION);
+		super("serverbanner", "Gets the server banner", Category.INFORMATION);
 		addOptions(
-			new CommandOptionLong("guild-id", "The guild id to get the banner from"),
+			new CommandOptionLong("server-id", "The server id to get the banner from"),
 			new CommandOptionInteger("size", "The image size")
 				.addChoices(
 					new CommandOptionChoice<>("16", 16),
@@ -34,21 +34,21 @@ public class ServerBannerCommand extends RunCommand{
 
 	@Override
 	public void run(Options options, Interaction ia){
-		var guildId = options.getOrDefault("guild-id", ia instanceof GuildInteraction ? ((GuildInteraction) ia).getGuildId() : -1L);
+		var guildId = options.getOrDefault("server-id", ia instanceof GuildInteraction ? ((GuildInteraction) ia).getGuildId() : -1L);
 		if(guildId == -1L){
-			ia.error("Please provide a guild id");
+			ia.error("Please provide a server id");
 			return;
 		}
 		var size = options.has("size") ? options.getInt("size") : 1024;
 
 		var guild = ia.getJDA().getGuildById(guildId);
 		if(guild == null){
-			ia.error("Guild not found in my cache");
+			ia.error("Server not found in my cache");
 			return;
 		}
 		var banner = guild.getBannerUrl();
 		if(banner == null){
-			ia.error("Guild has no banner set");
+			ia.error("Server has no banner set");
 			return;
 		}
 		ia.reply(builder -> builder

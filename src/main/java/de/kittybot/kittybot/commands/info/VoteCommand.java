@@ -23,7 +23,8 @@ public class VoteCommand extends RunCommand{
 	public void run(Options options, Interaction ia){
 		ia.reply("You can vote on following sites for KittyBot:\n" + Arrays.stream(BotList.values()).
 			filter(BotList::canVote)
-			.map(botList -> MessageUtils.maskLink(botList.getName(), botList.getBotUrl())).collect(Collectors.joining(", "))
+			.map(botList -> MessageUtils.maskLink(botList.getName(), botList.getBotUrl()))
+			.collect(Collectors.joining(", "))
 		);
 	}
 
