@@ -3,8 +3,8 @@ package de.kittybot.kittybot.commands.roles.roles;
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionRole;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import net.dv8tion.jda.api.Permission;
 
 import java.util.Collections;
@@ -20,15 +20,15 @@ public class RemoveCommand extends GuildSubCommand{
 	}
 
 	@Override
-	public void run(Options options, GuildInteraction ia){
+	public void run(Options options, GuildCommandContext ctx){
 		var role = options.getRole("role");
-		var settings = ia.get(SettingsModule.class);
-		if(settings.getSelfAssignableRoles(ia.getGuildId()).stream().noneMatch(r -> r.getRoleId() == role.getIdLong())){
-			ia.error("This role is not self assignable");
+		var settings = ctx.get(SettingsModule.class);
+		if(settings.getSelfAssignableRoles(ctx.getGuildId()).stream().noneMatch(r -> r.getRoleId() == role.getIdLong())){
+			ctx.error("This role is not self assignable");
 			return;
 		}
-		settings.removeSelfAssignableRoles(ia.getGuildId(), Collections.singleton(role.getIdLong()));
-		ia.reply("Removed self assignable role");
+		settings.removeSelfAssignableRoles(ctx.getGuildId(), Collections.singleton(role.getIdLong()));
+		ctx.reply("Removed self assignable role");
 	}
 
 }

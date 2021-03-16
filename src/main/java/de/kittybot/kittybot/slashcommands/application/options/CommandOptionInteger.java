@@ -3,20 +3,23 @@ package de.kittybot.kittybot.slashcommands.application.options;
 import de.kittybot.kittybot.objects.exceptions.OptionParseException;
 import de.kittybot.kittybot.slashcommands.application.CommandOption;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionType;
+import net.dv8tion.jda.api.entities.Command;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.exceptions.ParsingException;
 
 public class CommandOptionInteger extends CommandOption<Integer>{
 
 	public CommandOptionInteger(String name, String description){
-		super(CommandOptionType.INTEGER, name, description);
+		super(Command.OptionType.INTEGER, name, description);
 	}
 
 	@Override
-	public Integer parseValue(Object value){
+	public Integer parseValue(SlashCommandEvent.OptionData optionData){
 		try{
-			return (int) value;
+			return (int) optionData.getAsLong();
 		}
-		catch(ClassCastException e){
-			throw new OptionParseException("Failed to parse " + value + " as integer");
+		catch(ParsingException | ClassCastException e){
+			throw new OptionParseException(optionData, "number");
 		}
 	}
 

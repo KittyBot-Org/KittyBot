@@ -1,11 +1,13 @@
 package de.kittybot.kittybot.commands.info;
 
+import de.kittybot.kittybot.slashcommands.CommandContext;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.Category;
-import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
+import de.kittybot.kittybot.slashcommands.application.OptionChoice;
 import de.kittybot.kittybot.slashcommands.application.RunCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionLong;
-import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.utils.MessageUtils;
 
 @SuppressWarnings("unused")
@@ -17,14 +19,14 @@ public class ServerBannerCommand extends RunCommand{
 			new CommandOptionLong("server-id", "The server id to get the banner from"),
 			new CommandOptionInteger("size", "The image size")
 				.addChoices(
-					new CommandOptionChoice<>("16", 16),
-					new CommandOptionChoice<>("32", 32),
-					new CommandOptionChoice<>("64", 64),
-					new CommandOptionChoice<>("128", 128),
-					new CommandOptionChoice<>("256", 256),
-					new CommandOptionChoice<>("512", 512),
-					new CommandOptionChoice<>("1024", 1024),
-					new CommandOptionChoice<>("2048", 2048)
+					new OptionChoice("16", 16),
+					new OptionChoice("32", 32),
+					new OptionChoice("64", 64),
+					new OptionChoice("128", 128),
+					new OptionChoice("256", 256),
+					new OptionChoice("512", 512),
+					new OptionChoice("1024", 1024),
+					new OptionChoice("2048", 2048)
 				)
 		);
 	}

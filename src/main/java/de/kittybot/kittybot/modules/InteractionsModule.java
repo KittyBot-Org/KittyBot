@@ -27,15 +27,11 @@ import java.util.stream.Collectors;
 @SuppressWarnings("unused")
 public class InteractionsModule extends Module{
 
-	public static final Route INTERACTION_RESPONSE = Route.custom(Method.POST, "interactions/{interaction.id}/{interaction.token}/callback");
-	public static final Route INTERACTION_FOLLOW_UP = Route.custom(Method.POST, "webhooks/{application.id}/{interaction.token}");
 	private static final Logger LOG = LoggerFactory.getLogger(InteractionsModule.class);
-	private static final Set<Class<? extends Module>> DEPENDENCIES = Set.of(CommandsModule.class);
-	private static final String INTERACTION_CREATE = "INTERACTION_CREATE";
 
 	@Override
 	public Set<Class<? extends Module>> getDependencies(){
-		return DEPENDENCIES;
+		return Set.of(CommandsModule.class);
 	}
 
 	@Override

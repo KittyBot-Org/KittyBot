@@ -4,15 +4,10 @@ import de.kittybot.kittybot.modules.CommandsModule;
 import de.kittybot.kittybot.slashcommands.CommandContext;
 import de.kittybot.kittybot.slashcommands.GuildCommandContext;
 import de.kittybot.kittybot.slashcommands.Options;
-import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
+import de.kittybot.kittybot.slashcommands.application.OptionChoice;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionLong;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
-
-import de.kittybot.kittybot.utils.Colors;
-import net.dv8tion.jda.api.EmbedBuilder;
-
-import java.util.concurrent.TimeUnit;
 
 public class DeployCommand extends SubCommand{
 
@@ -21,8 +16,8 @@ public class DeployCommand extends SubCommand{
 		addOptions(
 			new CommandOptionInteger("environment", "In which environment should the commands get deployed").required()
 				.addChoices(
-					new CommandOptionChoice<>("global", 0),
-					new CommandOptionChoice<>("guild", 1)
+					new OptionChoice("global", 0),
+					new OptionChoice("guild", 1)
 				),
 			new CommandOptionLong("guild", "In which guild commands should get deployed")
 		);

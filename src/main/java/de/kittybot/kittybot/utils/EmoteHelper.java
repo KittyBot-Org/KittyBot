@@ -35,13 +35,13 @@ public class EmoteHelper{
 		ctx.replyEphemeral("processing...");
 		try{
 			if(inputStream.available() > MAX_EMOTE_SIZE){
-				ctx.getThread().sendMessage("").addEmbeds(ctx.getEmbed().setColor(Color.RED).setDescription("The image provided is bigger than 256kb").build()).queue();
+				ctx.getHook().sendMessage("").addEmbeds(ctx.getEmbed().setColor(Color.RED).setDescription("The image provided is bigger than 256kb").build()).queue();
 				return;
 			}
-			ctx.getGuild().createEmote(name, Icon.from(inputStream)).queue(success -> ctx.getThread().sendMessage("").addEmbeds(ctx.getEmbed().setColor(Color.RED).setDescription("Stole emote: " + success.getAsMention()).build()).queue(), failure -> ctx.getThread().sendMessage("").addEmbeds(ctx.getEmbed().setColor(Color.RED).setDescription("Error creating emote: " + failure.getMessage()).build()).queue());
+			ctx.getGuild().createEmote(name, Icon.from(inputStream)).queue(success -> ctx.getHook().sendMessage("").addEmbeds(ctx.getEmbed().setColor(Color.RED).setDescription("Stole emote: " + success.getAsMention()).build()).queue(), failure -> ctx.getHook().sendMessage("").addEmbeds(ctx.getEmbed().setColor(Color.RED).setDescription("Error creating emote: " + failure.getMessage()).build()).queue());
 		}
 		catch(IOException e){
-			ctx.getThread().sendMessage("").addEmbeds(ctx.getEmbed().setColor(Color.RED).setDescription("Error creating emote please try again\nError: " + e.getMessage()).build()).queue();
+			ctx.getHook().sendMessage("").addEmbeds(ctx.getEmbed().setColor(Color.RED).setDescription("Error creating emote please try again\nError: " + e.getMessage()).build()).queue();
 		}
 	}
 

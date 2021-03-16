@@ -1,8 +1,10 @@
 package de.kittybot.kittybot.slashcommands;
 
+import de.kittybot.kittybot.slashcommands.application.CommandOption;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.internal.entities.InviteImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,25 +16,28 @@ import java.util.stream.Stream;
 public class Options{
 
 	private final Map<String, SlashCommandEvent.OptionData> options;
+	private final Map<String, CommandOption<?>> definedOptions;
 
-	public Options(List<SlashCommandEvent.OptionData> options){
+	public Options(List<SlashCommandEvent.OptionData> options, List<CommandOption<?>> definedOptions){
 		this.options = options.stream().collect(Collectors.toMap(SlashCommandEvent.OptionData::getName, Function.identity()));
+		this.definedOptions = definedOptions.stream().collect(Collectors.toMap(CommandOption::getName, Function.identity()));
 	}
 
-	public int size(){
-		return this.options.size();
-	}
-
-	public boolean isEmpty(){
-		return this.options.isEmpty();
+	public boolean has(String name){
+		return this.options.containsKey(name);
 	}
 
 	public SlashCommandEvent.OptionData get(String name){
 		return this.options.get(name);
 	}
 
+	@SuppressWarnings("unchecked")
+	public <T> T get(String name, Class<T> clazz){
+		return (T) this.definedOptions.get(name).parseValue(get(name));
+	}
+
 	public String getString(String name){
-		return get(name).getAsString();
+		return get(name, String.class);
 	}
 
 	public String getString(String name, String defaultString){
@@ -40,7 +45,7 @@ public class Options{
 	}
 
 	public int getInt(String name){
-		return (int) get(name).getAsLong();
+		return get(name, Integer.class);
 	}
 
 	public int getInt(String name, int defaultInt){
@@ -48,11 +53,15 @@ public class Options{
 	}
 
 	public float getFloat(String name){
-		return 0f;// TODO
+		return get(name, Float.class);
+	}
+
+	public float getFloat(String name, float defaultFloat){
+		return has(name) ? getFloat(name) : defaultFloat;
 	}
 
 	public boolean getBoolean(String name){
-		return get(name).getAsBoolean();
+		return get(name, Boolean.class);
 	}
 
 	public boolean getBoolean(String name, boolean defaultBoolean){
@@ -64,7 +73,7 @@ public class Options{
 	}
 
 	public Long getLong(String name){
-		return get(name).getAsLong();
+		return get(name, Long.class);
 	}
 
 	public long getLong(String name, long defaultLong){
@@ -79,21 +88,20 @@ public class Options{
 		return has(name) ? getUser(name) : user;
 	}
 
-	public GuildChannel getChannel(String name){
-		return null;// TODO get(name).getAsLong();
+	public MessageChannel getMessageChannel(String name){
+		return get(name, MessageChannel.class);
 	}
 
-	public TextChannel getTextChannel(String name){
-		return null;//TODO
-		//throw new OptionParseException("Please provide a valid text channel");
+	public GuildChannel getGuildChannel(String name){
+		return get(name, GuildChannel.class);
 	}
 
 	public Role getRole(String name){
-		return get(name).getAsRole();
+		return get(name, Role.class);
 	}
 
 	public LocalDateTime getTime(String name){
-		return null;//TODO
+		return get(name, LocalDateTime.class);
 	}
 
 	public RestAction<ListedEmote> getEmote(Guild guild, String name){
@@ -101,31 +109,15 @@ public class Options{
 	}
 
 	public long getEmoteId(String name){
-		/*var emote = getValue(name, String.class);
-		var matcher = Message.MentionType.EMOTE.getPattern().matcher(emote);
-		if(matcher.matches()){
-			return MiscUtil.parseSnowflake(matcher.group(2));
-		}
-		throw new OptionParseException("Failed to parse emote id");*/
-		return get(name).getAsLong();
+		return get(name, Long.class);
 	}
 
 	public String getEmoteName(String name){
-		/*var emote = getValue(name, String.class);
-		var matcher = Message.MentionType.EMOTE.getPattern().matcher(emote);
-		if(matcher.matches()){
-			return matcher.group(1);
-		}
-		throw new OptionParseException("Failed to parse emote name");*/
-		return get(name).getAsString();
+		return get(name, String.class);
 	}
 
 	public boolean getEmoteAnimated(String name){
 		return get(name).getAsString().startsWith("<a:");
-	}
-
-	public boolean has(String name){
-		return this.options.containsKey(name);
 	}
 
 	public Map<String, SlashCommandEvent.OptionData> getMap(){

@@ -4,8 +4,8 @@ import de.kittybot.kittybot.modules.StreamModule;
 import de.kittybot.kittybot.objects.streams.StreamType;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 
 public class RemoveCommand extends GuildSubCommand{
 
@@ -17,15 +17,15 @@ public class RemoveCommand extends GuildSubCommand{
 	}
 
 	@Override
-	public void run(Options options, GuildInteraction ia){
+	public void run(Options options, GuildCommandContext ctx){
 		var type = StreamType.TWITCH;//StreamType.byId(options.getInt("service"));
 		var username = options.getString("username");
-		var success = ia.get(StreamModule.class).remove(username, ia.getGuildId(), type);
+		var success = ctx.get(StreamModule.class).remove(username, ctx.getGuildId(), type);
 		if(!success){
-			ia.error("Could not find stream announcement for " + type.getName() + " with username: " + username + ". Check your spelling");
+			ctx.error("Could not find stream announcement for " + type.getName() + " with username: " + username + ". Check your spelling");
 			return;
 		}
-		ia.reply("Stream announcement for " + type.getName() + " with username: " + username + " removed");
+		ctx.reply("Stream announcement for " + type.getName() + " with username: " + username + " removed");
 	}
 
 }

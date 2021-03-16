@@ -6,7 +6,7 @@ import de.kittybot.kittybot.objects.module.Modules;
 import de.kittybot.kittybot.utils.Colors;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.commands.CommandThread;
+import net.dv8tion.jda.api.commands.CommandHook;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
@@ -31,8 +31,8 @@ public class CommandContext{
 		return this.event;
 	}
 
-	public CommandThread getThread() {
-		return this.event.getThread();
+	public CommandHook getHook() {
+		return this.event.getHook();
 	}
 
 	public Options getOptions(){

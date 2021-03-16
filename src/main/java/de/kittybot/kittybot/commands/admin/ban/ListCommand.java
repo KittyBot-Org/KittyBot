@@ -1,8 +1,8 @@
 package de.kittybot.kittybot.commands.admin.ban;
 
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 
 import java.util.stream.Collectors;
@@ -14,14 +14,14 @@ public class ListCommand extends GuildSubCommand{
 	}
 
 	@Override
-	public void run(Options options, GuildInteraction ia){
-		ia.getGuild().retrieveBanList().queue(bans -> {
+	public void run(Options options, GuildCommandContext ctx){
+		ctx.getGuild().retrieveBanList().queue(bans -> {
 				if(bans.isEmpty()){
-					ia.reply("There are no banned users yet");
+					ctx.reply("There are no banned users yet");
 					return;
 				}
-				ia.reply("**Banned Users:**\n" + bans.stream().map(ban -> MarkdownSanitizer.escape(ban.getUser().getAsTag()) + "(`" + ban.getUser().getId() + "`)" + " - " + ban.getReason()).collect(Collectors.joining("\n")));
-			}, error -> ia.error("I was not able to retrieve the bans. Please give me the `ban members` permission")
+				ctx.reply("**Banned Users:**\n" + bans.stream().map(ban -> MarkdownSanitizer.escape(ban.getUser().getAsTag()) + "(`" + ban.getUser().getId() + "`)" + " - " + ban.getReason()).collect(Collectors.joining("\n")));
+			}, error -> ctx.error("I was not able to retrieve the bans. Please give me the `ban members` permission")
 		);
 	}
 

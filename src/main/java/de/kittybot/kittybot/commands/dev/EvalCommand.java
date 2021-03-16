@@ -6,8 +6,6 @@ import de.kittybot.kittybot.slashcommands.CommandContext;
 import de.kittybot.kittybot.slashcommands.GuildCommandContext;
 import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
-import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
-import net.dv8tion.jda.api.EmbedBuilder;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -63,7 +61,7 @@ public class EvalCommand extends RunCommand{
 			status = "Failed";
 		}
 		ctx.acknowledge(true).queue();
-		ctx.getThread().sendMessage("").addEmbeds(ctx.getEmbed()
+		ctx.getHook().sendMessage("").addEmbeds(ctx.getEmbed()
 			.setTitle("Eval")
 			.setColor(color)
 			.addField("Status:", status, true)

@@ -3,19 +3,22 @@ package de.kittybot.kittybot.slashcommands.application.options;
 import de.kittybot.kittybot.objects.exceptions.OptionParseException;
 import de.kittybot.kittybot.slashcommands.application.CommandOption;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionType;
+import net.dv8tion.jda.api.entities.Command;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.exceptions.ParsingException;
 
 public class CommandOptionBoolean extends CommandOption<Boolean>{
 
 	public CommandOptionBoolean(String name, String description){
-		super(CommandOptionType.BOOLEAN, name, description);
+		super(Command.OptionType.BOOLEAN, name, description);
 	}
 
-	public Boolean parseValue(Object value){
+	public Boolean parseValue(SlashCommandEvent.OptionData optionData){
 		try{
-			return (boolean) value;
+			return optionData.getAsBoolean();
 		}
-		catch(ClassCastException e){
-			throw new OptionParseException("Failed to parse " + value + " as true/false");
+		catch(ParsingException e){
+			throw new OptionParseException(optionData, "true/false");
 		}
 	}
 

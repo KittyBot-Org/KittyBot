@@ -5,7 +5,7 @@ import de.kittybot.kittybot.objects.enums.Environment;
 import de.kittybot.kittybot.slashcommands.CommandContext;
 import de.kittybot.kittybot.slashcommands.GuildCommandContext;
 import de.kittybot.kittybot.slashcommands.Options;
-import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
+import de.kittybot.kittybot.slashcommands.application.OptionChoice;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionLong;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
@@ -17,8 +17,8 @@ public class RemoveCommand extends SubCommand{
 		addOptions(
 			new CommandOptionInteger("environment", "In which environment should the commands get removed").required()
 				.addChoices(
-					new CommandOptionChoice<>("global", 0),
-					new CommandOptionChoice<>("guild", 1)
+					new OptionChoice("global", 0),
+					new OptionChoice("guild", 1)
 				),
 			new CommandOptionLong("guild", "In which guild commands should get removed")
 		);

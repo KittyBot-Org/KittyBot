@@ -1,9 +1,10 @@
 package de.kittybot.kittybot.slashcommands.application.options;
 
 import de.kittybot.kittybot.slashcommands.application.CommandOption;
-import de.kittybot.kittybot.slashcommands.application.CommandOptionType;
 import de.kittybot.kittybot.slashcommands.application.PermissionHolder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Command;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.utils.data.DataObject;
 
 import java.util.Arrays;
@@ -18,7 +19,7 @@ public abstract class SubBaseCommand extends CommandOption<Void> implements Perm
 	private boolean devOnly;
 
 	public SubBaseCommand(String name, String description, boolean guildOnly){
-		super(CommandOptionType.SUB_COMMAND, name, description);
+		super(Command.OptionType.SUB_COMMAND, name, description);
 		this.guildOnly = guildOnly;
 		this.devOnly = false;
 		this.permissions = new HashSet<>();
@@ -49,13 +50,13 @@ public abstract class SubBaseCommand extends CommandOption<Void> implements Perm
 	}
 
 	@Override
-	public Void parseValue(Object value){
+	public Void parseValue(SlashCommandEvent.OptionData optionData){
 		throw new UnsupportedOperationException("This is SubCommand");
 	}
 
 	@Override
-	public DataObject toDetailedJSON(){
-		return super.toDetailedJSON()
+	public DataObject toJSON(){
+		return super.toJSON()
 			.put("permissions", this.permissions.stream().map(Permission::getName).collect(Collectors.toList()))
 			.put("dev_only", this.devOnly);
 	}

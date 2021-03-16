@@ -5,7 +5,7 @@ import de.kittybot.kittybot.objects.music.RepeatMode;
 import de.kittybot.kittybot.slashcommands.GuildCommandContext;
 import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.Category;
-import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
+import de.kittybot.kittybot.slashcommands.application.OptionChoice;
 import de.kittybot.kittybot.slashcommands.application.RunGuildCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 
@@ -17,9 +17,9 @@ public class RepeatCommand extends RunGuildCommand{
 		addOptions(
 			new CommandOptionString("type", "The repeat mode").required()
 				.addChoices(
-					new CommandOptionChoice<>("off", "OFF"),
-					new CommandOptionChoice<>("song", "SONG"),
-					new CommandOptionChoice<>("queue", "QUEUE")
+					new OptionChoice("off", "OFF"),
+					new OptionChoice("song", "SONG"),
+					new OptionChoice("queue", "QUEUE")
 				)
 		);
 	}

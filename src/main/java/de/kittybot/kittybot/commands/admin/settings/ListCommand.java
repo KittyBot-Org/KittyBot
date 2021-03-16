@@ -3,8 +3,8 @@ package de.kittybot.kittybot.commands.admin.settings;
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.objects.enums.Emoji;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.MessageUtils;
 
@@ -15,10 +15,10 @@ public class ListCommand extends GuildSubCommand{
 	}
 
 	@Override
-	public void run(Options options, GuildInteraction ia){
-		var guildId = ia.getGuildId();
-		var settings = ia.get(SettingsModule.class).getSettings(guildId);
-		ia.reply(builder -> builder
+	public void run(Options options, GuildCommandContext ctx){
+		var guildId = ctx.getGuildId();
+		var settings = ctx.get(SettingsModule.class).getSettings(guildId);
+		ctx.reply(builder -> builder
 				.setAuthor("Guild settings:", Config.ORIGIN_URL + "/guilds/" + guildId + "/dashboard", Emoji.SETTINGS.getUrl())
 				.addField("Announcement Channel: ", settings.getAnnouncementChannel(), false)
 				.addField("Join Messages: " + MessageUtils.getBoolEmote(settings.areJoinMessagesEnabled()), settings.getJoinMessage(), false)

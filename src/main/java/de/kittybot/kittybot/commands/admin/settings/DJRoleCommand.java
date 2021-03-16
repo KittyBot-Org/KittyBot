@@ -3,8 +3,8 @@ package de.kittybot.kittybot.commands.admin.settings;
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionRole;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 
 public class DJRoleCommand extends GuildSubCommand{
 
@@ -16,10 +16,10 @@ public class DJRoleCommand extends GuildSubCommand{
 	}
 
 	@Override
-	public void run(Options options, GuildInteraction ia){
+	public void run(Options options, GuildCommandContext ctx){
 		var role = options.getRole("role");
-		ia.get(SettingsModule.class).setDjRoleId(ia.getGuildId(), role.getIdLong());
-		ia.reply("DJ Role set to: " + role.getAsMention());
+		ctx.get(SettingsModule.class).setDjRoleId(ctx.getGuildId(), role.getIdLong());
+		ctx.reply("DJ Role set to: " + role.getAsMention());
 	}
 
 }

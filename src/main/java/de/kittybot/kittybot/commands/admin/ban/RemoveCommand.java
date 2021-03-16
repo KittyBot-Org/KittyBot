@@ -3,8 +3,8 @@ package de.kittybot.kittybot.commands.admin.ban;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionUser;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 
 public class RemoveCommand extends GuildSubCommand{
 
@@ -17,16 +17,16 @@ public class RemoveCommand extends GuildSubCommand{
 	}
 
 	@Override
-	public void run(Options options, GuildInteraction ia){
+	public void run(Options options, GuildCommandContext ctx){
 		var user = options.getUser("user");
 		if(user == null){
-			ia.error("Please provide a valid user id");
+			ctx.error("Please provide a valid user id");
 			return;
 		}
-		var reason = options.has("reason") ? options.getString("reason") : "Unbanned by " + ia.getMember().getAsMention();
-		ia.getGuild().unban(user).reason(reason).queue(success ->
-				ia.reply("Unbanned " + user.getAsMention() + " with reason: " + reason),
-			error -> ia.error("Failed to unban " + user.getAsMention() + " for reason: `" + error.getMessage() + "`")
+		var reason = options.has("reason") ? options.getString("reason") : "Unbanned by " + ctx.getMember().getAsMention();
+		ctx.getGuild().unban(user).reason(reason).queue(success ->
+				ctx.reply("Unbanned " + user.getAsMention() + " with reason: " + reason),
+			error -> ctx.error("Failed to unban " + user.getAsMention() + " for reason: `" + error.getMessage() + "`")
 		);
 	}
 

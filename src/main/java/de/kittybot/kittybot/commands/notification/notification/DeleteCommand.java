@@ -3,8 +3,8 @@ package de.kittybot.kittybot.commands.notification.notification;
 import de.kittybot.kittybot.modules.NotificationModule;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 
 public class DeleteCommand extends GuildSubCommand{
 
@@ -16,13 +16,13 @@ public class DeleteCommand extends GuildSubCommand{
 	}
 
 	@Override
-	public void run(Options options, GuildInteraction ia){
+	public void run(Options options, GuildCommandContext ctx){
 		var notificationId = options.getLong("notification-id");
-		if(ia.get(NotificationModule.class).delete(notificationId, ia.getUserId())){
-			ia.reply("Deleted your notification with id `" + notificationId + "`");
+		if(ctx.get(NotificationModule.class).delete(notificationId, ctx.getUserId())){
+			ctx.reply("Deleted your notification with id `" + notificationId + "`");
 			return;
 		}
-		ia.error("Notification either does not exist or does not belong to you");
+		ctx.error("Notification either does not exist or does not belong to you");
 	}
 
 }

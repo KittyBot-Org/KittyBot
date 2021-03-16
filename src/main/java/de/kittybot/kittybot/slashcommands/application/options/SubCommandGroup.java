@@ -1,9 +1,10 @@
 package de.kittybot.kittybot.slashcommands.application.options;
 
 import de.kittybot.kittybot.slashcommands.application.CommandOption;
-import de.kittybot.kittybot.slashcommands.application.CommandOptionType;
 import de.kittybot.kittybot.slashcommands.application.PermissionHolder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Command;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.utils.data.DataObject;
 
 import java.util.Arrays;
@@ -18,7 +19,7 @@ public class SubCommandGroup extends CommandOption<Void> implements PermissionHo
 	private boolean devOnly;
 
 	public SubCommandGroup(String name, String description){
-		super(CommandOptionType.SUB_COMMAND_GROUP, name, description);
+		super(Command.OptionType.SUB_COMMAND_GROUP, name, description);
 		this.guildOnly = false;
 		this.devOnly = false;
 		this.permissions = new HashSet<>();
@@ -55,13 +56,13 @@ public class SubCommandGroup extends CommandOption<Void> implements PermissionHo
 	}
 
 	@Override
-	public Void parseValue(Object value){
+	public Void parseValue(SlashCommandEvent.OptionData optionData){
 		throw new UnsupportedOperationException("This is SubCommand group");
 	}
 
 	@Override
-	public DataObject toDetailedJSON(){
-		return super.toDetailedJSON()
+	public DataObject toJSON(){
+		return super.toJSON()
 			.put("permissions", this.permissions.stream().map(Permission::getName).collect(Collectors.toList()))
 			.put("dev_only", this.devOnly);
 	}

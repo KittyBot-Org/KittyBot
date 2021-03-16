@@ -28,10 +28,9 @@ repositories {
 
 dependencies {
     // discord/jda related
-    implementation('net.dv8tion:JDA:4.2.0_241') {
+    implementation('com.github.DV8FromTheWorld:JDA:8785713861') {
         exclude group: 'club.minnced', module: 'opus-java'
-    }*/
-    implementation 'com.github.DV8FromTheWorld:JDA:4c3955fdd3'
+    }
     implementation 'com.jagrosh:jda-utilities:3.0.5'
     implementation 'club.minnced:discord-webhooks:0.5.6'
     implementation 'com.github.caneleex:BotListHandler:1.0.12'

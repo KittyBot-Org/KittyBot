@@ -2,8 +2,8 @@ package de.kittybot.kittybot.commands.roles.roles.groups;
 
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 
 import java.util.stream.Collectors;
 
@@ -14,14 +14,14 @@ public class ListCommand extends GuildSubCommand{
 	}
 
 	@Override
-	public void run(Options options, GuildInteraction ia){
-		var settings = ia.get(SettingsModule.class).getSettings(ia.getGuildId());
+	public void run(Options options, GuildCommandContext ctx){
+		var settings = ctx.get(SettingsModule.class).getSettings(ctx.getGuildId());
 		var groups = settings.getSelfAssignableRoleGroups();
 		if(groups.isEmpty()){
-			ia.error("There are not groups defined.\nYou can add them with `/groups add <name> <max-roles>`");
+			ctx.error("There are not groups defined.\nYou can add them with `/groups add <name> <max-roles>`");
 			return;
 		}
-		ia.reply("**Self assignable role groups:**\n\n" + groups.stream().map(group -> "**Name:** `" + group.getName() + "` **Max Roles:** `" + group.getFormattedMaxRoles() + "`").collect(Collectors.joining("\n")));
+		ctx.reply("**Self assignable role groups:**\n\n" + groups.stream().map(group -> "**Name:** `" + group.getName() + "` **Max Roles:** `" + group.getFormattedMaxRoles() + "`").collect(Collectors.joining("\n")));
 	}
 
 }

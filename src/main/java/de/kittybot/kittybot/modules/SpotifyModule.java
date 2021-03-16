@@ -120,7 +120,7 @@ public class SpotifyModule extends Module{
 					return track;
 				}).filter(Objects::nonNull).collect(Collectors.toList());
 				if(tracks.isEmpty()){
-					ctx.getThread().sendMessage("No tracks on youtube found").queue();
+					ctx.getHook().sendMessage("No tracks on youtube found").queue();
 					return;
 				}
 				manager.connectToChannel(ctx);
@@ -129,11 +129,11 @@ public class SpotifyModule extends Module{
 				if(embed == null){
 					return;
 				}
-				ctx.getThread().editOriginal("").addEmbeds(embed)
+				ctx.getHook().editOriginal("").addEmbeds(embed)
 					.queue(success -> manager.getScheduler().tryPlay(toPlay), error -> manager.getScheduler().tryPlay(toPlay));
 			})
 			.exceptionally(error -> {
-				ctx.getThread().editOriginal("")
+				ctx.getHook().editOriginal("")
 					.addEmbeds(ctx.getEmbed().setColor(Color.RED).setDescription("Something went wrong while fetching your tracks: \n" + error.getMessage()).build()).queue();
 				return null;
 			});

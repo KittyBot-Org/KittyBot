@@ -4,22 +4,23 @@ import de.kittybot.kittybot.objects.exceptions.OptionParseException;
 import de.kittybot.kittybot.slashcommands.application.CommandOption;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionType;
 import net.dv8tion.jda.api.entities.Command;
+import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.exceptions.ParsingException;
 
-public class CommandOptionFloat extends CommandOption<Float>{
+public class CommandOptionGuildChannel extends CommandOption<GuildChannel>{
 
-	public CommandOptionFloat(String name, String description){
-		super(Command.OptionType.STRING, name, description);
+	public CommandOptionGuildChannel(String name, String description){
+		super(Command.OptionType.CHANNEL, name, description);
 	}
 
 	@Override
-	public Float parseValue(SlashCommandEvent.OptionData optionData){
+	public GuildChannel parseValue(SlashCommandEvent.OptionData optionData){
 		try{
-			return Float.parseFloat(optionData.getAsString());
+			return optionData.getAsGuildChannel();
 		}
-		catch(ParsingException | NumberFormatException e){
-			throw new OptionParseException(optionData, "float");
+		catch(ParsingException e){
+			throw new OptionParseException(optionData, "server channel");
 		}
 	}
 

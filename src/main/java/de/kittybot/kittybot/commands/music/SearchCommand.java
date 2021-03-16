@@ -3,7 +3,7 @@ package de.kittybot.kittybot.commands.music;
 import de.kittybot.kittybot.slashcommands.GuildCommandContext;
 import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.Category;
-import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
+import de.kittybot.kittybot.slashcommands.application.OptionChoice;
 import de.kittybot.kittybot.slashcommands.application.RunGuildCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.utils.annotations.Ignore;
@@ -18,8 +18,8 @@ public class SearchCommand extends RunGuildCommand{
 			new CommandOptionString("search-term", "A search-term to search for").required(),
 			new CommandOptionString("search-provider", "Which search provider use")
 				.addChoices(
-					new CommandOptionChoice<>("youtube", "yt"),
-					new CommandOptionChoice<>("soundcloud", "sc")
+					new OptionChoice("youtube", "yt"),
+					new OptionChoice("soundcloud", "sc")
 				)
 		);
 	}

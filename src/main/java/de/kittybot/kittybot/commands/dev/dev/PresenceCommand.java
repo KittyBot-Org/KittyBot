@@ -2,7 +2,7 @@ package de.kittybot.kittybot.commands.dev.dev;
 
 import de.kittybot.kittybot.slashcommands.CommandContext;
 import de.kittybot.kittybot.slashcommands.Options;
-import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
+import de.kittybot.kittybot.slashcommands.application.OptionChoice;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -14,18 +14,18 @@ public class PresenceCommand extends SubCommand{
 		super("presence", "Set the presence & activity");
 		addOptions(
 			new CommandOptionString("status", "The online status").addChoices(
-				new CommandOptionChoice<>(OnlineStatus.ONLINE),
-				new CommandOptionChoice<>(OnlineStatus.DO_NOT_DISTURB),
-				new CommandOptionChoice<>(OnlineStatus.IDLE),
-				new CommandOptionChoice<>(OnlineStatus.OFFLINE),
-				new CommandOptionChoice<>(OnlineStatus.INVISIBLE)
+				new OptionChoice(OnlineStatus.ONLINE),
+				new OptionChoice(OnlineStatus.DO_NOT_DISTURB),
+				new OptionChoice(OnlineStatus.IDLE),
+				new OptionChoice(OnlineStatus.OFFLINE),
+				new OptionChoice(OnlineStatus.INVISIBLE)
 			),
 			new CommandOptionString("activity", "The online status").addChoices(
-				new CommandOptionChoice<>(Activity.ActivityType.COMPETING),
-				new CommandOptionChoice<>(Activity.ActivityType.LISTENING),
-				new CommandOptionChoice<>(Activity.ActivityType.WATCHING),
-				new CommandOptionChoice<>(Activity.ActivityType.STREAMING),
-				new CommandOptionChoice<>(Activity.ActivityType.DEFAULT)
+				new OptionChoice(Activity.ActivityType.COMPETING),
+				new OptionChoice(Activity.ActivityType.LISTENING),
+				new OptionChoice(Activity.ActivityType.WATCHING),
+				new OptionChoice(Activity.ActivityType.STREAMING),
+				new OptionChoice(Activity.ActivityType.DEFAULT)
 			),
 			new CommandOptionString("message", "The activity message"),
 			new CommandOptionString("streaming-url", "The streaming url if you chose streaming as activity")

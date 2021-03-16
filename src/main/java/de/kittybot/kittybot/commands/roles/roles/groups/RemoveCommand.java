@@ -3,8 +3,8 @@ package de.kittybot.kittybot.commands.roles.roles.groups;
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import net.dv8tion.jda.api.Permission;
 
 import java.util.Collections;
@@ -20,16 +20,16 @@ public class RemoveCommand extends GuildSubCommand{
 	}
 
 	@Override
-	public void run(Options options, GuildInteraction ia){
+	public void run(Options options, GuildCommandContext ctx){
 		var name = options.getString("name");
-		var settings = ia.get(SettingsModule.class);
-		var group = settings.getSelfAssignableRoleGroups(ia.getGuildId()).stream().filter(g -> g.getName().equalsIgnoreCase(name)).findFirst();
+		var settings = ctx.get(SettingsModule.class);
+		var group = settings.getSelfAssignableRoleGroups(ctx.getGuildId()).stream().filter(g -> g.getName().equalsIgnoreCase(name)).findFirst();
 		if(group.isEmpty()){
-			ia.error("Group with name `" + name + "` not found");
+			ctx.error("Group with name `" + name + "` not found");
 			return;
 		}
-		settings.removeSelfAssignableRoleGroups(ia.getGuildId(), Collections.singleton(group.get().getId()));
-		ia.reply("Removed group with name `" + name + "`");
+		settings.removeSelfAssignableRoleGroups(ctx.getGuildId(), Collections.singleton(group.get().getId()));
+		ctx.reply("Removed group with name `" + name + "`");
 	}
 
 }

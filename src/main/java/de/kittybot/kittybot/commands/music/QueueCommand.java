@@ -5,7 +5,7 @@ import de.kittybot.kittybot.objects.music.SearchProvider;
 import de.kittybot.kittybot.slashcommands.GuildCommandContext;
 import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.Category;
-import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
+import de.kittybot.kittybot.slashcommands.application.OptionChoice;
 import de.kittybot.kittybot.slashcommands.application.RunGuildCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.utils.MessageUtils;
@@ -21,8 +21,8 @@ public class QueueCommand extends RunGuildCommand{
 			new CommandOptionString("query", "A link or search query to play from"),
 			new CommandOptionString("search-provider", "Which search provider use")
 				.addChoices(
-					new CommandOptionChoice<>(SearchProvider.YOUTUBE),
-					new CommandOptionChoice<>(SearchProvider.SOUNDCLOUD)/*,
+					new OptionChoice(SearchProvider.YOUTUBE),
+					new OptionChoice(SearchProvider.SOUNDCLOUD)/*,
 					new CommandOptionChoice<>("spotify", "sp")*/
 				)
 		);

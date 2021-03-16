@@ -29,7 +29,7 @@ public class TagCommand extends RunGuildCommand{
 			ctx.error("Tag with name `" + tagName + "` not found");
 			return;
 		}
-		ctx.getEvent().reply(tag.getContent()).setAllowedMentions(Set.of(Message.MentionType.EMOTE, Message.MentionType.CHANNEL)).queue();
+		ctx.getEvent().reply(tag.getContent()).allowedMentions(Set.of(Message.MentionType.EMOTE, Message.MentionType.CHANNEL)).queue();
 	}
 
 }

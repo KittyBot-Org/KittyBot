@@ -1,6 +1,7 @@
 package de.kittybot.kittybot.slashcommands.application;
 
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
 
@@ -70,24 +71,22 @@ public abstract class Command implements CommandOptionsHolder, PermissionHolder{
 		return this.options;
 	}
 
-	public DataObject toJSON(){
-		var json = DataObject.empty()
-			.put("name", this.name)
-			.put("description", this.description);
-		if(!this.options.isEmpty()){
-			json.put("options", CommandOption.toJSON(this.options));
+	public CommandUpdateAction.CommandData toData(){
+		var data = new CommandUpdateAction.CommandData(this.name, this.description);
+		for(var option : this.options){
+			data.addOption(option.toData());
 		}
-		return json;
+		return data;
 	}
 
-	public DataObject toDetailedJSON(){
+	public DataObject toJSON(){
 		var json = DataObject.empty()
 			.put("name", this.name)
 			.put("description", this.description)
 			.put("category", this.category.getName())
 			.put("permissions", getPermissionArray());
 		if(!this.options.isEmpty()){
-			json.put("options", CommandOption.toDetailedJSON(this.options));
+			json.put("options", this.options.stream().map(CommandOption::toData).collect(Collectors.toList()));
 		}
 		return json;
 	}
