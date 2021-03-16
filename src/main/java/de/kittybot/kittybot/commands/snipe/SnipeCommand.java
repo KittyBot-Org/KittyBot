@@ -31,8 +31,7 @@ public class SnipeCommand extends RunGuildCommand{
 		}
 		ia.getJDA().retrieveUserById(lastDeletedMessage.getAuthorId()).queue(user ->
 			ia.reply(builder -> {
-				builder
-					.setAuthor("Sniped " + user.getName(), lastDeletedMessage.getJumpUrl())
+				builder.setAuthor("Sniped " + user.getName(), lastDeletedMessage.getJumpUrl())
 					.setDescription(lastDeletedMessage.getContent())
 					.setFooter("from " + user.getName(), user.getEffectiveAvatarUrl())
 					.setTimestamp(lastDeletedMessage.getTimeCreated());

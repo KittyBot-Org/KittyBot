@@ -14,6 +14,7 @@ public enum Category{
 	NEKO(Emoji.NEKO, "Neko"),
 	ADMIN(Emoji.ADMIN, "Admin"),
 	NOTIFICATION(Emoji.NOTIFICATION, "Notification"),
+	ANNOUNCEMENT(Emoji.ANNOUNCEMENT, "Stream Announcement"),
 	TAGS(Emoji.TAGS, "Tags"),
 	DEV(Emoji.DEV, "Developer");
 

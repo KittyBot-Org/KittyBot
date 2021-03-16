@@ -8,12 +8,10 @@ import de.kittybot.kittybot.slashcommands.application.Command;
 public class DevCommand extends Command{
 
 	public DevCommand(){
-		super("dev", "Collection of dev commands", Category.DEV);
+		super("dev", "Collection of some dev commands", Category.DEV);
 		addOptions(
-			new EvalCommand(),
 			new DeployCommand(),
 			new RemoveCommand(),
-			new StatsCommand(),
 			new TestCommand(),
 			new PresenceCommand()
 		);
