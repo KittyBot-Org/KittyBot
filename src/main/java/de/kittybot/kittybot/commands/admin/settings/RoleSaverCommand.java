@@ -9,7 +9,7 @@ import de.kittybot.kittybot.slashcommands.interaction.Options;
 public class RoleSaverCommand extends GuildSubCommand{
 
 	public RoleSaverCommand(){
-		super("rolesaver", "Enabled/Disables saving of user roles on leave");
+		super("rolesaver", "Enables/disables saving of user roles on leave");
 		addOptions(
 			new CommandOptionBoolean("enabled", "Whether role saving is enabled or disabled").required()
 		);

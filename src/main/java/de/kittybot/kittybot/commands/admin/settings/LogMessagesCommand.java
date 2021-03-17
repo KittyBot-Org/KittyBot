@@ -12,7 +12,7 @@ import de.kittybot.kittybot.utils.MessageUtils;
 public class LogMessagesCommand extends GuildSubCommand{
 
 	public LogMessagesCommand(){
-		super("logmessages", "Sets the logging channel or enable/disables log messages");
+		super("logmessages", "Sets the logging channel or enables/disables log messages");
 		addOptions(
 			new CommandOptionBoolean("enabled", "Whether log messages are enabled"),
 			new CommandOptionChannel("channel", "The log message channel")

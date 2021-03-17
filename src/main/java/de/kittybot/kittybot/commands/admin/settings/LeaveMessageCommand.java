@@ -10,7 +10,7 @@ import de.kittybot.kittybot.slashcommands.interaction.Options;
 public class LeaveMessageCommand extends GuildSubCommand{
 
 	public LeaveMessageCommand(){
-		super("leavemessage", "Sets or enable/disables leave messages");
+		super("leavemessage", "Sets or enables/disables leave messages");
 		addOptions(
 			new CommandOptionBoolean("enabled", "Whether leave messages are enabled"),
 			new CommandOptionString("message", "The leave message template")
