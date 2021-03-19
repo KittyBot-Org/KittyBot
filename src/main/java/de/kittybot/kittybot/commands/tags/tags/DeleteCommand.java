@@ -1,10 +1,10 @@
 package de.kittybot.kittybot.commands.tags.tags;
 
 import de.kittybot.kittybot.modules.TagsModule;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
 import net.dv8tion.jda.api.Permission;
 
 public class DeleteCommand extends GuildSubCommand{
@@ -17,21 +17,21 @@ public class DeleteCommand extends GuildSubCommand{
 	}
 
 	@Override
-	public void run(Options options, GuildInteraction ia){
+	public void run(Options options, GuildCommandContext ctx){
 		var tagName = options.getString("name");
 		var deleted = false;
-		if(ia.getMember().hasPermission(Permission.ADMINISTRATOR)){
-			deleted = ia.get(TagsModule.class).delete(tagName, ia.getGuildId());
+		if(ctx.getMember().hasPermission(Permission.ADMINISTRATOR)){
+			deleted = ctx.get(TagsModule.class).delete(tagName, ctx.getGuildId());
 		}
 		else{
-			deleted = ia.get(TagsModule.class).delete(tagName, ia.getGuildId(), ia.getUserId());
+			deleted = ctx.get(TagsModule.class).delete(tagName, ctx.getGuildId(), ctx.getUserId());
 		}
 
 		if(deleted){
-			ia.reply("Deleted tag with name `" + tagName + "`");
+			ctx.reply("Deleted tag with name `" + tagName + "`");
 			return;
 		}
-		ia.error("Tag `" + tagName + "` does not exist or is not owned by you");
+		ctx.error("Tag `" + tagName + "` does not exist or is not owned by you");
 	}
 
 }

@@ -1,8 +1,8 @@
 package de.kittybot.kittybot.slashcommands.application;
 
+import de.kittybot.kittybot.slashcommands.CommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.Interaction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
 
 public class GenericHelpCommand extends SubCommand{
 
@@ -14,8 +14,8 @@ public class GenericHelpCommand extends SubCommand{
 	}
 
 	@Override
-	public void run(Options options, Interaction ia){
-		ia.reply(this.help);
+	public void run(Options options, CommandContext ctx){
+		ctx.reply(this.help);
 	}
 
 }

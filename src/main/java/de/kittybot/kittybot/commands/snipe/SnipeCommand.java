@@ -2,10 +2,10 @@ package de.kittybot.kittybot.commands.snipe;
 
 import de.kittybot.kittybot.modules.MessageModule;
 import de.kittybot.kittybot.modules.SettingsModule;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.RunGuildCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
 
 import java.awt.Color;
 
@@ -17,21 +17,22 @@ public class SnipeCommand extends RunGuildCommand{
 	}
 
 	@Override
-	public void run(Options options, GuildInteraction ia){
-		if(!ia.get(SettingsModule.class).areSnipesEnabled(ia.getGuildId())){
-			ia.error("Snipes are disabled for this guild");
+	public void run(Options options, GuildCommandContext ctx){
+		if(!ctx.get(SettingsModule.class).areSnipesEnabled(ctx.getGuildId())){
+			ctx.error("Snipes are disabled for this guild");
 		}
-		if(ia.get(SettingsModule.class).areSnipesDisabledInChannel(ia.getGuildId(), ia.getChannelId())){
-			ia.error("Snipes are disabled for this channel");
+		if(ctx.get(SettingsModule.class).areSnipesDisabledInChannel(ctx.getGuildId(), ctx.getChannelId())){
+			ctx.error("Snipes are disabled for this channel");
 		}
-		var lastDeletedMessage = ia.get(MessageModule.class).getLastDeletedMessage(ia.getChannelId());
+		var lastDeletedMessage = ctx.get(MessageModule.class).getLastDeletedMessage(ctx.getChannelId());
 		if(lastDeletedMessage == null){
-			ia.reply(builder -> builder.setColor(Color.RED).setDescription("There are no deleted messages to snipe"));
+			ctx.reply(builder -> builder.setColor(Color.RED).setDescription("There are no deleted messages to snipe"));
 			return;
 		}
-		ia.getJDA().retrieveUserById(lastDeletedMessage.getAuthorId()).queue(user ->
-			ia.reply(builder -> {
-				builder.setAuthor("Sniped " + user.getName(), lastDeletedMessage.getJumpUrl())
+		ctx.getJDA().retrieveUserById(lastDeletedMessage.getAuthorId()).queue(user ->
+			ctx.reply(builder -> {
+				builder
+					.setAuthor("Sniped " + user.getName(), lastDeletedMessage.getJumpUrl())
 					.setDescription(lastDeletedMessage.getContent())
 					.setFooter("from " + user.getName(), user.getEffectiveAvatarUrl())
 					.setTimestamp(lastDeletedMessage.getTimeCreated());

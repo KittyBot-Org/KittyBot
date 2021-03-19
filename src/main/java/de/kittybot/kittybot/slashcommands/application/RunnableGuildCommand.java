@@ -1,10 +1,10 @@
 package de.kittybot.kittybot.slashcommands.application;
 
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 
 public interface RunnableGuildCommand{
 
-	void run(Options options, GuildInteraction ia);
+	void run(Options options, GuildCommandContext ctx);
 
 }

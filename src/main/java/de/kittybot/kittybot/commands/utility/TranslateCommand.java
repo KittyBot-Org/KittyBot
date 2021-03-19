@@ -2,11 +2,11 @@ package de.kittybot.kittybot.commands.utility;
 
 import de.kittybot.kittybot.modules.RequestModule;
 import de.kittybot.kittybot.objects.enums.Language;
+import de.kittybot.kittybot.slashcommands.CommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.RunCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
-import de.kittybot.kittybot.slashcommands.interaction.Interaction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 
 @SuppressWarnings("unused")
@@ -22,28 +22,28 @@ public class TranslateCommand extends RunCommand{
 	}
 
 	@Override
-	public void run(Options options, Interaction ia){
+	public void run(Options options, CommandContext ctx){
 		var toLang = Language.getFromName(options.getString("to-language"));
 		var fromLang = options.has("from-language") ? Language.getFromName(options.getString("from-language")) : Language.AUTO;
 		if(toLang == Language.UNKNOWN || fromLang == Language.UNKNOWN){
-			ia.error("Invalid language entered");
+			ctx.error("Invalid language entered");
 			return;
 		}
 		if(toLang == fromLang){
-			ia.error("From lang can not be same as to lang");
+			ctx.error("From lang can not be same as to lang");
 			return;
 		}
 		var text = options.getString("text");
 		if(text.isBlank()){
-			ia.error("Please provide text to translate");
+			ctx.error("Please provide text to translate");
 			return;
 		}
-		ia.get(RequestModule.class).translateText(text, fromLang, toLang, translatedText -> {
+		ctx.get(RequestModule.class).translateText(text, fromLang, toLang, translatedText -> {
 			if(translatedText == null){
-				ia.error("Error while trying to translate text");
+				ctx.error("Error while trying to translate text");
 				return;
 			}
-			ia.reply("Translated text to `" + toLang.getName() + "`:\n```\n" + MarkdownSanitizer.escape(translatedText) + "\n```");
+			ctx.reply("Translated text to `" + toLang.getName() + "`:\n```\n" + MarkdownSanitizer.escape(translatedText) + "\n```");
 		});
 	}
 

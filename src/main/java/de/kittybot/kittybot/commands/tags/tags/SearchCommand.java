@@ -1,10 +1,10 @@
 package de.kittybot.kittybot.commands.tags.tags;
 
 import de.kittybot.kittybot.modules.TagsModule;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.MessageUtils;
 
 import java.util.stream.Collectors;
@@ -19,16 +19,16 @@ public class SearchCommand extends GuildSubCommand{
 	}
 
 	@Override
-	public void run(Options options, GuildInteraction ia){
+	public void run(Options options, GuildCommandContext ctx){
 		var tagName = options.getString("name");
-		var tags = ia.get(TagsModule.class).search(tagName, ia.getGuildId(), ia.getUserId());
+		var tags = ctx.get(TagsModule.class).search(tagName, ctx.getGuildId(), ctx.getUserId());
 
 		if(tags.isEmpty()){
-			ia.reply("No tags found for `" + tagName + "`");
+			ctx.reply("No tags found for `" + tagName + "`");
 			return;
 		}
 		// TODO add paginator
-		ia.reply("**Following tags were found for `" + tagName + "`:**\n" +
+		ctx.reply("**Following tags were found for `" + tagName + "`:**\n" +
 			tags.stream().map(tag -> "• `" + tag.getName() + "` (" + MessageUtils.getUserMention(tag.getUserId()) + ")").collect(Collectors.joining("\n"))
 		);
 	}

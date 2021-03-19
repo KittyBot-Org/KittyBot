@@ -4,8 +4,8 @@ import de.kittybot.kittybot.modules.NotificationModule;
 import de.kittybot.kittybot.modules.PaginatorModule;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.TimeUtils;
@@ -20,11 +20,11 @@ public class ListCommand extends GuildSubCommand{
 	}
 
 	@Override
-	public void run(Options options, GuildInteraction ia){
-		var notifs = ia.get(NotificationModule.class).get(ia.getUserId());
+	public void run(Options options, GuildCommandContext ctx){
+		var notifs = ctx.get(NotificationModule.class).get(ctx.getUserId());
 
 		if(notifs.isEmpty()){
-			ia.reply("You have no notifications");
+			ctx.reply("You have no notifications");
 			return;
 		}
 
@@ -41,9 +41,9 @@ public class ListCommand extends GuildSubCommand{
 		}
 		pages.add(notifMessage.toString());
 
-		ia.acknowledge(true).queue(success -> ia.get(PaginatorModule.class).create(
-			ia.getChannel(),
-			ia.getUserId(),
+		ctx.acknowledge(true).queue(success -> ctx.get(PaginatorModule.class).create(
+			ctx.getChannel(),
+			ctx.getUserId(),
 			pages.size(),
 			(page, embedBuilder) -> embedBuilder
 				.setColor(Colors.KITTYBOT_BLUE)

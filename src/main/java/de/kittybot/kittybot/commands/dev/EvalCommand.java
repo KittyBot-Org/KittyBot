@@ -2,13 +2,10 @@ package de.kittybot.kittybot.commands.dev;
 
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.RunCommand;
+import de.kittybot.kittybot.slashcommands.CommandContext;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
-import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Interaction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
-import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
-import net.dv8tion.jda.api.EmbedBuilder;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -35,21 +32,21 @@ public class EvalCommand extends RunCommand{
 	}
 
 	@Override
-	public void run(Options options, Interaction ia){
+	public void run(Options options, CommandContext ctx){
 		var code = options.getString("code");
 		Object out;
 		var color = Color.GREEN;
 		var status = "Success";
-		this.scriptEngine.put("ia", ia);
+		this.scriptEngine.put("ctx", ctx);
 		this.scriptEngine.put("options", options);
-		this.scriptEngine.put("jda", ia.getJDA());
+		this.scriptEngine.put("jda", ctx.getJDA());
 
-		this.scriptEngine.put("channel", ia.getChannel());
-		this.scriptEngine.put("user", ia.getUser());
-		if(ia instanceof GuildInteraction){
-			var guildIa = (GuildInteraction) ia;
-			this.scriptEngine.put("guild", guildIa.getGuild());
-			this.scriptEngine.put("member", guildIa.getMember());
+		this.scriptEngine.put("channel", ctx.getChannel());
+		this.scriptEngine.put("user", ctx.getUser());
+		if(ctx instanceof GuildCommandContext){
+			var guildCtx = (GuildCommandContext) ctx;
+			this.scriptEngine.put("guild", guildCtx.getGuild());
+			this.scriptEngine.put("member", guildCtx.getMember());
 		}
 
 		var imports = new StringBuilder();
@@ -63,17 +60,16 @@ public class EvalCommand extends RunCommand{
 			color = Color.RED;
 			status = "Failed";
 		}
-		ia.reply(new InteractionResponse.Builder()
-			.addEmbeds(new EmbedBuilder()
-				.setTitle("Eval")
-				.setColor(color)
-				.addField("Status:", status, true)
-				.addField("Duration:", (System.currentTimeMillis() - start) + "ms", true)
-				.addField("Code:", "```java\n" + code + "\n```", false)
-				.addField("Result:", out == null ? "" : out.toString(), false)
-				.build()
-			).build()
-		);
+		ctx.acknowledge(true).queue();
+		ctx.getHook().sendMessage("").addEmbeds(ctx.getEmbed()
+			.setTitle("Eval")
+			.setColor(color)
+			.addField("Status:", status, true)
+			.addField("Duration:", (System.currentTimeMillis() - start) + "ms", true)
+			.addField("Code:", "```java\n" + code + "\n```", false)
+			.addField("Result:", out == null ? "" : out.toString(), false)
+			.build()
+		).queue();
 	}
 
 }

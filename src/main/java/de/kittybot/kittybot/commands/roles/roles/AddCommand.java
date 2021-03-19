@@ -6,8 +6,8 @@ import de.kittybot.kittybot.slashcommands.application.options.CommandOptionEmote
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionRole;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import net.dv8tion.jda.api.Permission;
 
 import java.util.Collections;
@@ -25,21 +25,21 @@ public class AddCommand extends GuildSubCommand{
 	}
 
 	@Override
-	public void run(Options options, GuildInteraction ia){
+	public void run(Options options, GuildCommandContext ctx){
 		var role = options.getRole("role");
-		var emoteAction = options.getEmote(ia.getGuild(), "emote");
+		var emoteAction = options.getEmote(ctx.getGuild(), "emote");
 		var groupName = options.getString("group");
 
 		emoteAction.queue(emote -> {
-				var group = ia.get(SettingsModule.class).getSelfAssignableRoleGroups(ia.getGuildId()).stream().filter(g -> g.getName().equalsIgnoreCase(groupName)).findFirst();
+				var group = ctx.get(SettingsModule.class).getSelfAssignableRoleGroups(ctx.getGuildId()).stream().filter(g -> g.getName().equalsIgnoreCase(groupName)).findFirst();
 				if(group.isEmpty()){
-					ia.error("Please provide a valid group");
+					ctx.error("Please provide a valid group");
 					return;
 				}
 
-				ia.get(SettingsModule.class).addSelfAssignableRoles(ia.getGuildId(), Collections.singleton(new SelfAssignableRole(role.getIdLong(), emote.getIdLong(), ia.getGuildId(), group.get().getId())));
-				ia.reply("Added self assignable role");
-			}, error -> ia.error("Please provide a valid emote from this server")
+				ctx.get(SettingsModule.class).addSelfAssignableRoles(ctx.getGuildId(), Collections.singleton(new SelfAssignableRole(role.getIdLong(), emote.getIdLong(), ctx.getGuildId(), group.get().getId())));
+				ctx.reply("Added self assignable role");
+			}, error -> ctx.error("Please provide a valid emote from this server")
 		);
 
 	}

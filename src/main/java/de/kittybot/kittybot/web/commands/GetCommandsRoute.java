@@ -26,7 +26,7 @@ public class GetCommandsRoute implements Handler{
 	public void handle(@NotNull Context ctx){
 
 		var categories = DataArray.fromCollection(Arrays.stream(Category.values()).map(Category::toJSON).collect(Collectors.toList()));
-		var commands = DataArray.fromCollection(this.modules.get(CommandsModule.class).getCommands().values().stream().map(Command::toDetailedJSON).collect(Collectors.toList()));
+		var commands = DataArray.fromCollection(this.modules.get(CommandsModule.class).getCommands().values().stream().map(Command::toJSON).collect(Collectors.toList()));
 
 		WebModule.ok(ctx, DataObject.empty().put("categories", categories).put("commands", commands));
 	}

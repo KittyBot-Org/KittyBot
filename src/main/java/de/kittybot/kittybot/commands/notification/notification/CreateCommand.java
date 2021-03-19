@@ -4,8 +4,8 @@ import de.kittybot.kittybot.modules.NotificationModule;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionTime;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.utils.TimeUtils;
 
 import java.time.LocalDateTime;
@@ -23,26 +23,26 @@ public class CreateCommand extends GuildSubCommand{
 	}
 
 	@Override
-	public void run(Options options, GuildInteraction ia){
+	public void run(Options options, GuildCommandContext ctx){
 		var time = options.getTime("time");
 		if(time.isBefore(LocalDateTime.now())){
-			ia.error("Please provide a valid time or duration in this format: ");
+			ctx.error("Please provide a valid time or duration in this format: ");
 			return;
 		}
 		var message = options.getString("message");
-		var notif = ia.get(NotificationModule.class).create(
-			ia.getGuildId(),
-			ia.getChannelId(),
+		var notif = ctx.get(NotificationModule.class).create(
+			ctx.getGuildId(),
+			ctx.getChannelId(),
 			-1,
-			ia.getUser().getIdLong(),
+			ctx.getUser().getIdLong(),
 			message,
 			time
 		);
 		if(notif == null){
-			ia.error("There was an unexpected error while creating your notification");
+			ctx.error("There was an unexpected error while creating your notification");
 			return;
 		}
-		ia.reply("Notification at `" + TimeUtils.formatDuration(notif.getCreatedAt().until(notif.getNotificationTime(), ChronoUnit.MILLIS)) + "` created with id: `" + notif.getId() + "`");
+		ctx.reply("Notification at `" + TimeUtils.formatDuration(notif.getCreatedAt().until(notif.getNotificationTime(), ChronoUnit.MILLIS)) + "` created with id: `" + notif.getId() + "`");
 
 	}
 

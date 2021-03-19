@@ -6,6 +6,10 @@ import java.util.Set;
 
 public interface PermissionHolder{
 
+	boolean isGuildOnly();
+
+	void guildOnly();
+
 	void devOnly();
 
 	boolean isDevOnly();

@@ -20,7 +20,7 @@ public class RolesCommand extends Command{
 			new GroupsCommand(),
 			new GenericHelpCommand("To configure self assignable roles you need first need to create a group with `/roles groups add <group name> <max-roles-from-group>`.\n" +
 				"Then you can add a role to this group by doing `/roles add <@role> <custom-emote> <group-name>`.\n" +
-				"You can add as much as you like but only 20 of them are assignable by reactions via the specific emote.\n" +
+				"You can add as much as you like but only 20 of them are assignable by reactions vctx the specific emote.\n" +
 				"Use `/roles list` to view all roles with groups in a nice message"
 			)
 		);

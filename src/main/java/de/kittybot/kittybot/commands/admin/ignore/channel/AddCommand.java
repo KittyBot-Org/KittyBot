@@ -1,25 +1,25 @@
 package de.kittybot.kittybot.commands.admin.ignore.channel;
 
 import de.kittybot.kittybot.modules.SettingsModule;
-import de.kittybot.kittybot.slashcommands.application.options.CommandOptionChannel;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
+import de.kittybot.kittybot.slashcommands.application.options.CommandOptionGuildChannel;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
 
 public class AddCommand extends GuildSubCommand{
 
 	public AddCommand(){
 		super("add", "Used to disable a channel");
 		addOptions(
-			new CommandOptionChannel("channel", "Channel to disable").required()
+			new CommandOptionGuildChannel("channel", "Channel to disable").required()
 		);
 	}
 
 	@Override
-	public void run(Options options, GuildInteraction ia){
+	public void run(Options options, GuildCommandContext ctx){
 		var channel = options.getTextChannel("channel");
-		ia.get(SettingsModule.class).setBotDisabledInChannel(ia.getGuildId(), channel.getIdLong(), true);
-		ia.reply("Disabled commands in: " + channel.getAsMention());
+		ctx.get(SettingsModule.class).setBotDisabledInChannel(ctx.getGuildId(), channel.getIdLong(), true);
+		ctx.reply("Disabled commands in: " + channel.getAsMention());
 	}
 
 }

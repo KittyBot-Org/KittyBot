@@ -1,10 +1,10 @@
 package de.kittybot.kittybot.commands.admin.ignore.user;
 
 import de.kittybot.kittybot.modules.SettingsModule;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionUser;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
 
 import java.util.Collections;
 
@@ -18,10 +18,10 @@ public class AddCommand extends GuildSubCommand{
 	}
 
 	@Override
-	public void run(Options options, GuildInteraction ia){
+	public void run(Options options, GuildCommandContext ctx){
 		var user = options.getUser("user");
-		ia.get(SettingsModule.class).addBotIgnoredUsers(ia.getGuildId(), Collections.singleton(user.getIdLong()));
-		ia.reply("Disabled commands for: " + user.getAsMention());
+		ctx.get(SettingsModule.class).addBotIgnoredUsers(ctx.getGuildId(), Collections.singleton(user.getIdLong()));
+		ctx.reply("Disabled commands for: " + user.getAsMention());
 	}
 
 }

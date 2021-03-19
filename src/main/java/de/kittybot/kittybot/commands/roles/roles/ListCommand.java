@@ -6,8 +6,8 @@ import de.kittybot.kittybot.objects.enums.Emoji;
 import de.kittybot.kittybot.objects.settings.SelfAssignableRole;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -26,12 +26,12 @@ public class ListCommand extends GuildSubCommand{
 	}
 
 	@Override
-	public void run(Options options, GuildInteraction ia){
-		var settings = ia.get(SettingsModule.class).getSettings(ia.getGuildId());
+	public void run(Options options, GuildCommandContext ctx){
+		var settings = ctx.get(SettingsModule.class).getSettings(ctx.getGuildId());
 		var roles = settings.getSelfAssignableRoles();
 		var groups = settings.getSelfAssignableRoleGroups();
 		if(roles == null || roles.isEmpty()){
-			ia.error("No self assignable roles configured");
+			ctx.error("No self assignable roles configured");
 			return;
 		}
 		var sortedRoles = new LinkedHashSet<>(roles);
@@ -48,13 +48,13 @@ public class ListCommand extends GuildSubCommand{
 				}).collect(Collectors.joining("\n"))
 			).build();
 
-		if(!ia.getSelfMember().hasPermission(ia.getChannel(), Permission.MESSAGE_WRITE, Permission.MESSAGE_ADD_REACTION)){
-			ia.error("To list roles make sure I have the following permissions: `MESSAGE_WRITE` & `MESSAGE_ADD_REACTION`");
+		if(!ctx.getSelfMember().hasPermission(ctx.getChannel(), Permission.MESSAGE_WRITE, Permission.MESSAGE_ADD_REACTION)){
+			ctx.error("To list roles make sure I have the following permissions: `MESSAGE_WRITE` & `MESSAGE_ADD_REACTION`");
 			return;
 		}
-		ia.acknowledge(true).queue(success ->
-			ia.getChannel().sendMessage(embed).queue(message -> {
-				ia.get(ReactionRoleModule.class).add(message.getGuild().getIdLong(), message.getIdLong());
+		ctx.acknowledge(true).queue(success ->
+			ctx.getChannel().sendMessage(embed).queue(message -> {
+				ctx.get(ReactionRoleModule.class).add(message.getGuild().getIdLong(), message.getIdLong());
 				sortedRoles.forEach(role -> message.addReaction("test:" + role.getEmoteId()).queue());
 			})
 		);

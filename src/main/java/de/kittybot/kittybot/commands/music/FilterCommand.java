@@ -1,13 +1,13 @@
 package de.kittybot.kittybot.commands.music;
 
 import de.kittybot.kittybot.modules.MusicModule;
+import de.kittybot.kittybot.slashcommands.GuildCommandContext;
+import de.kittybot.kittybot.slashcommands.Options;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.Command;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionFloat;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionInteger;
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
-import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.utils.MusicUtils;
 import lavalink.client.io.filters.*;
 
@@ -39,15 +39,15 @@ public class FilterCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
-			var scheduler = ia.get(MusicModule.class).getScheduler(ia.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ia, scheduler) || !MusicUtils.checkMusicPermissions(ia, scheduler)){
+		public void run(Options options, GuildCommandContext ctx){
+			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
 				return;
 			}
 			var band = options.getInt("band");
 			var multiplier = options.getFloat("multiplier");
 			scheduler.getFilters().setBand(band, multiplier).commit();
-			ia.reply("Set band " + band + " to " + multiplier);
+			ctx.reply("Set band " + band + " to " + multiplier);
 		}
 
 	}
@@ -65,9 +65,9 @@ public class FilterCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
-			var scheduler = ia.get(MusicModule.class).getScheduler(ia.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ia, scheduler) || !MusicUtils.checkMusicPermissions(ia, scheduler)){
+		public void run(Options options, GuildCommandContext ctx){
+			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
 				return;
 			}
 			var karaoke = new Karaoke();
@@ -84,7 +84,7 @@ public class FilterCommand extends Command{
 				karaoke = karaoke.setFilterWidth(options.getFloat("filterWidth"));
 			}
 			scheduler.getFilters().setKaraoke(karaoke).commit();
-			ia.reply("Set karaoke filter");
+			ctx.reply("Set karaoke filter");
 		}
 
 	}
@@ -101,9 +101,9 @@ public class FilterCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
-			var scheduler = ia.get(MusicModule.class).getScheduler(ia.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ia, scheduler) || !MusicUtils.checkMusicPermissions(ia, scheduler)){
+		public void run(Options options, GuildCommandContext ctx){
+			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
 				return;
 			}
 			var timescale = new Timescale();
@@ -117,7 +117,7 @@ public class FilterCommand extends Command{
 				timescale = timescale.setRate(options.getFloat("rate"));
 			}
 			scheduler.getFilters().setTimescale(timescale).commit();
-			ia.reply("Set timescale filter");
+			ctx.reply("Set timescale filter");
 		}
 
 	}
@@ -133,9 +133,9 @@ public class FilterCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
-			var scheduler = ia.get(MusicModule.class).getScheduler(ia.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ia, scheduler) || !MusicUtils.checkMusicPermissions(ia, scheduler)){
+		public void run(Options options, GuildCommandContext ctx){
+			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
 				return;
 			}
 			var tremolo = new Tremolo();
@@ -148,7 +148,7 @@ public class FilterCommand extends Command{
 				tremolo = tremolo.setDepth(depth);
 			}
 			scheduler.getFilters().setTremolo(tremolo).commit();
-			ia.reply("Set tremolo filter");
+			ctx.reply("Set tremolo filter");
 		}
 
 	}
@@ -164,9 +164,9 @@ public class FilterCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
-			var scheduler = ia.get(MusicModule.class).getScheduler(ia.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ia, scheduler) || !MusicUtils.checkMusicPermissions(ia, scheduler)){
+		public void run(Options options, GuildCommandContext ctx){
+			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
 				return;
 			}
 			var vibrato = new Vibrato();
@@ -179,7 +179,7 @@ public class FilterCommand extends Command{
 				vibrato = vibrato.setDepth(depth);
 			}
 			scheduler.getFilters().setVibrato(vibrato).commit();
-			ia.reply("Set vibrato filter");
+			ctx.reply("Set vibrato filter");
 		}
 
 	}
@@ -194,14 +194,14 @@ public class FilterCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
-			var scheduler = ia.get(MusicModule.class).getScheduler(ia.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ia, scheduler) || !MusicUtils.checkMusicPermissions(ia, scheduler)){
+		public void run(Options options, GuildCommandContext ctx){
+			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
 				return;
 			}
 			var frequency = options.getFloat("frequency");
 			scheduler.getFilters().setRotation(new Rotation().setFrequency(frequency)).commit();
-			ia.reply("Set rotation filter");
+			ctx.reply("Set rotation filter");
 		}
 
 	}
@@ -224,9 +224,9 @@ public class FilterCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
-			var scheduler = ia.get(MusicModule.class).getScheduler(ia.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ia, scheduler) || !MusicUtils.checkMusicPermissions(ia, scheduler)){
+		public void run(Options options, GuildCommandContext ctx){
+			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
 				return;
 			}
 			var distortion = new Distortion();
@@ -257,7 +257,7 @@ public class FilterCommand extends Command{
 			}
 
 			scheduler.getFilters().setDistortion(distortion).commit();
-			ia.reply("Set distortion filter");
+			ctx.reply("Set distortion filter");
 		}
 
 	}
@@ -269,13 +269,13 @@ public class FilterCommand extends Command{
 		}
 
 		@Override
-		public void run(Options options, GuildInteraction ia){
-			var scheduler = ia.get(MusicModule.class).getScheduler(ia.getGuildId());
-			if(!MusicUtils.checkCommandRequirements(ia, scheduler) || !MusicUtils.checkMusicPermissions(ia, scheduler)){
+		public void run(Options options, GuildCommandContext ctx){
+			var scheduler = ctx.get(MusicModule.class).getScheduler(ctx.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ctx, scheduler) || !MusicUtils.checkMusicPermissions(ctx, scheduler)){
 				return;
 			}
 			scheduler.getFilters().clear().commit();
-			ia.reply("Cleared all filters!");
+			ctx.reply("Cleared all filters!");
 		}
 
 	}
