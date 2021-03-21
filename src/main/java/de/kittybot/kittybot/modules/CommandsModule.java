@@ -116,7 +116,7 @@ public class CommandsModule extends Module{
 			if(body == null){
 				return;
 			}
-			if(guildId == -1L && !Config.DISCORD_SERVICES_TOKEN.isBlank()){
+			if(guildId == -1L && Environment.is(Environment.PRODUCTION) && !Config.DISCORD_SERVICES_TOKEN.isBlank()){
 				this.modules.get(RequestModule.class).uploadCommands(commands.values());
 			}
 			LOG.info("Registered " + commands.size() + " commands...");
