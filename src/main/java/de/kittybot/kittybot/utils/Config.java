@@ -68,7 +68,6 @@ public class Config{
 		var json = DataObject.fromJson(Files.readAllBytes(config.toPath()));
 		checkMandatoryValues(json, "bot_token", "dev_ids", "db_host", "db_port", "db_database", "db_user", "db_password", "signing_key", "backend_port", "origin_url", "redirect_url");
 
-
 		BOT_TOKEN = json.getString("bot_token", "");
 		if(BOT_TOKEN.isBlank()){
 			BOT_ID = -1;
@@ -116,7 +115,7 @@ public class Config{
 		DISCORD_BOATS_TOKEN = getBotListToken(json, "discord_boats_token");
 		BOTLIST_SPACE_TOKEN = getBotListToken(json, "botlist_space_token");
 		BOTS_FOR_DISCORD_TOKEN = getBotListToken(json, "bots_for_discord_token");
-		BOTS_FOR_DISCORD_WEBHOOK_TOKEN = json.getString("bots_for_discord_webhook_token", "");
+		BOTS_FOR_DISCORD_WEBHOOK_TOKEN = getBotListToken(json, "bots_for_discord_webhook_token");
 		DISCORD_BOT_LIST_TOKEN = getBotListToken(json, "discord_bot_list_token");
 		DISCORD_SERVICES_TOKEN = getBotListToken(json, "discord_services_token");
 
@@ -149,13 +148,7 @@ public class Config{
 	}
 
 	private static long getIdFromToken(){
-		return Long.parseLong(
-			new String(
-				Base64.getDecoder().decode(
-					BOT_TOKEN.split("\\.")[0]
-				)
-			)
-		);
+		return Long.parseLong(new String(Base64.getDecoder().decode(BOT_TOKEN.split("\\.")[0])));
 	}
 
 	private static String getBotListToken(DataObject json, String key){

@@ -30,14 +30,12 @@ public class StreamModule extends Module{
 
 	private static final Logger LOG = LoggerFactory.getLogger(StreamModule.class);
 
-	private static final Set<Class<? extends Module>> DEPENDENCIES = Set.of(DatabaseModule.class);
-
 	private List<StreamUsersRecord> streams;
 	private TwitchWrapper twitchWrapper;
 
 	@Override
 	public Set<Class<? extends Module>> getDependencies(){
-		return DEPENDENCIES;
+		return Set.of(DatabaseModule.class);
 	}
 
 	@Override
@@ -57,7 +55,9 @@ public class StreamModule extends Module{
 
 	@Override
 	public void onReady(@NotNull ReadyEvent event){
-		this.modules.scheduleAtFixedRate(this::checkStreams, 0, 30, TimeUnit.SECONDS);
+		if(this.twitchWrapper != null){
+			this.modules.scheduleAtFixedRate(this::checkStreams, 0, 30, TimeUnit.SECONDS);
+		}
 	}
 
 	private void checkStreams(){
