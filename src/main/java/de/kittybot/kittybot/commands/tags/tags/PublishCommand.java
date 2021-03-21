@@ -38,7 +38,7 @@ public class PublishCommand extends GuildSubCommand{
 		}
 
 		if(!tagsModule.canPublishTag(ia.getGuildId())){
-			ia.error("You reached the maximum of 50 guild commands due to discords limitations");
+			ia.error("You reached the maximum of 100 guild commands due to discords limitations");
 			return;
 		}
 		var res = tagsModule.publishTag(name, options.getString("description"), ia.getGuildId());
