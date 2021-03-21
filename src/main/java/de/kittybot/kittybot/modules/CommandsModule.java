@@ -84,20 +84,6 @@ public class CommandsModule extends Module{
 		}
 	}
 
-	private void loadCommands(DataArray data, Map<String, Command> commandMap){
-		for(var i = 0; i < data.length(); i++){
-			var o = data.getObject(i);
-			var cmd = commandMap.get(o.getString("name"));
-			if(cmd != null){
-				this.commands.put(o.getLong("id"), cmd);
-			}
-		}
-	}
-
-	public void reDeployCommands(long guildId){
-		deployCommands(guildId, getCommands().values().stream().collect(Collectors.toMap(Command::getName, Function.identity())));
-	}
-
 	public void deployCommands(long guildId, Map<String, Command> commands){
 		LOG.info("Registering commands {}...", guildId == -1 ? "global" : "for guild " + guildId);
 
@@ -131,10 +117,28 @@ public class CommandsModule extends Module{
 		return this.modules.getHttpClient().newCall(newBuilder(route).method(route.getMethod().name(), body).build());
 	}
 
+	private void loadCommands(DataArray data, Map<String, Command> commandMap){
+		for(var i = 0; i < data.length(); i++){
+			var o = data.getObject(i);
+			var cmd = commandMap.get(o.getString("name"));
+			if(cmd != null){
+				this.commands.put(o.getLong("id"), cmd);
+			}
+		}
+	}
+
 	private Request.Builder newBuilder(Route.CompiledRoute route){
 		return new Request.Builder()
 			.url(Requester.DISCORD_API_PREFIX + route.getCompiledRoute())
 			.addHeader("Authorization", "Bot " + Config.BOT_TOKEN);
+	}
+
+	public void reDeployCommands(long guildId){
+		deployCommands(guildId, getCommands().values().stream().collect(Collectors.toMap(Command::getName, Function.identity())));
+	}
+
+	public Map<Long, Command> getCommands(){
+		return this.commands;
 	}
 
 	public long registerGuildCommand(long guildId, DataObject command){
@@ -230,10 +234,6 @@ public class CommandsModule extends Module{
 			LOG.error("Error while processing deleteAllCommands", e);
 		}
 		LOG.info("Deleted all commands...");
-	}
-
-	public Map<Long, Command> getCommands(){
-		return this.commands;
 	}
 
 }
