@@ -6,7 +6,6 @@ import de.kittybot.kittybot.slashcommands.application.options.CommandOptionChann
 import de.kittybot.kittybot.slashcommands.application.options.GuildSubCommand;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
-import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
 import de.kittybot.kittybot.utils.MessageUtils;
 
 public class LogMessagesCommand extends GuildSubCommand{

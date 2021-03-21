@@ -26,7 +26,7 @@ public class TagsModule extends Module{
 	}
 
 	public boolean canPublishTag(long guildId){
-		return this.modules.get(CommandsModule.class).getGuildCommands(guildId).length() < 50;
+		return this.modules.get(CommandsModule.class).getGuildCommands(guildId).length() < 100;
 	}
 
 	@Nullable

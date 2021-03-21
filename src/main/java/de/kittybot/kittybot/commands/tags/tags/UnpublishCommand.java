@@ -8,10 +8,10 @@ import de.kittybot.kittybot.slashcommands.interaction.Options;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 
-public class RemoveCommand extends GuildSubCommand{
+public class UnpublishCommand extends GuildSubCommand{
 
-	public RemoveCommand(){
-		super("remove", "Removes a published tag from slash commands");
+	public UnpublishCommand(){
+		super("unpublish", "Unpublishes a published tag from slash commands");
 		addOptions(
 			new CommandOptionString("name", "Tag name").required()
 		);
