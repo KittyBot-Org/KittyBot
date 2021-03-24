@@ -28,7 +28,7 @@ repositories {
 
 dependencies {
     // discord/jda related
-    implementation('com.github.DV8FromTheWorld:JDA:8785713861') {
+    implementation('com.github.DV8FromTheWorld:JDA:0363076696') {
         exclude group: 'club.minnced', module: 'opus-java'
     }
     implementation 'com.jagrosh:jda-utilities:3.0.5'

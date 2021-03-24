@@ -1,6 +1,5 @@
 package de.kittybot.kittybot.modules;
 
-import de.kittybot.kittybot.objects.exceptions.MissingOptionException;
 import de.kittybot.kittybot.objects.exceptions.OptionParseException;
 import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.slashcommands.CommandContext;
@@ -91,7 +90,7 @@ public class InteractionsModule extends Module{
 
 		if(applicationHolder instanceof RunnableCommand || applicationHolder instanceof RunnableGuildCommand){
 			try{
-				var commandOptions = new Options(event.getOptions());
+				var commandOptions = new Options(event.getOptions(), event.getJDA());
 				if(applicationHolder instanceof RunnableCommand){
 					((RunnableCommand) applicationHolder).run(commandOptions, new CommandContext(this.modules, commandOptions, event));
 				}
@@ -105,8 +104,8 @@ public class InteractionsModule extends Module{
 					event.reply("This slash command is not available in dms. Surruwu").queue();
 				}
 			}
-			catch(MissingOptionException | OptionParseException e){
-				event.reply(e.getMessage()).queue();
+			catch(OptionParseException e){
+				event.reply(e.getMessage()).setEphemeral(true).queue();
 			}
 			catch(Exception e){
 				LOG.error("Unexpected error while handling command", e);
@@ -118,7 +117,7 @@ public class InteractionsModule extends Module{
 		for(var option : applicationHolder.getOptions()){
 			var opt = options.get(0);
 			if(opt.getName().equalsIgnoreCase(option.getName())){
-				process(option, event, opt.getOptions());
+				process(option, event, opt.get());
 				return;
 			}
 		}
