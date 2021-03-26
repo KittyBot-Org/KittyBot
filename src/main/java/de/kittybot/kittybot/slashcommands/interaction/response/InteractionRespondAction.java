@@ -42,10 +42,10 @@ public class InteractionRespondAction extends RestActionImpl<Interaction>{
 		this.interaction = interaction;
 	}
 
-	public InteractionRespondAction(JDA api, Route.CompiledRoute route, Interaction interaction, boolean withSource){
+	public InteractionRespondAction(JDA api, Route.CompiledRoute route, Interaction interaction, boolean channelMessage){
 		super(api, route);
 		this.interaction = interaction;
-		this.type = withSource ? InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE : InteractionResponseType.CHANNEL_MESSAGE;
+		this.type = channelMessage ? InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE : InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE;
 	}
 
 	@Nonnull
@@ -156,23 +156,9 @@ public class InteractionRespondAction extends RestActionImpl<Interaction>{
 		return (InteractionRespondAction) super.timeout(timeout, unit);
 	}
 
-	public InteractionRespondAction withSource(boolean withSource){
-		if(this.type == InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE || this.type == InteractionResponseType.CHANNEL_MESSAGE){
-			this.type = withSource ? InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE : InteractionResponseType.CHANNEL_MESSAGE;
-		}
-		else{
-			this.type = withSource ? InteractionResponseType.ACKNOWLEDGE_WITH_SOURCE : InteractionResponseType.ACKNOWLEDGE;
-		}
-		return this;
-	}
-
 	public InteractionRespondAction channelMessage(boolean channelMessage){
-		if(this.type == InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE || this.type == InteractionResponseType.ACKNOWLEDGE_WITH_SOURCE){
-			this.type = channelMessage ? InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE : InteractionResponseType.ACKNOWLEDGE_WITH_SOURCE;
-		}
-		else{
-			this.type = channelMessage ? InteractionResponseType.CHANNEL_MESSAGE : InteractionResponseType.ACKNOWLEDGE;
-		}
+		this.type = channelMessage ? InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE : InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE;
+
 		return this;
 	}
 

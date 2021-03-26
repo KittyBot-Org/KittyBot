@@ -91,7 +91,7 @@ public class InteractionsModule extends Module{
 			var permHolder = ((PermissionHolder) applicationHolder);
 			var user = interaction.getUser();
 			if(permHolder.isDevOnly() && !Config.DEV_IDS.contains(user.getIdLong())){
-				reply(interaction).ephemeral().content("This command is developer only").type(InteractionResponseType.ACKNOWLEDGE).queue();
+				reply(interaction).ephemeral().content("This command is developer only").queue();
 				return;
 			}
 			if(!Config.DEV_IDS.contains(interaction.getUserId())){

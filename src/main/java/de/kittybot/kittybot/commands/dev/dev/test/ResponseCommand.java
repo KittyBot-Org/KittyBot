@@ -19,10 +19,8 @@ public class ResponseCommand extends SubCommand{
 		super("response", "Let's you choose the response type");
 		addOptions(
 			new CommandOptionString("type", "The response type you want").required().addChoices(
-				new CommandOptionChoice<>(InteractionResponseType.ACKNOWLEDGE),
-				new CommandOptionChoice<>(InteractionResponseType.ACKNOWLEDGE_WITH_SOURCE),
-				new CommandOptionChoice<>(InteractionResponseType.CHANNEL_MESSAGE),
-				new CommandOptionChoice<>(InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE)
+				new CommandOptionChoice<>(InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE),
+				new CommandOptionChoice<>(InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE)
 			),
 			new CommandOptionBoolean("ephemeral", "Weather the response should be a ephemeral message")
 		);
@@ -37,7 +35,7 @@ public class ResponseCommand extends SubCommand{
 			response.setEphemeral(options.getBoolean("ephemeral"));
 		}
 		if(response.isEphemeral()){
-			response.setContent(content);
+			//response.setContent(content);
 		}
 		else{
 			response.addEmbeds(ia.applyDefaultStyle(new EmbedBuilder()

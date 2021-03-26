@@ -163,7 +163,7 @@ public class Interaction{
 	}
 
 	public void error(String error){
-		this.modules.get(InteractionsModule.class).reply(this).type(InteractionResponseType.ACKNOWLEDGE).content(Emoji.X.get() + " " + error).ephemeral().queue();
+		this.modules.get(InteractionsModule.class).reply(this).type(InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE).content(Emoji.X.get() + " " + error).ephemeral().queue();
 	}
 
 	public void followup(String message){
