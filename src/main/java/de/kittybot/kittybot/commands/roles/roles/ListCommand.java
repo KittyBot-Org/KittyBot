@@ -52,7 +52,7 @@ public class ListCommand extends GuildSubCommand{
 			ia.error("To list roles make sure I have the following permissions: `MESSAGE_WRITE` & `MESSAGE_ADD_REACTION`");
 			return;
 		}
-		ia.acknowledge(true).queue(success ->
+		ia.acknowledge().queue(success ->
 			ia.getChannel().sendMessage(embed).queue(message -> {
 				ia.get(ReactionRoleModule.class).add(message.getGuild().getIdLong(), message.getIdLong());
 				sortedRoles.forEach(role -> message.addReaction("test:" + role.getEmoteId()).queue());

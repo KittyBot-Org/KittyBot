@@ -99,7 +99,7 @@ public class PaginatorModule extends Module{
 	}
 
 	public void create(Interaction ia, int maxPages, BiFunction<Integer, EmbedBuilder, EmbedBuilder> embedFunction){
-		ia.acknowledge(true).queue(success -> {
+		ia.acknowledge().queue(success -> {
 			var embedBuilder = embedFunction.apply(0, new EmbedBuilder().setFooter("Page: 1/" + maxPages)).build();
 			var channel = ia.getChannel();
 			create(maxPages, embedFunction, embedBuilder, channel, ia.getUserId());

@@ -1,6 +1,5 @@
 package de.kittybot.kittybot.slashcommands.interaction;
 
-import club.minnced.discord.webhook.receive.ReadonlyMessage;
 import de.kittybot.kittybot.modules.InteractionsModule;
 import de.kittybot.kittybot.objects.enums.Emoji;
 import de.kittybot.kittybot.objects.module.Module;
@@ -8,7 +7,6 @@ import de.kittybot.kittybot.objects.module.Modules;
 import de.kittybot.kittybot.slashcommands.interaction.response.FollowupMessage;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionRespondAction;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
-import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponseType;
 import de.kittybot.kittybot.utils.Colors;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -163,7 +161,15 @@ public class Interaction{
 	}
 
 	public void error(String error){
-		this.modules.get(InteractionsModule.class).reply(this).type(InteractionResponseType.ACKNOWLEDGE).content(Emoji.X.get() + " " + error).ephemeral().queue();
+		this.modules.get(InteractionsModule.class).reply(this).content(Emoji.X.get() + " " + error).ephemeral().queue();
+	}
+
+	public RestAction<Void> editError(String error){
+		return edit(new FollowupMessage.Builder().setContent(Emoji.X.get() + " " + error).build());
+	}
+
+	public RestAction<Void> edit(FollowupMessage message){
+		return this.modules.get(InteractionsModule.class).edit(this, message);
 	}
 
 	public void followup(String message){
@@ -174,7 +180,7 @@ public class Interaction{
 		followupMessage(message).queue();
 	}
 
-	public RestAction<ReadonlyMessage> followupMessage(FollowupMessage message){
+	public RestAction<Void> followupMessage(FollowupMessage message){
 		return this.modules.get(InteractionsModule.class).followup(this, message);
 	}
 
@@ -186,8 +192,8 @@ public class Interaction{
 		return getEmbed().setColor(Color.RED);
 	}
 
-	public InteractionRespondAction acknowledge(boolean withSource){
-		return this.modules.get(InteractionsModule.class).acknowledge(this, withSource);
+	public InteractionRespondAction acknowledge(){
+		return this.modules.get(InteractionsModule.class).acknowledge(this);
 	}
 
 }

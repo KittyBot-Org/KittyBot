@@ -23,7 +23,7 @@ public class StopCommand extends RunGuildCommand{
 		if(!MusicUtils.checkMusicPermissions(ia, scheduler)){
 			return;
 		}
-		ia.acknowledge(true).queue(success -> ia.get(MusicModule.class).destroy(ia.getGuildId(), ia.getUserId()));
+		ia.acknowledge().queue(success -> ia.get(MusicModule.class).destroy(ia.getGuildId(), ia.getUserId()));
 	}
 
 }

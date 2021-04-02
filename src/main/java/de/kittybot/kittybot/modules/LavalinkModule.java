@@ -24,7 +24,7 @@ public class LavalinkModule extends Module{
 		this.lavalink = new JdaLavalink(String.valueOf(Config.BOT_ID), 1, guildId -> modules.getJDA(guildId));
 		try{
 			for(var node : Config.LAVALINK_NODES){
-				lavalink.addNode(new URI("ws://" + node.getHost() + ":" + node.getPort()), node.getPassword());
+				lavalink.addNode(new URI(node.getProtocol() + "://" + node.getHost() + ":" + node.getPort()), node.getPassword());
 			}
 		}
 		catch(URISyntaxException e){

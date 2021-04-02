@@ -7,7 +7,6 @@ import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.objects.music.MusicManager;
 import de.kittybot.kittybot.objects.music.SearchProvider;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import de.kittybot.kittybot.slashcommands.interaction.response.FollowupMessage;
 import de.kittybot.kittybot.utils.Config;
 import de.kittybot.kittybot.utils.Utils;
 import org.slf4j.Logger;
@@ -77,7 +76,7 @@ public class SpotifyModule extends Module{
 			}
 			loadTracks(id, ia, manager, toLoad);
 		}).exceptionally(throwable -> {
-			ia.error(throwable.getMessage().contains("invalid id") ? "Album not found" : "There was an error while loading the album");
+			ia.editError(throwable.getMessage().contains("invalid id") ? "Album not found" : "There was an error while loading the album").queue();
 			return null;
 		});
 	}
@@ -86,7 +85,7 @@ public class SpotifyModule extends Module{
 		this.spotify.getTrack(id).build().executeAsync().thenAcceptAsync(track ->
 			this.modules.get(MusicModule.class).play(ia, track.getArtists()[0].getName() + " " + track.getName(), SearchProvider.YOUTUBE)
 		).exceptionally(throwable -> {
-			ia.error(throwable.getMessage().contains("invalid id") ? "Track not found" : "There was an error while loading the track");
+			ia.editError(throwable.getMessage().contains("invalid id") ? "Track not found" : "There was an error while loading the track").queue();
 			return null;
 		});
 	}
@@ -101,13 +100,12 @@ public class SpotifyModule extends Module{
 			}
 			loadTracks(id, ia, manager, toLoad);
 		}).exceptionally(throwable -> {
-			ia.error(throwable.getMessage().contains("Invalid playlist Id") ? "Playlist not found" : "There was an error while loading the playlist");
+			ia.editError(throwable.getMessage().contains("Invalid playlist Id") ? "Playlist not found" : "There was an error while loading the playlist").queue();
 			return null;
 		});
 	}
 
 	private void loadTracks(String id, GuildInteraction ia, MusicManager manager, List<String> toLoad){
-		ia.acknowledge(true).content("Loading...\nThis may take a while").ephemeral().queue();
 		var restClient = manager.getScheduler().getLink().getRestClient();
 		Utils.all(toLoad.stream().map(restClient::getYoutubeSearchResult).collect(Collectors.toList()))
 			.thenAcceptAsync(results -> {
@@ -119,21 +117,16 @@ public class SpotifyModule extends Module{
 					track.setUserData(ia.getUserId());
 					return track;
 				}).filter(Objects::nonNull).collect(Collectors.toList());
+
 				if(tracks.isEmpty()){
 					ia.followupError("No tracks on youtube found");
 					return;
 				}
 				manager.connectToChannel(ia);
-				var toPlay = tracks.remove(0);
-				var embed = manager.getScheduler().queue(toPlay, tracks);
-				if(embed == null){
-					return;
-				}
-				ia.followupMessage(new FollowupMessage.Builder().setEmbeds(embed).build())
-					.queue(success -> manager.getScheduler().tryPlay(toPlay), error -> manager.getScheduler().tryPlay(toPlay));
+				manager.getScheduler().queue(ia, tracks.remove(0), tracks);
 			})
 			.exceptionally(error -> {
-				ia.followupError("Something went wrong while fetching your tracks: \n" + error.getMessage());
+				ia.editError("Something went wrong while fetching your tracks: \n" + error.getMessage()).queue();
 				return null;
 			});
 	}
