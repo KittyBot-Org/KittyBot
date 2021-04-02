@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.slashcommands.interaction.response;
 
+import de.kittybot.kittybot.modules.InteractionsModule;
 import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
@@ -10,7 +11,6 @@ import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import net.dv8tion.jda.internal.requests.Requester;
 import net.dv8tion.jda.internal.requests.RestActionImpl;
-import net.dv8tion.jda.internal.requests.Route;
 import net.dv8tion.jda.internal.utils.Checks;
 import net.dv8tion.jda.internal.utils.Helpers;
 import okhttp3.RequestBody;
@@ -31,21 +31,16 @@ public class InteractionRespondAction extends RestActionImpl<Interaction>{
 	protected EnumSet<Message.MentionType> allowedMentions;
 	protected Set<String> mentionableUsers = new HashSet<>();
 	protected Set<String> mentionableRoles = new HashSet<>();
-	private InteractionResponseType type = InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE;
+	private InteractionResponseType type;
 	private StringBuilder content = new StringBuilder();
 	private boolean tts = false;
 	private int flags = 0;
 	private List<MessageEmbed> embeds = new ArrayList<>();
 
-	public InteractionRespondAction(JDA api, Route.CompiledRoute route, Interaction interaction){
-		super(api, route);
+	public InteractionRespondAction(JDA api, Interaction interaction, InteractionResponseType type){
+		super(api, InteractionsModule.INTERACTION_RESPONSE.compile(String.valueOf(interaction.getId()), interaction.getToken()));
 		this.interaction = interaction;
-	}
-
-	public InteractionRespondAction(JDA api, Route.CompiledRoute route, Interaction interaction, boolean channelMessage){
-		super(api, route);
-		this.interaction = interaction;
-		this.type = channelMessage ? InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE : InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE;
+		this.type = type;
 	}
 
 	@Nonnull
@@ -154,12 +149,6 @@ public class InteractionRespondAction extends RestActionImpl<Interaction>{
 	@Override
 	public InteractionRespondAction timeout(long timeout, @Nonnull TimeUnit unit){
 		return (InteractionRespondAction) super.timeout(timeout, unit);
-	}
-
-	public InteractionRespondAction channelMessage(boolean channelMessage){
-		this.type = channelMessage ? InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE : InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE;
-
-		return this;
 	}
 
 	public InteractionRespondAction type(InteractionResponseType type){

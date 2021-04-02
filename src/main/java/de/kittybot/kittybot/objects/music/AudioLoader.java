@@ -5,12 +5,15 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.stream.Collectors;
 
 public class AudioLoader implements AudioLoadResultHandler{
 
+	private static final Logger LOG = LoggerFactory.getLogger(AudioLoader.class);
 
 	private final GuildInteraction ia;
 	private final MusicManager manager;
@@ -50,6 +53,7 @@ public class AudioLoader implements AudioLoadResultHandler{
 
 	@Override
 	public void loadFailed(FriendlyException e){
+		LOG.error("Failed to load track:", e);
 		this.ia.reply("Failed to load track:\n" + e.getMessage());
 	}
 

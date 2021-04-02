@@ -54,7 +54,7 @@ public class QueueCommand extends RunGuildCommand{
 			ia.reply("The queue is empty. You can queue new tracks with `/play <query/search-term>` or `/queue <query/search-term>`");
 			return;
 		}
-		ia.acknowledge(true).queue(success ->
+		ia.acknowledge().queue(success ->
 			MusicUtils.sendTracks(tracks, ia.getModules(), ia.getChannel(), ia.getUserId(), "Currently " + tracks.size() + " " + MessageUtils.pluralize("track", tracks) + " are queued")
 		);
 
