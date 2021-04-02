@@ -24,11 +24,12 @@ repositories {
     mavenCentral() // this is to receive updates from mvnrepository repos that are not synced with jcenter
     jcenter()
     maven { url 'https://jitpack.io' }
+    maven { url 'https://m2.dv8tion.net/releases' }
 }
 
 dependencies {
     // discord/jda related
-    implementation('net.dv8tion:JDA:4.2.0_245') {
+    implementation('net.dv8tion:JDA:4.2.1_253') {
         exclude group: 'club.minnced', module: 'opus-java'
     }
     implementation 'com.jagrosh:jda-utilities:3.0.5'
@@ -39,7 +40,7 @@ dependencies {
     implementation('com.github.KittyBot-Org:Lavalink-Client:67371c0') {
         exclude group: 'com.sedmelluq', module: 'lavaplayer'
     }
-    implementation 'com.sedmelluq:lavaplayer:1.3.73'
+    implementation 'com.sedmelluq:lavaplayer:1.3.74'
     implementation 'se.michaelthelin.spotify:spotify-web-api-java:6.5.2'
 
     // database
@@ -67,7 +68,7 @@ dependencies {
 
     // other
     implementation 'io.javalin:javalin:3.13.4'
-    implementation 'io.github.classgraph:classgraph:4.8.102'
+    implementation 'io.github.classgraph:classgraph:4.8.104'
     implementation 'com.github.ben-manes.caffeine:caffeine:2.8.8'
     implementation 'com.squareup.okhttp3:okhttp:4.9.1'
 }
