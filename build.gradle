@@ -24,6 +24,7 @@ repositories {
     mavenCentral() // this is to receive updates from mvnrepository repos that are not synced with jcenter
     jcenter()
     maven { url 'https://jitpack.io' }
+    maven { url 'https://m2.dv8tion.net/releases' }
 }
 
 dependencies {
