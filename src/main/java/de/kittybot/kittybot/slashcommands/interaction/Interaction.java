@@ -156,6 +156,10 @@ public class Interaction{
 		this.modules.get(InteractionsModule.class).reply(this).embeds(embedBuilder.build()).queue();
 	}
 
+	public InteractionRespondAction reply(){
+		return this.modules.get(InteractionsModule.class).reply(this);
+	}
+
 	public void reply(InteractionResponse response){
 		this.modules.get(InteractionsModule.class).reply(this).fromData(response).queue();
 	}
