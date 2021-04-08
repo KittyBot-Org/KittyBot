@@ -21,10 +21,10 @@ group 'de.kittybot'
 mainClassName = 'de.kittybot.kittybot.main.Main'
 
 repositories {
+    maven { url 'https://m2.dv8tion.net/releases' }
     mavenCentral() // this is to receive updates from mvnrepository repos that are not synced with jcenter
     jcenter()
     maven { url 'https://jitpack.io' }
-    maven { url 'https://m2.dv8tion.net/releases' }
 }
 
 dependencies {
@@ -40,7 +40,7 @@ dependencies {
     implementation('com.github.KittyBot-Org:Lavalink-Client:67371c0') {
         exclude group: 'com.sedmelluq', module: 'lavaplayer'
     }
-    implementation 'com.github.sedmelluq:lavaplayer:1.3.75'
+    implementation 'com.sedmelluq:lavaplayer:1.3.74'
     implementation 'se.michaelthelin.spotify:spotify-web-api-java:6.5.2'
 
     // database
