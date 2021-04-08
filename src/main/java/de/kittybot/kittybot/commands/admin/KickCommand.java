@@ -6,7 +6,6 @@ import de.kittybot.kittybot.slashcommands.application.options.CommandOptionStrin
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionUser;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
-import de.kittybot.kittybot.utils.MessageUtils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 
@@ -28,18 +27,21 @@ public class KickCommand extends RunGuildCommand{
 			ia.error("I don't have the required permission to kick members");
 			return;
 		}
-		var userId = options.getLong("user");
-		ia.getGuild().retrieveMemberById(userId).queue(member -> {
-				if(!ia.getSelfMember().canInteract(member)){
-					ia.error("I can't interact with this member");
-					return;
-				}
-				var reason = options.getOrDefault("reason", "Kicked by " + ia.getMember().getAsMention());
-				ia.getGuild().kick(member, reason).reason(reason).queue(success ->
-						ia.reply("Kicked `" + MarkdownSanitizer.escape(member.getUser().getAsTag()) + "` with reason: " + reason),
-					error -> ia.error("Failed to kick " + MessageUtils.getUserMention(userId) + " for reason: `" + error.getMessage() + "`")
-				);
-			}, error -> ia.error("I could not find the provided user")
+		var user = options.getUser("user");
+		if(user.getIdLong() == ia.getUserId()){
+			ia.error("You can't kick yourself");
+		}
+		var member = options.getMember("user");
+		if(member != null){
+			if(!ia.getSelfMember().canInteract(member)){
+				ia.error("I can't interact with this member");
+				return;
+			}
+		}
+		var reason = options.getOrDefault("reason", "Kicked by " + ia.getMember().getAsMention());
+		ia.getGuild().kick(user.getId(), reason).reason(reason).queue(success ->
+				ia.reply("Kicked `" + MarkdownSanitizer.escape(user.getAsTag()) + "`(`" + user.getId() + "`).\nReason: " + reason),
+			error -> ia.error("Failed to kick " + user.getAsMention() + ".\nReason: `" + error.getMessage() + "`")
 		);
 	}
 

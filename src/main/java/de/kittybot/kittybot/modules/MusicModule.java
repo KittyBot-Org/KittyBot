@@ -199,6 +199,7 @@ public class MusicModule extends Module implements Serializable{
 	}
 
 	public void play(GuildInteraction ia, String query, SearchProvider searchProvider){
+		ia.acknowledge().queue();
 		var manager = this.musicPlayers.computeIfAbsent(ia.getGuildId(), guildId -> new MusicManager(this.modules, guildId, ia.getChannelId()));
 
 		var matcher = SPOTIFY_URL_PATTERN.matcher(query);

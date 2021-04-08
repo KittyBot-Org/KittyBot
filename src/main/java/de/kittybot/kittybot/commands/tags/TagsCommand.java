@@ -18,7 +18,7 @@ public class TagsCommand extends Command{
 			new ListCommand(),
 			new InfoCommand(),
 			new PublishCommand(),
-			new RemoveCommand(),
+			new UnpublishCommand(),
 			new GenericHelpCommand("Tags lets anyone create shortcuts to certain information.\n" +
 				"You can create them via `/tags create <name> <content>` or  `/tags create <name> <message-id>` to mirror the content of an already sent message.\n" +
 				"Members with the `MANAGE_SERVER` permission can also add up to 50 tags as server commands with `/tags publish <tag-name> <command description>`\n" +
