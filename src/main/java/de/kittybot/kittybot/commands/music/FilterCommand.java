@@ -24,6 +24,7 @@ public class FilterCommand extends Command{
 			new VibratoCommand(),
 			new RotationCommand(),
 			new DistortionCommand(),
+			new ChannelMixCommand(),
 			new ClearCommand()
 		);
 	}
@@ -258,6 +259,44 @@ public class FilterCommand extends Command{
 
 			scheduler.getFilters().setDistortion(distortion).commit();
 			ia.reply("Set distortion filter");
+		}
+
+	}
+
+	private static class ChannelMixCommand extends GuildSubCommand{
+
+		public ChannelMixCommand(){
+			super("channel-mix", "Distortion effect. It can generate some pretty unique audio effects.");
+			addOptions(
+				new CommandOptionFloat("left-to-left", "The offset"),
+				new CommandOptionFloat("left-to-right", "The sinOffset"),
+				new CommandOptionFloat("right-to-left", "The cosOffset"),
+				new CommandOptionFloat("right-to-right", "The tanOffset")
+			);
+		}
+
+		@Override
+		public void run(Options options, GuildInteraction ia){
+			var scheduler = ia.get(MusicModule.class).getScheduler(ia.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ia, scheduler) || !MusicUtils.checkMusicPermissions(ia, scheduler)){
+				return;
+			}
+			var channelMix = new ChannelMix();
+			if(options.has("left-to-left")){
+				channelMix = channelMix.setLeftToLeft(options.getFloat("left-to-left"));
+			}
+			if(options.has("left-to-right")){
+				channelMix = channelMix.setLeftToRight(options.getFloat("left-to-right"));
+			}
+			if(options.has("right-to-left")){
+				channelMix = channelMix.setRightToLeft(options.getFloat("right-to-left"));
+			}
+			if(options.has("right-to-right")){
+				channelMix = channelMix.setRightToLeft(options.getFloat("right-to-right"));
+			}
+
+			scheduler.getFilters().setChannelMix(channelMix).commit();
+			ia.reply("Set channel-mix filter");
 		}
 
 	}
