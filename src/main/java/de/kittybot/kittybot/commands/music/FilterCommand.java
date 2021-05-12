@@ -266,12 +266,12 @@ public class FilterCommand extends Command{
 	private static class ChannelMixCommand extends GuildSubCommand{
 
 		public ChannelMixCommand(){
-			super("channel-mix", "Distortion effect. It can generate some pretty unique audio effects.");
+			super("channel-mix", "Mixes both channels (left and right), with a configurable factor on how much each channel affects the other.");
 			addOptions(
-				new CommandOptionFloat("left-to-left", "The offset"),
-				new CommandOptionFloat("left-to-right", "The sinOffset"),
-				new CommandOptionFloat("right-to-left", "The cosOffset"),
-				new CommandOptionFloat("right-to-right", "The tanOffset")
+				new CommandOptionFloat("left-to-left", "How much audio from the left channel goes to the left channel"),
+				new CommandOptionFloat("left-to-right", "How much audio from the left channel goes to the right channel"),
+				new CommandOptionFloat("right-to-left", "How much audio from the right channel goes to the left channel"),
+				new CommandOptionFloat("right-to-right", "How much audio from the right channel goes to the right channel")
 			);
 		}
 
@@ -297,6 +297,32 @@ public class FilterCommand extends Command{
 
 			scheduler.getFilters().setChannelMix(channelMix).commit();
 			ia.reply("Set channel-mix filter");
+		}
+
+	}
+
+	private static class LowPassCommand extends GuildSubCommand{
+
+		public LowPassCommand(){
+			super("low-pass", "Higher frequencies get suppressed, while lower frequencies pass through this filter, thus the name low pass.");
+			addOptions(
+				new CommandOptionFloat("smoothing", "The smoothing level")
+			);
+		}
+
+		@Override
+		public void run(Options options, GuildInteraction ia){
+			var scheduler = ia.get(MusicModule.class).getScheduler(ia.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ia, scheduler) || !MusicUtils.checkMusicPermissions(ia, scheduler)){
+				return;
+			}
+			var lowPass = new LowPass();
+			if(options.has("smoothing")){
+				lowPass = lowPass.setSmoothing(options.getFloat("smoothing"));
+			}
+
+			scheduler.getFilters().setLowPass(lowPass).commit();
+			ia.reply("Set low-pass filter");
 		}
 
 	}

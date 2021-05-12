@@ -37,7 +37,7 @@ dependencies {
     implementation 'com.github.caneleex:BotListHandler:1.0.12'
 
     // audio
-    implementation('com.github.KittyBot-Org:Lavalink-Client:e4b28b8') {
+    implementation('com.github.KittyBot-Org:Lavalink-Client:09c6931') {
         exclude group: 'com.sedmelluq', module: 'lavaplayer'
     }
     implementation 'com.github.sedmelluq:lavaplayer:1.3.76'
