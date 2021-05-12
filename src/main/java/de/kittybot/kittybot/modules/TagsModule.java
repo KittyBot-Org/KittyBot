@@ -150,7 +150,7 @@ public class TagsModule extends Module{
 		if(record == null){
 			return false;
 		}
-		if(record.getCommandId() != -1){
+		if(record.getCommandId() != -1 && newName != null){
 			this.modules.get(CommandsModule.class).editGuildCommand(guildId, record.getCommandId(), DataObject.empty().put("name", newName));
 		}
 		return true;
