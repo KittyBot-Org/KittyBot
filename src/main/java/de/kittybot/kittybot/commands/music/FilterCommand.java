@@ -25,6 +25,7 @@ public class FilterCommand extends Command{
 			new RotationCommand(),
 			new DistortionCommand(),
 			new ChannelMixCommand(),
+			new LowPassCommand(),
 			new ClearCommand()
 		);
 	}
