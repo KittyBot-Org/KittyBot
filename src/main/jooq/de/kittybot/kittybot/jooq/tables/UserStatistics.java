@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row10;
+import org.jooq.Row11;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -26,6 +26,7 @@ import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
+import org.jooq.types.YearToSecond;
 
 
 /**
@@ -67,32 +68,37 @@ public class UserStatistics extends TableImpl<UserStatisticsRecord> {
     /**
      * The column <code>public.user_statistics.xp</code>.
      */
-    public final TableField<UserStatisticsRecord, Integer> XP = createField(DSL.name("xp"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
+    public final TableField<UserStatisticsRecord, Long> XP = createField(DSL.name("xp"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("0", SQLDataType.BIGINT)), this, "");
 
     /**
-     * The column <code>public.user_statistics.level</code>.
+     * The column <code>public.user_statistics.commands_used</code>.
      */
-    public final TableField<UserStatisticsRecord, Integer> LEVEL = createField(DSL.name("level"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
-
-    /**
-     * The column <code>public.user_statistics.bot_calls</code>.
-     */
-    public final TableField<UserStatisticsRecord, Integer> BOT_CALLS = createField(DSL.name("bot_calls"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
+    public final TableField<UserStatisticsRecord, Integer> COMMANDS_USED = createField(DSL.name("commands_used"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.user_statistics.voice_time</code>.
      */
-    public final TableField<UserStatisticsRecord, Integer> VOICE_TIME = createField(DSL.name("voice_time"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
+    public final TableField<UserStatisticsRecord, YearToSecond> VOICE_TIME = createField(DSL.name("voice_time"), SQLDataType.INTERVAL.nullable(false).defaultValue(DSL.field("'00:00:00'::interval", SQLDataType.INTERVAL)), this, "");
 
     /**
-     * The column <code>public.user_statistics.message_count</code>.
+     * The column <code>public.user_statistics.stream_time</code>.
      */
-    public final TableField<UserStatisticsRecord, Integer> MESSAGE_COUNT = createField(DSL.name("message_count"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
+    public final TableField<UserStatisticsRecord, YearToSecond> STREAM_TIME = createField(DSL.name("stream_time"), SQLDataType.INTERVAL.nullable(false).defaultValue(DSL.field("'00:00:00'::interval", SQLDataType.INTERVAL)), this, "");
 
     /**
-     * The column <code>public.user_statistics.emote_count</code>.
+     * The column <code>public.user_statistics.messages_sent</code>.
      */
-    public final TableField<UserStatisticsRecord, Integer> EMOTE_COUNT = createField(DSL.name("emote_count"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
+    public final TableField<UserStatisticsRecord, Integer> MESSAGES_SENT = createField(DSL.name("messages_sent"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>public.user_statistics.emotes_sent</code>.
+     */
+    public final TableField<UserStatisticsRecord, Integer> EMOTES_SENT = createField(DSL.name("emotes_sent"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>public.user_statistics.stickers_sent</code>.
+     */
+    public final TableField<UserStatisticsRecord, Integer> STICKERS_SENT = createField(DSL.name("stickers_sent"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.user_statistics.last_active</code>.
@@ -149,7 +155,7 @@ public class UserStatistics extends TableImpl<UserStatisticsRecord> {
 
     @Override
     public List<UniqueKey<UserStatisticsRecord>> getKeys() {
-        return Arrays.<UniqueKey<UserStatisticsRecord>>asList(Keys.USER_STATISTICS_PKEY);
+        return Arrays.<UniqueKey<UserStatisticsRecord>>asList(Keys.USER_STATISTICS_PKEY, Keys.USER_STATISTICS_GUILD_ID_USER_ID_KEY);
     }
 
     @Override
@@ -188,11 +194,11 @@ public class UserStatistics extends TableImpl<UserStatisticsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row10 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Long, Long, Long, Integer, Integer, Integer, Integer, Integer, Integer, LocalDateTime> fieldsRow() {
-        return (Row10) super.fieldsRow();
+    public Row11<Long, Long, Long, Long, Integer, YearToSecond, YearToSecond, Integer, Integer, Integer, LocalDateTime> fieldsRow() {
+        return (Row11) super.fieldsRow();
     }
 }

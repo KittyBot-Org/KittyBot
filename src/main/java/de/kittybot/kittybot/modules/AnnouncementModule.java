@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.modules;
 
+import de.kittybot.kittybot.jooq.Tables;
 import de.kittybot.kittybot.objects.data.Placeholder;
 import de.kittybot.kittybot.objects.enums.Emoji;
 import de.kittybot.kittybot.objects.module.Module;
@@ -24,6 +25,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static de.kittybot.kittybot.jooq.Tables.GUILDS;
+
 @SuppressWarnings("unused")
 public class AnnouncementModule extends Module{
 
@@ -40,7 +43,7 @@ public class AnnouncementModule extends Module{
 	}
 
 	@Override
-	protected void onEnable(){
+	public void onEnable(){
 		this.randomJoinMessages = FileUtils.loadMessageFile("join");
 		this.randomLeaveMessages = FileUtils.loadMessageFile("leave");
 	}
@@ -122,29 +125,29 @@ public class AnnouncementModule extends Module{
 
 	@Override
 	public void onGuildMemberRemove(@NotNull GuildMemberRemoveEvent event){
-		var settings = this.modules.get(SettingsModule.class).getSettings(event.getGuild().getIdLong());
-		if(!settings.areLeaveMessagesEnabled()){
+		var settings = this.modules.get(GuildSettingsModule.class).get(event.getGuild().getIdLong());
+		if(!settings.get(GUILDS.LEAVE_MESSAGES_ENABLED)){
 			return;
 		}
 		var user = event.getUser();
-		var message = PlaceholderUtils.replacePlaceholders(settings.getLeaveMessage(),
+		var message = PlaceholderUtils.replacePlaceholders(settings.get(GUILDS.LEAVE_MESSAGE),
 			new Placeholder("random_leave_message", getRandomMessage(this.randomLeaveMessages)),
 			new Placeholder("user", user.getAsMention()),
 			new Placeholder("user_tag", user.getAsTag()),
 			new Placeholder("user_name", user.getName())
 		);
-		sendAnnouncementMessage(event.getGuild(), settings.getAnnouncementChannelId(), message);
+		sendAnnouncementMessage(event.getGuild(), settings.get(GUILDS.ANNOUNCEMENT_CHANNEL_ID), message);
 	}
 
 	@Override
 	public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event){
-		var settings = this.modules.get(SettingsModule.class).getSettings(event.getGuild().getIdLong());
-		if(!settings.areJoinMessagesEnabled()){
+		var settings = this.modules.get(GuildSettingsModule.class).get(event.getGuild().getIdLong());
+		if(!settings.get(GUILDS.JOIN_MESSAGES_ENABLED)){
 			return;
 		}
 		var user = event.getUser();
 		var invite = this.modules.get(InviteModule.class).getUsedInvite(event.getGuild().getIdLong(), user.getIdLong());
-		var message = PlaceholderUtils.replacePlaceholders(settings.getJoinMessage(),
+		var message = PlaceholderUtils.replacePlaceholders(settings.get(GUILDS.JOIN_MESSAGE),
 			new Placeholder("random_join_message", getRandomMessage(this.randomJoinMessages)),
 			new Placeholder("user", user.getAsMention()),
 			new Placeholder("user_tag", user.getAsTag()),
@@ -152,7 +155,7 @@ public class AnnouncementModule extends Module{
 			new Placeholder("invite_code", invite == null ? "unknown" : invite.getCode()),
 			new Placeholder("invite_link", invite == null ? "unknown" : INVITE_CODE_PREFIX + invite.getCode())
 		);
-		sendAnnouncementMessage(event.getGuild(), settings.getAnnouncementChannelId(), message);
+		sendAnnouncementMessage(event.getGuild(), settings.get(GUILDS.ANNOUNCEMENT_CHANNEL_ID), message);
 	}
 
 	public String getRandomMessage(List<String> messages){

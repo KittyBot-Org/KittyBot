@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.commands.music;
 
 import de.kittybot.kittybot.modules.MusicModule;
-import de.kittybot.kittybot.modules.SettingsModule;
+import de.kittybot.kittybot.modules.GuildSettingsModule;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.RunGuildCommand;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
@@ -21,7 +21,7 @@ public class ShuffleCommand extends RunGuildCommand{
 		if(!MusicUtils.checkCommandRequirements(ia, scheduler)){
 			return;
 		}
-		if(!ia.get(SettingsModule.class).hasDJRole(ia.getMember())){
+		if(!ia.get(GuildSettingsModule.class).hasDJRole(ia.getMember())){
 			ia.error("Only DJs are allowed shuffle");
 			return;
 		}

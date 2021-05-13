@@ -1,6 +1,6 @@
 package de.kittybot.kittybot.web.guilds.guild.settings;
 
-import de.kittybot.kittybot.modules.SettingsModule;
+import de.kittybot.kittybot.modules.GuildSettingsModule;
 import de.kittybot.kittybot.modules.WebModule;
 import de.kittybot.kittybot.objects.module.Modules;
 import io.javalin.http.Context;
@@ -20,7 +20,7 @@ public class PostGuildSettingsRoute implements Handler{
 	public void handle(@NotNull Context ctx){
 		var guildId = this.modules.get(WebModule.class).getGuild(ctx).getIdLong();
 		var json = DataObject.fromJson(ctx.body());
-		var settings = this.modules.get(SettingsModule.class);
+		var settings = this.modules.get(GuildSettingsModule.class);
 
 		settings.setStreamAnnouncementChannelId(guildId, json.getLong("stream_announcement_channel_id"));
 		settings.setStreamAnnouncementMessage(guildId, json.getString("stream_announcement_message"));

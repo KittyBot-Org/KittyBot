@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.commands.neko;
 
 import de.kittybot.kittybot.modules.RequestModule;
-import de.kittybot.kittybot.modules.SettingsModule;
+import de.kittybot.kittybot.modules.GuildSettingsModule;
 import de.kittybot.kittybot.objects.enums.Neko;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionChoice;
@@ -51,7 +51,7 @@ public class NekoCommand extends RunCommand{
 		if(neko.isNsfw()){
 			if(ia.isFromGuild()){
 				var guildIa = (GuildInteraction) ia;
-				if(!ia.get(SettingsModule.class).isNsfwEnabled(guildIa.getGuildId())){
+				if(!ia.get(GuildSettingsModule.class).isNsfwEnabled(guildIa.getGuildId())){
 					ia.error("NSFW commands are disabled in this guild");
 					return;
 				}

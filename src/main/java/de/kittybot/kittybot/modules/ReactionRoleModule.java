@@ -16,7 +16,7 @@ import static de.kittybot.kittybot.jooq.Tables.SELF_ASSIGNABLE_ROLE_MESSAGES;
 @SuppressWarnings("unused")
 public class ReactionRoleModule extends Module{
 
-	private static final Set<Class<? extends Module>> DEPENDENCIES = Set.of(SettingsModule.class);
+	private static final Set<Class<? extends Module>> DEPENDENCIES = Set.of(GuildSettingsModule.class);
 
 	private LoadingCache<Long, Set<Long>> reactionMessages;
 
@@ -26,7 +26,7 @@ public class ReactionRoleModule extends Module{
 	}
 
 	@Override
-	protected void onEnable(){
+	public void onEnable(){
 		this.reactionMessages = Caffeine.newBuilder()
 			.expireAfterAccess(5, TimeUnit.MINUTES)
 			.recordStats()
@@ -50,7 +50,7 @@ public class ReactionRoleModule extends Module{
 				event.getReaction().removeReaction(event.getUser()).queue();
 				return;
 			}
-			var settings = this.modules.get(SettingsModule.class).getSettings(guildId);
+			var settings = this.modules.get(GuildSettingsModule.class).get(guildId);
 			var roles = settings.getSelfAssignableRoles();
 			var emoteId = event.getReactionEmote().getEmote().getIdLong();
 			var selfAssignableRole = roles.stream().filter(r -> r.getEmoteId() == emoteId).findFirst().orElse(null);

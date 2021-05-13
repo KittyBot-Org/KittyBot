@@ -21,6 +21,7 @@ import de.kittybot.kittybot.jooq.tables.Sessions;
 import de.kittybot.kittybot.jooq.tables.SnipeDisabledChannels;
 import de.kittybot.kittybot.jooq.tables.StreamUserEvents;
 import de.kittybot.kittybot.jooq.tables.StreamUsers;
+import de.kittybot.kittybot.jooq.tables.UserSettings;
 import de.kittybot.kittybot.jooq.tables.UserStatistics;
 import de.kittybot.kittybot.jooq.tables.Voters;
 
@@ -132,6 +133,11 @@ public class Public extends SchemaImpl {
     public final StreamUsers STREAM_USERS = StreamUsers.STREAM_USERS;
 
     /**
+     * The table <code>public.user_settings</code>.
+     */
+    public final UserSettings USER_SETTINGS = UserSettings.USER_SETTINGS;
+
+    /**
      * The table <code>public.user_statistics</code>.
      */
     public final UserStatistics USER_STATISTICS = UserStatistics.USER_STATISTICS;
@@ -197,6 +203,7 @@ public class Public extends SchemaImpl {
             SnipeDisabledChannels.SNIPE_DISABLED_CHANNELS,
             StreamUserEvents.STREAM_USER_EVENTS,
             StreamUsers.STREAM_USERS,
+            UserSettings.USER_SETTINGS,
             UserStatistics.USER_STATISTICS,
             Voters.VOTERS);
     }

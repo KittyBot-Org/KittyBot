@@ -32,6 +32,7 @@ public class KittyBot{
 		var modules = new Modules(this);
 		var botListHandler = new BLHBuilder()
 			.setUnavailableEventsEnabled(false)
+			.setSuccessLoggingEnabled(false)
 			.setDevModePredicate(jda -> Environment.is(Environment.DEVELOPMENT))
 			.setSuccessLoggingEnabled(false)
 			.addBotList(BotList.TOP_GG, Config.TOP_GG_TOKEN)

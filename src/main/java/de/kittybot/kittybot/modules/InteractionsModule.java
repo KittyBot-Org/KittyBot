@@ -28,6 +28,8 @@ import org.slf4j.LoggerFactory;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static de.kittybot.kittybot.jooq.Tables.USER_STATISTICS;
+
 @SuppressWarnings("unused")
 public class InteractionsModule extends Module{
 
@@ -49,10 +51,10 @@ public class InteractionsModule extends Module{
 		}
 		var start = System.currentTimeMillis();
 		var interaction = Interaction.fromJSON(this.modules, event.getPayload(), event.getJDA());
-
 		if(interaction instanceof GuildInteraction){
 			var guildInteraction = (GuildInteraction) interaction;
-			var settings = this.modules.get(SettingsModule.class).getSettings(guildInteraction.getGuild().getIdLong());
+			this.modules.get(StatsModule.class).incrementStat(guildInteraction.getGuildId(), guildInteraction.getUserId(), USER_STATISTICS.COMMANDS_USED, 1);
+			var settings = this.modules.get(GuildSettingsModule.class).get(guildInteraction.getGuildId());
 
 			if(settings.isBotIgnoredUser(guildInteraction.getMember().getIdLong())){
 				interaction.error("I ignore u baka");

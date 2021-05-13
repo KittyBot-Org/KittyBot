@@ -15,7 +15,10 @@ import javax.annotation.Nonnull;
 import java.awt.Color;
 import java.text.MessageFormat;
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class GuildLoggingModule extends Module{
@@ -27,8 +30,8 @@ public class GuildLoggingModule extends Module{
 
 	/*@Override
 	public void onGuildMessageUpdate(@Nonnull GuildMessageUpdateEvent event){
-		var settings = this.modules.get(SettingsModule.class).getSettings(event.getGuild().getIdLong());
-		if(!settings.areLogMessagesEnabled()){
+		var settings = this.modules.get(GuildSettingsModule.class).get(event.getGuild().getIdLong());
+		if(!settings.get()){
 			return;
 		}
 		logEvent(event, Color.RED, event.getAuthor(), "Message edit", "");
@@ -36,7 +39,7 @@ public class GuildLoggingModule extends Module{
 
 	@Override
 	public void onGuildMessageDelete(@Nonnull GuildMessageDeleteEvent event){
-		var settings = this.modules.get(SettingsModule.class).getSettings(event.getGuild().getIdLong());
+		var settings = this.modules.get(GuildSettingsModule.class).get(event.getGuild().getIdLong());
 		if(!settings.areLogMessagesEnabled()){
 			return;
 		}
@@ -45,7 +48,7 @@ public class GuildLoggingModule extends Module{
 
 	@Override
 	public void onGuildMemberRemove(@Nonnull GuildMemberRemoveEvent event){
-		var settings = this.modules.get(SettingsModule.class).getSettings(event.getGuild().getIdLong());
+		var settings = this.modules.get(GuildSettingsModule.class).get(event.getGuild().getIdLong());
 		if(!settings.areLogMessagesEnabled()){
 			return;
 		}
@@ -79,7 +82,7 @@ public class GuildLoggingModule extends Module{
 
 	@Override
 	public void onGuildMemberJoin(@Nonnull GuildMemberJoinEvent event){
-		var settings = this.modules.get(SettingsModule.class).getSettings(event.getGuild().getIdLong());
+		var settings = this.modules.get(GuildSettingsModule.class).get(event.getGuild().getIdLong());
 		if(!settings.areLogMessagesEnabled()){
 			return;
 		}
@@ -115,7 +118,7 @@ public class GuildLoggingModule extends Module{
 	}
 
 	private void logEvent(GenericGuildEvent event, Color color, User user, String eventName, String message, Object... args){
-		var settings = this.modules.get(SettingsModule.class).getSettings(event.getGuild().getIdLong());
+		var settings = this.modules.get(GuildSettingsModule.class).get(event.getGuild().getIdLong());
 		var guild = event.getGuild();
 		var channel = guild.getTextChannelById(settings.getLogChannelId());
 		if(channel == null){

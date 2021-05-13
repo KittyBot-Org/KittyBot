@@ -1,7 +1,7 @@
 package de.kittybot.kittybot.commands.music;
 
 import de.kittybot.kittybot.modules.MusicModule;
-import de.kittybot.kittybot.modules.SettingsModule;
+import de.kittybot.kittybot.modules.GuildSettingsModule;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.RunGuildCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionBoolean;
@@ -36,7 +36,7 @@ public class RemoveCommand extends RunGuildCommand{
 		}
 		if(options.has("all") && options.getBoolean("all")){
 			var member = ia.getMember();
-			if(!member.hasPermission(Permission.ADMINISTRATOR) && !ia.get(SettingsModule.class).hasDJRole(member)){
+			if(!member.hasPermission(Permission.ADMINISTRATOR) && !ia.get(GuildSettingsModule.class).hasDJRole(member)){
 				ia.error("You need to be the dj");
 				return;
 			}

@@ -22,7 +22,7 @@ public class InviteRolesModule extends Module{
 
 	@Override
 	public void onGuildInviteDelete(@Nonnull GuildInviteDeleteEvent event){
-		this.modules.get(SettingsModule.class).removeInviteRoles(event.getGuild().getIdLong(), event.getCode());
+		this.modules.get(GuildSettingsModule.class).removeInviteRoles(event.getGuild().getIdLong(), event.getCode());
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class InviteRolesModule extends Module{
 		if(invite == null){
 			return;
 		}
-		var roles = this.modules.get(SettingsModule.class).getInviteRoles(guildId, invite.getCode());
+		var roles = this.modules.get(GuildSettingsModule.class).getInviteRoles(guildId, invite.getCode());
 		if(roles == null){
 			return;
 		}
@@ -53,7 +53,7 @@ public class InviteRolesModule extends Module{
 
 	@Override
 	public void onRoleDelete(@NotNull RoleDeleteEvent event){
-		this.modules.get(SettingsModule.class).removeInviteRole(event.getGuild().getIdLong(), event.getRole().getIdLong());
+		this.modules.get(GuildSettingsModule.class).removeInviteRole(event.getGuild().getIdLong(), event.getRole().getIdLong());
 	}
 
 }

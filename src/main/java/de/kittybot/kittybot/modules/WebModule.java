@@ -135,7 +135,7 @@ public class WebModule extends Module{
 	}
 
 	@Override
-	protected void onDisable(){
+	public void onDisable(){
 		this.javalin.stop();
 	}
 

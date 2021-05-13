@@ -2,16 +2,20 @@ package de.kittybot.kittybot.utils;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.kittybot.kittybot.modules.PaginatorModule;
-import de.kittybot.kittybot.modules.SettingsModule;
+import de.kittybot.kittybot.modules.GuildSettingsModule;
 import de.kittybot.kittybot.objects.module.Modules;
 import de.kittybot.kittybot.objects.music.TrackScheduler;
+import de.kittybot.kittybot.objects.settings.guild.GeneralGuildSettings;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import static de.kittybot.kittybot.jooq.Tables.*;
 
 public class MusicUtils{
 
@@ -39,6 +43,11 @@ public class MusicUtils{
 		return MessageUtils.maskLink("`" + info.title + "`", info.uri);
 	}
 
+	public static boolean hasDJRole(Member member, GeneralGuildSettings settings){
+		var djRoleId = settings.get(GUILDS.DJ_ROLE_ID);
+		return member.getRoles().stream().anyMatch(role -> role.getIdLong() == djRoleId);
+	}
+
 	public static boolean checkCommandRequirements(GuildInteraction ia, TrackScheduler scheduler){
 		if(scheduler == null){
 			ia.error("No active player found");
@@ -63,7 +72,7 @@ public class MusicUtils{
 
 	public static boolean checkMusicPermissions(GuildInteraction ia, TrackScheduler scheduler){
 		var member = ia.getMember();
-		if(member.hasPermission(Permission.ADMINISTRATOR) || ia.get(SettingsModule.class).hasDJRole(member)){
+		if(member.hasPermission(Permission.ADMINISTRATOR) || hasDJRole(member, ia.get(GuildSettingsModule.class).get(member.getGuild().getIdLong()))){
 			return true;
 		}
 		var track = scheduler.getPlayingTrack();

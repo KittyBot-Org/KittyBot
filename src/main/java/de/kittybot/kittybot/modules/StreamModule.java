@@ -105,7 +105,7 @@ public class StreamModule extends Module{
 		if(guild == null){
 			return;
 		}
-		var settings = this.modules.get(SettingsModule.class).getSettings(guildId);
+		var settings = this.modules.get(GuildSettingsModule.class).get(guildId);
 
 		var channel = guild.getTextChannelById(settings.getStreamAnnouncementChannelId());
 		if(channel == null || !channel.canTalk()){
