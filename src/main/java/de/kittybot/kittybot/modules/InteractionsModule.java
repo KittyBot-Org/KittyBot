@@ -1,6 +1,5 @@
 package de.kittybot.kittybot.modules;
 
-import club.minnced.discord.webhook.receive.ReadonlyMessage;
 import de.kittybot.kittybot.objects.module.Module;
 import de.kittybot.kittybot.slashcommands.application.CommandOptionsHolder;
 import de.kittybot.kittybot.slashcommands.application.PermissionHolder;
@@ -35,14 +34,14 @@ import static de.kittybot.kittybot.jooq.Tables.USER_STATISTICS;
 public class InteractionsModule extends Module{
 
 	public static final Route INTERACTION_RESPONSE = Route.custom(Method.POST, "interactions/{interaction.id}/{interaction.token}/callback");
+	public static final Route INTERACTION_EDIT_ORIGINAL = Route.custom(Method.PATCH, "webhooks/{application.id}/{interaction.token}/messages/@original");
 	public static final Route INTERACTION_FOLLOW_UP = Route.custom(Method.POST, "webhooks/{application.id}/{interaction.token}");
 	private static final Logger LOG = LoggerFactory.getLogger(InteractionsModule.class);
-	private static final Set<Class<? extends Module>> DEPENDENCIES = Set.of(CommandsModule.class, DatabaseModule.class);
 	private static final String INTERACTION_CREATE = "INTERACTION_CREATE";
 
 	@Override
 	public Set<Class<? extends Module>> getDependencies(){
-		return DEPENDENCIES;
+		return Set.of(CommandsModule.class);
 	}
 
 	@Override
@@ -69,7 +68,7 @@ public class InteractionsModule extends Module{
 		}
 
 		var data = interaction.getData();
-		var cmd = this.modules.get(CommandsModule.class).getCommands().get(data.getName());
+		var cmd = this.modules.get(CommandsModule.class).getCommands().get(data.getId());
 		if(cmd != null){
 			process(cmd, interaction, data);
 			Metrics.COMMAND_LATENCY.labels(cmd.getName()).observe(System.currentTimeMillis() - start);
@@ -94,7 +93,7 @@ public class InteractionsModule extends Module{
 			var permHolder = ((PermissionHolder) applicationHolder);
 			var user = interaction.getUser();
 			if(permHolder.isDevOnly() && !Config.DEV_IDS.contains(user.getIdLong())){
-				reply(interaction).ephemeral().content("This command is developer only").type(InteractionResponseType.ACKNOWLEDGE).queue();
+				reply(interaction).ephemeral().content("This command is developer only").queue();
 				return;
 			}
 			if(!Config.DEV_IDS.contains(interaction.getUserId())){
@@ -140,19 +139,22 @@ public class InteractionsModule extends Module{
 		}
 	}
 
-	public InteractionRespondAction acknowledge(Interaction interaction, boolean withSource){
-		return new InteractionRespondAction(interaction.getJDA(), INTERACTION_RESPONSE.compile(String.valueOf(interaction.getId()), interaction.getToken()), interaction, withSource).channelMessage(false);
+	public InteractionRespondAction acknowledge(Interaction interaction){
+		return new InteractionRespondAction(interaction.getJDA(), interaction, InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE);
 	}
 
 	public InteractionRespondAction reply(Interaction interaction){
-		return reply(interaction, true);
+		return new InteractionRespondAction(interaction.getJDA(), interaction, InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE);
 	}
 
-	public InteractionRespondAction reply(Interaction interaction, boolean withSource){
-		return new InteractionRespondAction(interaction.getJDA(), INTERACTION_RESPONSE.compile(String.valueOf(interaction.getId()), interaction.getToken()), interaction, withSource);
+	public RestAction<Void> edit(Interaction interaction, FollowupMessage message){
+
+		Route.CompiledRoute route = INTERACTION_EDIT_ORIGINAL.compile(interaction.getJDA().getSelfUser().getId(), interaction.getToken());
+
+		return new RestActionImpl<>(interaction.getJDA(), route, message.toJSON());
 	}
 
-	public RestAction<ReadonlyMessage> followup(Interaction interaction, FollowupMessage message){
+	public RestAction<Void> followup(Interaction interaction, FollowupMessage message){
 
 		Route.CompiledRoute route = INTERACTION_FOLLOW_UP.compile(interaction.getJDA().getSelfUser().getId(), interaction.getToken());
 

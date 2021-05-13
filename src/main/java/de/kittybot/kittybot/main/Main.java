@@ -1,5 +1,6 @@
 package de.kittybot.kittybot.main;
 
+import de.kittybot.kittybot.objects.enums.Environment;
 import de.kittybot.kittybot.objects.exceptions.MissingConfigValuesException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,7 @@ public class Main{
 
 	public static void main(String... args) throws InterruptedException{
 		try{
-			LOG.info("Starting KittyBot...");
+			LOG.info("Starting KittyBot in " + Environment.getCurrent() + " mode...");
 			LOG.info("\n" +
 				"\n" +
 				"         _   ___ _   _        ______       _   \n" +

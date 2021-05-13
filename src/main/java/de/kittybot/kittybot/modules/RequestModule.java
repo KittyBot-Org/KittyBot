@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
+import java.util.Collection;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -151,8 +151,8 @@ public class RequestModule extends Module{
 		executeAsync(this.requestBuilder.build(), success, error);
 	}
 
-	public void uploadCommands(Map<String, Command> commands){
-		var json = DataArray.fromCollection(commands.values().stream().map(Command::toDiscordServicesJSON).collect(Collectors.toList()));
+	public void uploadCommands(Collection<Command> commands){
+		var json = DataArray.fromCollection(commands.stream().map(Command::toDiscordServicesJSON).collect(Collectors.toList()));
 
 		this.requestBuilder.url("https://api.discordservices.net/bot/" + Config.BOT_ID + "/commands");
 		this.requestBuilder.post(RequestBody.create(json.toJson(), MediaType.parse("application/json")));

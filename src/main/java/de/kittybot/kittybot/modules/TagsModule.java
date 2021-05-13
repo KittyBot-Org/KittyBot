@@ -26,7 +26,7 @@ public class TagsModule extends Module{
 	}
 
 	public boolean canPublishTag(long guildId){
-		return this.modules.get(CommandsModule.class).getGuildCommands(guildId).length() < 50;
+		return this.modules.get(CommandsModule.class).getGuildCommands(guildId).length() < 100;
 	}
 
 	@Nullable
@@ -150,7 +150,7 @@ public class TagsModule extends Module{
 		if(record == null){
 			return false;
 		}
-		if(record.getCommandId() != -1){
+		if(record.getCommandId() != -1 && newName != null){
 			this.modules.get(CommandsModule.class).editGuildCommand(guildId, record.getCommandId(), DataObject.empty().put("name", newName));
 		}
 		return true;

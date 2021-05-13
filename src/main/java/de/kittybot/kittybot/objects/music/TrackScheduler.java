@@ -5,6 +5,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import de.kittybot.kittybot.modules.GuildSettingsModule;
 import de.kittybot.kittybot.objects.module.Modules;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
+import de.kittybot.kittybot.slashcommands.interaction.response.FollowupMessage;
 import de.kittybot.kittybot.utils.Colors;
 import de.kittybot.kittybot.utils.MessageUtils;
 import de.kittybot.kittybot.utils.MusicUtils;
@@ -15,7 +16,6 @@ import lavalink.client.player.LavalinkPlayer;
 import lavalink.client.player.event.PlayerEventListenerAdapter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.time.Instant;
@@ -97,16 +97,6 @@ public class TrackScheduler extends PlayerEventListenerAdapter{
 	}
 
 	public void queue(GuildInteraction ia, AudioTrack toPlay, List<AudioTrack> tracks){
-		var embed = queue(toPlay, tracks);
-		var action = ia.acknowledge(true);
-		if(embed != null){
-			action.embeds(embed);
-		}
-		action.queue(success -> tryPlay(toPlay), error -> tryPlay(toPlay));
-	}
-
-	public MessageEmbed queue(AudioTrack toPlay, List<AudioTrack> tracks){
-		var wasEmpty = this.queue.isEmpty();
 		var shouldPlay = this.player.getPlayingTrack() == null;
 		if(!shouldPlay){
 			this.queue.offer(toPlay);
@@ -114,21 +104,18 @@ public class TrackScheduler extends PlayerEventListenerAdapter{
 		for(var track : tracks){
 			this.queue.offer(track);
 		}
-		if(!wasEmpty || this.queue.size() > 0){
-			return new EmbedBuilder()
-				.setColor(Colors.KITTYBOT_BLUE)
-				.setDescription("**Queued " + tracks.size() + " " + MessageUtils.pluralize("track", tracks.size()) + "**\n\n" +
-					(tracks.size() == 0 ? MusicUtils.formatTrackWithInfo(toPlay) : "") +
-					"\nUse `/queue` to view the queue"
-				)
-				.setTimestamp(Instant.now())
-				.build();
-		}
-		return null;
-	}
 
-	public void tryPlay(AudioTrack toPlay){
-		if(this.player.getPlayingTrack() == null){
+		var embed = new EmbedBuilder()
+			.setColor(Colors.KITTYBOT_BLUE)
+			.setDescription("**Queued " + tracks.size() + " " + MessageUtils.pluralize("track", tracks.size()) + "**\n\n" +
+				(tracks.size() == 0 ? MusicUtils.formatTrackWithInfo(toPlay) : "") +
+				"\nUse `/queue` to view the queue"
+			)
+			.setTimestamp(Instant.now())
+			.build();
+		ia.edit(new FollowupMessage.Builder().setEmbeds(embed).build()).queue();
+
+		if(shouldPlay){
 			this.player.playTrack(toPlay);
 			this.player.setPaused(false);
 		}

@@ -10,7 +10,7 @@ import de.kittybot.kittybot.slashcommands.interaction.Options;
 public class JoinMessageCommand extends GuildSubCommand{
 
 	public JoinMessageCommand(){
-		super("joinmessage", "Sets or enable/disables join messages");
+		super("joinmessage", "Sets or enables/disables join messages");
 		addOptions(
 			new CommandOptionBoolean("enabled", "Whether join messages are enabled"),
 			new CommandOptionString("message", "The join message template")

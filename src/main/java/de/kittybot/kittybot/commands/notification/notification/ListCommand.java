@@ -41,7 +41,7 @@ public class ListCommand extends GuildSubCommand{
 		}
 		pages.add(notifMessage.toString());
 
-		ia.acknowledge(true).queue(success -> ia.get(PaginatorModule.class).create(
+		ia.acknowledge().queue(success -> ia.get(PaginatorModule.class).create(
 			ia.getChannel(),
 			ia.getUserId(),
 			pages.size(),

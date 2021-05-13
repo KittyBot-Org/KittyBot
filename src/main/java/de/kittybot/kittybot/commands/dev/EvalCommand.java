@@ -3,11 +3,13 @@ package de.kittybot.kittybot.commands.dev;
 import de.kittybot.kittybot.slashcommands.application.Category;
 import de.kittybot.kittybot.slashcommands.application.RunCommand;
 import de.kittybot.kittybot.slashcommands.application.options.CommandOptionString;
-import de.kittybot.kittybot.slashcommands.application.options.SubCommand;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
 import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
+import de.kittybot.kittybot.slashcommands.interaction.response.FollowupMessage;
 import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
+import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponseType;
+import de.kittybot.kittybot.utils.Colors;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import javax.script.ScriptEngine;
@@ -37,6 +39,14 @@ public class EvalCommand extends RunCommand{
 	@Override
 	public void run(Options options, Interaction ia){
 		var code = options.getString("code");
+		var responseEmbed = ia.getEmbed()
+			.setTitle("Eval")
+			.addField("Status:", "Loading...", true)
+			.addField("Duration:", "...", true)
+			.addField("Code:", "```java\n" + code + "\n```", false)
+			.addField("Result:", "...", false);
+		ia.reply().embeds(responseEmbed.build()).queue();
+
 		Object out;
 		var color = Color.GREEN;
 		var status = "Success";
@@ -63,17 +73,14 @@ public class EvalCommand extends RunCommand{
 			color = Color.RED;
 			status = "Failed";
 		}
-		ia.reply(new InteractionResponse.Builder()
-			.addEmbeds(new EmbedBuilder()
-				.setTitle("Eval")
-				.setColor(color)
-				.addField("Status:", status, true)
-				.addField("Duration:", (System.currentTimeMillis() - start) + "ms", true)
-				.addField("Code:", "```java\n" + code + "\n```", false)
-				.addField("Result:", out == null ? "" : out.toString(), false)
-				.build()
-			).build()
-		);
+		responseEmbed.clearFields();
+		responseEmbed.setColor(color)
+			.addField("Status:", status, true)
+			.addField("Duration:", (System.currentTimeMillis() - start) + "ms", true)
+			.addField("Code:", "```java\n" + code + "\n```", false)
+			.addField("Result:", out == null ? "" : out.toString(), false);
+
+		ia.edit(new FollowupMessage.Builder().setEmbeds(responseEmbed.build()).build()).queue();
 	}
 
 }
