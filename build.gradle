@@ -1,30 +1,18 @@
-buildscript {
-    repositories {
-        maven {
-            url "https://dl.bintray.com/kittybot-org/gradle-jooq-plugin"
-        }
-    }
-    dependencies {
-        classpath 'de.kittybot.jooq:gradle-jooq-plugin:5.2.7'
-    }
-}
-
 plugins {
     id 'java'
     id 'application'
     id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'nu.studer.jooq' version '5.2.1'
 }
-
-apply plugin: 'de.kittybot.jooq'
 
 group 'de.kittybot'
 mainClassName = 'de.kittybot.kittybot.main.Main'
 
 repositories {
     maven { url 'https://m2.dv8tion.net/releases' }
-    mavenCentral() // this is to receive updates from mvnrepository repos that are not synced with jcenter
-    jcenter()
     maven { url 'https://jitpack.io' }
+    mavenCentral()
+    jcenter() // this is still required because of jda utilities
 }
 
 dependencies {
@@ -34,7 +22,7 @@ dependencies {
     }
     implementation 'com.jagrosh:jda-utilities:3.0.5'
     implementation 'club.minnced:discord-webhooks:0.5.7'
-    implementation 'com.github.caneleex:BotListHandler:1.0.12'
+    implementation 'dev.mlnr:BotListHandler-jda:2.0.0_6'
 
     // audio
     implementation('com.github.KittyBot-Org:Lavalink-Client:176ca86') {
@@ -74,7 +62,7 @@ dependencies {
 }
 
 jooq {
-    version = '3.14.4'
+    version = '3.14.11'
     configurations {
         main {
             generateSchemaSourceOnCompilation = false
