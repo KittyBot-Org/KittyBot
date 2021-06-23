@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
     // discord/jda related
-    implementation('net.dv8tion:JDA:4.3.0_281') {
+    implementation('net.dv8tion:JDA:4.3.0_282') {
         exclude group: 'club.minnced', module: 'opus-java'
     }
     implementation 'com.jagrosh:jda-utilities:3.0.5'
