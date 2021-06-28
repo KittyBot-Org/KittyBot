@@ -28,7 +28,7 @@ dependencies {
     implementation('com.github.KittyBot-Org:Lavalink-Client:176ca86') {
         exclude group: 'com.sedmelluq', module: 'lavaplayer'
     }
-    implementation 'com.sedmelluq:lavaplayer:1.3.77'
+    implementation 'com.sedmelluq:lavaplayer:1.3.78'
     implementation 'se.michaelthelin.spotify:spotify-web-api-java:6.5.4'
 
     // database
