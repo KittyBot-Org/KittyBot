@@ -11,6 +11,8 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -23,7 +25,7 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 @SuppressWarnings("unused")
-public class JoinModule extends Module{
+public class AnnouncementModule extends Module{
 
 	private static final Logger LOG = LoggerFactory.getLogger(MessageUtils.class);
 	private static final String INVITE_CODE_PREFIX = "https://discord.gg/";
