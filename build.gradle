@@ -22,7 +22,7 @@ dependencies {
     }
     implementation 'com.jagrosh:jda-utilities:3.0.5'
     implementation 'club.minnced:discord-webhooks:0.5.7'
-    implementation 'dev.mlnr:BotListHandler-jda:2.0.0_6'
+    implementation 'dev.mlnr:BotListHandler-jda:2.0.0_7'
 
     // audio
     implementation('com.github.KittyBot-Org:Lavalink-Client:176ca86') {
