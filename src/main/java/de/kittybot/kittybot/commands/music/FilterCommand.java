@@ -267,7 +267,7 @@ public class FilterCommand extends Command{
 	private static class ChannelMixCommand extends GuildSubCommand{
 
 		public ChannelMixCommand(){
-			super("channel-mix", "Mixes both channels (left and right), with a configurable factor on how much each channel affects the other.");
+			super("channel-mix", "Mixes both channels, with a configurable factor on how much each channel affects the other.");
 			addOptions(
 				new CommandOptionFloat("left-to-left", "How much audio from the left channel goes to the left channel"),
 				new CommandOptionFloat("left-to-right", "How much audio from the left channel goes to the right channel"),
@@ -305,7 +305,7 @@ public class FilterCommand extends Command{
 	private static class LowPassCommand extends GuildSubCommand{
 
 		public LowPassCommand(){
-			super("low-pass", "Higher frequencies get suppressed, while lower frequencies pass through this filter, thus the name low pass.");
+			super("low-pass", "Higher frequencies get suppressed, while lower frequencies pass through this filter.");
 			addOptions(
 				new CommandOptionFloat("smoothing", "The smoothing level")
 			);
