@@ -7,10 +7,6 @@ import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
 import de.kittybot.kittybot.slashcommands.interaction.Interaction;
 import de.kittybot.kittybot.slashcommands.interaction.Options;
 import de.kittybot.kittybot.slashcommands.interaction.response.FollowupMessage;
-import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponse;
-import de.kittybot.kittybot.slashcommands.interaction.response.InteractionResponseType;
-import de.kittybot.kittybot.utils.Colors;
-import net.dv8tion.jda.api.EmbedBuilder;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;

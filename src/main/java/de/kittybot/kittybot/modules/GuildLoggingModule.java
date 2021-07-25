@@ -13,7 +13,6 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 
 import javax.annotation.Nonnull;
 import java.awt.Color;
-import java.text.MessageFormat;
 import java.time.Instant;
 import java.util.Set;
 
