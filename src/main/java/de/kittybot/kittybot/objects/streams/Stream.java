@@ -15,9 +15,10 @@ public class Stream{
 	private final Instant startedAt;
 	private final Language language;
 	private final StreamType type;
+	private final boolean error;
 	private Game game;
 
-	public Stream(long streamId, String streamTitle, String thumbnailUrl, long userId, String userName, Game game, int viewerCount, Instant startedAt, Language language, StreamType type){
+	public Stream(long streamId, String streamTitle, String thumbnailUrl, long userId, String userName, Game game, int viewerCount, Instant startedAt, Language language, StreamType type, boolean error){
 		this.streamId = streamId;
 		this.streamTitle = streamTitle;
 		this.thumbnailUrl = thumbnailUrl;
@@ -28,6 +29,7 @@ public class Stream{
 		this.startedAt = startedAt;
 		this.language = language;
 		this.type = type;
+		this.error = error;
 	}
 
 	public static Stream fromTwitchJSON(DataObject json){
@@ -42,7 +44,8 @@ public class Stream{
 			json.getInt("viewer_count"),
 			Instant.parse(json.getString("started_at")),
 			lang.orElse(Language.UNKNOWN),
-			StreamType.TWITCH
+			StreamType.TWITCH,
+			false
 		);
 	}
 
@@ -98,6 +101,10 @@ public class Stream{
 			return this.type.getBaseUrl() + "c/" + this.userName;
 		}
 		return null;
+	}
+
+	public boolean hasError(){
+		return this.error;
 	}
 
 }
