@@ -13,7 +13,6 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 
 import javax.annotation.Nonnull;
 import java.awt.Color;
-import java.text.MessageFormat;
 import java.time.Instant;
 import java.util.Set;
 
@@ -61,7 +60,7 @@ public class GuildLoggingModule extends Module{
 						name = auditUser.getAsTag();
 					}
 				}
-				logEvent(event, Color.BLUE, user, "Bot remove", "{0} {1} has `removed` bot {2}({3}) from this server",
+				logEvent(event, Color.BLUE, user, "Bot remove", "%s `%s` has `removed` bot %s(`%d`) from this server",
 					Emoji.ROBOT.get(),
 					name,
 					user.getAsTag(),
@@ -70,7 +69,7 @@ public class GuildLoggingModule extends Module{
 			});
 			return;
 		}
-		logEvent(event, Color.GREEN, user, "User leave", "{0} **{1}** ({2}) has `left` the server",
+		logEvent(event, Color.GREEN, user, "User leave", "%s `%s`(`%d`) has `left` the server",
 			Emoji.OUTBOX_TRAY.get(),
 			user.getAsTag(),
 			userId
@@ -95,7 +94,7 @@ public class GuildLoggingModule extends Module{
 						name = auditUser.getAsTag();
 					}
 				}
-				logEvent(event, Color.BLUE, user, "Bot add", "{0} {1} has `added` bot {2}({3}) to this server",
+				logEvent(event, Color.BLUE, user, "Bot add", "%s **%s** has `added` bot %s(`%d`) to this server",
 					Emoji.ROBOT.get(),
 					name,
 					user.getAsTag(),
@@ -105,12 +104,12 @@ public class GuildLoggingModule extends Module{
 			return;
 		}
 		var invite = this.modules.get(InviteModule.class).getUsedInvite(event.getGuild().getIdLong(), userId);
-		logEvent(event, Color.GREEN, user, "User join", "{0} **{1}** ({2}) has `joined` the server with invite **https://discord.gg/{3}**(**{4}**)",
+		logEvent(event, Color.GREEN, user, "User join", "%s **%s**(`%d`) has `joined` the server with invite `%s`(%s)",
 			Emoji.INBOX_TRAY.get(),
 			user.getAsTag(),
 			userId,
-			invite.getCode(),
-			MessageUtils.getUserMention(invite.getUserId())
+			invite == null ? "unknown" : "https://discord.gg/" + invite.getCode(),
+			invite == null ? "unknown" : MessageUtils.getUserMention(invite.getUserId())
 		);
 	}
 
@@ -123,7 +122,7 @@ public class GuildLoggingModule extends Module{
 		}
 		channel.sendMessage(new EmbedBuilder()
 			.setColor(color)
-			.setDescription(MessageFormat.format(message, args))
+			.setDescription(String.format(message, args))
 			.setFooter(eventName, user == null ? null : user.getEffectiveAvatarUrl())
 			.setTimestamp(Instant.now())
 			.build()

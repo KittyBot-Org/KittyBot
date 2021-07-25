@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 @SuppressWarnings("unused")
-public class JoinModule extends Module{
+public class AnnouncementModule extends Module{
 
 	private static final Logger LOG = LoggerFactory.getLogger(MessageUtils.class);
 	private static final String INVITE_CODE_PREFIX = "https://discord.gg/";

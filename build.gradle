@@ -1,60 +1,48 @@
-buildscript {
-    repositories {
-        maven {
-            url "https://dl.bintray.com/kittybot-org/gradle-jooq-plugin"
-        }
-    }
-    dependencies {
-        classpath 'de.kittybot.jooq:gradle-jooq-plugin:5.2.7'
-    }
-}
-
 plugins {
     id 'java'
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'nu.studer.jooq' version '6.0'
 }
-
-apply plugin: 'de.kittybot.jooq'
 
 group 'de.kittybot'
 mainClassName = 'de.kittybot.kittybot.main.Main'
 
 repositories {
     maven { url 'https://m2.dv8tion.net/releases' }
-    mavenCentral() // this is to receive updates from mvnrepository repos that are not synced with jcenter
-    jcenter()
     maven { url 'https://jitpack.io' }
+    mavenCentral()
+    jcenter() // this is still required because of jda utilities
 }
 
 dependencies {
     // discord/jda related
-    implementation('net.dv8tion:JDA:4.2.1_255') {
+    implementation('net.dv8tion:JDA:4.3.0_298') {
         exclude group: 'club.minnced', module: 'opus-java'
     }
     implementation 'com.jagrosh:jda-utilities:3.0.5'
-    implementation 'club.minnced:discord-webhooks:0.5.6'
-    implementation 'com.github.caneleex:BotListHandler:1.0.12'
+    implementation 'club.minnced:discord-webhooks:0.5.7'
+    implementation 'dev.mlnr:BotListHandler-jda:2.0.0_8'
 
     // audio
     implementation('com.github.KittyBot-Org:Lavalink-Client:09c6931') {
         exclude group: 'com.sedmelluq', module: 'lavaplayer'
     }
-    implementation 'com.github.sedmelluq:lavaplayer:1.3.76'
-    implementation 'se.michaelthelin.spotify:spotify-web-api-java:6.5.2'
+    implementation 'com.sedmelluq:lavaplayer:1.3.78'
+    implementation 'se.michaelthelin.spotify:spotify-web-api-java:6.5.4'
 
     // database
-    implementation 'com.zaxxer:HikariCP:4.0.3'
-    implementation 'org.jooq:jooq:3.14.8'
-    implementation 'org.postgresql:postgresql:42.2.19'
-    jooqGenerator 'org.postgresql:postgresql:42.2.18'
+    implementation 'com.zaxxer:HikariCP:5.0.0'
+    implementation 'org.jooq:jooq:3.15.1'
+    implementation 'org.postgresql:postgresql:42.2.23'
+    jooqGenerator 'org.postgresql:postgresql:42.2.23'
 
     // logging
     implementation 'ch.qos.logback:logback-classic:1.3.0-alpha5'
-    implementation 'io.sentry:sentry-logback:4.3.0'
+    implementation 'io.sentry:sentry-logback:5.0.1'
 
     // eval
-    implementation 'org.codehaus.groovy:groovy-jsr223:3.0.7'
+    implementation 'org.codehaus.groovy:groovy-jsr223:3.0.8'
 
     // jjwt
     implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
@@ -62,19 +50,19 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
 
     // Prometheus
-    implementation 'io.prometheus:simpleclient:0.10.0'
-    implementation 'io.prometheus:simpleclient_hotspot:0.10.0'
-    implementation 'io.prometheus:simpleclient_httpserver:0.10.0'
+    implementation 'io.prometheus:simpleclient:0.11.0'
+    implementation 'io.prometheus:simpleclient_hotspot:0.11.0'
+    implementation 'io.prometheus:simpleclient_httpserver:0.11.0'
 
     // other
-    implementation 'io.javalin:javalin:3.13.4'
-    implementation 'io.github.classgraph:classgraph:4.8.104'
-    implementation 'com.github.ben-manes.caffeine:caffeine:2.8.8'
+    implementation 'io.javalin:javalin:3.13.10'
+    implementation 'io.github.classgraph:classgraph:4.8.110'
+    implementation 'com.github.ben-manes.caffeine:caffeine:3.0.3'
     implementation 'com.squareup.okhttp3:okhttp:4.9.1'
 }
 
 jooq {
-    version = '3.14.4'
+    version = '3.14.12'
     configurations {
         main {
             generateSchemaSourceOnCompilation = false

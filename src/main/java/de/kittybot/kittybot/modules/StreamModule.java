@@ -71,10 +71,14 @@ public class StreamModule extends Module{
 		if(userIds.isEmpty()){
 			return;
 		}
-		var streams = this.twitchWrapper.getStreams(userIds, false);
+		var streams = this.twitchWrapper.getStreams(userIds);
 
 		for(var streamAnnouncement : this.streams){
 			var stream = streams.stream().filter(st -> st.getUserId() == streamAnnouncement.getUserId()).findFirst();
+			if(stream.isPresent() && stream.get().hasError()){
+				// error while fetching stream skip
+				continue;
+			}
 			if(stream.isPresent() && !streamAnnouncement.getIsLive()){
 				setLiveStatus(streamAnnouncement, true);
 				// send online
@@ -133,7 +137,7 @@ public class StreamModule extends Module{
 				break;
 		}
 		channel.sendMessage(settings.getStreamAnnouncementMessage().replace("${user}", stream.getUserName()))
-			.embed(embed
+			.setEmbeds(embed
 				.setTimestamp(Instant.now())
 				.setColor(Colors.TWITCH_PURPLE)
 				.build()
