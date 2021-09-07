@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 public class MusicModule extends Module implements Serializable{
 
 	public static final Pattern URL_PATTERN = Pattern.compile("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]?");
-	public static final Pattern SPOTIFY_URL_PATTERN = Pattern.compile("^(https?://)?(www\\.)?open\\.spotify\\.com/(track|album|playlist)/([a-zA-Z0-9-_]+)(\\?si=[a-zA-Z0-9-_]+)?");
+	public static final Pattern SPOTIFY_URL_PATTERN = Pattern.compile("^(https?://)?(www\\.)?open\\.spotify\\.com/(user/[a-zA-Z0-9-_]+/)?(?<type>track|album|playlist)/(?<identifier>[a-zA-Z0-9-_]+)?.+");
 
 	private Map<Long, MusicManager> musicPlayers;
 
@@ -194,7 +194,7 @@ public class MusicModule extends Module implements Serializable{
 			if(channel == null || !channel.canTalk()){
 				return;
 			}
-			channel.sendMessage(new EmbedBuilder().setColor(Color.RED).setDescription(reason).setTimestamp(Instant.now()).build()).queue();
+			channel.sendMessageEmbeds(new EmbedBuilder().setColor(Color.RED).setDescription(reason).setTimestamp(Instant.now()).build()).queue();
 		}
 	}
 

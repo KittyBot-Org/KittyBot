@@ -24,6 +24,8 @@ public class FilterCommand extends Command{
 			new VibratoCommand(),
 			new RotationCommand(),
 			new DistortionCommand(),
+			new ChannelMixCommand(),
+			new LowPassCommand(),
 			new ClearCommand()
 		);
 	}
@@ -258,6 +260,70 @@ public class FilterCommand extends Command{
 
 			scheduler.getFilters().setDistortion(distortion).commit();
 			ia.reply("Set distortion filter");
+		}
+
+	}
+
+	private static class ChannelMixCommand extends GuildSubCommand{
+
+		public ChannelMixCommand(){
+			super("channel-mix", "Mixes both channels, with a configurable factor on how much each channel affects the other.");
+			addOptions(
+				new CommandOptionFloat("left-to-left", "How much audio from the left channel goes to the left channel"),
+				new CommandOptionFloat("left-to-right", "How much audio from the left channel goes to the right channel"),
+				new CommandOptionFloat("right-to-left", "How much audio from the right channel goes to the left channel"),
+				new CommandOptionFloat("right-to-right", "How much audio from the right channel goes to the right channel")
+			);
+		}
+
+		@Override
+		public void run(Options options, GuildInteraction ia){
+			var scheduler = ia.get(MusicModule.class).getScheduler(ia.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ia, scheduler) || !MusicUtils.checkMusicPermissions(ia, scheduler)){
+				return;
+			}
+			var channelMix = new ChannelMix();
+			if(options.has("left-to-left")){
+				channelMix = channelMix.setLeftToLeft(options.getFloat("left-to-left"));
+			}
+			if(options.has("left-to-right")){
+				channelMix = channelMix.setLeftToRight(options.getFloat("left-to-right"));
+			}
+			if(options.has("right-to-left")){
+				channelMix = channelMix.setRightToLeft(options.getFloat("right-to-left"));
+			}
+			if(options.has("right-to-right")){
+				channelMix = channelMix.setRightToLeft(options.getFloat("right-to-right"));
+			}
+
+			scheduler.getFilters().setChannelMix(channelMix).commit();
+			ia.reply("Set channel-mix filter");
+		}
+
+	}
+
+	private static class LowPassCommand extends GuildSubCommand{
+
+		public LowPassCommand(){
+			super("low-pass", "Higher frequencies get suppressed, while lower frequencies pass through this filter.");
+			addOptions(
+				new CommandOptionFloat("smoothing", "The smoothing level")
+			);
+		}
+
+		@Override
+		public void run(Options options, GuildInteraction ia){
+			var scheduler = ia.get(MusicModule.class).getScheduler(ia.getGuildId());
+			if(!MusicUtils.checkCommandRequirements(ia, scheduler) || !MusicUtils.checkMusicPermissions(ia, scheduler)){
+				return;
+			}
+			var lowPass = new LowPass();
+			if(options.has("smoothing")){
+				lowPass = lowPass.setSmoothing(options.getFloat("smoothing"));
+			}
+
+			scheduler.getFilters().setLowPass(lowPass).commit();
+			ia.reply("Set low-pass filter");
 		}
 
 	}

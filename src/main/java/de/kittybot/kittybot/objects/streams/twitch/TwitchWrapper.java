@@ -1,7 +1,9 @@
 package de.kittybot.kittybot.objects.streams.twitch;
 
 import de.kittybot.kittybot.objects.streams.BearerToken;
+import de.kittybot.kittybot.objects.streams.Game;
 import de.kittybot.kittybot.objects.streams.Stream;
+import de.kittybot.kittybot.objects.streams.StreamType;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import okhttp3.Call;
 import okhttp3.FormBody;
@@ -100,7 +102,7 @@ public class TwitchWrapper{
 		);
 	}
 
-	public List<Stream> getStreams(List<Long> userIds, boolean reTry){
+	public List<Stream> getStreams(List<Long> userIds){
 		var streams = new ArrayList<Stream>();
 		do{
 			var users = userIds.subList(0, Math.min(userIds.size(), 100));
@@ -112,9 +114,9 @@ public class TwitchWrapper{
 					LOG.error("Url: {} Code: {} Body: {}", resp.request().url(), resp.code(), body == null ? "null" : body.string());
 					if(resp.code() == 401){
 						this.bearerToken = null;
-						if(!reTry){
-							return getStreams(userIds, true);
-						}
+					}
+					for(var userId : users){
+						streams.add(new Stream(0L, "", "", userId, "", Game.getUnknown(), 0, null, null, StreamType.YOUTUBE, true));
 					}
 					continue;
 				}

@@ -54,15 +54,16 @@ public class SpotifyModule extends Module{
 	}
 
 	public void load(GuildInteraction ia, MusicManager manager, Matcher matcher){
-		switch(matcher.group(3)){
+		var identifier = matcher.group("identifier");
+		switch(matcher.group("type")){
 			case "album":
-				loadAlbum(matcher.group(4), ia, manager);
+				loadAlbum(identifier, ia, manager);
 				break;
 			case "track":
-				loadTrack(matcher.group(4), ia, manager);
+				loadTrack(identifier, ia, manager);
 				break;
 			case "playlist":
-				loadPlaylist(matcher.group(4), ia, manager);
+				loadPlaylist(identifier, ia, manager);
 				break;
 		}
 	}
@@ -72,7 +73,7 @@ public class SpotifyModule extends Module{
 			var items = tracks.getItems();
 			var toLoad = new ArrayList<String>();
 			for(var track : items){
-				toLoad.add("ytsearch:" + track.getArtists()[0].getName() + " " + track.getName());
+				toLoad.add(track.getArtists()[0].getName() + " " + track.getName());
 			}
 			loadTracks(id, ia, manager, toLoad);
 		}).exceptionally(throwable -> {
@@ -96,7 +97,7 @@ public class SpotifyModule extends Module{
 			var toLoad = new ArrayList<String>();
 			for(var item : items){
 				var track = (Track) item.getTrack();
-				toLoad.add("ytsearch:" + track.getArtists()[0].getName() + " " + track.getName());
+				toLoad.add(track.getArtists()[0].getName() + " " + track.getName());
 			}
 			loadTracks(id, ia, manager, toLoad);
 		}).exceptionally(throwable -> {
