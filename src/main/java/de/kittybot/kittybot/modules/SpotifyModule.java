@@ -73,7 +73,7 @@ public class SpotifyModule extends Module{
 			var items = tracks.getItems();
 			var toLoad = new ArrayList<String>();
 			for(var track : items){
-				toLoad.add("ytsearch:" + track.getArtists()[0].getName() + " " + track.getName());
+				toLoad.add(track.getArtists()[0].getName() + " " + track.getName());
 			}
 			loadTracks(id, ia, manager, toLoad);
 		}).exceptionally(throwable -> {
@@ -97,7 +97,7 @@ public class SpotifyModule extends Module{
 			var toLoad = new ArrayList<String>();
 			for(var item : items){
 				var track = (Track) item.getTrack();
-				toLoad.add("ytsearch:" + track.getArtists()[0].getName() + " " + track.getName());
+				toLoad.add(track.getArtists()[0].getName() + " " + track.getName());
 			}
 			loadTracks(id, ia, manager, toLoad);
 		}).exceptionally(throwable -> {
