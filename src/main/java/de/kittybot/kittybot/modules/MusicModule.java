@@ -194,7 +194,7 @@ public class MusicModule extends Module implements Serializable{
 			if(channel == null || !channel.canTalk()){
 				return;
 			}
-			channel.sendMessage(new EmbedBuilder().setColor(Color.RED).setDescription(reason).setTimestamp(Instant.now()).build()).queue();
+			channel.sendMessageEmbeds(new EmbedBuilder().setColor(Color.RED).setDescription(reason).setTimestamp(Instant.now()).build()).queue();
 		}
 	}
 
