@@ -95,13 +95,13 @@ public class WebModule extends Module{
 				before("/*", this::checkDiscordLogin);
 				get(new GetUserInfoRoute(this.modules));
 			});
-			path("/webhooks/votes/:botlist", () ->
+			path("/webhooks/votes/{botlist}", () ->
 				post(new PostVotesRoute(this.modules))
 			);
 			path("/guilds", () -> {
 				before("/*", this::checkDiscordLogin);
 				get(new GetAllGuildsRoute(this.modules));
-				path("/:guildId", () -> {
+				path("/{guildId}", () -> {
 					before("/*", this::checkGuildPerms);
 					path("/roles", () ->
 						get(new GetRolesRoute(this.modules))
@@ -120,7 +120,7 @@ public class WebModule extends Module{
 					);
 					path("/tags", () -> {
 						get(new GetTagsRoute(this.modules));
-						path("/:tagId", () -> {
+						path("/{tagId}", () -> {
 							post(new PostTagRoute(this.modules));
 							delete(new DeleteTagRoute(this.modules));
 						});
