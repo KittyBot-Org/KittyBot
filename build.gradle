@@ -33,7 +33,7 @@ dependencies {
 
     // database
     implementation 'com.zaxxer:HikariCP:5.0.0'
-    implementation 'org.jooq:jooq:3.15.4'
+    implementation 'org.jooq:jooq:3.15.5'
     implementation 'org.postgresql:postgresql:42.3.1'
     jooqGenerator 'org.postgresql:postgresql:42.3.0'
 
