@@ -21,7 +21,7 @@ dependencies {
         exclude group: 'club.minnced', module: 'opus-java'
     }
     implementation 'com.jagrosh:jda-utilities:3.0.5'
-    implementation 'club.minnced:discord-webhooks:0.7.2'
+    implementation 'club.minnced:discord-webhooks:0.7.3'
     implementation 'dev.mlnr:BotListHandler-jda:2.0.0_11'
 
     // audio
