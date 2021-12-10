@@ -187,7 +187,7 @@ public class WebModule extends Module{
 	}
 
 	public Guild getGuild(Context ctx){
-		var guildId = ctx.pathParam(":guildId");
+		var guildId = ctx.pathParam("guildId");
 		if(guildId.isBlank() || !Utils.isSnowflake(guildId)){
 			throw new BadRequestResponse("Please provide a valid guild id");
 		}
@@ -199,7 +199,7 @@ public class WebModule extends Module{
 	}
 
 	public long getTagId(Context ctx){
-		var tagId = ctx.pathParam(":tagId");
+		var tagId = ctx.pathParam("tagId");
 		try{
 			return Long.parseLong(tagId);
 		}
