@@ -50,7 +50,7 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
 
     // Prometheus
-    implementation 'io.prometheus:simpleclient:0.12.0'
+    implementation 'io.prometheus:simpleclient:0.13.0'
     implementation 'io.prometheus:simpleclient_hotspot:0.13.0'
     implementation 'io.prometheus:simpleclient_httpserver:0.13.0'
 
