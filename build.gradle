@@ -52,7 +52,7 @@ dependencies {
     // Prometheus
     implementation 'io.prometheus:simpleclient:0.13.0'
     implementation 'io.prometheus:simpleclient_hotspot:0.13.0'
-    implementation 'io.prometheus:simpleclient_httpserver:0.13.0'
+    implementation 'io.prometheus:simpleclient_httpserver:0.14.1'
 
     // other
     implementation 'io.javalin:javalin:4.1.1'
