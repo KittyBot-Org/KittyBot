@@ -72,7 +72,7 @@ public class InteractionRespondAction extends RestActionImpl<Interaction>{
 	}
 
 	protected RequestBody asJSON(){
-		return RequestBody.create(getJSON().toJson(), Requester.MEDIA_TYPE_JSON);
+		return RequestBody.create(Requester.MEDIA_TYPE_JSON, getJSON().toJson());
 	}
 
 	protected DataObject getJSON(){

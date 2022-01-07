@@ -63,7 +63,7 @@ public class NotificationModule extends Module{
 					return;
 				}
 				guild.retrieveMemberById(notification.getUserId()).flatMap(member ->
-					channel.sendMessage(member.getAsMention()).embed(
+					channel.sendMessage(member.getAsMention()).setEmbeds(
 						new EmbedBuilder()
 							.setAuthor("Notification", Category.NOTIFICATION.getUrl(), Category.NOTIFICATION.getEmoteUrl())
 							.setColor(Colors.NOTIFICATION)

@@ -30,7 +30,7 @@ public class SeekCommand extends RunGuildCommand{
 		}
 		var newPos = options.getLong("seconds") * 1000;
 		var lavalinkPlayer = scheduler.getPlayer();
-		if(newPos > scheduler.getPlayingTrack().getDuration()){
+		if(newPos > scheduler.getPlayingTrack().getInfo().getLength()){
 			scheduler.next(true);
 			ia.reply("Skipped to next track");
 			return;

@@ -1,7 +1,5 @@
 package de.kittybot.kittybot.objects.music;
 
-import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.kittybot.kittybot.modules.LavalinkModule;
 import de.kittybot.kittybot.modules.MusicModule;
 import de.kittybot.kittybot.objects.enums.Emoji;
@@ -13,6 +11,7 @@ import de.kittybot.kittybot.utils.TimeUtils;
 import lavalink.client.io.Link;
 import lavalink.client.io.jda.JdaLink;
 import lavalink.client.player.event.PlayerEventListenerAdapter;
+import lavalink.client.player.track.Track;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -91,13 +90,13 @@ public class MusicManager extends PlayerEventListenerAdapter{
 				embed.setColor(Color.GREEN)
 					.addField("Playing", Emoji.FORWARD.get() + " " + MusicUtils.formatTrack(track), false);
 			}
-			embed.setThumbnail(getThumbnail(track.getIdentifier(), track.getSourceManager()))
-				.addField("Author", info.author, true)
-				.addField("Length", TimeUtils.formatDuration(track.getDuration()), true)
+			embed.setThumbnail(getThumbnail(info.getIdentifier(), info.getSourceName()))
+				.addField("Author", info.getAuthor(), true)
+				.addField("Length", TimeUtils.formatDuration(info.getLength()), true)
 				.addField("Requested by", MessageUtils.getUserMention(track.getUserData(Long.class)), true);
 		}
 		embed
-			.addField("Volume", (int) (this.scheduler.getFilters().getVolume() * 100) + "%", true)
+			.addField("Volume", this.scheduler.getVolume() + "%", true)
 			.addField("Repeat Mode", this.scheduler.getRepeatMode().getName(), true)
 			.setTimestamp(Instant.now());
 		return embed;
@@ -117,7 +116,7 @@ public class MusicManager extends PlayerEventListenerAdapter{
 		if(!channel.canTalk()){
 			return;
 		}
-		channel.sendMessage(embed.build()).queue(message -> {
+		channel.sendMessageEmbeds(embed.build()).queue(message -> {
 			this.scheduler.setControllerId(message.getIdLong());
 			if(!channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_ADD_REACTION)){
 				return;
@@ -140,14 +139,10 @@ public class MusicManager extends PlayerEventListenerAdapter{
 		if(!channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_HISTORY)){
 			return;
 		}
-		channel.editMessageById(this.scheduler.getControllerMessageId(), new MessageBuilder().setEmbed(buildMusicController().build()).build()).override(true).queue();
+		channel.editMessageById(this.scheduler.getControllerMessageId(), new MessageBuilder().setEmbeds(buildMusicController().build()).build()).override(true).queue();
 	}
 
-	public String getThumbnail(String identifier, AudioSourceManager source){
-		if(source == null){
-			return null;
-		}
-		var sourceName = source.getSourceName();
+	public String getThumbnail(String identifier, String sourceName){
 		String thumbnail;
 		switch(sourceName){
 			case "youtube":
@@ -171,20 +166,20 @@ public class MusicManager extends PlayerEventListenerAdapter{
 			.put("history", tracksToJSON(this.scheduler.getHistory()));
 	}
 
-	private DataArray tracksToJSON(List<AudioTrack> tracks){
+	private DataArray tracksToJSON(List<Track> tracks){
 		return DataArray.fromCollection(tracks.stream().map(this::trackToJSON).collect(Collectors.toList()));
 	}
 
-	private DataObject trackToJSON(AudioTrack track){
+	private DataObject trackToJSON(Track track){
 		var info = track.getInfo();
 		return DataObject.empty()
-			.put("identifier", info.identifier)
-			.put("uri", info.uri)
-			.put("title", info.title)
-			.put("author", info.author)
-			.put("length", info.length)
-			.put("source_name", track.getSourceManager().getSourceName())
-			.put("is_stream", info.isStream);
+			.put("identifier", info.getIdentifier())
+			.put("uri", info.getUri())
+			.put("title", info.getTitle())
+			.put("author", info.getAuthor())
+			.put("length", info.getLength())
+			.put("source_name", info.getSourceName())
+			.put("is_stream", info.isStream());
 	}
 
 	public TrackScheduler getScheduler(){
