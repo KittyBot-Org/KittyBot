@@ -28,7 +28,7 @@ dependencies {
     implementation "dev.mlnr:BotListHandler-jda:2.0.0_11"
 
     // audio
-    implementation "com.github.KittyBot-Org:Lavalink-Client:91ba078"
+    implementation "com.github.KittyBot-Org:Lavalink-Client:5.0.0"
 
     // database
     implementation "com.zaxxer:HikariCP:5.0.0"
