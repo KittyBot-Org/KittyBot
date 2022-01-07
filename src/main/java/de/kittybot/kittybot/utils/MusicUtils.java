@@ -5,7 +5,7 @@ import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.objects.module.Modules;
 import de.kittybot.kittybot.objects.music.TrackScheduler;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
-import lavalink.client.player.track.Track;
+import lavalink.client.player.track.AudioTrack;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -17,7 +17,7 @@ public class MusicUtils{
 
 	private MusicUtils(){}
 
-	public static String formatTracks(String message, Collection<Track> tracks){
+	public static String formatTracks(String message, Collection<AudioTrack> tracks){
 		var trackMessage = new StringBuilder(message).append("\n");
 		for(var track : tracks){
 			var name = formatTrackWithInfo(track) + "\n";
@@ -29,12 +29,12 @@ public class MusicUtils{
 		return trackMessage.toString();
 	}
 
-	public static String formatTrackWithInfo(Track track){
+	public static String formatTrackWithInfo(AudioTrack track){
 		var info = track.getInfo();
 		return formatTrack(track) + " - " + TimeUtils.formatDuration(info.getLength()) + " [" + MessageUtils.getUserMention(track.getUserData(Long.class)) + "]";
 	}
 
-	public static String formatTrack(Track track){
+	public static String formatTrack(AudioTrack track){
 		var info = track.getInfo();
 		return MessageUtils.maskLink("`" + info.getTitle() + "`", info.getUri());
 	}
@@ -77,7 +77,7 @@ public class MusicUtils{
 		return true;
 	}
 
-	public static void sendTracks(Collection<Track> tracks, Modules modules, TextChannel channel, long authorId, String baseMessage){
+	public static void sendTracks(Collection<AudioTrack> tracks, Modules modules, TextChannel channel, long authorId, String baseMessage){
 		if(channel == null){
 			return;
 		}

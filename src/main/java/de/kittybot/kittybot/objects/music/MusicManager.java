@@ -11,7 +11,7 @@ import de.kittybot.kittybot.utils.TimeUtils;
 import lavalink.client.io.Link;
 import lavalink.client.io.jda.JdaLink;
 import lavalink.client.player.event.PlayerEventListenerAdapter;
-import lavalink.client.player.track.Track;
+import lavalink.client.player.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -166,11 +166,11 @@ public class MusicManager extends PlayerEventListenerAdapter{
 			.put("history", tracksToJSON(this.scheduler.getHistory()));
 	}
 
-	private DataArray tracksToJSON(List<Track> tracks){
+	private DataArray tracksToJSON(List<AudioTrack> tracks){
 		return DataArray.fromCollection(tracks.stream().map(this::trackToJSON).collect(Collectors.toList()));
 	}
 
-	private DataObject trackToJSON(Track track){
+	private DataObject trackToJSON(AudioTrack track){
 		var info = track.getInfo();
 		return DataObject.empty()
 			.put("identifier", info.getIdentifier())

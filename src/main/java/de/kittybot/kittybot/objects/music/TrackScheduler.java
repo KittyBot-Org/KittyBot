@@ -12,8 +12,8 @@ import lavalink.client.io.filters.Filters;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavalinkPlayer;
 import lavalink.client.player.event.PlayerEventListenerAdapter;
-import lavalink.client.player.track.Track;
-import lavalink.client.player.track.TrackEndReason;
+import lavalink.client.player.track.AudioTrack;
+import lavalink.client.player.track.AudioTrackEndReason;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -31,8 +31,8 @@ public class TrackScheduler extends PlayerEventListenerAdapter{
 	private final Modules modules;
 	private final Link link;
 	private final LavalinkPlayer player;
-	private final LinkedList<Track> queue;
-	private final LinkedList<Track> history;
+	private final LinkedList<AudioTrack> queue;
+	private final LinkedList<AudioTrack> history;
 	private final long guildId;
 	private final long channelId;
 	private long controllerMessageId;
@@ -64,13 +64,13 @@ public class TrackScheduler extends PlayerEventListenerAdapter{
 	}
 
 	@Override
-	public void onTrackStart(IPlayer player, Track track){
+	public void onTrackStart(IPlayer player, AudioTrack track){
 		this.manager.sendMusicController();
 		this.manager.cancelDestroy();
 	}
 
 	@Override
-	public void onTrackEnd(IPlayer player, Track track, TrackEndReason endReason){
+	public void onTrackEnd(IPlayer player, AudioTrack track, AudioTrackEndReason endReason){
 		this.history.push(track);
 		if(!endReason.mayStartNext){
 			this.manager.updateMusicController();
@@ -79,7 +79,7 @@ public class TrackScheduler extends PlayerEventListenerAdapter{
 		next(false, track);
 	}
 
-	public void next(boolean force, Track track){
+	public void next(boolean force, AudioTrack track){
 		if(this.repeatMode == RepeatMode.SONG && !force){
 			if(track != null){
 				this.player.playTrack(track);
@@ -98,7 +98,7 @@ public class TrackScheduler extends PlayerEventListenerAdapter{
 		}
 	}
 
-	public void queue(GuildInteraction ia, Track toPlay, List<Track> tracks){
+	public void queue(GuildInteraction ia, AudioTrack toPlay, List<AudioTrack> tracks){
 		var shouldPlay = this.player.getPlayingTrack() == null;
 		if(!shouldPlay){
 			this.queue.offer(toPlay);
@@ -197,15 +197,15 @@ public class TrackScheduler extends PlayerEventListenerAdapter{
 		return this.controllerMessageId;
 	}
 
-	public LinkedList<Track> getQueue(){
+	public LinkedList<AudioTrack> getQueue(){
 		return this.queue;
 	}
 
-	public LinkedList<Track> getHistory(){
+	public LinkedList<AudioTrack> getHistory(){
 		return this.history;
 	}
 
-	public Track getPlayingTrack(){
+	public AudioTrack getPlayingTrack(){
 		return this.player.getPlayingTrack();
 	}
 

@@ -3,8 +3,8 @@ package de.kittybot.kittybot.objects.music;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
 import lavalink.client.io.FriendlyException;
 import lavalink.client.io.LoadResultHandler;
-import lavalink.client.player.track.Playlist;
-import lavalink.client.player.track.Track;
+import lavalink.client.player.track.AudioPlaylist;
+import lavalink.client.player.track.AudioTrack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,14 +25,14 @@ public class AudioLoader implements LoadResultHandler{
 	}
 
 	@Override
-	public void trackLoaded(Track track){
+	public void trackLoaded(AudioTrack track){
 		this.manager.connectToChannel(ia);
 		track.setUserData(ia.getUserId());
 		this.manager.getScheduler().queue(ia, track, Collections.emptyList());
 	}
 
 	@Override
-	public void playlistLoaded(Playlist playlist){
+	public void playlistLoaded(AudioPlaylist playlist){
 		this.manager.connectToChannel(this.ia);
 		for(var track : playlist.getTracks()){
 			track.setUserData(this.ia.getUserId());
@@ -44,7 +44,7 @@ public class AudioLoader implements LoadResultHandler{
 	}
 
 	@Override
-	public void searchResultLoaded(List<Track> tracks){
+	public void searchResultLoaded(List<AudioTrack> tracks){
 		this.manager.connectToChannel(this.ia);
 		var track = tracks.get(0);
 		track.setUserData(this.ia.getUserId());
