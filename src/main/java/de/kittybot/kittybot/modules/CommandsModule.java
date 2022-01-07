@@ -88,15 +88,15 @@ public class CommandsModule extends Module{
 		LOG.info("Registering commands {}...", guildId == -1 ? "global" : "for guild " + guildId);
 
 		var rqBody = RequestBody.create(
-			DataArray.fromCollection(commands.values().stream().map(Command::toJSON).collect(Collectors.toList())).toJson(),
-			MediaType.parse("application/json")
+			MediaType.parse("application/json"),
+			DataArray.fromCollection(commands.values().stream().map(Command::toJSON).collect(Collectors.toList())).toJson()
 		);
 
 		var route = guildId == -1L ? COMMANDS_CREATE.compile(String.valueOf(Config.BOT_ID)) : GUILD_COMMANDS_CREATE.compile(String.valueOf(Config.BOT_ID), String.valueOf(guildId));
 		try(var resp = newCall(route, rqBody).execute()){
 			if(!resp.isSuccessful()){
 				var body = resp.body();
-				LOG.error("Registering commands failed. Request Body: {}, Response Body: {}", commands.toString(), body == null ? "null" : body.string());
+				LOG.error("Registering commands failed. Request Body: {}, Response Body: {}", commands, body == null ? "null" : body.string());
 			}
 			var body = resp.body();
 			if(body == null){
@@ -142,13 +142,13 @@ public class CommandsModule extends Module{
 	}
 
 	public long registerGuildCommand(long guildId, DataObject command){
-		var rqBody = RequestBody.create(command.toJson(), MediaType.parse("application/json"));
+		var rqBody = RequestBody.create(MediaType.parse("application/json"), command.toJson());
 
 		var route = GUILD_COMMAND_CREATE.compile(String.valueOf(Config.BOT_ID), String.valueOf(guildId));
 		try(var resp = newCall(route, rqBody).execute()){
 			if(!resp.isSuccessful()){
 				var body = resp.body();
-				LOG.error("Registering command failed. Request Body: {}, Response Body: {}", command.toString(), body == null ? "null" : body.string());
+				LOG.error("Registering command failed. Request Body: {}, Response Body: {}", command, body == null ? "null" : body.string());
 				return -1L;
 			}
 			var body = resp.body();
@@ -182,7 +182,7 @@ public class CommandsModule extends Module{
 	}
 
 	public boolean editGuildCommand(long guildId, long commandId, DataObject command){
-		var rqBody = RequestBody.create(command.toJson(), MediaType.parse("application/json"));
+		var rqBody = RequestBody.create(MediaType.parse("application/json"), command.toJson());
 
 		var route = GUILD_COMMAND_EDIT.compile(String.valueOf(Config.BOT_ID), String.valueOf(guildId), String.valueOf(commandId));
 		try(var resp = newCall(route, rqBody).execute()){
@@ -220,7 +220,7 @@ public class CommandsModule extends Module{
 
 	public void deleteAllCommands(long guildId){
 		LOG.info("Deleting commands {}...", guildId == -1 ? "global" : "for guild " + guildId);
-		var rqBody = RequestBody.create(DataArray.empty().toString(), MediaType.parse("application/json"));
+		var rqBody = RequestBody.create(MediaType.parse("application/json"), DataArray.empty().toString());
 
 		var route = guildId == -1L ? COMMANDS_CREATE.compile(String.valueOf(Config.BOT_ID)) : GUILD_COMMANDS_CREATE.compile(String.valueOf(Config.BOT_ID), String.valueOf(guildId));
 		try(var resp = newCall(route, rqBody).execute()){

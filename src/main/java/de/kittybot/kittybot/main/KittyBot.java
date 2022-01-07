@@ -58,8 +58,7 @@ public class KittyBot{
 			.disableCache(
 				CacheFlag.MEMBER_OVERRIDES,
 				CacheFlag.ACTIVITY,
-				CacheFlag.CLIENT_STATUS,
-				CacheFlag.ROLE_TAGS
+				CacheFlag.CLIENT_STATUS
 			)
 			.setMemberCachePolicy(MemberCachePolicy.VOICE)
 			.setChunkingFilter(ChunkingFilter.NONE)

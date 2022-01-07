@@ -53,7 +53,7 @@ public class AnnouncementModule extends Module{
 			return;
 		}
 		if((msg.contains("<@" + Config.BOT_ID + ">") || msg.contains("<@!" + Config.BOT_ID + ">")) && msg.contains("help")){
-			event.getChannel().sendMessage(new EmbedBuilder()
+			event.getChannel().sendMessageEmbeds(new EmbedBuilder()
 				.setColor(Colors.KITTYBOT_BLUE)
 				.setAuthor("KittyBot Slash Commands Update", event.getJDA().getSelfUser().getEffectiveAvatarUrl(), Config.ORIGIN_URL)
 				.setDescription("KittyBot now uses the new slash commands.\n" +
@@ -92,7 +92,7 @@ public class AnnouncementModule extends Module{
 			if(channel == null || !channel.canTalk()){
 				return;
 			}
-			channel.sendMessage(embed).queue();
+			channel.sendMessageEmbeds(embed).queue();
 			return;
 		}
 		guild.retrieveAuditLogs().type(ActionType.BOT_ADD).limit(1).cache(false).queue(entries -> {
@@ -105,14 +105,14 @@ public class AnnouncementModule extends Module{
 				return;
 			}
 
-			user.openPrivateChannel().flatMap(channel -> channel.sendMessage(embed)).queue(
+			user.openPrivateChannel().flatMap(channel -> channel.sendMessageEmbeds(embed)).queue(
 				null,
 				error -> {
 					var channel = guild.getDefaultChannel();
 					if(channel == null || !channel.canTalk()){
 						return;
 					}
-					channel.sendMessage(embed).queue();
+					channel.sendMessageEmbeds(embed).queue();
 				}
 			);
 		});

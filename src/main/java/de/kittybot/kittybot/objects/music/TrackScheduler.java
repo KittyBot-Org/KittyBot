@@ -1,7 +1,5 @@
 package de.kittybot.kittybot.objects.music;
 
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.objects.module.Modules;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
@@ -14,9 +12,13 @@ import lavalink.client.io.filters.Filters;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavalinkPlayer;
 import lavalink.client.player.event.PlayerEventListenerAdapter;
+import lavalink.client.player.track.AudioTrack;
+import lavalink.client.player.track.AudioTrackEndReason;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.Collections;
@@ -69,7 +71,7 @@ public class TrackScheduler extends PlayerEventListenerAdapter{
 
 	@Override
 	public void onTrackEnd(IPlayer player, AudioTrack track, AudioTrackEndReason endReason){
-		this.history.push(track.makeClone());
+		this.history.push(track);
 		if(!endReason.mayStartNext){
 			this.manager.updateMusicController();
 			return;
@@ -80,7 +82,7 @@ public class TrackScheduler extends PlayerEventListenerAdapter{
 	public void next(boolean force, AudioTrack track){
 		if(this.repeatMode == RepeatMode.SONG && !force){
 			if(track != null){
-				this.player.playTrack(track.makeClone());
+				this.player.playTrack(track);
 			}
 			return;
 		}
@@ -92,7 +94,7 @@ public class TrackScheduler extends PlayerEventListenerAdapter{
 		}
 		this.player.playTrack(next);
 		if(this.repeatMode == RepeatMode.QUEUE && track != null){
-			this.queue.offer(track.makeClone());
+			this.queue.offer(track);
 		}
 	}
 
@@ -171,7 +173,7 @@ public class TrackScheduler extends PlayerEventListenerAdapter{
 	}
 
 	public void increaseVolume(int volumeStep){
-		var newVol = ((int) this.player.getFilters().getVolume()) * 100 + volumeStep;
+		var newVol = this.player.getVolume() + volumeStep;
 		if(newVol <= 0){
 			newVol = 10;
 		}
@@ -183,8 +185,12 @@ public class TrackScheduler extends PlayerEventListenerAdapter{
 	}
 
 	public void setVolume(int volume){
-		this.player.getFilters().setVolume(volume / 100.0f).commit();
+		this.player.setVolume(volume);
 		this.manager.updateMusicController();
+	}
+
+	public int getVolume(){
+		return this.player.getVolume();
 	}
 
 	public long getControllerMessageId(){
