@@ -30,7 +30,6 @@ import java.util.regex.Pattern;
 public class MusicModule extends Module implements Serializable{
 
 	public static final Pattern URL_PATTERN = Pattern.compile("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]?");
-	public static final Pattern SPOTIFY_URL_PATTERN = Pattern.compile("(https?://)?(www\\.)?open\\.spotify\\.com/(user/[a-zA-Z0-9-_]+/)?(?<type>track|album|playlist)/(?<identifier>[a-zA-Z0-9-_]+)");
 
 	private Map<Long, MusicManager> musicPlayers;
 
@@ -66,7 +65,7 @@ public class MusicModule extends Module implements Serializable{
 		var messageId = event.getMessageIdLong();
 		var currentTrack = scheduler.getPlayingTrack();
 		var userId = event.getUserIdLong();
-		var requesterId = currentTrack == null ? -1L : currentTrack.getUserData(Long.class);
+		var requesterId = currentTrack == null ? -1L : currentTrack.getUserData(Long.class) == null ? -1L : currentTrack.getUserData(Long.class);
 		var settings = this.modules.get(SettingsModule.class).getSettings(event.getGuild().getIdLong());
 
 		if(messageId != scheduler.getControllerMessageId()){
@@ -201,12 +200,6 @@ public class MusicModule extends Module implements Serializable{
 	public void play(GuildInteraction ia, String query, SearchProvider searchProvider){
 		ia.acknowledge().queue();
 		var manager = this.musicPlayers.computeIfAbsent(ia.getGuildId(), guildId -> new MusicManager(this.modules, guildId, ia.getChannelId()));
-
-		var matcher = SPOTIFY_URL_PATTERN.matcher(query);
-		if(matcher.find()){
-			this.modules.get(SpotifyModule.class).load(ia, manager, matcher);
-			return;
-		}
 
 		if(!URL_PATTERN.matcher(query).matches()){
 			switch(searchProvider){

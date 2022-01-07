@@ -120,7 +120,7 @@ public class GuildLoggingModule extends Module{
 		if(channel == null){
 			return;
 		}
-		channel.sendMessage(new EmbedBuilder()
+		channel.sendMessageEmbeds(new EmbedBuilder()
 			.setColor(color)
 			.setDescription(String.format(message, args))
 			.setFooter(eventName, user == null ? null : user.getEffectiveAvatarUrl())

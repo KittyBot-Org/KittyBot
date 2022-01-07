@@ -32,7 +32,7 @@ public class ForwardCommand extends RunGuildCommand{
 		var lavalinkPlayer = scheduler.getPlayer();
 		var position = lavalinkPlayer.getTrackPosition();
 		var newPos = position + forward;
-		if(newPos > scheduler.getPlayingTrack().getDuration()){
+		if(newPos > scheduler.getPlayingTrack().getInfo().getLength()){
 			scheduler.next(true);
 			ia.reply("Skipped to next track");
 			return;

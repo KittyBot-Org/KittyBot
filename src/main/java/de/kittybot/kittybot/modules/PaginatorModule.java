@@ -59,13 +59,13 @@ public class PaginatorModule extends Module{
 		if(Emoji.ARROW_LEFT.get().equals(code)){
 			if(currentPage != 0){
 				paginator.previousPage();
-				event.getChannel().editMessageById(event.getMessageIdLong(), paginator.constructEmbed()).queue();
+				event.getChannel().editMessageEmbedsById(event.getMessageIdLong(), paginator.constructEmbed()).queue();
 			}
 		}
 		else if(Emoji.ARROW_RIGHT.get().equals(code)){
 			if(currentPage != maxPages - 1){
 				paginator.nextPage();
-				event.getChannel().editMessageById(event.getMessageIdLong(), paginator.constructEmbed()).queue();
+				event.getChannel().editMessageEmbedsById(event.getMessageIdLong(), paginator.constructEmbed()).queue();
 			}
 		}
 		else if(Emoji.WASTEBASKET.get().equals(code)){
@@ -84,7 +84,7 @@ public class PaginatorModule extends Module{
 	}
 
 	public void create(int maxPages, BiFunction<Integer, EmbedBuilder, EmbedBuilder> embedFunction, MessageEmbed embedBuilder, MessageChannel channel, long userId){
-		channel.sendMessage(embedBuilder).queue(message -> {
+		channel.sendMessageEmbeds(embedBuilder).queue(message -> {
 			var paginator = new Paginator(message, userId, maxPages, embedFunction);
 			this.paginators.put(paginator.getMessageId(), paginator);
 			if(channel instanceof GuildChannel && !((GuildChannel) channel).getGuild().getSelfMember().hasPermission(Permission.MESSAGE_HISTORY, Permission.MESSAGE_ADD_REACTION)){

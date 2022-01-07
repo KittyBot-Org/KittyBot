@@ -53,7 +53,7 @@ public class ListCommand extends GuildSubCommand{
 			return;
 		}
 		ia.acknowledge().queue(success ->
-			ia.getChannel().sendMessage(embed).queue(message -> {
+			ia.getChannel().sendMessageEmbeds(embed).queue(message -> {
 				ia.get(ReactionRoleModule.class).add(message.getGuild().getIdLong(), message.getIdLong());
 				sortedRoles.forEach(role -> message.addReaction("test:" + role.getEmoteId()).queue());
 			})

@@ -123,6 +123,7 @@ public class InteractionsModule extends Module{
 				}
 			}
 			catch(Exception e){
+				LOG.error("Error while executing command", e);
 				interaction.error(e.getMessage());
 			}
 			return;

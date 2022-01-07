@@ -1,11 +1,11 @@
 package de.kittybot.kittybot.utils;
 
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.kittybot.kittybot.modules.PaginatorModule;
 import de.kittybot.kittybot.modules.SettingsModule;
 import de.kittybot.kittybot.objects.module.Modules;
 import de.kittybot.kittybot.objects.music.TrackScheduler;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
+import lavalink.client.player.track.AudioTrack;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -31,12 +31,12 @@ public class MusicUtils{
 
 	public static String formatTrackWithInfo(AudioTrack track){
 		var info = track.getInfo();
-		return formatTrack(track) + " - " + TimeUtils.formatDuration(info.length) + " [" + MessageUtils.getUserMention(track.getUserData(Long.class)) + "]";
+		return formatTrack(track) + " - " + TimeUtils.formatDuration(info.getLength()) + " [" + MessageUtils.getUserMention(track.getUserData(Long.class)) + "]";
 	}
 
 	public static String formatTrack(AudioTrack track){
 		var info = track.getInfo();
-		return MessageUtils.maskLink("`" + info.title + "`", info.uri);
+		return MessageUtils.maskLink("`" + info.getTitle() + "`", info.getUri());
 	}
 
 	public static boolean checkCommandRequirements(GuildInteraction ia, TrackScheduler scheduler){

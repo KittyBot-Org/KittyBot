@@ -1,17 +1,18 @@
 package de.kittybot.kittybot.objects.music;
 
-import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
-import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
-import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.kittybot.kittybot.slashcommands.interaction.GuildInteraction;
+import lavalink.client.io.FriendlyException;
+import lavalink.client.io.LoadResultHandler;
+import lavalink.client.player.track.AudioPlaylist;
+import lavalink.client.player.track.AudioTrack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
-public class AudioLoader implements AudioLoadResultHandler{
+public class AudioLoader implements LoadResultHandler{
 
 	private static final Logger LOG = LoggerFactory.getLogger(AudioLoader.class);
 
@@ -37,13 +38,17 @@ public class AudioLoader implements AudioLoadResultHandler{
 			track.setUserData(this.ia.getUserId());
 		}
 		var firstTrack = playlist.getTracks().get(0);
-		if(playlist.isSearchResult()){
-			this.manager.getScheduler().queue(this.ia, firstTrack, Collections.emptyList());
-			return;
-		}
 
 		var toPlay = playlist.getSelectedTrack() == null ? firstTrack : playlist.getSelectedTrack();
 		this.manager.getScheduler().queue(this.ia, toPlay, playlist.getTracks().stream().filter(track -> !track.equals(toPlay)).collect(Collectors.toList()));
+	}
+
+	@Override
+	public void searchResultLoaded(List<AudioTrack> tracks){
+		this.manager.connectToChannel(this.ia);
+		var track = tracks.get(0);
+		track.setUserData(this.ia.getUserId());
+		this.manager.getScheduler().queue(this.ia, track, Collections.emptyList());
 	}
 
 	@Override

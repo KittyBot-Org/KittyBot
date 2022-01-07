@@ -126,7 +126,7 @@ public class RequestModule extends Module{
 
 	public void postToHastebin(String content, Consumer<String> callback){
 		this.requestBuilder.url(API.HASTEBIN.getUrl() + "/documents");
-		this.requestBuilder.post(RequestBody.create(content, MediaType.parse("text/html; charset=utf-8")));
+		this.requestBuilder.post(RequestBody.create(MediaType.parse("text/html; charset=utf-8"), content));
 		executeAsync(this.requestBuilder.build(), (call, response) -> {
 			var body = response.body();
 			String key = null;
@@ -155,7 +155,7 @@ public class RequestModule extends Module{
 		var json = DataArray.fromCollection(commands.stream().map(Command::toDiscordServicesJSON).collect(Collectors.toList()));
 
 		this.requestBuilder.url("https://api.discordservices.net/bot/" + Config.BOT_ID + "/commands");
-		this.requestBuilder.post(RequestBody.create(json.toJson(), MediaType.parse("application/json")));
+		this.requestBuilder.post(RequestBody.create(MediaType.parse("application/json"), json.toJson()));
 		this.requestBuilder.header("Authorization", Config.DISCORD_SERVICES_TOKEN);
 		executeAsync(this.requestBuilder.build(), (call, response) -> {}, (call, response) -> {
 			var body = response.body();

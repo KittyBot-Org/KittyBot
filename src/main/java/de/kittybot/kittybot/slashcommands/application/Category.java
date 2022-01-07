@@ -42,7 +42,7 @@ public enum Category{
 	}
 
 	public String getUrl(){
-		return "http://" + Config.ORIGIN_URL + "/commands#" + this.name.toLowerCase();
+		return "https://" + Config.ORIGIN_URL + "/commands#" + this.name.toLowerCase();
 	}
 
 	public String getEmoteUrl(){

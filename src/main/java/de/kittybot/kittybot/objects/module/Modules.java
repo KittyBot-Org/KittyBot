@@ -64,7 +64,7 @@ public class Modules{
 				var dependencies = instance.getDependencies();
 				if(dependencies != null && !dependencies.stream().allMatch(this.modules::containsKey)){
 					queue.add(instance);
-					LOG.info("Added '{}' back to the queue. Dependencies: {} (Dependency circle jerk incoming!)", instance.getClass().getSimpleName(), dependencies.toString());
+					LOG.info("Added '{}' back to the queue. Dependencies: {} (Dependency circle jerk incoming!)", instance.getClass().getSimpleName(), dependencies);
 					continue;
 				}
 				instance.onEnable();
